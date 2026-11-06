@@ -8,7 +8,11 @@ Work Planner expresses procedures as heading steps and links each consumed input
 
 ## Symbol Notation
 
-Current integration `fbce2c7535b1518dd3ebb4dbe845b67576186d94` uses ○ input, ● output and ƒ for called operations, protocols and procedures. The diagrams and native graph archive below retain their explicit structural baseline `00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01`; the [current verification](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-validation.md) separately records the exact notation-preservation audit and final parser checks.
+Symbol-notation revision `fbce2c7535b1518dd3ebb4dbe845b67576186d94` uses ○ input, ● output and ƒ for called operations, protocols and procedures. The diagrams and native graph archive below retain their explicit structural baseline `00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01`; the [current verification](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-validation.md) separately records the exact notation-preservation audit and final parser checks.
+
+## Command Quoting
+
+Current revision `eedc9a212ae38449a16638dc190b0e2f16d1a828` uses value-type shell quoting. The [command audit](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/command-quote-audit.json) records 114 argv-preserving quote removals. The measured structure below retains its stated baseline.
 
 ## Structure
 

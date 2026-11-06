@@ -1,0 +1,4270 @@
+{
+  "base": "fbce2c7535b1518dd3ebb4dbe845b67576186d94",
+  "removed_shell_quote_pairs": 114,
+  "retained_quoted_linked_arguments": 362,
+  "changed_command_files": 16,
+  "link_title_quotes_preserved": true,
+  "links_prose_flags_order_and_unselected_payload_preserved": true,
+  "typed_sample_argv_equal": true,
+  "failures": [],
+  "removals": [
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 136,
+      "before": "'[**&lt;board-identity&gt;**](#board-identity)'",
+      "parameters": [
+        "board-identity"
+      ],
+      "after": "[**&lt;board-identity&gt;**](#board-identity)",
+      "rendered_sample": "users/m2ux/projectsV2/17",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 142,
+      "before": "'users/[**&lt;owner&gt;**](#board-identity)/projectsV2/9'",
+      "parameters": [
+        "owner"
+      ],
+      "after": "users/[**&lt;owner&gt;**](#board-identity)/projectsV2/9",
+      "rendered_sample": "users/m2ux/projectsV2/9",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 158,
+      "before": "'[**&lt;board-identity&gt;**](#board-identity)'",
+      "parameters": [
+        "board-identity"
+      ],
+      "after": "[**&lt;board-identity&gt;**](#board-identity)",
+      "rendered_sample": "users/m2ux/projectsV2/17",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 158,
+      "before": "'[**&lt;held-issue-numbers&gt;**](#dispatch-selection)'",
+      "parameters": [
+        "held-issue-numbers"
+      ],
+      "after": "[**&lt;held-issue-numbers&gt;**](#dispatch-selection)",
+      "rendered_sample": "1615,1616",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 158,
+      "before": "'[**&lt;complete-epic-numbers&gt;**](#dispatch-selection)'",
+      "parameters": [
+        "complete-epic-numbers"
+      ],
+      "after": "[**&lt;complete-epic-numbers&gt;**](#dispatch-selection)",
+      "rendered_sample": "1616",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "line": 54,
+      "before": "'[**&lt;board-identity&gt;**](#board-identity)'",
+      "parameters": [
+        "board-identity"
+      ],
+      "after": "[**&lt;board-identity&gt;**](#board-identity)",
+      "rendered_sample": "users/m2ux/projectsV2/17",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "line": 60,
+      "before": "'users/[**&lt;owner&gt;**](#board-identity)/projectsV2/9'",
+      "parameters": [
+        "owner"
+      ],
+      "after": "users/[**&lt;owner&gt;**](#board-identity)/projectsV2/9",
+      "rendered_sample": "users/m2ux/projectsV2/9",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 215,
+      "before": "'[**&lt;template-number&gt;**](#template-selection)'",
+      "parameters": [
+        "template-number"
+      ],
+      "after": "[**&lt;template-number&gt;**](#template-selection)",
+      "rendered_sample": "13",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 215,
+      "before": "'[**&lt;owner&gt;**](#board-owner)'",
+      "parameters": [
+        "owner"
+      ],
+      "after": "[**&lt;owner&gt;**](#board-owner)",
+      "rendered_sample": "m2ux",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 215,
+      "before": "'[**&lt;owner&gt;**](#board-owner)'",
+      "parameters": [
+        "owner"
+      ],
+      "after": "[**&lt;owner&gt;**](#board-owner)",
+      "rendered_sample": "m2ux",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 231,
+      "before": "'[**&lt;board-number&gt;**](#board-coordinates)'",
+      "parameters": [
+        "board-number"
+      ],
+      "after": "[**&lt;board-number&gt;**](#board-coordinates)",
+      "rendered_sample": "17",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 231,
+      "before": "'[**&lt;owner&gt;**](#board-owner)'",
+      "parameters": [
+        "owner"
+      ],
+      "after": "[**&lt;owner&gt;**](#board-owner)",
+      "rendered_sample": "m2ux",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 231,
+      "before": "'[**&lt;repo&gt;**](#repository)'",
+      "parameters": [
+        "repo"
+      ],
+      "after": "[**&lt;repo&gt;**](#repository)",
+      "rendered_sample": "workflow-server",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 263,
+      "before": "'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items'",
+      "parameters": [
+        "owner",
+        "board-number"
+      ],
+      "after": "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items",
+      "rendered_sample": "users/m2ux/projectsV2/17/items",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 263,
+      "before": "'id=[**&lt;issue-id&gt;**](#issue-id)'",
+      "parameters": [
+        "issue-id"
+      ],
+      "after": "id=[**&lt;issue-id&gt;**](#issue-id)",
+      "rendered_sample": "id=1001",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 269,
+      "before": "'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/items'",
+      "parameters": [
+        "owner"
+      ],
+      "after": "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/items",
+      "rendered_sample": "users/m2ux/projectsV2/13/items",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 289,
+      "before": "'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)'",
+      "parameters": [
+        "owner",
+        "board-number",
+        "item-id"
+      ],
+      "after": "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)",
+      "rendered_sample": "users/m2ux/projectsV2/17/items/291152098",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 295,
+      "before": "'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/items/1001'",
+      "parameters": [
+        "owner"
+      ],
+      "after": "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/items/1001",
+      "rendered_sample": "users/m2ux/projectsV2/13/items/1001",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 311,
+      "before": "'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)'",
+      "parameters": [
+        "owner",
+        "board-number",
+        "item-id"
+      ],
+      "after": "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)",
+      "rendered_sample": "users/m2ux/projectsV2/17/items/291152098",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 317,
+      "before": "'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items/1001'",
+      "parameters": [
+        "owner"
+      ],
+      "after": "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items/1001",
+      "rendered_sample": "users/m2ux/projectsV2/9/items/1001",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 396,
+      "before": "'pull/[**<pull-request-number>**](#pull-request-number)/head'",
+      "parameters": [
+        "pull-request-number"
+      ],
+      "after": "pull/[**<pull-request-number>**](#pull-request-number)/head",
+      "rendered_sample": "pull/1641/head",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 448,
+      "before": "'[**<head-commit>**](#verified-head)'",
+      "parameters": [
+        "head-commit"
+      ],
+      "after": "[**<head-commit>**](#verified-head)",
+      "rendered_sample": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 470,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/branches/main/protection'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/branches/main/protection",
+      "rendered_sample": "repos/m2ux/workflow-server/branches/main/protection",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 492,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/rules/branches/main'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/rules/branches/main",
+      "rendered_sample": "repos/m2ux/workflow-server/rules/branches/main",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 48,
+      "before": "'[**<lane-index>**](#requested-lane)'",
+      "parameters": [
+        "lane-index"
+      ],
+      "after": "[**<lane-index>**](#requested-lane)",
+      "rendered_sample": "2",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 104,
+      "before": "'[**&lt;initiative-number&gt;**](#renumber-inputs)'",
+      "parameters": [
+        "initiative-number"
+      ],
+      "after": "[**&lt;initiative-number&gt;**](#renumber-inputs)",
+      "rendered_sample": "17",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 104,
+      "before": "'[**&lt;epic-number&gt;**](#renumber-inputs)'",
+      "parameters": [
+        "epic-number"
+      ],
+      "after": "[**&lt;epic-number&gt;**](#renumber-inputs)",
+      "rendered_sample": "2",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 104,
+      "before": "'[**&lt;task-number-map&gt;**](#renumber-inputs)'",
+      "parameters": [
+        "task-number-map"
+      ],
+      "after": "[**&lt;task-number-map&gt;**](#renumber-inputs)",
+      "rendered_sample": "1:2,3:4",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 129,
+      "before": "'[**&lt;initiative-number&gt;**](#renumber-inputs)'",
+      "parameters": [
+        "initiative-number"
+      ],
+      "after": "[**&lt;initiative-number&gt;**](#renumber-inputs)",
+      "rendered_sample": "17",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 129,
+      "before": "'[**&lt;epic-number-map&gt;**](#renumber-inputs)'",
+      "parameters": [
+        "epic-number-map"
+      ],
+      "after": "[**&lt;epic-number-map&gt;**](#renumber-inputs)",
+      "rendered_sample": "1:2,3:4",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 51,
+      "before": "'[**<free-slot-count>**](#free-slots)'",
+      "parameters": [
+        "free-slot-count"
+      ],
+      "after": "[**<free-slot-count>**](#free-slots)",
+      "rendered_sample": "3",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 51,
+      "before": "'[**<survey-board>**](#survey-board)'",
+      "parameters": [
+        "survey-board"
+      ],
+      "after": "[**<survey-board>**](#survey-board)",
+      "rendered_sample": "users/m2ux/projectsV2/17",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 69,
+      "before": "'[**<unit-identity>**](#unit-identity)'",
+      "parameters": [
+        "unit-identity"
+      ],
+      "after": "[**<unit-identity>**](#unit-identity)",
+      "rendered_sample": "I17:E01:W01+W02",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 69,
+      "before": "'[**<free-slot-count>**](#free-slots)'",
+      "parameters": [
+        "free-slot-count"
+      ],
+      "after": "[**<free-slot-count>**](#free-slots)",
+      "rendered_sample": "3",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 221,
+      "before": "'[**&lt;criterion-ids&gt;**](#criterion-selection)'",
+      "parameters": [
+        "criterion-ids"
+      ],
+      "after": "[**&lt;criterion-ids&gt;**](#criterion-selection)",
+      "rendered_sample": "AC1,AC2",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 250,
+      "before": "'[**&lt;task-ids&gt;**](#task-selection)'",
+      "parameters": [
+        "task-ids"
+      ],
+      "after": "[**&lt;task-ids&gt;**](#task-selection)",
+      "rendered_sample": "W01,W02",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 256,
+      "before": "'https://github.com/[**&lt;owner&gt;**](#planning-folder)/[**&lt;repo&gt;**](#planning-folder)/tree/engineering/artifacts/planning'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "https://github.com/[**&lt;owner&gt;**](#planning-folder)/[**&lt;repo&gt;**](#planning-folder)/tree/engineering/artifacts/planning",
+      "rendered_sample": "https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 278,
+      "before": "'[**&lt;task-ids&gt;**](#task-selection)'",
+      "parameters": [
+        "task-ids"
+      ],
+      "after": "[**&lt;task-ids&gt;**](#task-selection)",
+      "rendered_sample": "W01,W02",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "line": 120,
+      "before": "'[**&lt;pull-request-number&gt;**](#delivery-selection)'",
+      "parameters": [
+        "pull-request-number"
+      ],
+      "after": "[**&lt;pull-request-number&gt;**](#delivery-selection)",
+      "rendered_sample": "1641",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "line": 120,
+      "before": "'[**&lt;criterion-ids&gt;**](#delivery-selection)'",
+      "parameters": [
+        "criterion-ids"
+      ],
+      "after": "[**&lt;criterion-ids&gt;**](#delivery-selection)",
+      "rendered_sample": "AC1,AC2",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 172,
+      "before": "'[**&lt;criterion-ids&gt;**](#criterion-selection)'",
+      "parameters": [
+        "criterion-ids"
+      ],
+      "after": "[**&lt;criterion-ids&gt;**](#criterion-selection)",
+      "rendered_sample": "AC1,AC2",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "line": 215,
+      "before": "'repos/[**&lt;owner&gt;**](#reference-repositories)/[**&lt;repo&gt;**](#reference-repositories)'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#reference-repositories)/[**&lt;repo&gt;**](#reference-repositories)",
+      "rendered_sample": "repos/m2ux/workflow-server",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 274,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues",
+      "rendered_sample": "repos/m2ux/workflow-server/issues",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 280,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues",
+      "rendered_sample": "repos/m2ux/workflow-server/issues",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 296,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "issue-number"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/1616",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 302,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/943",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 318,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "issue-number"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/1616",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 324,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/943",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 340,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "issue-number"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/1616",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 346,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/943",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 364,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/labels'",
+      "parameters": [
+        "owner",
+        "repo",
+        "issue-number"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/labels",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/1616/labels",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 370,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943/labels'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943/labels",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/943/labels",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 408,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments'",
+      "parameters": [
+        "owner",
+        "repo",
+        "issue-number"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/1616/comments",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 414,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874/comments'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874/comments",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/874/comments",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 430,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "issue-number"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/1616",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 436,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/943",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 517,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "issue-number"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/1616",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 523,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/874",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 539,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments'",
+      "parameters": [
+        "owner",
+        "repo",
+        "issue-number"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/1616/comments",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 545,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/637/comments'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/637/comments",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/637/comments",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 561,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments'",
+      "parameters": [
+        "owner",
+        "repo",
+        "issue-number"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/1616/comments",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 567,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874/comments'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874/comments",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/874/comments",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 583,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "issue-number"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/1616",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 589,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943",
+      "rendered_sample": "repos/m2ux/workflow-server/issues/943",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 346,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "pull-request-number"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/1641",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 352,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/950",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 368,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "pull-request-number"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/1641",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 374,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/950",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 393,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 399,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 405,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 424,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 430,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 449,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)/merge'",
+      "parameters": [
+        "owner",
+        "repo",
+        "pull-request-number"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)/merge",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/1641/merge",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 455,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950/merge'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950/merge",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/950/merge",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 473,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "pull-request-number"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/1641",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 479,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/950",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 519,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)/merge'",
+      "parameters": [
+        "owner",
+        "repo",
+        "pull-request-number"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)/merge",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/1641/merge",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 519,
+      "before": "'[**<head-sha>**](#verified-head)'",
+      "parameters": [
+        "head-sha"
+      ],
+      "after": "[**<head-sha>**](#verified-head)",
+      "rendered_sample": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 525,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/980/merge'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/980/merge",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/980/merge",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 525,
+      "before": "'[**<head-sha>**](#verified-head)'",
+      "parameters": [
+        "head-sha"
+      ],
+      "after": "[**<head-sha>**](#verified-head)",
+      "rendered_sample": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 541,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "pull-request-number"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/1641",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 547,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/980'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/980",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/980",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 570,
+      "before": "'[**<issue-owner>**](#issue-identity)/[**<issue-repo>**](#issue-identity)#[**<issue-number>**](#issue-identity)'",
+      "parameters": [
+        "issue-owner",
+        "issue-repo",
+        "issue-number"
+      ],
+      "after": "[**<issue-owner>**](#issue-identity)/[**<issue-repo>**](#issue-identity)#[**<issue-number>**](#issue-identity)",
+      "rendered_sample": "m2ux/workflow-server#1616",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 570,
+      "before": "'[**<pr-owner>**](#identity)/[**<pr-repo>**](#identity)#[**<pull-request-number>**](#identity)'",
+      "parameters": [
+        "pr-owner",
+        "pr-repo",
+        "pull-request-number"
+      ],
+      "after": "[**<pr-owner>**](#identity)/[**<pr-repo>**](#identity)#[**<pull-request-number>**](#identity)",
+      "rendered_sample": "m2ux/workflow-server#1641",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 606,
+      "before": "'[**<issue-owner>**](#issue-identity)/[**<issue-repo>**](#issue-identity)#[**<issue-number>**](#issue-identity)'",
+      "parameters": [
+        "issue-owner",
+        "issue-repo",
+        "issue-number"
+      ],
+      "after": "[**<issue-owner>**](#issue-identity)/[**<issue-repo>**](#issue-identity)#[**<issue-number>**](#issue-identity)",
+      "rendered_sample": "m2ux/workflow-server#1616",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 606,
+      "before": "'[**<pr-owner>**](#identity)/[**<pr-repo>**](#identity)#[**<pull-request-number>**](#identity)'",
+      "parameters": [
+        "pr-owner",
+        "pr-repo",
+        "pull-request-number"
+      ],
+      "after": "[**<pr-owner>**](#identity)/[**<pr-repo>**](#identity)#[**<pull-request-number>**](#identity)",
+      "rendered_sample": "m2ux/workflow-server#1641",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 676,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "pull-request-number"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/1641",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 682,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/980'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/980",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/980",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 815,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)/files'",
+      "parameters": [
+        "owner",
+        "repo",
+        "pull-request-number"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)/files",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/1641/files",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 821,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950/files'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950/files",
+      "rendered_sample": "repos/m2ux/workflow-server/pulls/950/files",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 905,
+      "before": "'[**<pull-request-number>**](#identity)'",
+      "parameters": [
+        "pull-request-number"
+      ],
+      "after": "[**<pull-request-number>**](#identity)",
+      "rendered_sample": "1641",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 905,
+      "before": "'[**<owner>**](#repository)/[**<repository>**](#repository)'",
+      "parameters": [
+        "owner",
+        "repository"
+      ],
+      "after": "[**<owner>**](#repository)/[**<repository>**](#repository)",
+      "rendered_sample": "m2ux/workflow-server",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-labels.md",
+      "line": 52,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/labels'",
+      "parameters": [
+        "owner",
+        "repo"
+      ],
+      "after": "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/labels",
+      "rendered_sample": "repos/m2ux/workflow-server/labels",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-labels.md",
+      "line": 52,
+      "before": "'[**&lt;hex-colour&gt;**](#label-identity)'",
+      "parameters": [
+        "hex-colour"
+      ],
+      "after": "[**&lt;hex-colour&gt;**](#label-identity)",
+      "rendered_sample": "b60205",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "line": 62,
+      "before": "'[**&lt;window-start-date&gt;**](#report-selection)'",
+      "parameters": [
+        "window-start-date"
+      ],
+      "after": "[**&lt;window-start-date&gt;**](#report-selection)",
+      "rendered_sample": "2026-11-06",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "line": 62,
+      "before": "'[**&lt;initiative-filter&gt;**](#report-selection)'",
+      "parameters": [
+        "initiative-filter"
+      ],
+      "after": "[**&lt;initiative-filter&gt;**](#report-selection)",
+      "rendered_sample": "I17",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "line": 39,
+      "before": "'[**&lt;pull-request-number&gt;**](#delivery-selection)'",
+      "parameters": [
+        "pull-request-number"
+      ],
+      "after": "[**&lt;pull-request-number&gt;**](#delivery-selection)",
+      "rendered_sample": "1641",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "line": 39,
+      "before": "'[**&lt;criterion-ids&gt;**](#delivery-selection)'",
+      "parameters": [
+        "criterion-ids"
+      ],
+      "after": "[**&lt;criterion-ids&gt;**](#delivery-selection)",
+      "rendered_sample": "AC1,AC2",
+      "reason": "Validated shell-safe typed identifier/number/endpoint; no shell quoting is needed."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 352,
+      "before": "'i07/e00/main'",
+      "after": "i07/e00/main",
+      "parameters": [],
+      "rendered_sample": "i07/e00/main",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 399,
+      "before": "'i07/e00/w01-purpose'",
+      "after": "i07/e00/w01-purpose",
+      "parameters": [],
+      "rendered_sample": "i07/e00/w01-purpose",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 399,
+      "before": "'i07/e00/main'",
+      "after": "i07/e00/main",
+      "parameters": [],
+      "rendered_sample": "i07/e00/main",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 405,
+      "before": "'f00-key-validation'",
+      "after": "f00-key-validation",
+      "parameters": [],
+      "rendered_sample": "f00-key-validation",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 405,
+      "before": "'workspace'",
+      "after": "workspace",
+      "parameters": [],
+      "rendered_sample": "workspace",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 430,
+      "before": "'i07/e00/main'",
+      "after": "i07/e00/main",
+      "parameters": [],
+      "rendered_sample": "i07/e00/main",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 430,
+      "before": "'main'",
+      "after": "main",
+      "parameters": [],
+      "rendered_sample": "main",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 449,
+      "before": "'merge'",
+      "after": "merge",
+      "parameters": [],
+      "rendered_sample": "merge",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 455,
+      "before": "'merge'",
+      "after": "merge",
+      "parameters": [],
+      "rendered_sample": "merge",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 519,
+      "before": "'merge'",
+      "after": "merge",
+      "parameters": [],
+      "rendered_sample": "merge",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 525,
+      "before": "'merge'",
+      "after": "merge",
+      "parameters": [],
+      "rendered_sample": "merge",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 576,
+      "before": "'m2ux/workflow-server#637'",
+      "after": "m2ux/workflow-server#637",
+      "parameters": [],
+      "rendered_sample": "m2ux/workflow-server#637",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 576,
+      "before": "'m2ux/workflow-server#950'",
+      "after": "m2ux/workflow-server#950",
+      "parameters": [],
+      "rendered_sample": "m2ux/workflow-server#950",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 612,
+      "before": "'m2ux/workflow-server#637'",
+      "after": "m2ux/workflow-server#637",
+      "parameters": [],
+      "rendered_sample": "m2ux/workflow-server#637",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 612,
+      "before": "'m2ux/workflow-server#950'",
+      "after": "m2ux/workflow-server#950",
+      "parameters": [],
+      "rendered_sample": "m2ux/workflow-server#950",
+      "reason": "Fixed shell-safe literal argument; quoted and unquoted argv are identical."
+    }
+  ],
+  "retained": [
+    {
+      "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+      "line": 65,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+      "line": 65,
+      "before": "'[**&lt;checkout&gt;**](#project-checkout)'",
+      "parameters": [
+        "checkout"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+      "line": 65,
+      "before": "'[**&lt;revision&gt;**](#revision)'",
+      "parameters": [
+        "revision"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+      "line": 71,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+      "line": 71,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/agent-review.md",
+      "line": 53,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/agent-review.md",
+      "line": 53,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/agent-review.md",
+      "line": 53,
+      "before": "'[**&lt;pull-request-json-file&gt;**](#pull-request-record)'",
+      "parameters": [
+        "pull-request-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/agent-review.md",
+      "line": 53,
+      "before": "'[**&lt;review-records-file&gt;**](#published-reviews)'",
+      "parameters": [
+        "review-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 136,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 136,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 136,
+      "before": "'[**&lt;initiative-json-file&gt;**](#initiative-record)'",
+      "parameters": [
+        "initiative-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 136,
+      "before": "'[**&lt;epic-json-file&gt;**](#epic-records)'",
+      "parameters": [
+        "epic-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 136,
+      "before": "'[**&lt;task-json-file&gt;**](#task-records)'",
+      "parameters": [
+        "task-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 136,
+      "before": "'[**&lt;pull-request-records-file&gt;**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 136,
+      "before": "'[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)'",
+      "parameters": [
+        "issue-link-snapshot-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 136,
+      "before": "'[**&lt;review-records-file&gt;**](#published-reviews)'",
+      "parameters": [
+        "review-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 136,
+      "before": "'[**&lt;board-fields-file&gt;**](#board-fields)'",
+      "parameters": [
+        "board-fields-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 136,
+      "before": "'[**&lt;board-items-file&gt;**](#board-items)'",
+      "parameters": [
+        "board-items-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 136,
+      "before": "'[**&lt;output-directory&gt;**](#output-directory)'",
+      "parameters": [
+        "output-directory"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 136,
+      "before": "'[**&lt;assignee-login&gt;**](#assignee-login)'",
+      "parameters": [
+        "assignee-login"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 142,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 142,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 158,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 158,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 158,
+      "before": "'[**&lt;board-items-file&gt;**](#board-items)'",
+      "parameters": [
+        "board-items-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 158,
+      "before": "'[**&lt;board-fields-file&gt;**](#board-fields)'",
+      "parameters": [
+        "board-fields-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 158,
+      "before": "'[**&lt;output-directory&gt;**](#output-directory)'",
+      "parameters": [
+        "output-directory"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 158,
+      "before": "'[**&lt;assignee-login&gt;**](#assignee-login)'",
+      "parameters": [
+        "assignee-login"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 158,
+      "before": "'[**&lt;pull-request-records-file&gt;**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "line": 158,
+      "before": "'[**&lt;review-records-file&gt;**](#published-reviews)'",
+      "parameters": [
+        "review-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "line": 54,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "line": 54,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "line": 54,
+      "before": "'[**&lt;board-items-file&gt;**](#board-items)'",
+      "parameters": [
+        "board-items-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "line": 54,
+      "before": "'[**&lt;pull-request-records-file&gt;**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "line": 54,
+      "before": "'[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)'",
+      "parameters": [
+        "issue-link-snapshot-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "line": 54,
+      "before": "'[**&lt;board-fields-file&gt;**](#board-fields)'",
+      "parameters": [
+        "board-fields-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "line": 54,
+      "before": "'[**&lt;output-directory&gt;**](#output-directory)'",
+      "parameters": [
+        "output-directory"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "line": 54,
+      "before": "'[**&lt;assignee-login&gt;**](#assignee-login)'",
+      "parameters": [
+        "assignee-login"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "line": 60,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "line": 60,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 197,
+      "before": "\"users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100\"",
+      "parameters": [
+        "owner"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 197,
+      "before": "'.&#91;&#93; | select(.closed | not) | select(.title == \"[**&lt;template-title&gt;**](#template-selection)\") | .number'",
+      "parameters": [
+        "template-title"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 215,
+      "before": "'[**&lt;board-title&gt;**](#copy-title)'",
+      "parameters": [
+        "board-title"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 247,
+      "before": "\"users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100\"",
+      "parameters": [
+        "owner"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 289,
+      "before": "'[**&lt;status-input-file&gt;**](#status-input-file)'",
+      "parameters": [
+        "status-input-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 333,
+      "before": "\"users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/fields?per_page=100\"",
+      "parameters": [
+        "owner",
+        "board-number"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 333,
+      "before": "'[**&lt;board-fields-file&gt;**](#board-fields-file)'",
+      "parameters": [
+        "board-fields-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 339,
+      "before": "\"users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/fields?per_page=100\"",
+      "parameters": [
+        "owner"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 355,
+      "before": "\"users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100\"",
+      "parameters": [
+        "owner"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 355,
+      "before": "'.&#91;&#93; | select(.closed | not) | select(.title | sub(\"^\\\\&#91;P&#91;0-9&#93;+\\\\&#93; \"; \"\") | startswith(\"[**&lt;theme-name&gt;**](#theme-name): \")) | .number'",
+      "parameters": [
+        "theme-name"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 361,
+      "before": "\"users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100\"",
+      "parameters": [
+        "owner"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 377,
+      "before": "\"users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/fields?per_page=100\"",
+      "parameters": [
+        "owner",
+        "board-number"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 383,
+      "before": "\"users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/fields?per_page=100\"",
+      "parameters": [
+        "owner"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 399,
+      "before": "\"users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field)\"",
+      "parameters": [
+        "owner",
+        "board-number",
+        "status-field-id"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 399,
+      "before": "'[**&lt;board-items-file&gt;**](#board-items-file)'",
+      "parameters": [
+        "board-items-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 405,
+      "before": "\"users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items?per_page=100&fields=419167630\"",
+      "parameters": [
+        "owner"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 421,
+      "before": "\"users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)?fields=[**&lt;status-field-id&gt;**](#status-field)\"",
+      "parameters": [
+        "owner",
+        "board-number",
+        "item-id",
+        "status-field-id"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "line": 427,
+      "before": "\"users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items/1001?fields=419167630\"",
+      "parameters": [
+        "owner"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 222,
+      "before": "'refs/heads/[**<epic-branch-prefix>**](#epic-identity)/*'",
+      "parameters": [
+        "epic-branch-prefix"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 250,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 250,
+      "before": "\"[**<workspace>**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 250,
+      "before": "'[**<checkout>**](#project-checkout)'",
+      "parameters": [
+        "checkout"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 250,
+      "before": "'[**<revision>**](#revision)'",
+      "parameters": [
+        "revision"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 256,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 256,
+      "before": "\"[**<workspace>**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 256,
+      "before": "'[**<checkout>**](#project-checkout)'",
+      "parameters": [
+        "checkout"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 274,
+      "before": "'[**<source-branch>**](#source-branch)'",
+      "parameters": [
+        "source-branch"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 292,
+      "before": "'origin/[**<source-branch>**](#source-branch):refs/heads/[**<epic-base>**](#epic-base-name)'",
+      "parameters": [
+        "source-branch",
+        "epic-base"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 310,
+      "before": "'origin/[**<source-branch>**](#source-branch)'",
+      "parameters": [
+        "source-branch"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 346,
+      "before": "'HEAD:refs/heads/[**<task-branch>**](#task-branch)'",
+      "parameters": [
+        "task-branch"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 372,
+      "before": "'[**<worktree-path>**](#worktree-path)'",
+      "parameters": [
+        "worktree-path"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 372,
+      "before": "'[**<task-branch>**](#task-branch)'",
+      "parameters": [
+        "task-branch"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 372,
+      "before": "'origin/[**<base>**](#base-branch)'",
+      "parameters": [
+        "base"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 422,
+      "before": "'[**<worktree-path>**](#worktree-path)'",
+      "parameters": [
+        "worktree-path"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 422,
+      "before": "'[**<epic-base>**](#epic-base-name)'",
+      "parameters": [
+        "epic-base"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 448,
+      "before": "'[**<worktree-path>**](#worktree-path)'",
+      "parameters": [
+        "worktree-path"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 464,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/branches/[**<target-branch>**](#target-branch)/protection'",
+      "parameters": [
+        "owner",
+        "repo",
+        "target-branch"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 464,
+      "before": "'[**<branch-protection-file>**](#output-files)'",
+      "parameters": [
+        "branch-protection-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 486,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/rules/branches/[**<target-branch>**](#target-branch)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "target-branch"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 486,
+      "before": "'[**<branch-rules-file>**](#output-files)'",
+      "parameters": [
+        "branch-rules-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 508,
+      "before": "'[**<checkout>**](#checkout)'",
+      "parameters": [
+        "checkout"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 508,
+      "before": "'[**<revision>**](#revision)^{commit}'",
+      "parameters": [
+        "revision"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "line": 524,
+      "before": "'[**<checkout>**](#checkout)'",
+      "parameters": [
+        "checkout"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 48,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 48,
+      "before": "\"[**<workspace>**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 48,
+      "before": "'[**<board-items-file>**](#board-items)'",
+      "parameters": [
+        "board-items-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 48,
+      "before": "'[**<pull-request-records-file>**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 48,
+      "before": "'[**<issue-link-snapshot-file>**](#issue-link-snapshot)'",
+      "parameters": [
+        "issue-link-snapshot-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 48,
+      "before": "'[**<checkout>**](#project-checkout)'",
+      "parameters": [
+        "checkout"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 48,
+      "before": "'[**<revision>**](#revision)'",
+      "parameters": [
+        "revision"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 48,
+      "before": "'[**<epic-base-names>**](#epic-base-names)'",
+      "parameters": [
+        "epic-base-names"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 48,
+      "before": "'[**<engineering-worktree>**](#engineering-worktree)'",
+      "parameters": [
+        "engineering-worktree"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 54,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 54,
+      "before": "\"[**<workspace>**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 54,
+      "before": "'[**<checkout>**](#project-checkout)'",
+      "parameters": [
+        "checkout"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "line": 54,
+      "before": "'[**<checkout>**](#project-checkout)/.engineering'",
+      "parameters": [
+        "checkout"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 75,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 75,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 75,
+      "before": "'I=[**&lt;initiative-body-file&gt;**](#dependency-files)'",
+      "parameters": [
+        "initiative-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 75,
+      "before": "'[**&lt;epic-id&gt;**](#dependency-files)=[**&lt;epic-body-file&gt;**](#dependency-files)'",
+      "parameters": [
+        "epic-id",
+        "epic-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 75,
+      "before": "'[**&lt;epic-id&gt;**](#dependency-files):[**&lt;task-id&gt;**](#dependency-files)=[**&lt;work-item-file&gt;**](#dependency-files)'",
+      "parameters": [
+        "epic-id",
+        "task-id",
+        "work-item-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 75,
+      "before": "'R=[**&lt;record-file&gt;**](#dependency-files)'",
+      "parameters": [
+        "record-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 81,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 81,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 104,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 104,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 104,
+      "before": "'[**&lt;epic-body-file&gt;**](#dependency-files)'",
+      "parameters": [
+        "epic-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 104,
+      "before": "'[**&lt;affected-body-file&gt;**](#renumber-inputs)'",
+      "parameters": [
+        "affected-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 110,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 110,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 129,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 129,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 129,
+      "before": "'[**&lt;pull-request-records-file&gt;**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 129,
+      "before": "'[**&lt;body-file&gt;**](#renumber-inputs)'",
+      "parameters": [
+        "body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 135,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "line": 135,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 51,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 51,
+      "before": "\"[**<workspace>**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 51,
+      "before": "'[**<authorization-file>**](#authorization)'",
+      "parameters": [
+        "authorization-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 51,
+      "before": "'[**<dispatch-export-file>**](#survey-evidence)'",
+      "parameters": [
+        "dispatch-export-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 51,
+      "before": "'[**<session-inventory-file>**](#session-inventory)'",
+      "parameters": [
+        "session-inventory-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 51,
+      "before": "'[**<batch-file>**](#batch)'",
+      "parameters": [
+        "batch-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 69,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 69,
+      "before": "\"[**<workspace>**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 69,
+      "before": "'[**<batch-file>**](#batch)'",
+      "parameters": [
+        "batch-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 69,
+      "before": "'[**<start-evidence-file>**](#start-evidence)'",
+      "parameters": [
+        "start-evidence-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "line": 69,
+      "before": "'[**<session-inventory-file>**](#session-inventory)'",
+      "parameters": [
+        "session-inventory-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 197,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 197,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 197,
+      "before": "'[**&lt;epic-json-file&gt;**](#epic-record)'",
+      "parameters": [
+        "epic-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 197,
+      "before": "'[**&lt;pull-request-records-file&gt;**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 197,
+      "before": "'[**&lt;issue-link-snapshot-file&gt;**](#issue-links)'",
+      "parameters": [
+        "issue-link-snapshot-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 197,
+      "before": "'[**&lt;task-json-file&gt;**](#task-records)'",
+      "parameters": [
+        "task-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 197,
+      "before": "'[**&lt;task-pull-request-map&gt;**](#delivery-matches)'",
+      "parameters": [
+        "task-pull-request-map"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 197,
+      "before": "'[**&lt;checkout&gt;**](#project-checkout)'",
+      "parameters": [
+        "checkout"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 197,
+      "before": "'[**&lt;epic-base-revision&gt;**](#epic-bases)'",
+      "parameters": [
+        "epic-base-revision"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 197,
+      "before": "'[**&lt;output-body-file&gt;**](#output-body)'",
+      "parameters": [
+        "output-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 203,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 203,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 203,
+      "before": "'[**&lt;checkout&gt;**](#project-checkout)'",
+      "parameters": [
+        "checkout"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 221,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 221,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 221,
+      "before": "'[**&lt;epic-json-file&gt;**](#epic-record)'",
+      "parameters": [
+        "epic-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 221,
+      "before": "'[**&lt;pull-request-records-file&gt;**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 221,
+      "before": "'[**&lt;issue-link-snapshot-file&gt;**](#issue-links)'",
+      "parameters": [
+        "issue-link-snapshot-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 221,
+      "before": "'[**&lt;output-body-file&gt;**](#output-body)'",
+      "parameters": [
+        "output-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 227,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 227,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 250,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 250,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 250,
+      "before": "'[**&lt;epic-json-file&gt;**](#epic-record)'",
+      "parameters": [
+        "epic-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 250,
+      "before": "'[**&lt;board-items-file&gt;**](#board-items)'",
+      "parameters": [
+        "board-items-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 250,
+      "before": "'[**&lt;records-base-url&gt;**](#planning-folder)'",
+      "parameters": [
+        "records-base-url"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 250,
+      "before": "'[**&lt;output-body-file&gt;**](#output-body)'",
+      "parameters": [
+        "output-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 256,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 256,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 278,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 278,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 278,
+      "before": "'[**&lt;epic-json-file&gt;**](#epic-record)'",
+      "parameters": [
+        "epic-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 278,
+      "before": "'[**&lt;engineering-worktree&gt;**](#engineering-worktree)'",
+      "parameters": [
+        "engineering-worktree"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 278,
+      "before": "'[**&lt;output-body-file&gt;**](#output-body)'",
+      "parameters": [
+        "output-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 284,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "line": 284,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "line": 95,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "line": 95,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "line": 95,
+      "before": "'[**&lt;epic-json-file&gt;**](#epic-record)'",
+      "parameters": [
+        "epic-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "line": 95,
+      "before": "'[**&lt;pull-request-records-file&gt;**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "line": 95,
+      "before": "'[**&lt;issue-link-snapshot-file&gt;**](#issue-links)'",
+      "parameters": [
+        "issue-link-snapshot-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "line": 95,
+      "before": "'[**&lt;epic-body-file&gt;**](#output-body)'",
+      "parameters": [
+        "epic-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "line": 101,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "line": 101,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "line": 120,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "line": 120,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "line": 120,
+      "before": "'[**&lt;hot-fix-json-file&gt;**](#hot-fix-record)'",
+      "parameters": [
+        "hot-fix-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "line": 120,
+      "before": "'[**&lt;pull-request-records-file&gt;**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "line": 120,
+      "before": "'[**&lt;issue-link-snapshot-file&gt;**](#issue-links)'",
+      "parameters": [
+        "issue-link-snapshot-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "line": 120,
+      "before": "'[**&lt;output-body-file&gt;**](#output-body)'",
+      "parameters": [
+        "output-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "line": 126,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "line": 126,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 148,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 148,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 148,
+      "before": "'[**&lt;initiative-json-file&gt;**](#initiative-record)'",
+      "parameters": [
+        "initiative-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 148,
+      "before": "'[**&lt;epic-json-file&gt;**](#epic-records)'",
+      "parameters": [
+        "epic-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 154,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 154,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 172,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 172,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 172,
+      "before": "'[**&lt;initiative-json-file&gt;**](#initiative-record)'",
+      "parameters": [
+        "initiative-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 172,
+      "before": "'[**&lt;epic-json-file&gt;**](#epic-records)'",
+      "parameters": [
+        "epic-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 172,
+      "before": "'[**&lt;output-body-file&gt;**](#output-files)'",
+      "parameters": [
+        "output-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 178,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 178,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 194,
+      "before": "'repos/[**&lt;owner&gt;**](#source-evidence)/[**&lt;repository&gt;**](#source-evidence)/contents/[**&lt;source-path&gt;**](#source-evidence)?ref=[**&lt;revision&gt;**](#source-evidence)'",
+      "parameters": [
+        "owner",
+        "repository",
+        "source-path",
+        "revision"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "line": 194,
+      "before": "'[**&lt;source-file&gt;**](#output-files)'",
+      "parameters": [
+        "source-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "line": 169,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "line": 169,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "line": 169,
+      "before": "'[**&lt;issue-json-file&gt;**](#body-record)'",
+      "parameters": [
+        "issue-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "line": 169,
+      "before": "'[**&lt;output-body-file&gt;**](#output-files)'",
+      "parameters": [
+        "output-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "line": 175,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "line": 175,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "line": 191,
+      "before": "'[**&lt;issue-json-file&gt;**](#body-record)'",
+      "parameters": [
+        "issue-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "line": 215,
+      "before": "'[**&lt;repository-json-file&gt;**](#output-files)'",
+      "parameters": [
+        "repository-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "line": 239,
+      "before": "'[**&lt;issue-json-file&gt;**](#body-record)'",
+      "parameters": [
+        "issue-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "line": 239,
+      "before": "'[**&lt;repositories-json-file&gt;**](#repository-snapshot)'",
+      "parameters": [
+        "repositories-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 274,
+      "before": "'[**&lt;title&gt;**](#issue-changes)'",
+      "parameters": [
+        "title"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 274,
+      "before": "'body=@[**&lt;body-file&gt;**](#issue-changes)'",
+      "parameters": [
+        "body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 274,
+      "before": "'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)'",
+      "parameters": [
+        "label"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 280,
+      "before": "'[**&lt;title&gt;**](#issue-changes)'",
+      "parameters": [
+        "title"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 280,
+      "before": "'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)'",
+      "parameters": [
+        "label"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 296,
+      "before": "'body=@[**&lt;body-file&gt;**](#issue-changes)'",
+      "parameters": [
+        "body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 318,
+      "before": "'[**&lt;output-body-file&gt;**](#output-files)'",
+      "parameters": [
+        "output-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 340,
+      "before": "'[**&lt;title&gt;**](#issue-changes)'",
+      "parameters": [
+        "title"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 346,
+      "before": "'[**&lt;title&gt;**](#issue-changes)'",
+      "parameters": [
+        "title"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 364,
+      "before": "'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)'",
+      "parameters": [
+        "label"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 370,
+      "before": "'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)'",
+      "parameters": [
+        "label"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 386,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/labels/[**&lt;label&gt;**](#label-names)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "issue-number",
+        "label"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 392,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943/labels/[**&lt;label&gt;**](#label-names)'",
+      "parameters": [
+        "owner",
+        "repo",
+        "label"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 430,
+      "before": "'[**&lt;issue-json-file&gt;**](#issue-record)'",
+      "parameters": [
+        "issue-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 456,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 456,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 456,
+      "before": "'[**&lt;issue-json-file&gt;**](#issue-record)'",
+      "parameters": [
+        "issue-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 456,
+      "before": "'[**&lt;issue-links-file&gt;**](#development-snapshot)'",
+      "parameters": [
+        "issue-links-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 462,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 462,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 486,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 486,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 486,
+      "before": "'[**&lt;issues-json-file&gt;**](#issue-collection)'",
+      "parameters": [
+        "issues-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 486,
+      "before": "'[**&lt;issue-links-file&gt;**](#development-snapshot)'",
+      "parameters": [
+        "issue-links-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 492,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 492,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 539,
+      "before": "'[**&lt;comment-text&gt;**](#comment)'",
+      "parameters": [
+        "comment-text"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 561,
+      "before": "'body=@[**&lt;comment-file&gt;**](#comment)'",
+      "parameters": [
+        "comment-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 613,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 613,
+      "before": "'[**&lt;issues-json-file&gt;**](#issue-collection)'",
+      "parameters": [
+        "issues-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 613,
+      "before": "'[**&lt;issue-links-file&gt;**](#development-snapshot)'",
+      "parameters": [
+        "issue-links-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 619,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 643,
+      "before": "\"repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=all&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 643,
+      "before": "'[**&lt;issues-json-file&gt;**](#issue-collection)'",
+      "parameters": [
+        "issues-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 649,
+      "before": "\"repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=all&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 665,
+      "before": "\"repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=closed&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 665,
+      "before": "'[**&lt;issues-json-file&gt;**](#issue-collection)'",
+      "parameters": [
+        "issues-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 671,
+      "before": "\"repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=closed&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 687,
+      "before": "\"repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=closed&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 687,
+      "before": "'.&#91;&#93; | select(&#91;.number&#93; | inside(&#91;[**&lt;issue-numbers&gt;**](#audit-selection)&#93;))'",
+      "parameters": [
+        "issue-numbers"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 687,
+      "before": "'[**&lt;issues-json-file&gt;**](#issue-collection)'",
+      "parameters": [
+        "issues-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 693,
+      "before": "\"repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=closed&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 711,
+      "before": "\"repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=all&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 711,
+      "before": "'.&#91;&#93; | select(.pull_request == null) | select(.title | startswith(\"[**&lt;initiative-prefix&gt;**](#tracker-prefix)\")) | .number'",
+      "parameters": [
+        "initiative-prefix"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 717,
+      "before": "\"repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=all&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 733,
+      "before": "'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repository&gt;**](#repository)/issues?state=all&per_page=100'",
+      "parameters": [
+        "owner",
+        "repository"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "line": 733,
+      "before": "'.&#91;&#93; | select(.title | test(\"^\\\\&#91;[**&lt;prefix-letter&gt;**](#tracker-prefix)&#91;0-9&#93;{2}\\\\&#93;\")) | .title'",
+      "parameters": [
+        "prefix-letter"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 53,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 53,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 53,
+      "before": "'[**&lt;epic-body-file&gt;**](#epic-body-file)'",
+      "parameters": [
+        "epic-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 69,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 69,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 69,
+      "before": "'[**&lt;epic-body-file&gt;**](#epic-body-file)'",
+      "parameters": [
+        "epic-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 69,
+      "before": "'[**&lt;confirmed-map-file&gt;**](#confirmed-map)'",
+      "parameters": [
+        "confirmed-map-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 69,
+      "before": "'[**&lt;output-body-path&gt;**](#output-body)'",
+      "parameters": [
+        "output-body-path"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 85,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 85,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 85,
+      "before": "'[**&lt;epic-body-file&gt;**](#epic-body-file)'",
+      "parameters": [
+        "epic-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 85,
+      "before": "'[**&lt;task-ids&gt;**](#unit-task-ids)'",
+      "parameters": [
+        "task-ids"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 103,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 103,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 103,
+      "before": "'[**&lt;epic-body-file&gt;**](#epic-body-file)'",
+      "parameters": [
+        "epic-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 103,
+      "before": "'[**&lt;task-ids&gt;**](#unit-task-ids)'",
+      "parameters": [
+        "task-ids"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "line": 103,
+      "before": "'[**&lt;lane-index&gt;**](#requested-index)'",
+      "parameters": [
+        "lane-index"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/placement.md",
+      "line": 151,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/placement.md",
+      "line": 151,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/placement.md",
+      "line": 151,
+      "before": "'[**&lt;issues-json-file&gt;**](#issue-collection)'",
+      "parameters": [
+        "issues-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/placement.md",
+      "line": 157,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/placement.md",
+      "line": 157,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "line": 75,
+      "before": "'[**&lt;checkout&gt;**](#project-checkout)'",
+      "parameters": [
+        "checkout"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "line": 95,
+      "before": "'[**&lt;engineering-worktree&gt;**](#engineering-worktree)'",
+      "parameters": [
+        "engineering-worktree"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "line": 95,
+      "before": "'[**&lt;message-file&gt;**](#commit-message-file)'",
+      "parameters": [
+        "message-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "line": 123,
+      "before": "'[**&lt;planning-folder-path&gt;**](#planning-folder)'",
+      "parameters": [
+        "planning-folder-path"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request-body.md",
+      "line": 103,
+      "before": "'[**&lt;pull-request-json-file&gt;**](#pull-request-record)'",
+      "parameters": [
+        "pull-request-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request-body.md",
+      "line": 103,
+      "before": "'[**&lt;output-body-file&gt;**](#output-body)'",
+      "parameters": [
+        "output-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 346,
+      "before": "'[**<target-branch>**](#base-branch)'",
+      "parameters": [
+        "target-branch"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 368,
+      "before": "'[**<title>**](#title)'",
+      "parameters": [
+        "title"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 393,
+      "before": "'[**<title>**](#title)'",
+      "parameters": [
+        "title"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 393,
+      "before": "'[**<task-branch>**](#head-branch)'",
+      "parameters": [
+        "task-branch"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 393,
+      "before": "'[**<base>**](#base-branch)'",
+      "parameters": [
+        "base"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 393,
+      "before": "'body=@[**<body-file>**](#body-file)'",
+      "parameters": [
+        "body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 424,
+      "before": "'[**<title>**](#title)'",
+      "parameters": [
+        "title"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 424,
+      "before": "'[**<epic-base>**](#head-branch)'",
+      "parameters": [
+        "epic-base"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 424,
+      "before": "'[**<long-lived-base>**](#base-branch)'",
+      "parameters": [
+        "long-lived-base"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 424,
+      "before": "'body=@[**<body-file>**](#body-file)'",
+      "parameters": [
+        "body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 473,
+      "before": "'body=@[**<body-file>**](#body-file)'",
+      "parameters": [
+        "body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 495,
+      "before": "\"repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=open&head=[**<owner>**](#repository):[**<epic-base>**](#head-branch)\"",
+      "parameters": [
+        "owner",
+        "repo",
+        "owner",
+        "epic-base"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 501,
+      "before": "\"repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=open&head=[**<owner>**](#repository):i07/e00/main\"",
+      "parameters": [
+        "owner",
+        "repo",
+        "owner"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 570,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 576,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 606,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 612,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 642,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 642,
+      "before": "'[**<pull-request-records-file>**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 642,
+      "before": "'[**<issue-link-snapshot-file>**](#link-snapshot-path)'",
+      "parameters": [
+        "issue-link-snapshot-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 648,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 676,
+      "before": "'[**<pull-request-json-file>**](#output-files)'",
+      "parameters": [
+        "pull-request-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 698,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)/reviews?per_page=100'",
+      "parameters": [
+        "owner",
+        "repo",
+        "pull-request-number"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 698,
+      "before": "'[**<reviews-file>**](#output-files)'",
+      "parameters": [
+        "reviews-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 704,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/980/reviews?per_page=100'",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 720,
+      "before": "\"repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=all&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 720,
+      "before": "'.[] | select(.title | startswith(\"[**<initiative-prefix>**](#initiative-prefix)\"))'",
+      "parameters": [
+        "initiative-prefix"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 720,
+      "before": "'[**<pull-request-records-file>**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 726,
+      "before": "\"repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=all&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 749,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 749,
+      "before": "'[**<pull-request-records-file>**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 749,
+      "before": "'[**<issue-file>**](#issue-records)'",
+      "parameters": [
+        "issue-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 755,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 771,
+      "before": "\"repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=all&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 771,
+      "before": "'[**<pull-request-records-file>**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 777,
+      "before": "\"repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=all&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 793,
+      "before": "\"repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=all&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 793,
+      "before": "'[**<pull-request-records-file>**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 799,
+      "before": "\"repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=all&per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 815,
+      "before": "'[**<changed-paths-file>**](#output-files)'",
+      "parameters": [
+        "changed-paths-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 837,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/commits/[**<head-sha>**](#verified-head)/check-runs?per_page=100'",
+      "parameters": [
+        "owner",
+        "repo",
+        "head-sha"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 837,
+      "before": "'[**<check-runs-file>**](#output-files)'",
+      "parameters": [
+        "check-runs-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 843,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/commits/[**<head-sha>**](#verified-head)/check-runs?per_page=100'",
+      "parameters": [
+        "owner",
+        "repo",
+        "head-sha"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 859,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/commits/[**<head-sha>**](#verified-head)/status?per_page=100'",
+      "parameters": [
+        "owner",
+        "repo",
+        "head-sha"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 859,
+      "before": "'[**<commit-status-file>**](#output-files)'",
+      "parameters": [
+        "commit-status-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 865,
+      "before": "'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/commits/[**<head-sha>**](#verified-head)/status?per_page=100'",
+      "parameters": [
+        "owner",
+        "repo",
+        "head-sha"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "line": 889,
+      "before": "'[**<query-file>**](#query-file)'",
+      "parameters": [
+        "query-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "line": 94,
+      "before": "'[**&lt;base-branch&gt;**](#base-branch)'",
+      "parameters": [
+        "base-branch"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "line": 118,
+      "before": "'[**&lt;symbol-identity&gt;**](#symbol-identity)'",
+      "parameters": [
+        "symbol-identity"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "line": 142,
+      "before": "'[**&lt;flow-identity&gt;**](#flow-identity)'",
+      "parameters": [
+        "flow-identity"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-labels.md",
+      "line": 36,
+      "before": "\"repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/labels?per_page=100\"",
+      "parameters": [
+        "owner",
+        "repo"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-labels.md",
+      "line": 52,
+      "before": "'[**&lt;label&gt;**](#label-identity)'",
+      "parameters": [
+        "label"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-labels.md",
+      "line": 52,
+      "before": "'[**&lt;description&gt;**](#label-identity)'",
+      "parameters": [
+        "description"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "line": 62,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "line": 62,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "line": 62,
+      "before": "'[**&lt;board-items-file&gt;**](#board-items)'",
+      "parameters": [
+        "board-items-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "line": 62,
+      "before": "'[**&lt;pull-request-records-file&gt;**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "line": 62,
+      "before": "'[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)'",
+      "parameters": [
+        "issue-link-snapshot-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "line": 62,
+      "before": "'[**&lt;initiative-json-file&gt;**](#initiative-records)'",
+      "parameters": [
+        "initiative-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "line": 62,
+      "before": "'[**&lt;management-paragraph-file&gt;**](#management-file)'",
+      "parameters": [
+        "management-paragraph-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "line": 68,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "line": 68,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "line": 39,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "line": 39,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "line": 39,
+      "before": "'[**&lt;task-json-file&gt;**](#task-record)'",
+      "parameters": [
+        "task-json-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "line": 39,
+      "before": "'[**&lt;pull-request-records-file&gt;**](#pull-request-records)'",
+      "parameters": [
+        "pull-request-records-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "line": 39,
+      "before": "'[**&lt;issue-link-snapshot-file&gt;**](#issue-links)'",
+      "parameters": [
+        "issue-link-snapshot-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "line": 39,
+      "before": "'[**&lt;output-body-file&gt;**](#output-body)'",
+      "parameters": [
+        "output-body-file"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "line": 45,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "line": 45,
+      "before": "\"[**&lt;workspace&gt;**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "line": 78,
+      "before": "\"[**<workspace>**](#workspace)/skills/work-planner\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "line": 78,
+      "before": "\"[**<workspace>**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "line": 94,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "line": 94,
+      "before": "\"[**<workspace>**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "line": 94,
+      "before": "\"[**<skill-directory>**](#skill-directory)\"",
+      "parameters": [
+        "skill-directory"
+      ]
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "line": 100,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "line": 100,
+      "before": "\"[**<workspace>**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "line": 120,
+      "before": "\"[**<workspace>**](#workspace)\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "line": 120,
+      "before": "\"[**<workspace>**](#workspace)/scripts/sbx\"",
+      "parameters": [
+        "workspace"
+      ]
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "line": 120,
+      "before": "\"[**<base>**](#base)\"",
+      "parameters": [
+        "base"
+      ]
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "line": 120,
+      "before": "\"[**<head>**](#head)\"",
+      "parameters": [
+        "head"
+      ]
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "line": 120,
+      "before": "\"[**<skill-directory>**](#skill-directory)\"",
+      "parameters": [
+        "skill-directory"
+      ]
+    }
+  ],
+  "literal_quote_pairs_removed": 15
+}

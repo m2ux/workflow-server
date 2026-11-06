@@ -76,7 +76,7 @@ All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab
 
 | Artifact | What it holds |
 | --- | --- |
-| [Integration verification](integration-validation.md) | Current symbol checks, composed criterion review and explicit evidence boundaries |
+| [Integration verification](integration-validation.md) | Current command checks, composed criterion review and explicit evidence boundaries |
 | [Agent review](integration-agent-review.json) | Current head and target, composed review scope and finding dispositions |
 | [Measured flow atlas](integration-flow-atlas.md) | Structural baseline sequences for every reported affected process |
 | [Native graph measurements](integration-graph.tar.gz) | Complete contexts, raw relationships, ordered flows and instruments |
@@ -129,7 +129,7 @@ Runtime meanings live in [Link Roles](https://github.com/m2ux/workflow-server/bl
 | [Symbol preservation](symbol-preservation.json) | Exact title-only substitution and explicit rule clarification |
 | [Callable audit](symbol-callable-audit.json) | Every protocol, procedure and artifact-operation title |
 | [Contract audit](symbol-contract-audit.json) | Retained IO obligations through the symbol parser |
-| [Current source manifest](symbol-source-manifest.json) | Current commit and all 115 source hashes |
+| [Symbol source manifest](symbol-source-manifest.json) | Current commit and all 115 source hashes |
 | [Final document result](symbol-final-documents.log) | 13 passing checks after the rule clarification |
 | [Migration instrument](project17-symbol-links.py) | Executed notation conversion and inverse preservation check |
 | [Callable audit instrument](project17-symbol-callable-audit.py) | Executed protocol/procedure/operation enumeration |
@@ -141,3 +141,7 @@ Runtime meanings live in [Link Roles](https://github.com/m2ux/workflow-server/bl
 | Artifact | What it holds |
 | --- | --- |
 | [Command quoting](command-quoting.md) | Typed argument scope, required quotes and verification |
+| [Command quote audit](command-quote-audit.json) | Every removed quote pair, typed rationale, argv comparison and retained quoting |
+| [Command quote instruments](command-quote-instruments.tar.gz) | Executed inventory, conversion and exact-delta verification scripts |
+| [Command source manifest](command-quote-source-manifest.json) | Current commit and 115 verified source hashes |
+| [Final quote document check](command-quote-documents.log) | 13 passing document tests after the final guideline wording |
