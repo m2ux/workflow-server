@@ -1,0 +1,260 @@
+[
+  {
+    "file": "artifacts/acceptance-criteria.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Issue Body](issue-body.md)\n- [Epic Issue Body](epic-issue-body.md)\n- [Initiative Issue Body](initiative-issue-body.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/board-delivery.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Board Queue](board-queue.md)\n- [Board](board.md)\n- [Agent Review](agent-review.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/board-queue.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Lane](lane.md)\n- [Board](board.md)\n- [Epic Issue Body](epic-issue-body.md)\n- [Dependency Graph](dependency-graph.md)\n- [Delivery Branches](delivery-branches.md)\n- [Hot-fix](hotfix.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/board.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Configuration](../configuration.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/delivery-branches.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Work Item](work-item.md)\n- [Hot-fix](hotfix.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/delivery-brief.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Pull Request Body](pull-request-body.md)\n- [Plan Change](plan-change.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/delivery-evidence.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Pull Request](pull-request.md)\n- [Epic](epic.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/delivery-plan.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Lane](lane.md)\n- [Epic Issue Body](epic-issue-body.md)\n- [Delivery Branches](delivery-branches.md)\n- [Work Item](work-item.md)\n- [Hot-fix](hotfix.md)\n- [Hot-fix Body](hotfix-body.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/dependency-graph.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Lane](lane.md)\n- [Issue](issue.md)\n- [Initiative Issue Body](initiative-issue-body.md)\n- [Work Item](work-item.md)\n- [Plan Change](plan-change.md)\n- [Delivery Branches](delivery-branches.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/dispatch-batch.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Lane](lane.md)\n- [Delivery Plan](delivery-plan.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/epic-issue-body.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Lane](lane.md)\n- [Issue Body](issue-body.md)\n- [Pull Request](pull-request.md)\n- [Epic](epic.md)\n- [Issue](issue.md)\n- [Dependency Graph](dependency-graph.md)\n- [Delivery Plan](delivery-plan.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/epic.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Initiative Issue Body](initiative-issue-body.md)\n- [Issue](issue.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/goal-trace.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Issue Body](issue-body.md)\n- [Initiative Issue Body](initiative-issue-body.md)\n- [Planning Record](planning-record.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/hotfix-body.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Standalone Body](standalone-body.md)\n- [Board Queue](board-queue.md)\n- [Delivery Branches](delivery-branches.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/hotfix.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Hot-fix Body](hotfix-body.md)\n- [Issue](issue.md)\n- [Board](board.md)\n- [Board Delivery](board-delivery.md)\n- [Placement](placement.md)\n- [Agent Review](agent-review.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/initiative-issue-body.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Issue Body](issue-body.md)\n- [Requirement Characteristics](../references/requirement-characteristics.md)\n- [Initiative](initiative.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/issue-body.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Requirement Characteristics](../references/requirement-characteristics.md)\n- [Issue](issue.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/placement.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Hot-fix Body](hotfix-body.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/planning-record.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Configuration](../configuration.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/proposal-body.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Issue Body](issue-body.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/pull-request-body.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Issue Body](issue-body.md)\n- [Hot-fix](hotfix.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/pull-request.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Issue](issue.md)\n- [Delivery Branches](delivery-branches.md)\n- [Hot-fix](hotfix.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/standalone-body.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Board](board.md)\n\n- [Issue Body](issue-body.md)\n- [Epic Issue Body](epic-issue-body.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/standup-report.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Hot-fix Body](hotfix-body.md)\n- [Hot-fix](hotfix.md)\n- [Configuration](../configuration.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/task-body.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Issue Body](issue-body.md)\n- [Epic Issue Body](epic-issue-body.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "artifacts/work-item.md",
+    "line": 5,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Issue Body](issue-body.md)\n- [Pull Request Body](pull-request-body.md)\n- [Delivery Branches](delivery-branches.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "modes/advance-mode.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Board](../artifacts/board.md)\n- [Pull Request](../artifacts/pull-request.md)\n- [Board Queue](../artifacts/board-queue.md)\n- [Issue](../artifacts/issue.md)\n- [Repository Labels](../artifacts/repository-labels.md)\n- [Plan Change](../artifacts/plan-change.md)\n- [Guidelines](../guidelines.md)\n- [Sync Mode](sync-mode.md \"\u0192\")\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "modes/align-mode.md",
+    "line": 9,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Issue](../artifacts/issue.md)\n- [Initiative Issue Body](../artifacts/initiative-issue-body.md)\n- [Proposal Body](../artifacts/proposal-body.md)\n- [Epic Issue Body](../artifacts/epic-issue-body.md)\n- [Issue Body](../artifacts/issue-body.md)\n- [Acceptance Criteria](../artifacts/acceptance-criteria.md)\n- [Task Body](../artifacts/task-body.md)\n- [Standalone Body](../artifacts/standalone-body.md)\n- [Goal Trace](../artifacts/goal-trace.md)\n- [Review Finding](../artifacts/review-finding.md)\n- [Dependency Graph](../artifacts/dependency-graph.md)\n- [Requirement Characteristics](../references/requirement-characteristics.md)\n- [Pull Request](../artifacts/pull-request.md)\n- [Pull Request Body](../artifacts/pull-request-body.md)\n- [Delivery Evidence](../artifacts/delivery-evidence.md)\n- [Initiative](../artifacts/initiative.md)\n- [Epic](../artifacts/epic.md)\n- [Delivery Branches](../artifacts/delivery-branches.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "modes/deliver-mode.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Lane](../artifacts/lane.md)\n- [Board](../artifacts/board.md)\n- [Pull Request](../artifacts/pull-request.md)\n- [Delivery Evidence](../artifacts/delivery-evidence.md)\n- [Epic](../artifacts/epic.md)\n- [Delivery Branches](../artifacts/delivery-branches.md)\n- [Delivery Plan](../artifacts/delivery-plan.md)\n- [Dispatch Batch](../artifacts/dispatch-batch.md)\n- [Issue](../artifacts/issue.md)\n- [Hot-fix](../artifacts/hotfix.md)\n- [Guidelines](../guidelines.md)\n- [Epic Issue Body](../artifacts/epic-issue-body.md)\n- [Planning Record](../artifacts/planning-record.md)\n- [Delivery Brief](../artifacts/delivery-brief.md)\n- [Plan Change](../artifacts/plan-change.md)\n- [Agent Review](../artifacts/agent-review.md)\n- [Work Item](../artifacts/work-item.md)\n- [Pull Request Body](../artifacts/pull-request-body.md)\n- [Issue Body](../artifacts/issue-body.md)\n- [Task Merge](../protocols/task-merge.md \"\u0192\")\n- [Unit Dispatch](../protocols/unit-dispatch.md \"\u0192\")\n- [Advance Mode](advance-mode.md \"\u0192\")\n- [Hoist Mode](hoist-mode.md \"\u0192\")\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "modes/hoist-mode.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Issue](../artifacts/issue.md)\n- [Placement](../artifacts/placement.md)\n- [Hot-fix Body](../artifacts/hotfix-body.md)\n- [Plan Change](../artifacts/plan-change.md)\n- [Guidelines](../guidelines.md)\n- [Issue Body](../artifacts/issue-body.md)\n- [Dependency Graph](../artifacts/dependency-graph.md)\n- [Epic Issue Body](../artifacts/epic-issue-body.md)\n- [Hot-fix](../artifacts/hotfix.md)\n- [Initiative Issue Body](../artifacts/initiative-issue-body.md)\n- [Repository Labels](../artifacts/repository-labels.md)\n- [Standalone Body](../artifacts/standalone-body.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "modes/plan-mode.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Lane](../artifacts/lane.md)\n- [Guidelines](../guidelines.md)\n- [Planning Record](../artifacts/planning-record.md)\n- [Pull Request](../artifacts/pull-request.md)\n- [Issue](../artifacts/issue.md)\n- [Initiative Issue Body](../artifacts/initiative-issue-body.md)\n- [Epic Issue Body](../artifacts/epic-issue-body.md)\n- [Work Item](../artifacts/work-item.md)\n- [Repository Labels](../artifacts/repository-labels.md)\n- [Issue Body](../artifacts/issue-body.md)\n- [Epic](../artifacts/epic.md)\n- [Delivery Branches](../artifacts/delivery-branches.md)\n- [Review Finding](../artifacts/review-finding.md)\n- [Goal Trace](../artifacts/goal-trace.md)\n- [Dependency Graph](../artifacts/dependency-graph.md)\n- [Propose Mode](propose-mode.md \"\u0192\")\n- [Sync Mode](sync-mode.md \"\u0192\")\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "modes/propose-mode.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Proposal Body](../artifacts/proposal-body.md)\n- [Repository Labels](../artifacts/repository-labels.md)\n- [Issue](../artifacts/issue.md)\n- [Board](../artifacts/board.md)\n- [Issue Body](../artifacts/issue-body.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "modes/revise-mode.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Skill Guidelines](../../guidelines.md)\n- [Guidelines](../guidelines.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "modes/standup-mode.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Board](../artifacts/board.md)\n- [Pull Request](../artifacts/pull-request.md)\n- [Standup Report](../artifacts/standup-report.md)\n- [Issue](../artifacts/issue.md)\n- [Epic Issue Body](../artifacts/epic-issue-body.md)\n- [Issue Body](../artifacts/issue-body.md)\n- [Sync Mode](sync-mode.md \"\u0192\")\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "modes/sync-mode.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Issue](../artifacts/issue.md)\n- [Issue Body](../artifacts/issue-body.md)\n- [Acceptance Criteria](../artifacts/acceptance-criteria.md)\n- [Task Body](../artifacts/task-body.md)\n- [Pull Request](../artifacts/pull-request.md)\n- [Delivery Evidence](../artifacts/delivery-evidence.md)\n- [Epic](../artifacts/epic.md)\n- [Epic Issue Body](../artifacts/epic-issue-body.md)\n- [Initiative Issue Body](../artifacts/initiative-issue-body.md)\n- [Board](../artifacts/board.md)\n- [Work Item](../artifacts/work-item.md)\n- [Board Delivery](../artifacts/board-delivery.md)\n- [Plan Change](../artifacts/plan-change.md)\n- [Epic Integration](../protocols/epic-integration.md \"\u0192\")\n- [Issue Closure](../protocols/issue-closure.md \"\u0192\")\n- [Review Pull Request](../protocols/review-pull-request.md \"\u0192\")\n- [Understand Mode](understand-mode.md \"\u0192\")\n- [Configuration](../configuration.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "modes/understand-mode.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Change Overview](../protocols/change-overview.md \"\u0192\")\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "protocols/change-overview.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Pull Request](../artifacts/pull-request.md)\n- [Delivery Branches](../artifacts/delivery-branches.md)\n- [Repository Graph](../artifacts/repository-graph.md)\n- [Planning Record](../artifacts/planning-record.md)\n- [Architecture Overview](../artifacts/architecture-overview.md)\n- [Pull Request Body](../artifacts/pull-request-body.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "protocols/epic-integration.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Issue](../artifacts/issue.md)\n- [Pull Request](../artifacts/pull-request.md)\n- [Delivery Branches](../artifacts/delivery-branches.md)\n- [Epic](../artifacts/epic.md)\n- [Board Delivery](../artifacts/board-delivery.md)\n- [Agent Review](../artifacts/agent-review.md)\n- [Change Overview](change-overview.md \"\u0192\")\n- [Review Pull Request](review-pull-request.md \"\u0192\")\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "protocols/issue-closure.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Issue](../artifacts/issue.md)\n- [Pull Request](../artifacts/pull-request.md)\n- [Delivery Branches](../artifacts/delivery-branches.md)\n- [Epic](../artifacts/epic.md)\n- [Initiative](../artifacts/initiative.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "protocols/issue-delivery.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Task Body](../artifacts/task-body.md)\n- [Epic Issue Body](../artifacts/epic-issue-body.md)\n- [Epic](../artifacts/epic.md)\n- [Acceptance Criteria](../artifacts/acceptance-criteria.md)\n- [Issue](../artifacts/issue.md)\n- [Hot-fix](../artifacts/hotfix.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "protocols/review-pull-request.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Pull Request](../artifacts/pull-request.md)\n- [Pull Request Body](../artifacts/pull-request-body.md)\n- [Epic Issue Body](../artifacts/epic-issue-body.md)\n- [Agent Review](../artifacts/agent-review.md)\n- [Planning Record](../artifacts/planning-record.md)\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "protocols/task-merge.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Delivery Evidence](../artifacts/delivery-evidence.md)\n- [Epic Issue Body](../artifacts/epic-issue-body.md)\n- [Initiative Issue Body](../artifacts/initiative-issue-body.md)\n- [Hot-fix](../artifacts/hotfix.md)\n- [Epic Integration](epic-integration.md \"\u0192\")\n- [Issue Closure](issue-closure.md \"\u0192\")\n- [Issue Delivery](issue-delivery.md \"\u0192\")\n- [Review Pull Request](review-pull-request.md \"\u0192\")\n",
+    "list_only_targets": []
+  },
+  {
+    "file": "protocols/unit-dispatch.md",
+    "line": 7,
+    "section": "## Prerequisites\n\nRead these files first.\n\n- [Dispatch Batch](../artifacts/dispatch-batch.md)\n- [Epic Issue Body](../artifacts/epic-issue-body.md)\n- [Pull Request](../artifacts/pull-request.md)\n- [Planning Record](../artifacts/planning-record.md)\n- [Issue](../artifacts/issue.md)\n- [Board](../artifacts/board.md)\n- [Board Delivery](../artifacts/board-delivery.md)\n- [Hot-fix](../artifacts/hotfix.md)\n- [Delivery Branches](../artifacts/delivery-branches.md)\n- [Delivery Brief](../artifacts/delivery-brief.md)\n",
+    "list_only_targets": []
+  }
+]
