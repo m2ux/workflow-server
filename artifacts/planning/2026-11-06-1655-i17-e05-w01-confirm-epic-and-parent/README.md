@@ -13,6 +13,13 @@ The unit targets its verified epic base and retains the epic's acceptance criter
 | Artifact | What it holds |
 | --- | --- |
 | [w01.md](w01.md) | Implementation and validation plan for W01. |
+| [validation.md](validation.md) | Publication validation and independent reader evidence. |
+| [e05-w01-focused.log](e05-w01-focused.log) | Publication validation and independent reader evidence. |
+| [e05-w01-planner.log](e05-w01-planner.log) | Publication validation and independent reader evidence. |
+| [e05-w01-shared.log](e05-w01-shared.log) | Publication validation and independent reader evidence. |
+| [e05-w01-skill-check.log](e05-w01-skill-check.log) | Publication validation and independent reader evidence. |
+| [publication-reader-a.md](publication-reader-a.md) | Publication validation and independent reader evidence. |
+| [publication-reader-b.md](publication-reader-b.md) | Publication validation and independent reader evidence. |
 
 ## Links
 
