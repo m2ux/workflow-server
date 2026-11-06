@@ -6,6 +6,6 @@ Inventory every command example and map its useful values to linked Fields. Move
 
 ## Progress
 
-- [ ] In progress: relocate examples and update the authoring rule.
-- [ ] Audit command/contract preservation and validate affected readers.
-- [ ] Commit, push and publish the current review handoff.
+- [x] Relocate examples and update the authoring rule.
+- [x] Audit command/contract preservation and validate affected readers.
+- [ ] In progress: publish the current review handoff; product commit is pushed.

@@ -78,10 +78,10 @@ All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab
 | --- | --- |
 | [Integration verification](integration-validation.md) | Current command checks, composed criterion review and explicit evidence boundaries |
 | [Agent review](integration-agent-review.json) | Current head and target, composed review scope and finding dispositions |
-| [Measured flow atlas](integration-flow-atlas.md) | Current-head sequences for every reported affected process |
+| [Measured flow atlas](integration-flow-atlas.md) | Structural baseline 4882414d sequences for every reported affected process |
 | [Native graph measurements](integration-graph.tar.gz) | Complete contexts, raw relationships, ordered flows and instruments |
 | [Measurement manifest](integration-graph-manifest.json) | Archive members and hashes |
-| [Graph audit](integration-graph-audit.json) | Current-head context/flow order and freshness |
+| [Graph audit](integration-graph-audit.json) | Structural baseline 4882414d context/flow order and freshness |
 | [Step item inventory](step-item-audit.json) | Every step and exact bullet-prefix correction |
 | [Step preservation](step-preservation.json) | Exact procedure text, payload and route preservation |
 | [Work Planner result](integration-work-planner.log) | 934-test Work Planner run with one opt-in skip |
@@ -175,3 +175,9 @@ Runtime meanings live in [Link Roles](https://github.com/m2ux/workflow-server/bl
 | Artifact | What it holds |
 | --- | --- |
 | [Field format examples](field-examples.md) | Field-owned fenced examples, command specimen relocation and preservation checks |
+| [Preservation audit](field-examples-audit.json) | Operation IO, generic invocation, fenced-content and prerequisite equality |
+| [Migration ledger](field-examples-migration.json) | Every removed command and owning Field specimen |
+| [Validated source](field-examples-source-manifest.json) | 115 final source hashes |
+| [Executed instruments](field-examples-instruments.tar.gz) | Inventory, migration, refinement, audit and publication scripts |
+| [Instrument identities](field-examples-instruments-manifest.json) | Safe archive members and hashes |
+| [Published review gate](field-examples-review-gate.log) | Exact current head and target validated against the fetched published record |

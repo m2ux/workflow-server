@@ -1,0 +1,1753 @@
+{
+  "base": "4882414d678268aaa282fb4c0b184f14e3e47d1b",
+  "command_examples_removed": 88,
+  "field_value_examples": 118,
+  "payload_output_examples_moved": 6,
+  "remaining_invocations": 116,
+  "generic_invocations_byte_identical": true,
+  "headings_and_file_roles_preserved": true,
+  "fields": [
+    {
+      "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+      "target": "#project-checkout",
+      "values": {
+        "checkout": [
+          "/projects/workflow-server"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n/projects/workflow-server\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+      "target": "#revision",
+      "values": {
+        "revision": [
+          "i11/e16/workspace"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\ni11/e16/workspace\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+      "target": "#instrument",
+      "values": {
+        "instrument-command": [
+          "<workspace>/scripts/sbx python3 -m pytest skills/work-planner/test -q"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n<workspace>/scripts/sbx python3 -m pytest skills/work-planner/test -q\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "target": "#initiative-record",
+      "values": {
+        "initiative-json-file": [
+          "issue-936.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue-936.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "target": "#epic-records",
+      "values": {
+        "epic-json-file": [
+          "issue-943.json issue-937.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue-943.json issue-937.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "target": "#task-records",
+      "values": {
+        "task-json-file": [
+          "issue-637.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue-637.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "target": "#pull-request-records",
+      "values": {
+        "pull-request-records-file": [
+          "prs.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nprs.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "target": "#issue-link-snapshot",
+      "values": {
+        "issue-link-snapshot-file": [
+          "links.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nlinks.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "target": "#board-identity",
+      "values": {
+        "board-identity": [
+          "users/m2ux/projectsV2/9"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nusers/m2ux/projectsV2/9\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "target": "#board-fields",
+      "values": {
+        "board-fields-file": [
+          "fields.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nfields.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "target": "#board-items",
+      "values": {
+        "board-items-file": [
+          "items.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nitems.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "target": "#output-directory",
+      "values": {
+        "output-directory": [
+          "board/"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nboard/\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "target": "#assignee-login",
+      "values": {
+        "assignee-login": [
+          "m2ux"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nm2ux\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "target": "#board-items",
+      "values": {
+        "board-items-file": [
+          "items.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nitems.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "target": "#pull-request-records",
+      "values": {
+        "pull-request-records-file": [
+          "prs.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nprs.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "target": "#issue-link-snapshot",
+      "values": {
+        "issue-link-snapshot-file": [
+          "links.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nlinks.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "target": "#board-identity",
+      "values": {
+        "board-identity": [
+          "users/<owner>/projectsV2/9"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nusers/<owner>/projectsV2/9\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "target": "#board-fields",
+      "values": {
+        "board-fields-file": [
+          "fields.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nfields.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "target": "#output-directory",
+      "values": {
+        "output-directory": [
+          "board/"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nboard/\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "target": "#assignee-login",
+      "values": {
+        "assignee-login": [
+          "m2ux"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nm2ux\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "target": "#board-coordinates",
+      "values": {
+        "owner": [
+          "m2ux"
+        ],
+        "board-number": [
+          "13"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nowner: m2ux\nboard-number: 13\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "target": "#issue-id",
+      "values": {
+        "issue-id": [
+          "3040123456"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n3040123456\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "target": "#item-coordinates",
+      "values": {
+        "board": [
+          "users/m2ux/projectsV2/13"
+        ],
+        "item-id": [
+          "1001"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nboard: users/m2ux/projectsV2/13\nitem-id: 1001\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "target": "#status-input-file",
+      "values": {
+        "status-input-file": [
+          "status-backlog.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nstatus-backlog.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "target": "#board-fields-file",
+      "values": {
+        "board-fields-file": [
+          "fields.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nfields.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "target": "#theme-name",
+      "values": {
+        "theme-name": [
+          "Canon"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nCanon\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "target": "#status-field",
+      "values": {
+        "field-id": [
+          "419167630"
+        ],
+        "option-id": [
+          "OPTION"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nfield-id: 419167630\noption-id: OPTION\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "target": "#board-items-file",
+      "values": {
+        "board-items-file": [
+          "items.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nitems.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "target": "#epic-identity",
+      "values": {
+        "epic-branch-prefix": [
+          "i07/e00"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\ni07/e00\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "target": "#revision",
+      "values": {
+        "revision": [
+          "origin/i07/e00/main"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\norigin/i07/e00/main\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "target": "#task-branch",
+      "values": {
+        "task-branch": [
+          "i07/e00/w01-queue-plan"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\ni07/e00/w01-queue-plan\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "target": "#worktree-path",
+      "values": {
+        "worktree-path": [
+          ".worktrees/i07/e00/w01-queue-plan"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n.worktrees/i07/e00/w01-queue-plan\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "target": "#base-branch",
+      "values": {
+        "base": [
+          "i07/e00/main"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\ni07/e00/main\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "target": "#pull-request-number",
+      "values": {
+        "pull-request-number": [
+          "950"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n950\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "target": "#epic-base-name",
+      "values": {
+        "epic-base": [
+          "i07/e00/main"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\ni07/e00/main\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "target": "#target-branch",
+      "values": {
+        "target-branch": [
+          "main"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nmain\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "target": "#output-files",
+      "values": {
+        "branch-protection-file": [
+          "protection.json"
+        ],
+        "branch-rules-file": [
+          "branch-rules.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nbranch-protection-file: protection.json\nbranch-rules-file: branch-rules.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "target": "#board-items",
+      "values": {
+        "board-items-file": [
+          "items.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nitems.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "target": "#pull-request-records",
+      "values": {
+        "pull-request-records-file": [
+          "prs.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nprs.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "target": "#issue-link-snapshot",
+      "values": {
+        "issue-link-snapshot-file": [
+          "links.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nlinks.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "target": "#revision",
+      "values": {
+        "revision": [
+          "origin/workspace"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\norigin/workspace\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "target": "#epic-base-names",
+      "values": {
+        "epic-base-names": [
+          "i07/e00/main,i07/e00/workflows"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\ni07/e00/main,i07/e00/workflows\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "target": "#engineering-worktree",
+      "values": {
+        "engineering-worktree": [
+          "<checkout>/.engineering"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n<checkout>/.engineering\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "target": "#requested-lane",
+      "values": {
+        "lane-index": [
+          "2"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n2\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "target": "#renumber-inputs",
+      "values": {
+        "initiative-number": [
+          "07"
+        ],
+        "epic-number": [
+          "1"
+        ],
+        "task-number-map": [
+          "7:3,3:5"
+        ],
+        "affected-body-file": [
+          "live-*.md"
+        ],
+        "epic-number-map": [
+          "6:0,0:1"
+        ],
+        "body-file": [
+          "live-936.md live-943.md"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\ninitiative-number: 07\nepic-number: 1\ntask-number-map: 7:3,3:5\naffected-body-file: live-*.md\nepic-number-map: 6:0,0:1\nbody-file: live-936.md live-943.md\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "target": "#dependency-files",
+      "values": {
+        "dependency-file-arguments": [
+          "I=/drafts/live-936.md\nE00=/drafts/live-943.md\nE01=/drafts/live-937.md\nE00:W01=/drafts/e00/w01.md\nE01:W01=/drafts/e01/w01.md\nR=/records/joins.md"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nI=/drafts/live-936.md\nE00=/drafts/live-943.md\nE01=/drafts/live-937.md\nE00:W01=/drafts/e00/w01.md\nE01:W01=/drafts/e01/w01.md\nR=/records/joins.md\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "target": "#pull-request-records",
+      "values": {
+        "pull-request-records-file": [
+          "prs.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nprs.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "target": "#epic-record",
+      "values": {
+        "epic-json-file": [
+          "issue-943.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue-943.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "target": "#pull-request-records",
+      "values": {
+        "pull-request-records-file": [
+          "prs.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nprs.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "target": "#issue-links",
+      "values": {
+        "issue-link-snapshot-file": [
+          "links.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nlinks.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "target": "#task-records",
+      "values": {
+        "task-json-file": [
+          "issue-637.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue-637.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "target": "#delivery-matches",
+      "values": {
+        "task-pull-request-map": [
+          "W01=950,W01=951,W02=950"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nW01=950,W01=951,W02=950\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "target": "#epic-bases",
+      "values": {
+        "epic-base-revision": [
+          "origin/i07/e00/main\norigin/i07/e00/workflows"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\norigin/i07/e00/main\norigin/i07/e00/workflows\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "target": "#output-body",
+      "values": {
+        "output-body-file": [
+          "fixed-943.md"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nfixed-943.md\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "target": "#criterion-selection",
+      "values": {
+        "criterion-ids": [
+          "AC1,AC3"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nAC1,AC3\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "target": "#task-selection",
+      "values": {
+        "task-ids": [
+          "W01,W02"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nW01,W02\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "target": "#board-items",
+      "values": {
+        "board-items-file": [
+          "items.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nitems.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "target": "#planning-folder",
+      "values": {
+        "records-base-url": [
+          "https://github.com/<owner>/<repo>/tree/engineering/artifacts/planning"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nhttps://github.com/<owner>/<repo>/tree/engineering/artifacts/planning\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "target": "#engineering-worktree",
+      "values": {
+        "engineering-worktree": [
+          ".engineering"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n.engineering\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "target": "#epic-record",
+      "values": {
+        "epic-json-file": [
+          "issue-943.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue-943.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "target": "#pull-request-records",
+      "values": {
+        "pull-request-records-file": [
+          "prs.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nprs.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "target": "#issue-links",
+      "values": {
+        "issue-link-snapshot-file": [
+          "links.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nlinks.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "target": "#output-body",
+      "values": {
+        "epic-body-file": [
+          "epic-body.md"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nepic-body.md\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "target": "#hot-fix-record",
+      "values": {
+        "hot-fix-json-file": [
+          "issue-874.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue-874.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "target": "#pull-request-records",
+      "values": {
+        "pull-request-records-file": [
+          "prs.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nprs.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "target": "#issue-links",
+      "values": {
+        "issue-link-snapshot-file": [
+          "links.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nlinks.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "target": "#delivery-selection",
+      "values": {
+        "pull-request-number": [
+          "950"
+        ],
+        "criterion-ids": [
+          "AC1"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\npull-request-number: 950\ncriterion-ids: AC1\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "target": "#output-body",
+      "values": {
+        "output-body-file": [
+          "fixed-874.md"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nfixed-874.md\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "target": "#initiative-record",
+      "values": {
+        "initiative-json-file": [
+          "issue-936.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue-936.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "target": "#epic-records",
+      "values": {
+        "epic-json-file": [
+          "issue-943.json issue-937.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue-943.json issue-937.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "target": "#criterion-selection",
+      "values": {
+        "criterion-ids": [
+          "AC2"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nAC2\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "target": "#output-files",
+      "values": {
+        "output-body-file": [
+          "fixed-936.md"
+        ],
+        "source-file": [
+          "source-R1.md"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\noutput-body-file: fixed-936.md\nsource-file: source-R1.md\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "target": "#source-evidence",
+      "values": {
+        "repository": [
+          "m2ux/workflow-server"
+        ],
+        "source-path": [
+          "docs/spec.md"
+        ],
+        "revision": [
+          "4a217fe6"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nrepository: m2ux/workflow-server\nsource-path: docs/spec.md\nrevision: 4a217fe6\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "target": "#body-record",
+      "values": {
+        "issue-json-file": [
+          "issue.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "target": "#output-files",
+      "values": {
+        "output-body-file": [
+          "fixed.md"
+        ],
+        "repository-json-file": [
+          "repository.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\noutput-body-file: fixed.md\nrepository-json-file: repository.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "target": "#repository-snapshot",
+      "values": {
+        "repositories-json-file": [
+          "repositories.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nrepositories.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "target": "#issue-changes",
+      "values": {
+        "body-file": [
+          "body.md"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nbody.md\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "target": "#identity",
+      "values": {
+        "issue-number": [
+          "943"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n943\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "target": "#output-files",
+      "values": {
+        "output-body-file": [
+          "live-943.md"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nlive-943.md\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "target": "#issue-record",
+      "values": {
+        "issue-json-file": [
+          "issue-943.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue-943.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "target": "#development-snapshot",
+      "values": {
+        "issue-links-file": [
+          "links-943.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nlinks-943.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "target": "#issue-collection",
+      "values": {
+        "issues-json-file": [
+          "closed-issues.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nclosed-issues.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "target": "#comment",
+      "values": {
+        "comment-text": [
+          "Delivered by #950."
+        ],
+        "comment-file": [
+          "comment-874.md"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\ncomment-text: Delivered by #950.\ncomment-file: comment-874.md\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "target": "#audit-selection",
+      "values": {
+        "issue-numbers": [
+          "637, 943, 946"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n637, 943, 946\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "target": "#tracker-prefix",
+      "values": {
+        "initiative-prefix": [
+          "[I08]"
+        ],
+        "prefix-letter": [
+          "I"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\ninitiative-prefix: [I08]\nprefix-letter: I\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "target": "#repository",
+      "values": {
+        "repository": [
+          "m2ux/workflow-server"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nm2ux/workflow-server\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/placement.md",
+      "target": "#issue-collection",
+      "values": {
+        "issues-json-file": [
+          "issues.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissues.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "target": "#engineering-worktree",
+      "values": {
+        "engineering-worktree": [
+          ".engineering"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n.engineering\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "target": "#commit-message-file",
+      "values": {
+        "message-file": [
+          "/tmp/msg.txt"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n/tmp/msg.txt\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "target": "#planning-folder",
+      "values": {
+        "planning-folder-path": [
+          "artifacts/planning/2026-10-15-950-queue-plan"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nartifacts/planning/2026-10-15-950-queue-plan\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request-body.md",
+      "target": "#pull-request-record",
+      "values": {
+        "pull-request-json-file": [
+          "pr-950.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\npr-950.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request-body.md",
+      "target": "#output-body",
+      "values": {
+        "output-body-file": [
+          "fixed-950.md"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nfixed-950.md\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "target": "#identity",
+      "values": {
+        "identity": [
+          "m2ux/workflow-server#950",
+          "950"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nm2ux/workflow-server#950\n950\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "target": "#base-branch",
+      "values": {
+        "target-branch": [
+          "i07/e00/main"
+        ],
+        "base": [
+          "i07/e00/main"
+        ],
+        "long-lived-base": [
+          "main"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\ntarget-branch: i07/e00/main\nbase: i07/e00/main\nlong-lived-base: main\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "target": "#title",
+      "values": {
+        "title": [
+          "[I07:E00] Purpose",
+          "[F00] Reject Bad Keys"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n[I07:E00] Purpose\n[F00] Reject Bad Keys\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "target": "#head-branch",
+      "values": {
+        "task-branch": [
+          "i07/e00/w01-purpose"
+        ],
+        "hot-fix-branch": [
+          "f00-key-validation"
+        ],
+        "epic-base": [
+          "i07/e00/main"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\ntask-branch: i07/e00/w01-purpose\nhot-fix-branch: f00-key-validation\nepic-base: i07/e00/main\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "target": "#body-file",
+      "values": {
+        "body-file": [
+          "body.md"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nbody.md\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "target": "#issue-identity",
+      "values": {
+        "issue-identity": [
+          "m2ux/workflow-server#637"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nm2ux/workflow-server#637\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "target": "#pull-request-records",
+      "values": {
+        "pull-request-records-file": [
+          "prs.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nprs.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "target": "#link-snapshot-path",
+      "values": {
+        "issue-link-snapshot-file": [
+          "links.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nlinks.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "target": "#output-files",
+      "values": {
+        "pull-request-json-file": [
+          "epic-pr.json"
+        ],
+        "reviews-file": [
+          "reviews.json"
+        ],
+        "changed-paths-file": [
+          "changed-files.txt"
+        ],
+        "check-runs-file": [
+          "checks.json"
+        ],
+        "commit-status-file": [
+          "status.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\npull-request-json-file: epic-pr.json\nreviews-file: reviews.json\nchanged-paths-file: changed-files.txt\ncheck-runs-file: checks.json\ncommit-status-file: status.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "target": "#initiative-prefix",
+      "values": {
+        "initiative-prefix": [
+          "[I07"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\n[I07\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "target": "#issue-records",
+      "values": {
+        "issue-file": [
+          "issue-936.json issue-943.json issue-637.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue-936.json issue-943.json issue-637.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "target": "#base-branch",
+      "values": {
+        "base-branch": [
+          "main"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nmain\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "target": "#symbol-identity",
+      "values": {
+        "symbol-identity": [
+          "reserveRow"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nreserveRow\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "target": "#flow-identity",
+      "values": {
+        "flow-identity": [
+          "Queue Placement"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nQueue Placement\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "target": "#board-items",
+      "values": {
+        "board-items-file": [
+          "items.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nitems.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "target": "#pull-request-records",
+      "values": {
+        "pull-request-records-file": [
+          "prs.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nprs.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "target": "#issue-link-snapshot",
+      "values": {
+        "issue-link-snapshot-file": [
+          "links.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nlinks.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "target": "#report-selection",
+      "values": {
+        "window-start-date": [
+          "2026-09-21"
+        ],
+        "initiative-filter": [
+          "I08"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nwindow-start-date: 2026-09-21\ninitiative-filter: I08\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "target": "#initiative-records",
+      "values": {
+        "initiative-json-file": [
+          "issue-946.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue-946.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "target": "#management-file",
+      "values": {
+        "management-paragraph-file": [
+          "summary.txt"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nsummary.txt\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "target": "#task-record",
+      "values": {
+        "task-json-file": [
+          "issue-637.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nissue-637.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "target": "#pull-request-records",
+      "values": {
+        "pull-request-records-file": [
+          "prs.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nprs.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "target": "#issue-links",
+      "values": {
+        "issue-link-snapshot-file": [
+          "links.json"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nlinks.json\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "target": "#delivery-selection",
+      "values": {
+        "pull-request-number": [
+          "950"
+        ],
+        "criterion-ids": [
+          "AC1"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\npull-request-number: 950\ncriterion-ids: AC1\n```\n"
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "target": "#output-body",
+      "values": {
+        "output-body-file": [
+          "fixed-637.md"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nfixed-637.md\n```\n"
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "target": "#skill-directory",
+      "values": {
+        "skill-directory": [
+          "skills/work-planner"
+        ]
+      },
+      "fence": "\n**Example:**\n\n```text\nskills/work-planner\n```\n"
+    }
+  ],
+  "data_moves": [
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Capture Issue Links",
+      "target": "#development-snapshot",
+      "fence": "```json\n{\n  \"943\": [{\"repo\": \"owner/repo\", \"number\": 980, \"state\": \"MERGED\"}]\n}\n```"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Sweep Closure Evidence",
+      "target": "#closure-findings",
+      "fence": "```text\nunsupported: owner/repo#943 closed as completed: acceptance criteria are missing or unticked; owner/repo#980 not merged (closed) - Work Title\nunevaluable: owner/repo#944 closed as completed: Development links not captured - Other Title\nnot planned: owner/repo#945 closed as not_planned: acceptance criteria are missing or unticked - Moved Title\n1 unsupported, 1 unevaluable, 1 not planned\n```"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Capture Pull Request Links",
+      "target": "#issue-link-snapshot",
+      "fence": "```json\n[\n  {\n    \"repo\": \"owner/repo\",\n    \"number\": 950,\n    \"closingIssuesReferences\": [{\"repo\": \"owner/repo\", \"number\": 637}]\n  }\n]\n```"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Remove Development Link",
+      "target": "#failure",
+      "fence": "```text\nfailed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeCloseIssueReferences: Resource not accessible by integration\n```"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Set Development Link",
+      "target": "#development-relation",
+      "fence": "```text\nissue m2ux/workflow-server#637: m2ux/workflow-server#950\npull request m2ux/workflow-server#950: m2ux/workflow-server#637\nverified: add m2ux/workflow-server#950 -> m2ux/workflow-server#637\n```"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "operation": "Set Item Status",
+      "target": "#status-input-file",
+      "fence": "```json\n{\"fields\":[{\"id\":419167630,\"value\":\"OPTION\"}]}\n```"
+    }
+  ],
+  "removed_commands": [
+    {
+      "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+      "operation": "Run at Revision",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  python3 skills/work-planner/scripts/revision-check.py \\\n  --project /projects/workflow-server \\\n  --revision i11/e16/workspace \\\n  -- \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 \\\n  -m pytest skills/work-planner/test \\\n  -q\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "operation": "Compute Board Changes",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/board.py issue-936.json \\\n  --epics issue-943.json issue-937.json \\\n  --tasks issue-637.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --board users/[**&lt;owner&gt;**](#board-identity \"\u25cb\")/projectsV2/9 \\\n  --fields fields.json \\\n  --items items.json \\\n  --out board/ \\\n  --assignee m2ux\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "operation": "Compute Board Queue",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/board-queue.py \\\n  --items items.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --board users/[**&lt;owner&gt;**](#board-identity \"\u25cb\")/projectsV2/9 \\\n  --fields fields.json \\\n  --out board/ \\\n  --assignee m2ux\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "operation": "Fetch Board Item",
+      "source": "**Example:**\n\n<big><pre>\ngh api \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/9/items/1001?fields=419167630\"\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "operation": "Fetch Board Items with Status",
+      "source": "**Example:**\n\n<big><pre>\ngh api --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/9/items?per_page=100&fields=419167630\" > items.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "operation": "Find Status Field",
+      "source": "**Example:**\n\n<big><pre>\ngh api \\\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/9/fields?per_page=100\" \\\n  --jq '.&#91;&#93; | select(.name == \"Status\") | .id'\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "operation": "Find Theme Board",
+      "source": "**Example:**\n\n<big><pre>\ngh api \\\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2?per_page=100\" \\\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub(\"^\\\\&#91;P&#91;0-9&#93;+\\\\&#93; \"; \"\") | startswith(\"Canon: \")) | .number'\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "operation": "Fetch Board Fields",
+      "source": "**Example:**\n\n<big><pre>\ngh api --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/9/fields?per_page=100\" > fields.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "operation": "Remove Board Item",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method DELETE users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/9/items/1001\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "operation": "Set Item Status",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method PATCH users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/13/items/1001 --input status-backlog.json --jq .id\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "operation": "Add Issue to Board",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method POST users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/13/items -f type=Issue -F id=3040123456 --jq .id\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "operation": "Fetch Active Branch Rules",
+      "source": "**Example:**\n\n<big><pre>\ngh api --paginate repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/rules/branches/main > branch-rules.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "operation": "Fetch Branch Protection",
+      "source": "**Example:**\n\n<big><pre>\ngh api repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/branches/main/protection > protection.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "operation": "Add Epic Base Worktree",
+      "source": "**Example:**\n\n<big><pre>\ngit worktree add .worktrees/i07/e00/main i07/e00/main\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "operation": "Fetch Review Head",
+      "source": "**Example:**\n\n<big><pre>\ngit fetch origin pull/950/head\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "operation": "Add Task Worktree",
+      "source": "**Example:**\n\n<big><pre>\ngit worktree add .worktrees/i07/e00/w01-queue-plan -b i07/e00/w01-queue-plan origin/i07/e00/main\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "operation": "Push Task Branch",
+      "source": "**Example:**\n\n<big><pre>\ngit push origin HEAD:refs/heads/i07/e00/w01-queue-plan\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "operation": "List Long-Lived Branches",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && \\\n  \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py \\\n  --names \\\n  --project '[**<checkout>**](#project-checkout \"\u25cb\")' \\\n  --revision origin/i07/e00/main\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "operation": "List Epic Bases",
+      "source": "**Example:**\n\n<big><pre>\ngit ls-remote --heads origin 'refs/heads/i07/e00/*' | cut -f2 | sed 's|refs/heads/||'\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "operation": "Compute Available Work",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && \\\n  \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py \\\n  --items items.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --project '[**<checkout>**](#project-checkout \"\u25cb\")' \\\n  --revision origin/workspace \\\n  --bases i07/e00/main,i07/e00/workflows \\\n  --engineering '[**<checkout>**](#project-checkout \"\u25cb\")/.engineering' \\\n  --lane 2\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "operation": "Renumber Epics",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py \\\n  --initiative 07 \\\n  --prs prs.json \\\n  --map 6:0,0:1 live-936.md live-943.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "operation": "Renumber Tasks",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py \\\n  --initiative 07 \\\n  --epic 1 \\\n  --own live-937.md \\\n  --tasks 7:3,3:5 live-*.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "operation": "Check Dependencies",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deps.py I=/drafts/live-936.md \\\n  E00=/drafts/live-943.md E01=/drafts/live-937.md E00:W01=/drafts/e00/w01.md E01:W01=/drafts/e01/w01.md \\\n  R=/records/joins.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "operation": "Release Row",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py \\\n  --epic issue-943.json \\\n  --release W01 \\\n  --engineering .engineering \\\n  --fix fixed-943.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "operation": "Reserve Row",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py \\\n  --epic issue-943.json \\\n  --reserve W01,W02 \\\n  --items items.json \\\n  --records https://github.com/[**&lt;owner&gt;**](#planning-folder \"\u25cb\")/[**&lt;repo&gt;**](#planning-folder \"\u25cb\")/tree/engineering/artifacts/planning \\\n  --fix fixed-943.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "operation": "Tick Epic Criteria",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-943.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --tick AC1,AC3 \\\n  --fix fixed-943.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "operation": "Sync Epic",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-943.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --tasks issue-637.json \\\n  --link W01=950,W01=951,W02=950 \\\n  --project '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' \\\n  --revision origin/i07/e00/main \\\n  --revision origin/i07/e00/workflows \\\n  --fix fixed-943.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "operation": "Match Pull Requests",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-943.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --fix epic-body.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "operation": "Sync Hot-fix Issue",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-874.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --pr 950 \\\n  --tick AC1 \\\n  --fix fixed-874.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "operation": "Fetch Source",
+      "source": "**Example:**\n\n<big><pre>\ngh api 'repos/m2ux/workflow-server/contents/docs/spec.md?ref=4a217fe6' \\\n  --jq .content \\\n  | base64 \\\n  -d \\\n  > source-R1.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "operation": "Tick Initiative Criteria",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-936.json \\\n  --epics issue-943.json issue-937.json \\\n  --tick AC2 \\\n  --fix fixed-936.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "operation": "Sync Initiative",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-936.json \\\n  --epics issue-943.json issue-937.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "operation": "Validate Reference Visibility",
+      "source": "**Example:**\n\n<big><pre>\n[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/align.py references issue-943.json --repositories repositories.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "operation": "Fetch Reference Repository",
+      "source": "**Example:**\n\n<big><pre>\ngh api repos/{owner}/{repo} > repository.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "operation": "List Reference Repositories",
+      "source": "**Example:**\n\n<big><pre>\n[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/align.py repositories issue-943.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "operation": "Check Body Format",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/format.py issue.json \\\n  --fix fixed.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "List Prefixed Titles",
+      "source": "**Example:** Initiatives in one repository.\n\n<big><pre>\ngh api \\\n  --paginate 'repos/m2ux/workflow-server/issues?state=all&per_page=100' \\\n  --jq '.&#91;&#93; | select(.title | test(\"^\\\\&#91;I&#91;0-9&#93;{2}\\\\&#93;\")) | .title'\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Find Initiative Issue",
+      "source": "**Example:**\n\n<big><pre>\ngh api \\\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=all&per_page=100\" \\\n  --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith(\"&#91;I08&#93;\")) | .number'\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Fetch Selected Closed Issues",
+      "source": "**Example:**\n\n<big><pre>\ngh api \\\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=closed&per_page=100\" \\\n  --jq '.&#91;&#93; | select(&#91;.number&#93; | inside(&#91;637, 943, 946&#93;))' \\\n  > closed-issues.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Fetch Closed Issues",
+      "source": "**Example:**\n\n<big><pre>\ngh api --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=closed&per_page=100\" > closed-issues.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Fetch All Issues",
+      "source": "**Example:**\n\n<big><pre>\ngh api --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=all&per_page=100\" > issues.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Capture Issue Links",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  python3 skills/work-planner/scripts/links-by-issue.py \\\n  --issues issue-943.json \\\n  --out links-943.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Set Completed State",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/943 -f state=closed -f state_reason=completed --jq .state\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Post Comment File",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/874/comments -F body=@comment-874.md --jq .html_url\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Post Inline Comment",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/637/comments -f body='Delivered by #950.' --jq .html_url\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Close as Not Planned",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/874 -f state=closed -f state_reason=not_planned --jq .state\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Sweep Closure Evidence",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/closure-sweep.py \\\n  --issues closed-issues.json \\\n  --issue-links issue-links.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Check Issue Closure",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/closure.py \\\n  --issue issue-943.json \\\n  --development links-943.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Fetch Tracker Issue",
+      "source": "**Example:**\n\n<big><pre>\ngh api repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/943 > issue-943.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Fetch Issue Comments",
+      "source": "**Example:**\n\n<big><pre>\ngh api --paginate repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/874/comments\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Remove Issue Label",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method DELETE 'repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/943/labels/[**&lt;label&gt;**](#label-names \"\u25cb\")' --jq '.&#91;&#93;.name'\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Add Issue Labels",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/943/labels -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names \"\u25cb\")' --jq '.&#91;&#93;.name'\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Retitle Tracker Issue",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/943 -f title='[**&lt;title&gt;**](#issue-changes \"\u25cb\")' --jq .title\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Fetch Issue Body",
+      "source": "**Example:**\n\n<big><pre>\ngh api repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/943 --jq .body > live-943.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Patch Issue Body",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/943 -F body=@body.md --jq .number\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "operation": "Create Tracker Issue",
+      "source": "**Example:**\n\n<big><pre>\ngh api \\\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues \\\n  -f title='[**&lt;title&gt;**](#issue-changes \"\u25cb\")' \\\n  -F body=@body.md \\\n  -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names \"\u25cb\")' \\\n  --jq .number\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/placement.md",
+      "operation": "List Orphans",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/orphans.py issues.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "operation": "Add Planning Record",
+      "source": "**Example:**\n\n<big><pre>\nmkdir -p artifacts/planning/2026-10-15-950-queue-plan\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "operation": "Commit Planning Record",
+      "source": "**Example:**\n\n<big><pre>\ncd .engineering && \\\n  git add \\\n  -A && \\\n  (git diff \\\n  --cached \\\n  --quiet || git commit \\\n  -F /tmp/msg.txt) && \\\n  git fetch origin engineering && \\\n  git rebase origin/engineering && \\\n  git push\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request-body.md",
+      "operation": "Convert Test Plan",
+      "source": "**Example:**\n\n<big><pre>\n[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/align.py plan pr-950.json --fix fixed-950.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Fetch Head Status",
+      "source": "**Example:**\n\n<big><pre>\ngh api --paginate 'repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/commits/[**<head-sha>**](#verified-head \"\u25cb\")/status?per_page=100' > status.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Fetch Head Check Runs",
+      "source": "**Example:**\n\n<big><pre>\ngh api --paginate 'repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/commits/[**<head-sha>**](#verified-head \"\u25cb\")/check-runs?per_page=100' > checks.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Fetch Pull Request Files",
+      "source": "**Example:**\n\n<big><pre>\ngh api --paginate repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/950/files --jq '.[].filename' > changed-files.txt\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Append Repository Delivery Pull Requests",
+      "source": "**Example:**\n\n<big><pre>\ngh api \\\n  --paginate \"repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls?state=all&per_page=100\" \\\n  --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' \\\n  >> prs.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Fetch Repository Delivery Pull Requests",
+      "source": "**Example:**\n\n<big><pre>\ngh api \\\n  --paginate \"repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls?state=all&per_page=100\" \\\n  --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' \\\n  > prs.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Fetch Linked Pull Requests",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && \\\n  python3 skills/work-planner/scripts/linked-pull-requests.py \\\n  --prs prs.json \\\n  --issues issue-936.json issue-943.json issue-637.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Fetch Initiative Pull Requests",
+      "source": "**Example:**\n\n<big><pre>\ngh api \\\n  --paginate \"repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls?state=all&per_page=100\" \\\n  --jq '.[] | select(.title | startswith(\"[I07\"))' \\\n  > prs.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Fetch Pull Request Reviews",
+      "source": "**Example:**\n\n<big><pre>\ngh api --paginate 'repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/980/reviews?per_page=100' > reviews.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Save Pull Request Snapshot",
+      "source": "**Example:**\n\n<big><pre>\ngh api repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/980 > epic-pr.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Capture Pull Request Links",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && \\\n  python3 skills/work-planner/scripts/links-by-pull-request.py \\\n  --prs prs.json \\\n  --out links.json\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Remove Development Link",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && \\\n  python3 skills/work-planner/scripts/development-link.py remove \\\n  --issue m2ux/workflow-server#637 \\\n  --pull m2ux/workflow-server#950\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Set Development Link",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && \\\n  python3 skills/work-planner/scripts/development-link.py add \\\n  --issue m2ux/workflow-server#637 \\\n  --pull m2ux/workflow-server#950\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Read Merge Result",
+      "source": "**Example:**\n\n<big><pre>\ngh api repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/980 --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Submit Epic Merge",
+      "source": "**Example:**\n\n<big><pre>\ngh api \\\n  --method PUT repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/980/merge \\\n  -f merge_method=merge \\\n  -f sha=[**<head-sha>**](#verified-head \"\u25cb\") \\\n  --jq '{merged, message, sha}'\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Find Review Pull Request",
+      "source": "**Example:**\n\n<big><pre>\ngh api \"repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls?state=open&head=[**<owner>**](#repository \"\u25cb\"):i07/e00/main\" --jq '.[0].number'\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Patch Pull Request Body",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method PATCH repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/950 -F body=@pr-950.md --jq .html_url\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Merge Pull Request",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method PUT repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/950/merge -f merge_method=merge --jq .merged\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Open Epic Pull Request",
+      "source": "**Example:**\n\n<big><pre>\ngh api \\\n  --method POST repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls \\\n  -f title='[I07:E00] Name' \\\n  -f head=i07/e00/main \\\n  -f base=main \\\n  -F draft=true \\\n  -F body=@body.md \\\n  --jq .html_url\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Open Task Pull Request",
+      "source": "**Example:** A hot-fix's delivering pull request.\n\n<big><pre>\ngh api \\\n  --method POST repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls \\\n  -f title='[F00] Reject Bad Keys' \\\n  -f head=f00-key-validation \\\n  -f base=workspace \\\n  -F body=@body.md \\\n  -F draft=true \\\n  --jq .html_url\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Open Task Pull Request",
+      "source": "**Example:**\n\n<big><pre>\ngh api \\\n  --method POST repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls \\\n  -f title='[I07:E00] Purpose' \\\n  -f head=i07/e00/w01-purpose \\\n  -f base=i07/e00/main \\\n  -F body=@body.md \\\n  --jq .html_url\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Retitle Pull Request",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method PATCH repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/950 -f title='[I07:E00] Purpose' --jq .title\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "operation": "Retarget Pull Request",
+      "source": "**Example:**\n\n<big><pre>\ngh api --method PATCH repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/950 -f base=i07/e00/main --jq .base.ref\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "operation": "Flow Trace",
+      "source": "**Example:**\n\n<big><pre>\ngitnexus query --query \"Queue Placement\" --limit 1\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "operation": "Symbol Context",
+      "source": "**Example:**\n\n<big><pre>\ngitnexus context reserveRow\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "operation": "Change Surface",
+      "source": "**Example:**\n\n<big><pre>\ngitnexus detect-changes --scope compare --base-ref main\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "operation": "Summarise Progress",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/progress.py \\\n  --items items.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --since 2026-09-21 \\\n  --initiative I08 \\\n  --initiatives issue-946.json \\\n  --summary summary.txt\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "operation": "Sync Task Issue",
+      "source": "**Example:**\n\n<big><pre>\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-637.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --pr 950 \\\n  --tick AC1 \\\n  --fix fixed-637.md\n</pre></big>"
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "operation": "Check Skill Files",
+      "source": "**Example:** Work Planner in the selected checkout.\n\n<big><pre>\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/scripts/check_skill_files.py skills/work-planner\n</pre></big>"
+    }
+  ],
+  "failures": [],
+  "field_format_deduplication": "One representative for repeated values of each parameter format; repository-qualified and local identities keep both supported forms."
+}

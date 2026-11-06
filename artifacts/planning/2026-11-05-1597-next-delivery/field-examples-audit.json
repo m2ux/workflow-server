@@ -1,0 +1,20 @@
+{
+  "base": "4882414d678268aaa282fb4c0b184f14e3e47d1b",
+  "named_procedures": 242,
+  "contract_operations": 240,
+  "input_obligations": 824,
+  "output_obligations": 361,
+  "old_invocations": 204,
+  "retained_generic_invocations": 116,
+  "removed_concrete_invocations": 88,
+  "field_value_examples": 118,
+  "payload_output_examples_relocated": 6,
+  "command_argument_links": 455,
+  "continued_invocations": 62,
+  "original_fenced_content_preserved": true,
+  "per_operation_roles_preserved": true,
+  "prerequisites_preserved": true,
+  "source_files": 115,
+  "failures": [],
+  "limits": "Authoring and preservation checks; no authored workflow commands executed. Reading routes and invocation implementations remain identical."
+}

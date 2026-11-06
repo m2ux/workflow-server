@@ -1,0 +1,50 @@
+{
+  "archive_sha256": "ab5ece1bb13a0919681287c79b37e611337014ceb72f40a06420cafbb088d73a",
+  "members": [
+    {
+      "member": "project17-audit-field-examples.py",
+      "bytes": 5418,
+      "sha256": "b41075bfced79f881501e18d6b9b242ada3da996d8e8bf1ee842621d13644225"
+    },
+    {
+      "member": "project17-inventory-field-examples.py",
+      "bytes": 3199,
+      "sha256": "26cbb6dd20f5ff69f87f3baaebc6e7e4f28589843bc6e0760d595e29a6e67efe"
+    },
+    {
+      "member": "project17-label-field-data-examples.py",
+      "bytes": 570,
+      "sha256": "bce42571ef9014748b63a425bc2b15a171c176e43c4345b31065ae2dab155131"
+    },
+    {
+      "member": "project17-move-field-examples.py",
+      "bytes": 10688,
+      "sha256": "3f155d757fa5bb5b2917c947a13d89e1386d0dd72220452e530031ebed6c957a"
+    },
+    {
+      "member": "project17-plan-field-examples.py",
+      "bytes": 1557,
+      "sha256": "8dc982c3d0b2670a0f3a93f5e2b43efdd6a4c4a5a092747db46ab01bd0fd7b81"
+    },
+    {
+      "member": "project17-publish-field-examples.py",
+      "bytes": 13275,
+      "sha256": "e597f39ed5103b603268d3c91770b7ec85799ac02ccd43f7dc1cf41eebabae8a"
+    },
+    {
+      "member": "project17-refine-field-examples.py",
+      "bytes": 2135,
+      "sha256": "f821182299a3c181ed8a71a65e3714d85c4cfe3fe060317ce5d111d481c051f3"
+    },
+    {
+      "member": "project17-finalize-field-formats.py",
+      "bytes": 1285,
+      "sha256": "16cb78c214e3ef119a23a8d73503128656c24e656828503e2c94d10af820af59"
+    },
+    {
+      "member": "project17-review-field-example-formats.py",
+      "bytes": 1197,
+      "sha256": "7cecf43acce4fab5fefc8288fc04eba9b123276d3cf7ae7489a362ef15c9a067"
+    }
+  ]
+}

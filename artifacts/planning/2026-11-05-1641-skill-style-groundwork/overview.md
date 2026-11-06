@@ -6,6 +6,12 @@
 
 Work Planner uses heading steps and linked contracts where values are consumed or provided in prose or executing commands. Link titles identify input, output and callable roles; command parameters carry their own contracts. Shared declaration, lexical and role readers validate the installed corpus, while checkout readers interpret escaped command continuations.
 
+## Field Format Examples
+
+Current revision `a9ea82c1c04eda31b1cc2b4741d795ad80504a66` places fenced value, payload and output examples under their linked Fields. The [Status Input File](https://github.com/m2ux/workflow-server/blob/a9ea82c1c04eda31b1cc2b4741d795ad80504a66/skills/work-planner/artifacts/board.md#status-input-file) shows the file-path and JSON-content forms. Each executing step carries its generic invocation and meaningful usage conditions.
+
+The diagrams and native archive below retain structural baseline `4882414d678268aaa282fb4c0b184f14e3e47d1b`. Executable readers and declarations are identical at the current revision; the [current verification](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-validation.md) records the example-preservation audit separately.
+
 ## Structure
 
 The measured callers converge on contract selection, document parsing and execution-span selection. The diagrams group those shared responsibilities by their positive call relationships; they do not infer boundaries from folder names. Green marks changed elements and grey provides context.
@@ -193,7 +199,7 @@ The [pull request's Changes](https://github.com/m2ux/workflow-server/pull/1641) 
 - **Graph coverage.**
   The final index reports 311 total processes and 40 affected ones. It also reports 160 unranked candidate entries, 590 skipped callees and 21 budget-cut walks; an absent edge or process cannot establish that a path does not exist.
 - **Evidence limits.**
-  The current installed checker and both test suites pass. Two command-contract plans and earlier reading trials remain Partial for over-reading, prerequisite closure, truncation and receipt limits; the [verification record](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-validation.md) preserves those boundaries.
+  The current Work Planner suite and installed checker pass; unchanged shared-checker source retains its preceding suite evidence. Two command-contract plans and earlier reading trials remain Partial for over-reading, prerequisite closure, truncation and receipt limits; the [verification record](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-validation.md) preserves those boundaries.
 - **Scope.**
   The migration covers Work Planner and its shared-checker support. Other skills' existing findings are outside its zero-finding gate.
 
