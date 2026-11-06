@@ -30,3 +30,4 @@ Run focused checkout/command checks, the complete planner suite and installed mo
 | [command-tests.log](command-tests.log) | Reproducible change inventory or verification evidence |
 | [planner-tests.log](planner-tests.log) | Reproducible change inventory or verification evidence |
 | [model.log](model.log) | Reproducible change inventory or verification evidence |
+| [Publication](publication.json) | Exact corrected PR head, saved body and retained draft state |
