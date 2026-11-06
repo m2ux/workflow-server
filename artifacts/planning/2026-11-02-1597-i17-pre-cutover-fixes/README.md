@@ -89,6 +89,8 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | [Board Status prior snapshot](e02/board-status-scope-before.json) | Fresh E02 body and metadata before the scope clarification |
 | [Board Status draft snapshot](e02/board-status-scope-draft.json) | Revised E02 body with current issue context |
 | [Board Status scope format](e02/board-status-scope-format.log) | Zero-finding draft validation |
+| [Board Status saved readback](e02/board-status-scope-readback.json) | Exact published E02 body and unchanged metadata |
+| [Board Status saved format](e02/board-status-scope-saved-format.log) | Zero-finding published-body validation |
 
 ## Links
 
