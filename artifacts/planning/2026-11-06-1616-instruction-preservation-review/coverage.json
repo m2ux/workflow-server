@@ -1,0 +1,63 @@
+{
+  "original_files": 55,
+  "current_files": 58,
+  "original_fields_requiring_semantic_review": [
+    {
+      "file": "artifacts/acceptance-criteria.md",
+      "field": "Tick State",
+      "original": "A ticked criterion carries verification evidence. Epic criteria can derive that evidence from passed checks under Test Evidence. Done on the row or table that cites it follows Tables and Work Breakdown. A criterion refused as not ready to verify is returned unticked with what it is missing."
+    },
+    {
+      "file": "artifacts/board-queue.md",
+      "field": "Unresolvable Dependencies",
+      "original": "A `Depends on` entry that names no row and links no issue, names an issue the run was not given, or names a row the epic it points to does not carry, cannot resolve. No delivery makes it readable, so it is told apart from a prerequisite that has not landed. - The report names the row and the entry as written, and a run that met one while deciding a placement exits nonzero. - The epic that row gates keeps the Status it holds. The run proposes no move for it, so a Ready epic is not returned to Backlog on an entry nobody can read. - Every entry of a cell is read, so a cell carrying two names both."
+    },
+    {
+      "file": "artifacts/board.md",
+      "field": "Themes",
+      "original": "Every initiative belongs to one theme, and each theme has one project board. Each project names its own themes. - Example. workflow-server's themes. | Theme | Label | Description | | --- | --- | --- | | Canon | `theme:canon` | Definitions Checked Against the Design Canon | | Language | `theme:language` | The Definition Language and Its Rules | | Mechanical | `theme:mechanical` | The Engine That Runs Definitions | | Delivery | `theme:delivery` | What Reaches Agents and Hosts | | Planning | `theme:planning` | Project 17 \u2014 Process: How Work Is Planned and Delivered |"
+    },
+    {
+      "file": "artifacts/board.md",
+      "field": "Proposals",
+      "original": "- The board is titled `Proposals`. It holds proposal issues, the incoming funnel for work that may become an initiative. - Its copy source is the open board titled `Proposals Template`. That template carries Priority: High, Medium and Low, and its view is a board grouped by Status. - Suggested. Raised, and nobody has taken it up. A new proposal lands here, with no assignee. - Considering. Someone is weighing the goal, the evidence and the criteria. That person is the assignee. - Approved. Qualified to become an initiative. The assignee is the user. - Held. Not now. It stays on the board, with no assignee. - Declined. It will not become an initiative. It has no assignee."
+    },
+    {
+      "file": "artifacts/delivery-brief.md",
+      "field": "Execution Instructions",
+      "original": "The caller supplies the session procedure and its invocation context. The brief includes that procedure with its planning, publication, merge, debt and arising-issue obligations, plus the confirmed decisions and evidence needed to execute it. A missing instruction or prerequisite is a finding returned to the caller."
+    },
+    {
+      "file": "artifacts/delivery-evidence.md",
+      "field": "Completeness",
+      "original": "Evidence is complete when every pull request the plan links has a record, which Read Initiative Pull Requests fetches whatever its title. Incomplete evidence is a blocker, not a partial result."
+    },
+    {
+      "file": "artifacts/delivery-evidence.md",
+      "field": "Named Delivery",
+      "original": "A pull request that delivers an epic carries that epic's reference in its title, as `[I07:E00] Purpose`. A merged delivery linked by an epic task row whose title has no prefix or only a matching initiative or task prefix receives that row's epic prefix before the evidence returns. Correct titles remain unchanged; a title naming another epic is a conflict. Publish the repaired title and fetch it again before treating the prefix as verified."
+    },
+    {
+      "file": "artifacts/dispatch-batch.md",
+      "field": "Selection",
+      "original": "The batch retains authorized, unoccupied units in survey order, bounded by free capacity. Overlapping joined rows are selected once. Its `units` carry each selected export entry, and `pending` counts the other eligible units. Its `action` is `dispatch` when units fit, `wait` while scoped workers execute or admitted work awaits capacity, and `stop` when neither remains. Holds, blockers and required human review remain in the delivery evidence returned alongside the batch."
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "field": "Format Findings",
+      "original": "- Fixed. Structural changes preserve the wording and are present in the returned body file, with a body diff. - Apply. Title or label changes for the caller to publish on the issue. - Decide. Missing content or a judgement for the caller to resolve."
+    },
+    {
+      "file": "artifacts/standup-report.md",
+      "field": "Scope",
+      "original": "The default window opens a week before today. A supplied start date selects another window, such as the previous working day for a daily standup. An initiative filter names one initiative, qualified by repository when its number is ambiguous. Each repository numbers its own initiatives, and an initiative's epics and task issues may live in other repositories. Each item's place follows the Work Breakdown links, or for a task issue the pull request whose Development field links it. A pull request counts towards the epic of its reference in the epic's repository or its initiative's."
+    },
+    {
+      "file": "artifacts/standup-report.md",
+      "field": "Unresolved Evidence",
+      "original": "An unresolved initiative identifies its number and repository for the caller to fetch. An off-board dependency is blocked. An epic with unreadable Work Breakdown is summarised without tasks and returned as a finding. Unresolved lines are separate from the copyable report."
+    }
+  ],
+  "missing_global_command_flags": [],
+  "planner_script_diff": "diff --git a/skills/work-planner/scripts/format.py b/skills/work-planner/scripts/format.py\nindex 012e89b9f..ee85a584d 100644\n--- a/skills/work-planner/scripts/format.py\n+++ b/skills/work-planner/scripts/format.py\n@@ -210,7 +210,7 @@ def template_body(kind: str) -> str:\n     for line in path.read_text().splitlines(keepends=True):\n         if fence:\n             marker, capture = fence\n-            if re.fullmatch(re.escape(marker[0]) + '{' + str(len(marker)) + r',}\\s*', line):\n+            if re.fullmatch(r' {0,3}' + re.escape(marker[0]) + '{' + str(len(marker)) + r',}\\s*', line):\n                 if capture:\n                     found.append(''.join(body))\n                 fence = None\n"
+}

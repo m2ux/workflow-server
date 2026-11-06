@@ -1,0 +1,766 @@
+[
+  {
+    "file": "artifacts/board-queue.md",
+    "section": "Plan Board Queue",
+    "flags": [
+      "--assignee",
+      "--board",
+      "--fields",
+      "--items",
+      "--links",
+      "--others",
+      "--out",
+      "--prs",
+      "--unplanned"
+    ],
+    "retained_elsewhere": {
+      "--assignee": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md"
+      ],
+      "--board": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/dispatch-batch.md"
+      ],
+      "--fields": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md"
+      ],
+      "--items": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/standup-report.md"
+      ],
+      "--links": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--others": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/delivery-plan.md"
+      ],
+      "--out": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/issue.md",
+        "artifacts/lane.md",
+        "artifacts/pull-request.md"
+      ],
+      "--prs": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--unplanned": [
+        "artifacts/board-queue.md"
+      ]
+    }
+  },
+  {
+    "file": "artifacts/epic-issue-body.md",
+    "section": "Record Epic Delivery",
+    "flags": [
+      "--fix",
+      "--link",
+      "--links",
+      "--project",
+      "--prs",
+      "--revision",
+      "--tasks"
+    ],
+    "retained_elsewhere": {
+      "--fix": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request-body.md",
+        "artifacts/task-body.md"
+      ],
+      "--link": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--links": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--project": [
+        "artifacts/acceptance-criteria.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/issue-body.md"
+      ],
+      "--prs": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--revision": [
+        "artifacts/acceptance-criteria.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/issue-body.md"
+      ],
+      "--tasks": [
+        "artifacts/board-delivery.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md"
+      ]
+    }
+  },
+  {
+    "file": "artifacts/epic-issue-body.md",
+    "section": "Record Epic Criteria",
+    "flags": [
+      "--fix",
+      "--links",
+      "--prs",
+      "--tick"
+    ],
+    "retained_elsewhere": {
+      "--fix": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request-body.md",
+        "artifacts/task-body.md"
+      ],
+      "--links": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--prs": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--tick": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/task-body.md"
+      ]
+    }
+  },
+  {
+    "file": "artifacts/epic-issue-body.md",
+    "section": "Reserve Task Rows",
+    "flags": [
+      "--date",
+      "--epic",
+      "--fix",
+      "--items",
+      "--records",
+      "--reserve"
+    ],
+    "retained_elsewhere": {
+      "--date": [
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md"
+      ],
+      "--epic": [
+        "artifacts/board-delivery.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/issue-body.md"
+      ],
+      "--fix": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request-body.md",
+        "artifacts/task-body.md"
+      ],
+      "--items": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/standup-report.md"
+      ],
+      "--records": [
+        "artifacts/epic-issue-body.md"
+      ],
+      "--reserve": [
+        "artifacts/epic-issue-body.md"
+      ]
+    }
+  },
+  {
+    "file": "artifacts/epic-issue-body.md",
+    "section": "Release Task Rows",
+    "flags": [
+      "--engineering",
+      "--epic",
+      "--fix",
+      "--release"
+    ],
+    "retained_elsewhere": {
+      "--engineering": [
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md"
+      ],
+      "--epic": [
+        "artifacts/board-delivery.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/issue-body.md"
+      ],
+      "--fix": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request-body.md",
+        "artifacts/task-body.md"
+      ],
+      "--release": [
+        "artifacts/epic-issue-body.md"
+      ]
+    }
+  },
+  {
+    "file": "artifacts/epic-issue-body.md",
+    "section": "Validate Epic Body",
+    "flags": [
+      "--files",
+      "--initiative",
+      "--project",
+      "--prs",
+      "--revision"
+    ],
+    "retained_elsewhere": {
+      "--files": [
+        "artifacts/issue-body.md"
+      ],
+      "--initiative": [
+        "artifacts/dependency-graph.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/issue-body.md",
+        "artifacts/standup-report.md"
+      ],
+      "--project": [
+        "artifacts/acceptance-criteria.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/issue-body.md"
+      ],
+      "--prs": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--revision": [
+        "artifacts/acceptance-criteria.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/issue-body.md"
+      ]
+    }
+  },
+  {
+    "file": "artifacts/epic.md",
+    "section": "Inspect Epic Delivery",
+    "flags": [
+      "--fix",
+      "--links",
+      "--prs"
+    ],
+    "retained_elsewhere": {
+      "--fix": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request-body.md",
+        "artifacts/task-body.md"
+      ],
+      "--links": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--prs": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ]
+    }
+  },
+  {
+    "file": "artifacts/hotfix.md",
+    "section": "Record Hot-fix Delivery",
+    "flags": [
+      "--fix",
+      "--links",
+      "--pr",
+      "--prs",
+      "--tick"
+    ],
+    "retained_elsewhere": {
+      "--fix": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request-body.md",
+        "artifacts/task-body.md"
+      ],
+      "--links": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--pr": [
+        "artifacts/acceptance-criteria.md",
+        "artifacts/agent-review.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/dispatch-batch.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--prs": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--tick": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/task-body.md"
+      ]
+    }
+  },
+  {
+    "file": "artifacts/initiative-issue-body.md",
+    "section": "Record Initiative Delivery",
+    "flags": [
+      "--epics",
+      "--fix"
+    ],
+    "retained_elsewhere": {
+      "--epics": [
+        "artifacts/board-delivery.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md"
+      ],
+      "--fix": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request-body.md",
+        "artifacts/task-body.md"
+      ]
+    }
+  },
+  {
+    "file": "artifacts/initiative-issue-body.md",
+    "section": "Record Initiative Criteria",
+    "flags": [
+      "--epics",
+      "--fix",
+      "--tick"
+    ],
+    "retained_elsewhere": {
+      "--epics": [
+        "artifacts/board-delivery.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md"
+      ],
+      "--fix": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request-body.md",
+        "artifacts/task-body.md"
+      ],
+      "--tick": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/task-body.md"
+      ]
+    }
+  },
+  {
+    "file": "artifacts/initiative-issue-body.md",
+    "section": "Validate Initiative Body",
+    "flags": [
+      "--epic"
+    ],
+    "retained_elsewhere": {
+      "--epic": [
+        "artifacts/board-delivery.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/issue-body.md"
+      ]
+    }
+  },
+  {
+    "file": "artifacts/issue-body.md",
+    "section": "Validate Issue Body",
+    "flags": [
+      "--fix"
+    ],
+    "retained_elsewhere": {
+      "--fix": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request-body.md",
+        "artifacts/task-body.md"
+      ]
+    }
+  },
+  {
+    "file": "artifacts/standup-report.md",
+    "section": "Compose Standup Report",
+    "flags": [
+      "--initiative",
+      "--initiatives",
+      "--items",
+      "--links",
+      "--prs",
+      "--since"
+    ],
+    "retained_elsewhere": {
+      "--initiative": [
+        "artifacts/dependency-graph.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/issue-body.md",
+        "artifacts/standup-report.md"
+      ],
+      "--initiatives": [
+        "artifacts/standup-report.md"
+      ],
+      "--items": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/standup-report.md"
+      ],
+      "--links": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--prs": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--since": [
+        "artifacts/standup-report.md"
+      ]
+    }
+  },
+  {
+    "file": "artifacts/task-body.md",
+    "section": "Record Task Delivery",
+    "flags": [
+      "--fix",
+      "--links",
+      "--pr",
+      "--prs",
+      "--tick"
+    ],
+    "retained_elsewhere": {
+      "--fix": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request-body.md",
+        "artifacts/task-body.md"
+      ],
+      "--links": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--pr": [
+        "artifacts/acceptance-criteria.md",
+        "artifacts/agent-review.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/dispatch-batch.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--prs": [
+        "artifacts/board-delivery.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix.md",
+        "artifacts/issue-body.md",
+        "artifacts/pull-request.md",
+        "artifacts/pull-request.md",
+        "artifacts/standup-report.md",
+        "artifacts/task-body.md"
+      ],
+      "--tick": [
+        "artifacts/epic-issue-body.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/task-body.md"
+      ]
+    }
+  }
+]

@@ -1,0 +1,149 @@
+test_dispatch_can_check_review_with_an_empty_progress_selection (test_command_contracts.DocumentedCommandBehavior.test_dispatch_can_check_review_with_an_empty_progress_selection) ... FAIL
+test_dispatch_can_hold_progress_with_an_empty_review_selection (test_command_contracts.DocumentedCommandBehavior.test_dispatch_can_hold_progress_with_an_empty_review_selection) ... FAIL
+test_epic_format_observes_project_required_criteria_and_changed_paths (test_command_contracts.DocumentedCommandBehavior.test_epic_format_observes_project_required_criteria_and_changed_paths) ... FAIL
+test_epic_format_resolves_cross_epic_rows_from_its_parent (test_command_contracts.DocumentedCommandBehavior.test_epic_format_resolves_cross_epic_rows_from_its_parent) ... FAIL
+test_hotfix_delivery_records_its_pull_request_without_verified_criteria (test_command_contracts.DocumentedCommandBehavior.test_hotfix_delivery_records_its_pull_request_without_verified_criteria) ... FAIL
+test_initiative_delivery_writes_completed_rows_to_the_requested_body (test_command_contracts.DocumentedCommandBehavior.test_initiative_delivery_writes_completed_rows_to_the_requested_body) ... FAIL
+test_initiative_format_uses_linked_epic_titles (test_command_contracts.DocumentedCommandBehavior.test_initiative_format_uses_linked_epic_titles) ... FAIL
+test_survey_writes_the_requested_dispatch_export (test_command_contracts.DocumentedCommandBehavior.test_survey_writes_the_requested_dispatch_export) ... ERROR
+test_task_delivery_records_its_pull_request_without_verified_criteria (test_command_contracts.DocumentedCommandBehavior.test_task_delivery_records_its_pull_request_without_verified_criteria) ... FAIL
+
+======================================================================
+ERROR: test_survey_writes_the_requested_dispatch_export (test_command_contracts.DocumentedCommandBehavior.test_survey_writes_the_requested_dispatch_export)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 100, in test_survey_writes_the_requested_dispatch_export
+    self.assertEqual(json.loads(output.read_text()), [])
+                                ~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/command values 2rjis5xp/dispatch export.json'
+
+======================================================================
+FAIL: test_dispatch_can_check_review_with_an_empty_progress_selection (test_command_contracts.DocumentedCommandBehavior.test_dispatch_can_check_review_with_an_empty_progress_selection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 61, in test_dispatch_can_check_review_with_an_empty_progress_selection
+    self.dispatch('', '943', expected=1)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 82, in dispatch
+    self.assertEqual(done.returncode, expected, done.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 1 : usage: deliver.py [-h] [--items ITEMS] [--prs PRS] [--links LINKS]
+                  [--others [OTHERS ...]] [--epic EPIC] [--reserve RESERVE]
+                  [--release RELEASE] [--records RECORDS] [--lane LANE]
+                  [--date DATE] [--project PROJECT] [--revision REVISION]
+                  [--engineering ENGINEERING] [--bases BASES]
+                  [--progress PROGRESS] [--review REVIEW]
+                  [--agent-reviews AGENT_REVIEWS] [--board BOARD]
+                  [--fields FIELDS] [--out OUT] [--assignee ASSIGNEE]
+                  [--fix FIX] [--dispatch-plan DISPATCH_PLAN]
+deliver.py: error: argument --progress: expected one argument
+
+
+======================================================================
+FAIL: test_dispatch_can_hold_progress_with_an_empty_review_selection (test_command_contracts.DocumentedCommandBehavior.test_dispatch_can_hold_progress_with_an_empty_review_selection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 58, in test_dispatch_can_hold_progress_with_an_empty_review_selection
+    self.dispatch('943', '', expected=0)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 82, in dispatch
+    self.assertEqual(done.returncode, expected, done.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : usage: deliver.py [-h] [--items ITEMS] [--prs PRS] [--links LINKS]
+                  [--others [OTHERS ...]] [--epic EPIC] [--reserve RESERVE]
+                  [--release RELEASE] [--records RECORDS] [--lane LANE]
+                  [--date DATE] [--project PROJECT] [--revision REVISION]
+                  [--engineering ENGINEERING] [--bases BASES]
+                  [--progress PROGRESS] [--review REVIEW]
+                  [--agent-reviews AGENT_REVIEWS] [--board BOARD]
+                  [--fields FIELDS] [--out OUT] [--assignee ASSIGNEE]
+                  [--fix FIX] [--dispatch-plan DISPATCH_PLAN]
+deliver.py: error: argument --review: expected one argument
+
+
+======================================================================
+FAIL: test_epic_format_observes_project_required_criteria_and_changed_paths (test_command_contracts.DocumentedCommandBehavior.test_epic_format_observes_project_required_criteria_and_changed_paths)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 185, in test_epic_format_observes_project_required_criteria_and_changed_paths
+    self.assertIn('source: config/required-criteria.json', done.stdout)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'source: config/required-criteria.json' not found in '#2 epic (open): 0 fixed, 1 to apply, 6 to decide\n  apply: labels: add type:epic\n  decide: title name runs to 1 words; a name is 2 or 3\n  decide: no theme:* label\n  decide: required section missing: Overview\n  decide: required section missing: Problem\n  decide: required section missing: Proposal\n  decide: required section missing: References\n'
+
+======================================================================
+FAIL: test_epic_format_resolves_cross_epic_rows_from_its_parent (test_command_contracts.DocumentedCommandBehavior.test_epic_format_resolves_cross_epic_rows_from_its_parent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 167, in test_epic_format_resolves_cross_epic_rows_from_its_parent
+    self.assertIn(f'[E01:W01]({url("issues", 3)})', output.read_text())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '[E01:W01](https://github.com/o/r/issues/3)' not found in '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Work | AC1 | E01:W01 | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n'
+
+======================================================================
+FAIL: test_hotfix_delivery_records_its_pull_request_without_verified_criteria (test_command_contracts.DocumentedCommandBehavior.test_hotfix_delivery_records_its_pull_request_without_verified_criteria)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 109, in test_hotfix_delivery_records_its_pull_request_without_verified_criteria
+    self.sync_without_ticks('hotfix.md', 'Sync Hot-fix Issue', hotfix(4, target='workspace'),
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            pr(950, '[F04] Reject Bad Keys', base='workspace'), 'hot-fix-json-file')
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 120, in sync_without_ticks
+    self.assertEqual(done.returncode, 0, done.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : usage: sync.py [-h] [--prs PRS] [--links LINKS] [--pr PR] [--link LINK]
+               [--tasks [TASKS ...]] [--epics [EPICS ...]] [--tick TICK]
+               [--project PROJECT] [--revision REVISION] [--names] [--fix FIX]
+               [issue]
+sync.py: error: argument --tick: expected one argument
+
+
+======================================================================
+FAIL: test_initiative_delivery_writes_completed_rows_to_the_requested_body (test_command_contracts.DocumentedCommandBehavior.test_initiative_delivery_writes_completed_rows_to_the_requested_body)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 136, in test_initiative_delivery_writes_completed_rows_to_the_requested_body
+    self.assertTrue(output.is_file(), 'the requested body is absent')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : the requested body is absent
+
+======================================================================
+FAIL: test_initiative_format_uses_linked_epic_titles (test_command_contracts.DocumentedCommandBehavior.test_initiative_format_uses_linked_epic_titles)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 160, in test_initiative_format_uses_linked_epic_titles
+    self.assertIn('| Actual Name |', output.read_text())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '| Actual Name |' not found in '## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/2) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n'
+
+======================================================================
+FAIL: test_task_delivery_records_its_pull_request_without_verified_criteria (test_command_contracts.DocumentedCommandBehavior.test_task_delivery_records_its_pull_request_without_verified_criteria)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 105, in test_task_delivery_records_its_pull_request_without_verified_criteria
+    self.sync_without_ticks('task-body.md', 'Sync Task Issue', record,
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            pr(950, '[I01:E00] Work'), 'task-json-file')
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 120, in sync_without_ticks
+    self.assertEqual(done.returncode, 0, done.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : usage: sync.py [-h] [--prs PRS] [--links LINKS] [--pr PR] [--link LINK]
+               [--tasks [TASKS ...]] [--epics [EPICS ...]] [--tick TICK]
+               [--project PROJECT] [--revision REVISION] [--names] [--fix FIX]
+               [issue]
+sync.py: error: argument --tick: expected one argument
+
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.414s
+
+FAILED (failures=8, errors=1)
+Frozen reviewed source: 756aaf9f53f884b1da120e990ec9524a936aa4b2; failures=8; errors=1
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace (name more with SBX_EXTRA_ROOTS=dir1:dir2)
