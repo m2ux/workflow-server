@@ -34,7 +34,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Check Dispatch Start
 
-Check one selected unit immediately before execution and provide [Validated Unit](#validated-unit "●") to the requester, or [Failure](#failure "●") if the operation fails.
+Check one selected unit immediately before execution and provide [Validated Unit](#validated-unit "●") to the requester, or [Failure](#failure "●") if the operation fails. The start names one selected unit, has a currently free harness slot and overlaps no held or running session. Its supplied evidence names that unit, the planning record confirmed on the remote engineering branch, and the record associated with its confirmed hold. For rows, that association is read from every live row reservation; for a hot-fix it is the run's record for the unit whose board hold was confirmed. The evidence is gathered in that order before execution; any missing, mismatched or unverified evidence blocks the start.
 
 Exit 0 returns the selected unit; exit 1 names the blocking condition.
 
@@ -47,8 +47,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --sessions '[**&lt;session-inventory-file&gt;**](#session-inventory "○")' &#92;
   --capacity [**&lt;free-slot-count&gt;**](#free-slots "○")
 </pre></big>
-
-- The start names one selected unit, has a currently free harness slot and overlaps no held or running session. Its supplied evidence names that unit, the planning record confirmed on the remote engineering branch, and the record associated with its confirmed hold. For rows, that association is read from every live row reservation; for a hot-fix it is the run's record for the unit whose board hold was confirmed. The evidence is gathered in that order before execution; any missing, mismatched or unverified evidence blocks the start.
 
 ## Fields
 

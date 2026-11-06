@@ -17,7 +17,7 @@ Read raw task-table Lane cells through the Lane module and provide [Assignment R
 
 ### Write Lane Assignments
 
-Write confirmed assignments while preserving other body content and provide [Output Body](#output-body "●") to the requester.
+Write confirmed assignments while preserving other body content and provide [Output Body](#output-body "●") to the requester. Refuse unknown task ids or malformed resulting cells. The requester validates the complete body and dependencies before publication.
 
 <big><pre>
 "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" assign &#92;
@@ -25,8 +25,6 @@ Write confirmed assignments while preserving other body content and provide [Out
   --map '[**&lt;confirmed-map-file&gt;**](#confirmed-map "○")' &#92;
   --out '[**&lt;output-body-path&gt;**](#output-body "○")'
 </pre></big>
-
-- Refuse unknown task ids or malformed resulting cells. The requester validates the complete body and dependencies before publication.
 
 ### Validate Lane Unit
 

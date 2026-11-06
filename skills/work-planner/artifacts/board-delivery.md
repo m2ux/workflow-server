@@ -90,7 +90,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Compute Dispatch Status
 
-Render board calls within the dispatch jurisdiction and provide [Board Changes](#board-changes "●") to the requester. A missing or failing agent review blocks the In Review write.
+Render board calls within the dispatch jurisdiction and provide [Board Changes](#board-changes "●") to the requester. A missing or failing agent review blocks the In Review write. Apply the dispatch jurisdiction in [Status Changes](#status-changes). Assignee changes must follow [Assignees](board.md#assignees).
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
@@ -105,8 +105,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
   --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")'
 </pre></big>
-
-- Apply the dispatch jurisdiction in [Status Changes](#status-changes). Assignee changes must follow [Assignees](board.md#assignees).
 
 ## Fields
 

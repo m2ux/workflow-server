@@ -13,7 +13,7 @@ Read these files first.
 
 ### Sync Task Issue
 
-Record the open or merged pull request delivering a task issue, tick verified criteria, report whether the task issue is closable, and provide [Output Body](#output-body "●") and [Delivery Findings](#delivery-findings "●") to the requester.
+Record the open or merged pull request delivering a task issue, tick verified criteria, report whether the task issue is closable, and provide [Output Body](#output-body "●") and [Delivery Findings](#delivery-findings "●") to the requester. Tick only criteria the requester has verified. The requester publishes comments and closes the tracker issue.
 
 An open pull request supplies verification evidence; completion requires its merge.
 
@@ -28,8 +28,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --tick '[**&lt;criterion-ids&gt;**](#delivery-selection "○")' &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
-
-- Tick only criteria the requester has verified. The requester publishes comments and closes the tracker issue.
 
 ## Fields
 
