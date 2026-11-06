@@ -1,6 +1,4 @@
 """format.py on standalone issues.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import json
 import re
