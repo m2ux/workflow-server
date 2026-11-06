@@ -551,6 +551,24 @@
       "sha256": "bfabf0f4aa1c10786bb0ce9e9460228c975eed24ba79c7940357518bc5c2859e",
       "bytes": 1936,
       "prepared_sha256": "bfabf0f4aa1c10786bb0ce9e9460228c975eed24ba79c7940357518bc5c2859e"
+    },
+    {
+      "path": "independent-review.md",
+      "sha256": "f5c03b7bf230989c9f9dbfde5656edc53ffba3aff3e0d426925ae4f4bbf33461",
+      "bytes": 15581,
+      "prepared_sha256": "f5c03b7bf230989c9f9dbfde5656edc53ffba3aff3e0d426925ae4f4bbf33461"
+    },
+    {
+      "path": "independent-reverify.log",
+      "sha256": "53382e76608a2726da3f8c4f8f8b14d26bcbfd3f6740720a1adcfe0790b7128c",
+      "bytes": 888,
+      "prepared_sha256": "53382e76608a2726da3f8c4f8f8b14d26bcbfd3f6740720a1adcfe0790b7128c"
+    },
+    {
+      "path": "independent-graph-review.json",
+      "sha256": "b7fa80e35538bb2c860c78d5d4c188d0d68cc3f445942a4dec231f87fe0181e4",
+      "bytes": 555,
+      "prepared_sha256": "b7fa80e35538bb2c860c78d5d4c188d0d68cc3f445942a4dec231f87fe0181e4"
     }
   ],
   "planning_drafts": [

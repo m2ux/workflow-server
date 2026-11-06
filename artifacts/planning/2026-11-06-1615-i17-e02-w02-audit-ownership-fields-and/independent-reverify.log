@@ -1,0 +1,7 @@
+PASS: all 84 governed paths, SHA-256 hashes and line counts match immutable source 86df5e4c2ccc2516b46cb0be7cf89e1cc258480f
+PASS: every 518 Fields heading has exact source/body/line coverage, owner, classification and disposition {'shape': 489, 'invariant': 23, 'mixed': 6}
+PASS: P1–P4 confirmed; P2 supersession/Done boundary and current-pin observation provenance retained
+PASS: E06 draft has 19 unique one-file components and criteria in joined groups of 6/6/4/3; both source ancestors verified
+PASS: reciprocal joined groups have no internal prerequisite edges; draft local producer prerequisites are condensed
+HELD: E06 external producer-row proof and any derived whole-epic reach await exact E02 refinement; this check proves no whole-epic gate
+LIMIT: coverage checks do not prove semantic classifications, runtime correctness, a saved tracker state or implemented pause behavior

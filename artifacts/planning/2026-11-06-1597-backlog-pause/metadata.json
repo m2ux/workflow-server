@@ -1,0 +1,134 @@
+{
+  "title": "[I17:E06] Backlog Pause: Unfinished Descendants Pause with Their Initiative",
+  "labels": [
+    "type:epic",
+    "theme:planning",
+    "bot:ai-assisted",
+    "priority: 6"
+  ],
+  "parent": "m2ux/workflow-server#1597",
+  "priority": 6,
+  "record": "2026-11-06-1597-backlog-pause",
+  "proposed_whole_epic_dependencies": [
+    "I17:E02",
+    "I17:E04"
+  ],
+  "component_rows": [
+    {
+      "task": "W01",
+      "component": "workspace:skills/work-planner/protocols/delivery-pause.md",
+      "unit": "A",
+      "criterion": "AC1"
+    },
+    {
+      "task": "W02",
+      "component": "workspace:skills/work-planner/modes/deliver-mode.md",
+      "unit": "A",
+      "criterion": "AC2"
+    },
+    {
+      "task": "W03",
+      "component": "workspace:skills/work-planner/artifacts/dispatch-batch.md",
+      "unit": "A",
+      "criterion": "AC3"
+    },
+    {
+      "task": "W04",
+      "component": "workspace:skills/work-planner/scripts/dispatch.py",
+      "unit": "A",
+      "criterion": "AC4"
+    },
+    {
+      "task": "W05",
+      "component": "workspace:skills/work-planner/artifacts/delivery-brief.md",
+      "unit": "A",
+      "criterion": "AC5"
+    },
+    {
+      "task": "W06",
+      "component": "workspace:skills/work-planner/artifacts/initiative.md",
+      "unit": "A",
+      "criterion": "AC6"
+    },
+    {
+      "task": "W07",
+      "component": "workspace:skills/work-planner/artifacts/board-status.md",
+      "unit": "B",
+      "criterion": "AC7"
+    },
+    {
+      "task": "W08",
+      "component": "workspace:skills/work-planner/artifacts/board-queue.md",
+      "unit": "B",
+      "criterion": "AC8"
+    },
+    {
+      "task": "W09",
+      "component": "workspace:skills/work-planner/scripts/board-queue.py",
+      "unit": "B",
+      "criterion": "AC9"
+    },
+    {
+      "task": "W10",
+      "component": "workspace:skills/work-planner/scripts/board.py",
+      "unit": "B",
+      "criterion": "AC10"
+    },
+    {
+      "task": "W11",
+      "component": "workspace:skills/work-planner/scripts/statuses.py",
+      "unit": "B",
+      "criterion": "AC11"
+    },
+    {
+      "task": "W12",
+      "component": "workspace:skills/work-planner/artifacts/board-delivery.md",
+      "unit": "B",
+      "criterion": "AC12"
+    },
+    {
+      "task": "W13",
+      "component": "workspace:skills/work-planner/artifacts/delivery-plan.md",
+      "unit": "C",
+      "criterion": "AC13"
+    },
+    {
+      "task": "W14",
+      "component": "workspace:skills/work-planner/scripts/deliver.py",
+      "unit": "C",
+      "criterion": "AC14"
+    },
+    {
+      "task": "W15",
+      "component": "workspace:skills/work-planner/artifacts/pull-request.md",
+      "unit": "C",
+      "criterion": "AC15"
+    },
+    {
+      "task": "W16",
+      "component": "workspace:skills/work-planner/protocols/epic-integration.md",
+      "unit": "C",
+      "criterion": "AC16"
+    },
+    {
+      "task": "W17",
+      "component": "workspace:skills/work-planner/protocols/unit-dispatch.md",
+      "unit": "D",
+      "criterion": "AC17"
+    },
+    {
+      "task": "W18",
+      "component": "workspace:skills/work-planner/artifacts/delivery-branches.md",
+      "unit": "D",
+      "criterion": "AC18"
+    },
+    {
+      "task": "W19",
+      "component": "workspace:skills/work-planner/scripts/delivery-branches.py",
+      "unit": "D",
+      "criterion": "AC19"
+    }
+  ],
+  "dependency_note": "Whole E02/E04 gates remain unproved proposals. Retain literal task producers and their output justifications until E02 refinement resolves them. Publish no fabricated whole barrier and no engineering W02 ancestry gate. Local joined-unit representatives do not establish external reach.",
+  "graph_status": "held: exact E02 producer refinement and external edge proof pending"
+}

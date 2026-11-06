@@ -1,0 +1,18 @@
+{
+  "source_revision": "86df5e4c2ccc2516b46cb0be7cf89e1cc258480f",
+  "context_edges": 42,
+  "context_cycle_witness": null,
+  "task_counts": {
+    "E02": 10,
+    "E06": 19,
+    "E04": 3
+  },
+  "parsed_task_problems": [],
+  "derived_E06_whole_dependencies": [],
+  "E06_external_task_edges": [],
+  "input_sha256": {
+    "E02": "657b107899aacd1a5dd473450ca79da31eff0b89fed67a361c5c5bcf3cb49ab5",
+    "E06": "a0bb4a291a95f52d85fb6ac43578113d01168cb8824524db531a3d7c595c4af1",
+    "E04": "016f7abf545866b2f3e9f5ac37bc11dea1795b7f3c31cbf2c0b90a5fa8db7d4b"
+  }
+}

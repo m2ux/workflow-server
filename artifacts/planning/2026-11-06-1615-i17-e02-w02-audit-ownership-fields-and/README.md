@@ -111,6 +111,9 @@ The audit and approved decisions are delivered here. E06 names a proposed Backlo
 | [semantic-review-before/fields-ledger.md](semantic-review-before/fields-ledger.md) | Audit evidence, approved decision or proposed implementation plan. |
 | [semantic-review-before/ownership-findings.json](semantic-review-before/ownership-findings.json) | Audit evidence, approved decision or proposed implementation plan. |
 | [semantic-review-before/verify.py](semantic-review-before/verify.py) | Audit evidence, approved decision or proposed implementation plan. |
+| [independent-review.md](independent-review.md) | Independent semantic review and current evidence verification. |
+| [independent-reverify.log](independent-reverify.log) | Independent semantic review and current evidence verification. |
+| [independent-graph-review.json](independent-graph-review.json) | Independent semantic review and current evidence verification. |
 
 ## Links
 
