@@ -110,3 +110,7 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 ## Delivery Failure Recovery
 
 [E04](https://github.com/m2ux/workflow-server/issues/1654) owns the approved inherited draft-restoration and merge-refusal gaps at priority 6. Its [planning record](../2026-11-06-1597-delivery-failure-recovery/README.md) owns the design, task files and review evidence.
+
+## E01 Completed Integration
+
+[PR #1641](https://github.com/m2ux/workflow-server/pull/1641) merges the reviewed style model into workspace at 9a924cfdda903ca64257449d8b5bf2ff762725ce. [Closeout evidence](../2026-11-06-1616-integration-closeout/README.md) confirms E01 closed/completed, board Done and its initiative row Done after fresh delivery and Development-link gates. E02/E04/E05 and initiative AC1 remain incomplete.

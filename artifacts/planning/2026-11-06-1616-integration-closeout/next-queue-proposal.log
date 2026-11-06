@@ -1,0 +1,9 @@
+users/m2ux/projectsV2/17: Status field 422017304
+  set #1615 [I17:E02] Skill Separation: Every Rule in One Home Before the Extraction: Backlog → Ready: gh api --method PATCH users/m2ux/projectsV2/17/items/291137184 --input /tmp/i17-e01-next-queue/status-ready.json
+  assign #1615 [I17:E02] Skill Separation: Every Rule in One Home Before the Extraction (Ready): gh api --method POST repos/m2ux/workflow-server/issues/1615/assignees -f 'assignees[]=m2ux'
+  set #1654 [I17:E04] Delivery Failure Recovery: Verified Draft and Merge Outcomes: Backlog → Ready: gh api --method PATCH users/m2ux/projectsV2/17/items/295717376 --input /tmp/i17-e01-next-queue/status-ready.json
+  assign #1654 [I17:E04] Delivery Failure Recovery: Verified Draft and Merge Outcomes (Ready): gh api --method POST repos/m2ux/workflow-server/issues/1654/assignees -f 'assignees[]=m2ux'
+  set #1655 [I17:E05] Plan Publication: Confirm Saved Epic and Parent Context: Backlog → Ready: gh api --method PATCH users/m2ux/projectsV2/17/items/295854942 --input /tmp/i17-e01-next-queue/status-ready.json
+  assign #1655 [I17:E05] Plan Publication: Confirm Saved Epic and Parent Context (Ready): gh api --method POST repos/m2ux/workflow-server/issues/1655/assignees -f 'assignees[]=m2ux'
+  next #1597 [I17] Cutover Readiness: Every Known Skill Fix Lands Before the Extraction: E02, E04, E05
+  current: 4, to do: 3

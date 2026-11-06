@@ -1,0 +1,24 @@
+{
+  "pull_request": "https://github.com/m2ux/workflow-server/pull/1641",
+  "merged_at": "2026-11-06T10:51:07Z",
+  "head": "b5ee78f3fb524445c0b811b38aff04c08e45628e",
+  "merge_commit": "9a924cfdda903ca64257449d8b5bf2ff762725ce",
+  "epic": "https://github.com/m2ux/workflow-server/issues/1616",
+  "epic_state": "closed",
+  "state_reason": "completed",
+  "board_status": "Done",
+  "initiative_row": "E01 Done",
+  "initiative_closed": false,
+  "remaining_epics": [
+    "E02",
+    "E04",
+    "E05"
+  ],
+  "queue_complete": true,
+  "proposed_ready_epics": [
+    "E02",
+    "E04",
+    "E05"
+  ],
+  "queue_writes_at_closeout": "not yet applied"
+}
