@@ -42,7 +42,7 @@ These runs use concrete captured inputs and real local queue/review/survey funct
 
 The concrete draft carries nineteen one-file tasks in four joined units of six, six, four and three criteria. Source contracts and their immediate consumers ship together in the affected unit. Every fixing PR carries its observing route/real-git tests; no later testing row substitutes for them. The epic integrates into workspace only when the full behavior and current integration review pass. There is no feature flag, migration shim or parallel compatibility implementation.
 
-The foundation consumes the final separated retained-unit/board contracts and the recovery baseline, including confirmed draft restoration and distinct merge outcomes. Final whole-epic E02/E04 prerequisites are derived from the refreshed complete task graph. E05's publication behavior is not consumed. Rebind exact component paths/producer rows after E02's broad rows are refined; current anticipated files are explicitly listed in component-map.md rather than silently treated as already delivered.
+The foundation consumes the final separated retained-unit/board contracts and the recovery baseline, including confirmed draft restoration and distinct merge outcomes. Whole-E02/E04 prerequisites remain unproved proposals. Exact producer-row edges and their consumed outputs must be established from E02 refinement before dispatch; only all-row reach can justify a whole-epic gate. E05's publication behavior is not consumed. Rebind exact component paths/producer rows after E02's broad rows are refined; current anticipated files are explicitly listed in component-map.md rather than silently treated as already delivered.
 
 ## Observing Matrix
 

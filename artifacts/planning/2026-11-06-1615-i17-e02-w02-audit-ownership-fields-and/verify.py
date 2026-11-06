@@ -52,8 +52,17 @@ for row in ledger:
     assert row['owner'] and row['reason'] and row['disposition'] and row['review_basis']
     assert row['classification'] in ('shape','invariant','mixed')
 counts=dict(collections.Counter(r['classification'] for r in ledger))
-assert counts=={'shape':490,'invariant':27,'mixed':1},counts
-assert next(r['source'] for r in ledger if r['classification']=='mixed')=='artifacts/dependency-graph.md#edges'
+assert counts=={'shape':489,'invariant':23,'mixed':6},counts
+assert {r['source'] for r in ledger if r['classification']=='mixed'}=={
+    'artifacts/dependency-graph.md#edges','artifacts/dependency-graph.md#joins',
+    'artifacts/delivery-branches.md#branches','artifacts/delivery-branches.md#epic-bases',
+    'artifacts/epic-issue-body.md#required-criteria','artifacts/delivery-brief.md#execution-instructions'}
+semantic=load('semantic-review.json')
+assert len(semantic['invariants_reviewed'])==27
+assert len(semantic['changed_new_controls_reviewed'])==70
+assert semantic['counts']==counts
+findings=load('ownership-findings.json')
+assert ['artifacts/delivery-branches.md',249,260] in next(r['evidence'] for r in findings if r['id']=='A06')
 assert {r['file'] for r in load('file-ledger.json')}==paths
 print('PASS: every 518 Fields heading has exact source/body/line coverage, owner, classification and disposition '+str(counts))
 
@@ -97,5 +106,6 @@ for ancestor in (refresh['initial_revision'],refresh['integrated_workspace_revis
 assert len(refresh['full_tree_delta'])==7
 assert set(refresh['governed_files_changed'])=={'artifacts/pull-request.md','modes/deliver-mode.md','protocols/epic-integration.md'}
 print('PASS: E06 draft has 19 unique one-file components and criteria in joined groups of 6/6/4/3; both source ancestors verified')
-print('PASS: reciprocal joined groups have no internal prerequisite edges; producer prerequisites are condensed and no blanket external row gate repeats whole-epic gates')
+print('PASS: reciprocal joined groups have no internal prerequisite edges; draft local producer prerequisites are condensed')
+print('HELD: E06 external producer-row proof and any derived whole-epic reach await exact E02 refinement; this check proves no whole-epic gate')
 print('LIMIT: coverage checks do not prove semantic classifications, runtime correctness, a saved tracker state or implemented pause behavior')

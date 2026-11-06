@@ -129,5 +129,6 @@
       "criterion": "AC19"
     }
   ],
-  "dependency_note": "E02 and E04 are the confirmed proposed whole-epic prerequisites; task rows do not repeat them. W06 represents the entire joined foundation, supplying session schema, occupancy, worker control and parent selection together. W12 represents the entire cascade unit. No E02 W02 engineering-commit ancestry edge and no E05 implementation prerequisite apply. Validate the final saved graph after actual issue identity and E02 component refinement."
+  "dependency_note": "Whole E02/E04 gates remain unproved proposals. Retain literal task producers and their output justifications until E02 refinement resolves them. Publish no fabricated whole barrier and no engineering W02 ancestry gate. Local joined-unit representatives do not establish external reach.",
+  "graph_status": "held: exact E02 producer refinement and external edge proof pending"
 }

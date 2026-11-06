@@ -11,13 +11,13 @@ Every governed source file is covered; JSON retains source hash, reviewed role a
 | artifacts/board-delivery.md | artifact | A01, A02, A08, A10 |
 | artifacts/board-queue.md | artifact | A02, A05, A10 |
 | artifacts/board.md | artifact | A02 |
-| artifacts/delivery-branches.md | artifact | A02, A06, A10 |
-| artifacts/delivery-brief.md | artifact | A02, A10 |
+| artifacts/delivery-branches.md | artifact | A02, A06, A10, A11 |
+| artifacts/delivery-brief.md | artifact | A02, A10, A11 |
 | artifacts/delivery-evidence.md | artifact | No additional breach identified |
 | artifacts/delivery-plan.md | artifact | A02, A09, A10 |
-| artifacts/dependency-graph.md | artifact | A07 |
+| artifacts/dependency-graph.md | artifact | A07, A11 |
 | artifacts/dispatch-batch.md | artifact | A02, A10 |
-| artifacts/epic-issue-body.md | kind-owned artifact | A09 |
+| artifacts/epic-issue-body.md | kind-owned artifact | A09, A11 |
 | artifacts/epic.md | artifact | No additional breach identified |
 | artifacts/goal-trace.md | artifact | No additional breach identified |
 | artifacts/hotfix-body.md | kind-owned artifact | No additional breach identified |

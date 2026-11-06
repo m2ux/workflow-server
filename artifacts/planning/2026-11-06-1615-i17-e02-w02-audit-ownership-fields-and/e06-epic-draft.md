@@ -24,7 +24,7 @@ A Backlog initiative pauses its ongoing delivery and moves every unfinished desc
 - **Contracts and consumers land together.**
   Each joined unit carries its owning schemas, callers and observing regressions. The complete epic reaches workspace only after integration verifies the whole behavior; there is no feature flag or temporary compatibility path.
 
-The initiative's whole-epic prerequisites are E02 and E04, supplying finalized separated state/unit contracts and the integrated recovery/merge baseline. Task rows do not repeat those gates. W06 represents the complete joined foundation unit: its prerequisites deliver the observed-session schema, occupancy rules, worker control and parent selector together. Both cascade and resume units consume that complete producer; the admission unit consumes the completed cascade through W12. E02 W02's engineering audit commit is evidence, not a workspace ancestry prerequisite.
+Whole-E02/E04 prerequisites are proposed, not established. The draft is held for exact producer refinement: every external edge must name the consumed output's actual producer row, and a whole-epic gate requires every dependent task or joined unit to reach every producer row directly or transitively. The current local W06/W12 representatives summarize joined producer units; they prove no external whole-epic reach. E02 W02's engineering audit commit is evidence, not a workspace ancestry prerequisite.
 
 ## Work Breakdown
 

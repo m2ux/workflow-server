@@ -276,8 +276,8 @@
       ],
       [
         "artifacts/delivery-branches.md",
-        269,
-        282
+        249,
+        260
       ]
     ],
     "problem": "Unit Dispatch accepts retained context, but its checkout preparation still selects the creation command unconditionally at the audited revision.",
@@ -414,5 +414,47 @@
       "scripts/delivery-branches.py"
     ],
     "disposition": "Publish the concrete nineteen-file, four-unit draft after refreshing the final task graph and issue identities. E02/E04 supply separated state and merge/recovery contracts. E05 is not an implementation prerequisite. This is an approved feature gap, not a regression newly introduced by the audited source."
+  },
+  {
+    "id": "A11",
+    "status": "confirmed-after-semantic-review",
+    "guideline": "Field Boundaries / Callable Transformations",
+    "subject": "Declaration, branch and brief fields embed acquisition/reporting outcomes",
+    "evidence": [
+      [
+        "artifacts/delivery-branches.md",
+        330,
+        341
+      ],
+      [
+        "artifacts/delivery-branches.md",
+        342,
+        354
+      ],
+      [
+        "artifacts/delivery-brief.md",
+        27,
+        30
+      ],
+      [
+        "artifacts/dependency-graph.md",
+        145,
+        159
+      ],
+      [
+        "artifacts/epic-issue-body.md",
+        296,
+        319
+      ]
+    ],
+    "problem": "Five additional fields combine retained value constraints with explicit fetch, checker-report, unevaluable/refusal or caller-finding behavior. The original invariant/shape classification was too broad.",
+    "owner": "Exact retained clauses, callable owners and dispositions are recorded per heading in fields-ledger.json and semantic-review.json.",
+    "components": [
+      "artifacts/delivery-branches.md",
+      "artifacts/delivery-brief.md",
+      "artifacts/dependency-graph.md",
+      "artifacts/epic-issue-body.md"
+    ],
+    "disposition": "Fix these in the owning E02 component PRs, updating callers and observing regressions atomically. Preserve every valid schema/provenance constraint and all existing failure/report outputs. The audit correction precedes W02 completion."
   }
 ]

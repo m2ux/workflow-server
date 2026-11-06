@@ -1722,14 +1722,19 @@
     "body": "The project's ordered long-lived branch names, declared in `config/branches` at its root, one name per line. A run reads the statement at the commit it evaluates, in the repository its checkout locates; which worktree the checkout is, and what its working files hold, choose nothing. The evaluated revision is fetched before it is read.\n\n- An epic sync evaluates each of its epic bases, such as `origin/i07/e00/main` and `origin/i07/e00/workflows`. Declarations that disagree across those bases leave the names unevaluable, and each is reported with its source.\n- A read of one epic's branches evaluates its epic base, such as `origin/i07/e00/main`.\n- Base preparation, before a base exists, evaluates the long-lived branch the base is cut from, such as `origin/main`.\n- A delivery survey evaluates the long-lived branch that states the project's branches, such as `origin/workspace`.\n- Verification of merged delivery evaluates the merged commit.\n\n- eg `docker`, `main`, `workflows` and `workspace` in workflow-server's `config/branches`.",
     "source": "artifacts/delivery-branches.md#branches",
     "revision": "86df5e4c2ccc2516b46cb0be7cf89e1cc258480f",
-    "owner": "artifacts/delivery-branches.md",
+    "owner": "artifacts/delivery-branches.md#read-delivery-branches, #list-long-lived-branches and their selected callers; branch-name parsing/reporting remains implemented in scripts/sync.py#read_branches and #epic_base_declarations.",
     "supplied_evidence": "The field value or the input/output object whose constraints it defines.",
-    "produced_decision": null,
-    "classification": "invariant",
-    "status": "accepted",
-    "reason": "The branch declaration is bound to a fetched evaluated revision, not working files. Its provenance constraint is accepted; fetch execution remains in callers.",
-    "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
-    "review_basis": "Current changed/new contract read completely in the four changed-fields review batches."
+    "produced_decision": "The evaluated revision is fetched before it is read.; Declarations that disagree across those bases leave the names unevaluable, and each is reported with its source.",
+    "classification": "mixed",
+    "status": "confirmed",
+    "reason": "The input declaration field orders a fetch and directs disagreement reporting, beyond the branch-name value and provenance it defines.",
+    "disposition": "Retain the stated value/provenance constraints in Fields. Place the exact acquisition/reporting/refusal clauses in the named callable owner, preserve all outcomes and update readers atomically.",
+    "review_basis": "Fresh complete contract reread during independent semantic review; original classification retained in semantic-review-before/fields-ledger.json.",
+    "retained_constraints": "Ordered branch names, declaration location, evaluated-commit provenance and repository binding remain value/provenance constraints.",
+    "action_clauses": [
+      "The evaluated revision is fetched before it is read.",
+      "Declarations that disagree across those bases leave the names unevaluable, and each is reported with its source."
+    ]
   },
   {
     "file": "artifacts/delivery-branches.md",
@@ -1740,14 +1745,18 @@
     "body": "The epic's base-branch collection, one branch per changed long-lived branch.\n\n- Each long-lived branch an epic changes has a base branch, named for the initiative, the epic and that branch, and rooted in that long-lived branch. Its prerequisite epics are closed as completed with every delivery base merged.\n- eg `i07/e00/main` for an epic base cut from `main`.\n- The base's last segment is its long-lived branch, which gives the target it merges and is merged into.\n- Each base is worked in one worktree, named by the base under the worktree directory of the repository's main working tree.\n- eg `i07/e00/main` merges `main` and is checked out at `.worktrees/i07/e00/main`.\n- Every pull request delivering the epic's tasks targets that epic base.\n- A completed epic is delivered by merging each base into its long-lived branch. The epic stays open until every base has merged. Another epic still incomplete holds no base back unless it is a prerequisite.\n- An epic sync reports each open or merged pull request off these routes as `target`: a task pull request into anything but one of its epic's bases, and an integration pull request into anything but the long-lived branch its head names.",
     "source": "artifacts/delivery-branches.md#epic-bases",
     "revision": "86df5e4c2ccc2516b46cb0be7cf89e1cc258480f",
-    "owner": "artifacts/delivery-branches.md",
+    "owner": "artifacts/epic-issue-body.md#sync-epic and scripts/sync.py#misrouted; Delivery Branches retains the base topology constraint.",
     "supplied_evidence": "The field value or the input/output object whose constraints it defines.",
-    "produced_decision": null,
-    "classification": "invariant",
-    "status": "accepted",
-    "reason": "Branch naming, target correspondence and completion predicates constrain valid delivery topology.",
-    "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
-    "review_basis": "Current changed/new contract read completely in the four changed-fields review batches."
+    "produced_decision": "An epic sync reports each open or merged pull request off these routes as `target`: a task pull request into anything but one of its epic's bases, and an integration pull request into anything but the long-lived branch its head names.",
+    "classification": "mixed",
+    "status": "confirmed",
+    "reason": "The base-branch collection field mandates a separate sync diagnostic and its tagged report output.",
+    "disposition": "Retain the stated value/provenance constraints in Fields. Place the exact acquisition/reporting/refusal clauses in the named callable owner, preserve all outcomes and update readers atomically.",
+    "review_basis": "Fresh complete contract reread during independent semantic review; original classification retained in semantic-review-before/fields-ledger.json.",
+    "retained_constraints": "One base per changed long-lived branch, branch/worktree naming, target relationships and completed-base state remain invariants.",
+    "action_clauses": [
+      "An epic sync reports each open or merged pull request off these routes as `target`: a task pull request into anything but one of its epic's bases, and an integration pull request into anything but the long-lived branch its head names."
+    ]
   },
   {
     "file": "artifacts/delivery-branches.md",
@@ -2419,14 +2428,18 @@
     "body": "The supplied session-procedure reference and invocation context, including its planning, publication, merge, debt and arising-issue obligations, with the confirmed decisions and evidence needed to execute it. A missing instruction or prerequisite is a finding provided to the caller.",
     "source": "artifacts/delivery-brief.md#execution-instructions",
     "revision": "86df5e4c2ccc2516b46cb0be7cf89e1cc258480f",
-    "owner": "artifacts/delivery-brief.md",
+    "owner": "protocols/unit-dispatch.md at brief population/validation and its owning Delivery Brief validation capability; introduce a callable only when the actual repeated validation warrants one.",
     "supplied_evidence": "The field value or the input/output object whose constraints it defines.",
-    "produced_decision": null,
-    "classification": "shape",
-    "status": "accepted",
-    "reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here.",
-    "disposition": "Retain in Fields.",
-    "review_basis": "Current changed/new contract read completely in the four changed-fields review batches."
+    "produced_decision": "A missing instruction or prerequisite is a finding provided to the caller.",
+    "classification": "mixed",
+    "status": "confirmed",
+    "reason": "The supplied execution-instruction field directs a missing-input finding to the caller, an output/refusal outcome rather than input schema.",
+    "disposition": "Retain the stated value/provenance constraints in Fields. Place the exact acquisition/reporting/refusal clauses in the named callable owner, preserve all outcomes and update readers atomically.",
+    "review_basis": "Fresh complete contract reread during independent semantic review; original classification retained in semantic-review-before/fields-ledger.json.",
+    "retained_constraints": "Supplied procedure reference, invocation context, obligations and prerequisite evidence remain the brief input value.",
+    "action_clauses": [
+      "A missing instruction or prerequisite is a finding provided to the caller."
+    ]
   },
   {
     "file": "artifacts/delivery-brief.md",
@@ -3136,14 +3149,20 @@
     "body": "The candidate joined units, each a set of task ids in one epic. The undelivered rows of one epic whose work items declare one [component](work-item.md#component) are a candidate unit: one pull request writes that file once, where separate ones each rebase on the last. Rows declaring different components need no accounting.\n\n- **A joined unit has one lane.**\n  Joined rows must meet [Unit Consistency](lane.md#unit-consistency).\n- **A candidate is answered once.**\n  Its rows name each other in Joins, or one line of a record names exactly its rows and why they stay split. A line naming only some of its rows, or rows besides, accounts for none.\n- **Both resolutions are stated where the candidate is reported.**\n  Naming the rows in Joins asserts one pull request; the record line says why there are several. A report naming only the first makes the assertion the cheaper answer.\n- **A direct edge inside a candidate is the edge a join drops.**\n  The report names it, since the joined pull request orders the commits.\n- **Some candidates are split by rule.**\n  A candidate whose rows cover more than six criteria, or with a path between two of them through a row outside it, cannot join. The report names the reason, and no record line is asked for.",
     "source": "artifacts/dependency-graph.md#joins",
     "revision": "86df5e4c2ccc2516b46cb0be7cf89e1cc258480f",
-    "owner": "artifacts/dependency-graph.md",
+    "owner": "artifacts/dependency-graph.md#check-dependencies-and-numbering and #check-dependencies; scripts/deps.py owns join-candidate diagnostic/report composition.",
     "supplied_evidence": "The field value or the input/output object whose constraints it defines.",
-    "produced_decision": null,
-    "classification": "invariant",
-    "status": "accepted",
-    "reason": "Valid joined membership, lane, criterion grain and split-accounting conditions constrain graph results; literal output requirements are accepted.",
-    "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
-    "review_basis": "Current changed/new contract read completely in the four changed-fields review batches."
+    "produced_decision": "Both resolutions are stated where the candidate is reported.; The report names it, since the joined pull request orders the commits.; The report names the reason, and no record line is asked for.",
+    "classification": "mixed",
+    "status": "confirmed",
+    "reason": "The candidate-unit field also dictates content and branching of the checker report and whether a record line is requested, a distinct produced result.",
+    "disposition": "Retain the stated value/provenance constraints in Fields. Place the exact acquisition/reporting/refusal clauses in the named callable owner, preserve all outcomes and update readers atomically.",
+    "review_basis": "Fresh complete contract reread during independent semantic review; original classification retained in semantic-review-before/fields-ledger.json.",
+    "retained_constraints": "Candidate member sets, reciprocal join or exact split-accounting representation, one lane, six-criterion bound and excluded-path predicate remain constraints.",
+    "action_clauses": [
+      "Both resolutions are stated where the candidate is reported.",
+      "The report names it, since the joined pull request orders the commits.",
+      "The report names the reason, and no record line is asked for."
+    ]
   },
   {
     "file": "artifacts/dependency-graph.md",
@@ -3682,14 +3701,21 @@
     "body": "The project's required-criterion declaration array. A project states the criteria its epics must carry in `config/required-criteria.json` at its root. The file is a JSON array, and each entry is one required criterion with these fields, each a non-empty string except `paths`:\n\n| Field | What it states |\n| --- | --- |\n| `branch` | The long-lived branch the criterion's work reaches. |\n| `paths` | A non-empty list of files and directories on `branch`. An epic carries the criterion when a pull request of its work reaching `branch` changes a file that is one of them or lies under one. |\n| `criterion` | The criterion's text, which the epic carries after its `**ACn.**` label. |\n| `phrase` | A phrase identifying the criterion in an epic that carries it, matched without regard to case. |\n| `row` | The Description of the task row that delivers the criterion. |\n\n- **The declared row delivers the criterion.**\n  It carries the declared `row` as its Description, depends on the rows whose work changes the declared paths, and covers that criterion alone.\n- **The tracker states what the work changes.**\n  The check reads each pull request's changed files as the tracker lists them. A pull request reaching the declared branch whose changed files are not supplied leaves the criterion unevaluable, unless another pull request of the epic is known to change a declared path.\n- **The evaluated commit holds the statement.**\n  The check reads the file at the commit its evaluated revision resolves to, in the repository its checkout locates, and names that path, commit and repository as its source. Which worktree the checkout is, and what its working files hold, choose nothing.\n- **A project declaring nothing requires nothing.**\n  A missing or empty file at the evaluated commit, or an empty array, declares no required criterion, and the check reports none. A project declaring nothing acquires no other project's criteria.\n- **An unreadable statement is unevaluable.**\n  A revision resolving to no commit, unreadable JSON, a value other than an array, or an entry lacking a field or stating `paths` as anything but a non-empty list of non-empty strings leaves the project's required criteria unevaluable. The check reports that and names the fault, and reports no epic as lacking a criterion.\n- workflow-server requires its corpus audit of work that changes the workflow definitions under `corpus` on `workflows`: eg `[{\"branch\": \"workflows\", \"paths\": [\"corpus\"], \"criterion\": \"The definitions this epic changes carry no outstanding confirmed finding, one neither fixed on the epic's branch nor taken by an issue, as the canon audit's coverage report shows.\", \"phrase\": \"canon audit\", \"row\": \"Canon audit of the changed definitions\"}]`",
     "source": "artifacts/epic-issue-body.md#required-criteria",
     "revision": "86df5e4c2ccc2516b46cb0be7cf89e1cc258480f",
-    "owner": "artifacts/epic-issue-body.md",
+    "owner": "artifacts/issue-body.md#check-body-format and artifacts/epic-issue-body.md#validate-epic-body; scripts/format.py#required_criteria and Review required-criteria validation own declaration acquisition, unevaluable classification and reporting.",
     "supplied_evidence": "The field value or the input/output object whose constraints it defines.",
-    "produced_decision": null,
-    "classification": "invariant",
-    "status": "accepted",
-    "reason": "The declaration schema, path reach and unevaluable states constrain inputs/findings; the named validation operation gathers evidence.",
-    "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
-    "review_basis": "Current changed/new contract read completely in the four changed-fields review batches."
+    "produced_decision": "The check reads each pull request's changed files as the tracker lists them.; The check reads the file at the commit its evaluated revision resolves to, in the repository its checkout locates, and names that path, commit and repository as its source.; A missing or empty file at the evaluated commit, or an empty array, declares no required criterion, and the check reports none.; The check reports that and names the fault, and reports no epic as lacking a criterion.",
+    "classification": "mixed",
+    "status": "confirmed",
+    "reason": "A required-criterion input declaration embeds checker acquisition, result classification, source reporting and failure/no-missing-criterion outcomes.",
+    "disposition": "Retain the stated value/provenance constraints in Fields. Place the exact acquisition/reporting/refusal clauses in the named callable owner, preserve all outcomes and update readers atomically.",
+    "review_basis": "Fresh complete contract reread during independent semantic review; original classification retained in semantic-review-before/fields-ledger.json.",
+    "retained_constraints": "The array schema, nonempty strings/paths, path reach predicate, criterion/phrase and declared row constraint remain value constraints.",
+    "action_clauses": [
+      "The check reads each pull request's changed files as the tracker lists them.",
+      "The check reads the file at the commit its evaluated revision resolves to, in the repository its checkout locates, and names that path, commit and repository as its source.",
+      "A missing or empty file at the evaluated commit, or an empty array, declares no required criterion, and the check reports none.",
+      "The check reports that and names the fault, and reports no epic as lacking a criterion."
+    ]
   },
   {
     "file": "artifacts/epic-issue-body.md",

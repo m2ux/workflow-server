@@ -103,6 +103,14 @@ The audit and approved decisions are delivered here. E06 names a proposed Backlo
 | [e06-work-items/w18.md](e06-work-items/w18.md) | Audit evidence, approved decision or proposed implementation plan. |
 | [e06-work-items/w19.md](e06-work-items/w19.md) | Audit evidence, approved decision or proposed implementation plan. |
 | [artifact-manifest.json](artifact-manifest.json) | Audit evidence, approved decision or proposed implementation plan. |
+| [semantic-review.json](semantic-review.json) | Audit evidence, approved decision or proposed implementation plan. |
+| [semantic-review.md](semantic-review.md) | Audit evidence, approved decision or proposed implementation plan. |
+| [semantic-review-before/artifact-manifest.json](semantic-review-before/artifact-manifest.json) | Audit evidence, approved decision or proposed implementation plan. |
+| [semantic-review-before/audit.md](semantic-review-before/audit.md) | Audit evidence, approved decision or proposed implementation plan. |
+| [semantic-review-before/fields-ledger.json](semantic-review-before/fields-ledger.json) | Audit evidence, approved decision or proposed implementation plan. |
+| [semantic-review-before/fields-ledger.md](semantic-review-before/fields-ledger.md) | Audit evidence, approved decision or proposed implementation plan. |
+| [semantic-review-before/ownership-findings.json](semantic-review-before/ownership-findings.json) | Audit evidence, approved decision or proposed implementation plan. |
+| [semantic-review-before/verify.py](semantic-review-before/verify.py) | Audit evidence, approved decision or proposed implementation plan. |
 
 ## Links
 

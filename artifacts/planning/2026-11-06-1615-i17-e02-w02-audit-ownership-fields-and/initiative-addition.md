@@ -1,1 +1,3 @@
-| [E06](PENDING_E06_ISSUE_URL) | Backlog Pause | AC1 | [E02](https://github.com/m2ux/workflow-server/issues/1615), [E04](https://github.com/m2ux/workflow-server/issues/1654) | |
+| [E06](PENDING_E06_ISSUE_URL) | Backlog Pause | AC1 | | |
+
+Draft only: whole-E02/E04 gates are held pending exact producer reach proof; place any justified selected-task dependencies in the E06 task table.

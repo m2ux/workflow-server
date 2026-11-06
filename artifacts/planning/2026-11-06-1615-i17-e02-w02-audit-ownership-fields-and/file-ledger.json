@@ -110,7 +110,8 @@
     "findings": [
       "A02",
       "A06",
-      "A10"
+      "A10",
+      "A11"
     ],
     "kind_mention_lines": [
       372,
@@ -126,7 +127,8 @@
     "lines": 41,
     "findings": [
       "A02",
-      "A10"
+      "A10",
+      "A11"
     ],
     "kind_mention_lines": [
       13
@@ -176,7 +178,8 @@
     "sha256": "5b073234c04caece390fca50572b74d9146cc421f83968c81e1159d077eb5dc9",
     "lines": 199,
     "findings": [
-      "A07"
+      "A07",
+      "A11"
     ],
     "kind_mention_lines": [],
     "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
@@ -204,7 +207,8 @@
     "sha256": "44dcd178724518e8a889ceab7228ebb0f95768b15c22aaf4f987c9abf1d57ba9",
     "lines": 430,
     "findings": [
-      "A09"
+      "A09",
+      "A11"
     ],
     "kind_mention_lines": [],
     "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",

@@ -1,0 +1,822 @@
+{
+  "revision": "86df5e4c2ccc2516b46cb0be7cf89e1cc258480f",
+  "invariants_reviewed": [
+    {
+      "source": "artifacts/agent-review.md#review-record",
+      "line": 52,
+      "end": 57,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Record members, required evidence links, currentness predicates and authoritative same-revision precedence constrain valid review state. No read/report/write step is specified; per-kind freshness ownership is a separate A02 concern.",
+      "reason": "Record members, required evidence links, currentness predicates and authoritative same-revision precedence constrain valid review state. No read/report/write step is specified; per-kind freshness ownership is a separate A02 concern.",
+      "action_clauses": [],
+      "owner": "artifacts/agent-review.md"
+    },
+    {
+      "source": "artifacts/architecture-overview.md#diagrams",
+      "line": 93,
+      "end": 112,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "The rendered diagram kinds, bounds, notation and styling constrain output structure. P3 governs count interpretation; no graph measurement or publication is executed by this field.",
+      "reason": "The rendered diagram kinds, bounds, notation and styling constrain output structure. P3 governs count interpretation; no graph measurement or publication is executed by this field.",
+      "action_clauses": [],
+      "owner": "artifacts/architecture-overview.md"
+    },
+    {
+      "source": "artifacts/architecture-overview.md#overview-file",
+      "line": 133,
+      "end": 135,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Output path/content, absent-until-populated state and optional/required section presence constrain the output document, not an input acquisition route.",
+      "reason": "Output path/content, absent-until-populated state and optional/required section presence constrain the output document, not an input acquisition route.",
+      "action_clauses": [],
+      "owner": "artifacts/architecture-overview.md"
+    },
+    {
+      "source": "artifacts/board-queue.md#priority-sets",
+      "line": 55,
+      "end": 62,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Positive ranks, equal-rank groups, unordered state and largest-valid-label interpretation define the priority-map/state invariant. Compute Board Queue performs placement; no fetch, mutation or reporting action is selected in this field. Shared executable parsing ownership remains A04.",
+      "reason": "Positive ranks, equal-rank groups, unordered state and largest-valid-label interpretation define the priority-map/state invariant. Compute Board Queue performs placement; no fetch, mutation or reporting action is selected in this field. Shared executable parsing ownership remains A04.",
+      "action_clauses": [],
+      "owner": "artifacts/board-queue.md"
+    },
+    {
+      "source": "artifacts/board-queue.md#ready-units",
+      "line": 63,
+      "end": 66,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Membership predicates constrain the offered-unit output collection, including free/undelivered members and proposed status. The final statement that calls depend on priority/state names a relationship but prescribes neither an invocation nor a report outcome; Compute Board Queue owns those transformations.",
+      "reason": "Membership predicates constrain the offered-unit output collection, including free/undelivered members and proposed status. The final statement that calls depend on priority/state names a relationship but prescribes neither an invocation nor a report outcome; Compute Board Queue owns those transformations.",
+      "action_clauses": [],
+      "owner": "artifacts/board-queue.md"
+    },
+    {
+      "source": "artifacts/board.md#themes",
+      "line": 237,
+      "end": 242,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Theme/board cardinality and matching labels are static cross-record value constraints.",
+      "reason": "Theme/board cardinality and matching labels are static cross-record value constraints.",
+      "action_clauses": [],
+      "owner": "artifacts/board.md"
+    },
+    {
+      "source": "artifacts/delivery-branches.md#branches",
+      "line": 330,
+      "end": 341,
+      "before": "invariant",
+      "after": "mixed",
+      "retained": "Ordered branch names, declaration location, evaluated-commit provenance and repository binding remain value/provenance constraints.",
+      "reason": "The input declaration field orders a fetch and directs disagreement reporting, beyond the branch-name value and provenance it defines.",
+      "action_clauses": [
+        "The evaluated revision is fetched before it is read.",
+        "Declarations that disagree across those bases leave the names unevaluable, and each is reported with its source."
+      ],
+      "owner": "artifacts/delivery-branches.md#read-delivery-branches, #list-long-lived-branches and their selected callers; branch-name parsing/reporting remains implemented in scripts/sync.py#read_branches and #epic_base_declarations."
+    },
+    {
+      "source": "artifacts/delivery-branches.md#epic-bases",
+      "line": 342,
+      "end": 354,
+      "before": "invariant",
+      "after": "mixed",
+      "retained": "One base per changed long-lived branch, branch/worktree naming, target relationships and completed-base state remain invariants.",
+      "reason": "The base-branch collection field mandates a separate sync diagnostic and its tagged report output.",
+      "action_clauses": [
+        "An epic sync reports each open or merged pull request off these routes as `target`: a task pull request into anything but one of its epic's bases, and an integration pull request into anything but the long-lived branch its head names."
+      ],
+      "owner": "artifacts/epic-issue-body.md#sync-epic and scripts/sync.py#misrouted; Delivery Branches retains the base topology constraint."
+    },
+    {
+      "source": "artifacts/delivery-branches.md#task-branches",
+      "line": 361,
+      "end": 376,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Triples, branch/base/worktree naming and unit/component correspondence constrain the derived branch collection. The unplanned-row note describes when an unavailable work-item value can become present, not an unconditional create/recreate instruction. A06 separately audits the actual dispatch call.",
+      "reason": "Triples, branch/base/worktree naming and unit/component correspondence constrain the derived branch collection. The unplanned-row note describes when an unavailable work-item value can become present, not an unconditional create/recreate instruction. A06 separately audits the actual dispatch call.",
+      "action_clauses": [],
+      "owner": "artifacts/delivery-branches.md"
+    },
+    {
+      "source": "artifacts/dependency-graph.md#whole-epic-edges",
+      "line": 132,
+      "end": 140,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "The result collection is valid only for all-row transitive reach; closure/priority cost explains the edge semantics. It supplies no checker acquisition, write or reporting step. No whole edge is established by this audit.",
+      "reason": "The result collection is valid only for all-row transitive reach; closure/priority cost explains the edge semantics. It supplies no checker acquisition, write or reporting step. No whole edge is established by this audit.",
+      "action_clauses": [],
+      "owner": "artifacts/dependency-graph.md"
+    },
+    {
+      "source": "artifacts/dependency-graph.md#joins",
+      "line": 145,
+      "end": 159,
+      "before": "invariant",
+      "after": "mixed",
+      "retained": "Candidate member sets, reciprocal join or exact split-accounting representation, one lane, six-criterion bound and excluded-path predicate remain constraints.",
+      "reason": "The candidate-unit field also dictates content and branching of the checker report and whether a record line is requested, a distinct produced result.",
+      "action_clauses": [
+        "Both resolutions are stated where the candidate is reported.",
+        "The report names it, since the joined pull request orders the commits.",
+        "The report names the reason, and no record line is asked for."
+      ],
+      "owner": "artifacts/dependency-graph.md#check-dependencies-and-numbering and #check-dependencies; scripts/deps.py owns join-candidate diagnostic/report composition."
+    },
+    {
+      "source": "artifacts/epic-issue-body.md#work-breakdown",
+      "line": 245,
+      "end": 287,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Table shape, unique criterion scope, task test obligations, joined-unit legality and plan publication completeness constrain valid task rows. Plan Gap Task and row-revision capabilities execute rewriting; the task-scope completeness rule is not a command invoked from this field.",
+      "reason": "Table shape, unique criterion scope, task test obligations, joined-unit legality and plan publication completeness constrain valid task rows. Plan Gap Task and row-revision capabilities execute rewriting; the task-scope completeness rule is not a command invoked from this field.",
+      "action_clauses": [],
+      "owner": "artifacts/epic-issue-body.md"
+    },
+    {
+      "source": "artifacts/epic-issue-body.md#required-criteria",
+      "line": 296,
+      "end": 319,
+      "before": "invariant",
+      "after": "mixed",
+      "retained": "The array schema, nonempty strings/paths, path reach predicate, criterion/phrase and declared row constraint remain value constraints.",
+      "reason": "A required-criterion input declaration embeds checker acquisition, result classification, source reporting and failure/no-missing-criterion outcomes.",
+      "action_clauses": [
+        "The check reads each pull request's changed files as the tracker lists them.",
+        "The check reads the file at the commit its evaluated revision resolves to, in the repository its checkout locates, and names that path, commit and repository as its source.",
+        "A missing or empty file at the evaluated commit, or an empty array, declares no required criterion, and the check reports none.",
+        "The check reports that and names the fault, and reports no epic as lacking a criterion."
+      ],
+      "owner": "artifacts/issue-body.md#check-body-format and artifacts/epic-issue-body.md#validate-epic-body; scripts/format.py#required_criteria and Review required-criteria validation own declaration acquisition, unevaluable classification and reporting."
+    },
+    {
+      "source": "artifacts/epic-issue-body.md#task-delivery",
+      "line": 320,
+      "end": 341,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Reference forms encode reserved/in-flight/delivered states and transition identities. The mismatch statement describes a diagnostic condition rather than performing sync; its report production remains in Sync Epic. No publication command is selected by the field.",
+      "reason": "Reference forms encode reserved/in-flight/delivered states and transition identities. The mismatch statement describes a diagnostic condition rather than performing sync; its report production remains in Sync Epic. No publication command is selected by the field.",
+      "action_clauses": [],
+      "owner": "artifacts/epic-issue-body.md"
+    },
+    {
+      "source": "artifacts/hotfix.md#delivery-unit",
+      "line": 62,
+      "end": 75,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Unit identity and states are predicates over supplied issue/status/PR evidence. Hold semantics specify what the status represents; no dispatch command is selected or run. The actual hold/release guards remain in the caller and are covered by observing fixtures.",
+      "reason": "Unit identity and states are predicates over supplied issue/status/PR evidence. Hold semantics specify what the status represents; no dispatch command is selected or run. The actual hold/release guards remain in the caller and are covered by observing fixtures.",
+      "action_clauses": [],
+      "owner": "artifacts/hotfix.md"
+    },
+    {
+      "source": "artifacts/hotfix.md#delivering-pull-request",
+      "line": 80,
+      "end": 89,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Title/repository/base/link and draft/current-review conditions constrain which PR state is valid as a delivering PR. Reopen/retarget clauses define membership against supplied state. Creation/readiness commands and sequencing remain at their actual callers.",
+      "reason": "Title/repository/base/link and draft/current-review conditions constrain which PR state is valid as a delivering PR. Reopen/retarget clauses define membership against supplied state. Creation/readiness commands and sequencing remain at their actual callers.",
+      "action_clauses": [],
+      "owner": "artifacts/hotfix.md"
+    },
+    {
+      "source": "artifacts/hotfix.md#delivery-record",
+      "line": 90,
+      "end": 96,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "The recorded subject, criterion/PR/closure ordering and final board consistency constrain the delivered record. A02 covers generic caller coupling; the cross-artifact sequence stays in the real delivery/merge protocol, not a newly executed artifact procedure.",
+      "reason": "The recorded subject, criterion/PR/closure ordering and final board consistency constrain the delivered record. A02 covers generic caller coupling; the cross-artifact sequence stays in the real delivery/merge protocol, not a newly executed artifact procedure.",
+      "action_clauses": [],
+      "owner": "artifacts/hotfix.md"
+    },
+    {
+      "source": "artifacts/initiative-issue-body.md#work-breakdown",
+      "line": 184,
+      "end": 198,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Row/criterion exclusion for not-planned closure, label retention, reference syntax and whole-edge legality constrain the resulting body. Sync Initiative performs actual deletions; no acquisition, checker report or publication step is selected here.",
+      "reason": "Row/criterion exclusion for not-planned closure, label retention, reference syntax and whole-edge legality constrain the resulting body. Sync Initiative performs actual deletions; no acquisition, checker report or publication step is selected here.",
+      "action_clauses": [],
+      "owner": "artifacts/initiative-issue-body.md"
+    },
+    {
+      "source": "artifacts/issue-body.md#shared-acceptance-criteria",
+      "line": 213,
+      "end": 234,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "One-invariant criterion grain, label stability, verifiability and coverage presence constrain valid statement/table values. A split is the normalization implied by invalid multi-invariant content, not an embedded command sequence.",
+      "reason": "One-invariant criterion grain, label stability, verifiability and coverage presence constrain valid statement/table values. A split is the normalization implied by invalid multi-invariant content, not an embedded command sequence.",
+      "action_clauses": [],
+      "owner": "artifacts/issue-body.md"
+    },
+    {
+      "source": "artifacts/issue-body.md#tables",
+      "line": 235,
+      "end": 247,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Allowed cell contents and coverage predicates are direct table schema constraints.",
+      "reason": "Allowed cell contents and coverage predicates are direct table schema constraints.",
+      "action_clauses": [],
+      "owner": "artifacts/issue-body.md"
+    },
+    {
+      "source": "artifacts/issue-body.md#body",
+      "line": 252,
+      "end": 279,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Document agreement, populated placeholders, sections and linked-code/prose forms constrain valid body content. A superseded-decision reference is invalid input; this field does not gather decisions or emit a checker result.",
+      "reason": "Document agreement, populated placeholders, sections and linked-code/prose forms constrain valid body content. A superseded-decision reference is invalid input; this field does not gather decisions or emit a checker result.",
+      "action_clauses": [],
+      "owner": "artifacts/issue-body.md"
+    },
+    {
+      "source": "artifacts/issue-body.md#coverage-reports",
+      "line": 284,
+      "end": 295,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Required criterion entries and matching evidence are report-output membership constraints. They select no evidence instrument execution.",
+      "reason": "Required criterion entries and matching evidence are report-output membership constraints. They select no evidence instrument execution.",
+      "action_clauses": [],
+      "owner": "artifacts/issue-body.md"
+    },
+    {
+      "source": "artifacts/pull-request.md#issue-links",
+      "line": 589,
+      "end": 600,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Relation persistence, endpoint identity and valid closure/link states constrain the stored relation. Development acquisition and closure mutation remain explicit owning commands.",
+      "reason": "Relation persistence, endpoint identity and valid closure/link states constrain the stored relation. Development acquisition and closure mutation remain explicit owning commands.",
+      "action_clauses": [],
+      "owner": "artifacts/pull-request.md"
+    },
+    {
+      "source": "artifacts/standup-report.md#scope",
+      "line": 63,
+      "end": 68,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Window/filter provenance and cross-repository attribution define report membership. The computation is explicit in Summarise Progress/Compose Standup Report; this field performs no new fetch or repair.",
+      "reason": "Window/filter provenance and cross-repository attribution define report membership. The computation is explicit in Summarise Progress/Compose Standup Report; this field performs no new fetch or repair.",
+      "action_clauses": [],
+      "owner": "artifacts/standup-report.md"
+    },
+    {
+      "source": "artifacts/standup-report.md#sections",
+      "line": 69,
+      "end": 90,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Required groups, order, marks and filtering constrain the rendered report result. They are result invariants, unlike checker behavior hidden in a declaration input.",
+      "reason": "Required groups, order, marks and filtering constrain the rendered report result. They are result invariants, unlike checker behavior hidden in a declaration input.",
+      "action_clauses": [],
+      "owner": "artifacts/standup-report.md"
+    },
+    {
+      "source": "artifacts/standup-report.md#unresolved-evidence",
+      "line": 95,
+      "end": 98,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "The distinct finding collection and rendered unreadable-body/omitted-task representation constrain the result; no fetch, report-emission command or repair loop runs here.",
+      "reason": "The distinct finding collection and rendered unreadable-body/omitted-task representation constrain the result; no fetch, report-emission command or repair loop runs here.",
+      "action_clauses": [],
+      "owner": "artifacts/standup-report.md"
+    },
+    {
+      "source": "artifacts/task-body.md#open-questions",
+      "line": 61,
+      "end": 66,
+      "before": "invariant",
+      "after": "invariant",
+      "retained": "Started task state requires an empty unresolved collection; no answer or start action is selected.",
+      "reason": "Started task state requires an empty unresolved collection; no answer or start action is selected.",
+      "action_clauses": [],
+      "owner": "artifacts/task-body.md"
+    }
+  ],
+  "changed_new_controls_reviewed": [
+    {
+      "source": "artifacts/acceptance-criteria.md#criterion",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/acceptance-criteria.md#instrument-result",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/acceptance-criteria.md#criterion-selection",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/agent-review.md#review-record",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Record members, required evidence links, currentness predicates and authoritative same-revision precedence constrain valid review state. No read/report/write step is specified; per-kind freshness ownership is a separate A02 concern."
+    },
+    {
+      "source": "artifacts/architecture-overview.md#diagrams",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "The rendered diagram kinds, bounds, notation and styling constrain output structure. P3 governs count interpretation; no graph measurement or publication is executed by this field."
+    },
+    {
+      "source": "artifacts/architecture-overview.md#what-changed",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/architecture-overview.md#overview-file",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Output path/content, absent-until-populated state and optional/required section presence constrain the output document, not an input acquisition route."
+    },
+    {
+      "source": "artifacts/board-delivery.md#change-calls",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/board-delivery.md#missing-evidence",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/board-queue.md#board-identity",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/board-queue.md#priority-sets",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Positive ranks, equal-rank groups, unordered state and largest-valid-label interpretation define the priority-map/state invariant. Compute Board Queue performs placement; no fetch, mutation or reporting action is selected in this field. Shared executable parsing ownership remains A04."
+    },
+    {
+      "source": "artifacts/board-queue.md#ready-units",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Membership predicates constrain the offered-unit output collection, including free/undelivered members and proposed status. The final statement that calls depend on priority/state names a relationship but prescribes neither an invocation nor a report outcome; Compute Board Queue owns those transformations."
+    },
+    {
+      "source": "artifacts/board-queue.md#queue-result",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/board.md#themes",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Theme/board cardinality and matching labels are static cross-record value constraints."
+    },
+    {
+      "source": "artifacts/board.md#theme-board-title",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/delivery-branches.md#branches",
+      "classification": "mixed",
+      "disposition": "Retain the stated value/provenance constraints in Fields. Place the exact acquisition/reporting/refusal clauses in the named callable owner, preserve all outcomes and update readers atomically.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "The input declaration field orders a fetch and directs disagreement reporting, beyond the branch-name value and provenance it defines."
+    },
+    {
+      "source": "artifacts/delivery-branches.md#epic-bases",
+      "classification": "mixed",
+      "disposition": "Retain the stated value/provenance constraints in Fields. Place the exact acquisition/reporting/refusal clauses in the named callable owner, preserve all outcomes and update readers atomically.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "The base-branch collection field mandates a separate sync diagnostic and its tagged report output."
+    },
+    {
+      "source": "artifacts/delivery-branches.md#review-worktrees",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/delivery-branches.md#task-branches",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Triples, branch/base/worktree naming and unit/component correspondence constrain the derived branch collection. The unplanned-row note describes when an unavailable work-item value can become present, not an unconditional create/recreate instruction. A06 separately audits the actual dispatch call."
+    },
+    {
+      "source": "artifacts/delivery-brief.md#location",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/delivery-brief.md#validation-scope",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/delivery-brief.md#execution-instructions",
+      "classification": "mixed",
+      "disposition": "Retain the stated value/provenance constraints in Fields. Place the exact acquisition/reporting/refusal clauses in the named callable owner, preserve all outcomes and update readers atomically.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "The supplied execution-instruction field directs a missing-input finding to the caller, an output/refusal outcome rather than input schema."
+    },
+    {
+      "source": "artifacts/delivery-evidence.md#named-delivery",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/dependency-graph.md#edges",
+      "classification": "mixed",
+      "disposition": "Keep edge shape and resolution predicates in Fields; put observing reader behavior at the owning callable contract and retain all outcomes. This is a current mixed-boundary finding, not a keyword-only candidate.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "The final clause directs every reader to name an invalid entry, preserve row placement and exit nonzero. These are reader/command outcomes mixed with the edge collection schema."
+    },
+    {
+      "source": "artifacts/dependency-graph.md#whole-epic-edges",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "The result collection is valid only for all-row transitive reach; closure/priority cost explains the edge semantics. It supplies no checker acquisition, write or reporting step. No whole edge is established by this audit."
+    },
+    {
+      "source": "artifacts/dependency-graph.md#epic-priority",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/dependency-graph.md#joins",
+      "classification": "mixed",
+      "disposition": "Retain the stated value/provenance constraints in Fields. Place the exact acquisition/reporting/refusal clauses in the named callable owner, preserve all outcomes and update readers atomically.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "The candidate-unit field also dictates content and branching of the checker report and whether a record line is requested, a distinct produced result."
+    },
+    {
+      "source": "artifacts/dispatch-batch.md#start-evidence",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/epic-issue-body.md#work-breakdown",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Table shape, unique criterion scope, task test obligations, joined-unit legality and plan publication completeness constrain valid task rows. Plan Gap Task and row-revision capabilities execute rewriting; the task-scope completeness rule is not a command invoked from this field."
+    },
+    {
+      "source": "artifacts/epic-issue-body.md#acceptance-criteria",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/epic-issue-body.md#open-questions",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/epic-issue-body.md#required-criteria",
+      "classification": "mixed",
+      "disposition": "Retain the stated value/provenance constraints in Fields. Place the exact acquisition/reporting/refusal clauses in the named callable owner, preserve all outcomes and update readers atomically.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "A required-criterion input declaration embeds checker acquisition, result classification, source reporting and failure/no-missing-criterion outcomes."
+    },
+    {
+      "source": "artifacts/epic-issue-body.md#task-delivery",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Reference forms encode reserved/in-flight/delivered states and transition identities. The mismatch statement describes a diagnostic condition rather than performing sync; its report production remains in Sync Epic. No publication command is selected by the field."
+    },
+    {
+      "source": "artifacts/hotfix.md#delivery-unit",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Unit identity and states are predicates over supplied issue/status/PR evidence. Hold semantics specify what the status represents; no dispatch command is selected or run. The actual hold/release guards remain in the caller and are covered by observing fixtures."
+    },
+    {
+      "source": "artifacts/hotfix.md#delivering-pull-request",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Title/repository/base/link and draft/current-review conditions constrain which PR state is valid as a delivering PR. Reopen/retarget clauses define membership against supplied state. Creation/readiness commands and sequencing remain at their actual callers."
+    },
+    {
+      "source": "artifacts/hotfix.md#delivery-record",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "The recorded subject, criterion/PR/closure ordering and final board consistency constrain the delivered record. A02 covers generic caller coupling; the cross-artifact sequence stays in the real delivery/merge protocol, not a newly executed artifact procedure."
+    },
+    {
+      "source": "artifacts/initiative-issue-body.md#problem",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/initiative-issue-body.md#work-breakdown",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Row/criterion exclusion for not-planned closure, label retention, reference syntax and whole-edge legality constrain the resulting body. Sync Initiative performs actual deletions; no acquisition, checker report or publication step is selected here."
+    },
+    {
+      "source": "artifacts/issue-body.md#titles",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/issue-body.md#labels",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/issue-body.md#problem-and-proposal",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/issue-body.md#shared-acceptance-criteria",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "One-invariant criterion grain, label stability, verifiability and coverage presence constrain valid statement/table values. A split is the normalization implied by invalid multi-invariant content, not an embedded command sequence."
+    },
+    {
+      "source": "artifacts/issue-body.md#tables",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Allowed cell contents and coverage predicates are direct table schema constraints."
+    },
+    {
+      "source": "artifacts/issue-body.md#reference-form",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/issue-body.md#body",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Document agreement, populated placeholders, sections and linked-code/prose forms constrain valid body content. A superseded-decision reference is invalid input; this field does not gather decisions or emit a checker result."
+    },
+    {
+      "source": "artifacts/issue-body.md#references",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/issue-body.md#coverage-reports",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Required criterion entries and matching evidence are report-output membership constraints. They select no evidence instrument execution."
+    },
+    {
+      "source": "artifacts/issue-body.md#format-findings",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/issue.md#auto-close-setting",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/lane.md#assignments",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/lane.md#assignment-read-result",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/lane.md#unit-lane-result",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/lane.md#admission-result",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/placement.md#disposition",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/placement.md#draft-bodies",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/plan-change.md#allowance",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/plan-change.md#change-kinds",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/planning-record.md#links",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/proposal-body.md#problem",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/pull-request-body.md#review-body",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/pull-request.md#scope",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/pull-request.md#issue-links",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Relation persistence, endpoint identity and valid closure/link states constrain the stored relation. Development acquisition and closure mutation remain explicit owning commands."
+    },
+    {
+      "source": "artifacts/pull-request.md#merge-result",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/pull-request.md#merge-response",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/pull-request.md#merge-state",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    },
+    {
+      "source": "artifacts/standup-report.md#scope",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Window/filter provenance and cross-repository attribution define report membership. The computation is explicit in Summarise Progress/Compose Standup Report; this field performs no new fetch or repair."
+    },
+    {
+      "source": "artifacts/standup-report.md#sections",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Required groups, order, marks and filtering constrain the rendered report result. They are result invariants, unlike checker behavior hidden in a declaration input."
+    },
+    {
+      "source": "artifacts/standup-report.md#unresolved-evidence",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "The distinct finding collection and rendered unreadable-body/omitted-task representation constrain the result; no fetch, report-emission command or repair loop runs here."
+    },
+    {
+      "source": "artifacts/task-body.md#open-questions",
+      "classification": "invariant",
+      "disposition": "Retain the value constraint; callable transformations stay in their existing operations.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Started task state requires an empty unresolved collection; no answer or start action is selected."
+    },
+    {
+      "source": "artifacts/task-body.md#acceptance-criteria",
+      "classification": "shape",
+      "disposition": "Retain in Fields.",
+      "basis": "Complete current-source reread. Result shape/validity is distinguished from instructions that acquire inputs, produce another result or direct a caller outcome.",
+      "specific_reason": "Defines a scalar, document, collection, template or concrete result shape, with valid conditional constraints where present; no evidence-gathering or execution step is selected here."
+    }
+  ],
+  "corrected_boundaries": [
+    "artifacts/delivery-branches.md#branches",
+    "artifacts/delivery-branches.md#epic-bases",
+    "artifacts/epic-issue-body.md#required-criteria",
+    "artifacts/dependency-graph.md#joins",
+    "artifacts/delivery-brief.md#execution-instructions"
+  ],
+  "counts": {
+    "shape": 489,
+    "invariant": 23,
+    "mixed": 6
+  },
+  "history": "semantic-review-before/fields-ledger.json",
+  "limitations": "This is semantic clause review, not proof that every accepted predicate is free of every possible ownership concern. Existing A02/A04 concerns and future observing regressions remain explicit."
+}
