@@ -23,3 +23,5 @@ The draft formatter reports zero fixed, applied or decision findings using the l
 ## Publication
 
 The record is committed and pushed before issue publication. A fresh pre-write read must match the captured issue body/title/state/labels. The issue PATCH supplies body only. Exact saved-body and metadata readback and saved-body validation complete publication.
+
+The published issue body matches bodies/e02.md exactly. Its title, open state and full label set match the captured input. Saved-body formatting reports zero findings. The issue remains planning work; no delivery session or implementation has started.

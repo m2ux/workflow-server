@@ -73,6 +73,8 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | [E02 retained format check](e02/retained-format.log) | Zero-finding draft validation |
 | [E02 retained dependencies](e02/retained-dependencies.log) | Graph, component and numbering checks |
 | [E02 retained dependency inputs](e02/retained-dependency-inputs.json) | Current initiative and sibling issue snapshots used for validation |
+| [E02 retained saved readback](e02/retained-epic-readback.json) | Exact published body and preserved metadata |
+| [E02 retained saved format check](e02/retained-saved-format.log) | Zero-finding saved-body validation |
 
 ## Links
 
