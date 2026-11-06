@@ -84,33 +84,23 @@ The optional JSON export holds exactly the available units in report order. Each
 
 ### Board Items
 
-The current board-items snapshot file, including each issue body.
-
-eg `items.json`
+The current board-items snapshot file, including each issue body. eg `items.json`
 
 ### Pull Request Records
 
-The current pull request records snapshot file.
-
-eg `prs.json`
+The current pull request records snapshot file. eg `prs.json`
 
 ### Issue-Link Snapshot
 
-The complete Development relation snapshot file.
-
-eg `links.json`
+The complete Development relation snapshot file. eg `links.json`
 
 ### Epic-Base Names
 
-A comma-separated list of full epic-base branch names.
-
-eg `i07/e00/main,i07/e00/workflows`
+A comma-separated list of full epic-base branch names. eg `i07/e00/main,i07/e00/workflows`
 
 ### Engineering Worktree
 
-The engineering checkout where each free row’s linked work-item file is read.
-
-eg `<checkout>/.engineering`
+The engineering checkout where each free row’s linked work-item file is read. eg `<checkout>/.engineering`
 
 ### Off-Board Issues
 
@@ -118,9 +108,7 @@ Each resolved off-board issue record supplied through `--others`.
 
 ### Requested Lane
 
-The optional requested bare decimal lane index; absent when the run names no lane, meeting [Index](lane.md#index).
-
-eg `2`
+The optional requested bare decimal lane index; absent when the run names no lane, meeting [Index](lane.md#index). eg `2`
 
 ### Record Date
 
@@ -144,9 +132,7 @@ The project repository checkout supplied for branch and delivery reads or writes
 
 ### Revision
 
-The fetched commit or revision evaluated by the run.
-
-eg `origin/workspace`
+The fetched commit or revision evaluated by the run. eg `origin/workspace`
 
 ### Failure
 

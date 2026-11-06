@@ -115,9 +115,7 @@ Checkout containing the installed skill, its scripts and tests.
 
 ### Skill Directory
 
-Affected skill directory. Comparison takes each skill directory the move touches.
-
-eg `skills/work-planner`
+Affected skill directory. Comparison takes each skill directory the move touches. eg `skills/work-planner`
 
 ### Base
 

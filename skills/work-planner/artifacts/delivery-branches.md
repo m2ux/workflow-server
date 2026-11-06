@@ -419,9 +419,7 @@ Every worktree of a repository shares one stash list, so a delivery session that
 
 ### Epic Identity
 
-The initiative and epic identifier, with an epic branch prefix of `i<initiative-number>/e<epic-number>`.
-
-eg `i07/e00`
+The initiative and epic identifier, with an epic branch prefix of `i<initiative-number>/e<epic-number>`. eg `i07/e00`
 
 ### Changed Branches
 
@@ -437,33 +435,23 @@ The source branch name without the `origin/` prefix.
 
 ### Epic-Base Name
 
-The full epic-base branch name.
-
-eg `i07/e00/main`
+The full epic-base branch name. eg `i07/e00/main`
 
 ### Task Branch
 
-The destination task branch name.
-
-eg `i07/e00/w01-queue-plan`
+The destination task branch name. eg `i07/e00/w01-queue-plan`
 
 ### Base Branch
 
-The fetched base from which the task branch is rooted.
-
-eg `i07/e00/main`
+The fetched base from which the task branch is rooted. eg `i07/e00/main`
 
 ### Worktree Path
 
-The caller-composed lasting path, resolved against the checkout running the command and placed under the project’s worktree directory.
-
-eg `.worktrees/i07/e00/w01-queue-plan`
+The caller-composed lasting path, resolved against the checkout running the command and placed under the project’s worktree directory. eg `.worktrees/i07/e00/w01-queue-plan`
 
 ### Pull Request Number
 
-The repository-local pull request number.
-
-eg `950`
+The repository-local pull request number. eg `950`
 
 ### Verified Head
 
@@ -471,15 +459,11 @@ The literal verified head commit used to read a reviewed change.
 
 ### Target Branch
 
-The long-lived target branch whose current protection and active rules govern readiness.
-
-eg `main`
+The long-lived target branch whose current protection and active rules govern readiness. eg `main`
 
 ### Output Files
 
-Destination paths for the requested protection and active-rule responses.
-
-eg `branch-protection-file: protection.json`, `branch-rules-file: branch-rules.json`
+Destination paths for the requested protection and active-rule responses. eg `branch-protection-file: protection.json`, `branch-rules-file: branch-rules.json`
 
 ### Branch Names
 
@@ -531,9 +515,7 @@ The supplied repository checkout in which a git operation acts; callers name the
 
 ### Revision
 
-The fetched commit or revision evaluated by the run.
-
-eg `origin/i07/e00/main`
+The fetched commit or revision evaluated by the run. eg `origin/i07/e00/main`
 
 ### Failure
 

@@ -136,21 +136,15 @@ The verified head commit supplied for measurement.
 
 ### Base Branch
 
-The supplied comparison base branch.
-
-eg `main`
+The supplied comparison base branch. eg `main`
 
 ### Symbol Identity
 
-One symbol identity provided by the supplied change surface.
-
-eg `reserveRow`
+One symbol identity provided by the supplied change surface. eg `reserveRow`
 
 ### Flow Identity
 
-One flow identity provided by the supplied change surface.
-
-eg `Queue Placement`
+One flow identity provided by the supplied change surface. eg `Queue Placement`
 
 ### Graph Measurements
 

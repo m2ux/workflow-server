@@ -82,35 +82,25 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Task Record
 
-The supplied current task issue JSON.
-
-eg `issue-637.json`
+The supplied current task issue JSON. eg `issue-637.json`
 
 ### Pull Request Records
 
-The supplied current pull request records.
-
-eg `prs.json`
+The supplied current pull request records. eg `prs.json`
 
 ### Issue Links
 
-The complete supplied issue-link snapshot.
-
-eg `links.json`
+The complete supplied issue-link snapshot. eg `links.json`
 
 ### Delivery Selection
 
 Verified criterion ids may be empty when recording delivery without requesting criterion ticks.
 
-The supplied delivering pull request number and verified criterion ids.
-
-eg `pull-request-number: 950`, `criterion-ids: AC1`
+The supplied delivering pull request number and verified criterion ids. eg `pull-request-number: 950`, `criterion-ids: AC1`
 
 ### Output Body
 
-The supplied local destination for the complete provided body.
-
-eg `fixed-637.md`
+The supplied local destination for the complete provided body. eg `fixed-637.md`
 
 ### Delivery Findings
 

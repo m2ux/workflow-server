@@ -151,9 +151,7 @@ The optional existing complete pull request body.
 
 ### Pull Request Record
 
-The supplied current REST pull request JSON.
-
-eg `pr-950.json`
+The supplied current REST pull request JSON. eg `pr-950.json`
 
 ### Overview URL
 
@@ -161,9 +159,7 @@ The published architecture overview URL on the engineering branch.
 
 ### Output Body
 
-The supplied local destination for the complete body.
-
-eg `fixed-950.md`
+The supplied local destination for the complete body. eg `fixed-950.md`
 
 ### Unresolved Evidence
 

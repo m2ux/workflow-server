@@ -77,9 +77,7 @@ The current orphan body, candidate destinations, proposed work and supplied plan
 
 ### Issue Collection
 
-The complete supplied repository issue collection, at its local JSON file path.
-
-eg `issues.json`
+The complete supplied repository issue collection, at its local JSON file path. eg `issues.json`
 
 ### Confirmed Placement
 

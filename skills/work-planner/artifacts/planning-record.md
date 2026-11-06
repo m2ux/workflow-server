@@ -177,15 +177,11 @@ The supplied record identity, folder path, artifact files and external links.
 
 ### Planning Folder
 
-The supplied folder path and its registered artifact files, meeting [Layout](#layout). A new folder is absent until created.
-
-eg `artifacts/planning/2026-10-15-950-queue-plan`
+The supplied folder path and its registered artifact files, meeting [Layout](#layout). A new folder is absent until created. eg `artifacts/planning/2026-10-15-950-queue-plan`
 
 ### Engineering Worktree
 
-The checkout holding the engineering branch, as an absolute path.
-
-eg `.engineering`
+The checkout holding the engineering branch, as an absolute path. eg `.engineering`
 
 ### Project Checkout
 
@@ -193,9 +189,7 @@ Any supplied checkout of the project.
 
 ### Commit Message File
 
-The supplied local file holding the exact commit message.
-
-eg `/tmp/msg.txt`
+The supplied local file holding the exact commit message. eg `/tmp/msg.txt`
 
 ### Publication Result
 

@@ -104,21 +104,15 @@ The supplied delivery findings and delivering revisions for the selected criteri
 
 ### Instrument
 
-Each selected criterion's named command, test or check, with its command arguments.
-
-eg `<workspace>/scripts/sbx python3 -m pytest skills/work-planner/test -q`
+Each selected criterion's named command, test or check, with its command arguments. eg `<workspace>/scripts/sbx python3 -m pytest skills/work-planner/test -q`
 
 ### Project Checkout
 
-The supplied checkout of the project in which the instrument is run.
-
-eg `/projects/workflow-server`
+The supplied checkout of the project in which the instrument is run. eg `/projects/workflow-server`
 
 ### Revision
 
-The branch, tag or commit supplied for verification.
-
-eg `i11/e16/workspace`
+The branch, tag or commit supplied for verification. eg `i11/e16/workspace`
 
 ### Verification Evidence
 

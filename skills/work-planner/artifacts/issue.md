@@ -397,9 +397,7 @@ gh api &#92;
 
 ### Identity
 
-The issue has its repository, number and URL. A new issue has its repository before creation supplies its number and URL.
-
-eg `943`
+The issue has its repository, number and URL. A new issue has its repository before creation supplies its number and URL. eg `943`
 
 ### Content
 
@@ -424,21 +422,15 @@ GitHub's **Auto-close issues with merged linked pull requests** repository setti
 
 ### Repository
 
-The tracker repository owner and name. Commands use these supplied values as owner and repo, or repository.
-
-eg `m2ux/workflow-server`
+The tracker repository owner and name. Commands use these supplied values as owner and repo, or repository. eg `m2ux/workflow-server`
 
 ### Issue Record
 
-The complete current tracker issue JSON at the supplied local path, carrying its [Identity](#identity), [Content](#content) and [State](#state).
-
-eg `issue-943.json`
+The complete current tracker issue JSON at the supplied local path, carrying its [Identity](#identity), [Content](#content) and [State](#state). eg `issue-943.json`
 
 ### Output Files
 
-The supplied local destinations for the requested issue, body, discussion, collection or Development evidence.
-
-eg `live-943.md`
+The supplied local destinations for the requested issue, body, discussion, collection or Development evidence. eg `live-943.md`
 
 ### Closure Evidence Paths
 
@@ -450,9 +442,7 @@ Whether the supplied request needs the issue discussion.
 
 ### Issue Changes
 
-The supplied complete body file, title and labels for creation, or the selected body and metadata changes for an existing issue, with an optional comment file.
-
-eg `body.md`
+The supplied complete body file, title and labels for creation, or the selected body and metadata changes for an existing issue, with an optional comment file. eg `body.md`
 
 ### Label Names
 
@@ -460,9 +450,7 @@ The supplied repository label names for creation, addition or removal. An assign
 
 ### Comment
 
-The supplied exact comment text, as one line or a complete local file, with the reviewer identity and addressed feedback for a reply. A posted comment also has its saved URL.
-
-eg `comment-text: Delivered by #950.`, `comment-file: comment-874.md`
+The supplied exact comment text, as one line or a complete local file, with the reviewer identity and addressed feedback for a reply. A posted comment also has its saved URL. eg `comment-text: Delivered by #950.`, `comment-file: comment-874.md`
 
 ### Delivery Evidence
 
@@ -478,35 +466,23 @@ Authenticated access to the repository and its issue Development relations.
 
 ### Development Snapshot
 
-A complete issue-links file, keyed by issue number and carrying its repository identity. Each issue maps to all Development pull requests across repositories and states, or an empty array after a complete empty read.
-
-eg `links-943.json`
-
-eg `{"943": [{"repo": "owner/repo", "number": 980, "state": "MERGED"}]}`
+A complete issue-links file, keyed by issue number and carrying its repository identity. Each issue maps to all Development pull requests across repositories and states, or an empty array after a complete empty read. eg `links-943.json`, `{"943": [{"repo": "owner/repo", "number": 980, "state": "MERGED"}]}`
 
 ### Issue Collection
 
-One supplied tracker issue JSON or a collection of issue records. Pull request entries carry a pull_request field.
-
-eg `closed-issues.json`
+One supplied tracker issue JSON or a collection of issue records. Pull request entries carry a pull_request field. eg `closed-issues.json`
 
 ### Audit Selection
 
-The supplied issue numbers to audit, separated by commas, or the selection of every closed issue in the repository.
-
-eg `637, 943, 946`
+The supplied issue numbers to audit, separated by commas, or the selection of every closed issue in the repository. eg `637, 943, 946`
 
 ### Closure Findings
 
-The closure gate verdict or the sweep results, retaining each issue identity, state reason and finding, with execution failures identified.
-
-eg `unsupported: owner/repo#943 closed as completed: acceptance criteria are missing or unticked; owner/repo#980 not merged (closed) - Work Title`, `unevaluable: owner/repo#944 closed as completed: Development links not captured - Other Title`, `not planned: owner/repo#945 closed as not_planned: acceptance criteria are missing or unticked - Moved Title`, `1 unsupported, 1 unevaluable, 1 not planned`
+The closure gate verdict or the sweep results, retaining each issue identity, state reason and finding, with execution failures identified. eg `unsupported: owner/repo#943 closed as completed: acceptance criteria are missing or unticked; owner/repo#980 not merged (closed) - Work Title`, `unevaluable: owner/repo#944 closed as completed: Development links not captured - Other Title`, `not planned: owner/repo#945 closed as not_planned: acceptance criteria are missing or unticked - Moved Title`, `1 unsupported, 1 unevaluable, 1 not planned`
 
 ### Tracker Prefix
 
-The supplied kind prefix letter, initiative prefix or existing prefixed titles. An initiative prefix includes the initiative id and its enclosing brackets.
-
-eg `initiative-prefix: [I08]`, `prefix-letter: I`
+The supplied kind prefix letter, initiative prefix or existing prefixed titles. An initiative prefix includes the initiative id and its enclosing brackets. eg `initiative-prefix: [I08]`, `prefix-letter: I`
 
 ### Tracker Number
 

@@ -44,9 +44,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Board Identity
 
-The queue belongs to one theme board, identified as `users/{owner}/projectsV2/{id}` or `orgs/{owner}/projectsV2/{id}`. Its source snapshots contain board items with Status, board fields, initiative pull requests and any off-board issues its rows depend on.
-
-eg `users/<owner>/projectsV2/9`
+The queue belongs to one theme board, identified as `users/{owner}/projectsV2/{id}` or `orgs/{owner}/projectsV2/{id}`. Its source snapshots contain board items with Status, board fields, initiative pull requests and any off-board issues its rows depend on. eg `users/<owner>/projectsV2/9`
 
 ### Priority Sets
 
@@ -165,39 +163,27 @@ The proposed calls, report lines and unresolved references, retaining pending de
 
 ### Board Items
 
-The supplied current board items with Status and their complete issue records, at the local paginated snapshot path.
-
-eg `items.json`
+The supplied current board items with Status and their complete issue records, at the local paginated snapshot path. eg `items.json`
 
 ### Pull Request Records
 
-The supplied complete initiative and hot-fix pull request records, one JSON object per nonempty line at the local file path.
-
-eg `prs.json`
+The supplied complete initiative and hot-fix pull request records, one JSON object per nonempty line at the local file path. eg `prs.json`
 
 ### Issue Link Snapshot
 
-The complete supplied pull-request issue-link snapshot at its local JSON path.
-
-eg `links.json`
+The complete supplied pull-request issue-link snapshot at its local JSON path. eg `links.json`
 
 ### Board Fields
 
-The supplied board-field definitions at their local snapshot path.
-
-eg `fields.json`
+The supplied board-field definitions at their local snapshot path. eg `fields.json`
 
 ### Output Directory
 
-The supplied local directory receiving proposed calls.
-
-eg `board/`
+The supplied local directory receiving proposed calls. eg `board/`
 
 ### Assignee Login
 
-The supplied login assigned to work from Ready.
-
-eg `m2ux`
+The supplied login assigned to work from Ready. eg `m2ux`
 
 ### Workspace
 

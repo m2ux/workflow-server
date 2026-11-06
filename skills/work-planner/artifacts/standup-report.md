@@ -104,15 +104,11 @@ An unresolved initiative identifies its number and repository for the caller to 
 
 ### Report Selection
 
-The optional window start uses `YYYY-MM-DD`. The optional initiative filter is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories.
-
-eg `window-start-date: 2026-09-21`, `initiative-filter: I08`
+The optional window start uses `YYYY-MM-DD`. The optional initiative filter is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories. eg `window-start-date: 2026-09-21`, `initiative-filter: I08`
 
 ### Initiative Records
 
-The supplied resolved off-board initiative JSON records, each at a separate local file path.
-
-eg `issue-946.json`
+The supplied resolved off-board initiative JSON records, each at a separate local file path. eg `issue-946.json`
 
 ### Output Paths
 
@@ -120,9 +116,7 @@ The supplied report and paragraph output paths.
 
 ### Management File
 
-The optional local file holding the management paragraph. It is absent before the paragraph is written.
-
-eg `summary.txt`
+The optional local file holding the management paragraph. It is absent before the paragraph is written. eg `summary.txt`
 
 ### Report Result
 
@@ -130,21 +124,15 @@ The rendered copyable report and separate unresolved evidence findings.
 
 ### Board Items
 
-The supplied board items with Status and their complete issue records, at the local paginated snapshot path.
-
-eg `items.json`
+The supplied board items with Status and their complete issue records, at the local paginated snapshot path. eg `items.json`
 
 ### Pull Request Records
 
-The supplied current complete pull request records, one JSON object per nonempty line at the local file path.
-
-eg `prs.json`
+The supplied current complete pull request records, one JSON object per nonempty line at the local file path. eg `prs.json`
 
 ### Issue Link Snapshot
 
-The complete supplied pull-request issue-link snapshot at its local JSON path.
-
-eg `links.json`
+The complete supplied pull-request issue-link snapshot at its local JSON path. eg `links.json`
 
 ### Workspace
 

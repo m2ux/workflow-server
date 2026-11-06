@@ -158,27 +158,19 @@ The saved item statuses or unresolved discrepancies provided after item readback
 
 ### Initiative Record
 
-The supplied complete current initiative JSON at its local file path.
-
-eg `issue-936.json`
+The supplied complete current initiative JSON at its local file path. eg `issue-936.json`
 
 ### Epic Records
 
-The supplied complete current epic JSON records, each at a separate local file path.
-
-eg `issue-943.json issue-937.json`
+The supplied complete current epic JSON records, each at a separate local file path. eg `issue-943.json issue-937.json`
 
 ### Task Records
 
-The supplied complete current task issue JSON records, each at a separate local file path.
-
-eg `issue-637.json`
+The supplied complete current task issue JSON records, each at a separate local file path. eg `issue-637.json`
 
 ### Pull Request Records
 
-The supplied freshly fetched complete REST pull request records, one JSON object per nonempty line at the local file path.
-
-eg `prs.json`
+The supplied freshly fetched complete REST pull request records, one JSON object per nonempty line at the local file path. eg `prs.json`
 
 ### Published Reviews
 
@@ -186,33 +178,23 @@ The JSON list of published agent-review records fetched from their linked planni
 
 ### Issue Link Snapshot
 
-The supplied complete pull-request issue-link snapshot at its local file path.
-
-eg `links.json`
+The supplied complete pull-request issue-link snapshot at its local file path. eg `links.json`
 
 ### Board Identity
 
-The supplied users/owner/projectsV2/number or orgs/owner/projectsV2/number board identity.
-
-eg `users/m2ux/projectsV2/9`
+The supplied users/owner/projectsV2/number or orgs/owner/projectsV2/number board identity. eg `users/m2ux/projectsV2/9`
 
 ### Board Fields
 
-The supplied board field definitions at their local snapshot path.
-
-eg `fields.json`
+The supplied board field definitions at their local snapshot path. eg `fields.json`
 
 ### Board Items
 
-The supplied board items with Status and their complete issue records, at the local paginated snapshot path.
-
-eg `items.json`
+The supplied board items with Status and their complete issue records, at the local paginated snapshot path. eg `items.json`
 
 ### Output Directory
 
-The supplied local directory receiving generated calls.
-
-eg `board/`
+The supplied local directory receiving generated calls. eg `board/`
 
 ### Output Paths
 
@@ -220,9 +202,7 @@ The supplied local paths for fetched evidence and generated calls.
 
 ### Assignee Login
 
-The supplied login assigned to work from Ready.
-
-eg `m2ux`
+The supplied login assigned to work from Ready. eg `m2ux`
 
 ### Workspace
 

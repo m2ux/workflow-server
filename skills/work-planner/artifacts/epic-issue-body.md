@@ -356,9 +356,7 @@ Work Breakdown contains its table. Explanatory prose belongs in Proposal. The bo
 
 ### Epic Record
 
-The supplied complete current epic issue JSON.
-
-eg `issue-943.json`
+The supplied complete current epic issue JSON. eg `issue-943.json`
 
 ### Initiative Context
 
@@ -370,27 +368,19 @@ The proposed task rows or confirmed row changes, including descriptions, Coverag
 
 ### Pull Request Records
 
-The supplied current pull request records for the epic.
-
-eg `prs.json`
+The supplied current pull request records for the epic. eg `prs.json`
 
 ### Issue Links
 
-The complete supplied issue-link snapshot.
-
-eg `links.json`
+The complete supplied issue-link snapshot. eg `links.json`
 
 ### Task Records
 
-The supplied task issue JSON files.
-
-eg `issue-637.json`
+The supplied task issue JSON files. eg `issue-637.json`
 
 ### Delivery Matches
 
-The confirmed task-to-pull-request matches supplied by the caller.
-
-eg `W01=950,W01=951,W02=950`
+The confirmed task-to-pull-request matches supplied by the caller. eg `W01=950,W01=951,W02=950`
 
 ### Project Checkout
 
@@ -402,45 +392,31 @@ The fetched revision supplied for evaluation at the project checkout.
 
 ### Epic Bases
 
-The fetched epic bases supplied for recording delivery, each identified by its revision.
-
-eg `origin/i07/e00/main`, `origin/i07/e00/workflows`
+The fetched epic bases supplied for recording delivery, each identified by its revision. eg `origin/i07/e00/main`, `origin/i07/e00/workflows`
 
 ### Output Body
 
-The supplied local output path for the complete body.
-
-eg `fixed-943.md`
+The supplied local output path for the complete body. eg `fixed-943.md`
 
 ### Criterion Selection
 
-The supplied verified criterion ids, or the unmet criterion ids and their delivery evidence for gap planning.
-
-eg `AC1,AC3`
+The supplied verified criterion ids, or the unmet criterion ids and their delivery evidence for gap planning. eg `AC1,AC3`
 
 ### Task Selection
 
-The confirmed task ids for the selected delivery units. A release selection also carries the supplied explicit user decision releasing the hold.
-
-eg `W01,W02`
+The confirmed task ids for the selected delivery units. A release selection also carries the supplied explicit user decision releasing the hold. eg `W01,W02`
 
 ### Board Items
 
-The supplied current board items, including Status.
-
-eg `items.json`
+The supplied current board items, including Status. eg `items.json`
 
 ### Planning Folder
 
-The existing supplied planning-folder identity, planning-records base URL and the date the record is opened.
-
-eg `https://github.com/<owner>/<repo>/tree/engineering/artifacts/planning`
+The existing supplied planning-folder identity, planning-records base URL and the date the record is opened. eg `https://github.com/<owner>/<repo>/tree/engineering/artifacts/planning`
 
 ### Engineering Worktree
 
-The supplied engineering checkout containing the planning records.
-
-eg `.engineering`
+The supplied engineering checkout containing the planning records. eg `.engineering`
 
 ### Validation Findings
 

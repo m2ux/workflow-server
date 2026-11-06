@@ -330,9 +330,7 @@ The confirmed local resolutions, criterion changes and selected decisions to kee
 
 ### Output Files
 
-The supplied local destinations for a corrected complete body, a body-snapshot JSON record or repository visibility evidence.
-
-eg `output-body-file: fixed.md`, `repository-json-file: repository.json`
+The supplied local destinations for a corrected complete body, a body-snapshot JSON record or repository visibility evidence. eg `output-body-file: fixed.md`, `repository-json-file: repository.json`
 
 ### Body Snapshot
 
@@ -344,9 +342,7 @@ The destination repository and the repositories cited in References, identified 
 
 ### Repository Snapshot
 
-The supplied JSON array of fetched repository objects, each retaining full_name and private.
-
-eg `repositories.json`
+The supplied JSON array of fetched repository objects, each retaining full_name and private. eg `repositories.json`
 
 ### Visibility Findings
 
@@ -358,33 +354,23 @@ The absolute checkout holding the installed Work Planner scripts and sandbox hel
 
 ### Body Record
 
-The complete current issue-shaped JSON record: a saved tracker issue record, or a local [Body Snapshot](#body-snapshot) for an unpublished draft.
-
-eg `issue.json`
+The complete current issue-shaped JSON record: a saved tracker issue record, or a local [Body Snapshot](#body-snapshot) for an unpublished draft. eg `issue.json`
 
 ### Initiative Record
 
-The complete parent initiative JSON used to resolve an epic's cross-epic references.
-
-eg `initiative.json`
+The complete parent initiative JSON used to resolve an epic's cross-epic references. eg `initiative.json`
 
 ### Epic Records
 
-Every linked epic's complete current JSON, supplied separately when validating an initiative's row titles and structure.
-
-eg `epic.json`
+Every linked epic's complete current JSON, supplied separately when validating an initiative's row titles and structure. eg `epic.json`
 
 ### Pull Request Records
 
-The current complete REST pull request snapshot as one JSON object per nonempty line, used to determine which declared branches and paths the epic changes.
-
-eg `prs.json`
+The current complete REST pull request snapshot as one JSON object per nonempty line, used to determine which declared branches and paths the epic changes. eg `prs.json`
 
 ### Changed File Records
 
-Each pull request number paired with its local changed-paths file as `NUMBER=FILE`; the file contains one tracker-supplied changed path per line.
-
-eg `950=changed-950.txt`
+Each pull request number paired with its local changed-paths file as `NUMBER=FILE`; the file contains one tracker-supplied changed path per line. eg `950=changed-950.txt`
 
 ### Project Checkout
 
@@ -392,9 +378,7 @@ The checkout holding the project-required-criteria declaration and the fetched r
 
 ### Evaluated Revision
 
-The fetched epic base on the declaration's long-lived branch, or that long-lived branch while the epic has no base on it.
-
-eg `origin/i07/e00/workspace`
+The fetched epic base on the declaration's long-lived branch, or that long-lived branch while the epic has no base on it. eg `origin/i07/e00/workspace`
 
 ### Snapshot Metadata
 

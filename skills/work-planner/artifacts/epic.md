@@ -120,9 +120,7 @@ A coverage disagreement identifies the pull request and row, a criterion absent 
 
 ### Epic Record
 
-The supplied complete current epic issue JSON.
-
-eg `issue-943.json`
+The supplied complete current epic issue JSON. eg `issue-943.json`
 
 ### Initiative Evidence
 
@@ -134,15 +132,11 @@ The current issue and base-merge records for every prerequisite named by the ini
 
 ### Pull Request Records
 
-The supplied current pull request records for the epic.
-
-eg `prs.json`
+The supplied current pull request records for the epic. eg `prs.json`
 
 ### Issue Links
 
-The complete supplied snapshot of the pull requests' Development-linked issues.
-
-eg `links.json`
+The complete supplied snapshot of the pull requests' Development-linked issues. eg `links.json`
 
 ### Verification Evidence
 
@@ -154,9 +148,7 @@ The complete expected epic-base list and each base's merge evidence into its cor
 
 ### Output Body
 
-The supplied local scratch destination for the corrected epic body.
-
-eg `epic-body.md`
+The supplied local scratch destination for the corrected epic body. eg `epic-body.md`
 
 ### Workspace
 

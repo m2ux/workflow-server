@@ -596,9 +596,7 @@ A pull request outside epic delivery targets a long-lived branch. An open stacke
 The agent harness lets a delivery session merge a task pull request into an [epic base](delivery-branches.md#epic-bases), such as `i07/e00/main`, without a prompt. A merge into the default branch stays with a person.
 
 - **Claude Code.**
-  User settings (`~/.claude/settings.json`) grant it with an `autoMode.allow` rule and an `autoMode.environment` entry, each array keeping `"$defaults"`; auto mode reads neither from project settings. `claude auto-mode config` prints the rules in effect.
-
-  eg `{"autoMode": {"environment": ["$defaults", "Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review"], "allow": ["$defaults", "Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review. Merges into the default branch are not covered"]}}`
+  User settings (`~/.claude/settings.json`) grant it with an `autoMode.allow` rule and an `autoMode.environment` entry, each array keeping `"$defaults"`; auto mode reads neither from project settings. `claude auto-mode config` prints the rules in effect. eg `{"autoMode": {"environment": ["$defaults", "Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review"], "allow": ["$defaults", "Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review. Merges into the default branch are not covered"]}}`
 
 ### Issue Links
 
@@ -612,9 +610,7 @@ The agent harness lets a delivery session merge a task pull request into an [epi
 
 ### Identity
 
-The pull request’s repository-qualified identity, or its repository and local number. A new pull request has no saved identity until creation succeeds.
-
-eg `m2ux/workflow-server#950`, `950`
+The pull request’s repository-qualified identity, or its repository and local number. A new pull request has no saved identity until creation succeeds. eg `m2ux/workflow-server#950`, `950`
 
 ### Kind
 
@@ -650,9 +646,7 @@ The requested read, addition or removal of a Development relation.
 
 ### Issue Identity
 
-The delivery issue’s repository-qualified identity; absent where the work carries no issue of its own.
-
-eg `m2ux/workflow-server#637`
+The delivery issue’s repository-qualified identity; absent where the work carries no issue of its own. eg `m2ux/workflow-server#637`
 
 ### Removal Decision
 
@@ -660,27 +654,19 @@ The user decision authorizing removal of the supplied abandoned or incorrect Dev
 
 ### Pull Request Records
 
-Complete pull request REST responses stored as JSON lines, from one or more repositories. Each record includes its repository identity and `html_url`.
-
-eg `prs.json`
+Complete pull request REST responses stored as JSON lines, from one or more repositories. Each record includes its repository identity and `html_url`. eg `prs.json`
 
 ### Issue-Link Snapshot
 
-The complete saved Development snapshot, with one entry per pull request and every linked issue’s repository and number, or an empty array.
-
-eg `[{"repo": "owner/repo", "number": 950, "closingIssuesReferences": [{"repo": "owner/repo", "number": 637}]}]`
+The complete saved Development snapshot, with one entry per pull request and every linked issue’s repository and number, or an empty array. eg `[{"repo": "owner/repo", "number": 950, "closingIssuesReferences": [{"repo": "owner/repo", "number": 637}]}]`
 
 ### Link-Snapshot Path
 
-The supplied destination for a complete Development snapshot. The snapshot is absent before a successful capture writes it.
-
-eg `links.json`
+The supplied destination for a complete Development snapshot. The snapshot is absent before a successful capture writes it. eg `links.json`
 
 ### Development Relation
 
-The issue and pull request identities verified from both ends, or an explicit unreadable or failed relation.
-
-eg `issue m2ux/workflow-server#637: m2ux/workflow-server#950`, `pull request m2ux/workflow-server#950: m2ux/workflow-server#637`, `verified: add m2ux/workflow-server#950 -> m2ux/workflow-server#637`
+The issue and pull request identities verified from both ends, or an explicit unreadable or failed relation. eg `issue m2ux/workflow-server#637: m2ux/workflow-server#950`, `pull request m2ux/workflow-server#950: m2ux/workflow-server#637`, `verified: add m2ux/workflow-server#950 -> m2ux/workflow-server#637`
 
 ### Repository List
 
@@ -688,9 +674,7 @@ The ordered repositories included in a board delivery fetch.
 
 ### Issue Records
 
-The fetched plan issues supplied as issue files, or board items containing their complete issues.
-
-eg `issue-936.json issue-943.json issue-637.json`
+The fetched plan issues supplied as issue files, or board items containing their complete issues. eg `issue-936.json issue-943.json issue-637.json`
 
 ### Collection Path
 
@@ -698,15 +682,11 @@ The JSON-lines pull request collection destination. It is absent before a fresh 
 
 ### Initiative Prefix
 
-The opening bracket and initiative id matched against task and epic titles.
-
-eg `[I07`
+The opening bracket and initiative id matched against task and epic titles. eg `[I07`
 
 ### Output Files
 
-The caller-supplied destinations for complete metadata, changed-paths, reviews, protection, rules, check and status snapshots, selected by the operation.
-
-eg `pull-request-json-file: epic-pr.json`, `reviews-file: reviews.json`, `changed-paths-file: changed-files.txt`, `check-runs-file: checks.json`, `commit-status-file: status.json`
+The caller-supplied destinations for complete metadata, changed-paths, reviews, protection, rules, check and status snapshots, selected by the operation. eg `pull-request-json-file: epic-pr.json`, `reviews-file: reviews.json`, `changed-paths-file: changed-files.txt`, `check-runs-file: checks.json`, `commit-status-file: status.json`
 
 ### Record Selection
 
@@ -726,27 +706,19 @@ Every page of reviews for the selected pull request.
 
 ### Body File
 
-The complete populated body text supplied through a file.
-
-eg `body.md`
+The complete populated body text supplied through a file. eg `body.md`
 
 ### Title
 
-The complete selected pull request title.
-
-eg `[I07:E00] Purpose`, `[F00] Reject Bad Keys`
+The complete selected pull request title. eg `[I07:E00] Purpose`, `[F00] Reject Bad Keys`
 
 ### Head Branch
 
-The task branch or epic-base head selected for creation.
-
-eg `task-branch: i07/e00/w01-purpose`, `hot-fix-branch: f00-key-validation`, `epic-base: i07/e00/main`
+The task branch or epic-base head selected for creation. eg `task-branch: i07/e00/w01-purpose`, `hot-fix-branch: f00-key-validation`, `epic-base: i07/e00/main`
 
 ### Base Branch
 
-The task base, epic’s long-lived target or replacement base selected by the operation.
-
-eg `target-branch: i07/e00/main`, `base: i07/e00/main`, `long-lived-base: main`
+The task base, epic’s long-lived target or replacement base selected by the operation. eg `target-branch: i07/e00/main`, `base: i07/e00/main`, `long-lived-base: main`
 
 ### Selected Changes
 
@@ -806,6 +778,4 @@ Authenticated tracker access for the selected repositories.
 
 ### Failure
 
-The operation and error, discrepancy or missing evidence that prevents a verified result.
-
-eg `failed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeCloseIssueReferences: Resource not accessible by integration`
+The operation and error, discrepancy or missing evidence that prevents a verified result. eg `failed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeCloseIssueReferences: Resource not accessible by integration`

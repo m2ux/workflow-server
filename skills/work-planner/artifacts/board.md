@@ -292,9 +292,7 @@ Either the supplied theme name or the proposals-board selection.
 
 ### Board Coordinates
 
-The supplied existing board owner and number.
-
-eg `owner: m2ux`, `board-number: 13`
+The supplied existing board owner and number. eg `owner: m2ux`, `board-number: 13`
 
 ### Repository
 
@@ -326,9 +324,7 @@ The new board owner and number. The number is absent until the copy succeeds.
 
 ### Issue Id
 
-The supplied numeric issue id; it is distinct from the issue number.
-
-eg `3040123456`
+The supplied numeric issue id; it is distinct from the issue number. eg `3040123456`
 
 ### Initial Status
 
@@ -336,23 +332,15 @@ The initial Status selected by the caller.
 
 ### Item Coordinates
 
-The supplied board item id and board coordinates.
-
-eg `board: users/m2ux/projectsV2/13`, `item-id: 1001`
+The supplied board item id and board coordinates. eg `board: users/m2ux/projectsV2/13`, `item-id: 1001`
 
 ### Status Field
 
-The supplied Status field id and its option ids.
-
-eg `field-id: 419167630`, `option-id: OPTION`
+The supplied Status field id and its option ids. eg `field-id: 419167630`, `option-id: OPTION`
 
 ### Status Input File
 
-The local input file containing the selected Status field id as a JSON integer and option id as a JSON string, from the fetched board fields.
-
-eg `status-backlog.json`
-
-eg `{"fields": [{"id": 419167630, "value": "OPTION"}]}`
+The local input file containing the selected Status field id as a JSON integer and option id as a JSON string, from the fetched board fields. eg `status-backlog.json`, `{"fields": [{"id": 419167630, "value": "OPTION"}]}`
 
 ### Output Files
 
@@ -388,18 +376,12 @@ The repository link operation result for the supplied board.
 
 ### Board Fields File
 
-The supplied local output path for the complete board-field definitions.
-
-eg `fields.json`
+The supplied local output path for the complete board-field definitions. eg `fields.json`
 
 ### Board Items File
 
-The supplied local output path for the board items with Status and their complete issues.
-
-eg `items.json`
+The supplied local output path for the board items with Status and their complete issues. eg `items.json`
 
 ### Theme Name
 
-The supplied theme name, excluding any originating proposal designator.
-
-eg `Canon`
+The supplied theme name, excluding any originating proposal designator. eg `Canon`

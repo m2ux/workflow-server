@@ -112,9 +112,7 @@ The supplied repository owner and name.
 
 ### Hot-fix Record
 
-The supplied complete current hot-fix issue JSON.
-
-eg `issue-874.json`
+The supplied complete current hot-fix issue JSON. eg `issue-874.json`
 
 ### Board Evidence
 
@@ -122,29 +120,21 @@ The supplied board identity, most recently read board items with Status and fiel
 
 ### Pull Request Records
 
-The supplied current pull request records.
-
-eg `prs.json`
+The supplied current pull request records. eg `prs.json`
 
 ### Issue Links
 
-The complete supplied issue-link snapshot.
-
-eg `links.json`
+The complete supplied issue-link snapshot. eg `links.json`
 
 ### Delivery Selection
 
 Verified criterion ids may be empty when recording delivery without requesting criterion ticks.
 
-The confirmed delivering pull request number and the verified criterion ids.
-
-eg `pull-request-number: 950`, `criterion-ids: AC1`
+The confirmed delivering pull request number and the verified criterion ids. eg `pull-request-number: 950`, `criterion-ids: AC1`
 
 ### Output Body
 
-The supplied local destination for the complete provided body.
-
-eg `fixed-874.md`
+The supplied local destination for the complete provided body. eg `fixed-874.md`
 
 ### Hot-fix Number
 
