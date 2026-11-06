@@ -15,7 +15,7 @@
   "prose/consumers": ["review"],
   "prose/measured-claims": ["review"],
   "prose/reachable-dependencies": ["review"],
-  "operations/spec-layout": ["fenced invocation in HTML model", "invocation outside execution step", "malformed HTML invocation", "GraphQL without a REST gap", "review"],
+  "operations/spec-layout": ["fenced invocation in HTML model", "invocation outside execution step", "malformed HTML invocation", "unwrapped shell invocation", "GraphQL without a REST gap", "review"],
   "operations/one-command": ["review"],
   "operations/one-home": ["review"],
   "operations/direction": ["review"],
@@ -88,6 +88,6 @@
   "changes/planning-adoption": ["review"],
   "changes/integrated-implementation": ["review"],
   "changes/delivery": ["review"],
-  "prose/contextual-contracts": ["operation contract links", "operation link role", "review"],
+  "prose/contextual-contracts": ["duplicate command parameter prose", "operation contract links", "operation link role", "review"],
   "artifacts/provided-output": ["review"]
 }

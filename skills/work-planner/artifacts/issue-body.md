@@ -160,19 +160,23 @@ Checks one issue against its template, and with `--fix` writes the body with the
 
 #### 1. Check Body Format
 
-- Run this command from the [workspace](#workspace "○") checkout using [Body Record](#body-record "○"), [Kind Conditions](#kind-conditions "○"), [Output Files](#output-files "○").
+- Validate the body against [Kind Conditions](#kind-conditions "○").
 
 - The format reader takes the template fence from the body artifact and its table columns where present. A body with a Work Breakdown table requires coverage for every criterion.
 - The input is one issue JSON. `--fix` names the output body file for mechanical fixes. Further inputs are specified by the calling body procedure.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/format.py '[**&lt;issue-json-file&gt;**](#body-record)' --fix '[**&lt;output-body-file&gt;**](#output-files)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/format.py '[**&lt;issue-json-file&gt;**](#body-record "○")' \
+  --fix '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/format.py issue.json --fix fixed.md
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/format.py issue.json \
+  --fix fixed.md
 </pre></big>
 
 #### 2. Provide Checked Body Format
@@ -185,16 +189,14 @@ List repository names from the issue destination and References section.
 
 #### 1. List Reference Repositories
 
-Run this command from the [workspace](#workspace "○") checkout using [Body Record](#body-record "○").
-
 <big><pre>
-[**&lt;workspace&gt;**](#workspace)/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/align.py repositories '[**&lt;issue-json-file&gt;**](#body-record)'
+[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py repositories '[**&lt;issue-json-file&gt;**](#body-record "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-[**&lt;workspace&gt;**](#workspace)/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/align.py repositories issue-943.json
+[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py repositories issue-943.json
 </pre></big>
 
 #### 2. Provide Listed Reference Repositories
@@ -207,12 +209,12 @@ Read one listed repository's visibility with the authenticated repository API.
 
 #### 1. Fetch Reference Repository
 
-- Run this command from the repository checkout using [Reference Repositories](#reference-repositories "○"), [Output Files](#output-files "○").
+- Run in the repository checkout.
 
 - Save each object with its `full_name` and `private` fields; combine the objects into the caller's JSON array. A failed fetch supplies no visibility.
 
 <big><pre>
-gh api repos/[**&lt;owner&gt;**](#reference-repositories)/[**&lt;repo&gt;**](#reference-repositories) > '[**&lt;repository-json-file&gt;**](#output-files)'
+gh api repos/[**&lt;owner&gt;**](#reference-repositories "○")/[**&lt;repo&gt;**](#reference-repositories "○") > '[**&lt;repository-json-file&gt;**](#output-files "○")'
 </pre></big>
 
 **Example:**
@@ -231,18 +233,16 @@ Report private repository references on a public issue and unresolved repository
 
 #### 1. Validate Reference Visibility
 
-- Run this command from the [workspace](#workspace "○") checkout using [Body Record](#body-record "○"), [Repository Snapshot](#repository-snapshot "○").
-
-- The snapshot is a JSON array of fetched repository objects. Exit 1 means findings remain.
+The snapshot is a JSON array of fetched repository objects. Exit 1 means findings remain.
 
 <big><pre>
-[**&lt;workspace&gt;**](#workspace)/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/align.py references '[**&lt;issue-json-file&gt;**](#body-record)' --repositories '[**&lt;repositories-json-file&gt;**](#repository-snapshot)'
+[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py references '[**&lt;issue-json-file&gt;**](#body-record "○")' --repositories '[**&lt;repositories-json-file&gt;**](#repository-snapshot "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-[**&lt;workspace&gt;**](#workspace)/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/align.py references issue-943.json --repositories repositories.json
+[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py references issue-943.json --repositories repositories.json
 </pre></big>
 
 #### 2. Provide Validated Reference Visibility

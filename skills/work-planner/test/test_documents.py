@@ -81,7 +81,7 @@ class DocumentInterfaces(unittest.TestCase):
                     with self.subTest(file=path.name, target=target):
                         self.assertIn(destination.parent.name, reachable)
 
-    def test_artifact_operations_bind_argument_inputs_in_prose_and_consecutive_steps(self):
+    def test_artifact_operations_bind_arguments_at_their_use_and_consecutive_steps(self):
         for path in sorted((ROOT / 'artifacts').glob('*.md')):
             lines, fenced, headings = checker.scan(path)
             payload = checker.scan_blocks(lines).html_lines
@@ -105,15 +105,15 @@ class DocumentInterfaces(unittest.TestCase):
                     self.assertEqual(numbers, list(range(1, len(numbers) + 1)))
                     self.assertFalse(any(re.match(r'^\d+\. ', line) for line in body))
                     self.assertFalse(any(re.match(r'^\*\*(?:Inputs|Outputs):', line) for line in body))
-                    prose_inputs = {match[1] for line in body
-                                    for match in checker.LINK.finditer(checker.CODE_SPAN.sub('', line))
-                                    if checker.link_role(match) == 'input'}
-                    argument_inputs = {match[2] for i in range(start + 1, end) if i in payload
-                                       for match in checker.ARGUMENT_LINK.finditer(lines[i])}
-                    self.assertLessEqual(argument_inputs, prose_inputs,
-                                         'an executable argument has no contextual input contract')
-                    self.assertTrue(any(checker.link_role(match) == 'output' for line in body
-                                        for match in checker.LINK.finditer(checker.CODE_SPAN.sub('', line))))
+                    contracts = [(target, role) for i, target, role, _ in checker.role_links(lines, fenced)
+                                 if start < i < end and (i in payload or not checker.HEADING.match(lines[i]))]
+                    inputs = {target for target, role in contracts if role == 'input'}
+                    arguments = [(match[2], checker.link_role(match)) for i in range(start + 1, end)
+                                 if i in payload for match in checker.ARGUMENT_LINK.finditer(lines[i])]
+                    self.assertTrue(all(role in ('input', 'output', 'operation') for _, role in arguments),
+                                    'an executable annotation has no role')
+                    self.assertLessEqual({target for target, role in arguments if role == 'input'}, inputs)
+                    self.assertTrue(any(role == 'output' for _, role in contracts))
                     self.assertFalse(any(re.match(r'^(?:\d+\. |\- )\*\*', line) for line in body))
                     self.assertFalse(any(line.startswith(('Result:', '**Result:')) for line in body))
 

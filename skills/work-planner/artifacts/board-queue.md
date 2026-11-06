@@ -38,26 +38,35 @@ Prints proposed Status and assignee calls, [report lines](#report-lines) and unr
 
 #### 1. Compute Board Queue
 
-- Run the following command using [Board Items](#board-items "○"), [Board Fields](#board-fields "○"), [Output Directory](#output-directory "○"), [Resolved Issues](#resolved-issues "○"), [Status Scope](#status-scope "○"), [Workspace](#workspace "○").
+- Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
+- Limit proposed writes to [Status Scope](#status-scope "○").
 
-- `--items` is the board's items with Status.
-- `--prs` is the [pull requests](#pull-request-records "○") that name an initiative or a hot-fix.
-- `--links` is the [issue-link snapshot](#issue-link-snapshot "○") of those pull requests, where the hot-fix each one delivers is read.
-- `--board` is the [board identity](#board-identity "○").
-- `--fields` is the board's fields.
-- `--out` is the directory the calls are written to.
-- `--assignee` is the [login](#assignee-login "○") assigned to work from Ready.
-- `--others` is an issue file for an issue the rows depend on that is not on the board. Repeatable.
-- `--unplanned` supplies each [Unplanned Initiative](#unplanned-initiatives "○"). Repeatable.
+- Repeat `--unplanned` for each supplied [Unplanned Initiative](#unplanned-initiatives "○").
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --board [**&lt;board-identity&gt;**](#board-identity) --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py \
+  --items '[**&lt;board-items-file&gt;**](#board-items "○")' \
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' \
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot "○")' \
+  --board [**&lt;board-identity&gt;**](#board-identity "○") \
+  --fields '[**&lt;board-fields-file&gt;**](#board-fields "○")' \
+  --out '[**&lt;output-directory&gt;**](#output-directory "○")' \
+  --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items items.json --prs prs.json --links links.json --board users/[**&lt;owner&gt;**](#board-identity)/projectsV2/9 --fields fields.json --out board/ --assignee m2ux
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py \
+  --items items.json \
+  --prs prs.json \
+  --links links.json \
+  --board users/[**&lt;owner&gt;**](#board-identity "○")/projectsV2/9 \
+  --fields fields.json \
+  --out board/ \
+  --assignee m2ux
 </pre></big>
 
 #### 2. Provide Computed Board Queue

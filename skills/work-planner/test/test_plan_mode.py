@@ -33,10 +33,11 @@ def section(text, heading):
     start, level = found[0]
     end = checker.heading_end(headings, start, level, len(lines))
     commands = checker.scan_blocks(lines).html_lines
-    return '\n'.join(html.unescape(checker.ARGUMENT_LINK.sub(lambda match: match[1], line))
+    result = '\n'.join(html.unescape(checker.ARGUMENT_LINK.sub(lambda match: match[1], line))
                      if index in commands else line
                      for index, line in enumerate(lines[start + 1:end], start + 1)
                      if not fenced[index])
+    return '\n'.join(checker.logical_command_lines(result))
 
 
 def steps():

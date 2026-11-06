@@ -47,10 +47,8 @@ Reads raw task-table Lane cells through the Lane module.
 
 #### 1. Read Lane Assignments
 
-Run the following command using [Epic Body File](#epic-body-file "○"), [Workspace](#workspace "○").
-
 <big><pre>
-"[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py" read '[**&lt;epic-body-file&gt;**](#epic-body-file)'
+"[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" read '[**&lt;epic-body-file&gt;**](#epic-body-file "○")'
 </pre></big>
 
 #### 2. Provide Read Lane Assignments
@@ -63,10 +61,11 @@ Writes confirmed assignments while preserving other body content.
 
 #### 1. Write Lane Assignments
 
-Run the following command using [Epic Body File](#epic-body-file "○"), [Confirmed Map](#confirmed-map "○"), [Output Body](#output-body "○"), [Workspace](#workspace "○").
-
 <big><pre>
-"[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py" assign '[**&lt;epic-body-file&gt;**](#epic-body-file)' --map '[**&lt;confirmed-map-file&gt;**](#confirmed-map)' --out '[**&lt;output-body-path&gt;**](#output-body)'
+"[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" assign \
+  '[**&lt;epic-body-file&gt;**](#epic-body-file "○")' \
+  --map '[**&lt;confirmed-map-file&gt;**](#confirmed-map "○")' \
+  --out '[**&lt;output-body-path&gt;**](#output-body "○")'
 </pre></big>
 
 #### 2. Provide Written Lane Assignments
@@ -79,10 +78,10 @@ Reports a unit's common lane or assignment findings.
 
 #### 1. Validate Lane Unit
 
-Run the following command using [Epic Body File](#epic-body-file "○"), [Unit Task Ids](#unit-task-ids "○"), [Workspace](#workspace "○").
-
 <big><pre>
-"[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py" check '[**&lt;epic-body-file&gt;**](#epic-body-file)' --unit '[**&lt;task-ids&gt;**](#unit-task-ids)'
+"[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" check \
+  '[**&lt;epic-body-file&gt;**](#epic-body-file "○")' \
+  --unit '[**&lt;task-ids&gt;**](#unit-task-ids "○")'
 </pre></big>
 
 #### 2. Provide Validated Lane Unit
@@ -95,12 +94,13 @@ Reports whether the request admits a valid unit.
 
 #### 1. Evaluate Lane Admission
 
-- Run the following command using [Epic Body File](#epic-body-file "○"), [Unit Task Ids](#unit-task-ids "○"), [Requested Index](#requested-index "○"), [Workspace](#workspace "○").
-
-- Omit the lane option when the request supplies none.
+Omit the lane option when the request supplies none.
 
 <big><pre>
-"[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py" admit '[**&lt;epic-body-file&gt;**](#epic-body-file)' --unit '[**&lt;task-ids&gt;**](#unit-task-ids)' --lane '[**&lt;lane-index&gt;**](#requested-index)'
+"[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" admit \
+  '[**&lt;epic-body-file&gt;**](#epic-body-file "○")' \
+  --unit '[**&lt;task-ids&gt;**](#unit-task-ids "○")' \
+  --lane '[**&lt;lane-index&gt;**](#requested-index "○")'
 </pre></big>
 
 #### 2. Provide Evaluate Lane Admission

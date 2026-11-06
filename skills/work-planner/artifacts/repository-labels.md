@@ -30,10 +30,10 @@ Lists the labels that exist in the repository.
 
 #### 1. List Labels
 
-Run this command from the [repository](#repository "○") checkout with the supplied inputs.
+Run in the repository checkout.
 
 <big><pre>
-gh api "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/labels?per_page=100" --jq '.&#91;&#93;.name'
+gh api "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/labels?per_page=100" --jq '.&#91;&#93;.name'
 </pre></big>
 
 #### 2. Provide Listed Labels
@@ -46,10 +46,15 @@ Creates the label specified by its name, colour and description.
 
 #### 1. Create Label
 
-Run this command from the [repository](#repository "○") checkout using [Label Identity](#label-identity "○").
+Run in the repository checkout.
 
 <big><pre>
-gh api --method POST repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/labels -f name='[**&lt;label&gt;**](#label-identity)' -f color=[**&lt;hex-colour&gt;**](#label-identity) -f description='[**&lt;description&gt;**](#label-identity)' --jq .name
+gh api \
+  --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/labels \
+  -f name='[**&lt;label&gt;**](#label-identity "○")' \
+  -f color=[**&lt;hex-colour&gt;**](#label-identity "○") \
+  -f description='[**&lt;description&gt;**](#label-identity "○")' \
+  --jq .name
 </pre></big>
 
 #### 2. Provide Created Label

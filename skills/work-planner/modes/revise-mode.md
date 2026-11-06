@@ -72,10 +72,8 @@ Runs the skill's script tests.
 
 #### 1. Run Skill Tests
 
-Run the following command in the [workspace checkout](#workspace "○").
-
 <big><pre>
-cd "[**<workspace>**](#workspace)/skills/work-planner" && "[**<workspace>**](#workspace)/scripts/sbx" python3 -m unittest discover -s test
+cd "[**<workspace>**](#workspace "○")/skills/work-planner" && "[**<workspace>**](#workspace "○")/scripts/sbx" python3 -m unittest discover -s test
 </pre></big>
 
 #### 2. Provide Test Result
@@ -88,16 +86,16 @@ Checks the affected skill's files against the rules the shared skill guidelines 
 
 #### 1. Check Affected Skills
 
-Run the following command in the [workspace checkout](#workspace "○") for the selected [Skill Directory](#skill-directory "○"); repeat the skill argument for additional affected skills.
+Repeat the skill argument for additional affected skills.
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/scripts/check_skill_files.py "[**<skill-directory>**](#skill-directory)"
+cd "[**<workspace>**](#workspace "○")" && "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py "[**<skill-directory>**](#skill-directory "○")"
 </pre></big>
 
 **Example:** Work Planner in the selected checkout.
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/scripts/check_skill_files.py skills/work-planner
+cd "[**<workspace>**](#workspace "○")" && "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py skills/work-planner
 </pre></big>
 
 #### 2. Provide Skill Check Result
@@ -110,14 +108,14 @@ Compares every third-level section's body between the change's base and its head
 
 #### 1. Compare Changed Sections
 
-- Run the following command in the [workspace checkout](#workspace "○") for [Skill Directory](#skill-directory "○"), comparing [Base](#base "○") with [Head](#head "○").
-
 - A relative link target is compared by its fragment alone, so a retargeted link is no difference.
 - Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
 - Exit 1 means a section was added, removed or differs.
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/scripts/check_skill_files.py --compare "[**<base>**](#base)" "[**<head>**](#head)" "[**<skill-directory>**](#skill-directory)"
+cd "[**<workspace>**](#workspace "○")" && \
+  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py \
+  --compare "[**<base>**](#base "○")" "[**<head>**](#head "○")" "[**<skill-directory>**](#skill-directory "○")"
 </pre></big>
 
 #### 2. Provide Section Comparison

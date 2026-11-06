@@ -34,24 +34,43 @@ Computes available work from supplied board and delivery snapshots.
 
 #### 1. Compute Available Work
 
-- Run the command using [Workspace](#workspace "○"), [Board Items](#board-items "○"), [Pull Request Records](#pull-request-records "○"), [Issue-Link Snapshot](#issue-link-snapshot "○"), [Off-Board Issues](#off-board-issues "○"), [Requested Lane](#requested-lane "○"), [Dispatch-Export Path](#dispatch-export-path "○").
+- Save the survey export at [Dispatch-Export Path](#dispatch-export-path "○").
+- Include each supplied [Off-Board Issues](#off-board-issues "○") file with `--others`.
 
-- `--items`, `--prs` and `--links` receive the supplied snapshots. A row's own links, which say whether its work is under way, are read from the epic body.
-- `--project` is the [checkout](#project-checkout "○") and `--revision` the evaluated [revision](#revision "○"); `--bases` receives [Epic-Base Names](#epic-base-names "○").
-- `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run.
-- `--engineering` is the [engineering worktree](#engineering-worktree "○"), where each free row's work-item file is read.
-- `--others` supplies each resolved off-board issue; `--date` selects another [record date](#record-date "○").
-- `--lane <id>` supplies the requested bare decimal index. Omit it when the run names no lane. The offered units meet [Admission](lane.md#admission).
-- `--dispatch-plan '<dispatch-export-file>'` writes the [dispatch export](#dispatch-export "●").
+- Read each row’s own links from the epic body to determine whether its work is under way.
+
+- Fetch the project checkout’s remote epic bases and long-lived branches before reading producer outputs against them.
+- Read each free row’s work-item file from the supplied engineering worktree.
+- Use `--date` to override the [record date](#record-date "○").
+- Omit `--lane` when the run names no lane. Offered units meet [Admission](lane.md#admission).
+- Use `--dispatch-plan` when saving a [dispatch export](#dispatch-export "●").
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '[**<board-items-file>**](#board-items)' --prs '[**<pull-request-records-file>**](#pull-request-records)' --links '[**<issue-link-snapshot-file>**](#issue-link-snapshot)' --project '[**<checkout>**](#project-checkout)' --revision '[**<revision>**](#revision)' --bases '[**<epic-base-names>**](#epic-base-names)' --engineering '[**<engineering-worktree>**](#engineering-worktree)' --lane [**<lane-index>**](#requested-lane)
+cd "[**<workspace>**](#workspace "○")" && \
+  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py \
+  --items '[**<board-items-file>**](#board-items "○")' \
+  --prs '[**<pull-request-records-file>**](#pull-request-records "○")' \
+  --links '[**<issue-link-snapshot-file>**](#issue-link-snapshot "○")' \
+  --project '[**<checkout>**](#project-checkout "○")' \
+  --revision '[**<revision>**](#revision "○")' \
+  --bases '[**<epic-base-names>**](#epic-base-names "○")' \
+  --engineering '[**<engineering-worktree>**](#engineering-worktree "○")' \
+  --lane [**<lane-index>**](#requested-lane "○")
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '[**<checkout>**](#project-checkout)' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '[**<checkout>**](#project-checkout)/.engineering' --lane 2
+cd "[**<workspace>**](#workspace "○")" && \
+  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py \
+  --items items.json \
+  --prs prs.json \
+  --links links.json \
+  --project '[**<checkout>**](#project-checkout "○")' \
+  --revision origin/workspace \
+  --bases i07/e00/main,i07/e00/workflows \
+  --engineering '[**<checkout>**](#project-checkout "○")/.engineering' \
+  --lane 2
 </pre></big>
 
 #### 2. Provide Computed Available Work

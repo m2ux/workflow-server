@@ -87,18 +87,24 @@ Reports an epic's delivery state against the pull requests that name it.
 
 #### 1. Match Pull Requests
 
-- Run this command from the [workspace](#workspace "○") checkout using [Epic Record](#epic-record "○"), [Pull Request Records](#pull-request-records "○"), [Issue Links](#issue-links "○"), [Output Body](#output-body "○").
-
-- Results follow [Delivery Findings](#delivery-findings "●").
+Results follow [Delivery Findings](#delivery-findings "●").
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links)' --fix '[**&lt;epic-body-file&gt;**](#output-body)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record "○")' \
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' \
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' \
+  --fix '[**&lt;epic-body-file&gt;**](#output-body "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --fix epic-body.md
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json \
+  --prs prs.json \
+  --links links.json \
+  --fix epic-body.md
 </pre></big>
 
 #### 2. Provide Match Pull Requests

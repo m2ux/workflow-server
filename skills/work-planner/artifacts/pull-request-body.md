@@ -94,19 +94,17 @@ Convert an unambiguous checked list and Test/Criteria table to the current plan 
 
 #### 1. Convert Test Plan
 
-- Run this command from the [workspace](#workspace "○") checkout using [Output Body](#output-body "○").
-
 - Input is a current REST [pull request record](#pull-request-record "○"); output is the complete body. Existing current tables are unchanged.
 - A conversion prints the pull request identity. Exit 1 means an unreadable plan or missing linked result evidence; inspect the body and findings before publishing.
 
 <big><pre>
-[**&lt;workspace&gt;**](#workspace)/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/align.py plan '[**&lt;pull-request-json-file&gt;**](#pull-request-record)' --fix '[**&lt;output-body-file&gt;**](#output-body)'
+[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py plan '[**&lt;pull-request-json-file&gt;**](#pull-request-record "○")' --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-[**&lt;workspace&gt;**](#workspace)/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/align.py plan pr-950.json --fix fixed-950.md
+[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py plan pr-950.json --fix fixed-950.md
 </pre></big>
 
 #### 2. Provide Converted Test Plan

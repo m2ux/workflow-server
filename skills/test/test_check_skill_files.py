@@ -1751,7 +1751,7 @@ An inventory page from supplied evidence.
 Fetch the requested page using [Limit](#limit "○").
 
 <big><pre>
-inventory_fetch { [**limit**](#limit), offset }
+inventory_fetch { [**limit**](#limit "○"), offset }
 </pre></big>
 
 #### 2. Provide Inventory Page
@@ -1921,9 +1921,48 @@ Keep the refreshed inventory.
         self.replace(self.mode, 'Apply [Read Inventory]', '- Apply [Read Inventory]')
         self.assertEqual(self.findings(), [])
 
-    def test_contextual_inputs_must_carry_role_titles(self):
-        self.replace(self.inventory, '[Limit](#limit "○")', '[Limit](#limit)')
-        self.assertIn('operation contract links', self.kinds())
+    def test_command_annotation_supplies_input_without_repeated_prose(self):
+        self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "○").', '')
+        self.assertEqual(self.findings(), [])
+
+    def test_command_arguments_require_role_titles(self):
+        self.replace(self.inventory, '[**limit**](#limit "○")', '[**limit**](#limit)')
+        self.assertIn('invocation argument contract', self.kinds())
+
+    def test_command_annotation_can_supply_the_output(self):
+        self.replace(self.inventory, 'Provide [Page](#page "●").', 'The page is available.')
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }',
+                     'inventory_fetch { [**limit**](#limit "○"), offset } > [**page**](#page "●")')
+        self.assertEqual(self.findings(), [])
+
+    def test_command_transformation_annotation_resolves_its_callable(self):
+        self.replace(self.inventory, 'inventory_fetch {', '[**inventory_fetch**](#read-inventory "ƒ") {')
+        self.assertEqual(self.findings(), [])
+
+    def test_unselected_role_model_keeps_argument_field_validation(self):
+        model = {name: dict(entry) for name, entry in self.MODEL.items()}
+        model['artifacts'].pop('link_roles')
+        self.declare(model)
+        self.replace(self.inventory, 'inventory_fetch {', '[**inventory_fetch**](#read-inventory "ƒ") {')
+        self.assertIn('invocation argument contract', self.kinds())
+
+    def test_command_transformation_cannot_select_a_field(self):
+        self.replace(self.inventory, 'inventory_fetch {', '[**inventory_fetch**](#limit "ƒ") {')
+        self.assertIn('operation link role', self.kinds())
+
+    def test_repeated_command_parameter_list_is_reported(self):
+        self.replace(self.inventory, '### Limit', '### Offset\n\nThe page offset.\n\n### Limit')
+        self.replace(self.inventory, ', offset }', ', [**offset**](#offset "○") }')
+        self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "○").',
+                     'Run the command using [Limit](#limit "○") and [Offset](#offset "○").')
+        self.assertIn('duplicate command parameter prose', self.kinds())
+
+    def test_long_shell_invocation_requires_continuations(self):
+        command = 'inventory_fetch --limit [**limit**](#limit "○") --label ' + "'" + 'x' * 140 + "'"
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }', command)
+        self.assertIn('unwrapped shell invocation', self.kinds())
+        self.replace(self.inventory, command, command.replace(' --', ' \\\n  --'))
+        self.assertNotIn('unwrapped shell invocation', self.kinds())
 
     def test_word_titles_do_not_supply_role_contracts(self):
         self.replace(self.inventory, '#limit "○"', '#limit "input"')
@@ -1951,6 +1990,7 @@ Keep the refreshed inventory.
     def test_role_links_in_headings_do_not_supply_prose_inputs(self):
         self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "○").',
                      'Fetch the requested page.')
+        self.replace(self.inventory, '[**limit**](#limit "○")', 'limit')
         self.replace(self.inventory, '#### 1. Fetch Inventory Page',
                      '#### 1. Fetch [Limit](#limit "○")')
         self.assertIn('operation contract links', self.kinds())
@@ -1964,7 +2004,7 @@ Keep the refreshed inventory.
     def test_contract_links_can_reach_another_artifacts_fields(self):
         self.write('artifacts/source.md', '# Source\n\n## Fields\n\n### Limit\n\nThe page size.\n')
         self.replace(self.inventory, '[Limit](#limit "○")', '[Limit](source.md#limit "○")')
-        self.replace(self.inventory, '[**limit**](#limit)', '[**limit**](source.md#limit)')
+        self.replace(self.inventory, '[**limit**](#limit "○")', '[**limit**](source.md#limit "○")')
         self.assertEqual(self.findings(), [])
 
     def test_fenced_shell_and_tool_invocations_are_rejected(self):
@@ -1989,11 +2029,11 @@ Keep the refreshed inventory.
         self.assertIn('malformed HTML invocation', self.kinds())
 
     def test_an_empty_html_invocation_is_reported(self):
-        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }', '')
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }', '')
         self.assertIn('malformed HTML invocation', self.kinds())
 
     def test_an_html_invocation_belongs_to_its_executing_step(self):
-        command = '<big><pre>\ninventory_fetch { [**limit**](#limit), offset }\n</pre></big>\n\n'
+        command = '<big><pre>\ninventory_fetch { [**limit**](#limit "○"), offset }\n</pre></big>\n\n'
         self.replace(self.inventory, command, '')
         self.replace(self.inventory, '## Fields', command + '## Fields')
         # It is still in the step until its next ancestor heading.
@@ -2002,8 +2042,8 @@ Keep the refreshed inventory.
         self.assertIn('invocation outside execution step', self.kinds())
 
     def test_argument_links_resolve_even_among_shell_quoting(self):
-        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }',
-                     "cmd --literal '<workspace>' \\\n  --input `[**limit**](#limit)` --json '{\"key\": \"value\"}'")
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }',
+                     "cmd --literal '<workspace>' \\\n  --input `[**limit**](#limit \"○\")` --json '{\"key\": \"value\"}'")
         self.assertEqual(self.findings(), [])
 
     def test_literal_brackets_before_argument_links_keep_their_contracts(self):
@@ -2011,44 +2051,45 @@ Keep the refreshed inventory.
             with self.subTest(redirection=redirection):
                 command = ('gh api --paginate "repos/o/r/pulls?state=all&per_page=100" '
                            '--jq \'.[] | select(.title | startswith("[I") or startswith("[F"))\' '
-                           + redirection + " '[**limit**](#limit)'")
+                           + redirection + " '[**limit**](#limit \"○\")'")
+                command = command.replace(' --', ' \\\n  --')
                 self.inventory.write_text(self.INVENTORY.replace(
-                    'inventory_fetch { [**limit**](#limit), offset }', command))
+                    'inventory_fetch { [**limit**](#limit "○"), offset }', command))
                 self.assertEqual(self.findings(), [])
 
     def test_literal_brackets_do_not_hide_unbold_contract_links(self):
-        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }',
-                     "cmd --filter '[I' --output '[**limit**](#limit)' --input '[limit](#limit)'")
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }',
+                     "cmd --filter '[I' --output '[**limit**](#limit \"○\")' --input '[limit](#limit)'")
         self.assertIn('invocation argument contract', self.kinds())
 
     def test_literal_brackets_do_not_hide_broken_argument_targets(self):
         for target in ('#absent', '#read-inventory'):
             with self.subTest(target=target):
                 self.inventory.write_text(self.INVENTORY.replace(
-                    'inventory_fetch { [**limit**](#limit), offset }',
+                    'inventory_fetch { [**limit**](#limit "○"), offset }',
                     "cmd --filter '[I' --output '[**limit**](" + target + ")'"))
                 self.assertIn('invocation argument contract', self.kinds())
 
     def test_a_missing_argument_anchor_is_reported(self):
-        self.replace(self.inventory, '[**limit**](#limit)', '[**limit**](#absent)')
+        self.replace(self.inventory, '[**limit**](#limit "○")', '[**limit**](#absent)')
         self.assertIn('unresolved anchor', self.kinds())
         self.assertIn('invocation argument contract', self.kinds())
 
     def test_a_missing_argument_file_is_reported(self):
-        self.replace(self.inventory, '[**limit**](#limit)', '[**limit**](missing.md#limit)')
+        self.replace(self.inventory, '[**limit**](#limit "○")', '[**limit**](missing.md#limit)')
         self.assertIn('unresolved link', self.kinds())
 
     def test_a_contract_backed_argument_link_is_bold(self):
-        self.replace(self.inventory, '[**limit**](#limit)', '[limit](#limit)')
+        self.replace(self.inventory, '[**limit**](#limit "○")', '[limit](#limit)')
         self.assertIn('invocation argument contract', self.kinds())
 
     def test_argument_targets_are_contracts_not_arbitrary_headings(self):
-        self.replace(self.inventory, '[**limit**](#limit)', '[**limit**](#read-inventory)')
+        self.replace(self.inventory, '[**limit**](#limit "○")', '[**limit**](#read-inventory)')
         self.assertIn('invocation argument contract', self.kinds())
 
     def test_literal_headings_and_fences_in_html_do_not_change_markdown_state(self):
         payload = '### Literal Heading\n' + FENCE + 'bash\n1. literal command text\n- **Literal label**\n' + FENCE
-        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }', payload)
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }', payload)
         lines, fenced, headings = checker.scan(self.inventory)
         self.assertEqual(lines, self.inventory.read_text().splitlines())
         self.assertNotIn('Literal Heading', [title for _, _, title in headings])
@@ -2080,23 +2121,23 @@ Keep the refreshed inventory.
         self.assertEqual(self.findings(), [])
 
     def test_html_graphql_needs_its_own_step_rest_gap(self):
-        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }', 'gh api graphql -F query=@query.graphql')
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }', 'gh api graphql -F query=@query.graphql')
         self.assertIn('GraphQL without a REST gap', self.kinds())
         self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "○").', 'Fetch the requested page using [Limit](#limit "○").\n\n**REST gap:** REST exposes no relation write.')
         self.assertNotIn('GraphQL without a REST gap', self.kinds())
 
     def test_another_steps_rest_gap_cannot_cover_an_invocation(self):
-        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }', 'gh api graphql -F query=@query.graphql')
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }', 'gh api graphql -F query=@query.graphql')
         self.replace(self.inventory, '## Fields', '#### 2. Retain Evidence\n\n**REST gap:** REST exposes no relation write.\n\n## Fields')
         self.assertIn('GraphQL without a REST gap', self.kinds())
 
     def test_html_script_access_retains_interface_validation(self):
         self.write('scripts/read.py', "COMMAND = 'gh api graphql'\n")
-        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }', 'python3 scripts/read.py')
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }', 'python3 scripts/read.py')
         self.assertIn('GraphQL without a REST gap', self.kinds())
 
     def test_html_commands_still_reject_projects_classic(self):
-        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }', 'gh api projects/123/columns')
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }', 'gh api projects/123/columns')
         self.assertIn('Projects classic interface', self.kinds())
 
     def test_declarations_are_applied_from_each_supported_cli_root(self):
@@ -2121,12 +2162,13 @@ Keep the refreshed inventory.
         self.assertEqual(status, 0, printed.getvalue())
 
     def test_specimen_role_links_do_not_supply_operation_inputs(self):
+        self.replace(self.inventory, '[**limit**](#limit "○")', 'limit')
         self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "○").',
                      FENCE + 'markdown\nUse [Limit](#limit "○").\n' + FENCE)
         self.assertIn('operation contract links', self.kinds())
 
     def test_literal_rest_gap_text_in_payload_is_not_evidence(self):
-        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }',
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }',
                      'gh api graphql -F query=@query.graphql\n**REST gap:** A literal payload line.')
         self.assertIn('GraphQL without a REST gap', self.kinds())
 

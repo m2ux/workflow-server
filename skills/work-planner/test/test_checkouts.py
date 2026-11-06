@@ -91,24 +91,23 @@ class Document:
         return None
 
     def inputs(self, start):
-        """Input names and owning Field definitions inside this operation's steps."""
+        """Input names and owning Field definitions in this operation’s prose and commands."""
         _, end, _, _ = self.spans[start]
         contracts = []
-        for index in range(start + 1, end):
-            if index not in self.steps or self.fenced[index] or index in self.blocks.html_lines:
+        for index, target, role, _ in checker.role_links(self.lines, self.fenced):
+            if not (start < index < end and index in self.steps) or role != 'input':
                 continue
-            for match in checker.LINK.finditer(checker.CODE_SPAN.sub('', self.lines[index])):
-                if checker.link_role(match) != 'input':
-                    continue
-                name, _, fragment = match[1].partition('#')
-                destination = (self.path.parent / name).resolve() if name else self.path
-                if not checker.field_contract(self.path, match[1], 'Fields'):
-                    continue
-                lines, _, headings = checker.scan(destination)
-                first, depth, title = next((i, d, t) for i, d, t in headings
-                                          if checker.anchor_of(t) == fragment)
-                last = checker.heading_end(headings, first, depth, len(lines))
-                contracts.append(title + '\n' + '\n'.join(lines[first + 1:last]))
+            if index not in self.blocks.html_lines and checker.HEADING.match(self.lines[index]):
+                continue
+            name, _, fragment = target.partition('#')
+            destination = (self.path.parent / name).resolve() if name else self.path
+            if not checker.field_contract(self.path, target, 'Fields'):
+                continue
+            lines, _, headings = checker.scan(destination)
+            first, depth, title = next((i, d, t) for i, d, t in headings
+                                      if checker.anchor_of(t) == fragment)
+            last = checker.heading_end(headings, first, depth, len(lines))
+            contracts.append(title + '\n' + '\n'.join(lines[first + 1:last]))
         return '\n'.join(contracts)
 
 
@@ -142,7 +141,7 @@ class Document:
             if start is not None:
                 payload = '\n'.join(self.lines[first:last + 1]).strip()
                 payload = payload.removeprefix('<big><pre>').removesuffix('</pre></big>')
-                operations.setdefault(start, []).extend(payload.splitlines())
+                operations.setdefault(start, []).extend(checker.logical_command_lines(payload))
         for start, payload in operations.items():
             _, end, _, title = self.spans[start]
             bare = any(WHERE_IT_STANDS.match(line) for line in payload)
@@ -326,7 +325,7 @@ git status
                 'Inspect Undeclared Checkout': (True, False),
             })
 
-    def test_inputs_require_contextual_step_prose(self):
+    def test_inputs_require_actual_step_prose_or_command_annotations(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'artifacts/control.md'
             path.parent.mkdir()
@@ -347,6 +346,10 @@ git status
             self.assertEqual(document.inputs(start), '')
             path.write_text(content.replace('Inspect the supplied state.',
                                             'Inspect [Review Checkout](#review-checkout "○").'))
+            document = Document(path, entry)
+            self.assertIn('review checkout', document.inputs(start).lower())
+            path.write_text(content.replace('Inspect the supplied state.',
+                                            '<big><pre>inspect --checkout [**checkout**](#review-checkout "○")</pre></big>'))
             document = Document(path, entry)
             self.assertIn('review checkout', document.inputs(start).lower())
 

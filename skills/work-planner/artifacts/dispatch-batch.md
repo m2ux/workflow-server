@@ -41,14 +41,21 @@ Selects the next batch without tracker writes or worker execution.
 
 #### 1. Compute Dispatch Batch
 
-- Run the command using [Workspace](#workspace "○"), [Authorization](#authorization "○"), [Survey Evidence](#survey-evidence "○"), [Session Inventory](#session-inventory "○"), [Survey Board](#survey-board "○"), [Requested Lane](#requested-lane "○"), [Free Slots](#free-slots "○"), [Batch](#batch "○").
+- Honor [Requested Lane](#requested-lane "○") when selecting units.
 
 - Supply `--lane '<lane-index>'` only when that lane was used by the survey.
 - Supply `--preparations '<preparations-file>'` for this run's admitted [preparations](#preparations "○") awaiting capacity.
 - The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py batch --authorization '[**<authorization-file>**](#authorization)' --plan '[**<dispatch-export-file>**](#survey-evidence)' --sessions '[**<session-inventory-file>**](#session-inventory)' --capacity [**<free-slot-count>**](#free-slots) --board [**<survey-board>**](#survey-board) > '[**<batch-file>**](#batch)'
+cd "[**<workspace>**](#workspace "○")" && \
+  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py batch \
+  --authorization '[**<authorization-file>**](#authorization "○")' \
+  --plan '[**<dispatch-export-file>**](#survey-evidence "○")' \
+  --sessions '[**<session-inventory-file>**](#session-inventory "○")' \
+  --capacity [**<free-slot-count>**](#free-slots "○") \
+  --board [**<survey-board>**](#survey-board "○") \
+  > '[**<batch-file>**](#batch "○")'
 </pre></big>
 
 #### 2. Provide Computed Dispatch Batch
@@ -61,12 +68,16 @@ Checks one selected unit immediately before execution.
 
 #### 1. Check Dispatch Start
 
-- Run the command using [Workspace](#workspace "○"), [Batch](#batch "○"), [Unit Identity](#unit-identity "○"), [Start Evidence](#start-evidence "○"), [Session Inventory](#session-inventory "○"), [Free Slots](#free-slots "○").
-
-- Exit 0 returns the selected unit; exit 1 names the blocking condition.
+Exit 0 returns the selected unit; exit 1 names the blocking condition.
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py start --batch '[**<batch-file>**](#batch)' --unit [**<unit-identity>**](#unit-identity) --evidence '[**<start-evidence-file>**](#start-evidence)' --sessions '[**<session-inventory-file>**](#session-inventory)' --capacity [**<free-slot-count>**](#free-slots)
+cd "[**<workspace>**](#workspace "○")" && \
+  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py start \
+  --batch '[**<batch-file>**](#batch "○")' \
+  --unit [**<unit-identity>**](#unit-identity "○") \
+  --evidence '[**<start-evidence-file>**](#start-evidence "○")' \
+  --sessions '[**<session-inventory-file>**](#session-inventory "○")' \
+  --capacity [**<free-slot-count>**](#free-slots "○")
 </pre></big>
 
 #### 2. Provide Checked Dispatch Start

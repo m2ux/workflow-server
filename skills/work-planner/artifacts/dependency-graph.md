@@ -54,8 +54,6 @@ Checks the task dependency graph across the epics given, and with `I=` the initi
 
 #### 1. Check Dependencies
 
-- Run the following command using [Workspace](#workspace "○").
-
 - Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.
 - The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files "○") defines them.
 
@@ -72,13 +70,18 @@ Checks the task dependency graph across the epics given, and with `I=` the initi
 - Its supplied inputs are published body text or local drafts.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deps.py 'I=[**&lt;initiative-body-file&gt;**](#dependency-files)' '[**&lt;epic-id&gt;**](#dependency-files)=[**&lt;epic-body-file&gt;**](#dependency-files)' '[**&lt;epic-id&gt;**](#dependency-files):[**&lt;task-id&gt;**](#dependency-files)=[**&lt;work-item-file&gt;**](#dependency-files)' 'R=[**&lt;record-file&gt;**](#dependency-files)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deps.py 'I=[**&lt;initiative-body-file&gt;**](#dependency-files "○")' \
+  '[**&lt;epic-id&gt;**](#dependency-files "○")=[**&lt;epic-body-file&gt;**](#dependency-files "○")' '[**&lt;epic-id&gt;**](#dependency-files "○"):[**&lt;task-id&gt;**](#dependency-files "○")=[**&lt;work-item-file&gt;**](#dependency-files "○")' 'R=[**&lt;record-file&gt;**](#dependency-files "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deps.py I=/drafts/live-936.md E00=/drafts/live-943.md E01=/drafts/live-937.md E00:W01=/drafts/e00/w01.md E01:W01=/drafts/e01/w01.md R=/records/joins.md
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deps.py I=/drafts/live-936.md \
+  E00=/drafts/live-943.md E01=/drafts/live-937.md E00:W01=/drafts/e00/w01.md E01:W01=/drafts/e01/w01.md \
+  R=/records/joins.md
 </pre></big>
 
 #### 2. Provide Checked Dependencies
@@ -91,8 +94,6 @@ Renumbers one epic's tasks by the map given, in the files given.
 
 #### 1. Renumber Tasks
 
-- Run the following command using [Renumber Inputs](#renumber-inputs "○"), [Workspace](#workspace "○"), [Dependency Files](#dependency-files "○").
-
 - `<task-number-map>` is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each affected body file as a separate argument.
 
 - It renumbers `<epic-id> Wxx` and `<epic-id>:Wxx` everywhere, and bare `Wxx` inside that epic's own body. **Example:** for `E01`, the qualified forms are `E01 Wxx` and `E01:Wxx`.
@@ -101,13 +102,23 @@ Renumbers one epic's tasks by the map given, in the files given.
 - Only rows no pull request names may be renumbered. Inspect the rewritten files before publishing them.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative [**&lt;initiative-number&gt;**](#renumber-inputs) --epic [**&lt;epic-number&gt;**](#renumber-inputs) --own '[**&lt;epic-body-file&gt;**](#dependency-files)' --tasks [**&lt;task-number-map&gt;**](#renumber-inputs) '[**&lt;affected-body-file&gt;**](#renumber-inputs)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py \
+  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs "○") \
+  --epic [**&lt;epic-number&gt;**](#renumber-inputs "○") \
+  --own '[**&lt;epic-body-file&gt;**](#dependency-files "○")' \
+  --tasks [**&lt;task-number-map&gt;**](#renumber-inputs "○") '[**&lt;affected-body-file&gt;**](#renumber-inputs "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative 07 --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py \
+  --initiative 07 \
+  --epic 1 \
+  --own live-937.md \
+  --tasks 7:3,3:5 live-*.md
 </pre></big>
 
 #### 2. Provide Renumber Tasks
@@ -120,19 +131,25 @@ Renumbers an initiative's epics across supplied body files.
 
 #### 1. Renumber Epics
 
-- Run the following command using [Renumber Inputs](#renumber-inputs "○"), [Pull Request Records](#pull-request-records "○"), [Workspace](#workspace "○").
-
 - The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.
 - Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative [**&lt;initiative-number&gt;**](#renumber-inputs) --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --map [**&lt;epic-number-map&gt;**](#renumber-inputs) '[**&lt;body-file&gt;**](#renumber-inputs)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py \
+  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs "○") \
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' \
+  --map [**&lt;epic-number-map&gt;**](#renumber-inputs "○") '[**&lt;body-file&gt;**](#renumber-inputs "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative 07 --prs prs.json --map 6:0,0:1 live-936.md live-943.md
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py \
+  --initiative 07 \
+  --prs prs.json \
+  --map 6:0,0:1 live-936.md live-943.md
 </pre></big>
 
 #### 2. Provide Renumber Epics

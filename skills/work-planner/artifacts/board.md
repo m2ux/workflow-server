@@ -191,10 +191,10 @@ Prints the number of the open board with the supplied exact template title.
 
 #### 1. Find Board Template
 
-Run the following command using [Board Owner](#board-owner "○"), [Template Selection](#template-selection "○").
-
 <big><pre>
-gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100" --jq '.&#91;&#93; | select(.closed | not) | select(.title == "[**&lt;template-title&gt;**](#template-selection)") | .number'
+gh api \
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2?per_page=100" \
+  --jq '.&#91;&#93; | select(.closed | not) | select(.title == "[**&lt;template-title&gt;**](#template-selection "○")") | .number'
 </pre></big>
 
 #### 2. Provide Located Board Template
@@ -207,12 +207,15 @@ Copies the supplied template into a new open board with the supplied title and p
 
 #### 1. Copy Board Template
 
-- Run the following command using [Board Owner](#board-owner "○"), [Template Selection](#template-selection "○"), [Copy Title](#copy-title "○").
-
-- The copy's JSON is one project; `.number` identifies the new board.
+The copy's JSON is one project; `.number` identifies the new board.
 
 <big><pre>
-gh project copy [**&lt;template-number&gt;**](#template-selection) --source-owner [**&lt;owner&gt;**](#board-owner) --target-owner [**&lt;owner&gt;**](#board-owner) --title '[**&lt;board-title&gt;**](#copy-title)' --format json --jq .number
+gh project copy [**&lt;template-number&gt;**](#template-selection "○") \
+  --source-owner [**&lt;owner&gt;**](#board-owner "○") \
+  --target-owner [**&lt;owner&gt;**](#board-owner "○") \
+  --title '[**&lt;board-title&gt;**](#copy-title "○")' \
+  --format json \
+  --jq .number
 </pre></big>
 
 #### 2. Provide Copied Board Template
@@ -225,10 +228,8 @@ Links one board to the supplied repository.
 
 #### 1. Link Board to Repository
 
-Run the following command using [Board Coordinates](#board-coordinates "○"), [Repository](#repository "○"), [Board Owner](#board-owner "○").
-
 <big><pre>
-gh project link [**&lt;board-number&gt;**](#board-coordinates) --owner [**&lt;owner&gt;**](#board-owner) --repo [**&lt;repo&gt;**](#repository)
+gh project link [**&lt;board-number&gt;**](#board-coordinates "○") --owner [**&lt;owner&gt;**](#board-owner "○") --repo [**&lt;repo&gt;**](#repository "○")
 </pre></big>
 
 #### 2. Provide Linked Board to Repository
@@ -241,10 +242,10 @@ Prints the number of the open [proposals board](../configuration.md#proposals-bo
 
 #### 1. Find Proposals Board
 
-Run the following command using [Board Owner](#board-owner "○").
-
 <big><pre>
-gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100" --jq '.&#91;&#93; | select(.closed | not) | select(.title == "Proposals") | .number'
+gh api \
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2?per_page=100" \
+  --jq '.&#91;&#93; | select(.closed | not) | select(.title == "Proposals") | .number'
 </pre></big>
 
 #### 2. Provide Located Proposals Board
@@ -257,16 +258,14 @@ Adds the caller-supplied issue to a board and prints the new item's id.
 
 #### 1. Add Issue to Board
 
-Run the following command using [Board Coordinates](#board-coordinates "○"), [Issue Id](#issue-id "○"), [Board Owner](#board-owner "○").
-
 <big><pre>
-gh api --method POST users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items -f type=Issue -F id=[**&lt;issue-id&gt;**](#issue-id) --jq .id
+gh api --method POST users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items -f type=Issue -F id=[**&lt;issue-id&gt;**](#issue-id "○") --jq .id
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method POST users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/items -f type=Issue -F id=3040123456 --jq .id
+gh api --method POST users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/13/items -f type=Issue -F id=3040123456 --jq .id
 </pre></big>
 
 #### 2. Provide Added Issue to Board
@@ -279,20 +278,21 @@ Sets one board item's Status.
 
 #### 1. Set Item Status
 
-- Run the following command using [Board Coordinates](#board-coordinates "○"), [Item Coordinates](#item-coordinates "○"), [Status Input File](#status-input-file "○"), [Board Owner](#board-owner "○").
-
-- The input body names the Status field id and option id from the fetched board fields: `{"fields":[{"id":<status-field-id>,"value":"<status-option-id>"}]}`. Substitute the field id as a JSON integer and the option id as a JSON string.
+The input body names the Status field id and option id from the fetched board fields: `{"fields":[{"id":<status-field-id>,"value":"<status-option-id>"}]}`. Substitute the field id as a JSON integer and the option id as a JSON string.
 
 **Example payload:** `{"fields":[{"id":419167630,"value":"OPTION"}]}`.
 
 <big><pre>
-gh api --method PATCH users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates) --input '[**&lt;status-input-file&gt;**](#status-input-file)' --jq .id
+gh api \
+  --method PATCH users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items/[**&lt;item-id&gt;**](#item-coordinates "○") \
+  --input '[**&lt;status-input-file&gt;**](#status-input-file "○")' \
+  --jq .id
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method PATCH users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/items/1001 --input status-backlog.json --jq .id
+gh api --method PATCH users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/13/items/1001 --input status-backlog.json --jq .id
 </pre></big>
 
 #### 2. Provide Saved Item Status
@@ -305,16 +305,14 @@ Removes one item from a board, leaving its issue as it stands.
 
 #### 1. Remove Board Item
 
-Run the following command using [Board Coordinates](#board-coordinates "○"), [Item Coordinates](#item-coordinates "○"), [Board Owner](#board-owner "○").
-
 <big><pre>
-gh api --method DELETE users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)
+gh api --method DELETE users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items/[**&lt;item-id&gt;**](#item-coordinates "○")
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method DELETE users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items/1001
+gh api --method DELETE users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/9/items/1001
 </pre></big>
 
 #### 2. Provide Removed Board Item
@@ -327,16 +325,14 @@ Saves a board's fields.
 
 #### 1. Fetch Board Fields
 
-Run the following command using [Board Coordinates](#board-coordinates "○"), [Board Fields File](#board-fields-file "○"), [Board Owner](#board-owner "○").
-
 <big><pre>
-gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/fields?per_page=100" > '[**&lt;board-fields-file&gt;**](#board-fields-file)'
+gh api --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/fields?per_page=100" > '[**&lt;board-fields-file&gt;**](#board-fields-file "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/fields?per_page=100" > fields.json
+gh api --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/9/fields?per_page=100" > fields.json
 </pre></big>
 
 #### 2. Provide Fetched Board Fields
@@ -349,16 +345,18 @@ Prints the number of the open board for one theme, by its theme name after any p
 
 #### 1. Find Theme Board
 
-Run the following command using [Board Owner](#board-owner "○"), [Theme Name](#theme-name "○").
-
 <big><pre>
-gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100" --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub("^\\&#91;P&#91;0-9&#93;+\\&#93; "; "") | startswith("[**&lt;theme-name&gt;**](#theme-name): ")) | .number'
+gh api \
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2?per_page=100" \
+  --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub("^\\&#91;P&#91;0-9&#93;+\\&#93; "; "") | startswith("[**&lt;theme-name&gt;**](#theme-name "○"): ")) | .number'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100" --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub("^\\&#91;P&#91;0-9&#93;+\\&#93; "; "") | startswith("Canon: ")) | .number'
+gh api \
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2?per_page=100" \
+  --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub("^\\&#91;P&#91;0-9&#93;+\\&#93; "; "") | startswith("Canon: ")) | .number'
 </pre></big>
 
 #### 2. Provide Located Theme Board
@@ -371,16 +369,18 @@ Prints the id of a board's Status field.
 
 #### 1. Find Status Field
 
-Run the following command using [Board Coordinates](#board-coordinates "○"), [Board Owner](#board-owner "○").
-
 <big><pre>
-gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/fields?per_page=100" --jq '.&#91;&#93; | select(.name == "Status") | .id'
+gh api \
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/fields?per_page=100" \
+  --jq '.&#91;&#93; | select(.name == "Status") | .id'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/fields?per_page=100" --jq '.&#91;&#93; | select(.name == "Status") | .id'
+gh api \
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/9/fields?per_page=100" \
+  --jq '.&#91;&#93; | select(.name == "Status") | .id'
 </pre></big>
 
 #### 2. Provide Located Status Field
@@ -393,16 +393,16 @@ Saves a board's items with their Status, each carrying its issue whole.
 
 #### 1. Fetch Board Items with Status
 
-Run the following command using [Board Coordinates](#board-coordinates "○"), [Status Field](#status-field "○"), [Board Items File](#board-items-file "○"), [Board Owner](#board-owner "○").
-
 <big><pre>
-gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field)" > '[**&lt;board-items-file&gt;**](#board-items-file)'
+gh api \
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field "○")" \
+  > '[**&lt;board-items-file&gt;**](#board-items-file "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items?per_page=100&fields=419167630" > items.json
+gh api --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/9/items?per_page=100&fields=419167630" > items.json
 </pre></big>
 
 #### 2. Provide Fetched Board Items with Status
@@ -415,16 +415,14 @@ Reads one board item, including its current Status.
 
 #### 1. Fetch Board Item
 
-Run the following command using [Board Coordinates](#board-coordinates "○"), [Item Coordinates](#item-coordinates "○"), [Status Field](#status-field "○"), [Board Owner](#board-owner "○").
-
 <big><pre>
-gh api "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)?fields=[**&lt;status-field-id&gt;**](#status-field)"
+gh api "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items/[**&lt;item-id&gt;**](#item-coordinates "○")?fields=[**&lt;status-field-id&gt;**](#status-field "○")"
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items/1001?fields=419167630"
+gh api "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/9/items/1001?fields=419167630"
 </pre></big>
 
 #### 2. Provide Fetched Board Item
@@ -437,7 +435,7 @@ Prints the login `gh` runs as, the user assigned to work from Ready on.
 
 #### 1. Find User
 
-Run the following command using [Authenticated Access](#authenticated-access "○").
+Require [Authenticated Access](#authenticated-access "○") before executing the command.
 
 <big><pre>
 gh api user --jq .login

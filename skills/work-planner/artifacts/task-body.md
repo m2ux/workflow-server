@@ -31,18 +31,28 @@ An open pull request supplies verification evidence; completion requires its mer
 
 #### 1. Sync Task Issue
 
-- Run this command from the [workspace](#workspace "○") checkout using [Task Record](#task-record "○"), [Pull Request Records](#pull-request-records "○"), [Issue Links](#issue-links "○"), [Delivery Selection](#delivery-selection "○"), [Output Body](#output-body "○").
-
-- `<criterion-ids>` is a comma-separated list of verified criterion ids.
+`<criterion-ids>` is a comma-separated list of verified criterion ids.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;task-json-file&gt;**](#task-record)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links)' --pr [**&lt;pull-request-number&gt;**](#delivery-selection) --tick [**&lt;criterion-ids&gt;**](#delivery-selection) --fix '[**&lt;output-body-file&gt;**](#output-body)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;task-json-file&gt;**](#task-record "○")' \
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' \
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' \
+  --pr [**&lt;pull-request-number&gt;**](#delivery-selection "○") \
+  --tick [**&lt;criterion-ids&gt;**](#delivery-selection "○") \
+  --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-637.json --prs prs.json --links links.json --pr 950 --tick AC1 --fix fixed-637.md
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-637.json \
+  --prs prs.json \
+  --links links.json \
+  --pr 950 \
+  --tick AC1 \
+  --fix fixed-637.md
 </pre></big>
 
 #### 2. Provide Recorded Task Issue

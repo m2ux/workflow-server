@@ -67,12 +67,10 @@ Prints the checkout holding the engineering branch, which is where every plannin
 
 #### 1. Find Engineering Worktree
 
-- Run the following command using [Project Checkout](#project-checkout "○").
-
-- The engineering branch has one long-lived worktree and takes no further one.
+The engineering branch has one long-lived worktree and takes no further one.
 
 <big><pre>
-git -C '[**&lt;checkout&gt;**](#project-checkout)' worktree list | grep '\&#91;engineering\&#93;'
+git -C '[**&lt;checkout&gt;**](#project-checkout "○")' worktree list | grep '\&#91;engineering\&#93;'
 </pre></big>
 
 #### 2. Provide Located Engineering Worktree
@@ -85,20 +83,36 @@ Commits everything pending in the engineering worktree and publishes the branch,
 
 #### 1. Commit Planning Record
 
-- Run the following command using [Engineering Worktree](#engineering-worktree "○"), [Commit Message File](#commit-message-file "○").
-
 - It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).
 - Planning records go straight to the branch; they take no pull request.
 - Pass the message through a file outside the worktree; the worktree is a linked one, so git writes here run unsandboxed.
 
 <big><pre>
-cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree)' && git add -A && (git diff --cached --quiet || git commit -F '[**&lt;message-file&gt;**](#commit-message-file)') && git fetch origin engineering && git rebase origin/engineering && git push
+cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' && \
+  git add \
+  -A && \
+  (git diff \
+  --cached \
+  --quiet || git commit \
+  -F '[**&lt;message-file&gt;**](#commit-message-file "○")') && \
+  git fetch origin engineering && \
+  git rebase origin/engineering && \
+  git push
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd .engineering && git add -A && (git diff --cached --quiet || git commit -F /tmp/msg.txt) && git fetch origin engineering && git rebase origin/engineering && git push
+cd .engineering && \
+  git add \
+  -A && \
+  (git diff \
+  --cached \
+  --quiet || git commit \
+  -F /tmp/msg.txt) && \
+  git fetch origin engineering && \
+  git rebase origin/engineering && \
+  git push
 </pre></big>
 
 #### 2. Provide Commit Planning Record
@@ -111,7 +125,7 @@ Adds the folder for one planning record on the long-lived engineering worktree.
 
 #### 1. Add Planning Record
 
-- Run the following command using [Engineering Worktree](#engineering-worktree "○"), [Planning Folder](#planning-folder "○").
+- Run in the [Engineering Worktree](#engineering-worktree "○").
 
 - `<planning-folder-path>` is `<yyyy-mm-dd>[-<ref>]-<slug>/` under the [configured planning directory](../configuration.md#planning-records). The date is the day the record is opened.
 - `<ref>` is the bare number of the issue or the pull request the record is for. A record for ad hoc work, which has neither, has no ref segment.
@@ -120,7 +134,7 @@ Adds the folder for one planning record on the long-lived engineering worktree.
 - Edits are made on that worktree. The engineering branch takes no further worktree and no branch.
 
 <big><pre>
-mkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder)'
+mkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder "○")'
 </pre></big>
 
 **Example:**

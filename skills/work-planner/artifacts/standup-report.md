@@ -48,24 +48,36 @@ Prints the standup from supplied board items, pull request records and their iss
 
 #### 1. Summarise Progress
 
-- Run the following command using [Board Items](#board-items "○"), [Pull Request Records](#pull-request-records "○"), [Management File](#management-file "○"), [Workspace](#workspace "○").
-
-- `--links` is the supplied complete pull-request [issue-link snapshot](#issue-link-snapshot "○"); it identifies the issue each pull request delivers.
-- `--since` supplies the window start in [Report Selection](#report-selection "○"), selecting the [window](#scope).
-- `--initiative` selects the initiative filter in [Report Selection](#report-selection "○"). **Examples:** `I08`, `owner/repo:I08`.
-- `--initiatives` gives supplied off-board [initiative records](#initiative-records "○"), each as a separate file argument.
-- `--summary` gives the paragraph for management.
+- Select the reporting [window](#scope) from the supplied [Report Selection](#report-selection "○").
+- An initiative filter can be `I08` or `owner/repo:I08`.
+- Pass each supplied off-board [initiative record](#initiative-records "○") as a separate argument after `--initiatives`.
 
 - The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --since [**&lt;window-start-date&gt;**](#report-selection) --initiative [**&lt;initiative-filter&gt;**](#report-selection) --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records)' --summary '[**&lt;management-paragraph-file&gt;**](#management-file)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/progress.py \
+  --items '[**&lt;board-items-file&gt;**](#board-items "○")' \
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' \
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot "○")' \
+  --since [**&lt;window-start-date&gt;**](#report-selection "○") \
+  --initiative [**&lt;initiative-filter&gt;**](#report-selection "○") \
+  --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records "○")' \
+  --summary '[**&lt;management-paragraph-file&gt;**](#management-file "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --links links.json --since 2026-09-21 --initiative I08 --initiatives issue-946.json --summary summary.txt
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/progress.py \
+  --items items.json \
+  --prs prs.json \
+  --links links.json \
+  --since 2026-09-21 \
+  --initiative I08 \
+  --initiatives issue-946.json \
+  --summary summary.txt
 </pre></big>
 
 #### 2. Provide Summarise Progress

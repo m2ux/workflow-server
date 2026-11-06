@@ -52,9 +52,7 @@ Runs one instrument at the commit a branch, tag or commit resolves to, in a deta
 
 #### 1. Run at Revision
 
-- Run this command from the [workspace](#workspace "○") [checkout](#project-checkout "○") using [Revision](#revision "○").
-
-- `--project` is any checkout of the repository; `--revision` is the branch, tag or commit under verification. The [instrument](#instrument "○") follows `--` and runs at the checkout's top level.
+- The instrument follows `--` and runs at the checkout’s top level.
 - The first output line is `{"revision": <commit>, "checkout": <path>}`, the commit the result is recorded against. The instrument's output follows.
 - The exit status is the instrument's, whatever it is. The checkout is removed after a pass or a failure; one it cannot remove is reported with its path and the instrument's status stands.
 - Exit 125 is the helper's own failure, as `git bisect run` reserves it, with one standard error line naming the cause: a usage error, `revision not found:` or `checkout not created:` before any output, or `command not started:` after the first line, once the checkout exists. An instrument that itself exits 125 is told apart by that line's absence.
@@ -62,13 +60,23 @@ Runs one instrument at the commit a branch, tag or commit resolves to, in a deta
 - The checkout is registered in the repository's git directory, which `sbx` leaves read-only for a linked worktree or another repository, so the helper runs outside `sbx`. An instrument that needs the sandbox carries its own `sbx` prefix.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && python3 skills/work-planner/scripts/revision-check.py --project '[**&lt;checkout&gt;**](#project-checkout)' --revision '[**&lt;revision&gt;**](#revision)' -- [**&lt;instrument-command&gt;**](#instrument)
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  python3 skills/work-planner/scripts/revision-check.py \
+  --project '[**&lt;checkout&gt;**](#project-checkout "○")' \
+  --revision '[**&lt;revision&gt;**](#revision "○")' \
+  -- [**&lt;instrument-command&gt;**](#instrument "○")
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && python3 skills/work-planner/scripts/revision-check.py --project /projects/workflow-server --revision i11/e16/workspace -- "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 -m pytest skills/work-planner/test -q
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  python3 skills/work-planner/scripts/revision-check.py \
+  --project /projects/workflow-server \
+  --revision i11/e16/workspace \
+  -- "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 \
+  -m pytest skills/work-planner/test \
+  -q
 </pre></big>
 
 #### 2. Provide Executed at Revision

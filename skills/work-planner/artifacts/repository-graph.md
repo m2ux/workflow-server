@@ -50,7 +50,7 @@ Reports whether the repository is indexed, and how far behind the index sits.
 
 **Acts on:** the checkout it runs in.
 
-Run the following command using [Requested Revision](#requested-revision "○").
+Compare the indexed commit with [Requested Revision](#requested-revision "○").
 
 <big><pre>
 gitnexus status
@@ -68,7 +68,7 @@ Indexes the repository, which an unindexed or behind repository needs before any
 
 **Acts on:** the checkout it runs in.
 
-Run the following command using [Requested Revision](#requested-revision "○").
+Compare the indexed commit with [Requested Revision](#requested-revision "○").
 
 <big><pre>
 gitnexus analyze
@@ -86,12 +86,10 @@ Reports the symbols a pull request's diff touches and the flows they sit in, aga
 
 **Acts on:** the checkout it runs in.
 
-- Run the following command using [Base Branch](#base-branch "○").
-
-- `--base-ref` is the pull request's base, so the surface is the change rather than the branch's whole history.
+Compare against the pull request’s base to isolate its change from the branch’s full history.
 
 <big><pre>
-gitnexus detect-changes --scope compare --base-ref '[**&lt;base-branch&gt;**](#base-branch)'
+gitnexus detect-changes --scope compare --base-ref '[**&lt;base-branch&gt;**](#base-branch "○")'
 </pre></big>
 
 **Example:**
@@ -112,10 +110,8 @@ Reports one symbol's callers, its callees and the flows it sits in, each with th
 
 **Acts on:** the checkout it runs in.
 
-Run the following command using [Symbol Identity](#symbol-identity "○").
-
 <big><pre>
-gitnexus context '[**&lt;symbol-identity&gt;**](#symbol-identity)'
+gitnexus context '[**&lt;symbol-identity&gt;**](#symbol-identity "○")'
 </pre></big>
 
 **Example:**
@@ -136,10 +132,8 @@ Reports one flow's symbols in step order, the structure a sequence diagram is dr
 
 **Acts on:** the checkout it runs in.
 
-Run the following command using [Flow Identity](#flow-identity "○").
-
 <big><pre>
-gitnexus query --query '[**&lt;flow-identity&gt;**](#flow-identity)' --limit 1
+gitnexus query --query '[**&lt;flow-identity&gt;**](#flow-identity "○")' --limit 1
 </pre></big>
 
 **Example:**

@@ -179,28 +179,43 @@ Links each named task's id to the pull requests naming the epic it is delivered 
 
 #### 1. Sync Epic
 
-- Run this command from the [workspace](#workspace "○") [checkout](#project-checkout "○") using [Epic Record](#epic-record "○"), [Task Records](#task-records "○"), [Delivery Matches](#delivery-matches "○"), [Epic Bases](#epic-bases "○"), [Output Body](#output-body "○").
-
 - A row whose id links its task [issue links](#issue-links "○") the pull request instead.
 - A pull request whose head is an epic base is the pull request that merges that base, and is not matched to a task.
 - An unmerged epic base keeps the epic open, even when every row is delivered and every criterion is ticked.
 - An epic base is reported `draft` only where it holds a commit its long-lived branch lacks. The base is read at the `--revision` naming it and the long-lived branch beside it on the same remote, so `origin/i07/e00/main` is compared with `origin/main`; a base no `--revision` names is reported `unevaluable`.
-- `--project` is a checkout of the project and each `--revision` one of the epic's bases, such as `origin/i07/e00/main`. The long-lived branch names are the ones `config/branches` states at those commits, and each `source` line names a path, commit and repository.
+- Read long-lived branch names from `config/branches` at each supplied epic-base revision, such as `origin/i07/e00/main`; each `source` line names its path, commit and repository.
 - An absent, empty or unreadable statement, and statements that disagree across the bases, are reported `unevaluable` with their source. Without the long-lived branch names, the run names each check it did not make as `not checked`, and an epic that would otherwise be closable is not.
 - An open review pull request's Changes paths are read at its head commit in the `--project` repository: a path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree. A head commit the repository does not hold is reported `unevaluable`.
 - Passed checks settle criteria under [Test Evidence](#test-evidence).
-- `--link` names each task id and the pull request number it links. An id repeats once for each pull request, one per long-lived branch its unit changes. The row keeps the deliveries it links in place and gains each named one it lacks, so a repeated run leaves it unchanged. `--tasks` is the task issues. `--links` is the [pull requests](#pull-request-records "○")' Development-linked issues. `--fix` is the body written with the Done ticks.
+- Repeat a task id in `--link` once per pull request, one per long-lived branch its unit changes. Retain its existing deliveries and add only those missing, so repeated execution is idempotent.
 
 - `<task-pull-request-map>` is a comma-separated list of `<task-id>=<pull-request-number>` pairs, with a pair for each pull request a task id links. Pass each task JSON file as a separate argument after `--tasks`.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links)' --tasks '[**&lt;task-json-file&gt;**](#task-records)' --link '[**&lt;task-pull-request-map&gt;**](#delivery-matches)' --project '[**&lt;checkout&gt;**](#project-checkout)' --revision '[**&lt;epic-base-revision&gt;**](#epic-bases)' --fix '[**&lt;output-body-file&gt;**](#output-body)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record "○")' \
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' \
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' \
+  --tasks '[**&lt;task-json-file&gt;**](#task-records "○")' \
+  --link '[**&lt;task-pull-request-map&gt;**](#delivery-matches "○")' \
+  --project '[**&lt;checkout&gt;**](#project-checkout "○")' \
+  --revision '[**&lt;epic-base-revision&gt;**](#epic-bases "○")' \
+  --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --tasks issue-637.json --link W01=950,W01=951,W02=950 --project '[**&lt;checkout&gt;**](#project-checkout)' --revision origin/i07/e00/main --revision origin/i07/e00/workflows --fix fixed-943.md
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json \
+  --prs prs.json \
+  --links links.json \
+  --tasks issue-637.json \
+  --link W01=950,W01=951,W02=950 \
+  --project '[**&lt;checkout&gt;**](#project-checkout "○")' \
+  --revision origin/i07/e00/main \
+  --revision origin/i07/e00/workflows \
+  --fix fixed-943.md
 </pre></big>
 
 #### 2. Provide Recorded Epic
@@ -213,18 +228,26 @@ Ticks confirmed epic criteria, refusing any not ready to verify, and ticks compl
 
 #### 1. Tick Epic Criteria
 
-- Run this command from the [workspace](#workspace "○") checkout using [Epic Record](#epic-record "○"), [Pull Request Records](#pull-request-records "○"), [Issue Links](#issue-links "○"), [Output Body](#output-body "○").
-
-- `<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection "○").
+`<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection "○").
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links)' --tick [**&lt;criterion-ids&gt;**](#criterion-selection) --fix '[**&lt;output-body-file&gt;**](#output-body)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record "○")' \
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' \
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' \
+  --tick [**&lt;criterion-ids&gt;**](#criterion-selection "○") \
+  --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --tick AC1,AC3 --fix fixed-943.md
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json \
+  --prs prs.json \
+  --links links.json \
+  --tick AC1,AC3 \
+  --fix fixed-943.md
 </pre></big>
 
 #### 2. Provide Ticked Epic Criteria
@@ -237,23 +260,32 @@ Holds each named unit for one session, by setting its record folder as the singl
 
 #### 1. Reserve Row
 
-- Run this command from the [workspace](#workspace "○") checkout using [Epic Record](#epic-record "○"), [Task Selection](#task-selection "○"), [Board Items](#board-items "○"), [Planning Folder](#planning-folder "○"), [Output Body](#output-body "○").
-
-- `--items` is the board's items with Status.
-- `--records` is the URL of the planning records folder, needed when no row id in the epic links a record.
+- Supply the planning-records base URL when no epic row links a record.
 - The caller supplies the planned folder identity; `--date` is the day it is opened.
 - The folder is the one the unit's first task id and Description give it, as the available-work report's `unit` line names it. A call naming some rows of a joined unit and not the others is refused.
 
 - `<task-ids>` is a comma-separated list of task ids; `<records-base-url>` identifies the planning records folder.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic '[**&lt;epic-json-file&gt;**](#epic-record)' --reserve [**&lt;task-ids&gt;**](#task-selection) --items '[**&lt;board-items-file&gt;**](#board-items)' --records '[**&lt;records-base-url&gt;**](#planning-folder)' --fix '[**&lt;output-body-file&gt;**](#output-body)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py \
+  --epic '[**&lt;epic-json-file&gt;**](#epic-record "○")' \
+  --reserve [**&lt;task-ids&gt;**](#task-selection "○") \
+  --items '[**&lt;board-items-file&gt;**](#board-items "○")' \
+  --records '[**&lt;records-base-url&gt;**](#planning-folder "○")' \
+  --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --reserve W01,W02 --items items.json --records https://github.com/[**&lt;owner&gt;**](#planning-folder)/[**&lt;repo&gt;**](#planning-folder)/tree/engineering/artifacts/planning --fix fixed-943.md
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py \
+  --epic issue-943.json \
+  --reserve W01,W02 \
+  --items items.json \
+  --records https://github.com/[**&lt;owner&gt;**](#planning-folder "○")/[**&lt;repo&gt;**](#planning-folder "○")/tree/engineering/artifacts/planning \
+  --fix fixed-943.md
 </pre></big>
 
 #### 2. Provide Reserved Row
@@ -266,22 +298,30 @@ Frees each named task row, by replacing the planning-folder link with its work-i
 
 #### 1. Release Row
 
-- Run this command from the [workspace](#workspace "○") checkout using [Epic Record](#epic-record "○"), [Task Selection](#task-selection "○"), [Engineering Worktree](#engineering-worktree "○"), [Output Body](#output-body "○").
-
 - The file is the task id in lowercase within that folder, as [Task ids](#task-delivery) defines.
-- `--engineering` is the checkout holding the planning records. A row whose folder there holds no such file, or whose README does not link it, is refused.
+- Refuse a row when its planning folder contains no matching work-item file or its README does not link that file.
 - A call naming some rows of a joined unit and not the others is refused.
 
 - `<task-ids>` is a comma-separated list of task ids.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic '[**&lt;epic-json-file&gt;**](#epic-record)' --release [**&lt;task-ids&gt;**](#task-selection) --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree)' --fix '[**&lt;output-body-file&gt;**](#output-body)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py \
+  --epic '[**&lt;epic-json-file&gt;**](#epic-record "○")' \
+  --release [**&lt;task-ids&gt;**](#task-selection "○") \
+  --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' \
+  --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --release W01 --engineering .engineering --fix fixed-943.md
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py \
+  --epic issue-943.json \
+  --release W01 \
+  --engineering .engineering \
+  --fix fixed-943.md
 </pre></big>
 
 #### 2. Provide Released Row

@@ -97,8 +97,10 @@ not read.
 
 import argparse
 import difflib
+import html
 import json
 import re
+import shlex
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -107,7 +109,8 @@ from pathlib import Path
 FENCE = re.compile(r'^\s*(`{3,}|~{3,})')
 RULE = re.compile(r'^\s*(-{3,}|\*{3,}|_{3,})\s*$')
 HEADING = re.compile(r'^(#{1,6})\s+(.*)$')
-LINK = re.compile(r'\[[^\]]*\]\(([^)]+?)(?:\s+"(?:\\.|[^"\\])*")?\)')
+LINK_DESTINATION = r'([^)]+?)(?:\s+"(?:\\.|[^"\\])*")?'
+LINK = re.compile(r'\[[^\]]*\]\(' + LINK_DESTINATION + r'\)')
 ROLE_TITLES = {'○': 'input', '●': 'output', 'ƒ': 'operation'}
 CODE_SPAN = re.compile(r'`[^`]*`')
 PLACEHOLDER = re.compile(r'\{\{.*\}\}|\{[a-z_]+\}|^[.…\s]*$')
@@ -174,6 +177,7 @@ KINDS = (
     'heading step sequence', 'procedure without heading steps', 'procedure preamble missing',
     'operation contract links', 'operation link role', 'fenced invocation in HTML model', 'malformed HTML invocation',
     'invocation outside execution step', 'invocation argument contract', 'operation call verb',
+    'unwrapped shell invocation', 'duplicate command parameter prose',
 )
 OPERATIONS = KINDS + ('review',)
 
@@ -449,7 +453,7 @@ def citations(paths, structures=None):
 
 
 HEADING_STEP = re.compile(r'^(\d+)\.\s+\S')
-ARGUMENT_LINK = re.compile(r'\[\*\*([^*\]\n]+)\*\*\]\(([^)\n]+)\)')
+ARGUMENT_LINK = re.compile(r'\[\*\*([^*\]\n]+)\*\*\]\(' + LINK_DESTINATION + r'\)')
 
 
 def heading_end(headings, start, level, total):
@@ -492,6 +496,24 @@ def link_role(match):
     return ROLE_TITLES.get(title[1], '') if title else ''
 
 
+def role_links(lines, fenced):
+    """Explicit role links in prose and bold invocation annotations, outside specimens."""
+    commands = scan_blocks(lines).html_lines
+    for index, line in enumerate(lines):
+        if fenced[index]:
+            continue
+        matches = (ARGUMENT_LINK.finditer(line) if index in commands
+                   else LINK.finditer(CODE_SPAN.sub('', line)))
+        for match in matches:
+            target = match[2] if index in commands else match[1]
+            yield index, target, link_role(match), match[0]
+
+
+def logical_command_lines(payload):
+    """Unfold the invocation model’s token-boundary shell continuations."""
+    return re.sub(r'\\\n[ \t]*', '', payload).splitlines()
+
+
 def operation_target(path, target):
     """Whether a link selects a callable entry point or named procedure."""
     name, _, fragment = target.partition('#')
@@ -515,19 +537,14 @@ def link_roles(path, lines, fenced, entry):
     """Role titles select Field contracts or callable operations."""
     if not entry or not (entry.get('link_roles') or entry.get('contracts')):
         return
-    commands = scan_blocks(lines).html_lines
-    for index, line in enumerate(lines):
-        if fenced[index] or index in commands:
-            continue
-        for match in LINK.finditer(CODE_SPAN.sub('', line)):
-            role = link_role(match)
-            callable_target = operation_target(path, match[1])
-            if entry.get('link_roles') and callable_target and role != 'operation':
-                yield index, 'operation link role', match[0]
-            elif entry.get('link_roles') and role == 'operation' and not callable_target:
-                yield index, 'operation link role', match[0]
-            if role in ('input', 'output') and not field_contract(path, match[1], entry.get('contracts', 'Fields')):
-                yield index, 'operation contract links', match[0]
+    for index, target, role, source in role_links(lines, fenced):
+        callable_target = operation_target(path, target)
+        if entry.get('link_roles') and callable_target and role != 'operation':
+            yield index, 'operation link role', source
+        elif entry.get('link_roles') and role == 'operation' and not callable_target:
+            yield index, 'operation link role', source
+        if role in ('input', 'output') and not field_contract(path, target, entry.get('contracts', 'Fields')):
+            yield index, 'operation contract links', source
 
 
 def heading_model(path, lines, fenced, headings, entry):
@@ -581,14 +598,9 @@ def heading_model(path, lines, fenced, headings, entry):
             if level != 3 or HEADING_STEP.match(title):
                 continue
             first_step = next((start for start, _, _, _ in steps if index < start < end), end)
-            roles = set()
-            for line in range(first_step + 1, end):
-                if fenced[line] or line in commands or HEADING.match(lines[line]):
-                    continue
-                for match in LINK.finditer(CODE_SPAN.sub('', lines[line])):
-                    role = link_role(match)
-                    if role in ('input', 'output'):
-                        roles.add(role)
+            roles = {role for line, _, role, _ in role_links(lines, fenced)
+                     if first_step < line < end and (line in commands or not HEADING.match(lines[line]))
+                     and role in ('input', 'output')}
             for role in ('input', 'output'):
                 if role not in roles:
                     yield index, 'operation contract links', f'{title}: contextual {role} link required'
@@ -619,12 +631,38 @@ def inline_commands(path, lines, fenced, entry, steps):
             yield start, 'malformed HTML invocation', 'invocation is empty'
         for index in range(start, end + 1):
             for match in ARGUMENT_LINK.finditer(lines[index]):
+                role = link_role(match)
+                if entry.get('link_roles') and role == 'operation':
+                    continue
                 if not field_contract(path, match[2], entry.get('contracts', 'Fields')):
                     yield index, 'invocation argument contract', match[2]
+                if entry.get('link_roles') and role not in ('input', 'output'):
+                    yield index, 'invocation argument contract', 'argument links identify their input/output role'
+            visible = html.unescape(ARGUMENT_LINK.sub(lambda match: match[1], lines[index])).strip()
+            if entry.get('link_roles') and len(visible) > 120 and not visible.endswith('\\'):
+                try:
+                    words = shlex.split(visible)
+                except ValueError:
+                    words = []
+                if sum(word.startswith('--') or (word.startswith('-') and len(word) == 2) for word in words) >= 2:
+                    yield index, 'unwrapped shell invocation', 'split option/value groups with shell continuations'
             ordinary = ARGUMENT_LINK.sub('', lines[index])
             for match in LINK.finditer(ordinary):
                 if field_contract(path, match[1], entry.get('contracts', 'Fields')):
                     yield index, 'invocation argument contract', 'contract-backed arguments use bold links'
+
+    if entry.get('link_roles'):
+        for start, _, _, end in steps:
+            parameters = {match[2] for first, last in blocks if start < first <= last < end
+                          for index in range(first, last + 1) for match in ARGUMENT_LINK.finditer(lines[index])}
+            for index in range(start + 1, end):
+                if fenced[index] or index in lexical.html_lines:
+                    continue
+                matches = list(LINK.finditer(lines[index]))
+                bare = LINK.sub('', lines[index])
+                if len(matches) >= 2 and all(match[1] in parameters for match in matches) and re.fullmatch(
+                        r'(?:- )?Run (?:the following|the|this) command using[\s,.]*(?:and[\s,.]*)*', bare):
+                    yield index, 'duplicate command parameter prose', 'command annotations already bind these parameters'
 
 
 def operation_calls(path, lines, fenced, entry, inside):

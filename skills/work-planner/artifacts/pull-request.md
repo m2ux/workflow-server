@@ -340,16 +340,17 @@ Points a pull request at another base branch, such as its epic's base branch.
 
 #### 1. Retarget Pull Request
 
-Run the command using [Identity](#identity "○"), [Base Branch](#base-branch "○"), [Repository](#repository "○").
-
 <big><pre>
-gh api --method PATCH repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity) -f base='[**<target-branch>**](#base-branch)' --jq .base.ref
+gh api \
+  --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") \
+  -f base='[**<target-branch>**](#base-branch "○")' \
+  --jq .base.ref
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method PATCH repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950 -f base=i07/e00/main --jq .base.ref
+gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/950 -f base=i07/e00/main --jq .base.ref
 </pre></big>
 
 #### 2. Provide Retargeted Pull Request
@@ -362,16 +363,14 @@ Replaces a pull request's title.
 
 #### 1. Retitle Pull Request
 
-Run the command using [Identity](#identity "○"), [Title](#title "○"), [Repository](#repository "○").
-
 <big><pre>
-gh api --method PATCH repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity) -f title='[**<title>**](#title)' --jq .title
+gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") -f title='[**<title>**](#title "○")' --jq .title
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method PATCH repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950 -f title='[I07:E00] Purpose' --jq .title
+gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/950 -f title='[I07:E00] Purpose' --jq .title
 </pre></big>
 
 #### 2. Provide Retitled Pull Request
@@ -384,25 +383,42 @@ Creates a pull request from a unit's branch to its base.
 
 #### 1. Open Task Pull Request
 
-- Run the command using [Repository](#repository "○"), [Head Branch](#head-branch "○"), [Base Branch](#base-branch "○").
-
 - Supply the [title](#title "○"), the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the [complete body file](#body-file "○").
 - A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens.
 
 <big><pre>
-gh api --method POST repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls -f title='[**<title>**](#title)' -f head='[**<task-branch>**](#head-branch)' -f base='[**<base>**](#base-branch)' -F 'body=@[**<body-file>**](#body-file)' --jq .html_url
+gh api \
+  --method POST repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls \
+  -f title='[**<title>**](#title "○")' \
+  -f head='[**<task-branch>**](#head-branch "○")' \
+  -f base='[**<base>**](#base-branch "○")' \
+  -F 'body=@[**<body-file>**](#body-file "○")' \
+  --jq .html_url
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method POST repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls -f title='[I07:E00] Purpose' -f head=i07/e00/w01-purpose -f base=i07/e00/main -F body=@body.md --jq .html_url
+gh api \
+  --method POST repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls \
+  -f title='[I07:E00] Purpose' \
+  -f head=i07/e00/w01-purpose \
+  -f base=i07/e00/main \
+  -F body=@body.md \
+  --jq .html_url
 </pre></big>
 
 **Example:** A hot-fix's delivering pull request.
 
 <big><pre>
-gh api --method POST repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls -f title='[F00] Reject Bad Keys' -f head=f00-key-validation -f base=workspace -F body=@body.md -F draft=true --jq .html_url
+gh api \
+  --method POST repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls \
+  -f title='[F00] Reject Bad Keys' \
+  -f head=f00-key-validation \
+  -f base=workspace \
+  -F body=@body.md \
+  -F draft=true \
+  --jq .html_url
 </pre></big>
 
 #### 2. Provide Open Task Pull Request
@@ -415,19 +431,31 @@ Creates the draft pull request from an epic base to its long-lived target.
 
 #### 1. Open Epic Pull Request
 
-- Run the command using [Repository](#repository "○"), [Head Branch](#head-branch "○"), [Base Branch](#base-branch "○").
-
 - Supply the epic prefix and name as [title](#title "○"), the epic base as head, its long-lived branch as base, and the populated review [body file](#body-file "○").
 - `draft` is true, including when the work is already complete.
 
 <big><pre>
-gh api --method POST repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls -f title='[**<title>**](#title)' -f head='[**<epic-base>**](#head-branch)' -f base='[**<long-lived-base>**](#base-branch)' -F draft=true -F 'body=@[**<body-file>**](#body-file)' --jq .html_url
+gh api \
+  --method POST repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls \
+  -f title='[**<title>**](#title "○")' \
+  -f head='[**<epic-base>**](#head-branch "○")' \
+  -f base='[**<long-lived-base>**](#base-branch "○")' \
+  -F draft=true \
+  -F 'body=@[**<body-file>**](#body-file "○")' \
+  --jq .html_url
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method POST repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls -f title='[I07:E00] Name' -f head=i07/e00/main -f base=main -F draft=true -F body=@body.md --jq .html_url
+gh api \
+  --method POST repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls \
+  -f title='[I07:E00] Name' \
+  -f head=i07/e00/main \
+  -f base=main \
+  -F draft=true \
+  -F body=@body.md \
+  --jq .html_url
 </pre></big>
 
 #### 2. Provide Open Epic Pull Request
@@ -440,19 +468,19 @@ Merges the task pull request into its base.
 
 #### 1. Merge Pull Request
 
-- Run the command using [Identity](#identity "○"), [Merge Authorization](#merge-authorization "○"), [Repository](#repository "○").
+- Require [Merge Authorization](#merge-authorization "○") before executing the command.
 
 - Require the supplied [readiness evidence](#readiness-evidence "○") and authorization before issuing the merge.
 - The merge method is a merge commit.
 
 <big><pre>
-gh api --method PUT repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)/merge -f merge_method=merge --jq .merged
+gh api --method PUT repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○")/merge -f merge_method=merge --jq .merged
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method PUT repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950/merge -f merge_method=merge --jq .merged
+gh api --method PUT repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/950/merge -f merge_method=merge --jq .merged
 </pre></big>
 
 #### 2. Provide Merged Pull Request
@@ -465,18 +493,16 @@ Replaces a pull request's body.
 
 #### 1. Patch Pull Request Body
 
-- Run the command using [Identity](#identity "○"), [Body File](#body-file "○"), [Repository](#repository "○").
-
-- The file is the whole body. The issue a pull request delivers is linked on the pull request itself, so this call leaves that link standing.
+The file is the whole body. The issue a pull request delivers is linked on the pull request itself, so this call leaves that link standing.
 
 <big><pre>
-gh api --method PATCH repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity) -F 'body=@[**<body-file>**](#body-file)' --jq .html_url
+gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") -F 'body=@[**<body-file>**](#body-file "○")' --jq .html_url
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method PATCH repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950 -F body=@pr-950.md --jq .html_url
+gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/950 -F body=@pr-950.md --jq .html_url
 </pre></big>
 
 #### 2. Provide Patch Pull Request Body
@@ -489,16 +515,14 @@ Returns the open pull request whose head is the supplied epic base, or no result
 
 #### 1. Find Review Pull Request
 
-Run the command using [Repository](#repository "○"), [Head Branch](#head-branch "○").
-
 <big><pre>
-gh api "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=open&head=[**<owner>**](#repository):[**<epic-base>**](#head-branch)" --jq '.[0].number'
+gh api "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=open&head=[**<owner>**](#repository "○"):[**<epic-base>**](#head-branch "○")" --jq '.[0].number'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=open&head=[**<owner>**](#repository):i07/e00/main" --jq '.[0].number'
+gh api "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=open&head=[**<owner>**](#repository "○"):i07/e00/main" --jq '.[0].number'
 </pre></big>
 
 #### 2. Provide Located Review Pull Request
@@ -511,18 +535,26 @@ Merges the epic base into its long-lived target at the supplied head.
 
 #### 1. Submit Epic Merge
 
-- Run the command using [Identity](#identity "○"), [Verified Head](#verified-head "○"), [Target Requirements](#target-requirements "○"), [Readiness Evidence](#readiness-evidence "○"), [Merge Authorization](#merge-authorization "○"), [Repository](#repository "○").
+- Require [Merge Authorization](#merge-authorization "○"), [Readiness Evidence](#readiness-evidence "○"), [Target Requirements](#target-requirements "○") before executing the command.
 
 - The merge method is a merge commit. The endpoint refuses a different head.
 
 <big><pre>
-gh api --method PUT repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)/merge -f merge_method=merge -f sha=[**<head-sha>**](#verified-head) --jq '{merged, message, sha}'
+gh api \
+  --method PUT repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○")/merge \
+  -f merge_method=merge \
+  -f sha=[**<head-sha>**](#verified-head "○") \
+  --jq '{merged, message, sha}'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method PUT repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/980/merge -f merge_method=merge -f sha=[**<head-sha>**](#verified-head) --jq '{merged, message, sha}'
+gh api \
+  --method PUT repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/980/merge \
+  -f merge_method=merge \
+  -f sha=[**<head-sha>**](#verified-head "○") \
+  --jq '{merged, message, sha}'
 </pre></big>
 
 #### 2. Provide Submit Epic Merge
@@ -535,16 +567,15 @@ Returns a pull request's merge state, merge commit, head and base.
 
 #### 1. Read Merge Result
 
-Run the command using [Identity](#identity "○"), [Repository](#repository "○").
-
 <big><pre>
-gh api repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity) --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'
+gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") \
+  --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/980 --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'
+gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/980 --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'
 </pre></big>
 
 #### 2. Provide Read Merge Result
@@ -557,7 +588,7 @@ Adds one pull request to an issue's Development relation, and reads the relation
 
 #### 1. Set Development Link
 
-- Run the command using [Workspace](#workspace "○"), [Issue Identity](#issue-identity "○"), [Authenticated Access](#authenticated-access "○"), [Repository Prerequisite](#repository-prerequisite "○").
+- Require [Authenticated Access](#authenticated-access "○"), [Repository Prerequisite](#repository-prerequisite "○") before executing the command.
 
 **REST gap:** REST exposes no write to the Development relation; `addCloseIssueReferences` is a GraphQL mutation alone.
 
@@ -567,13 +598,19 @@ Adds one pull request to an issue's Development relation, and reads the relation
 - Exit 1 prints `failed:` with the operation, the step and the tracker's error, or `discrepancy:` with the relation read back.
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && python3 skills/work-planner/scripts/development-link.py add --issue [**<issue-owner>**](#issue-identity)/[**<issue-repo>**](#issue-identity)#[**<issue-number>**](#issue-identity) --pull [**<pr-owner>**](#identity)/[**<pr-repo>**](#identity)#[**<pull-request-number>**](#identity)
+cd "[**<workspace>**](#workspace "○")" && \
+  python3 skills/work-planner/scripts/development-link.py add \
+  --issue [**<issue-owner>**](#issue-identity "○")/[**<issue-repo>**](#issue-identity "○")#[**<issue-number>**](#issue-identity "○") \
+  --pull [**<pr-owner>**](#identity "○")/[**<pr-repo>**](#identity "○")#[**<pull-request-number>**](#identity "○")
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && python3 skills/work-planner/scripts/development-link.py add --issue m2ux/workflow-server#637 --pull m2ux/workflow-server#950
+cd "[**<workspace>**](#workspace "○")" && \
+  python3 skills/work-planner/scripts/development-link.py add \
+  --issue m2ux/workflow-server#637 \
+  --pull m2ux/workflow-server#950
 </pre></big>
 
 **Example output:**
@@ -594,7 +631,7 @@ Removes one pull request from an issue's Development relation, and reads the rel
 
 #### 1. Remove Development Link
 
-- Run the command using [Workspace](#workspace "○"), [Identity](#identity "○"), [Issue Identity](#issue-identity "○"), [Authenticated Access](#authenticated-access "○"), [Removal Decision](#removal-decision "○").
+- Require [Authenticated Access](#authenticated-access "○"), [Removal Decision](#removal-decision "○") before executing the command.
 
 **REST gap:** REST exposes no write to the Development relation; `removeCloseIssueReferences` is a GraphQL mutation alone.
 
@@ -603,13 +640,19 @@ Removes one pull request from an issue's Development relation, and reads the rel
 - Exit 1 prints `failed:` or `discrepancy:` with the operation, step and tracker error, or the relation read back.
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && python3 skills/work-planner/scripts/development-link.py remove --issue [**<issue-owner>**](#issue-identity)/[**<issue-repo>**](#issue-identity)#[**<issue-number>**](#issue-identity) --pull [**<pr-owner>**](#identity)/[**<pr-repo>**](#identity)#[**<pull-request-number>**](#identity)
+cd "[**<workspace>**](#workspace "○")" && \
+  python3 skills/work-planner/scripts/development-link.py remove \
+  --issue [**<issue-owner>**](#issue-identity "○")/[**<issue-repo>**](#issue-identity "○")#[**<issue-number>**](#issue-identity "○") \
+  --pull [**<pr-owner>**](#identity "○")/[**<pr-repo>**](#identity "○")#[**<pull-request-number>**](#identity "○")
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && python3 skills/work-planner/scripts/development-link.py remove --issue m2ux/workflow-server#637 --pull m2ux/workflow-server#950
+cd "[**<workspace>**](#workspace "○")" && \
+  python3 skills/work-planner/scripts/development-link.py remove \
+  --issue m2ux/workflow-server#637 \
+  --pull m2ux/workflow-server#950
 </pre></big>
 
 **Example output:**
@@ -628,7 +671,7 @@ Writes the complete issue-link snapshot for a pull request collection, read from
 
 #### 1. Capture Pull Request Links
 
-- Run the command using [Workspace](#workspace "○"), [Link-Snapshot Path](#link-snapshot-path "○"), [Authenticated Access](#authenticated-access "○").
+- Require [Authenticated Access](#authenticated-access "○") before executing the command.
 
 **REST gap:** REST exposes no read of a pull request's closing issue references.
 
@@ -639,13 +682,19 @@ Writes the complete issue-link snapshot for a pull request collection, read from
 - A call the tracker refuses outright, such as a rejected credential, exits 1 with `GraphQL read failed:` and what `gh` reported, and writes nothing.
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && python3 skills/work-planner/scripts/links-by-pull-request.py --prs '[**<pull-request-records-file>**](#pull-request-records)' --out '[**<issue-link-snapshot-file>**](#link-snapshot-path)'
+cd "[**<workspace>**](#workspace "○")" && \
+  python3 skills/work-planner/scripts/links-by-pull-request.py \
+  --prs '[**<pull-request-records-file>**](#pull-request-records "○")' \
+  --out '[**<issue-link-snapshot-file>**](#link-snapshot-path "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && python3 skills/work-planner/scripts/links-by-pull-request.py --prs prs.json --out links.json
+cd "[**<workspace>**](#workspace "○")" && \
+  python3 skills/work-planner/scripts/links-by-pull-request.py \
+  --prs prs.json \
+  --out links.json
 </pre></big>
 
 **Example payload:**
@@ -670,16 +719,14 @@ Saves one complete pull request response, replacing the destination file.
 
 #### 1. Save Pull Request Snapshot
 
-Run the command using [Identity](#identity "○"), [Output Files](#output-files "○"), [Repository](#repository "○").
-
 <big><pre>
-gh api repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity) > '[**<pull-request-json-file>**](#output-files)'
+gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") > '[**<pull-request-json-file>**](#output-files "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/980 > epic-pr.json
+gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/980 > epic-pr.json
 </pre></big>
 
 #### 2. Provide Save Pull Request Snapshot
@@ -692,16 +739,14 @@ Saves every review on one pull request.
 
 #### 1. Fetch Pull Request Reviews
 
-Run the command using [Identity](#identity "○"), [Output Files](#output-files "○"), [Repository](#repository "○").
-
 <big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)/reviews?per_page=100' > '[**<reviews-file>**](#output-files)'
+gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○")/reviews?per_page=100' > '[**<reviews-file>**](#output-files "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/980/reviews?per_page=100' > reviews.json
+gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/980/reviews?per_page=100' > reviews.json
 </pre></big>
 
 #### 2. Provide Fetched Pull Request Reviews
@@ -714,16 +759,22 @@ Saves the task and epic pull requests that name one initiative's epics.
 
 #### 1. Fetch Initiative Pull Requests
 
-Run the command using [Repository](#repository "○"), [Initiative Prefix](#initiative-prefix "○"), [Collection Path](#collection-path "○"), [Pull Request Records](#pull-request-records "○").
+Use [Collection Path](#collection-path "○") for the saved collection.
 
 <big><pre>
-gh api --paginate "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[**<initiative-prefix>**](#initiative-prefix)"))' > '[**<pull-request-records-file>**](#pull-request-records)'
+gh api \
+  --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" \
+  --jq '.[] | select(.title | startswith("[**<initiative-prefix>**](#initiative-prefix "○")"))' \
+  > '[**<pull-request-records-file>**](#pull-request-records "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --paginate "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I07"))' > prs.json
+gh api \
+  --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" \
+  --jq '.[] | select(.title | startswith("[I07"))' \
+  > prs.json
 </pre></big>
 
 #### 2. Provide Fetched Initiative Pull Requests
@@ -736,7 +787,7 @@ Appends to a pull request collection each pull request the plan links that the c
 
 #### 1. Fetch Linked Pull Requests
 
-- Run the command using [Workspace](#workspace "○"), [Collection Path](#collection-path "○"), [Issue Records](#issue-records "○"), [Pull Request Records](#pull-request-records "○").
+- Use [Collection Path](#collection-path "○") for the saved collection.
 
 **REST gap:** REST exposes no read of the pull requests an issue's Development field holds.
 
@@ -746,13 +797,19 @@ Appends to a pull request collection each pull request the plan links that the c
 - Exit 0 means every linked pull request is in the collection. Exit 1 names each unreadable relation or pull request and appends nothing; the caller treats it as a blocker.
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && python3 skills/work-planner/scripts/linked-pull-requests.py --prs '[**<pull-request-records-file>**](#pull-request-records)' --issues '[**<issue-file>**](#issue-records)' ...
+cd "[**<workspace>**](#workspace "○")" && \
+  python3 skills/work-planner/scripts/linked-pull-requests.py \
+  --prs '[**<pull-request-records-file>**](#pull-request-records "○")' \
+  --issues '[**<issue-file>**](#issue-records "○")' ...
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && python3 skills/work-planner/scripts/linked-pull-requests.py --prs prs.json --issues issue-936.json issue-943.json issue-637.json
+cd "[**<workspace>**](#workspace "○")" && \
+  python3 skills/work-planner/scripts/linked-pull-requests.py \
+  --prs prs.json \
+  --issues issue-936.json issue-943.json issue-637.json
 </pre></big>
 
 #### 2. Provide Fetched Linked Pull Requests
@@ -765,16 +822,22 @@ Starts a collection with all initiative- and hot-fix-prefixed pull requests from
 
 #### 1. Fetch Repository Delivery Pull Requests
 
-Run the command using [Repository](#repository "○"), [Collection Path](#collection-path "○"), [Pull Request Records](#pull-request-records "○").
+Use [Collection Path](#collection-path "○") for the saved collection.
 
 <big><pre>
-gh api --paginate "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' > '[**<pull-request-records-file>**](#pull-request-records)'
+gh api \
+  --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" \
+  --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' \
+  > '[**<pull-request-records-file>**](#pull-request-records "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --paginate "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' > prs.json
+gh api \
+  --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" \
+  --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' \
+  > prs.json
 </pre></big>
 
 #### 2. Provide Fetched Repository Delivery Pull Requests
@@ -787,16 +850,22 @@ Appends all initiative- and hot-fix-prefixed pull requests from one further repo
 
 #### 1. Append Repository Delivery Pull Requests
 
-Run the command using [Repository](#repository "○"), [Collection Path](#collection-path "○"), [Pull Request Records](#pull-request-records "○").
+Use [Collection Path](#collection-path "○") for the saved collection.
 
 <big><pre>
-gh api --paginate "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' >> '[**<pull-request-records-file>**](#pull-request-records)'
+gh api \
+  --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" \
+  --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' \
+  >> '[**<pull-request-records-file>**](#pull-request-records "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --paginate "repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' >> prs.json
+gh api \
+  --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" \
+  --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' \
+  >> prs.json
 </pre></big>
 
 #### 2. Provide Appended Repository Delivery Pull Requests
@@ -809,16 +878,17 @@ Saves the paths a pull request changes.
 
 #### 1. Fetch Pull Request Files
 
-Run the command using [Identity](#identity "○"), [Output Files](#output-files "○"), [Repository](#repository "○").
-
 <big><pre>
-gh api --paginate repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)/files --jq '.[].filename' > '[**<changed-paths-file>**](#output-files)'
+gh api \
+  --paginate repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○")/files \
+  --jq '.[].filename' \
+  > '[**<changed-paths-file>**](#output-files "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --paginate repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/950/files --jq '.[].filename' > changed-files.txt
+gh api --paginate repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/950/files --jq '.[].filename' > changed-files.txt
 </pre></big>
 
 #### 2. Provide Fetched Pull Request Files
@@ -831,16 +901,14 @@ Saves every check run for one exact commit.
 
 #### 1. Fetch Head Check Runs
 
-Run the command using [Repository](#repository "○"), [Verified Head](#verified-head "○"), [Output Files](#output-files "○").
-
 <big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/commits/[**<head-sha>**](#verified-head)/check-runs?per_page=100' > '[**<check-runs-file>**](#output-files)'
+gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/commits/[**<head-sha>**](#verified-head "○")/check-runs?per_page=100' > '[**<check-runs-file>**](#output-files "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/commits/[**<head-sha>**](#verified-head)/check-runs?per_page=100' > checks.json
+gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/commits/[**<head-sha>**](#verified-head "○")/check-runs?per_page=100' > checks.json
 </pre></big>
 
 #### 2. Provide Fetched Head Check Runs
@@ -853,16 +921,14 @@ Saves commit status evidence for one exact commit.
 
 #### 1. Fetch Head Status
 
-Run the command using [Repository](#repository "○"), [Verified Head](#verified-head "○"), [Output Files](#output-files "○").
-
 <big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/commits/[**<head-sha>**](#verified-head)/status?per_page=100' > '[**<commit-status-file>**](#output-files)'
+gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/commits/[**<head-sha>**](#verified-head "○")/status?per_page=100' > '[**<commit-status-file>**](#output-files "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/commits/[**<head-sha>**](#verified-head)/status?per_page=100' > status.json
+gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/commits/[**<head-sha>**](#verified-head "○")/status?per_page=100' > status.json
 </pre></big>
 
 #### 2. Provide Fetched Head Status
@@ -875,7 +941,7 @@ Marks a draft pull request ready for review.
 
 #### 1. Mark Review Ready
 
-- Run the command using [Node Metadata](#node-metadata "○").
+- Build the selected GraphQL mutation from [Node Metadata](#node-metadata "○") before running it.
 
 **REST gap:** REST has no endpoint that marks a draft ready for review.
 
@@ -886,7 +952,7 @@ Marks a draft pull request ready for review.
   ```
 
 <big><pre>
-gh api graphql -F query=@'[**<query-file>**](#query-file)' --jq .data.markPullRequestReadyForReview.pullRequest.isDraft
+gh api graphql -F query=@'[**<query-file>**](#query-file "○")' --jq .data.markPullRequestReadyForReview.pullRequest.isDraft
 </pre></big>
 
 #### 2. Provide Mark Review Ready
@@ -899,10 +965,8 @@ Returns an open integration pull request with blocked handoff evidence to draft.
 
 #### 1. Mark Review Draft
 
-Run the command using [Identity](#identity "○"), [Repository](#repository "○").
-
 <big><pre>
-gh pr ready [**<pull-request-number>**](#identity) --undo --repo [**<owner>**](#repository)/[**<repository>**](#repository)
+gh pr ready [**<pull-request-number>**](#identity "○") --undo --repo [**<owner>**](#repository "○")/[**<repository>**](#repository "○")
 </pre></big>
 
 #### 2. Provide Mark Review Draft

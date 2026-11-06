@@ -211,7 +211,7 @@ Prints one epic's base branch names, one per line.
 
 #### 1. List Epic Bases
 
-- Run the command in the [Project Checkout](#project-checkout "○"), using [Epic Identity](#epic-identity "○").
+- Run in the [Project Checkout](#project-checkout "○").
 
 **Acts on:** the checkout it runs in.
 
@@ -219,7 +219,7 @@ Prints one epic's base branch names, one per line.
 - The prefix has the form `i<initiative-number>/e<epic-number>`. **Example:** `i07/e00`; a corresponding base is `i07/e00/main`.
 
 <big><pre>
-git ls-remote --heads origin 'refs/heads/[**<epic-branch-prefix>**](#epic-identity)/*' | cut -f2 | sed 's|refs/heads/||'
+git ls-remote --heads origin 'refs/heads/[**<epic-branch-prefix>**](#epic-identity "○")/*' | cut -f2 | sed 's|refs/heads/||'
 </pre></big>
 
 **Example:**
@@ -238,22 +238,28 @@ Prints the long-lived branch names, one per line.
 
 #### 1. List Long-Lived Branches
 
-- Run the command using [Workspace](#workspace "○").
-
 - The names meet [Branches](#branches).
-- `--project` is any [checkout of the project](#project-checkout "○"). `--revision` is the evaluated [revision](#revision "○") [Branches](#branches) names for the run.
+- Select the evaluated revision according to [Branches](#branches).
 - The names are the ones `config/branches` states at the commit `--revision` resolves to. Standard error carries their source: the configuration path, that commit and the repository.
 - `--names` reads one `--revision`.
 - An absent, empty or unreadable statement, or a revision resolving to no commit, prints `unevaluable:` with the source and why, and exits 1.
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py --names --project '[**<checkout>**](#project-checkout)' --revision '[**<revision>**](#revision)'
+cd "[**<workspace>**](#workspace "○")" && \
+  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py \
+  --names \
+  --project '[**<checkout>**](#project-checkout "○")' \
+  --revision '[**<revision>**](#revision "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py --names --project '[**<checkout>**](#project-checkout)' --revision origin/i07/e00/main
+cd "[**<workspace>**](#workspace "○")" && \
+  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py \
+  --names \
+  --project '[**<checkout>**](#project-checkout "○")' \
+  --revision origin/i07/e00/main
 </pre></big>
 
 #### 2. Provide Listed Long-Lived Branches
@@ -266,12 +272,12 @@ Fetches one source branch from origin.
 
 #### 1. Fetch Remote Branch
 
-Run the command in the [Checkout](#checkout "○"), using [Source Branch](#source-branch "○").
+Run in the [Checkout](#checkout "○").
 
 **Acts on:** the checkout it runs in.
 
 <big><pre>
-git fetch origin '[**<source-branch>**](#source-branch)'
+git fetch origin '[**<source-branch>**](#source-branch "○")'
 </pre></big>
 
 #### 2. Provide Fetched Remote Branch
@@ -284,12 +290,13 @@ Creates a remote epic base from the fetched source branch.
 
 #### 1. Publish Epic Base
 
-Run the command in the [Project Checkout](#project-checkout "○"), using [Source Branch](#source-branch "○"), [Epic-Base Name](#epic-base-name "○"), [Prerequisite Evidence](#prerequisite-evidence "○"), [Missing Destination](#missing-destination "○").
+- Run in the [Project Checkout](#project-checkout "○").
+- Require [Missing Destination](#missing-destination "○"), [Prerequisite Evidence](#prerequisite-evidence "○") before executing the command.
 
 **Acts on:** the checkout it runs in.
 
 <big><pre>
-git push origin 'origin/[**<source-branch>**](#source-branch):refs/heads/[**<epic-base>**](#epic-base-name)'
+git push origin 'origin/[**<source-branch>**](#source-branch "○"):refs/heads/[**<epic-base>**](#epic-base-name "○")'
 </pre></big>
 
 #### 2. Provide Published Epic Base
@@ -302,12 +309,12 @@ Merges one fetched remote branch into the branch of the checkout it runs in.
 
 #### 1. Merge Remote Branch
 
-Run the command in the [Checkout](#checkout "○"), using [Source Branch](#source-branch "○").
+Run in the [Checkout](#checkout "○").
 
 **Acts on:** the checkout it runs in.
 
 <big><pre>
-git merge --no-edit 'origin/[**<source-branch>**](#source-branch)'
+git merge --no-edit 'origin/[**<source-branch>**](#source-branch "○")'
 </pre></big>
 
 #### 2. Provide Merged Remote Branch
@@ -320,7 +327,8 @@ Pushes the epic base checked out where it runs to its configured upstream.
 
 #### 1. Push Epic Base
 
-Run the command in the [Checkout](#checkout "○"), using [Successful Merge](#successful-merge "○").
+- Run in the [Checkout](#checkout "○").
+- Require [Successful Merge](#successful-merge "○") before executing the command.
 
 **Acts on:** the checkout it runs in.
 
@@ -338,12 +346,13 @@ Pushes the head of the checkout it runs in to its named remote task branch.
 
 #### 1. Push Task Branch
 
-Run the command using [Unit Checkout](#unit-checkout "○"), [Task Branch](#task-branch "○"), [Successful Merge](#successful-merge "○").
+- Run in the [Unit Checkout](#unit-checkout "○").
+- Require [Successful Merge](#successful-merge "○") before executing the command.
 
 **Acts on:** the checkout it runs in.
 
 <big><pre>
-git push origin 'HEAD:refs/heads/[**<task-branch>**](#task-branch)'
+git push origin 'HEAD:refs/heads/[**<task-branch>**](#task-branch "○")'
 </pre></big>
 
 **Example:**
@@ -362,14 +371,15 @@ Creates a task branch and worktree at the fetched base.
 
 #### 1. Add Task Worktree
 
-- Run the command in the [Project Checkout](#project-checkout "○"), using [Worktree Path](#worktree-path "○"), [Task Branch](#task-branch "○"), [Base Branch](#base-branch "○"), [Prerequisite Evidence](#prerequisite-evidence "○").
+- Run in the [Project Checkout](#project-checkout "○").
+- Require [Prerequisite Evidence](#prerequisite-evidence "○") before executing the command.
 
 **Acts on:** the checkout it runs in.
 
 - The path resolves against the directory the command runs in, so supply it as [Task Branches](#task-branches) anchors it rather than relative to a linked worktree.
 
 <big><pre>
-git worktree add '[**<worktree-path>**](#worktree-path)' -b '[**<task-branch>**](#task-branch)' 'origin/[**<base>**](#base-branch)'
+git worktree add '[**<worktree-path>**](#worktree-path "○")' -b '[**<task-branch>**](#task-branch "○")' 'origin/[**<base>**](#base-branch "○")'
 </pre></big>
 
 **Example:**
@@ -388,12 +398,12 @@ Fetches one pull request head into FETCH_HEAD.
 
 #### 1. Fetch Review Head
 
-Run the command in the [Project Checkout](#project-checkout "○"), using [Pull Request Number](#pull-request-number "○").
+Run in the [Project Checkout](#project-checkout "○").
 
 **Acts on:** the checkout it runs in.
 
 <big><pre>
-git fetch origin pull/[**<pull-request-number>**](#pull-request-number)/head
+git fetch origin pull/[**<pull-request-number>**](#pull-request-number "○")/head
 </pre></big>
 
 **Example:**
@@ -412,14 +422,14 @@ Creates the worktree for an existing epic base.
 
 #### 1. Add Epic Base Worktree
 
-- Run the command in the [Project Checkout](#project-checkout "○"), using [Worktree Path](#worktree-path "○"), [Epic-Base Name](#epic-base-name "○").
+- Run in the [Project Checkout](#project-checkout "○").
 
 **Acts on:** the checkout it runs in.
 
 - The path resolves against the directory the command runs in, so supply it as [Epic Bases](#epic-bases) anchors it rather than relative to a linked worktree.
 
 <big><pre>
-git worktree add '[**<worktree-path>**](#worktree-path)' '[**<epic-base>**](#epic-base-name)'
+git worktree add '[**<worktree-path>**](#worktree-path "○")' '[**<epic-base>**](#epic-base-name "○")'
 </pre></big>
 
 **Example:**
@@ -438,14 +448,14 @@ Creates a detached worktree at the fetched review head.
 
 #### 1. Add Review Worktree
 
-- Run the command in the [Project Checkout](#project-checkout "○"), using [Worktree Path](#worktree-path "○"), [Verified Head](#verified-head "○").
+- Run in the [Project Checkout](#project-checkout "○").
 
 **Acts on:** the checkout it runs in.
 
 - The path resolves against the directory the command runs in, so supply it as [Review Worktrees](#review-worktrees) anchors it rather than relative to a linked worktree.
 
 <big><pre>
-git worktree add --detach '[**<worktree-path>**](#worktree-path)' [**<head-commit>**](#verified-head)
+git worktree add --detach '[**<worktree-path>**](#worktree-path "○")' [**<head-commit>**](#verified-head "○")
 </pre></big>
 
 #### 2. Provide Added Review Worktree
@@ -458,16 +468,14 @@ Saves the target branch protection response.
 
 #### 1. Fetch Branch Protection
 
-Run the command using [Repository](#repository "○"), [Target Branch](#target-branch "○"), [Output Files](#output-files "○").
-
 <big><pre>
-gh api 'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/branches/[**<target-branch>**](#target-branch)/protection' > '[**<branch-protection-file>**](#output-files)'
+gh api 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/branches/[**<target-branch>**](#target-branch "○")/protection' > '[**<branch-protection-file>**](#output-files "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api repos/[**<owner>**](#repository)/[**<repo>**](#repository)/branches/main/protection > protection.json
+gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/branches/main/protection > protection.json
 </pre></big>
 
 #### 2. Provide Fetched Branch Protection
@@ -480,16 +488,14 @@ Saves every active rule for the target branch.
 
 #### 1. Fetch Active Branch Rules
 
-Run the command using [Repository](#repository "○"), [Target Branch](#target-branch "○"), [Output Files](#output-files "○").
-
 <big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/rules/branches/[**<target-branch>**](#target-branch)' > '[**<branch-rules-file>**](#output-files)'
+gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/rules/branches/[**<target-branch>**](#target-branch "○")' > '[**<branch-rules-file>**](#output-files "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --paginate repos/[**<owner>**](#repository)/[**<repo>**](#repository)/rules/branches/main > branch-rules.json
+gh api --paginate repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/rules/branches/main > branch-rules.json
 </pre></big>
 
 #### 2. Provide Fetched Active Branch Rules
@@ -502,10 +508,8 @@ Resolves one revision to its commit in the selected checkout.
 
 #### 1. Read Checkout Revision
 
-Run the command using [Checkout](#checkout "○"), [Revision](#revision "○").
-
 <big><pre>
-git -C '[**<checkout>**](#checkout)' rev-parse '[**<revision>**](#revision)^{commit}'
+git -C '[**<checkout>**](#checkout "○")' rev-parse '[**<revision>**](#revision "○")^{commit}'
 </pre></big>
 
 #### 2. Provide Read Checkout Revision
@@ -518,10 +522,8 @@ Reports branch or detached-HEAD state and tracked and untracked changes in one c
 
 #### 1. Read Checkout Status
 
-Run the command using [Checkout](#checkout "○").
-
 <big><pre>
-git -C '[**<checkout>**](#checkout)' status --porcelain --branch
+git -C '[**<checkout>**](#checkout "○")' status --porcelain --branch
 </pre></big>
 
 #### 2. Provide Read Checkout Status

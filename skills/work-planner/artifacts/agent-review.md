@@ -47,10 +47,11 @@ Checks published review evidence against a freshly fetched integration pull requ
 
 #### 1. Validate Agent Review
 
-Run the following command using [Pull Request Record](#pull-request-record "○"), [Published Reviews](#published-reviews "○"), [Workspace](#workspace "○").
-
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/agent_review.py --pr '[**&lt;pull-request-json-file&gt;**](#pull-request-record)' --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/agent_review.py \
+  --pr '[**&lt;pull-request-json-file&gt;**](#pull-request-record "○")' \
+  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")'
 </pre></big>
 
 #### 2. Provide Validated Agent Review

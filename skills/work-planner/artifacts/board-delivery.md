@@ -123,23 +123,41 @@ Computes membership, Status and assignee calls from supplied delivery evidence.
 
 #### 1. Compute Board Changes
 
-- Run the following command using [Initiative Record](#initiative-record "○"), [Epic Records](#epic-records "○"), [Task Records](#task-records "○"), [Published Reviews](#published-reviews "○"), [Board Identity](#board-identity "○"), [Board Fields](#board-fields "○"), [Board Items](#board-items "○"), [Output Directory](#output-directory "○"), [Resolved Issues](#resolved-issues "○"), [Workspace](#workspace "○").
+- Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
 
-- `--epics`, `--tasks`, `--prs` and `--links` receive the related records and complete [link snapshot](#issue-link-snapshot "○"). `--agent-reviews` supplies the published review records fetched from the open epic [pull requests](#pull-request-records "○"); absent evidence holds those epics In Progress.
-- `--board`, `--fields` and `--items` identify the current board state.
-- `--out` receives the call files; `--assignee` is the supplied [login](#assignee-login "○").
-- `--others` supplies each resolved dependency issue.
+- Missing published agent-review evidence holds the epic In Progress.
 
 - Pass each epic or task JSON file as a separate argument after its corresponding flag.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record)' --epics '[**&lt;epic-json-file&gt;**](#epic-records)' --tasks '[**&lt;task-json-file&gt;**](#task-records)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews)' --board [**&lt;board-identity&gt;**](#board-identity) --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --items '[**&lt;board-items-file&gt;**](#board-items)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record "○")' \
+  --epics '[**&lt;epic-json-file&gt;**](#epic-records "○")' \
+  --tasks '[**&lt;task-json-file&gt;**](#task-records "○")' \
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' \
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot "○")' \
+  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")' \
+  --board [**&lt;board-identity&gt;**](#board-identity "○") \
+  --fields '[**&lt;board-fields-file&gt;**](#board-fields "○")' \
+  --items '[**&lt;board-items-file&gt;**](#board-items "○")' \
+  --out '[**&lt;output-directory&gt;**](#output-directory "○")' \
+  --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --links links.json --board users/[**&lt;owner&gt;**](#board-identity)/projectsV2/9 --fields fields.json --items items.json --out board/ --assignee m2ux
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/board.py issue-936.json \
+  --epics issue-943.json issue-937.json \
+  --tasks issue-637.json \
+  --prs prs.json \
+  --links links.json \
+  --board users/[**&lt;owner&gt;**](#board-identity "○")/projectsV2/9 \
+  --fields fields.json \
+  --items items.json \
+  --out board/ \
+  --assignee m2ux
 </pre></big>
 
 #### 2. Provide Computed Board Changes
@@ -152,10 +170,18 @@ Renders board calls within the dispatch jurisdiction.
 
 #### 1. Compute Dispatch Status
 
-Run the following command using [Board Items](#board-items "○"), [Board Identity](#board-identity "○"), [Board Fields](#board-fields "○"), [Output Directory](#output-directory "○"), [Assignee Login](#assignee-login "○"), [Dispatch Selection](#dispatch-selection "○"), [Pull Request Records](#pull-request-records "○"), [Published Reviews](#published-reviews "○"), [Workspace](#workspace "○").
-
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '[**&lt;board-items-file&gt;**](#board-items)' --board [**&lt;board-identity&gt;**](#board-identity) --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)' --progress [**&lt;held-issue-numbers&gt;**](#dispatch-selection) --review [**&lt;complete-epic-numbers&gt;**](#dispatch-selection) --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py \
+  --items '[**&lt;board-items-file&gt;**](#board-items "○")' \
+  --board [**&lt;board-identity&gt;**](#board-identity "○") \
+  --fields '[**&lt;board-fields-file&gt;**](#board-fields "○")' \
+  --out '[**&lt;output-directory&gt;**](#output-directory "○")' \
+  --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")' \
+  --progress [**&lt;held-issue-numbers&gt;**](#dispatch-selection "○") \
+  --review [**&lt;complete-epic-numbers&gt;**](#dispatch-selection "○") \
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' \
+  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")'
 </pre></big>
 
 #### 2. Provide Computed Dispatch Status

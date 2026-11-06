@@ -138,20 +138,24 @@ Reports an initiative's delivery state against its epics, and ticks Done on an e
 
 #### 1. Sync Initiative
 
-- Run this command from the [workspace](#workspace "○") checkout using [Initiative Record](#initiative-record "○"), [Epic Records](#epic-records "○"), [Output Files](#output-files "○").
+- Use [Output Files](#output-files "○") to select the destination.
 
 - It takes every linked epic's current JSON. Delivery findings follow [Delivery State](initiative.md#delivery-state).
 
 - Pass every epic JSON file as a separate argument after `--epics`.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record)' --epics '[**&lt;epic-json-file&gt;**](#epic-records)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record "○")' \
+  --epics '[**&lt;epic-json-file&gt;**](#epic-records "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-936.json \
+  --epics issue-943.json issue-937.json
 </pre></big>
 
 #### 2. Provide Recorded Initiative
@@ -164,18 +168,24 @@ Ticks confirmed initiative criteria, refusing any not ready to verify, and ticks
 
 #### 1. Tick Initiative Criteria
 
-- Run this command from the [workspace](#workspace "○") checkout using [Initiative Record](#initiative-record "○"), [Epic Records](#epic-records "○"), [Output Files](#output-files "○").
-
-- Pass every epic JSON file as a separate argument after `--epics`. `<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection "○").
+Pass every epic JSON file as a separate argument after `--epics`. `<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection "○").
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record)' --epics '[**&lt;epic-json-file&gt;**](#epic-records)' --tick [**&lt;criterion-ids&gt;**](#criterion-selection) --fix '[**&lt;output-body-file&gt;**](#output-files)'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record "○")' \
+  --epics '[**&lt;epic-json-file&gt;**](#epic-records "○")' \
+  --tick [**&lt;criterion-ids&gt;**](#criterion-selection "○") \
+  --fix '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json --tick AC2 --fix fixed-936.md
+cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-936.json \
+  --epics issue-943.json issue-937.json \
+  --tick AC2 \
+  --fix fixed-936.md
 </pre></big>
 
 #### 2. Provide Ticked Initiative Criteria
@@ -188,16 +198,24 @@ Saves one GitHub source at the revision its permalink pins.
 
 #### 1. Fetch Source
 
-Run this command from the repository checkout using [Source Evidence](#source-evidence "○"), [Output Files](#output-files "○").
+Run in the repository checkout.
 
 <big><pre>
-gh api 'repos/[**&lt;owner&gt;**](#source-evidence)/[**&lt;repository&gt;**](#source-evidence)/contents/[**&lt;source-path&gt;**](#source-evidence)?ref=[**&lt;revision&gt;**](#source-evidence)' --jq .content | base64 -d > '[**&lt;source-file&gt;**](#output-files)'
+gh api 'repos/[**&lt;owner&gt;**](#source-evidence "○")/[**&lt;repository&gt;**](#source-evidence "○")/contents/[**&lt;source-path&gt;**](#source-evidence "○")?ref=[**&lt;revision&gt;**](#source-evidence "○")' \
+  --jq .content \
+  | base64 \
+  -d \
+  > '[**&lt;source-file&gt;**](#output-files "○")'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api 'repos/m2ux/workflow-server/contents/docs/spec.md?ref=4a217fe6' --jq .content | base64 -d > source-R1.md
+gh api 'repos/m2ux/workflow-server/contents/docs/spec.md?ref=4a217fe6' \
+  --jq .content \
+  | base64 \
+  -d \
+  > source-R1.md
 </pre></big>
 
 #### 2. Provide Fetched Source
