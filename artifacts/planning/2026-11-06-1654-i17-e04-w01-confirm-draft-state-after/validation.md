@@ -36,7 +36,7 @@ The full planner suite includes the installed document interfaces, checkout cont
 
 ## Fresh-Context Reading
 
-**Pending coordinator execution at committed source `814eab99c949cc81b8c87c0a901e262c348e78b0`.** Independent reader capacity was occupied during implementation. No fresh-reader behavior or citation-efficacy claim is established by the offline adapter. The coordinator owns this evidence before final delivery.
+Readers A and B independently interpret seven captured scenarios at the pinned task heads. Both select restoration/readback, terminal refusal/handoff, bounded retry and success-only confirmation as the source requires; see [reader A](recovery-reader-a.md) and [reader B](recovery-reader-b.md). These are fresh-agent source-reading trials, distinct from offline fixture execution and live tracker operations. Both recover truncated reads and report broad-context overhead. That pre-existing disclosure limitation remains in [Skill Separation](https://github.com/m2ux/workflow-server/issues/1615); no citation-efficacy, context-saving or complete disclosure-conformance claim is made.
 
 ## Review
 

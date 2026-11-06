@@ -20,6 +20,7 @@ The unit targets its verified epic base and retains the epic's acceptance criter
 | [e04-w02-w03-shared.log](e04-w02-w03-shared.log) | Exact local validation output. |
 | [e04-w02-w03-checker-final.log](e04-w02-w03-checker-final.log) | Exact local validation output. |
 | [recovery-reader-a.md](recovery-reader-a.md) | Independent reader receipt and source interpretation. |
+| [recovery-reader-b.md](recovery-reader-b.md) | Independent reader receipt and source interpretation. |
 
 ## Links
 

@@ -48,7 +48,7 @@ The coordinator refreshed the repository's requirements: `workspace` requires on
 - Deliver reaches the task merge owner through Merge Task Pull Requests, with current board, repository prerequisite, base and verified-head evidence. The selected mutation's linked input supplies the exact SHA; its raw response and readback have separate shapes. The caller returns terminal results and retries only a classified GitHub refusal after fresh evidence.
 - Sync/Task Merge reaches Epic Integration as a whole protocol. The merge step selects the owning operation and its result contract; terminal result branches return before the success-only readback. A GitHub refusal selects withdrawal and Refresh and Validate before its sole retry.
 - The same Rules, Conventions and common contracts are reused at the same source revision. The changed command and outcome branches link the selected capabilities and result shapes at use. Existing prerequisite-cycle work remains in E02.
-- Independent fresh-context route readings are pending coordinator capacity. The bounded fixture run is structural/behavioral offline evidence and is not represented as a fresh-agent trial.
+- Readers A and B independently interpret seven captured scenarios at the pinned task heads; their [first](recovery-reader-a.md) and [second](recovery-reader-b.md) receipts confirm selected operation order and terminal-claim boundaries. The bounded fixture run remains offline execution evidence. The readers recover truncated reads and report pre-existing broad-context overhead; that disclosure limitation remains in [Skill Separation](https://github.com/m2ux/workflow-server/issues/1615), with no context-saving or complete disclosure-conformance claim.
 
 ## Plan Changes
 

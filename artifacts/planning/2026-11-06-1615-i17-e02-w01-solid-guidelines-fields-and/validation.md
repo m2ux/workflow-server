@@ -34,3 +34,7 @@ No plan changes applied or held. Policy interpretations remain for the audit's a
 ## Independent Review
 
 Reader A found that the audit scope was implicit. Commit `358287d8cc7ede34ed0ce70f330cd2bc758af2d6` scopes the classification rule to the ownership audit. Reader B confirms the corrected field, transformation and policy boundaries at that head. Reader C independently confirms the same boundaries at that head; both final receipts are published beside this report. Required whole-guideline overhead and recovered truncation are retained in the receipts; no context-saving or citation-efficacy claim is made.
+
+## Merged Criterion Verification
+
+The exact-commit instrument passes at merge `3cf01bfe28cf16d24b823cd97bda907e85992dc8`; see [its output](e02-w01-merged-criterion.log). W01 and AC1 are recorded complete; the remaining epic is open.
