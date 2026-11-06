@@ -2,6 +2,8 @@
   "titles/title-case": ["review"],
   "titles/action-titles": ["review"],
   "procedure/explicit-execution": ["review"],
+  "procedure/openings": ["review"],
+  "procedure/provided-results": ["review"],
   "procedure/subsection-titles": ["review"],
   "procedure/numbered-steps": ["list step in heading model", "indented detail in heading model", "heading step sequence", "procedure without heading steps", "review", "repeated procedure title"],
   "procedure/sub-bullets": ["review"],
@@ -53,7 +55,6 @@
   "artifacts/virtual-artifacts": ["review"],
   "artifacts/descriptions": ["review"],
   "artifacts/prose-api": ["review"],
-  "artifacts/operation-inputs": ["review"],
   "artifacts/operation-scope": ["review"],
   "artifacts/bodies-and-lifecycle": ["review"],
   "artifacts/no-mode-no-protocol": ["review"],
@@ -88,6 +89,5 @@
   "changes/planning-adoption": ["review"],
   "changes/integrated-implementation": ["review"],
   "changes/delivery": ["review"],
-  "prose/contextual-contracts": ["duplicate command parameter prose", "command contract links", "operation link role", "review"],
-  "artifacts/provided-output": ["review"]
+  "prose/contextual-contracts": ["duplicate command parameter prose", "command contract links", "operation link role", "review"]
 }
