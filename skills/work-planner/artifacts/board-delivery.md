@@ -25,7 +25,7 @@ Require the complete [Issue Link Snapshot](#issue-link-snapshot "○"); refuse t
 #### 2. Compute Delivery Calls
 
 - Supply the [Published Reviews](#published-reviews "○") linked from each open epic integration pull request; retain missing records as handoff blockers.
-- Apply [Compute Board Changes](#compute-board-changes "ƒ") with the [Initiative Record](#initiative-record "○"), [Epic Records](#epic-records "○"), [Task Records](#task-records "○") and [Pull Request Records](#pull-request-records "○") for the [Board Identity](#board-identity "○"), using [Board Fields](#board-fields "○") and [Board Items](#board-items "○"), writing calls to [Output Directory](#output-directory "○") for [Assignee Login](#assignee-login "○") and including [Resolved Issues](#resolved-issues "○").
+- Run [Compute Board Changes](#compute-board-changes "ƒ") with the [Initiative Record](#initiative-record "○"), [Epic Records](#epic-records "○"), [Task Records](#task-records "○") and [Pull Request Records](#pull-request-records "○") for the [Board Identity](#board-identity "○"), using [Board Fields](#board-fields "○") and [Board Items](#board-items "○"), writing calls to [Output Directory](#output-directory "○") for [Assignee Login](#assignee-login "○") and including [Resolved Issues](#resolved-issues "○").
 
 #### 3. Provide Proposed Changes
 
@@ -116,37 +116,6 @@ Apply [Compute Dispatch Status](#compute-dispatch-status "ƒ") with the [Dispatc
 #### 3. Provide Saved Statuses
 
 Provide [Confirmed Statuses](#confirmed-statuses "●") with saved statuses or unresolved discrepancies.
-
-### Compute Board Changes
-
-Computes membership, Status and assignee calls from supplied delivery evidence.
-
-#### 1. Compute Board Changes
-
-- Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
-
-- Missing published agent-review evidence holds the epic In Progress.
-
-- Pass each epic or task JSON file as a separate argument after its corresponding flag.
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record "○")' &#92;
-  --epics '[**&lt;epic-json-file&gt;**](#epic-records "○")' &#92;
-  --tasks '[**&lt;task-json-file&gt;**](#task-records "○")' &#92;
-  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
-  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot "○")' &#92;
-  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")' &#92;
-  --board [**&lt;board-identity&gt;**](#board-identity "○") &#92;
-  --fields '[**&lt;board-fields-file&gt;**](#board-fields "○")' &#92;
-  --items '[**&lt;board-items-file&gt;**](#board-items "○")' &#92;
-  --out '[**&lt;output-directory&gt;**](#output-directory "○")' &#92;
-  --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")'
-</pre></big>
-
-#### 2. Provide Computed Board Changes
-
-Provide [Board Changes](#board-changes "●") to the requester.
 
 ### Compute Dispatch Status
 
@@ -335,3 +304,32 @@ m2ux
 ### Workspace
 
 The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+
+## Commands
+
+### Compute Board Changes
+
+Computes membership, Status and assignee calls from supplied delivery evidence.
+
+- Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
+
+- Missing published agent-review evidence holds the epic In Progress.
+
+- Pass each epic or task JSON file as a separate argument after its corresponding flag.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record "○")' &#92;
+  --epics '[**&lt;epic-json-file&gt;**](#epic-records "○")' &#92;
+  --tasks '[**&lt;task-json-file&gt;**](#task-records "○")' &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot "○")' &#92;
+  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")' &#92;
+  --board [**&lt;board-identity&gt;**](#board-identity "○") &#92;
+  --fields '[**&lt;board-fields-file&gt;**](#board-fields "○")' &#92;
+  --items '[**&lt;board-items-file&gt;**](#board-items "○")' &#92;
+  --out '[**&lt;output-directory&gt;**](#output-directory "○")' &#92;
+  --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")'
+</pre></big>
+
+Provide [Board Changes](#board-changes "●") to the requester.
