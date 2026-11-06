@@ -1,0 +1,108 @@
+{
+  "baseline": "4a23a4f50064c37b8ac45b842b8aa0f40c0a3937",
+  "counts": {
+    "commands": 116,
+    "templates": 9,
+    "markdown_files": 58
+  },
+  "changed_markdown": [
+    {
+      "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+      "sha256": "b51936ddd78f46f930bbeb5968361684a890b1fe73b57d75b4a40cb79443a237"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "sha256": "902316778acef889e0d49d12cc302da4bf1e240fb8810425b9bacda11dd3e07f"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "sha256": "bf8b4cd4d626b89c2df7810fa196442fa76847e21fb39facbf975676504c3122"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "sha256": "04274a55440c920ac15b5e0d29874eba96e5a5f7483fd9c6189ed9d27bdfce9f"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "sha256": "3ae6b4265f9e1de637502965dfbeab1ea0ef77be55360757e501b4152b3ce0b3"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "sha256": "43ced13f0720818b9c6ccafd94c70bbe8750f951adeb8e3730b1552d62fb4672"
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "sha256": "322d18a3b7460051fb6e31b46741a32200c129962211948a785a165b352e3b02"
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "sha256": "6fb3eb405bc696a85dd32d124ba640bca36e70244de67ce2cd2a5499f87d9426"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "sha256": "c6ad2c45159766a6e3a3999e0548ef6ecdcca9a67ab8e4ccb3fbdd3dbea21e70"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "sha256": "eaf3d2bf1af7cae0410b320cb07ca3a3c01c0f8c86a31305b0b90f08200aee9a"
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "sha256": "be1f9835ce70ea69875f0eebd58b75d81b66c2827ac768a08e334ae5c8ff320c"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "sha256": "02aa4c1c8e9a47a83483eea6135fd84b05ee4eaabbcb624fb6b30445d05ab09d"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative.md",
+      "sha256": "9a92ec1f5ed86edbaa6af48f757a965c5f1ef6c99823c7f9d228cb4299e2f74c"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "sha256": "ab6350f7eb72f88ba3283a15bc5769eff63dc36acb71e90fe1136173b764bb2d"
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "sha256": "f92a35d37919f190a192e91af10fa5af3a39e6d2b9ab606b64900f57c0446b01"
+    },
+    {
+      "file": "skills/work-planner/artifacts/placement.md",
+      "sha256": "fcb9b3960e00f5a85cfa1da61533acc591d39bfec82a767b5684ce0c62cb9633"
+    },
+    {
+      "file": "skills/work-planner/artifacts/proposal-body.md",
+      "sha256": "e470ba076339d2433a87007f8e865541e95c25bde0a328464ee8b5a53ef75687"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request-body.md",
+      "sha256": "4247f6800d197c47003c3b5a613be1050eb67062176a9b25c228849109f809b3"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "sha256": "fee7e94e138a2b825e9a8c3d130d7d5528bac59a13424af3e6e8b199ff888338"
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "sha256": "b55f4e502cb761a14f9d64130b4ac7f97331f9ebe842bd86d83e0bc3ab4d3ffa"
+    },
+    {
+      "file": "skills/work-planner/artifacts/work-item.md",
+      "sha256": "7d52adc371deb0aef328a0e1a83b12f4b1e654d8cf65bf692920fa23f26cc65d"
+    },
+    {
+      "file": "skills/work-planner/guidelines.md",
+      "sha256": "3696fe069abc150a07fdf519d681036dff112ec7819a37e556749266c7436446"
+    },
+    {
+      "file": "skills/work-planner/modes/deliver-mode.md",
+      "sha256": "375fd9dc35eda1ef9fb60b1df9731d0fe343282e945226ced2678fdfd27a0f99"
+    },
+    {
+      "file": "skills/work-planner/modes/sync-mode.md",
+      "sha256": "2725187c232d3e7a04626b1391002bcfebdfb4f619aa14cca2bbea59f65ddc58"
+    }
+  ],
+  "invocations_templates_headings_link_targets_and_roles_identical": true,
+  "runtime_scripts_unchanged": true
+}

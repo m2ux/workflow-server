@@ -1,0 +1,260 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "before": "Results meet ",
+    "after": "Results should meet ",
+    "count": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "before": "The selection meets ",
+    "after": "The selection must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "before": "The copy meets ",
+    "after": "The copy must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "before": "Each proposed body meets its own kind's shape",
+    "after": "Each proposed body must meet its own kind's shape",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "before": "Offered units meet ",
+    "after": "Offered units must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "before": "The report whose units and diagnostic lines meet [Report Lines](#report-lines).",
+    "after": "The computed report. Its units and diagnostic lines must meet [Report Lines](#report-lines).",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "Updated rows meet ",
+    "after": "Updated rows must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "The row's delivery lane meets ",
+    "after": "The row's delivery lane must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "Task numbering meets ",
+    "after": "Task numbering must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "An epic criterion meets the ",
+    "after": "An epic criterion must meet the ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "before": "A Problem meets ",
+    "after": "A Problem must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "before": "Epic numbering meets ",
+    "after": "Epic numbering must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "before": "An initiative criterion meets the ",
+    "after": "An initiative criterion must meet the ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "before": "Delivery findings follow ",
+    "after": "Delivery findings should follow ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/proposal-body.md",
+    "before": "A Problem meets ",
+    "after": "A Problem must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "before": "A task criterion meets the ",
+    "after": "A task criterion must meet the ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "before": "New task planning follows ",
+    "after": "New task planning must follow ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/work-item.md",
+    "before": "Problem and Proposal meet ",
+    "after": "Problem and Proposal must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "before": "That evidence meets ",
+    "after": "That evidence must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "before": "Every member is free, undelivered and meets [Task Eligibility]",
+    "after": "Every member must be free and undelivered and meet [Task Eligibility]",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "before": "A unit meets [Ready Units]",
+    "after": "A unit must meet [Ready Units]",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "before": "Task readiness meets ",
+    "after": "Task readiness must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "before": "Assignees follow [Assignees]",
+    "after": "Assignees must follow [Assignees]",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "before": "The requested lane meets ",
+    "after": "The requested lane must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "before": "Joined rows meet ",
+    "after": "Joined rows must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "before": "Initiative edges follow the ",
+    "after": "Initiative edges must follow the ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "The snapshot meets ",
+    "after": "The snapshot should meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "before": "An acceptance criterion meets these.",
+    "after": "An acceptance criterion must meet these.",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative.md",
+    "before": "Epic delivery follows ",
+    "after": "Epic delivery must follow ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "before": "Results follow ",
+    "after": "Results should follow ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "before": "Its board item follows [Board Status]",
+    "after": "Its board item must follow [Board Status]",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "before": "Done on the row or table that cites it follows [Tables]",
+    "after": "Done on the row or table that cites it must follow [Tables]",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "before": "The copy source and the title meet ",
+    "after": "The copy source and the title must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/modes/deliver-mode.md",
+    "before": "so the title, the base, the Test Plan, and the issue links meet ",
+    "after": "The title, the base, the Test Plan, and the issue links must meet ",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/guidelines.md",
+    "before": "A subsection follows [Openings]",
+    "after": "A subsection must follow [Openings]",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/guidelines.md",
+    "before": "Mode procedures follow the [procedure rules]",
+    "after": "Mode procedures must follow the [procedure rules]",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/guidelines.md",
+    "before": "The steps follow the [procedure rules]",
+    "after": "The steps must follow the [procedure rules]",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/guidelines.md",
+    "before": "calls follow the [routing rules]",
+    "after": "calls must follow the [routing rules]",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/guidelines.md",
+    "before": "Calls follow [Contextual Contracts]",
+    "after": "Calls must follow [Contextual Contracts]",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/guidelines.md",
+    "before": "Issue bodies follow [Issue Body]",
+    "after": "Issue bodies must follow [Issue Body]",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/guidelines.md",
+    "before": "pull request bodies follow [Pull Request Body]",
+    "after": "pull request bodies must follow [Pull Request Body]",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "before": "The names meet [Branches](#branches).",
+    "after": "The names should meet [Branches](#branches).",
+    "count": 1
+  },
+  {
+    "file": "skills/work-planner/guidelines.md",
+    "before": "Nested calls follow [Contextual Contracts]",
+    "after": "Nested calls must follow [Contextual Contracts]",
+    "count": 1
+  }
+]

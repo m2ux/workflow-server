@@ -21,3 +21,22 @@ Check all changed conformance statements for preserved strength and untouched ga
 | Resource | Link |
 | --- | --- |
 | Style PR | https://github.com/m2ux/workflow-server/pull/1641 |
+
+## Result
+
+Source: `d22b9a1919f1ba8bfe60017e420b7d9527519dd0`. Forty-five conformance references have explicit requirement wording. The three Lane result statements use the user's exact “Results should meet” form. Output-format guidance uses should; mandatory schema, eligibility and body constraints use must. Existing must clauses and validation calls remain. The guideline states lowercase requirement strength and distinguishes conformance expectations from explicit validation actions, with a matching rule-registry entry.
+
+Reviewed exclusions include only-once/only-for eligibility predicates, factual completion and configured-default descriptions, positional follows, and meets meaning encounters. These retain their meaning rather than acquiring new validation or optionality. No formal uppercase RFC conversion, validator implementation or runtime change is introduced.
+
+Preservation checks cover all 58 Markdown files: all 116 invocation blocks, all nine literal templates, all headings and every link target/role are identical. Fourteen document tests and twelve documented-command tests pass; installed model checks 58 files with zero findings; whitespace validation passes. No live tracker/graph behavior is claimed.
+
+## Artifacts
+
+| Artifact | What it holds |
+| --- | --- |
+| [Conformance changes](changes.json) | Reviewed old/new wording with unchanged requirement-strength intent |
+| [preservation.json](preservation.json) | Reproducible preservation or existing test evidence |
+| [verify.py](verify.py) | Reproducible preservation or existing test evidence |
+| [model.log](model.log) | Reproducible preservation or existing test evidence |
+| [document-tests.log](document-tests.log) | Reproducible preservation or existing test evidence |
+| [command-tests.log](command-tests.log) | Reproducible preservation or existing test evidence |
