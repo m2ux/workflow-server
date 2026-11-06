@@ -1,0 +1,1008 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "command": "Run at Revision",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/revision-check.py &#92;\n  --project '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**&lt;revision&gt;**](#revision \"\u25cb\")' &#92;\n  -- [**&lt;instrument-command&gt;**](#instrument \"\u25cb\")\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/agent-review.md",
+    "command": "Validate Agent Review",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/agent_review.py &#92;\n  --pr '[**&lt;pull-request-json-file&gt;**](#pull-request-record \"\u25cb\")' &#92;\n  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "command": "Compute Board Changes",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"\u25cb\")' &#92;\n  --epics '[**&lt;epic-json-file&gt;**](#epic-records \"\u25cb\")' &#92;\n  --tasks '[**&lt;task-json-file&gt;**](#task-records \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"\u25cb\")' &#92;\n  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"\u25cb\")' &#92;\n  --board [**&lt;board-identity&gt;**](#board-identity \"\u25cb\") &#92;\n  --fields '[**&lt;board-fields-file&gt;**](#board-fields \"\u25cb\")' &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --out '[**&lt;output-directory&gt;**](#output-directory \"\u25cb\")' &#92;\n  --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "command": "Compute Dispatch Status",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --board [**&lt;board-identity&gt;**](#board-identity \"\u25cb\") &#92;\n  --fields '[**&lt;board-fields-file&gt;**](#board-fields \"\u25cb\")' &#92;\n  --out '[**&lt;output-directory&gt;**](#output-directory \"\u25cb\")' &#92;\n  --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"\u25cb\")' &#92;\n  --progress '[**&lt;held-issue-numbers&gt;**](#dispatch-selection \"\u25cb\")' &#92;\n  --review '[**&lt;complete-epic-numbers&gt;**](#dispatch-selection \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "command": "Compute Board Queue",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/board-queue.py &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"\u25cb\")' &#92;\n  --board [**&lt;board-identity&gt;**](#board-identity \"\u25cb\") &#92;\n  --fields '[**&lt;board-fields-file&gt;**](#board-fields \"\u25cb\")' &#92;\n  --out '[**&lt;output-directory&gt;**](#output-directory \"\u25cb\")' &#92;\n  --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find Board Template",
+    "payload": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2?per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title == \"[**&lt;template-title&gt;**](#template-selection \"\u25cb\")\") | .number'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Copy Board Template",
+    "payload": "\ngh project copy [**&lt;template-number&gt;**](#template-selection \"\u25cb\") &#92;\n  --source-owner [**&lt;owner&gt;**](#board-owner \"\u25cb\") &#92;\n  --target-owner [**&lt;owner&gt;**](#board-owner \"\u25cb\") &#92;\n  --title '[**&lt;board-title&gt;**](#copy-title \"\u25cb\")' &#92;\n  --format json &#92;\n  --jq .number\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Link Board to Repository",
+    "payload": "\ngh project link [**&lt;board-number&gt;**](#board-coordinates \"\u25cb\") --owner [**&lt;owner&gt;**](#board-owner \"\u25cb\") --repo [**&lt;repo&gt;**](#repository \"\u25cb\")\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find Proposals Board",
+    "payload": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2?per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title == \"Proposals\") | .number'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Add Issue to Board",
+    "payload": "\ngh api --method POST users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items -f type=Issue -F id=[**&lt;issue-id&gt;**](#issue-id \"\u25cb\") --jq .id\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Set Item Status",
+    "payload": "\ngh api &#92;\n  --method PATCH users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items/[**&lt;item-id&gt;**](#item-coordinates \"\u25cb\") &#92;\n  --input '[**&lt;status-input-file&gt;**](#status-input-file \"\u25cb\")' &#92;\n  --jq .id\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Remove Board Item",
+    "payload": "\ngh api --method DELETE users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items/[**&lt;item-id&gt;**](#item-coordinates \"\u25cb\")\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Fetch Board Fields",
+    "payload": "\ngh api --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/fields?per_page=100\" > '[**&lt;board-fields-file&gt;**](#board-fields-file \"\u25cb\")'\n",
+    "raw_angles": 1,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find Theme Board",
+    "payload": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2?per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub(\"^\\\\&#91;P&#91;0-9&#93;+\\\\&#93; \"; \"\") | startswith(\"[**&lt;theme-name&gt;**](#theme-name \"\u25cb\"): \")) | .number'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find Status Field",
+    "payload": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/fields?per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.name == \"Status\") | .id'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Fetch Board Items with Status",
+    "payload": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field \"\u25cb\")\" &#92;\n  &gt; '[**&lt;board-items-file&gt;**](#board-items-file \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Fetch Board Item",
+    "payload": "\ngh api \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items/[**&lt;item-id&gt;**](#item-coordinates \"\u25cb\")?fields=[**&lt;status-field-id&gt;**](#status-field \"\u25cb\")\"\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find User",
+    "payload": "\ngh api user --jq .login\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "List Epic Bases",
+    "payload": "\ngit ls-remote --heads origin 'refs/heads/[**<epic-branch-prefix>**](#epic-identity \"\u25cb\")/*' | cut -f2 | sed 's|refs/heads/||'\n",
+    "raw_angles": 2,
+    "unknown_rendered_tags": [
+      "epic-branch-prefix"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "List Long-Lived Branches",
+    "payload": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py &#92;\n  --names &#92;\n  --project '[**<checkout>**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**<revision>**](#revision \"\u25cb\")'\n",
+    "raw_angles": 8,
+    "unknown_rendered_tags": [
+      "workspace",
+      "workspace",
+      "checkout",
+      "revision"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Fetch Remote Branch",
+    "payload": "\ngit fetch origin '[**<source-branch>**](#source-branch \"\u25cb\")'\n",
+    "raw_angles": 2,
+    "unknown_rendered_tags": [
+      "source-branch"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Publish Epic Base",
+    "payload": "\ngit push origin 'origin/[**<source-branch>**](#source-branch \"\u25cb\"):refs/heads/[**<epic-base>**](#epic-base-name \"\u25cb\")'\n",
+    "raw_angles": 4,
+    "unknown_rendered_tags": [
+      "source-branch",
+      "epic-base"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Merge Remote Branch",
+    "payload": "\ngit merge --no-edit 'origin/[**<source-branch>**](#source-branch \"\u25cb\")'\n",
+    "raw_angles": 2,
+    "unknown_rendered_tags": [
+      "source-branch"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Push Epic Base",
+    "payload": "\ngit push\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Push Task Branch",
+    "payload": "\ngit push origin 'HEAD:refs/heads/[**<task-branch>**](#task-branch \"\u25cb\")'\n",
+    "raw_angles": 2,
+    "unknown_rendered_tags": [
+      "task-branch"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Add Task Worktree",
+    "payload": "\ngit worktree add '[**<worktree-path>**](#worktree-path \"\u25cb\")' -b '[**<task-branch>**](#task-branch \"\u25cb\")' 'origin/[**<base>**](#base-branch \"\u25cb\")'\n",
+    "raw_angles": 6,
+    "unknown_rendered_tags": [
+      "worktree-path",
+      "task-branch",
+      "base"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Fetch Review Head",
+    "payload": "\ngit fetch origin pull/[**<pull-request-number>**](#pull-request-number \"\u25cb\")/head\n",
+    "raw_angles": 2,
+    "unknown_rendered_tags": [
+      "pull-request-number"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Add Epic Base Worktree",
+    "payload": "\ngit worktree add '[**<worktree-path>**](#worktree-path \"\u25cb\")' '[**<epic-base>**](#epic-base-name \"\u25cb\")'\n",
+    "raw_angles": 4,
+    "unknown_rendered_tags": [
+      "worktree-path",
+      "epic-base"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Add Review Worktree",
+    "payload": "\ngit worktree add --detach '[**<worktree-path>**](#worktree-path \"\u25cb\")' [**<head-commit>**](#verified-head \"\u25cb\")\n",
+    "raw_angles": 4,
+    "unknown_rendered_tags": [
+      "worktree-path",
+      "head-commit"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Fetch Branch Protection",
+    "payload": "\ngh api 'repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/branches/[**<target-branch>**](#target-branch \"\u25cb\")/protection' > '[**<branch-protection-file>**](#output-files \"\u25cb\")'\n",
+    "raw_angles": 9,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "target-branch",
+      "branch-protection-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Fetch Active Branch Rules",
+    "payload": "\ngh api --paginate 'repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/rules/branches/[**<target-branch>**](#target-branch \"\u25cb\")' > '[**<branch-rules-file>**](#output-files \"\u25cb\")'\n",
+    "raw_angles": 9,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "target-branch",
+      "branch-rules-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Read Checkout Revision",
+    "payload": "\ngit -C '[**<checkout>**](#checkout \"\u25cb\")' rev-parse '[**<revision>**](#revision \"\u25cb\")^{commit}'\n",
+    "raw_angles": 4,
+    "unknown_rendered_tags": [
+      "checkout",
+      "revision"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Read Checkout Status",
+    "payload": "\ngit -C '[**<checkout>**](#checkout \"\u25cb\")' status --porcelain --branch\n",
+    "raw_angles": 2,
+    "unknown_rendered_tags": [
+      "checkout"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "command": "Compute Available Work",
+    "payload": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py &#92;\n  --items '[**<board-items-file>**](#board-items \"\u25cb\")' &#92;\n  --prs '[**<pull-request-records-file>**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**<issue-link-snapshot-file>**](#issue-link-snapshot \"\u25cb\")' &#92;\n  --project '[**<checkout>**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**<revision>**](#revision \"\u25cb\")' &#92;\n  --bases '[**<epic-base-names>**](#epic-base-names \"\u25cb\")' &#92;\n  --engineering '[**<engineering-worktree>**](#engineering-worktree \"\u25cb\")' &#92;\n  --lane [**<lane-index>**](#requested-lane \"\u25cb\") &#92;\n  --dispatch-plan '[**<dispatch-export-file>**](#dispatch-export-path \"\u25cb\")'\n",
+    "raw_angles": 22,
+    "unknown_rendered_tags": [
+      "workspace",
+      "workspace",
+      "board-items-file",
+      "pull-request-records-file",
+      "issue-link-snapshot-file",
+      "checkout",
+      "revision",
+      "epic-base-names",
+      "engineering-worktree",
+      "lane-index",
+      "dispatch-export-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "command": "Check Dependencies",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deps.py 'I=[**&lt;initiative-body-file&gt;**](#dependency-files \"\u25cb\")' &#92;\n  '[**&lt;epic-id&gt;**](#dependency-files \"\u25cb\")=[**&lt;epic-body-file&gt;**](#dependency-files \"\u25cb\")' '[**&lt;epic-id&gt;**](#dependency-files \"\u25cb\"):[**&lt;task-id&gt;**](#dependency-files \"\u25cb\")=[**&lt;work-item-file&gt;**](#dependency-files \"\u25cb\")' 'R=[**&lt;record-file&gt;**](#dependency-files \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "command": "Renumber Tasks",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py &#92;\n  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs \"\u25cb\") &#92;\n  --epic [**&lt;epic-number&gt;**](#renumber-inputs \"\u25cb\") &#92;\n  --own '[**&lt;epic-body-file&gt;**](#dependency-files \"\u25cb\")' &#92;\n  --tasks [**&lt;task-number-map&gt;**](#renumber-inputs \"\u25cb\") '[**&lt;affected-body-file&gt;**](#renumber-inputs \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "command": "Renumber Epics",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py &#92;\n  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs \"\u25cb\") &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --map [**&lt;epic-number-map&gt;**](#renumber-inputs \"\u25cb\") '[**&lt;body-file&gt;**](#renumber-inputs \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "command": "Compute Dispatch Batch",
+    "payload": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/dispatch.py batch &#92;\n  --authorization '[**<authorization-file>**](#authorization \"\u25cb\")' &#92;\n  --plan '[**<dispatch-export-file>**](#survey-evidence \"\u25cb\")' &#92;\n  --sessions '[**<session-inventory-file>**](#session-inventory \"\u25cb\")' &#92;\n  --capacity [**<free-slot-count>**](#free-slots \"\u25cb\") &#92;\n  --board [**<survey-board>**](#survey-board \"\u25cb\") &#92;\n  &gt; '[**<batch-file>**](#batch \"\u25cb\")'\n",
+    "raw_angles": 16,
+    "unknown_rendered_tags": [
+      "workspace",
+      "workspace",
+      "authorization-file",
+      "dispatch-export-file",
+      "session-inventory-file",
+      "free-slot-count",
+      "survey-board",
+      "batch-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "command": "Check Dispatch Start",
+    "payload": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/dispatch.py start &#92;\n  --batch '[**<batch-file>**](#batch \"\u25cb\")' &#92;\n  --unit [**<unit-identity>**](#unit-identity \"\u25cb\") &#92;\n  --evidence '[**<start-evidence-file>**](#start-evidence \"\u25cb\")' &#92;\n  --sessions '[**<session-inventory-file>**](#session-inventory \"\u25cb\")' &#92;\n  --capacity [**<free-slot-count>**](#free-slots \"\u25cb\")\n",
+    "raw_angles": 14,
+    "unknown_rendered_tags": [
+      "workspace",
+      "workspace",
+      "batch-file",
+      "unit-identity",
+      "start-evidence-file",
+      "session-inventory-file",
+      "free-slot-count"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Sync Epic",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --tasks '[**&lt;task-json-file&gt;**](#task-records \"\u25cb\")' &#92;\n  --link '[**&lt;task-pull-request-map&gt;**](#delivery-matches \"\u25cb\")' &#92;\n  --project '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**&lt;epic-base-revision&gt;**](#epic-bases \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Tick Epic Criteria",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --tick '[**&lt;criterion-ids&gt;**](#criterion-selection \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Reserve Row",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py &#92;\n  --epic '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --reserve [**&lt;task-ids&gt;**](#task-selection \"\u25cb\") &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --records '[**&lt;records-base-url&gt;**](#planning-folder \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Release Row",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py &#92;\n  --epic '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --release [**&lt;task-ids&gt;**](#task-selection \"\u25cb\") &#92;\n  --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "command": "Match Pull Requests",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --fix '[**&lt;epic-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "command": "Sync Hot-fix Issue",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;hot-fix-json-file&gt;**](#hot-fix-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --pr [**&lt;pull-request-number&gt;**](#delivery-selection \"\u25cb\") &#92;\n  --tick '[**&lt;criterion-ids&gt;**](#delivery-selection \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "command": "Sync Initiative",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"\u25cb\")' &#92;\n  --epics '[**&lt;epic-json-file&gt;**](#epic-records \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-files \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "command": "Tick Initiative Criteria",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"\u25cb\")' &#92;\n  --epics '[**&lt;epic-json-file&gt;**](#epic-records \"\u25cb\")' &#92;\n  --tick '[**&lt;criterion-ids&gt;**](#criterion-selection \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-files \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "command": "Fetch Source",
+    "payload": "\ngh api 'repos/[**&lt;owner&gt;**](#source-evidence \"\u25cb\")/[**&lt;repository&gt;**](#source-evidence \"\u25cb\")/contents/[**&lt;source-path&gt;**](#source-evidence \"\u25cb\")?ref=[**&lt;revision&gt;**](#source-evidence \"\u25cb\")' &#92;\n  --jq .content &#92;\n  | base64 &#92;\n  -d &#92;\n  &gt; '[**&lt;source-file&gt;**](#output-files \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "Check Body Format",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/format.py '[**&lt;issue-json-file&gt;**](#body-record \"\u25cb\")' &#92;\n  --initiative '[**&lt;initiative-json-file&gt;**](#initiative-record \"\u25cb\")' &#92;\n  --epic '[**&lt;epic-json-file&gt;**](#epic-records \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --files '[**&lt;pull-request-changed-paths&gt;**](#changed-file-records \"\u25cb\")' &#92;\n  --project '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**&lt;revision&gt;**](#evaluated-revision \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-files \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "List Reference Repositories",
+    "payload": "\n[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/align.py repositories '[**&lt;issue-json-file&gt;**](#body-record \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "Fetch Reference Repository",
+    "payload": "\ngh api repos/[**&lt;owner&gt;**](#reference-repositories \"\u25cb\")/[**&lt;repo&gt;**](#reference-repositories \"\u25cb\") > '[**&lt;repository-json-file&gt;**](#output-files \"\u25cb\")'\n",
+    "raw_angles": 1,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "Validate Reference Visibility",
+    "payload": "\n[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/align.py references '[**&lt;issue-json-file&gt;**](#body-record \"\u25cb\")' --repositories '[**&lt;repositories-json-file&gt;**](#repository-snapshot \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Create Tracker Issue",
+    "payload": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues &#92;\n  -f title='[**&lt;title&gt;**](#issue-changes \"\u25cb\")' &#92;\n  -F 'body=@[**&lt;body-file&gt;**](#issue-changes \"\u25cb\")' &#92;\n  -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names \"\u25cb\")' &#92;\n  --jq .number\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Patch Issue Body",
+    "payload": "\ngh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") -F 'body=@[**&lt;body-file&gt;**](#issue-changes \"\u25cb\")' --jq .number\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Issue Body",
+    "payload": "\ngh api repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") --jq .body > '[**&lt;output-body-file&gt;**](#output-files \"\u25cb\")'\n",
+    "raw_angles": 1,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Retitle Tracker Issue",
+    "payload": "\ngh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") -f title='[**&lt;title&gt;**](#issue-changes \"\u25cb\")' --jq .title\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Add Issue Labels",
+    "payload": "\ngh api --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/labels -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names \"\u25cb\")' --jq '.&#91;&#93;.name'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Remove Issue Label",
+    "payload": "\ngh api --method DELETE 'repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/labels/[**&lt;label&gt;**](#label-names \"\u25cb\")' --jq '.&#91;&#93;.name'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Issue Comments",
+    "payload": "\ngh api --paginate repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/comments\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Tracker Issue",
+    "payload": "\ngh api repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") > '[**&lt;issue-json-file&gt;**](#issue-record \"\u25cb\")'\n",
+    "raw_angles": 1,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Check Issue Closure",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/closure.py &#92;\n  --issue '[**&lt;issue-json-file&gt;**](#issue-record \"\u25cb\")' &#92;\n  --development '[**&lt;issue-links-file&gt;**](#development-snapshot \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Sweep Closure Evidence",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/closure-sweep.py &#92;\n  --issues '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")' &#92;\n  --issue-links '[**&lt;issue-links-file&gt;**](#development-snapshot \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Close as Not Planned",
+    "payload": "\ngh api &#92;\n  --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") &#92;\n  -f state=closed &#92;\n  -f state_reason=not_planned &#92;\n  --jq .state\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Post Inline Comment",
+    "payload": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/comments &#92;\n  -f body='[**&lt;comment-text&gt;**](#comment \"\u25cb\")' &#92;\n  --jq .html_url\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Post Comment File",
+    "payload": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/comments &#92;\n  -F 'body=@[**&lt;comment-file&gt;**](#comment \"\u25cb\")' &#92;\n  --jq .html_url\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Set Completed State",
+    "payload": "\ngh api &#92;\n  --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") &#92;\n  -f state=closed &#92;\n  -f state_reason=completed &#92;\n  --jq .state\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Capture Issue Links",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/links-by-issue.py &#92;\n  --issues '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")' &#92;\n  --out '[**&lt;issue-links-file&gt;**](#development-snapshot \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch All Issues",
+    "payload": "\ngh api --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=all&per_page=100\" > '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")'\n",
+    "raw_angles": 1,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Closed Issues",
+    "payload": "\ngh api --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=closed&per_page=100\" > '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")'\n",
+    "raw_angles": 1,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Selected Closed Issues",
+    "payload": "\ngh api &#92;\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=closed&per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(&#91;.number&#93; | inside(&#91;[**&lt;issue-numbers&gt;**](#audit-selection \"\u25cb\")&#93;))' &#92;\n  &gt; '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Find Initiative Issue",
+    "payload": "\ngh api &#92;\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=all&per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith(\"[**&lt;initiative-prefix&gt;**](#tracker-prefix \"\u25cb\")\")) | .number'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "List Prefixed Titles",
+    "payload": "\ngh api &#92;\n  --paginate 'repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repository&gt;**](#repository \"\u25cb\")/issues?state=all&per_page=100' &#92;\n  --jq '.&#91;&#93; | select(.title | test(\"^\\\\&#91;[**&lt;prefix-letter&gt;**](#tracker-prefix \"\u25cb\")&#91;0-9&#93;{2}\\\\&#93;\")) | .title'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Read Lane Assignments",
+    "payload": "\n\"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/lane.py\" read '[**&lt;epic-body-file&gt;**](#epic-body-file \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Write Lane Assignments",
+    "payload": "\n\"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/lane.py\" assign &#92;\n  '[**&lt;epic-body-file&gt;**](#epic-body-file \"\u25cb\")' &#92;\n  --map '[**&lt;confirmed-map-file&gt;**](#confirmed-map \"\u25cb\")' &#92;\n  --out '[**&lt;output-body-path&gt;**](#output-body \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Validate Lane Unit",
+    "payload": "\n\"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/lane.py\" check &#92;\n  '[**&lt;epic-body-file&gt;**](#epic-body-file \"\u25cb\")' &#92;\n  --unit '[**&lt;task-ids&gt;**](#unit-task-ids \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Evaluate Lane Admission",
+    "payload": "\n\"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/lane.py\" admit &#92;\n  '[**&lt;epic-body-file&gt;**](#epic-body-file \"\u25cb\")' &#92;\n  --unit '[**&lt;task-ids&gt;**](#unit-task-ids \"\u25cb\")' &#92;\n  --lane '[**&lt;lane-index&gt;**](#requested-index \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "command": "List Orphans",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/orphans.py '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "command": "Find Engineering Worktree",
+    "payload": "\ngit -C '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' worktree list | grep '\\&#91;engineering\\&#93;'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "command": "Commit Planning Record",
+    "payload": "\ncd '[**&lt;engineering-worktree&gt;**](#engineering-worktree \"\u25cb\")' && &#92;\n  git add &#92;\n  -A && &#92;\n  (git diff &#92;\n  --cached &#92;\n  --quiet || git commit &#92;\n  -F '[**&lt;message-file&gt;**](#commit-message-file \"\u25cb\")') && &#92;\n  git fetch origin engineering && &#92;\n  git rebase origin/engineering && &#92;\n  git push\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "command": "Add Planning Record",
+    "payload": "\nmkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "command": "Convert Test Plan",
+    "payload": "\n[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/align.py plan '[**&lt;pull-request-json-file&gt;**](#pull-request-record \"\u25cb\")' --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Retarget Pull Request",
+    "payload": "\ngh api &#92;\n  --method PATCH repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\") &#92;\n  -f base='[**<target-branch>**](#base-branch \"\u25cb\")' &#92;\n  --jq .base.ref\n",
+    "raw_angles": 8,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "pull-request-number",
+      "target-branch"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Retitle Pull Request",
+    "payload": "\ngh api --method PATCH repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\") -f title='[**<title>**](#title \"\u25cb\")' --jq .title\n",
+    "raw_angles": 8,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "pull-request-number",
+      "title"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Open Task Pull Request",
+    "payload": "\ngh api &#92;\n  --method POST repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls &#92;\n  -f title='[**<title>**](#title \"\u25cb\")' &#92;\n  -f head='[**<task-branch>**](#head-branch \"\u25cb\")' &#92;\n  -f base='[**<base>**](#base-branch \"\u25cb\")' &#92;\n  -F 'body=@[**<body-file>**](#body-file \"\u25cb\")' &#92;\n  --jq .html_url\n",
+    "raw_angles": 12,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "title"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Open Epic Pull Request",
+    "payload": "\ngh api &#92;\n  --method POST repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls &#92;\n  -f title='[**<title>**](#title \"\u25cb\")' &#92;\n  -f head='[**<epic-base>**](#head-branch \"\u25cb\")' &#92;\n  -f base='[**<long-lived-base>**](#base-branch \"\u25cb\")' &#92;\n  -F draft=true &#92;\n  -F 'body=@[**<body-file>**](#body-file \"\u25cb\")' &#92;\n  --jq .html_url\n",
+    "raw_angles": 12,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "title"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Merge Pull Request",
+    "payload": "\ngh api --method PUT repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\")/merge -f merge_method=merge --jq .merged\n",
+    "raw_angles": 6,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "pull-request-number"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Patch Pull Request Body",
+    "payload": "\ngh api --method PATCH repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\") -F 'body=@[**<body-file>**](#body-file \"\u25cb\")' --jq .html_url\n",
+    "raw_angles": 8,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "pull-request-number",
+      "body-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Find Review Pull Request",
+    "payload": "\ngh api \"repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls?state=open&head=[**<owner>**](#repository \"\u25cb\"):[**<epic-base>**](#head-branch \"\u25cb\")\" --jq '.[0].number'\n",
+    "raw_angles": 8,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "owner",
+      "epic-base"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Submit Epic Merge",
+    "payload": "\ngh api &#92;\n  --method PUT repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\")/merge &#92;\n  -f merge_method=merge &#92;\n  -f sha=[**<head-sha>**](#verified-head \"\u25cb\") &#92;\n  --jq '{merged, message, sha}'\n",
+    "raw_angles": 8,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "pull-request-number",
+      "head-sha"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Read Merge Result",
+    "payload": "\ngh api repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\") &#92;\n  --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'\n",
+    "raw_angles": 6,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "pull-request-number"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Set Development Link",
+    "payload": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/development-link.py add &#92;\n  --issue [**<issue-owner>**](#issue-identity \"\u25cb\")/[**<issue-repo>**](#issue-identity \"\u25cb\")#[**<issue-number>**](#issue-identity \"\u25cb\") &#92;\n  --pull [**<pr-owner>**](#identity \"\u25cb\")/[**<pr-repo>**](#identity \"\u25cb\")#[**<pull-request-number>**](#identity \"\u25cb\")\n",
+    "raw_angles": 14,
+    "unknown_rendered_tags": [
+      "workspace",
+      "issue-owner",
+      "issue-repo",
+      "issue-number",
+      "pr-owner",
+      "pr-repo",
+      "pull-request-number"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Remove Development Link",
+    "payload": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/development-link.py remove &#92;\n  --issue [**<issue-owner>**](#issue-identity \"\u25cb\")/[**<issue-repo>**](#issue-identity \"\u25cb\")#[**<issue-number>**](#issue-identity \"\u25cb\") &#92;\n  --pull [**<pr-owner>**](#identity \"\u25cb\")/[**<pr-repo>**](#identity \"\u25cb\")#[**<pull-request-number>**](#identity \"\u25cb\")\n",
+    "raw_angles": 14,
+    "unknown_rendered_tags": [
+      "workspace",
+      "issue-owner",
+      "issue-repo",
+      "issue-number",
+      "pr-owner",
+      "pr-repo",
+      "pull-request-number"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Capture Pull Request Links",
+    "payload": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/links-by-pull-request.py &#92;\n  --prs '[**<pull-request-records-file>**](#pull-request-records \"\u25cb\")' &#92;\n  --out '[**<issue-link-snapshot-file>**](#link-snapshot-path \"\u25cb\")'\n",
+    "raw_angles": 6,
+    "unknown_rendered_tags": [
+      "workspace",
+      "pull-request-records-file",
+      "issue-link-snapshot-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Save Pull Request Snapshot",
+    "payload": "\ngh api repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\") > '[**<pull-request-json-file>**](#output-files \"\u25cb\")'\n",
+    "raw_angles": 9,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "pull-request-number",
+      "pull-request-json-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Pull Request Reviews",
+    "payload": "\ngh api --paginate 'repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\")/reviews?per_page=100' > '[**<reviews-file>**](#output-files \"\u25cb\")'\n",
+    "raw_angles": 9,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "pull-request-number",
+      "reviews-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Initiative Pull Requests",
+    "payload": "\ngh api &#92;\n  --paginate \"repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls?state=all&per_page=100\" &#92;\n  --jq '.[] | select(.title | startswith(\"[**<initiative-prefix>**](#initiative-prefix \"\u25cb\")\"))' &#92;\n  &gt; '[**<pull-request-records-file>**](#pull-request-records \"\u25cb\")'\n",
+    "raw_angles": 8,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "initiative-prefix",
+      "pull-request-records-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Linked Pull Requests",
+    "payload": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/linked-pull-requests.py &#92;\n  --prs '[**<pull-request-records-file>**](#pull-request-records \"\u25cb\")' &#92;\n  --issues '[**<issue-file>**](#issue-records \"\u25cb\")' ...\n",
+    "raw_angles": 6,
+    "unknown_rendered_tags": [
+      "workspace",
+      "pull-request-records-file",
+      "issue-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Repository Delivery Pull Requests",
+    "payload": "\ngh api &#92;\n  --paginate \"repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls?state=all&per_page=100\" &#92;\n  --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' &#92;\n  &gt; '[**<pull-request-records-file>**](#pull-request-records \"\u25cb\")'\n",
+    "raw_angles": 6,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "pull-request-records-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Append Repository Delivery Pull Requests",
+    "payload": "\ngh api &#92;\n  --paginate \"repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls?state=all&per_page=100\" &#92;\n  --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' &#92;\n  &gt;&gt; '[**<pull-request-records-file>**](#pull-request-records \"\u25cb\")'\n",
+    "raw_angles": 6,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "pull-request-records-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Pull Request Files",
+    "payload": "\ngh api &#92;\n  --paginate repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\")/files &#92;\n  --jq '.[].filename' &#92;\n  &gt; '[**<changed-paths-file>**](#output-files \"\u25cb\")'\n",
+    "raw_angles": 8,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "pull-request-number",
+      "changed-paths-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Head Check Runs",
+    "payload": "\ngh api --paginate 'repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/commits/[**<head-sha>**](#verified-head \"\u25cb\")/check-runs?per_page=100' > '[**<check-runs-file>**](#output-files \"\u25cb\")'\n",
+    "raw_angles": 9,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "head-sha",
+      "check-runs-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Head Status",
+    "payload": "\ngh api --paginate 'repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/commits/[**<head-sha>**](#verified-head \"\u25cb\")/status?per_page=100' > '[**<commit-status-file>**](#output-files \"\u25cb\")'\n",
+    "raw_angles": 9,
+    "unknown_rendered_tags": [
+      "owner",
+      "repo",
+      "head-sha",
+      "commit-status-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Mark Review Ready",
+    "payload": "\ngh api graphql -F query=@'[**<query-file>**](#query-file \"\u25cb\")' --jq .data.markPullRequestReadyForReview.pullRequest.isDraft\n",
+    "raw_angles": 2,
+    "unknown_rendered_tags": [
+      "query-file"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Mark Review Draft",
+    "payload": "\ngh pr ready [**<pull-request-number>**](#identity \"\u25cb\") --undo --repo [**<owner>**](#repository \"\u25cb\")/[**<repository>**](#repository \"\u25cb\")\n",
+    "raw_angles": 6,
+    "unknown_rendered_tags": [
+      "pull-request-number",
+      "owner",
+      "repository"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Index Status",
+    "payload": "\ngitnexus status\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Index Repository",
+    "payload": "\ngitnexus analyze\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Change Surface",
+    "payload": "\ngitnexus detect-changes --scope compare --base-ref '[**&lt;base-branch&gt;**](#base-branch \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Symbol Context",
+    "payload": "\ngitnexus context '[**&lt;symbol-identity&gt;**](#symbol-identity \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Flow Trace",
+    "payload": "\ngitnexus query --query '[**&lt;flow-identity&gt;**](#flow-identity \"\u25cb\")' --limit 1\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-labels.md",
+    "command": "List Labels",
+    "payload": "\ngh api \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/labels?per_page=100\" --jq '.&#91;&#93;.name'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-labels.md",
+    "command": "Create Label",
+    "payload": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/labels &#92;\n  -f name='[**&lt;label&gt;**](#label-identity \"\u25cb\")' &#92;\n  -f color=[**&lt;hex-colour&gt;**](#label-identity \"\u25cb\") &#92;\n  -f description='[**&lt;description&gt;**](#label-identity \"\u25cb\")' &#92;\n  --jq .name\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "command": "Summarise Progress",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/progress.py &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"\u25cb\")' &#92;\n  --since [**&lt;window-start-date&gt;**](#report-selection \"\u25cb\") &#92;\n  --initiative [**&lt;initiative-filter&gt;**](#report-selection \"\u25cb\") &#92;\n  --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records \"\u25cb\")' &#92;\n  --summary '[**&lt;management-paragraph-file&gt;**](#management-file \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "command": "Sync Task Issue",
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;task-json-file&gt;**](#task-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --pr [**&lt;pull-request-number&gt;**](#delivery-selection \"\u25cb\") &#92;\n  --tick '[**&lt;criterion-ids&gt;**](#delivery-selection \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "raw_angles": 0,
+    "unknown_rendered_tags": []
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "command": "Run Tests",
+    "payload": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")/skills/work-planner\" && \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 -m unittest discover -s test\n",
+    "raw_angles": 4,
+    "unknown_rendered_tags": [
+      "workspace",
+      "workspace"
+    ]
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "command": "Check Skill Files",
+    "payload": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/scripts/check_skill_files.py \"[**<skill-directory>**](#skill-directory \"\u25cb\")\"\n",
+    "raw_angles": 6,
+    "unknown_rendered_tags": [
+      "workspace",
+      "workspace",
+      "skill-directory"
+    ]
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "command": "Compare Section Bodies",
+    "payload": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/scripts/check_skill_files.py &#92;\n  --compare \"[**<base>**](#base \"\u25cb\")\" \"[**<head>**](#head \"\u25cb\")\" \"[**<skill-directory>**](#skill-directory \"\u25cb\")\"\n",
+    "raw_angles": 10,
+    "unknown_rendered_tags": [
+      "workspace",
+      "workspace",
+      "base",
+      "head",
+      "skill-directory"
+    ]
+  }
+]
