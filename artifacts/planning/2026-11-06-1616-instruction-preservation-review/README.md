@@ -16,6 +16,7 @@ The review records real losses separately from intended style changes and pre-ex
 | [Instruction Inventory](inventory.json) | Changed prose candidates and exact source identities |
 | [Review Findings](review.md) | Confirmed regressions, corrections, preserved gates and limits |
 | [Corrected Source](source.json) | Exact source identity and file hashes |
+| [Publication Readback](publication.json) | Confirmed PR head, retained draft state and exact body readback |
 | [Command Payload Comparison](command-payloads.json) | All 116 generic commands and the seven explained differences |
 | [Command Comparison Script](compare-command-payloads.py) | Repeatable normalized shell-token comparison |
 | [Command Comparison Log](command-payloads.log) | Readable changed command tokens |

@@ -1,0 +1,11 @@
+{
+  "pull_request": "https://github.com/m2ux/workflow-server/pull/1641",
+  "head": "3fcac1cbf60d784983e7c590e4f4de15cc3e7aad",
+  "base": "workspace",
+  "draft": true,
+  "exact_body_readback": true,
+  "body_sha256": "c24cda346750146243db1bddcebc34485636d01a9218471d60191e026303b03b",
+  "published_review_commit": "a114b310b",
+  "product_worktree_clean": true,
+  "engineering_worktree_clean_before_readback": true
+}
