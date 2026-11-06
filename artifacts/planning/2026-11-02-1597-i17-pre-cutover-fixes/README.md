@@ -65,6 +65,14 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | [E02 prerequisite dependencies](e02/prerequisite-dependencies.log) | Current initiative dependency/join validation and retained advisory |
 | [E02 dependency input snapshots](e02/prerequisite-dependency-inputs.json) | Current initiative and sibling epic records used by the check |
 | [E02 prerequisite saved readback](e02/prerequisite-epic-readback.json) | Exact published body and retained issue metadata |
+| [E02 retained preparation plan](e02/retained-preparation.md) | Approved reuse follow-up, upstream ownership and regression matrix |
+| [E02 W10](e02/w10.md) | Protocol selection and verified capacity-wait resume |
+| [E02 retained plan audit](e02/retained-plan-audit.json) | New row/criterion ownership, unchanged existing rows and upstream state |
+| [E02 prior retained-plan snapshot](e02/retained-epic-before.json) | Current issue before publishing the approved follow-up |
+| [E02 retained plan review](e02/retained-plan-review.md) | Goal/ownership review, coverage, graph findings and publication limits |
+| [E02 retained format check](e02/retained-format.log) | Zero-finding draft validation |
+| [E02 retained dependencies](e02/retained-dependencies.log) | Graph, component and numbering checks |
+| [E02 retained dependency inputs](e02/retained-dependency-inputs.json) | Current initiative and sibling issue snapshots used for validation |
 
 ## Links
 

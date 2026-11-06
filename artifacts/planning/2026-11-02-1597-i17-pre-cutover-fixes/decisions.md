@@ -139,3 +139,7 @@ The user confirms Work Planner as the sole acceptance scope. Specimen fixtures v
 - W06–W08 are one joined unit so the artifact and both known caller components remain valid together. They share the existing general-fix prerequisites and carry extraction regressions in that same unit. W09 supplies the reusable checker feature and its own positive/negative fixtures afterward.
 - Candidate detection reports evidence for review; conditional constraints and literal examples are valid. The audit settles semantic ownership and adds any further component rows before dispatch.
 - The plan remains unlaned and waits for E01 W08 on workspace. No source implementation or delivery start is included in this planning request.
+
+## Retained Preparation Follow-up — 2026-11-06
+
+The user selected “Plan it in E02” for the preservation review's pre-existing retained-worktree ambiguity. E02 W10 consumes the existing correction from #1631 / PR #1645 and the completed separation diagnostics, reconciles the protocol route and verifies non-mutating reuse and single-start behavior. The plan adds three criteria with one task owner, keeps the existing rows and priority, and authorizes no implementation or merge.
