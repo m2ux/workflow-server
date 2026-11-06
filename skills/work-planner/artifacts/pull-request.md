@@ -6,46 +6,43 @@ A pull request's identity, head and base, issue links, review state and merge re
 
 ### Merge Delivery Pull Request
 
-One task or epic pull request's merge result, or its handoff for human approval.
+One delivery pull request's confirmed merge, human handoff or classified refusal.
 
 #### 1. Read Target Review Requirements
 
-- Read the supplied target branch's current required reviews and checks alongside the [verified head](#verified-head). A branch whose protection or active rules require an approving review takes that review from a person. An agent cannot approve a [pull request](#identity) it opened; on such a branch, the merge belongs to the reviewer even when every other condition holds.
-- Report the pull request as ready for approval, naming what was verified.
-- Stop merge attempts. This handoff is a finished outcome.
+- Read the supplied [Target Requirements](#target-requirements) alongside the [Verified Head](#verified-head) and confirm the supplied [Merge Authorization](#merge-authorization) against [Merge Permission](#merge-permission).
+- When the target is the default branch or requires an approving review from a person, provide [Merge Result](#merge-result) with outcome `human-handoff`, the verified head and target requirements, and return without a merge attempt. The reviewer owns the merge even when every other condition holds.
+- An agent cannot approve a [pull request](#identity) it opened.
 - Keep approval with that reviewer. Another account, an administrative bypass or a setting change cannot supply it. Changing repository protection requires the user's explicit authorization, asked for separately.
 - For example, workflow-server's `main` requires one approving review, so carry an epic to ready and stop.
+- Otherwise continue to merge approved delivery only when the authorization permits this delivery target and [Repository Prerequisite](#repository-prerequisite) is confirmed; provide a missing condition as [Failure](#failure) and return.
 
 #### 2. Merge Approved Delivery
 
-- When approval permits the agent to merge and [Repository Prerequisite](#repository-prerequisite) is confirmed, select the merge operation from [Kind](#kind):
+- Select the mutation from [Kind](#kind), using the current [Readiness Evidence](#readiness-evidence), authorization, target requirements and exact verified head SHA.
 
 ##### Task Merge
 
-- For a task, Run [Merge Pull Request](#merge-pull-request "ƒ") with the verified [readiness evidence](#readiness-evidence) and authorization result.
+Run [Merge Pull Request](#merge-pull-request "ƒ") for a task with that evidence.
 
 ##### Epic Merge
 
-- For an epic, use the verified readiness evidence, authorization, [target requirements](#target-requirements) and exact verified head SHA:
+Run [Submit Epic Merge](#submit-epic-merge "ƒ") for an epic with that evidence.
 
-- Require the supplied [Target Requirements](#target-requirements), [Readiness Evidence](#readiness-evidence) and [Merge Authorization](#merge-authorization).
+##### Mutation Outcome
 
-- Run [Submit Epic Merge](#submit-epic-merge "ƒ") with the exact head whose checks and target requirements were verified. On refusal, continue directly to Merge Refusals below.
+- For either selected mutation, retain its [Merge Response](#merge-response), or the observed permission-layer refusal or [Failure](#failure).
+- When the harness declines to execute the mutation, provide [Merge Result](#merge-result) with outcome `harness-denial`, the verified head and target, the observed refusal and missing permission, and return. GitHub supplies no response to that attempt. Report current ready-and-verified state only while its evidence remains current; this outcome requests no human approval and permits no further merge attempt in this run.
+- When GitHub returns a refusal, including a head-SHA mismatch or a response with `merged: false`, provide [Merge Result](#merge-result) with outcome `github-refusal`, the exact attempted head and target and GitHub's refusal evidence, and return for the caller's bounded fresh-verification route.
+- For an unreadable response or transport failure, provide [Failure](#failure) with the unknown mutation outcome and return; no merge is confirmed.
+- Only a response with `merged: true` continues to confirm the merge.
 
-- Run [Read Merge Result](#read-merge-result "ƒ") for that [pull request](#identity).
+#### 3. Confirm Delivery Merge
 
-- Confirm the merged state, merge commit, [verified head](#verified-head) and target.
-
-- Retain [Merge Result](#merge-result) or [Failure](#failure) with the discrepancy.
-
-##### Merge Refusals
-
-- If GitHub refuses the merge, provide [Failure](#failure) with the refusal for fresh verification.
-- If the agent's own permission layer refuses it, the harness declines to run the merge command and GitHub returns nothing. On a target with no review requirement, that refusal is neither a handoff for approval nor a branch blocker. Provide the pull request as ready and verified, naming the refusal and the [merge permission](#merge-permission) it lacks, and stop merge attempts. A later Deliver run merges it in its merge step or reports the missing permission; neither asks the user to approve it.
-
-#### 3. Provide Delivery Merge Result
-
-Provide the [merge result](#merge-result), including its merge commit when supplied, for the caller's readback.
+- Run [Read Merge Result](#read-merge-result "ƒ") for the same [Identity](#identity).
+- Compare its [Merge State](#merge-state) with the verified head, target and mutation's merge commit.
+- On a missing merge, changed head or target, absent merge commit or disagreeing commit, provide [Failure](#failure) with the discrepancy and return.
+- Provide [Merge Result](#merge-result) with outcome `confirmed-merge`, the verified head and target, and the confirmed merge commit.
 
 ### Access Development Links
 
@@ -204,20 +201,19 @@ Apply [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close "ƒ
 
 #### 2. Merge Verified Task Pull
 
-- Merge the task pull request.
 - Where its base is an epic base, Apply [Update Epic Base](delivery-branches.md#update-epic-base "ƒ") with the [project checkout](#project-checkout) and that base.
 - Apply [Fetch Merge Readiness](#fetch-merge-readiness "ƒ") for the task pull request and its base.
 - Apply [Merge Delivery Pull Request](#merge-delivery-pull-request "ƒ") with delivery kind task, verified head, target requirements, [Repository Prerequisite](#repository-prerequisite) and passing [Readiness Evidence](#readiness-evidence), without further confirmation.
-- Stop on a handoff for human approval or a permission-layer refusal, returning it to the caller.
+- Stop on `human-handoff`, `harness-denial` or an unconfirmed mutation outcome, returning the provided result to the caller.
 
-- If GitHub refuses the merge:
+- Only for `github-refusal`, refresh once:
 - Apply [Update Task Branch](delivery-branches.md#update-task-branch "ƒ") with the [unit checkout](#unit-checkout), the task branch and its base.
 - Apply [Fetch Merge Readiness](#fetch-merge-readiness "ƒ") again for the updated task head.
-- Apply [Merge Delivery Pull Request](#merge-delivery-pull-request "ƒ") once more with that verified evidence. A conflict or repeated refusal leaves the pull request open with the blocker reported.
+- Apply [Merge Delivery Pull Request](#merge-delivery-pull-request "ƒ") once more with that verified evidence. Continue to confirmation only for `confirmed-merge`; return any other result without another attempt. A conflict or repeated refusal leaves the pull request open with the blocker reported.
 
 #### 3. Confirm Task Merge Result
 
-- Apply [Read Pull Request State](#read-pull-request-state "ƒ") to confirm the merged state, head, base and merge commit.
+- Only for `confirmed-merge`, Apply [Read Pull Request State](#read-pull-request-state "ƒ") to confirm the merged state, head, base and merge commit.
 - Provide [Merge Result](#merge-result), or [Failure](#failure) with the unresolved conflict, refusal or handoff.
 
 ### Fetch Merge Readiness
@@ -329,16 +325,20 @@ gh api &#92;
 
 ### Merge Pull Request
 
-Merge the task pull request into its base and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+Merge the task pull request at the supplied verified head and provide [Merge Response](#merge-response "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
-gh api --method PUT repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/merge -f merge_method=merge --jq .merged
+gh api &#92;
+  --method PUT repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/merge &#92;
+  -f merge_method=merge &#92;
+  -f sha=[**&lt;head-sha&gt;**](#verified-head "○") &#92;
+  --jq '{merged, message, sha}'
 </pre></big>
 
 - Require [Merge Authorization](#merge-authorization "○") before executing the command.
 
 - Require the supplied [readiness evidence](#readiness-evidence "○") and authorization before issuing the merge.
-- The merge method is a merge commit.
+- The merge method is a merge commit. The endpoint refuses a different head; the refusal is evidence for fresh verification, never confirmation of a merge.
 
 ### Patch Pull Request Body
 
@@ -360,7 +360,7 @@ gh api "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#reposit
 
 ### Submit Epic Merge
 
-Merge the epic base into its long-lived target at the supplied head and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+Merge the epic base into its long-lived target at the supplied head and provide [Merge Response](#merge-response "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh api &#92;
@@ -376,7 +376,7 @@ gh api &#92;
 
 ### Read Merge Result
 
-Read the merge state, merge commit, head and base of a pull request and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+Read the merge state, merge commit, head and base of a pull request and provide [Merge State](#merge-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○") &#92;
@@ -570,7 +570,7 @@ gh api graphql -F query=@'[**&lt;query-file&gt;**](#query-file "○")' --jq .dat
 
 ### Mark Review Draft
 
-Mark an open integration pull request with blocked handoff evidence as draft and provide [Review State](#review-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
+Mark an open pull request with blocked readiness evidence as draft and provide [Review State](#review-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh pr ready [**&lt;pull-request-number&gt;**](#identity "○") --undo --repo [**&lt;owner&gt;**](#repository "○")/[**&lt;repository&gt;**](#repository "○")
@@ -628,7 +628,15 @@ The confirmed authorization for the agent to merge.
 
 ### Merge Result
 
-The merge command result and merge commit when supplied, with the verified head and target; a refusal or discrepancy remains explicit.
+The operation's result has `outcome`, pull request identity, exact verified `head`, `target` and evidence. Its outcomes are `confirmed-merge` (the readback-confirmed merge commit), `human-handoff` (the default-branch or required-person merge boundary), `harness-denial` (the observed permission refusal with no GitHub response), and `github-refusal` (GitHub's refusal response). Only `confirmed-merge` carries a confirmed merge commit; every other outcome leaves the pull request open. An unreadable response or disagreeing readback is [Failure](#failure), with no confirmed merge. eg `{"outcome":"confirmed-merge","pull_request":"m2ux/workflow-server#950","head":"0123456789abcdef0123456789abcdef01234567","target":"i07/e00/main","merge_commit":"89abcdef0123456789abcdef0123456789abcdef01","evidence":"merge response and matching readback"}`
+
+### Merge Response
+
+The merge endpoint's JSON object `{merged, message, sha}`: `merged` is a boolean, `message` is GitHub's response text and `sha` is the resulting merge commit on success. A refused request retains its HTTP status and response; a harness denial has no response. eg `{"merged":true,"message":"Pull Request successfully merged","sha":"89abcdef0123456789abcdef0123456789abcdef01"}`
+
+### Merge State
+
+The readback JSON object `{merged, merge_commit_sha, head, base}`: `merged` is a boolean, the merge commit is nullable, `head` is the literal commit SHA and `base` is the target branch. An absent or unreadable response supplies no confirmed state. eg `{"merged":true,"merge_commit_sha":"89abcdef0123456789abcdef0123456789abcdef01","head":"0123456789abcdef0123456789abcdef01234567","base":"i07/e00/main"}`
 
 ### Link Request
 
@@ -774,7 +782,7 @@ The operation and error, discrepancy or missing evidence that prevents a verifie
 
 ### Merge Permission
 
-The agent harness lets a delivery session merge a task pull request into an [epic base](delivery-branches.md#epic-bases), such as `i07/e00/main`, without a prompt. A merge into the default branch stays with a person.
+Delivery requires both the user's authorization for the selected target and the harness capability to execute its mutation. A task targets its [epic base](delivery-branches.md#epic-bases); an epic targets that base's long-lived branch; a hot-fix uses task delivery against its declared long-lived target. The allowance for an epic base supplies no permission for another target. A merge into the default branch stays with a person. Another target requiring a person's approving review stays with that reviewer. A target without that requirement can be merged only within the authorization and harness permission actually granted for it. Neither the skill nor a ready result expands those grants or authorizes a protection bypass.
 
 - **Claude Code.**
   User settings (`~/.claude/settings.json`) grant it with an `autoMode.allow` rule and an `autoMode.environment` entry, each array keeping `"$defaults"`; auto mode reads neither from project settings. `claude auto-mode config` prints the rules in effect. eg `{"autoMode": {"environment": ["$defaults", "Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review"], "allow": ["$defaults", "Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review. Merges into the default branch are not covered"]}}`

@@ -228,18 +228,34 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 - Use the pull request and published review records.
 
 - Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for its full metadata.
+- If metadata is unreadable or the pull request is closed, retain [Failure](../artifacts/pull-request.md#failure), report the unresolved current state and stop before repair or merge.
 
 - Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with that metadata and [Published Reviews](../artifacts/pull-request.md#published-reviews).
-- On a finding, keep the [pull request](../artifacts/pull-request.md#identity) in draft and continue directly to Repair Hot-Fix Findings below.
+- On a finding, continue directly to Restore Hot-Fix Draft below.
 
 - For a draft with passing evidence, Run [Mark Review Ready](../artifacts/pull-request.md#mark-review-ready "ƒ") with the node id its metadata names.
+- On a failed ready write, retain its failure and continue directly to Restore Hot-Fix Draft below.
 
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again with the same identity, then Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records. Retain [Review State](../artifacts/pull-request.md#review-state), or [Failure](../artifacts/pull-request.md#failure) with the changed revision or finding that leaves it unconfirmed.
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again with the same identity.
+- On an unreadable or closed result, retain the unresolved current-state failure and stop before repair or merge.
+- Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records.
+- On a finding or a draft readback, retain the changed revision or readiness failure and continue directly to Restore Hot-Fix Draft below.
+- Only a confirmed open, ready pull request with passing current review evidence provides [Review State](../artifacts/pull-request.md#review-state) and continues to the merge step.
+
+##### Restore Hot-Fix Draft
+
+- Retain every review or readiness finding.
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") with the same identity before selecting restoration.
+- If metadata is unreadable or the pull request is closed, provide the unresolved restoration discrepancy as [Failure](../artifacts/pull-request.md#failure) and stop before repair or merge.
+- For an open, ready pull request, Run [Mark Review Draft](../artifacts/pull-request.md#mark-review-draft "ƒ") with its identity.
+- After a selected restoration write, including a failed write, Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") with the same identity.
+- If the restoration write failed, metadata is unreadable, or the readback is closed or ready, provide the unresolved restoration discrepancy as [Failure](../artifacts/pull-request.md#failure) and stop before repair or merge. Report draft state only when the readback confirms it.
+- With a successful selected write and confirmed open draft, or a confirmed open draft requiring no write, continue to Repair Hot-Fix Findings below.
 
 ##### Repair Hot-Fix Findings
 
 - For each provided finding, fix it on the task branch and repeat this step from Produce Agent Review, until review validation and ready-state readback provide no finding.
-- A finding the session cannot fix within its allowance stops it before the merge step. The hot-fix stays held and its pull request a draft, and the session returns each open finding in its result.
+- A finding the session cannot fix within its allowance stops it before the merge step. Retain the hold, the confirmed draft readback and each open finding in the session result.
 
 #### 10. Merge
 
