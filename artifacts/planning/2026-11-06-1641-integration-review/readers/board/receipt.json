@@ -1,0 +1,89 @@
+{
+  "head": "c3d4f5b7bafba00096f71c8f53f213e57a264cba",
+  "checkout": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace",
+  "kind": "read-only semantic instruction-route consumer check",
+  "verdict": "pass within stated limits",
+  "findings": [],
+  "cases": [
+    {
+      "case": "advance_automatic_ask_I09",
+      "verdict": "pass",
+      "recommended_priority": 6,
+      "gates": [
+        "record decision",
+        "ensure label",
+        "save and confirm issue",
+        "refresh and recompute",
+        "complete queue before calls",
+        "refresh until complete and no calls"
+      ]
+    },
+    {
+      "case": "align_joined_lane_and_entire_epic_dependency",
+      "verdict": "pass",
+      "gates": [
+        "investigate consumed outputs and full graph",
+        "approve common lane or unjoin",
+        "approve explicit producer-row dependencies",
+        "validate bodies and graph",
+        "save and read back",
+        "rerun affected checks"
+      ]
+    },
+    {
+      "case": "sync_merged_task_unverified_epic_criterion",
+      "verdict": "pass",
+      "gates": [
+        "record matched delivery",
+        "verify at delivered revision",
+        "leave unverified criterion unticked",
+        "block epic readiness and closure",
+        "continue initiative and board sync",
+        "leave queue selection unevaluated"
+      ]
+    }
+  ],
+  "known_other_scope": {
+    "E02_1615": "automatic decision wording; selected-context boundaries and graph diagnostics",
+    "E04_1654": "hotfix draft restoration; epic merge refusal/retry",
+    "attribution": "parent confirmation; E02 captured plan also read"
+  },
+  "actual_read_limits": {
+    "entry": "SKILL.md then shared Rules/Conventions and selected Advance, Align and Sync routes",
+    "details": "report.md lists actual source families and relevant sections",
+    "not_run": [
+      "executable fixtures",
+      "criterion instruments",
+      "workers",
+      "network commands",
+      "GitHub writes",
+      "repository edits",
+      "merges",
+      "publication"
+    ],
+    "missing_context": [
+      "actual captured board, issue and PR evidence",
+      "concrete correct Lane choice",
+      "concrete consumed producer identities",
+      "E04 body not inspected"
+    ],
+    "truncation": "two batched skill reads recovered; unrelated discovery truncation not used as correctness evidence",
+    "unrelated_context": "full Lane admission and graph renumbering material; broad worktree/planning discovery output",
+    "claim_boundary": "instruction-route usability, not live tracker or executable acceptance"
+  },
+  "repository_mutated": false,
+  "scratch_artifacts": [
+    "/tmp/e01-board-route-review/report.md",
+    "/tmp/e01-board-route-review/receipt.json"
+  ],
+  "concurrent_state_at_receipt_verification": {
+    "modified_paths": [
+      "skills/work-planner/artifacts/issue-body.md",
+      "skills/work-planner/modes/propose-mode.md",
+      "skills/work-planner/protocols/issue-closure.md",
+      "skills/work-planner/protocols/issue-delivery.md"
+    ],
+    "reviewer_changed_repository": false,
+    "reviewed_later_changes": false
+  }
+}

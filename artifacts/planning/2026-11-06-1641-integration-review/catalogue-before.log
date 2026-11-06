@@ -1,0 +1,268 @@
+.F.FFFFFFFFFFFFFFFFFF.F....
+======================================================================
+FAIL: test_every_module_has_one_row (test_readme.Catalogue.test_every_module_has_one_row)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 155, in test_every_module_has_one_row
+    self.assertEqual(sorted({Path(name).stem for name in modules()} - set(rows_named)), [],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     'modules with no catalogue row')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['test_command_contracts'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'test_command_contracts'
+
+- ['test_command_contracts']
++ [] : modules with no catalogue row
+
+======================================================================
+FAIL: test_the_description_is_the_docstring (test_readme.Catalogue.test_the_description_is_the_docstring) (module='test_checkouts.py')
+The row states what the docstring states. A link marks a name in one
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 182, in test_the_description_is_the_docstring
+    self.assertEqual(without_extension(written), without_extension(summary(name)))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Each command acting on its checkout is run in a named one' != 'Checkout-sensitive commands consume linked input contracts'
+- Each command acting on its checkout is run in a named one
++ Checkout-sensitive commands consume linked input contracts
+
+
+======================================================================
+FAIL: test_a_document_row_names_the_prose_modules_that_read_it (test_readme.Coverage.test_a_document_row_names_the_prose_modules_that_read_it) (document='artifacts/')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 215, in test_a_document_row_names_the_prose_modules_that_read_it
+    self.assertEqual(set(Path(target).stem for target in linked(row[1])), readers)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Items in the first set but not the second:
+'test_worktrees'
+
+======================================================================
+FAIL: test_a_script_row_names_the_modules_that_reach_it (test_readme.Coverage.test_a_script_row_names_the_modules_that_reach_it) (script='closure')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 206, in test_a_script_row_names_the_modules_that_reach_it
+    self.assertEqual(set(Path(target).stem for target in linked(row[1])), holders)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Items in the second set but not the first:
+'test_command_contracts'
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_templates.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '4' != '6'
+- 4
++ 6
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_checkouts.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '7' != '10'
+- 7
++ 10
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_documents.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '11' != '13'
+- 11
++ 13
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_checkouts.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '7' != '10'
+- 7
++ 10
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_documents.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '11' != '13'
+- 11
++ 13
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_checkouts.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '7' != '10'
+- 7
++ 10
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_documents.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '11' != '13'
+- 11
++ 13
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_checkouts.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '7' != '10'
+- 7
++ 10
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_documents.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '11' != '13'
+- 11
++ 13
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_checkouts.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '7' != '10'
+- 7
++ 10
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_documents.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '11' != '13'
+- 11
++ 13
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_checkouts.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '7' != '10'
+- 7
++ 10
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_documents.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '11' != '13'
+- 11
++ 13
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_plan_mode.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '6' != '8'
+- 6
++ 8
+
+
+======================================================================
+FAIL: test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods) (module='test_plan_mode.py')
+A count sits beside the module it measures, in every row naming it.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 222, in test_each_count_is_the_modules_test_methods
+    self.assertEqual(count, test_count(Path(target).name))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '6' != '8'
+- 6
++ 8
+
+
+======================================================================
+FAIL: test_every_document_the_prose_tests_read_has_a_row (test_readme.Coverage.test_every_document_the_prose_tests_read_has_a_row)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_readme.py", line 199, in test_every_document_the_prose_tests_read_has_a_row
+    self.assertEqual(sorted(held - written), [], 'documents with no coverage row')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['artifacts/delivery-branches.md'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'artifacts/delivery-branches.md'
+
+- ['artifacts/delivery-branches.md']
++ [] : documents with no coverage row
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.151s
+
+FAILED (failures=20)
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace (name more with SBX_EXTRA_ROOTS=dir1:dir2)

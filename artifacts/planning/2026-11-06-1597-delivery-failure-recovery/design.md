@@ -37,3 +37,7 @@ E00 is closed and E02 scopes ownership-preserving separation. The user confirmed
 | Confirmed merge | Fresh merged-state/head/target/commit confirmation |
 
 Tests must observe selected operations and their order, not merely check that document keywords exist. Use a bounded fixture-driven reader/executor for the changed routes, recording calls, writes and terminal results; never exercise a real merge. Pair source checks with fresh-context readings of failure and success branches at a pinned revision. Run document/contract/model checks and the full required fixing-PR suites. Keep pre-existing prerequisite-cycle limitations explicit until E02 supplies its repair.
+
+## Verified Task Merge Head
+
+The I17:E01 review identifies another inherited merge gap at `3223aee0e83766bf9ef5727662ce3626115a27ae`: Merge Pull Request omits the verified SHA from its write. E04 W02 owns this command and AC8 observes the captured request and moving-head refusal. The user approved this follow-up. Include the reviewed SHA in the mutation, retain current authorization and retry bounds, and require fresh verification after a mismatch. This is part of the existing W02/W03 atomic unit, with no new lane or dependency.

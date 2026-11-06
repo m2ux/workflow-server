@@ -1,0 +1,25 @@
+Original shell specifications: 116 Current: 116 Differing: 8
+artifacts/delivery-plan.md Compute Available Work
+ before: ['cd', '<workspace>', '&&', '<workspace>/scripts/sbx', 'python3', 'skills/work-planner/scripts/deliver.py', '--items', '<board-items-file>', '--prs', '<pull-request-records-file>', '--links', '<issue-link-snapshot-file>', '--project', '<checkout>', '--revision', '<revision>', '--bases', '<epic-base-names>', '--engineering', '<engineering-worktree>', '--lane', '<lane-index>']
+ after:  ['cd', '<workspace>', '&&', '<workspace>/scripts/sbx', 'python3', 'skills/work-planner/scripts/deliver.py', '--items', '<board-items-file>', '--prs', '<pull-request-records-file>', '--links', '<issue-link-snapshot-file>', '--project', '<checkout>', '--revision', '<revision>', '--bases', '<epic-base-names>', '--engineering', '<engineering-worktree>', '--lane', '<lane-index>', '--dispatch-plan', '<dispatch-export-file>']
+artifacts/epic-issue-body.md Reserve Row
+ before: ['cd', '<workspace>', '&&', '<workspace>/scripts/sbx', 'python3', 'skills/work-planner/scripts/deliver.py', '--epic', '<epic-json-file>', '--reserve', '<task-ids>', '--items', '<board-items-file>', '--records', '<records-base-url>', '--fix', '<output-body-file>']
+ after:  ['cd', '<workspace>', '&&', '<workspace>/scripts/sbx', 'python3', 'skills/work-planner/scripts/deliver.py', '--epic', '<epic-json-file>', '--reserve', '<task-ids>', '--items', '<board-items-file>', '--records', '<records-base-url>', '--date', '<record-date>', '--fix', '<output-body-file>']
+artifacts/initiative-issue-body.md Sync Initiative
+ before: ['cd', '<workspace>', '&&', '<workspace>/scripts/sbx', 'python3', 'skills/work-planner/scripts/sync.py', '<initiative-json-file>', '--epics', '<epic-json-file>']
+ after:  ['cd', '<workspace>', '&&', '<workspace>/scripts/sbx', 'python3', 'skills/work-planner/scripts/sync.py', '<initiative-json-file>', '--epics', '<epic-json-file>', '--fix', '<output-body-file>']
+artifacts/issue-body.md Check Body Format
+ before: ['cd', '<workspace>', '&&', '<workspace>/scripts/sbx', 'python3', 'skills/work-planner/scripts/format.py', '<issue-json-file>', '--fix', '<output-body-file>']
+ after:  ['cd', '<workspace>', '&&', '<workspace>/scripts/sbx', 'python3', 'skills/work-planner/scripts/format.py', '<issue-json-file>', '--initiative', '<initiative-json-file>', '--epic', '<epic-json-file>', '--prs', '<pull-request-records-file>', '--files', '<pull-request-changed-paths>', '--project', '<checkout>', '--revision', '<revision>', '--fix', '<output-body-file>']
+artifacts/issue-body.md Fetch Reference Repository
+ before: ['gh', 'api', 'repos/{owner}/{repo}', '>', 'repository.json']
+ after:  ['gh', 'api', 'repos/<owner>/<repo>', '>', '<repository-json-file>']
+artifacts/issue-body.md List Reference Repositories
+ before: ['<workspace>/scripts/sbx', 'python3', '<workspace>/skills/work-planner/scripts/align.py', 'repositories', 'issue-943.json']
+ after:  ['<workspace>/scripts/sbx', 'python3', '<workspace>/skills/work-planner/scripts/align.py', 'repositories', '<issue-json-file>']
+artifacts/issue-body.md Validate Reference Visibility
+ before: ['<workspace>/scripts/sbx', 'python3', '<workspace>/skills/work-planner/scripts/align.py', 'references', 'issue-943.json', '--repositories', 'repositories.json']
+ after:  ['<workspace>/scripts/sbx', 'python3', '<workspace>/skills/work-planner/scripts/align.py', 'references', '<issue-json-file>', '--repositories', '<repositories-json-file>']
+artifacts/pull-request-body.md Convert Test Plan
+ before: ['<workspace>/scripts/sbx', 'python3', '<workspace>/skills/work-planner/scripts/align.py', 'plan', 'pr-950.json', '--fix', 'fixed-950.md']
+ after:  ['<workspace>/scripts/sbx', 'python3', '<workspace>/skills/work-planner/scripts/align.py', 'plan', '<pull-request-json-file>', '--fix', '<output-body-file>']
