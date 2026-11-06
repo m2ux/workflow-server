@@ -6,6 +6,10 @@
 
 Work Planner expresses procedures as heading steps and links each consumed input and provided output to its Field in step prose. Markdown link titles identify input, output and callable operation roles; commands execute in their owning steps. Each skill's declarations select the shared checker model used by the converted corpus and its document readers.
 
+## Symbol Notation
+
+Current integration `fbce2c7535b1518dd3ebb4dbe845b67576186d94` uses ○ input, ● output and ƒ for called operations, protocols and procedures. The diagrams and native graph archive below retain their explicit structural baseline `00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01`; the [current verification](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-validation.md) separately records the exact notation-preservation audit and final parser checks.
+
 ## Structure
 
 The measured callers converge on contract selection, document parsing and execution-span selection. The diagrams group those shared responsibilities by their positive call relationships; they do not infer boundaries from folder names. Green marks changed elements and grey provides context.
@@ -162,7 +166,7 @@ The [pull request's Changes](https://github.com/m2ux/workflow-server/pull/1641) 
 - **Graph coverage.**
   The final index reports 308 total processes and 37 affected ones. It also reports 159 unranked candidate entries, 590 skipped callees and 21 budget-cut walks; an absent edge or process cannot establish that a path does not exist.
 - **Evidence limits.**
-  The current-head installed checker and both test suites pass. Six contextual-contract reading plans remain Partial for over-reading, prerequisite closure, truncation and receipt limits; the [verification record](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-validation.md) preserves those boundaries.
+  The current symbol-notation installed checker and both test suites pass. Six contextual-contract reading plans remain Partial for over-reading, prerequisite closure, truncation and receipt limits; the [verification record](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-validation.md) preserves those boundaries.
 - **Scope.**
   The migration covers Work Planner and its shared-checker support. Other skills' existing findings are outside its zero-finding gate.
 

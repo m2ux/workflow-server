@@ -1,6 +1,6 @@
 # Symbol Link Titles
 
-The approved Markdown link titles are ○ for input, ● for output and ƒ for callable operation. Visible link names, destinations, contracts, procedure bodies and invocation payloads keep their meaning. rules.md owns the concise definition; guidelines continue to link that definition.
+The approved Markdown link titles are ○ for input, ● for output and ƒ for called operations, protocols and procedures. Visible link names, destinations, contracts, procedure bodies and invocation payloads keep their meaning. rules.md owns the concise definition; guidelines continue to link that definition.
 
 ## Implementation
 
@@ -13,6 +13,6 @@ Compare every migrated file with its baseline after reversing only the title sub
 ## Progress
 
 - [x] Confirm the exact symbols and link-title placement.
-- [ ] In progress: convert corpus, parser, fixtures, rule and example together.
-- [ ] Verify exact preservation and required suites.
-- [ ] Commit, push and update the current review evidence.
+- [x] Convert corpus, parser, fixtures, rule and example together.
+- [x] Verify exact preservation and required suites.
+- [x] Commit and push the product correction; publish current composed review evidence.

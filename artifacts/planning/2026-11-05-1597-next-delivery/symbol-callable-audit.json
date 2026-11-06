@@ -1,0 +1,10 @@
+{
+  "counts": {
+    "artifact_operations": 567,
+    "protocols": 44,
+    "mode_procedures": 40
+  },
+  "total": 651,
+  "failures": [],
+  "scope": "Every callable link in authored Work Planner prose, including whole protocol/mode procedures and named child procedures."
+}

@@ -1,0 +1,6152 @@
+{
+  "head": "fbce2c7535b1518dd3ebb4dbe845b67576186d94",
+  "operations": 237,
+  "input_obligations": 817,
+  "output_obligations": 357,
+  "callable_links": 651,
+  "html_invocations": 204,
+  "failures": [],
+  "operations_audit": [
+    {
+      "file": "artifacts/acceptance-criteria.md",
+      "operation": "Run at Revision",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout",
+          "#revision": "Revision",
+          "#instrument": "Instrument",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#instrument-result": "Instrument Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#instrument",
+          "#project-checkout",
+          "#revision",
+          "#workspace"
+        ],
+        "output": [
+          "#instrument-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/acceptance-criteria.md",
+      "operation": "Tick Verified Criteria",
+      "expected": {
+        "input": {
+          "#issue-evidence": "Issue Evidence",
+          "#criterion-selection": "Criterion Selection",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#tick-state": "Tick State",
+          "#output-body": "Output Body"
+        }
+      },
+      "observed": {
+        "input": [
+          "#criterion-selection",
+          "#issue-evidence",
+          "#output-body"
+        ],
+        "output": [
+          "#output-body",
+          "#tick-state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/acceptance-criteria.md",
+      "operation": "Verify Selected Criteria",
+      "expected": {
+        "input": {
+          "#criterion-selection": "Criterion Selection",
+          "#issue-body": "Issue Body",
+          "#delivery-evidence": "Delivery Evidence",
+          "#instrument": "Instrument",
+          "#project-checkout": "Project Checkout"
+        },
+        "output": {
+          "#verification-evidence": "Verification Evidence"
+        }
+      },
+      "observed": {
+        "input": [
+          "#criterion-selection",
+          "#delivery-evidence",
+          "#instrument",
+          "#issue-body",
+          "#project-checkout"
+        ],
+        "output": [
+          "#verification-evidence"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/agent-review.md",
+      "operation": "Validate Agent Review",
+      "expected": {
+        "input": {
+          "#pull-request-record": "Pull Request Record",
+          "#published-reviews": "Published Reviews",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#review-eligibility": "Review Eligibility"
+        }
+      },
+      "observed": {
+        "input": [
+          "#published-reviews",
+          "#pull-request-record",
+          "#workspace"
+        ],
+        "output": [
+          "#review-eligibility"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/agent-review.md",
+      "operation": "Check Agent Review",
+      "expected": {
+        "input": {
+          "#pull-request-record": "Pull Request Record",
+          "#published-reviews": "Published Reviews"
+        },
+        "output": {
+          "#review-eligibility": "Review Eligibility"
+        }
+      },
+      "observed": {
+        "input": [
+          "#published-reviews",
+          "#pull-request-record"
+        ],
+        "output": [
+          "#review-eligibility"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/agent-review.md",
+      "operation": "Produce Agent Review",
+      "expected": {
+        "input": {
+          "#review-inputs": "Review Inputs"
+        },
+        "output": {
+          "#review-record": "Review Record"
+        }
+      },
+      "observed": {
+        "input": [
+          "#review-inputs"
+        ],
+        "output": [
+          "#review-record"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/architecture-overview.md",
+      "operation": "Populate Architecture Overview",
+      "expected": {
+        "input": {
+          "#measurements": "Measurements",
+          "#pull-request-head": "Pull Request Head",
+          "#overview-file": "Overview File"
+        },
+        "output": {
+          "#overview-file": "Overview File"
+        }
+      },
+      "observed": {
+        "input": [
+          "#measurements",
+          "#overview-file",
+          "#pull-request-head"
+        ],
+        "output": [
+          "#overview-file"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board-delivery.md",
+      "operation": "Compute Dispatch Status",
+      "expected": {
+        "input": {
+          "#board-items": "Board Items",
+          "#board-identity": "Board Identity",
+          "#board-fields": "Board Fields",
+          "#output-directory": "Output Directory",
+          "#assignee-login": "Assignee Login",
+          "#dispatch-selection": "Dispatch Selection",
+          "#pull-request-records": "Pull Request Records",
+          "#published-reviews": "Published Reviews",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#board-changes": "Board Changes"
+        }
+      },
+      "observed": {
+        "input": [
+          "#assignee-login",
+          "#board-fields",
+          "#board-identity",
+          "#board-items",
+          "#dispatch-selection",
+          "#output-directory",
+          "#published-reviews",
+          "#pull-request-records",
+          "#workspace"
+        ],
+        "output": [
+          "#board-changes"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board-delivery.md",
+      "operation": "Compute Board Changes",
+      "expected": {
+        "input": {
+          "#initiative-record": "Initiative Record",
+          "#epic-records": "Epic Records",
+          "#task-records": "Task Records",
+          "#pull-request-records": "Pull Request Records",
+          "#published-reviews": "Published Reviews",
+          "#issue-link-snapshot": "Issue Link Snapshot",
+          "#board-identity": "Board Identity",
+          "#board-fields": "Board Fields",
+          "#board-items": "Board Items",
+          "#output-directory": "Output Directory",
+          "#assignee-login": "Assignee Login",
+          "#resolved-issues": "Resolved Issues",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#board-changes": "Board Changes"
+        }
+      },
+      "observed": {
+        "input": [
+          "#assignee-login",
+          "#board-fields",
+          "#board-identity",
+          "#board-items",
+          "#epic-records",
+          "#initiative-record",
+          "#issue-link-snapshot",
+          "#output-directory",
+          "#published-reviews",
+          "#pull-request-records",
+          "#resolved-issues",
+          "#task-records",
+          "#workspace"
+        ],
+        "output": [
+          "#board-changes"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board-delivery.md",
+      "operation": "Record Dispatch Status",
+      "expected": {
+        "input": {
+          "#board-items": "Board Items",
+          "#board-identity": "Board Identity",
+          "#board-fields": "Board Fields",
+          "#output-directory": "Output Directory",
+          "#assignee-login": "Assignee Login",
+          "#dispatch-selection": "Dispatch Selection",
+          "#pull-request-records": "Pull Request Records",
+          "#published-reviews": "Published Reviews"
+        },
+        "output": {
+          "#confirmed-statuses": "Confirmed Statuses"
+        }
+      },
+      "observed": {
+        "input": [
+          "#assignee-login",
+          "#board-fields",
+          "#board-identity",
+          "#board-items",
+          "#dispatch-selection",
+          "#output-directory",
+          "#published-reviews",
+          "#pull-request-records"
+        ],
+        "output": [
+          "#confirmed-statuses"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board-delivery.md",
+      "operation": "Record Board Delivery",
+      "expected": {
+        "input": {
+          "#saved-identities": "Saved Identities"
+        },
+        "output": {
+          "#confirmed-statuses": "Confirmed Statuses"
+        }
+      },
+      "observed": {
+        "input": [
+          "#saved-identities"
+        ],
+        "output": [
+          "#confirmed-statuses"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board-delivery.md",
+      "operation": "Record Epic Review",
+      "expected": {
+        "input": {
+          "#review-selection": "Review Selection",
+          "#pull-request-records": "Pull Request Records",
+          "#published-reviews": "Published Reviews",
+          "#output-paths": "Output Paths"
+        },
+        "output": {
+          "#confirmed-statuses": "Confirmed Statuses"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-paths",
+          "#published-reviews",
+          "#pull-request-records",
+          "#review-selection"
+        ],
+        "output": [
+          "#confirmed-statuses"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board-delivery.md",
+      "operation": "Plan Board Changes",
+      "expected": {
+        "input": {
+          "#initiative-record": "Initiative Record",
+          "#epic-records": "Epic Records",
+          "#task-records": "Task Records",
+          "#pull-request-records": "Pull Request Records",
+          "#published-reviews": "Published Reviews",
+          "#issue-link-snapshot": "Issue Link Snapshot",
+          "#board-identity": "Board Identity",
+          "#board-fields": "Board Fields",
+          "#board-items": "Board Items",
+          "#output-directory": "Output Directory",
+          "#assignee-login": "Assignee Login",
+          "#resolved-issues": "Resolved Issues"
+        },
+        "output": {
+          "#board-changes": "Board Changes"
+        }
+      },
+      "observed": {
+        "input": [
+          "#assignee-login",
+          "#board-fields",
+          "#board-identity",
+          "#board-items",
+          "#epic-records",
+          "#initiative-record",
+          "#issue-link-snapshot",
+          "#output-directory",
+          "#published-reviews",
+          "#pull-request-records",
+          "#resolved-issues",
+          "#task-records"
+        ],
+        "output": [
+          "#board-changes"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board-queue.md",
+      "operation": "Compute Board Queue",
+      "expected": {
+        "input": {
+          "#board-identity": "Board Identity",
+          "#board-items": "Board Items",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-link-snapshot": "Issue Link Snapshot",
+          "#board-fields": "Board Fields",
+          "#output-directory": "Output Directory",
+          "#assignee-login": "Assignee Login",
+          "#resolved-issues": "Resolved Issues",
+          "#unplanned-initiatives": "Unplanned Initiatives",
+          "#status-scope": "Status Scope",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#queue-result": "Queue Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#assignee-login",
+          "#board-fields",
+          "#board-identity",
+          "#board-items",
+          "#issue-link-snapshot",
+          "#output-directory",
+          "#pull-request-records",
+          "#resolved-issues",
+          "#status-scope",
+          "#unplanned-initiatives",
+          "#workspace"
+        ],
+        "output": [
+          "#queue-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board-queue.md",
+      "operation": "Plan Board Queue",
+      "expected": {
+        "input": {
+          "#board-identity": "Board Identity",
+          "#board-items": "Board Items",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-link-snapshot": "Issue Link Snapshot",
+          "#board-fields": "Board Fields",
+          "#output-directory": "Output Directory",
+          "#assignee-login": "Assignee Login",
+          "#resolved-issues": "Resolved Issues",
+          "#unplanned-initiatives": "Unplanned Initiatives"
+        },
+        "output": {
+          "#queue-result": "Queue Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#assignee-login",
+          "#board-fields",
+          "#board-identity",
+          "#board-items",
+          "#issue-link-snapshot",
+          "#output-directory",
+          "#pull-request-records",
+          "#resolved-issues",
+          "#unplanned-initiatives"
+        ],
+        "output": [
+          "#queue-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Find User",
+      "expected": {
+        "input": {
+          "#authenticated-access": "Authenticated Access"
+        },
+        "output": {
+          "#assignee-login": "Assignee Login"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access"
+        ],
+        "output": [
+          "#assignee-login"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Fetch Board Item",
+      "expected": {
+        "input": {
+          "#board-coordinates": "Board Coordinates",
+          "#item-coordinates": "Item Coordinates",
+          "#status-field": "Status Field",
+          "#board-owner": "Board Owner"
+        },
+        "output": {
+          "#board-configuration": "Board Configuration"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-coordinates",
+          "#board-owner",
+          "#item-coordinates",
+          "#status-field"
+        ],
+        "output": [
+          "#board-configuration"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Fetch Board Items with Status",
+      "expected": {
+        "input": {
+          "#board-coordinates": "Board Coordinates",
+          "#status-field": "Status Field",
+          "#board-items-file": "Board Items File",
+          "#board-owner": "Board Owner"
+        },
+        "output": {
+          "#board-state": "Board State"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-coordinates",
+          "#board-items-file",
+          "#board-owner",
+          "#status-field"
+        ],
+        "output": [
+          "#board-state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Find Status Field",
+      "expected": {
+        "input": {
+          "#board-coordinates": "Board Coordinates",
+          "#board-owner": "Board Owner"
+        },
+        "output": {
+          "#status-field": "Status Field"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-coordinates",
+          "#board-owner"
+        ],
+        "output": [
+          "#status-field"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Find Theme Board",
+      "expected": {
+        "input": {
+          "#board-owner": "Board Owner",
+          "#theme-name": "Theme Name"
+        },
+        "output": {
+          "#selected-board": "Selected Board"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-owner",
+          "#theme-name"
+        ],
+        "output": [
+          "#selected-board"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Fetch Board Fields",
+      "expected": {
+        "input": {
+          "#board-coordinates": "Board Coordinates",
+          "#board-fields-file": "Board Fields File",
+          "#board-owner": "Board Owner"
+        },
+        "output": {
+          "#board-configuration": "Board Configuration"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-coordinates",
+          "#board-fields-file",
+          "#board-owner"
+        ],
+        "output": [
+          "#board-configuration"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Remove Board Item",
+      "expected": {
+        "input": {
+          "#board-coordinates": "Board Coordinates",
+          "#item-coordinates": "Item Coordinates",
+          "#board-owner": "Board Owner"
+        },
+        "output": {
+          "#membership-result": "Membership Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-coordinates",
+          "#board-owner",
+          "#item-coordinates"
+        ],
+        "output": [
+          "#membership-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Set Item Status",
+      "expected": {
+        "input": {
+          "#board-coordinates": "Board Coordinates",
+          "#item-coordinates": "Item Coordinates",
+          "#status-input-file": "Status Input File",
+          "#board-owner": "Board Owner"
+        },
+        "output": {
+          "#membership-result": "Membership Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-coordinates",
+          "#board-owner",
+          "#item-coordinates",
+          "#status-input-file"
+        ],
+        "output": [
+          "#membership-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Add Issue to Board",
+      "expected": {
+        "input": {
+          "#board-coordinates": "Board Coordinates",
+          "#issue-id": "Issue Id",
+          "#board-owner": "Board Owner"
+        },
+        "output": {
+          "#membership-result": "Membership Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-coordinates",
+          "#board-owner",
+          "#issue-id"
+        ],
+        "output": [
+          "#membership-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Find Proposals Board",
+      "expected": {
+        "input": {
+          "#board-owner": "Board Owner"
+        },
+        "output": {
+          "#selected-board": "Selected Board"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-owner"
+        ],
+        "output": [
+          "#selected-board"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Link Board to Repository",
+      "expected": {
+        "input": {
+          "#board-coordinates": "Board Coordinates",
+          "#repository": "Repository",
+          "#board-owner": "Board Owner"
+        },
+        "output": {
+          "#link-result": "Link Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-coordinates",
+          "#board-owner",
+          "#repository"
+        ],
+        "output": [
+          "#link-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Copy Board Template",
+      "expected": {
+        "input": {
+          "#board-owner": "Board Owner",
+          "#template-selection": "Template Selection",
+          "#copy-title": "Copy Title"
+        },
+        "output": {
+          "#copied-board": "Copied Board"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-owner",
+          "#copy-title",
+          "#template-selection"
+        ],
+        "output": [
+          "#copied-board"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Find Board Template",
+      "expected": {
+        "input": {
+          "#board-owner": "Board Owner",
+          "#template-selection": "Template Selection"
+        },
+        "output": {
+          "#template-selection": "Template Selection"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-owner",
+          "#template-selection"
+        ],
+        "output": [
+          "#template-selection"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Locate Project Board",
+      "expected": {
+        "input": {
+          "#board-owner": "Board Owner",
+          "#board-selection": "Board Selection"
+        },
+        "output": {
+          "#selected-board": "Selected Board"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-owner",
+          "#board-selection"
+        ],
+        "output": [
+          "#selected-board"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Read Board Configuration",
+      "expected": {
+        "input": {
+          "#board-coordinates": "Board Coordinates",
+          "#output-files": "Output Files",
+          "#optional-item": "Optional Item"
+        },
+        "output": {
+          "#board-configuration": "Board Configuration"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-coordinates",
+          "#optional-item",
+          "#output-files"
+        ],
+        "output": [
+          "#board-configuration"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Read Board Assignee",
+      "expected": {
+        "input": {
+          "#authenticated-access": "Authenticated Access"
+        },
+        "output": {
+          "#assignee-login": "Assignee Login"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access"
+        ],
+        "output": [
+          "#assignee-login"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Read Board State",
+      "expected": {
+        "input": {
+          "#board-coordinates": "Board Coordinates"
+        },
+        "output": {
+          "#board-state": "Board State"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-coordinates"
+        ],
+        "output": [
+          "#board-state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Place Issue on Board",
+      "expected": {
+        "input": {
+          "#board-coordinates": "Board Coordinates",
+          "#issue-id": "Issue Id",
+          "#initial-status": "Initial Status"
+        },
+        "output": {
+          "#board-configuration": "Board Configuration"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-coordinates",
+          "#initial-status",
+          "#issue-id"
+        ],
+        "output": [
+          "#board-configuration"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Create Theme Board",
+      "expected": {
+        "input": {
+          "#board-owner": "Board Owner",
+          "#repository": "Repository",
+          "#theme-provenance": "Theme Provenance"
+        },
+        "output": {
+          "#copied-board": "Copied Board"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-owner",
+          "#repository",
+          "#theme-provenance"
+        ],
+        "output": [
+          "#copied-board"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Create Proposals Board",
+      "expected": {
+        "input": {
+          "#board-owner": "Board Owner",
+          "#repository": "Repository"
+        },
+        "output": {
+          "#copied-board": "Copied Board"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-owner",
+          "#repository"
+        ],
+        "output": [
+          "#copied-board"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Copy Project Board",
+      "expected": {
+        "input": {
+          "#board-owner": "Board Owner",
+          "#repository": "Repository",
+          "#selected-kind": "Selected Kind"
+        },
+        "output": {
+          "#copied-board": "Copied Board"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-owner",
+          "#repository",
+          "#selected-kind"
+        ],
+        "output": [
+          "#copied-board"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/board.md",
+      "operation": "Select Project Board",
+      "expected": {
+        "input": {
+          "#board-owner": "Board Owner",
+          "#board-selection": "Board Selection"
+        },
+        "output": {
+          "#selected-board": "Selected Board"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-owner",
+          "#board-selection"
+        ],
+        "output": [
+          "#selected-board"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Read Checkout Status",
+      "expected": {
+        "input": {
+          "#checkout": "Checkout"
+        },
+        "output": {
+          "#checkout-status": "Checkout Status",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#checkout"
+        ],
+        "output": [
+          "#checkout-status",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Read Checkout Revision",
+      "expected": {
+        "input": {
+          "#checkout": "Checkout",
+          "#revision": "Revision"
+        },
+        "output": {
+          "#checkout-commit": "Checkout Commit",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#checkout",
+          "#revision"
+        ],
+        "output": [
+          "#checkout-commit",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Fetch Active Branch Rules",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#target-branch": "Target Branch",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#target-requirements": "Target Requirements",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-files",
+          "#repository",
+          "#target-branch"
+        ],
+        "output": [
+          "#failure",
+          "#target-requirements"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Fetch Branch Protection",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#target-branch": "Target Branch",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#target-requirements": "Target Requirements",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-files",
+          "#repository",
+          "#target-branch"
+        ],
+        "output": [
+          "#failure",
+          "#target-requirements"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Add Review Worktree",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout",
+          "#worktree-path": "Worktree Path",
+          "#verified-head": "Verified Head"
+        },
+        "output": {
+          "#worktree-result": "Worktree Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#project-checkout",
+          "#verified-head",
+          "#worktree-path"
+        ],
+        "output": [
+          "#failure",
+          "#worktree-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Add Epic Base Worktree",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout",
+          "#worktree-path": "Worktree Path",
+          "#epic-base-name": "Epic-Base Name"
+        },
+        "output": {
+          "#worktree-result": "Worktree Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-base-name",
+          "#project-checkout",
+          "#worktree-path"
+        ],
+        "output": [
+          "#failure",
+          "#worktree-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Fetch Review Head",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout",
+          "#pull-request-number": "Pull Request Number"
+        },
+        "output": {
+          "#checkout-commit": "Checkout Commit",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#project-checkout",
+          "#pull-request-number"
+        ],
+        "output": [
+          "#checkout-commit",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Add Task Worktree",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout",
+          "#worktree-path": "Worktree Path",
+          "#task-branch": "Task Branch",
+          "#base-branch": "Base Branch",
+          "#prerequisite-evidence": "Prerequisite Evidence"
+        },
+        "output": {
+          "#worktree-result": "Worktree Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#base-branch",
+          "#prerequisite-evidence",
+          "#project-checkout",
+          "#task-branch",
+          "#worktree-path"
+        ],
+        "output": [
+          "#failure",
+          "#worktree-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Push Task Branch",
+      "expected": {
+        "input": {
+          "#unit-checkout": "Unit Checkout",
+          "#task-branch": "Task Branch",
+          "#successful-merge": "Successful Merge"
+        },
+        "output": {
+          "#branch-result": "Branch Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#successful-merge",
+          "#task-branch",
+          "#unit-checkout"
+        ],
+        "output": [
+          "#branch-result",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Push Epic Base",
+      "expected": {
+        "input": {
+          "#checkout": "Checkout",
+          "#successful-merge": "Successful Merge"
+        },
+        "output": {
+          "#branch-result": "Branch Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#checkout",
+          "#successful-merge"
+        ],
+        "output": [
+          "#branch-result",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Merge Remote Branch",
+      "expected": {
+        "input": {
+          "#checkout": "Checkout",
+          "#source-branch": "Source Branch"
+        },
+        "output": {
+          "#branch-result": "Branch Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#checkout",
+          "#source-branch"
+        ],
+        "output": [
+          "#branch-result",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Publish Epic Base",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout",
+          "#source-branch": "Source Branch",
+          "#epic-base-name": "Epic-Base Name",
+          "#prerequisite-evidence": "Prerequisite Evidence",
+          "#missing-destination": "Missing Destination"
+        },
+        "output": {
+          "#branch-result": "Branch Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-base-name",
+          "#missing-destination",
+          "#prerequisite-evidence",
+          "#project-checkout",
+          "#source-branch"
+        ],
+        "output": [
+          "#branch-result",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Fetch Remote Branch",
+      "expected": {
+        "input": {
+          "#checkout": "Checkout",
+          "#source-branch": "Source Branch"
+        },
+        "output": {
+          "#branch-result": "Branch Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#checkout",
+          "#source-branch"
+        ],
+        "output": [
+          "#branch-result",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "List Long-Lived Branches",
+      "expected": {
+        "input": {
+          "#workspace": "Workspace",
+          "#project-checkout": "Project Checkout",
+          "#revision": "Revision"
+        },
+        "output": {
+          "#branch-names": "Branch Names",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#project-checkout",
+          "#revision",
+          "#workspace"
+        ],
+        "output": [
+          "#branch-names",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "List Epic Bases",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout",
+          "#epic-identity": "Epic Identity"
+        },
+        "output": {
+          "#epic-base-names": "Epic-Base Names",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-identity",
+          "#project-checkout"
+        ],
+        "output": [
+          "#epic-base-names",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Read Delivery Branches",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout",
+          "#epic-identity": "Epic Identity",
+          "#revision": "Revision"
+        },
+        "output": {
+          "#branch-names": "Branch Names",
+          "#epic-base-names": "Epic-Base Names",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-identity",
+          "#project-checkout",
+          "#revision"
+        ],
+        "output": [
+          "#branch-names",
+          "#epic-base-names",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Read Target Requirements",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#target-branch": "Target Branch",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#target-requirements": "Target Requirements",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-files",
+          "#repository",
+          "#target-branch"
+        ],
+        "output": [
+          "#failure",
+          "#target-requirements"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Create Pull Request Worktree",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout",
+          "#pull-request-number": "Pull Request Number",
+          "#verified-head": "Verified Head"
+        },
+        "output": {
+          "#worktree-result": "Worktree Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#project-checkout",
+          "#pull-request-number",
+          "#verified-head"
+        ],
+        "output": [
+          "#failure",
+          "#worktree-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Create Task Worktree",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout",
+          "#worktree-path": "Worktree Path",
+          "#task-branch": "Task Branch",
+          "#base-branch": "Base Branch",
+          "#prerequisite-evidence": "Prerequisite Evidence"
+        },
+        "output": {
+          "#worktree-result": "Worktree Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#base-branch",
+          "#prerequisite-evidence",
+          "#project-checkout",
+          "#task-branch",
+          "#worktree-path"
+        ],
+        "output": [
+          "#failure",
+          "#worktree-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Update Task Branch",
+      "expected": {
+        "input": {
+          "#unit-checkout": "Unit Checkout",
+          "#task-branch": "Task Branch",
+          "#base-branch": "Base Branch"
+        },
+        "output": {
+          "#branch-result": "Branch Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#base-branch",
+          "#task-branch",
+          "#unit-checkout"
+        ],
+        "output": [
+          "#branch-result",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Update Epic Base",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout",
+          "#epic-base-name": "Epic-Base Name"
+        },
+        "output": {
+          "#branch-result": "Branch Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-base-name",
+          "#project-checkout"
+        ],
+        "output": [
+          "#branch-result",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Create Epic Base",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout",
+          "#source-branch": "Source Branch",
+          "#epic-base-name": "Epic-Base Name",
+          "#prerequisite-evidence": "Prerequisite Evidence"
+        },
+        "output": {
+          "#branch-result": "Branch Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-base-name",
+          "#prerequisite-evidence",
+          "#project-checkout",
+          "#source-branch"
+        ],
+        "output": [
+          "#branch-result",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "operation": "Prepare Delivery Bases",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout",
+          "#epic-identity": "Epic Identity",
+          "#changed-branches": "Changed Branches",
+          "#prerequisite-evidence": "Prerequisite Evidence"
+        },
+        "output": {
+          "#epic-base-names": "Epic-Base Names",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#changed-branches",
+          "#epic-identity",
+          "#prerequisite-evidence",
+          "#project-checkout"
+        ],
+        "output": [
+          "#epic-base-names",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-brief.md",
+      "operation": "Populate Delivery Brief",
+      "expected": {
+        "input": {
+          "#work-identity": "Work Identity",
+          "#planning-record": "Planning Record",
+          "#validation-scope": "Validation Scope",
+          "#change-autonomy": "Change Autonomy",
+          "#execution-instructions": "Execution Instructions",
+          "#output-path": "Output Path"
+        },
+        "output": {
+          "#brief-path": "Brief Path",
+          "#missing-context": "Missing Context"
+        }
+      },
+      "observed": {
+        "input": [
+          "#change-autonomy",
+          "#execution-instructions",
+          "#output-path",
+          "#planning-record",
+          "#validation-scope",
+          "#work-identity"
+        ],
+        "output": [
+          "#brief-path",
+          "#missing-context"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-evidence.md",
+      "operation": "Read Delivery Evidence",
+      "expected": {
+        "input": {
+          "#selected-repositories": "Selected Repositories",
+          "#initiative-prefix": "Initiative Prefix",
+          "#issue-records": "Issue Records",
+          "#authenticated-access": "Authenticated Access",
+          "#snapshot-paths": "Snapshot Paths"
+        },
+        "output": {
+          "#pull-request-records": "Pull Request Records",
+          "#issue-link-snapshot": "Issue-Link Snapshot",
+          "#delivery-findings": "Delivery Findings",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access",
+          "#initiative-prefix",
+          "#issue-records",
+          "#selected-repositories",
+          "#snapshot-paths"
+        ],
+        "output": [
+          "#delivery-findings",
+          "#failure",
+          "#issue-link-snapshot",
+          "#pull-request-records"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-plan.md",
+      "operation": "Compute Available Work",
+      "expected": {
+        "input": {
+          "#workspace": "Workspace",
+          "#board-items": "Board Items",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-link-snapshot": "Issue-Link Snapshot",
+          "#project-checkout": "Project Checkout",
+          "#revision": "Revision",
+          "#epic-base-names": "Epic-Base Names",
+          "#engineering-worktree": "Engineering Worktree",
+          "#off-board-issues": "Off-Board Issues",
+          "#requested-lane": "Requested Lane",
+          "#record-date": "Record Date",
+          "#dispatch-export-path": "Dispatch-Export Path"
+        },
+        "output": {
+          "#plan-report": "Plan Report",
+          "#dispatch-export": "Dispatch Export",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-items",
+          "#dispatch-export-path",
+          "#engineering-worktree",
+          "#epic-base-names",
+          "#issue-link-snapshot",
+          "#off-board-issues",
+          "#project-checkout",
+          "#pull-request-records",
+          "#record-date",
+          "#requested-lane",
+          "#revision",
+          "#workspace"
+        ],
+        "output": [
+          "#dispatch-export",
+          "#failure",
+          "#plan-report"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/delivery-plan.md",
+      "operation": "Plan Available Work",
+      "expected": {
+        "input": {
+          "#board-items": "Board Items",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-link-snapshot": "Issue-Link Snapshot",
+          "#project-checkout": "Project Checkout",
+          "#revision": "Revision",
+          "#epic-base-names": "Epic-Base Names",
+          "#engineering-worktree": "Engineering Worktree",
+          "#off-board-issues": "Off-Board Issues",
+          "#requested-lane": "Requested Lane",
+          "#record-date": "Record Date",
+          "#dispatch-export-path": "Dispatch-Export Path"
+        },
+        "output": {
+          "#plan-report": "Plan Report",
+          "#dispatch-export": "Dispatch Export",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-items",
+          "#dispatch-export-path",
+          "#engineering-worktree",
+          "#epic-base-names",
+          "#issue-link-snapshot",
+          "#off-board-issues",
+          "#project-checkout",
+          "#pull-request-records",
+          "#record-date",
+          "#requested-lane",
+          "#revision"
+        ],
+        "output": [
+          "#dispatch-export",
+          "#failure",
+          "#plan-report"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/dependency-graph.md",
+      "operation": "Renumber Epics",
+      "expected": {
+        "input": {
+          "#renumber-inputs": "Renumber Inputs",
+          "#pull-request-records": "Pull Request Records",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#rewritten-bodies": "Rewritten Bodies"
+        }
+      },
+      "observed": {
+        "input": [
+          "#pull-request-records",
+          "#renumber-inputs",
+          "#workspace"
+        ],
+        "output": [
+          "#rewritten-bodies"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/dependency-graph.md",
+      "operation": "Renumber Tasks",
+      "expected": {
+        "input": {
+          "#renumber-inputs": "Renumber Inputs",
+          "#workspace": "Workspace",
+          "#dependency-files": "Dependency Files"
+        },
+        "output": {
+          "#rewritten-bodies": "Rewritten Bodies"
+        }
+      },
+      "observed": {
+        "input": [
+          "#dependency-files",
+          "#renumber-inputs",
+          "#workspace"
+        ],
+        "output": [
+          "#rewritten-bodies"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/dependency-graph.md",
+      "operation": "Check Dependencies",
+      "expected": {
+        "input": {
+          "#dependency-files": "Dependency Files",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#graph-result": "Graph Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#dependency-files",
+          "#workspace"
+        ],
+        "output": [
+          "#graph-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/dependency-graph.md",
+      "operation": "Check Dependencies and Numbering",
+      "expected": {
+        "input": {
+          "#graph-inputs": "Graph Inputs"
+        },
+        "output": {
+          "#graph-result": "Graph Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#graph-inputs"
+        ],
+        "output": [
+          "#graph-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/dispatch-batch.md",
+      "operation": "Check Dispatch Start",
+      "expected": {
+        "input": {
+          "#workspace": "Workspace",
+          "#batch": "Batch",
+          "#unit-identity": "Unit Identity",
+          "#start-evidence": "Start Evidence",
+          "#session-inventory": "Session Inventory",
+          "#free-slots": "Free Slots"
+        },
+        "output": {
+          "#validated-unit": "Validated Unit",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#batch",
+          "#free-slots",
+          "#session-inventory",
+          "#start-evidence",
+          "#unit-identity",
+          "#workspace"
+        ],
+        "output": [
+          "#failure",
+          "#validated-unit"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/dispatch-batch.md",
+      "operation": "Compute Dispatch Batch",
+      "expected": {
+        "input": {
+          "#workspace": "Workspace",
+          "#authorization": "Authorization",
+          "#survey-evidence": "Survey Evidence",
+          "#session-inventory": "Session Inventory",
+          "#survey-board": "Survey Board",
+          "#requested-lane": "Requested Lane",
+          "#free-slots": "Free Slots",
+          "#preparations": "Preparations",
+          "#batch": "Batch"
+        },
+        "output": {
+          "#batch": "Batch",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authorization",
+          "#batch",
+          "#free-slots",
+          "#preparations",
+          "#requested-lane",
+          "#session-inventory",
+          "#survey-board",
+          "#survey-evidence",
+          "#workspace"
+        ],
+        "output": [
+          "#batch",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/dispatch-batch.md",
+      "operation": "Validate Dispatch Start",
+      "expected": {
+        "input": {
+          "#batch": "Batch",
+          "#unit-identity": "Unit Identity",
+          "#start-evidence": "Start Evidence",
+          "#session-inventory": "Session Inventory",
+          "#free-slots": "Free Slots"
+        },
+        "output": {
+          "#validated-unit": "Validated Unit",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#batch",
+          "#free-slots",
+          "#session-inventory",
+          "#start-evidence",
+          "#unit-identity"
+        ],
+        "output": [
+          "#failure",
+          "#validated-unit"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/dispatch-batch.md",
+      "operation": "Plan Dispatch Batch",
+      "expected": {
+        "input": {
+          "#authorization": "Authorization",
+          "#survey-evidence": "Survey Evidence",
+          "#survey-board": "Survey Board",
+          "#requested-lane": "Requested Lane",
+          "#session-inventory": "Session Inventory",
+          "#free-slots": "Free Slots",
+          "#preparations": "Preparations"
+        },
+        "output": {
+          "#batch": "Batch",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authorization",
+          "#free-slots",
+          "#preparations",
+          "#requested-lane",
+          "#session-inventory",
+          "#survey-board",
+          "#survey-evidence"
+        ],
+        "output": [
+          "#batch",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "operation": "Release Row",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#task-selection": "Task Selection",
+          "#engineering-worktree": "Engineering Worktree",
+          "#output-body": "Output Body",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#row-result": "Row Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#engineering-worktree",
+          "#epic-record",
+          "#output-body",
+          "#task-selection",
+          "#workspace"
+        ],
+        "output": [
+          "#output-body",
+          "#row-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "operation": "Reserve Row",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#task-selection": "Task Selection",
+          "#board-items": "Board Items",
+          "#planning-folder": "Planning Folder",
+          "#output-body": "Output Body",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#row-result": "Row Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-items",
+          "#epic-record",
+          "#output-body",
+          "#planning-folder",
+          "#task-selection",
+          "#workspace"
+        ],
+        "output": [
+          "#output-body",
+          "#row-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "operation": "Tick Epic Criteria",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-links": "Issue Links",
+          "#criterion-selection": "Criterion Selection",
+          "#output-body": "Output Body",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#criterion-selection": "Criterion Selection"
+        }
+      },
+      "observed": {
+        "input": [
+          "#criterion-selection",
+          "#epic-record",
+          "#issue-links",
+          "#output-body",
+          "#pull-request-records",
+          "#workspace"
+        ],
+        "output": [
+          "#criterion-selection",
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "operation": "Sync Epic",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-links": "Issue Links",
+          "#task-records": "Task Records",
+          "#delivery-matches": "Delivery Matches",
+          "#project-checkout": "Project Checkout",
+          "#epic-bases": "Epic Bases",
+          "#output-body": "Output Body",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "epic.md#delivery-findings": "Delivery Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#delivery-matches",
+          "#epic-bases",
+          "#epic-record",
+          "#issue-links",
+          "#output-body",
+          "#project-checkout",
+          "#pull-request-records",
+          "#task-records",
+          "#workspace"
+        ],
+        "output": [
+          "#output-body",
+          "epic.md#delivery-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "operation": "Plan Gap Task",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#epic-body": "Epic Body",
+          "#task-rows": "Task Rows",
+          "#criterion-selection": "Criterion Selection",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-links": "Issue Links",
+          "#project-checkout": "Project Checkout",
+          "#epic-bases": "Epic Bases",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#row-result": "Row Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#criterion-selection",
+          "#epic-bases",
+          "#epic-body",
+          "#epic-record",
+          "#issue-links",
+          "#output-body",
+          "#project-checkout",
+          "#pull-request-records",
+          "#task-rows"
+        ],
+        "output": [
+          "#row-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "operation": "Revise Epic Rows",
+      "expected": {
+        "input": {
+          "#epic-body": "Epic Body",
+          "#task-rows": "Task Rows",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#validation-findings": "Validation Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-body",
+          "#output-body",
+          "#task-rows"
+        ],
+        "output": [
+          "#output-body",
+          "#validation-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "operation": "Validate Epic Body",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#initiative-context": "Initiative Context",
+          "#pull-request-records": "Pull Request Records",
+          "#project-checkout": "Project Checkout",
+          "#evaluated-revision": "Evaluated Revision",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#validation-findings": "Validation Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-record",
+          "#evaluated-revision",
+          "#initiative-context",
+          "#output-body",
+          "#project-checkout",
+          "#pull-request-records"
+        ],
+        "output": [
+          "#output-body",
+          "#validation-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "operation": "Release Task Rows",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#task-selection": "Task Selection",
+          "#engineering-worktree": "Engineering Worktree",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#row-result": "Row Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#engineering-worktree",
+          "#epic-record",
+          "#output-body",
+          "#task-selection"
+        ],
+        "output": [
+          "#output-body",
+          "#row-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "operation": "Reserve Task Rows",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#task-selection": "Task Selection",
+          "#board-items": "Board Items",
+          "#planning-folder": "Planning Folder",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#row-result": "Row Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-items",
+          "#epic-record",
+          "#output-body",
+          "#planning-folder",
+          "#task-selection"
+        ],
+        "output": [
+          "#output-body",
+          "#row-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "operation": "Record Epic Criteria",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-links": "Issue Links",
+          "#criterion-selection": "Criterion Selection",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#criterion-selection": "Criterion Selection"
+        }
+      },
+      "observed": {
+        "input": [
+          "#criterion-selection",
+          "#epic-record",
+          "#issue-links",
+          "#output-body",
+          "#pull-request-records"
+        ],
+        "output": [
+          "#criterion-selection",
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "operation": "Record Epic Delivery",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-links": "Issue Links",
+          "#task-records": "Task Records",
+          "#delivery-matches": "Delivery Matches",
+          "#project-checkout": "Project Checkout",
+          "#epic-bases": "Epic Bases",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "epic.md#delivery-findings": "Delivery Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#delivery-matches",
+          "#epic-bases",
+          "#epic-record",
+          "#issue-links",
+          "#output-body",
+          "#project-checkout",
+          "#pull-request-records",
+          "#task-records"
+        ],
+        "output": [
+          "#output-body",
+          "epic.md#delivery-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "operation": "Populate Epic Issue Body",
+      "expected": {
+        "input": {
+          "#initiative-context": "Initiative Context",
+          "#draft-metadata": "Draft Metadata",
+          "#task-rows": "Task Rows",
+          "#pull-request-records": "Pull Request Records",
+          "#project-checkout": "Project Checkout",
+          "#evaluated-revision": "Evaluated Revision",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#row-result": "Row Result",
+          "#validation-findings": "Validation Findings",
+          "#output-body": "Output Body"
+        }
+      },
+      "observed": {
+        "input": [
+          "#draft-metadata",
+          "#evaluated-revision",
+          "#initiative-context",
+          "#output-body",
+          "#project-checkout",
+          "#pull-request-records",
+          "#task-rows"
+        ],
+        "output": [
+          "#output-body",
+          "#row-result",
+          "#validation-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic.md",
+      "operation": "Match Pull Requests",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-links": "Issue Links",
+          "#output-body": "Output Body",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#delivery-findings": "Delivery Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-record",
+          "#issue-links",
+          "#output-body",
+          "#pull-request-records",
+          "#workspace"
+        ],
+        "output": [
+          "#delivery-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic.md",
+      "operation": "Check Epic Completion",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-links": "Issue Links",
+          "#verification-evidence": "Verification Evidence",
+          "#base-merges": "Base Merges"
+        },
+        "output": {
+          "#delivery-state": "Delivery State"
+        }
+      },
+      "observed": {
+        "input": [
+          "#base-merges",
+          "#epic-record",
+          "#issue-links",
+          "#pull-request-records",
+          "#verification-evidence"
+        ],
+        "output": [
+          "#delivery-state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic.md",
+      "operation": "Check Epic Readiness",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-links": "Issue Links",
+          "#verification-evidence": "Verification Evidence"
+        },
+        "output": {
+          "#delivery-state": "Delivery State"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-record",
+          "#issue-links",
+          "#pull-request-records",
+          "#verification-evidence"
+        ],
+        "output": [
+          "#delivery-state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic.md",
+      "operation": "Inspect Epic Delivery",
+      "expected": {
+        "input": {
+          "#epic-record": "Epic Record",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-links": "Issue Links",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#delivery-findings": "Delivery Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-record",
+          "#issue-links",
+          "#output-body",
+          "#pull-request-records"
+        ],
+        "output": [
+          "#delivery-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/epic.md",
+      "operation": "Check Epic Prerequisites",
+      "expected": {
+        "input": {
+          "#initiative-evidence": "Initiative Evidence",
+          "#epic-body": "Epic Body",
+          "#prerequisite-records": "Prerequisite Records"
+        },
+        "output": {
+          "#prerequisite-evidence": "Prerequisite Evidence"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-body",
+          "#initiative-evidence",
+          "#prerequisite-records"
+        ],
+        "output": [
+          "#prerequisite-evidence"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/goal-trace.md",
+      "operation": "Check Outside Threats",
+      "expected": {
+        "input": {
+          "#plan-bodies": "Plan Bodies",
+          "#changed-surface": "Changed Surface"
+        },
+        "output": {
+          "#review-result": "Review Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#changed-surface",
+          "#plan-bodies"
+        ],
+        "output": [
+          "#review-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/goal-trace.md",
+      "operation": "Review Initiative Goal",
+      "expected": {
+        "input": {
+          "#goal-evidence": "Goal Evidence"
+        },
+        "output": {
+          "#trace-table": "Trace Table",
+          "#review-result": "Review Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#goal-evidence"
+        ],
+        "output": [
+          "#review-result",
+          "#trace-table"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/hotfix-body.md",
+      "operation": "Populate Hot-fix Body",
+      "expected": {
+        "input": {
+          "#hot-fix-identity": "Hot-fix Identity",
+          "#target": "Target",
+          "#defect-evidence": "Defect Evidence",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body"
+        }
+      },
+      "observed": {
+        "input": [
+          "#defect-evidence",
+          "#hot-fix-identity",
+          "#output-body",
+          "#target"
+        ],
+        "output": [
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/hotfix.md",
+      "operation": "Sync Hot-fix Issue",
+      "expected": {
+        "input": {
+          "#hot-fix-record": "Hot-fix Record",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-links": "Issue Links",
+          "#delivery-selection": "Delivery Selection",
+          "#output-body": "Output Body",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#delivery-findings": "Delivery Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#delivery-selection",
+          "#hot-fix-record",
+          "#issue-links",
+          "#output-body",
+          "#pull-request-records",
+          "#workspace"
+        ],
+        "output": [
+          "#delivery-findings",
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/hotfix.md",
+      "operation": "Settle Hot-fix Board Status",
+      "expected": {
+        "input": {
+          "#board-evidence": "Board Evidence",
+          "#hot-fix-identity": "Hot-fix Identity"
+        },
+        "output": {
+          "#board-result": "Board Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-evidence",
+          "#hot-fix-identity"
+        ],
+        "output": [
+          "#board-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/hotfix.md",
+      "operation": "Record Hot-fix Delivery",
+      "expected": {
+        "input": {
+          "#hot-fix-record": "Hot-fix Record",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-links": "Issue Links",
+          "#delivery-selection": "Delivery Selection",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#delivery-findings": "Delivery Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#delivery-selection",
+          "#hot-fix-record",
+          "#issue-links",
+          "#output-body",
+          "#pull-request-records"
+        ],
+        "output": [
+          "#delivery-findings",
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/hotfix.md",
+      "operation": "Release Hot-fix Hold",
+      "expected": {
+        "input": {
+          "#hot-fix-identity": "Hot-fix Identity",
+          "#board-evidence": "Board Evidence"
+        },
+        "output": {
+          "#board-result": "Board Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-evidence",
+          "#hot-fix-identity"
+        ],
+        "output": [
+          "#board-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/hotfix.md",
+      "operation": "Hold Hot-fix Unit",
+      "expected": {
+        "input": {
+          "#hot-fix-identity": "Hot-fix Identity",
+          "#board-evidence": "Board Evidence"
+        },
+        "output": {
+          "#board-result": "Board Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-evidence",
+          "#hot-fix-identity"
+        ],
+        "output": [
+          "#board-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/hotfix.md",
+      "operation": "Open Hot-fix Issue",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#hot-fix-identity": "Hot-fix Identity"
+        },
+        "output": {
+          "#hot-fix-number": "Hot-fix Number"
+        }
+      },
+      "observed": {
+        "input": [
+          "#hot-fix-identity",
+          "#repository"
+        ],
+        "output": [
+          "#hot-fix-number"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "operation": "Fetch Source",
+      "expected": {
+        "input": {
+          "#source-evidence": "Source Evidence",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#source-evidence": "Source Evidence"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-files",
+          "#source-evidence"
+        ],
+        "output": [
+          "#source-evidence"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "operation": "Tick Initiative Criteria",
+      "expected": {
+        "input": {
+          "#initiative-record": "Initiative Record",
+          "#epic-records": "Epic Records",
+          "#criterion-selection": "Criterion Selection",
+          "#output-files": "Output Files",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#output-files": "Output Files",
+          "#criterion-selection": "Criterion Selection"
+        }
+      },
+      "observed": {
+        "input": [
+          "#criterion-selection",
+          "#epic-records",
+          "#initiative-record",
+          "#output-files",
+          "#workspace"
+        ],
+        "output": [
+          "#criterion-selection",
+          "#output-files"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "operation": "Sync Initiative",
+      "expected": {
+        "input": {
+          "#initiative-record": "Initiative Record",
+          "#epic-records": "Epic Records",
+          "#output-files": "Output Files",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#output-files": "Output Files",
+          "initiative.md#delivery-findings": "Delivery Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-records",
+          "#initiative-record",
+          "#output-files",
+          "#workspace"
+        ],
+        "output": [
+          "#output-files",
+          "initiative.md#delivery-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "operation": "Read Requirement Sources",
+      "expected": {
+        "input": {
+          "#requirement-references": "Requirement References",
+          "#source-evidence": "Source Evidence",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#source-evidence": "Source Evidence",
+          "#validation-findings": "Validation Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-files",
+          "#requirement-references",
+          "#source-evidence"
+        ],
+        "output": [
+          "#source-evidence",
+          "#validation-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "operation": "Validate Initiative Body",
+      "expected": {
+        "input": {
+          "#initiative-record": "Initiative Record",
+          "#epic-records": "Epic Records",
+          "#source-evidence": "Source Evidence",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#output-files": "Output Files",
+          "#validation-findings": "Validation Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-records",
+          "#initiative-record",
+          "#output-files",
+          "#source-evidence"
+        ],
+        "output": [
+          "#output-files",
+          "#validation-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "operation": "Record Initiative Criteria",
+      "expected": {
+        "input": {
+          "#initiative-record": "Initiative Record",
+          "#epic-records": "Epic Records",
+          "#criterion-selection": "Criterion Selection",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#output-files": "Output Files",
+          "#criterion-selection": "Criterion Selection"
+        }
+      },
+      "observed": {
+        "input": [
+          "#criterion-selection",
+          "#epic-records",
+          "#initiative-record",
+          "#output-files"
+        ],
+        "output": [
+          "#criterion-selection",
+          "#output-files"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "operation": "Record Initiative Delivery",
+      "expected": {
+        "input": {
+          "#initiative-record": "Initiative Record",
+          "#epic-records": "Epic Records",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#output-files": "Output Files",
+          "initiative.md#delivery-findings": "Delivery Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-records",
+          "#initiative-record",
+          "#output-files"
+        ],
+        "output": [
+          "#output-files",
+          "initiative.md#delivery-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "operation": "Draft Initiative Issue Body",
+      "expected": {
+        "input": {
+          "#proposal-context": "Proposal Context",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#output-files": "Output Files"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-files",
+          "#proposal-context"
+        ],
+        "output": [
+          "#output-files"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "operation": "Populate Initiative Issue Body",
+      "expected": {
+        "input": {
+          "#proposal-context": "Proposal Context",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#output-files": "Output Files",
+          "#validation-findings": "Validation Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-files",
+          "#proposal-context"
+        ],
+        "output": [
+          "#output-files",
+          "#validation-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/initiative.md",
+      "operation": "Check Initiative Completion",
+      "expected": {
+        "input": {
+          "#initiative-record": "Initiative Record",
+          "#epic-records": "Epic Records",
+          "#verification-evidence": "Verification Evidence",
+          "#development-evidence": "Development Evidence"
+        },
+        "output": {
+          "#delivery-state": "Delivery State"
+        }
+      },
+      "observed": {
+        "input": [
+          "#development-evidence",
+          "#epic-records",
+          "#initiative-record",
+          "#verification-evidence"
+        ],
+        "output": [
+          "#delivery-state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "operation": "Validate Reference Visibility",
+      "expected": {
+        "input": {
+          "#body-record": "Body Record",
+          "#repository-snapshot": "Repository Snapshot",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#visibility-findings": "Visibility Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#body-record",
+          "#repository-snapshot",
+          "#workspace"
+        ],
+        "output": [
+          "#visibility-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "operation": "Fetch Reference Repository",
+      "expected": {
+        "input": {
+          "#reference-repositories": "Reference Repositories",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#repository-snapshot": "Repository Snapshot"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-files",
+          "#reference-repositories"
+        ],
+        "output": [
+          "#repository-snapshot"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "operation": "List Reference Repositories",
+      "expected": {
+        "input": {
+          "#body-record": "Body Record",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#reference-repositories": "Reference Repositories"
+        }
+      },
+      "observed": {
+        "input": [
+          "#body-record",
+          "#workspace"
+        ],
+        "output": [
+          "#reference-repositories"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "operation": "Check Body Format",
+      "expected": {
+        "input": {
+          "#body-record": "Body Record",
+          "#kind-conditions": "Kind Conditions",
+          "#output-files": "Output Files",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#format-findings": "Format Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#body-record",
+          "#kind-conditions",
+          "#output-files",
+          "#workspace"
+        ],
+        "output": [
+          "#format-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "operation": "Check Reference Visibility",
+      "expected": {
+        "input": {
+          "#body-record": "Body Record",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#visibility-findings": "Visibility Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#body-record",
+          "#output-files"
+        ],
+        "output": [
+          "#visibility-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "operation": "Repair Issue Format",
+      "expected": {
+        "input": {
+          "#body-record": "Body Record",
+          "#kind-conditions": "Kind Conditions",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#body-evidence": "Body Evidence",
+          "#format-findings": "Format Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#body-record",
+          "#kind-conditions",
+          "#output-files"
+        ],
+        "output": [
+          "#body-evidence",
+          "#format-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "operation": "Build Body Snapshot",
+      "expected": {
+        "input": {
+          "#body-evidence": "Body Evidence",
+          "#snapshot-metadata": "Snapshot Metadata",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#body-snapshot": "Body Snapshot"
+        }
+      },
+      "observed": {
+        "input": [
+          "#body-evidence",
+          "#output-files",
+          "#snapshot-metadata"
+        ],
+        "output": [
+          "#body-snapshot"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "operation": "Apply Body Corrections",
+      "expected": {
+        "input": {
+          "#body-evidence": "Body Evidence",
+          "#kind-conditions": "Kind Conditions",
+          "#confirmed-corrections": "Confirmed Corrections",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#body-evidence": "Body Evidence",
+          "#format-findings": "Format Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#body-evidence",
+          "#confirmed-corrections",
+          "#kind-conditions",
+          "#output-files"
+        ],
+        "output": [
+          "#body-evidence",
+          "#format-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "operation": "Validate Issue Body",
+      "expected": {
+        "input": {
+          "#body-record": "Body Record",
+          "#kind-conditions": "Kind Conditions",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#format-findings": "Format Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#body-record",
+          "#kind-conditions",
+          "#output-files"
+        ],
+        "output": [
+          "#format-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "operation": "Check Round of Edits",
+      "expected": {
+        "input": {
+          "#changed-bodies": "Changed Bodies",
+          "#kind-conditions": "Kind Conditions",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#format-findings": "Format Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#changed-bodies",
+          "#kind-conditions",
+          "#output-files"
+        ],
+        "output": [
+          "#format-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "operation": "Write Issue Table",
+      "expected": {
+        "input": {
+          "#body-evidence": "Body Evidence",
+          "#kind-conditions": "Kind Conditions",
+          "#row-data": "Row Data"
+        },
+        "output": {
+          "#body-evidence": "Body Evidence"
+        }
+      },
+      "observed": {
+        "input": [
+          "#body-evidence",
+          "#kind-conditions",
+          "#row-data"
+        ],
+        "output": [
+          "#body-evidence"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "List Prefixed Titles",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#tracker-prefix": "Tracker Prefix"
+        },
+        "output": {
+          "#tracker-prefix": "Tracker Prefix"
+        }
+      },
+      "observed": {
+        "input": [
+          "#repository",
+          "#tracker-prefix"
+        ],
+        "output": [
+          "#tracker-prefix"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Find Initiative Issue",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#tracker-prefix": "Tracker Prefix"
+        },
+        "output": {
+          "#identity": "Identity",
+          "#tracker-number": "Tracker Number"
+        }
+      },
+      "observed": {
+        "input": [
+          "#repository",
+          "#tracker-prefix"
+        ],
+        "output": [
+          "#identity",
+          "#tracker-number"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Fetch Selected Closed Issues",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#audit-selection": "Audit Selection",
+          "#output-files": "Output Files",
+          "#issue-collection": "Issue Collection"
+        },
+        "output": {
+          "#issue-collection": "Issue Collection"
+        }
+      },
+      "observed": {
+        "input": [
+          "#audit-selection",
+          "#issue-collection",
+          "#output-files",
+          "#repository"
+        ],
+        "output": [
+          "#issue-collection"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Fetch Closed Issues",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#output-files": "Output Files",
+          "#issue-collection": "Issue Collection"
+        },
+        "output": {
+          "#issue-collection": "Issue Collection"
+        }
+      },
+      "observed": {
+        "input": [
+          "#issue-collection",
+          "#output-files",
+          "#repository"
+        ],
+        "output": [
+          "#issue-collection"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Fetch All Issues",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#output-files": "Output Files",
+          "#issue-collection": "Issue Collection"
+        },
+        "output": {
+          "#issue-collection": "Issue Collection"
+        }
+      },
+      "observed": {
+        "input": [
+          "#issue-collection",
+          "#output-files",
+          "#repository"
+        ],
+        "output": [
+          "#issue-collection"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Capture Issue Links",
+      "expected": {
+        "input": {
+          "#issue-collection": "Issue Collection",
+          "#authenticated-access": "Authenticated Access",
+          "#output-files": "Output Files",
+          "#workspace": "Workspace",
+          "#development-snapshot": "Development Snapshot"
+        },
+        "output": {
+          "#development-snapshot": "Development Snapshot"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access",
+          "#development-snapshot",
+          "#issue-collection",
+          "#output-files",
+          "#workspace"
+        ],
+        "output": [
+          "#development-snapshot"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Set Completed State",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity",
+          "#delivery-evidence": "Delivery Evidence",
+          "#closure-findings": "Closure Findings"
+        },
+        "output": {
+          "#state": "State"
+        }
+      },
+      "observed": {
+        "input": [
+          "#closure-findings",
+          "#delivery-evidence",
+          "#identity",
+          "#repository"
+        ],
+        "output": [
+          "#state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Post Comment File",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity",
+          "#comment": "Comment"
+        },
+        "output": {
+          "#comment": "Comment"
+        }
+      },
+      "observed": {
+        "input": [
+          "#comment",
+          "#identity",
+          "#repository"
+        ],
+        "output": [
+          "#comment"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Post Inline Comment",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity",
+          "#comment": "Comment"
+        },
+        "output": {
+          "#comment": "Comment"
+        }
+      },
+      "observed": {
+        "input": [
+          "#comment",
+          "#identity",
+          "#repository"
+        ],
+        "output": [
+          "#comment"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Close as Not Planned",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#transfer-evidence": "Transfer Evidence",
+          "#repository": "Repository"
+        },
+        "output": {
+          "#state": "State"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#repository",
+          "#transfer-evidence"
+        ],
+        "output": [
+          "#state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Sweep Closure Evidence",
+      "expected": {
+        "input": {
+          "#issue-collection": "Issue Collection",
+          "#development-snapshot": "Development Snapshot",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#closure-findings": "Closure Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#development-snapshot",
+          "#issue-collection",
+          "#workspace"
+        ],
+        "output": [
+          "#closure-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Check Issue Closure",
+      "expected": {
+        "input": {
+          "#issue-record": "Issue Record",
+          "#development-snapshot": "Development Snapshot",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#closure-findings": "Closure Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#development-snapshot",
+          "#issue-record",
+          "#workspace"
+        ],
+        "output": [
+          "#closure-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Fetch Tracker Issue",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity",
+          "#output-files": "Output Files",
+          "#issue-record": "Issue Record"
+        },
+        "output": {
+          "#issue-record": "Issue Record"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#issue-record",
+          "#output-files",
+          "#repository"
+        ],
+        "output": [
+          "#issue-record"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Fetch Issue Comments",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity"
+        },
+        "output": {
+          "#discussion": "Discussion"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#repository"
+        ],
+        "output": [
+          "#discussion"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Remove Issue Label",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity",
+          "#label-names": "Label Names"
+        },
+        "output": {
+          "#label-names": "Label Names"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#label-names",
+          "#repository"
+        ],
+        "output": [
+          "#label-names"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Add Issue Labels",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity",
+          "#label-names": "Label Names"
+        },
+        "output": {
+          "#label-names": "Label Names"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#label-names",
+          "#repository"
+        ],
+        "output": [
+          "#label-names"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Retitle Tracker Issue",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity",
+          "#issue-changes": "Issue Changes"
+        },
+        "output": {
+          "#content": "Content"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#issue-changes",
+          "#repository"
+        ],
+        "output": [
+          "#content"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Fetch Issue Body",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#issue-body": "Issue Body"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#output-files",
+          "#repository"
+        ],
+        "output": [
+          "#issue-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Patch Issue Body",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity",
+          "#issue-changes": "Issue Changes"
+        },
+        "output": {
+          "#identity": "Identity",
+          "#content": "Content"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#issue-changes",
+          "#repository"
+        ],
+        "output": [
+          "#content",
+          "#identity"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Create Tracker Issue",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#issue-changes": "Issue Changes",
+          "#label-names": "Label Names"
+        },
+        "output": {
+          "#identity": "Identity"
+        }
+      },
+      "observed": {
+        "input": [
+          "#issue-changes",
+          "#label-names",
+          "#repository"
+        ],
+        "output": [
+          "#identity"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Select Tracker Number",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#tracker-prefix": "Tracker Prefix"
+        },
+        "output": {
+          "#tracker-number": "Tracker Number"
+        }
+      },
+      "observed": {
+        "input": [
+          "#repository",
+          "#tracker-prefix"
+        ],
+        "output": [
+          "#tracker-number"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Locate Initiative Issue",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#tracker-prefix": "Tracker Prefix"
+        },
+        "output": {
+          "#identity": "Identity",
+          "#tracker-number": "Tracker Number"
+        }
+      },
+      "observed": {
+        "input": [
+          "#repository",
+          "#tracker-prefix"
+        ],
+        "output": [
+          "#identity",
+          "#tracker-number"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Read Repository Issues",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#issue-collection": "Issue Collection"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-files",
+          "#repository"
+        ],
+        "output": [
+          "#issue-collection"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Confirm Repository Auto-Close",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#authenticated-access": "Authenticated Access"
+        },
+        "output": {
+          "#auto-close-setting": "Auto-Close Setting"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access",
+          "#repository"
+        ],
+        "output": [
+          "#auto-close-setting"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Audit Closure Evidence",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#authenticated-access": "Authenticated Access",
+          "#audit-selection": "Audit Selection",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#closure-findings": "Closure Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#audit-selection",
+          "#authenticated-access",
+          "#output-files",
+          "#repository"
+        ],
+        "output": [
+          "#closure-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Read Issue Development",
+      "expected": {
+        "input": {
+          "#issue-collection": "Issue Collection",
+          "#authenticated-access": "Authenticated Access",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#development-snapshot": "Development Snapshot"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access",
+          "#issue-collection",
+          "#output-files"
+        ],
+        "output": [
+          "#development-snapshot"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Capture Issue Development",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#authenticated-access": "Authenticated Access",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#issue-record": "Issue Record",
+          "#development-snapshot": "Development Snapshot"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access",
+          "#identity",
+          "#output-files"
+        ],
+        "output": [
+          "#development-snapshot",
+          "#issue-record"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Close as Completed",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity",
+          "#authenticated-access": "Authenticated Access",
+          "#delivery-evidence": "Delivery Evidence",
+          "#closure-evidence-paths": "Closure Evidence Paths"
+        },
+        "output": {
+          "#state": "State",
+          "#closure-findings": "Closure Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access",
+          "#closure-evidence-paths",
+          "#delivery-evidence",
+          "#identity",
+          "#repository"
+        ],
+        "output": [
+          "#closure-findings",
+          "#state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Comment on Issue",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity",
+          "#comment": "Comment"
+        },
+        "output": {
+          "#comment": "Comment"
+        }
+      },
+      "observed": {
+        "input": [
+          "#comment",
+          "#identity",
+          "#repository"
+        ],
+        "output": [
+          "#comment"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Close Transferred Work",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#transfer-evidence": "Transfer Evidence",
+          "#comment": "Comment"
+        },
+        "output": {
+          "#state": "State"
+        }
+      },
+      "observed": {
+        "input": [
+          "#comment",
+          "#identity",
+          "#transfer-evidence"
+        ],
+        "output": [
+          "#state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Close Tracker Issue",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#delivery-evidence": "Delivery Evidence",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#state": "State",
+          "#closure-findings": "Closure Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#delivery-evidence",
+          "#identity",
+          "#output-files"
+        ],
+        "output": [
+          "#closure-findings",
+          "#state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Save Tracker Issue",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity",
+          "#issue-changes": "Issue Changes",
+          "#comment": "Comment"
+        },
+        "output": {
+          "#issue-record": "Issue Record"
+        }
+      },
+      "observed": {
+        "input": [
+          "#comment",
+          "#identity",
+          "#issue-changes",
+          "#repository"
+        ],
+        "output": [
+          "#issue-record"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/issue.md",
+      "operation": "Read Tracker Issue",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#identity": "Identity",
+          "#output-files": "Output Files",
+          "#discussion-selection": "Discussion Selection"
+        },
+        "output": {
+          "#issue-record": "Issue Record",
+          "#issue-body": "Issue Body",
+          "#discussion": "Discussion"
+        }
+      },
+      "observed": {
+        "input": [
+          "#discussion-selection",
+          "#identity",
+          "#output-files",
+          "#repository"
+        ],
+        "output": [
+          "#discussion",
+          "#issue-body",
+          "#issue-record"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/lane.md",
+      "operation": "Evaluate Lane Admission",
+      "expected": {
+        "input": {
+          "#epic-body-file": "Epic Body File",
+          "#unit-task-ids": "Unit Task Ids",
+          "#requested-index": "Requested Index",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#lane-result": "Lane Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-body-file",
+          "#requested-index",
+          "#unit-task-ids",
+          "#workspace"
+        ],
+        "output": [
+          "#lane-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/lane.md",
+      "operation": "Validate Lane Unit",
+      "expected": {
+        "input": {
+          "#epic-body-file": "Epic Body File",
+          "#unit-task-ids": "Unit Task Ids",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#lane-result": "Lane Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-body-file",
+          "#unit-task-ids",
+          "#workspace"
+        ],
+        "output": [
+          "#lane-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/lane.md",
+      "operation": "Write Lane Assignments",
+      "expected": {
+        "input": {
+          "#epic-body-file": "Epic Body File",
+          "#confirmed-map": "Confirmed Map",
+          "#output-body": "Output Body",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#output-body": "Output Body"
+        }
+      },
+      "observed": {
+        "input": [
+          "#confirmed-map",
+          "#epic-body-file",
+          "#output-body",
+          "#workspace"
+        ],
+        "output": [
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/lane.md",
+      "operation": "Read Lane Assignments",
+      "expected": {
+        "input": {
+          "#epic-body-file": "Epic Body File",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#lane-result": "Lane Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-body-file",
+          "#workspace"
+        ],
+        "output": [
+          "#lane-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/lane.md",
+      "operation": "Determine Lane Admission",
+      "expected": {
+        "input": {
+          "#epic-body-file": "Epic Body File",
+          "#unit-task-ids": "Unit Task Ids",
+          "#requested-index": "Requested Index"
+        },
+        "output": {
+          "#lane-result": "Lane Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-body-file",
+          "#requested-index",
+          "#unit-task-ids"
+        ],
+        "output": [
+          "#lane-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/lane.md",
+      "operation": "Check Unit Lanes",
+      "expected": {
+        "input": {
+          "#epic-body-file": "Epic Body File",
+          "#unit-task-ids": "Unit Task Ids"
+        },
+        "output": {
+          "#lane-result": "Lane Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-body-file",
+          "#unit-task-ids"
+        ],
+        "output": [
+          "#lane-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/lane.md",
+      "operation": "Assign Task Lanes",
+      "expected": {
+        "input": {
+          "#epic-body-file": "Epic Body File",
+          "#confirmed-map": "Confirmed Map",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body"
+        }
+      },
+      "observed": {
+        "input": [
+          "#confirmed-map",
+          "#epic-body-file",
+          "#output-body"
+        ],
+        "output": [
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/lane.md",
+      "operation": "Read Task Lanes",
+      "expected": {
+        "input": {
+          "#epic-body-file": "Epic Body File"
+        },
+        "output": {
+          "#lane-result": "Lane Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-body-file"
+        ],
+        "output": [
+          "#lane-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/placement.md",
+      "operation": "List Orphans",
+      "expected": {
+        "input": {
+          "#issue-collection": "Issue Collection",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#candidate-destinations": "Candidate Destinations"
+        }
+      },
+      "observed": {
+        "input": [
+          "#issue-collection",
+          "#workspace"
+        ],
+        "output": [
+          "#candidate-destinations"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/placement.md",
+      "operation": "Subsume Orphan Work",
+      "expected": {
+        "input": {
+          "#transfer-inputs": "Transfer Inputs"
+        },
+        "output": {
+          "#saved-orphan": "Saved Orphan"
+        }
+      },
+      "observed": {
+        "input": [
+          "#transfer-inputs"
+        ],
+        "output": [
+          "#saved-orphan"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/placement.md",
+      "operation": "Rewrite Orphan Issue",
+      "expected": {
+        "input": {
+          "#rewrite-inputs": "Rewrite Inputs"
+        },
+        "output": {
+          "#saved-orphan": "Saved Orphan"
+        }
+      },
+      "observed": {
+        "input": [
+          "#rewrite-inputs"
+        ],
+        "output": [
+          "#saved-orphan"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/placement.md",
+      "operation": "Apply Issue Placement",
+      "expected": {
+        "input": {
+          "#confirmed-placement": "Confirmed Placement"
+        },
+        "output": {
+          "#placement-result": "Placement Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#confirmed-placement"
+        ],
+        "output": [
+          "#placement-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/placement.md",
+      "operation": "Find Placement Candidates",
+      "expected": {
+        "input": {
+          "#issue-collection": "Issue Collection"
+        },
+        "output": {
+          "#candidate-destinations": "Candidate Destinations"
+        }
+      },
+      "observed": {
+        "input": [
+          "#issue-collection"
+        ],
+        "output": [
+          "#candidate-destinations",
+          "#candidate-issues"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/placement.md",
+      "operation": "Draft Issue Placement",
+      "expected": {
+        "input": {
+          "#placement-inputs": "Placement Inputs"
+        },
+        "output": {
+          "#placement-result": "Placement Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#placement-inputs"
+        ],
+        "output": [
+          "#placement-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/plan-change.md",
+      "operation": "Record Plan Change",
+      "expected": {
+        "input": {
+          "#change-details": "Change Details",
+          "#change-list": "Change List"
+        },
+        "output": {
+          "#change-list": "Change List"
+        }
+      },
+      "observed": {
+        "input": [
+          "#change-details",
+          "#change-list"
+        ],
+        "output": [
+          "#change-list"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/plan-change.md",
+      "operation": "Check Plan Change Autonomy",
+      "expected": {
+        "input": {
+          "#pending-change": "Pending Change",
+          "#allowance": "Allowance"
+        },
+        "output": {
+          "#autonomy-result": "Autonomy Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#allowance",
+          "#pending-change"
+        ],
+        "output": [
+          "#autonomy-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/planning-record.md",
+      "operation": "Add Planning Record",
+      "expected": {
+        "input": {
+          "#engineering-worktree": "Engineering Worktree",
+          "#planning-folder": "Planning Folder"
+        },
+        "output": {
+          "#planning-folder": "Planning Folder"
+        }
+      },
+      "observed": {
+        "input": [
+          "#engineering-worktree",
+          "#planning-folder"
+        ],
+        "output": [
+          "#planning-folder"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/planning-record.md",
+      "operation": "Commit Planning Record",
+      "expected": {
+        "input": {
+          "#engineering-worktree": "Engineering Worktree",
+          "#commit-message-file": "Commit Message File"
+        },
+        "output": {
+          "#publication-result": "Publication Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#commit-message-file",
+          "#engineering-worktree"
+        ],
+        "output": [
+          "#publication-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/planning-record.md",
+      "operation": "Find Engineering Worktree",
+      "expected": {
+        "input": {
+          "#project-checkout": "Project Checkout"
+        },
+        "output": {
+          "#engineering-worktree": "Engineering Worktree"
+        }
+      },
+      "observed": {
+        "input": [
+          "#project-checkout"
+        ],
+        "output": [
+          "#engineering-worktree"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/planning-record.md",
+      "operation": "Publish Planning Record",
+      "expected": {
+        "input": {
+          "#planning-folder": "Planning Folder",
+          "#commit-message-file": "Commit Message File"
+        },
+        "output": {
+          "#publication-result": "Publication Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#commit-message-file",
+          "#planning-folder"
+        ],
+        "output": [
+          "#publication-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/planning-record.md",
+      "operation": "Populate Planning Record",
+      "expected": {
+        "input": {
+          "#record-selection": "Record Selection"
+        },
+        "output": {
+          "#planning-folder": "Planning Folder"
+        }
+      },
+      "observed": {
+        "input": [
+          "#record-selection"
+        ],
+        "output": [
+          "#planning-folder"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/proposal-body.md",
+      "operation": "Validate Proposal Body",
+      "expected": {
+        "input": {
+          "#proposal-record": "Proposal Record",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#validation-findings": "Validation Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-body",
+          "#proposal-record"
+        ],
+        "output": [
+          "#output-body",
+          "#validation-findings"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/proposal-body.md",
+      "operation": "Populate Proposal Body",
+      "expected": {
+        "input": {
+          "#proposal-context": "Proposal Context",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-body",
+          "#proposal-context"
+        ],
+        "output": [
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request-body.md",
+      "operation": "Convert Test Plan",
+      "expected": {
+        "input": {
+          "#pull-request-record": "Pull Request Record",
+          "#output-body": "Output Body",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#unresolved-evidence": "Unresolved Evidence"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-body",
+          "#pull-request-record",
+          "#workspace"
+        ],
+        "output": [
+          "#output-body",
+          "#unresolved-evidence"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request-body.md",
+      "operation": "Repair Test Plan",
+      "expected": {
+        "input": {
+          "#pull-request-record": "Pull Request Record",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#unresolved-evidence": "Unresolved Evidence"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-body",
+          "#pull-request-record"
+        ],
+        "output": [
+          "#output-body",
+          "#unresolved-evidence"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request-body.md",
+      "operation": "Link Architecture Overview",
+      "expected": {
+        "input": {
+          "#current-body": "Current Body",
+          "#overview-url": "Overview URL",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body"
+        }
+      },
+      "observed": {
+        "input": [
+          "#current-body",
+          "#output-body",
+          "#overview-url"
+        ],
+        "output": [
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request-body.md",
+      "operation": "Populate Review Body",
+      "expected": {
+        "input": {
+          "#change-evidence": "Change Evidence",
+          "#current-body": "Current Body",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body"
+        }
+      },
+      "observed": {
+        "input": [
+          "#change-evidence",
+          "#current-body",
+          "#output-body"
+        ],
+        "output": [
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request-body.md",
+      "operation": "Populate Pull Request Body",
+      "expected": {
+        "input": {
+          "#change-evidence": "Change Evidence",
+          "#current-body": "Current Body",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#unresolved-evidence": "Unresolved Evidence"
+        }
+      },
+      "observed": {
+        "input": [
+          "#change-evidence",
+          "#current-body",
+          "#output-body"
+        ],
+        "output": [
+          "#output-body",
+          "#unresolved-evidence"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Mark Review Draft",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#repository": "Repository"
+        },
+        "output": {
+          "#review-state": "Review State",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#repository"
+        ],
+        "output": [
+          "#failure",
+          "#review-state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Mark Review Ready",
+      "expected": {
+        "input": {
+          "#node-metadata": "Node Metadata",
+          "#query-file": "Query File"
+        },
+        "output": {
+          "#review-state": "Review State",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#node-metadata",
+          "#query-file"
+        ],
+        "output": [
+          "#failure",
+          "#review-state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Fetch Head Status",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#verified-head": "Verified Head",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#head-status": "Head Status",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-files",
+          "#repository",
+          "#verified-head"
+        ],
+        "output": [
+          "#failure",
+          "#head-status"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Fetch Head Check Runs",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#verified-head": "Verified Head",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#head-checks": "Head Checks",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-files",
+          "#repository",
+          "#verified-head"
+        ],
+        "output": [
+          "#failure",
+          "#head-checks"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Fetch Pull Request Files",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#output-files": "Output Files",
+          "#repository": "Repository"
+        },
+        "output": {
+          "#changed-paths": "Changed Paths",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#output-files",
+          "#repository"
+        ],
+        "output": [
+          "#changed-paths",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Append Repository Delivery Pull Requests",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#collection-path": "Collection Path",
+          "#pull-request-records": "Pull Request Records"
+        },
+        "output": {
+          "#pull-request-records": "Pull Request Records",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#collection-path",
+          "#pull-request-records",
+          "#repository"
+        ],
+        "output": [
+          "#failure",
+          "#pull-request-records"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Fetch Repository Delivery Pull Requests",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#collection-path": "Collection Path",
+          "#pull-request-records": "Pull Request Records"
+        },
+        "output": {
+          "#pull-request-records": "Pull Request Records",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#collection-path",
+          "#pull-request-records",
+          "#repository"
+        ],
+        "output": [
+          "#failure",
+          "#pull-request-records"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Fetch Linked Pull Requests",
+      "expected": {
+        "input": {
+          "#workspace": "Workspace",
+          "#collection-path": "Collection Path",
+          "#issue-records": "Issue Records",
+          "#pull-request-records": "Pull Request Records"
+        },
+        "output": {
+          "#pull-request-records": "Pull Request Records",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#collection-path",
+          "#issue-records",
+          "#pull-request-records",
+          "#workspace"
+        ],
+        "output": [
+          "#failure",
+          "#pull-request-records"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Fetch Initiative Pull Requests",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#initiative-prefix": "Initiative Prefix",
+          "#collection-path": "Collection Path",
+          "#pull-request-records": "Pull Request Records"
+        },
+        "output": {
+          "#pull-request-records": "Pull Request Records",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#collection-path",
+          "#initiative-prefix",
+          "#pull-request-records",
+          "#repository"
+        ],
+        "output": [
+          "#failure",
+          "#pull-request-records"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Fetch Pull Request Reviews",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#output-files": "Output Files",
+          "#repository": "Repository"
+        },
+        "output": {
+          "#reviews": "Reviews",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#output-files",
+          "#repository"
+        ],
+        "output": [
+          "#failure",
+          "#reviews"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Save Pull Request Snapshot",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#output-files": "Output Files",
+          "#repository": "Repository"
+        },
+        "output": {
+          "#pull-request-record": "Pull Request Record",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#output-files",
+          "#repository"
+        ],
+        "output": [
+          "#failure",
+          "#pull-request-record"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Capture Pull Request Links",
+      "expected": {
+        "input": {
+          "#workspace": "Workspace",
+          "#pull-request-records": "Pull Request Records",
+          "#link-snapshot-path": "Link-Snapshot Path",
+          "#authenticated-access": "Authenticated Access"
+        },
+        "output": {
+          "#issue-link-snapshot": "Issue-Link Snapshot",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access",
+          "#link-snapshot-path",
+          "#pull-request-records",
+          "#workspace"
+        ],
+        "output": [
+          "#failure",
+          "#issue-link-snapshot"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Remove Development Link",
+      "expected": {
+        "input": {
+          "#workspace": "Workspace",
+          "#identity": "Identity",
+          "#issue-identity": "Issue Identity",
+          "#authenticated-access": "Authenticated Access",
+          "#removal-decision": "Removal Decision"
+        },
+        "output": {
+          "#development-relation": "Development Relation",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access",
+          "#identity",
+          "#issue-identity",
+          "#removal-decision",
+          "#workspace"
+        ],
+        "output": [
+          "#development-relation",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Set Development Link",
+      "expected": {
+        "input": {
+          "#workspace": "Workspace",
+          "#identity": "Identity",
+          "#issue-identity": "Issue Identity",
+          "#authenticated-access": "Authenticated Access",
+          "#repository-prerequisite": "Repository Prerequisite"
+        },
+        "output": {
+          "#development-relation": "Development Relation",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access",
+          "#identity",
+          "#issue-identity",
+          "#repository-prerequisite",
+          "#workspace"
+        ],
+        "output": [
+          "#development-relation",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Read Merge Result",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#repository": "Repository"
+        },
+        "output": {
+          "#merge-result": "Merge Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#repository"
+        ],
+        "output": [
+          "#failure",
+          "#merge-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Submit Epic Merge",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#verified-head": "Verified Head",
+          "#target-requirements": "Target Requirements",
+          "#readiness-evidence": "Readiness Evidence",
+          "#merge-authorization": "Merge Authorization",
+          "#repository": "Repository"
+        },
+        "output": {
+          "#merge-result": "Merge Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#merge-authorization",
+          "#readiness-evidence",
+          "#repository",
+          "#target-requirements",
+          "#verified-head"
+        ],
+        "output": [
+          "#failure",
+          "#merge-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Find Review Pull Request",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#head-branch": "Head Branch"
+        },
+        "output": {
+          "#review-number": "Review Number",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#head-branch",
+          "#repository"
+        ],
+        "output": [
+          "#failure",
+          "#review-number"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Patch Pull Request Body",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#body-file": "Body File",
+          "#repository": "Repository"
+        },
+        "output": {
+          "#identity": "Identity",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#body-file",
+          "#identity",
+          "#repository"
+        ],
+        "output": [
+          "#failure",
+          "#identity"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Merge Pull Request",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#readiness-evidence": "Readiness Evidence",
+          "#merge-authorization": "Merge Authorization",
+          "#repository": "Repository"
+        },
+        "output": {
+          "#merge-result": "Merge Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#merge-authorization",
+          "#readiness-evidence",
+          "#repository"
+        ],
+        "output": [
+          "#failure",
+          "#merge-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Open Epic Pull Request",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#title": "Title",
+          "#head-branch": "Head Branch",
+          "#base-branch": "Base Branch",
+          "#body-file": "Body File"
+        },
+        "output": {
+          "#identity": "Identity",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#base-branch",
+          "#body-file",
+          "#head-branch",
+          "#repository",
+          "#title"
+        ],
+        "output": [
+          "#failure",
+          "#identity"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Open Task Pull Request",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#title": "Title",
+          "#head-branch": "Head Branch",
+          "#base-branch": "Base Branch",
+          "#body-file": "Body File"
+        },
+        "output": {
+          "#identity": "Identity",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#base-branch",
+          "#body-file",
+          "#head-branch",
+          "#repository",
+          "#title"
+        ],
+        "output": [
+          "#failure",
+          "#identity"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Retitle Pull Request",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#title": "Title",
+          "#repository": "Repository"
+        },
+        "output": {
+          "#title": "Title",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#repository",
+          "#title"
+        ],
+        "output": [
+          "#failure",
+          "#title"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Retarget Pull Request",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#base-branch": "Base Branch",
+          "#repository": "Repository"
+        },
+        "output": {
+          "#base-branch": "Base Branch",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#base-branch",
+          "#identity",
+          "#repository"
+        ],
+        "output": [
+          "#base-branch",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Ready Hot-fix Pull Request",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#published-reviews": "Published Reviews"
+        },
+        "output": {
+          "#review-state": "Review State",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#published-reviews"
+        ],
+        "output": [
+          "#failure",
+          "#review-state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Ready Epic Review",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#published-reviews": "Published Reviews",
+          "#epic-readiness": "Epic Readiness"
+        },
+        "output": {
+          "#review-state": "Review State",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#epic-readiness",
+          "#identity",
+          "#published-reviews"
+        ],
+        "output": [
+          "#failure",
+          "#review-state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Hold Epic Review",
+      "expected": {
+        "input": {
+          "#identity": "Identity"
+        },
+        "output": {
+          "#review-state": "Review State",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity"
+        ],
+        "output": [
+          "#failure",
+          "#review-state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Fetch Merge Readiness",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#base-branch": "Base Branch",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#verified-head": "Verified Head",
+          "#target-requirements": "Target Requirements",
+          "#readiness-evidence": "Readiness Evidence",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#base-branch",
+          "#identity",
+          "#output-files"
+        ],
+        "output": [
+          "#failure",
+          "#readiness-evidence",
+          "#target-requirements",
+          "#verified-head"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Merge Task Pull Requests",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#base-branch": "Base Branch",
+          "#project-checkout": "Project Checkout",
+          "#unit-checkout": "Unit Checkout",
+          "#repository-prerequisite": "Repository Prerequisite",
+          "#readiness-evidence": "Readiness Evidence"
+        },
+        "output": {
+          "#merge-result": "Merge Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#base-branch",
+          "#identity",
+          "#project-checkout",
+          "#readiness-evidence",
+          "#repository-prerequisite",
+          "#unit-checkout"
+        ],
+        "output": [
+          "#failure",
+          "#merge-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Read Head Evidence",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#verified-head": "Verified Head",
+          "#output-files": "Output Files"
+        },
+        "output": {
+          "#head-checks": "Head Checks",
+          "#head-status": "Head Status",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#output-files",
+          "#repository",
+          "#verified-head"
+        ],
+        "output": [
+          "#failure",
+          "#head-checks",
+          "#head-status"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Locate Review Pull Request",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#head-branch": "Head Branch"
+        },
+        "output": {
+          "#review-number": "Review Number",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#head-branch",
+          "#repository"
+        ],
+        "output": [
+          "#failure",
+          "#review-number"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Publish Pull Request",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#kind": "Kind",
+          "#selected-changes": "Selected Changes",
+          "#identity": "Identity",
+          "#body-file": "Body File",
+          "#issue-identity": "Issue Identity",
+          "#repository-prerequisite": "Repository Prerequisite",
+          "#link-snapshot-path": "Link-Snapshot Path"
+        },
+        "output": {
+          "#pull-request-record": "Pull Request Record",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#body-file",
+          "#identity",
+          "#issue-identity",
+          "#kind",
+          "#link-snapshot-path",
+          "#repository",
+          "#repository-prerequisite",
+          "#selected-changes"
+        ],
+        "output": [
+          "#failure",
+          "#pull-request-record"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Read Pull Request State",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#output-files": "Output Files",
+          "#record-selection": "Record Selection"
+        },
+        "output": {
+          "#pull-request-record": "Pull Request Record",
+          "#changed-paths": "Changed Paths",
+          "#reviews": "Reviews",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#output-files",
+          "#record-selection"
+        ],
+        "output": [
+          "#changed-paths",
+          "#failure",
+          "#pull-request-record",
+          "#reviews"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Read Initiative Pull Requests",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#initiative-prefix": "Initiative Prefix",
+          "#issue-records": "Issue Records",
+          "#collection-path": "Collection Path"
+        },
+        "output": {
+          "#pull-request-records": "Pull Request Records",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#collection-path",
+          "#initiative-prefix",
+          "#issue-records",
+          "#repository"
+        ],
+        "output": [
+          "#failure",
+          "#pull-request-records"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Fetch All Delivery Pull Requests",
+      "expected": {
+        "input": {
+          "#repository-list": "Repository List",
+          "#issue-records": "Issue Records",
+          "#collection-path": "Collection Path"
+        },
+        "output": {
+          "#pull-request-records": "Pull Request Records",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#collection-path",
+          "#issue-records",
+          "#repository-list"
+        ],
+        "output": [
+          "#failure",
+          "#pull-request-records"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Merge Epic Pull Request",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#verified-head": "Verified Head",
+          "#target-requirements": "Target Requirements",
+          "#readiness-evidence": "Readiness Evidence",
+          "#merge-authorization": "Merge Authorization"
+        },
+        "output": {
+          "#merge-result": "Merge Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#merge-authorization",
+          "#readiness-evidence",
+          "#target-requirements",
+          "#verified-head"
+        ],
+        "output": [
+          "#failure",
+          "#merge-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Link Pull Request to Issue",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#issue-identity": "Issue Identity",
+          "#pull-request-records": "Pull Request Records",
+          "#link-snapshot-path": "Link-Snapshot Path",
+          "#authenticated-access": "Authenticated Access",
+          "#repository-prerequisite": "Repository Prerequisite"
+        },
+        "output": {
+          "#development-relation": "Development Relation",
+          "#issue-link-snapshot": "Issue-Link Snapshot",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access",
+          "#identity",
+          "#issue-identity",
+          "#link-snapshot-path",
+          "#pull-request-records",
+          "#repository-prerequisite"
+        ],
+        "output": [
+          "#development-relation",
+          "#failure",
+          "#issue-link-snapshot"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Fetch Pull Request Issue Links",
+      "expected": {
+        "input": {
+          "#pull-request-records": "Pull Request Records",
+          "#authenticated-access": "Authenticated Access",
+          "#link-snapshot-path": "Link-Snapshot Path"
+        },
+        "output": {
+          "#issue-link-snapshot": "Issue-Link Snapshot",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access",
+          "#link-snapshot-path",
+          "#pull-request-records"
+        ],
+        "output": [
+          "#failure",
+          "#issue-link-snapshot"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Access Development Links",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#authenticated-access": "Authenticated Access",
+          "#link-request": "Link Request",
+          "#issue-identity": "Issue Identity",
+          "#repository-prerequisite": "Repository Prerequisite",
+          "#removal-decision": "Removal Decision"
+        },
+        "output": {
+          "#development-relation": "Development Relation",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#authenticated-access",
+          "#identity",
+          "#issue-identity",
+          "#link-request",
+          "#removal-decision",
+          "#repository-prerequisite"
+        ],
+        "output": [
+          "#development-relation",
+          "#failure"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "operation": "Merge Delivery Pull Request",
+      "expected": {
+        "input": {
+          "#identity": "Identity",
+          "#kind": "Kind",
+          "#verified-head": "Verified Head",
+          "#target-requirements": "Target Requirements",
+          "#readiness-evidence": "Readiness Evidence",
+          "#repository-prerequisite": "Repository Prerequisite"
+        },
+        "output": {
+          "#merge-result": "Merge Result",
+          "#failure": "Failure"
+        }
+      },
+      "observed": {
+        "input": [
+          "#identity",
+          "#kind",
+          "#readiness-evidence",
+          "#repository-prerequisite",
+          "#target-requirements",
+          "#verified-head"
+        ],
+        "output": [
+          "#failure",
+          "#merge-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/repository-graph.md",
+      "operation": "Flow Trace",
+      "expected": {
+        "input": {
+          "#flow-identity": "Flow Identity"
+        },
+        "output": {
+          "#flow-traces": "Flow Traces"
+        }
+      },
+      "observed": {
+        "input": [
+          "#flow-identity"
+        ],
+        "output": [
+          "#flow-traces"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/repository-graph.md",
+      "operation": "Symbol Context",
+      "expected": {
+        "input": {
+          "#symbol-identity": "Symbol Identity"
+        },
+        "output": {
+          "#symbol-relationships": "Symbol Relationships"
+        }
+      },
+      "observed": {
+        "input": [
+          "#symbol-identity"
+        ],
+        "output": [
+          "#symbol-relationships"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/repository-graph.md",
+      "operation": "Change Surface",
+      "expected": {
+        "input": {
+          "#base-branch": "Base Branch"
+        },
+        "output": {
+          "#changed-symbols": "Changed Symbols"
+        }
+      },
+      "observed": {
+        "input": [
+          "#base-branch"
+        ],
+        "output": [
+          "#changed-symbols"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/repository-graph.md",
+      "operation": "Index Repository",
+      "expected": {
+        "input": {
+          "#requested-revision": "Requested Revision"
+        },
+        "output": {
+          "#index-state": "Index State"
+        }
+      },
+      "observed": {
+        "input": [
+          "#requested-revision"
+        ],
+        "output": [
+          "#index-state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/repository-graph.md",
+      "operation": "Index Status",
+      "expected": {
+        "input": {
+          "#requested-revision": "Requested Revision"
+        },
+        "output": {
+          "#index-state": "Index State"
+        }
+      },
+      "observed": {
+        "input": [
+          "#requested-revision"
+        ],
+        "output": [
+          "#index-state"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/repository-graph.md",
+      "operation": "Measure Repository Change",
+      "expected": {
+        "input": {
+          "#review-checkout": "Review Checkout",
+          "#requested-revision": "Requested Revision",
+          "#base-branch": "Base Branch"
+        },
+        "output": {
+          "#graph-measurements": "Graph Measurements"
+        }
+      },
+      "observed": {
+        "input": [
+          "#base-branch",
+          "#requested-revision",
+          "#review-checkout"
+        ],
+        "output": [
+          "#graph-measurements"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/repository-labels.md",
+      "operation": "Create Label",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#label-identity": "Label Identity"
+        },
+        "output": {
+          "#label-identity": "Label Identity"
+        }
+      },
+      "observed": {
+        "input": [
+          "#label-identity",
+          "#repository"
+        ],
+        "output": [
+          "#label-identity"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/repository-labels.md",
+      "operation": "List Labels",
+      "expected": {
+        "input": {
+          "#repository": "Repository"
+        },
+        "output": {
+          "#label-identity": "Label Identity"
+        }
+      },
+      "observed": {
+        "input": [
+          "#repository"
+        ],
+        "output": [
+          "#label-identity"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/repository-labels.md",
+      "operation": "Ensure Repository Labels",
+      "expected": {
+        "input": {
+          "#repository": "Repository",
+          "#label-identity": "Label Identity"
+        },
+        "output": {
+          "#label-identity": "Label Identity"
+        }
+      },
+      "observed": {
+        "input": [
+          "#label-identity",
+          "#repository"
+        ],
+        "output": [
+          "#label-identity"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/review-finding.md",
+      "operation": "Report Review Finding",
+      "expected": {
+        "input": {
+          "#finding-set": "Finding Set"
+        },
+        "output": {
+          "#finding-result": "Finding Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#finding-set"
+        ],
+        "output": [
+          "#finding-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/review-finding.md",
+      "operation": "Populate Review Finding",
+      "expected": {
+        "input": {
+          "#finding-evidence": "Finding Evidence"
+        },
+        "output": {
+          "#finding-result": "Finding Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#finding-evidence"
+        ],
+        "output": [
+          "#finding-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/standalone-body.md",
+      "operation": "Revise Standalone Body",
+      "expected": {
+        "input": {
+          "#current-body": "Current Body",
+          "#confirmed-boundary": "Confirmed Boundary",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body"
+        }
+      },
+      "observed": {
+        "input": [
+          "#confirmed-boundary",
+          "#current-body",
+          "#output-body"
+        ],
+        "output": [
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/standalone-body.md",
+      "operation": "Populate Standalone Body",
+      "expected": {
+        "input": {
+          "#issue-context": "Issue Context",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body"
+        }
+      },
+      "observed": {
+        "input": [
+          "#issue-context",
+          "#output-body"
+        ],
+        "output": [
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/standup-report.md",
+      "operation": "Summarise Progress",
+      "expected": {
+        "input": {
+          "#board-items": "Board Items",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-link-snapshot": "Issue Link Snapshot",
+          "#report-selection": "Report Selection",
+          "#initiative-records": "Initiative Records",
+          "#management-file": "Management File",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#report-result": "Report Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-items",
+          "#initiative-records",
+          "#issue-link-snapshot",
+          "#management-file",
+          "#pull-request-records",
+          "#report-selection",
+          "#workspace"
+        ],
+        "output": [
+          "#report-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/standup-report.md",
+      "operation": "Compose Standup Report",
+      "expected": {
+        "input": {
+          "#board-items": "Board Items",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-link-snapshot": "Issue Link Snapshot",
+          "#report-selection": "Report Selection",
+          "#initiative-records": "Initiative Records",
+          "#output-paths": "Output Paths"
+        },
+        "output": {
+          "#report-result": "Report Result"
+        }
+      },
+      "observed": {
+        "input": [
+          "#board-items",
+          "#initiative-records",
+          "#issue-link-snapshot",
+          "#output-paths",
+          "#pull-request-records",
+          "#report-selection"
+        ],
+        "output": [
+          "#report-result"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/task-body.md",
+      "operation": "Sync Task Issue",
+      "expected": {
+        "input": {
+          "#task-record": "Task Record",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-links": "Issue Links",
+          "#delivery-selection": "Delivery Selection",
+          "#output-body": "Output Body",
+          "#workspace": "Workspace"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#delivery-findings": "Delivery Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#delivery-selection",
+          "#issue-links",
+          "#output-body",
+          "#pull-request-records",
+          "#task-record",
+          "#workspace"
+        ],
+        "output": [
+          "#delivery-findings",
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/task-body.md",
+      "operation": "Record Task Delivery",
+      "expected": {
+        "input": {
+          "#task-record": "Task Record",
+          "#pull-request-records": "Pull Request Records",
+          "#issue-links": "Issue Links",
+          "#delivery-selection": "Delivery Selection",
+          "#output-body": "Output Body"
+        },
+        "output": {
+          "#output-body": "Output Body",
+          "#delivery-findings": "Delivery Findings"
+        }
+      },
+      "observed": {
+        "input": [
+          "#delivery-selection",
+          "#issue-links",
+          "#output-body",
+          "#pull-request-records",
+          "#task-record"
+        ],
+        "output": [
+          "#delivery-findings",
+          "#output-body"
+        ]
+      }
+    },
+    {
+      "file": "artifacts/work-item.md",
+      "operation": "Populate Work Item",
+      "expected": {
+        "input": {
+          "#task-context": "Task Context",
+          "#work-item-file": "Work Item File"
+        },
+        "output": {
+          "#work-item-file": "Work Item File"
+        }
+      },
+      "observed": {
+        "input": [
+          "#task-context",
+          "#work-item-file"
+        ],
+        "output": [
+          "#work-item-file"
+        ]
+      }
+    }
+  ]
+}

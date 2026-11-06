@@ -76,16 +76,16 @@ All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab
 
 | Artifact | What it holds |
 | --- | --- |
-| [Integration verification](integration-validation.md) | Current-head checks, criterion observations and evidence limits |
-| [Agent review](integration-agent-review.json) | Exact head and target, scope and finding dispositions |
-| [Measured flow atlas](integration-flow-atlas.md) | One sequence for each reported affected process |
+| [Integration verification](integration-validation.md) | Current symbol checks, composed criterion review and explicit evidence boundaries |
+| [Agent review](integration-agent-review.json) | Current head and target, composed review scope and finding dispositions |
+| [Measured flow atlas](integration-flow-atlas.md) | Structural baseline sequences for every reported affected process |
 | [Native graph measurements](integration-graph.tar.gz) | Complete contexts, raw relationships, ordered flows and instruments |
 | [Measurement manifest](integration-graph-manifest.json) | Archive members and hashes |
-| [Graph audit](integration-graph-audit.json) | Context identities, ordered flow completeness and freshness |
+| [Graph audit](integration-graph-audit.json) | Structural baseline context/flow order and freshness |
 | [Step item inventory](step-item-audit.json) | Every step and exact bullet-prefix correction |
 | [Step preservation](step-preservation.json) | Exact procedure text, payload and route preservation |
-| [Work Planner result](integration-work-planner.log) | Frozen-head 934-test run with one opt-in skip |
-| [Shared checker result](integration-shared-checker.log) | Frozen-head 262-test run |
+| [Work Planner result](integration-work-planner.log) | 934-test Work Planner run with one opt-in skip |
+| [Shared checker result](integration-shared-checker.log) | 263-test shared checker run |
 | [Installed model result](integration-installed-check.log) | 58 files and zero findings |
 | [Final document result](step-document-check.log) | 13 affected document checks |
 | [Delivery reconciliation](integration-sync.log) | Sole expected unmerged integration base |
@@ -126,3 +126,11 @@ Runtime meanings live in [Link Roles](https://github.com/m2ux/workflow-server/bl
 | Artifact | What it holds |
 | --- | --- |
 | [Symbol notation](symbol-link-titles.md) | Approved symbol mapping, scope, preservation check and validation |
+| [Symbol preservation](symbol-preservation.json) | Exact title-only substitution and explicit rule clarification |
+| [Callable audit](symbol-callable-audit.json) | Every protocol, procedure and artifact-operation title |
+| [Contract audit](symbol-contract-audit.json) | Retained IO obligations through the symbol parser |
+| [Current source manifest](symbol-source-manifest.json) | Current commit and all 115 source hashes |
+| [Final document result](symbol-final-documents.log) | 13 passing checks after the rule clarification |
+| [Migration instrument](project17-symbol-links.py) | Executed notation conversion and inverse preservation check |
+| [Callable audit instrument](project17-symbol-callable-audit.py) | Executed protocol/procedure/operation enumeration |
+| [Rule clarification instrument](project17-symbol-rule-clarification.py) | Exact final runtime definition and recorded exception |
