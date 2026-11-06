@@ -1,0 +1,17 @@
+100 → 65 operations; 35 inlined; 116 command specifications and 36 Fields sections identical.
+177 instruction lines matched; 15 context/result rewrites require manual review.
+Populate Architecture Overview : - Take the graph [measurements](#measurements) supplied by the caller and check the proposed diagrams.
+Populate Delivery Brief : Provide the [brief path](#brief-path) and any [missing context](#missing-context). The caller resolves gaps before dispatch.
+Check Epic Completion : Provide the completion result in [Delivery State](#delivery-state), identifying remaining blockers. Passing normal delivery checks supplies the caller's closure evidence; the tracker issue's current Development-link gate still governs the write.
+Check Outside Threats : - Provide [Review Result](#review-result) with the evidenced threats and gaps to the requesting goal review.
+Open Hot-fix Issue : Provide the [hot-fix number](#hot-fix-number) to the caller for rewriting and saving the issue's body, title and labels. The caller then invokes Apply [Settle Hot-fix Board Status](#settle-hot-fix-board-status "ƒ") as its [placement](placement.md#disposition-conditions) orders.
+Close Tracker Issue : - Provide an abandoned or incorrect Development link to the caller for the user's decision on its removal. A replacement pull request does not remove the requirement on a link still present.
+Audit Closure Evidence : - An empty collection means none of the named issues is closed; provide nothing listed.
+Draft Issue Placement : Provide [Placement Result](#placement-result) for the requester to offer and apply.
+Apply Issue Placement : - Use the source issue as the destination with disposition Kept. The caller rewrites its hot-fix body and keeps the issue open.
+Apply Issue Placement : - Use the source issue as the destination with disposition Leave. The caller rewrites its standalone body and keeps the issue open.
+Apply Issue Placement : Provide [Placement Result](#placement-result) with the saved destination, identities of all affected bodies and confirmed disposition, including the destination initiative, epic and new row id for a new task or new epic, and the number for a hot-fix. The requester performs the rewrite or closure.
+Populate Pull Request Body : Provide the [complete body file](#output-body) and any [unresolved evidence](#unresolved-evidence) links to the caller for publication.
+Merge Epic Pull Request : Run [Submit Epic Merge](#submit-epic-merge "ƒ") with the exact head whose checks and target requirements were verified; provide a refusal without continuing.
+Read Head Evidence : Provide [Head Checks](#head-checks) and [Head Status](#head-status), retaining missing or pending evidence as unresolved [Failure](#failure). The requester compares them with supplied target requirements and current reviews.
+Ready Hot-fix Pull Request : - On a finding, provide it to the caller; the [pull request](#identity) stays a draft.

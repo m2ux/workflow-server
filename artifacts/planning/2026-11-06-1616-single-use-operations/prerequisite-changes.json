@@ -1,0 +1,69 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "added": [],
+    "removed": [
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/issue.md",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/pull-request.md"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix-body.md",
+    "added": [],
+    "removed": [
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/issue-body.md"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "added": [],
+    "removed": [
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/repository-labels.md"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "added": [],
+    "removed": [
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/dependency-graph.md",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/epic-issue-body.md",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/hotfix.md",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/initiative-issue-body.md",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/issue-body.md",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/issue.md",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/standalone-body.md"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "added": [],
+    "removed": [
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/agent-review.md"
+    ]
+  },
+  {
+    "file": "skills/work-planner/modes/hoist-mode.md",
+    "added": [
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/epic-issue-body.md",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/hotfix.md",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/initiative-issue-body.md",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/repository-labels.md",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/standalone-body.md"
+    ],
+    "removed": []
+  },
+  {
+    "file": "skills/work-planner/modes/propose-mode.md",
+    "added": [
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/artifacts/issue-body.md"
+    ],
+    "removed": []
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "added": [
+      "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/configuration.md"
+    ],
+    "removed": []
+  }
+]

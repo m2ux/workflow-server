@@ -1,0 +1,360 @@
+{
+  "request": "Understand PR #1641 and prepare a read-only account of required evidence and intended steps; stop before indexing, changing worktrees, writing records or changing GitHub.",
+  "source": {
+    "checkout": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace",
+    "repository": "m2ux/workflow-server",
+    "branch": "i17/e01/workspace",
+    "revision": "5fdc535a8d0d29304293e782f97cdcfa11effd9a",
+    "comparison_baseline": "2d2e223451815c2a8986bf2848bdd0dd7e4be58d",
+    "working_tree": "clean; branch reports ahead 1 of origin/i17/e01/workspace"
+  },
+  "captured_pr": {
+    "file": "/tmp/project17-inline-examples-pr-readback.json",
+    "identity": "m2ux/workflow-server#1641",
+    "url": "https://github.com/m2ux/workflow-server/pull/1641",
+    "title": "[I17:E01] Skill Style: The Groundwork for Prosiform Compliance",
+    "head": "2d2e223451815c2a8986bf2848bdd0dd7e4be58d",
+    "head_ref": "i17/e01/workspace",
+    "base": "03d353300ca4804194fd50d316d73e3bf1270d1d",
+    "base_ref": "workspace",
+    "state": "open",
+    "draft": true,
+    "mergeable_state": "blocked",
+    "updated_at": "2026-11-06T07:23:43Z",
+    "freshness": "Saved response only; not a fresh tracker read. Its head is distinct from the installed-skill source revision."
+  },
+  "fresh_request_reading_check": {
+    "result": "Partial",
+    "route": [
+      "AGENTS.md",
+      "skills/work-planner/SKILL.md",
+      "skills/work-planner/rules.md",
+      "skills/work-planner/conventions.md",
+      "skills/work-planner/modes/understand-mode.md",
+      "skills/work-planner/protocols/change-overview.md"
+    ],
+    "selection": "Understand: named PR and architecture account. No Deliver or mutation procedure was executed.",
+    "direct_whole_file_prerequisites": [
+      "artifacts/pull-request.md",
+      "artifacts/delivery-branches.md",
+      "artifacts/repository-graph.md",
+      "artifacts/planning-record.md",
+      "artifacts/architecture-overview.md",
+      "artifacts/pull-request-body.md"
+    ],
+    "required_whole_document_closure": [
+      "skills/work-planner/modes/understand-mode.md",
+      "skills/work-planner/protocols/change-overview.md",
+      "skills/work-planner/artifacts/pull-request.md",
+      "skills/work-planner/artifacts/issue.md",
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "skills/work-planner/artifacts/work-item.md",
+      "skills/work-planner/artifacts/issue-body.md",
+      "skills/work-planner/references/requirement-characteristics.md",
+      "skills/work-planner/artifacts/pull-request-body.md",
+      "skills/work-planner/artifacts/hotfix.md",
+      "skills/work-planner/artifacts/hotfix-body.md",
+      "skills/work-planner/artifacts/standalone-body.md",
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "skills/work-planner/artifacts/lane.md",
+      "skills/work-planner/artifacts/epic.md",
+      "skills/work-planner/artifacts/initiative-issue-body.md",
+      "skills/work-planner/artifacts/initiative.md",
+      "skills/work-planner/artifacts/dependency-graph.md",
+      "skills/work-planner/artifacts/plan-change.md",
+      "skills/work-planner/artifacts/delivery-plan.md",
+      "skills/work-planner/artifacts/board-queue.md",
+      "skills/work-planner/artifacts/board.md",
+      "skills/work-planner/configuration.md",
+      "skills/work-planner/artifacts/board-delivery.md",
+      "skills/work-planner/artifacts/agent-review.md",
+      "skills/work-planner/artifacts/placement.md",
+      "skills/work-planner/artifacts/repository-graph.md",
+      "skills/work-planner/artifacts/planning-record.md",
+      "skills/work-planner/artifacts/architecture-overview.md"
+    ],
+    "closure_count": 29,
+    "full_documents_received_from_closure": [
+      "skills/work-planner/modes/understand-mode.md",
+      "skills/work-planner/protocols/change-overview.md",
+      "skills/work-planner/artifacts/pull-request.md",
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "skills/work-planner/artifacts/pull-request-body.md",
+      "skills/work-planner/artifacts/hotfix.md",
+      "skills/work-planner/configuration.md",
+      "skills/work-planner/artifacts/agent-review.md",
+      "skills/work-planner/artifacts/repository-graph.md",
+      "skills/work-planner/artifacts/planning-record.md",
+      "skills/work-planner/artifacts/architecture-overview.md"
+    ],
+    "not_received_whole": [
+      "skills/work-planner/artifacts/issue.md",
+      "skills/work-planner/artifacts/work-item.md",
+      "skills/work-planner/artifacts/issue-body.md",
+      "skills/work-planner/references/requirement-characteristics.md",
+      "skills/work-planner/artifacts/hotfix-body.md",
+      "skills/work-planner/artifacts/standalone-body.md",
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "skills/work-planner/artifacts/lane.md",
+      "skills/work-planner/artifacts/epic.md",
+      "skills/work-planner/artifacts/initiative-issue-body.md",
+      "skills/work-planner/artifacts/initiative.md",
+      "skills/work-planner/artifacts/dependency-graph.md",
+      "skills/work-planner/artifacts/plan-change.md",
+      "skills/work-planner/artifacts/delivery-plan.md",
+      "skills/work-planner/artifacts/board-queue.md",
+      "skills/work-planner/artifacts/board.md",
+      "skills/work-planner/artifacts/board-delivery.md",
+      "skills/work-planner/artifacts/placement.md"
+    ],
+    "prerequisite_cycles": [
+      [
+        "skills/work-planner/artifacts/pull-request.md",
+        "skills/work-planner/artifacts/delivery-branches.md",
+        "skills/work-planner/artifacts/work-item.md",
+        "skills/work-planner/artifacts/pull-request-body.md",
+        "skills/work-planner/artifacts/hotfix.md",
+        "skills/work-planner/artifacts/hotfix-body.md",
+        "skills/work-planner/artifacts/standalone-body.md",
+        "skills/work-planner/artifacts/epic-issue-body.md",
+        "skills/work-planner/artifacts/pull-request.md"
+      ],
+      [
+        "skills/work-planner/artifacts/work-item.md",
+        "skills/work-planner/artifacts/pull-request-body.md",
+        "skills/work-planner/artifacts/hotfix.md",
+        "skills/work-planner/artifacts/hotfix-body.md",
+        "skills/work-planner/artifacts/standalone-body.md",
+        "skills/work-planner/artifacts/epic-issue-body.md",
+        "skills/work-planner/artifacts/dependency-graph.md",
+        "skills/work-planner/artifacts/work-item.md"
+      ],
+      [
+        "skills/work-planner/artifacts/delivery-branches.md",
+        "skills/work-planner/artifacts/work-item.md",
+        "skills/work-planner/artifacts/pull-request-body.md",
+        "skills/work-planner/artifacts/hotfix.md",
+        "skills/work-planner/artifacts/hotfix-body.md",
+        "skills/work-planner/artifacts/standalone-body.md",
+        "skills/work-planner/artifacts/epic-issue-body.md",
+        "skills/work-planner/artifacts/dependency-graph.md",
+        "skills/work-planner/artifacts/delivery-branches.md"
+      ],
+      [
+        "skills/work-planner/artifacts/epic-issue-body.md",
+        "skills/work-planner/artifacts/delivery-plan.md",
+        "skills/work-planner/artifacts/epic-issue-body.md"
+      ],
+      [
+        "skills/work-planner/artifacts/delivery-branches.md",
+        "skills/work-planner/artifacts/work-item.md",
+        "skills/work-planner/artifacts/pull-request-body.md",
+        "skills/work-planner/artifacts/hotfix.md",
+        "skills/work-planner/artifacts/hotfix-body.md",
+        "skills/work-planner/artifacts/standalone-body.md",
+        "skills/work-planner/artifacts/epic-issue-body.md",
+        "skills/work-planner/artifacts/delivery-plan.md",
+        "skills/work-planner/artifacts/delivery-branches.md"
+      ],
+      [
+        "skills/work-planner/artifacts/work-item.md",
+        "skills/work-planner/artifacts/pull-request-body.md",
+        "skills/work-planner/artifacts/hotfix.md",
+        "skills/work-planner/artifacts/hotfix-body.md",
+        "skills/work-planner/artifacts/standalone-body.md",
+        "skills/work-planner/artifacts/epic-issue-body.md",
+        "skills/work-planner/artifacts/delivery-plan.md",
+        "skills/work-planner/artifacts/work-item.md"
+      ],
+      [
+        "skills/work-planner/artifacts/hotfix.md",
+        "skills/work-planner/artifacts/hotfix-body.md",
+        "skills/work-planner/artifacts/standalone-body.md",
+        "skills/work-planner/artifacts/epic-issue-body.md",
+        "skills/work-planner/artifacts/delivery-plan.md",
+        "skills/work-planner/artifacts/hotfix.md"
+      ],
+      [
+        "skills/work-planner/artifacts/hotfix-body.md",
+        "skills/work-planner/artifacts/standalone-body.md",
+        "skills/work-planner/artifacts/epic-issue-body.md",
+        "skills/work-planner/artifacts/delivery-plan.md",
+        "skills/work-planner/artifacts/hotfix-body.md"
+      ],
+      [
+        "skills/work-planner/artifacts/delivery-branches.md",
+        "skills/work-planner/artifacts/work-item.md",
+        "skills/work-planner/artifacts/pull-request-body.md",
+        "skills/work-planner/artifacts/hotfix.md",
+        "skills/work-planner/artifacts/hotfix-body.md",
+        "skills/work-planner/artifacts/board-queue.md",
+        "skills/work-planner/artifacts/delivery-branches.md"
+      ],
+      [
+        "skills/work-planner/artifacts/hotfix.md",
+        "skills/work-planner/artifacts/hotfix-body.md",
+        "skills/work-planner/artifacts/board-queue.md",
+        "skills/work-planner/artifacts/hotfix.md"
+      ],
+      [
+        "skills/work-planner/artifacts/hotfix.md",
+        "skills/work-planner/artifacts/hotfix-body.md",
+        "skills/work-planner/artifacts/hotfix.md"
+      ],
+      [
+        "skills/work-planner/artifacts/delivery-branches.md",
+        "skills/work-planner/artifacts/work-item.md",
+        "skills/work-planner/artifacts/pull-request-body.md",
+        "skills/work-planner/artifacts/hotfix.md",
+        "skills/work-planner/artifacts/hotfix-body.md",
+        "skills/work-planner/artifacts/delivery-branches.md"
+      ],
+      [
+        "skills/work-planner/artifacts/delivery-branches.md",
+        "skills/work-planner/artifacts/work-item.md",
+        "skills/work-planner/artifacts/delivery-branches.md"
+      ]
+    ],
+    "cycle_examples": [
+      "delivery-branches.md -> work-item.md -> delivery-branches.md",
+      "hotfix.md -> hotfix-body.md -> hotfix.md",
+      "epic-issue-body.md -> delivery-plan.md -> epic-issue-body.md"
+    ],
+    "no_waiver": "Prerequisite-first ordering cannot be satisfied across these cycles. Whole supporting documents were read for static understanding, but this is not claimed as a compliant end-to-end reading walk.",
+    "reuse": "Complete Rules/Conventions and supporting files at 5fdc535a were reused for later selected operations; already-read whole documents satisfy their heading sections at that revision. No earlier revision's content was treated as current.",
+    "truncation": "Initial batched pull-request/delivery-branches and repository-graph/planning-record/pull-request-body output was truncated. Recovered pull-request in ranges 1-279, 280-560, 560-810; delivery-branches in 1-180, 180-380, 380-548; repository-graph in 1-130 and 131-161; planning-record and pull-request-body were reread whole. These recoveries do not establish completeness for unreceived transitive prerequisites.",
+    "unrelated_retrieval": "Whole Pull Request and Delivery Branches prerequisites expose merge, Development-link mutation, task-branch and other command bodies irrelevant to read-only Understand. Thus exclusion of unrelated command bodies is not demonstrated.",
+    "instruction_gap": "AGENTS.md names .project/main/AGENTS.md; .project/main was absent in this checkout. No missing contents were invented.",
+    "fresh_context_limit": "Independent agent from implementation author, but forked conversation/developer memory summary were inherited. A memory-registry keyword search occurred; its output was not used for source findings. Later parent steering explicitly requested scrutiny of the hot-fix failure continuation, so this targeted reassessment is not an unprompted observation.",
+    "needed_sections": [
+      "pull-request.md#read-pull-request-state; #save-pull-request-snapshot; #fetch-pull-request-files; selected identity/output/record fields",
+      "delivery-branches.md#create-pull-request-worktree; Fetch Review Head, Read Checkout Revision, Read Checkout Status, Add Review Worktree; Review Worktrees and verified-head/path fields",
+      "repository-graph.md#measure-repository-change, all selected graph command specifications and Fields",
+      "architecture-overview.md#fields, including Template, Diagrams, Measured Structure, Code References, Measurements, Pull Request Head and Overview File",
+      "planning-record.md#populate-planning-record, #publish-planning-record and their command/field contracts; configuration.md#planning-records",
+      "pull-request-body.md#overview-url, #current-body, #template, #output-body",
+      "pull-request.md#publish-pull-request and #patch-pull-request-body for eventual authorized publication only"
+    ],
+    "intended_steps": [
+      "Use the named PR identity, not the current branch. Refresh complete PR metadata and selected changed paths before live work; the saved response supplies a bounded specimen.",
+      "Fetch the named PR head into the project checkout; compare FETCH_HEAD with the verified metadata head. On mismatch reread metadata and repeat; use/reuse only a clean detached review worktree at that exact head, otherwise preserve the old checkout and select an unused suffixed path.",
+      "In the verified review checkout, read GitNexus status and index only if absent/stale; detect the change against PR base workspace, inspect each changed symbol and ordered reported flow, reject stale responses and repeat affected measurements after index refresh.",
+      "Resolve changed revision/freshness blockers before authoring. Current task stops before fetch/worktree/index mutation and supplies no graph measurements.",
+      "Find the existing overview record by PR number before selecting a new folder; reuse identity and preserve other record content. Author measured structural and functional diagrams and head-pinned code references from complete Fields.",
+      "Register the overview and PR link, publish engineering record first, update the complete current PR body with its Architecture Overview reference preserving the existing row, publish and read back; report PR/folder/diagrams/References row. These future writes are outside this read-only request."
+    ],
+    "missing_runtime_evidence": [
+      "Fresh current PR response and complete changed paths",
+      "Verified clean detached review checkout for captured/fresh PR head",
+      "Current graph index status, measured surface, symbol relationships and ordered flows",
+      "Existing planning-record inventory/readback",
+      "Fresh current target requirements, checks and published review records if assessing actual readiness"
+    ],
+    "authority_boundary": "No gh call, fetch, indexing, worktree mutation, planning-record write, source edit, commit, push or GitHub mutation occurred. Only the requested /tmp ledger was written."
+  },
+  "static_branch_comparison": {
+    "result": "Instruction preservation mostly observed; two introduced control-flow ambiguities and one moved-owner responsibility ambiguity remain.",
+    "scope": [
+      "protocols/change-overview.md",
+      "protocols/unit-dispatch.md",
+      "modes/deliver-mode.md",
+      "protocols/epic-integration.md",
+      "artifacts/pull-request.md readiness/merge operations",
+      "removed owning operations in architecture-overview.md, delivery-branches.md, delivery-brief.md, pull-request-body.md and hotfix.md"
+    ],
+    "preserved": [
+      {
+        "area": "Change Overview",
+        "evidence": "Same measured diagrams, complete Fields, head-pinned links, existing-record reuse/replacement, engineering publication before body publication, existing References-row preservation and final result. Changed-head/stale-index loops remain in their prior sections."
+      },
+      {
+        "area": "Unit Dispatch",
+        "evidence": "For-each checkout scope ends at the Delivery Brief heading, so one brief is composed from all selected branches. Confirmed prerequisites, branch names, fetch-failure stop, task-worktree command and multi-base placement survive. New hot-fix acquisition is under New Hot-Fix Unit; retained hold confirmation is separate. Publication precedes hold, and capacity/missing-context failures retain hold."
+      },
+      {
+        "area": "Brief composition",
+        "evidence": "All former Populate Delivery Brief inputs and Fields survive inline: Work Identity, Planning Record/component context, Validation Scope, Change Autonomy, Execution Instructions, output path/location, missing-context finding before dispatch."
+      },
+      {
+        "area": "Release authorization",
+        "evidence": "Requested Hold Release contains explicit-user authorization, task/hot-fix alternatives, current Development capture, refusal while running/unrecorded, Ready write and confirmed result. Survey Continuation is a sibling to both alternatives and repeats survey with refreshed evidence after either release."
+      },
+      {
+        "area": "Epic Integration",
+        "evidence": "Confirmed readiness, published review validation before ready, metadata/readiness validation after ready, draft withdrawal on changed revision, explicit failure stop before In Review, board withdrawal on failed gates, fresh merge readiness and human handoff remain. Agent Review contract refreshes both tips before ready/board/handoff."
+      },
+      {
+        "area": "Merge readiness",
+        "evidence": "Both target protection and active rules, unreadable-requirement blocker including protection-404 caveat, exact-head check runs/status/reviews, unresolved/pending state, final stable-head reread and changed-head refresh remain explicit."
+      },
+      {
+        "area": "Human approval and exact merge",
+        "evidence": "Required approving review stays with a person, with no alternate-account/admin/protection bypass; changing protection requires separate explicit authorization. Epic Submit retains exact SHA, merge authorization, target/readiness requirements and merge-result readback. This is a static rule, not live verification that workspace requires approval."
+      },
+      {
+        "area": "Hot-fix repair result",
+        "evidence": "The final loop restarts from Produce Agent Review with publication and current metadata, repeats until validation plus ready-state readback have no finding, and holds/stops before merge when allowance cannot fix a finding. The passing-evidence condition remains on Mark Review Ready."
+      }
+    ],
+    "findings": [
+      {
+        "id": "NEW-CONTINUATION-1",
+        "severity": "control-flow ambiguity",
+        "location": "skills/work-planner/modes/deliver-mode.md:259-266",
+        "baseline": "Ready Hot-fix Pull Request step 2 provided an initial validation finding to its caller; the caller's existing loop then fixed it and restarted Produce Agent Review.",
+        "current": "Initial Validate Agent Review failure only says retain it for this step's repair loop. There is no explicit jump to repair before the later unconditional metadata/readback validation.",
+        "impact": "A reader may continue through readback with known failing published evidence before entering repair. Mark Review Ready still requires passing evidence, so this review does not claim an authorized unsafe ready write.",
+        "recommendation": "Explicitly route an initial finding to the repair loop before ready-write/readback, or state the conditional success-only continuation."
+      },
+      {
+        "id": "NEW-CONTINUATION-2",
+        "severity": "control-flow ambiguity",
+        "location": "skills/work-planner/artifacts/pull-request.md:41-52",
+        "baseline": "Submit failure's 'provide a refusal without continuing' ended Merge Epic Pull Request and returned its result to Merge Delivery Pull Request, where GitHub/harness refusal handling lived.",
+        "current": "That early-return phrase now sits in Merge Delivery Pull Request itself, before sibling Merge Refusals.",
+        "impact": "The outer operation can be read as returning before the required harness-refusal account naming ready/verified state and missing merge permission. The rule text survives but the route to it is ambiguous.",
+        "recommendation": "Route Submit failure explicitly to Merge Refusals; retain the distinction between GitHub refusal, human-review handoff and harness refusal."
+      },
+      {
+        "id": "NEW-ACTOR-3",
+        "severity": "responsibility ambiguity",
+        "location": "skills/work-planner/artifacts/pull-request.md:257-258",
+        "provenance": "Parent surfaced this issue after initial independent comparison; source text was already received and was checked against its moved-owner context.",
+        "baseline": "Read Head Evidence provided checks/status to its requester Fetch Merge Readiness, which combined requirements and current reviews.",
+        "current": "The inlined text still says the requester compares them with supplied target requirements and current reviews, followed by fetching reviews. In the new owner that can delegate comparison past Fetch Merge Readiness.",
+        "impact": "The owning operation does not clearly perform the combined readiness comparison after fetching reviews.",
+        "recommendation": "Require Fetch Merge Readiness to compare fetched checks/status/reviews with current target requirements before stable-head confirmation."
+      },
+      {
+        "id": "INHERITED-RETAINED-1",
+        "severity": "existing instruction gap",
+        "location": "skills/work-planner/protocols/unit-dispatch.md:84-98; artifacts/dispatch-batch.md:73-75",
+        "baseline": "Create Task Worktree was called unconditionally for each selected branch.",
+        "current": "Retained preparation already contains prepared worktrees, yet Unit Checkouts still unconditionally runs git worktree add -b; no retained-checkout verification/reuse branch is given.",
+        "impact": "A capacity-wait preparation can fail when re-entered because its branch/path already exists. This is preserved pre-existing ambiguity, not a newly dropped guard."
+      },
+      {
+        "id": "INHERITED-DRAFT-1",
+        "severity": "existing ready-state gap",
+        "location": "skills/work-planner/modes/deliver-mode.md:263-267",
+        "baseline": "Ready Hot-fix Pull Request provided a post-ready changed-revision failure without explicitly marking an already-ready hot-fix draft again.",
+        "current": "The inline sequence likewise states the hot-fix stays draft but has no explicit draft mutation after a post-ready failure.",
+        "impact": "Static prose does not establish that an already-ready PR returns to draft when the second validation fails. No runtime behavior was tested."
+      },
+      {
+        "id": "READING-PREREQUISITES",
+        "severity": "reading check blocker",
+        "location": "Prerequisite closure",
+        "impact": "Cycles prevent strict prerequisite-first reading and whole prerequisites retrieve unrelated command bodies. Fresh reading result remains Partial; these are not waived or called new inlining regressions."
+      }
+    ],
+    "lost_instructions": "No other concrete omitted instruction identified in the bounded compared paths. The two new findings concern control-scope/continuation, not absent field values.",
+    "limitations": [
+      "Static document comparison only; no delivery execution, command acceptance or GitHub readiness verification",
+      "No comparable baseline reading trial or token-savings measurement",
+      "No complete transitive prerequisite body walk; required closure and unread bodies are enumerated",
+      "No full integration-diff agent approval claim; scope is the requested paths and their removed owning operations",
+      "An optional read-only prerequisite-analysis helper was blocked by inline-interpreter policy; retry through the prescribed sandbox failed with bwrap namespace denial. The closure was computed from read-only awk output in functions.exec JavaScript instead."
+    ]
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "task": "Independent fresh-context bounded inline epic-merge permission-refusal check",
+  "source": {
+    "checkout": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace",
+    "requested_commit": "f819e3b68e32aa014c4ca58648ce674e542cf773",
+    "observed_head_before_and_after": "f819e3b68e32aa014c4ca58648ce674e542cf773",
+    "working_tree": "git status --short returned no entries; git diff --exit-code for AGENTS.md, skills/work-planner and skills/guidelines.md returned no diff",
+    "comparison_baseline": "2d2e223451815c2a8986bf2848bdd0dd7e4be58d",
+    "evidence_kind": "Controlled static scenario and source interpretation, not live tracker or harness merge evidence"
+  },
+  "scenario": {
+    "kind": "epic",
+    "target_requires_human_review": false,
+    "repository_prerequisite": "confirmed by scenario",
+    "current_exact_head_evidence": "confirmed by scenario",
+    "user_run_merge_authorization": "confirmed by scenario",
+    "submit_outcome": "Harness permission layer refuses to run Submit Epic Merge; no GitHub request or response"
+  },
+  "bounded_branch_result": {
+    "confidence": "High for the inline operation; wider caller behavior has inherited ambiguity",
+    "classification": "Harness permission refusal, neither human-approval handoff nor branch blocker on the supplied no-review target",
+    "next_steps": [
+      "At pull-request.md:41 continue directly to Merge Refusals, skipping lines 43-47.",
+      "Select permission-layer clause at line 52; GitHub refusal clause at line 51 does not apply.",
+      "Provide the pull request as ready and verified using supplied current evidence; name Submit Epic Merge, the harness refusal and the missing harness merge permission.",
+      "Keep refusal explicit in the returned outcome, with the supplied verified head and target. Do not invent a GitHub response, merged state or merge commit.",
+      "Stop merge attempts in this run. A later Deliver run may merge in its merge step if permission is available, or report missing permission; neither asks the user to approve this no-review merge."
+    ],
+    "success_readback_actions": {
+      "Read Merge Result": "Skipped by direct refusal continuation at line 41.",
+      "Confirm merged state and commit": "Skipped success confirmation; no successful merge may be claimed. Supplied head and target remain usable as readiness evidence.",
+      "Provide Delivery Merge Result": "May provide explicit refusal/ready-and-verified outcome. Merge Result at lines 643-645 includes refusal/discrepancy and a merge commit only when supplied.",
+      "Other independent read-only inspection": "Not selected or required by this bounded inline branch. Stop merge attempts is not a general ban on independently authorized read-only inspection. No gh calls are authorized in this experiment.",
+      "Epic Integration Confirm the Result": "Caller has generic Read Pull Request State confirmation at lines 68-71. This bounded branch does not establish that the broader step is reached; it does not establish merge success.",
+      "Success-dependent closure or board/worktree writes": "No success premise exists and this experiment authorizes no such mutation."
+    },
+    "retry_and_approval": {
+      "same_run_merge_retry": false,
+      "user_merge_approval_as_refusal_recovery": false,
+      "GitHub_refusal_fresh_verification": "Not selected: GitHub received nothing.",
+      "task_update_retry": "Not selected: kind is epic; task operation also stops on permission refusal at lines 216-222.",
+      "settings_changes_or_account_bypass": "Not called or authorized by this branch or experiment.",
+      "later_Deliver": "Explicitly permitted to merge at its merge step or report missing permission, without asking the user to approve."
+    },
+    "example_report": "The epic pull request is ready and verified for the supplied exact head and target. The harness refused to run Submit Epic Merge because the required merge permission is missing; GitHub received no merge request and supplied no merge result or commit. Merge attempts stop here. This is not a human-approval request or a branch-readiness blocker."
+  },
+  "ambiguities": [
+    {
+      "area": "Epic Integration generic refusal continuation",
+      "current_evidence": "protocols/epic-integration.md:65-71: generic merge refusal returns to readiness checks; repeated refusal is reported; later confirmation reads merged state.",
+      "baseline_evidence": "Same wording at baseline protocols/epic-integration.md:57-63.",
+      "provenance": "Inherited, not introduced by inline correction.",
+      "interpretation": "Specific inline harness-refusal branch stops merge attempts and reports readiness. Generic caller text does not distinguish GitHub from harness refusal, leaving wider protocol continuation underqualified. It cannot justify same-run merge retry against the explicit stop instruction."
+    },
+    {
+      "area": "Merge Permission field scope",
+      "current_evidence": "artifacts/pull-request.md:594-601 defines task merges into epic bases and says default-branch merges stay with a person.",
+      "baseline_evidence": "Identical text at baseline artifacts/pull-request.md:639-646.",
+      "provenance": "Inherited, not introduced.",
+      "interpretation": "Field does not describe epic merge into arbitrary no-review long-lived target although operation handles that kind and scenario supplies authorization. Target name is absent, so check cannot resolve whether default-branch person rule would also apply. Do not treat example task permission as an epic grant."
+    },
+    {
+      "area": "Inline refusal continuation",
+      "current_evidence": "artifacts/pull-request.md:41 adds explicit direct continuation to Merge Refusals.",
+      "baseline_evidence": "Removed nested Merge Epic Pull Request submitted at baseline lines 111-113 and returned refusal without continuing. Surrounding Merge Delivery Pull Request already contained identical harness-refusal policy.",
+      "provenance": "Direct inline routing is introduced; refusal policy and success-readback exclusion are preserved from nested flow.",
+      "interpretation": "Bounded current inline scenario selects concrete refusal continuation and does not fall through success commands."
+    }
+  ],
+  "actual_reads": {
+    "whole_documents": [
+      "AGENTS.md",
+      "skills/work-planner/SKILL.md",
+      "skills/work-planner/rules.md (twice)",
+      "skills/work-planner/conventions.md (twice)",
+      "skills/work-planner/protocols/epic-integration.md:1-71 (complete)"
+    ],
+    "section_or_range_reads": [
+      "skills/work-planner/artifacts/pull-request.md:1-150 (prerequisites, complete Merge Delivery Pull Request, unrelated adjacent operations)",
+      "skills/work-planner/artifacts/pull-request.md:285-420 (complete Submit Epic Merge and Read Merge Result; unrelated adjacent commands)",
+      "skills/work-planner/artifacts/pull-request.md:480-800 (relevant fields plus unrelated commands/fields)",
+      "skills/work-planner/artifacts/pull-request.md:180-228 (Merge Task Pull Requests and adjacent Publish Pull Request)",
+      "skills/work-planner/artifacts/pull-request.md:799-811 (Failure and nearby fields)",
+      "skills/work-planner/artifacts/pull-request.md:161-181 (complete Read Pull Request State)",
+      "skills/work-planner/artifacts/issue.md:1-38,93-108,416-424",
+      "skills/work-planner/artifacts/delivery-branches.md:1-38,359-369",
+      "skills/work-planner/artifacts/hotfix.md:1-38",
+      "skills/work-planner/artifacts/epic.md:1-38",
+      "skills/work-planner/artifacts/board-delivery.md:1-38",
+      "skills/work-planner/artifacts/agent-review.md:1-38",
+      "skills/work-planner/artifacts/work-item.md:1-30",
+      "skills/work-planner/artifacts/hotfix-body.md:1-24",
+      "skills/work-planner/artifacts/board.md:1-24",
+      "skills/work-planner/artifacts/board-queue.md:1-24",
+      "skills/work-planner/artifacts/placement.md:1-24",
+      "skills/work-planner/protocols/change-overview.md:1-32",
+      "skills/work-planner/protocols/review-pull-request.md:1-30",
+      "skills/guidelines.md:151-187 (complete Progressive Disclosure and Disclosure Verification)",
+      "skills/work-planner/guidelines.md:234-246 (complete Progressive Disclosure)"
+    ],
+    "search_only": [
+      "rg --files for AGENTS/SKILL/merge/convention/rule paths and all Work Planner paths",
+      "rg -n merge/permission/disclosure matches across skills/work-planner",
+      "rg -n headings in shared and Work Planner guidelines",
+      "rg -n headings in issue, delivery-branches, work-item, hotfix-body, board, board-queue, placement",
+      "rg -n headings in configuration.md and AGENTS.md"
+    ],
+    "baseline": [
+      "Complete git diff baseline..requested_commit for pull-request.md and epic-integration.md",
+      "baseline pull-request.md:15-70,106-130,594-602 (last range unrelated due to shifted lines),639-647 via heading match",
+      "baseline epic-integration.md:63-74 (only trailing line existed),52-65"
+    ]
+  },
+  "prerequisite_and_disclosure_limits": {
+    "complete_skill_execution_or_disclosure_pass": false,
+    "component_instructions": ".project is absent in this checkout; rg --files .project reported no such file. AGENTS rule is conditional on working inside that component; no component source edited.",
+    "whole_file_gap": "Pull Request requires Issue, Delivery Branches and Hot-fix whole files before section reads. Only their headers and selected sections were read, after initial operation read. Transcript does not satisfy complete prerequisite disclosure or prescribed read order.",
+    "protocol_gap": "Epic Integration read before its whole-document prerequisites were complete. Declared artifacts/protocols only partly read. No Deliver mode selected/read/executed.",
+    "observed_cycles": [
+      "Delivery Branches -> Work Item -> Delivery Branches",
+      "Hot-fix -> Hot-fix Body -> Hot-fix",
+      "Hot-fix -> Board Delivery -> Board Queue -> Hot-fix"
+    ],
+    "cycle_scope": "Direct cycles observed from actual headers, not exhaustive dependency audit. Rules permit reuse of complete prerequisites at same revision but do not explicitly resolve first-read prerequisite cycles.",
+    "unnecessary_context": "Broad ranges retrieved unrelated Development-link operations, PR publication, link/check commands and fields. This fails exclusion-of-unrelated-content as a complete disclosure check; bounded semantic answer is separately evidenced.",
+    "repeated_reads": "Rules, Conventions, overlapping pull-request ranges and shifted baseline attempts repeated content.",
+    "truncation": "No successful output reported truncation. Ranges ending inside unrelated next sections are not claimed as complete section reads.",
+    "environment_events": [
+      "Successful shell commands emit Failed to create stream fd: Operation not permitted warnings before expected output.",
+      "PreToolUse blocked one shell-variable loop before execution; literal read-only commands recovered the reads.",
+      "PreToolUse blocked an inline Python JSON-writing interpreter before execution; apply_patch wrote only the authorized /tmp output. No escalation or bypass attempted."
+    ],
+    "live_gap": "No actual merge refusal, GitHub request, checks, authorization, repository setting, PR identity or target branch inspected. These are scenario premises.",
+    "performance": "No token savings, consistent mode behavior or complete skill conformance claim."
+  },
+  "actions": {
+    "executed": "Read-only source and git identity/status/diff/show inspections; authorized /tmp JSON output.",
+    "not_executed": "No gh, merge, tracker, source, worktree, graph or planning mutation; no agent-settings change; no commit/push."
+  }
+}

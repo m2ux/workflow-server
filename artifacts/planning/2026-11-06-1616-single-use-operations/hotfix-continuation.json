@@ -1,0 +1,79 @@
+{
+  "check_type": "independent fresh-context bounded static branch interpretation",
+  "source_checkout": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace",
+  "source_head": "f819e3b68e32aa014c4ca58648ce674e542cf773",
+  "source_verification": {"head_verified_twice": true, "git_status_short": "empty", "git_diff_HEAD_AGENTS_and_work_planner": "empty, exit 0"},
+  "scenario": {"live_tracker_evidence": false, "assumptions": ["Run Delivery Session applies to a hot-fix", "Draft delivering pull request and published review record are supplied", "Initial Validate Agent Review during Verify Hot-Fix Readiness reports stale-head", "Required fixes fit the run allowance"]},
+  "result": {
+    "next_action": "Keep the pull request in draft and continue directly to Repair Hot-Fix Findings.",
+    "reachable_before_repair": ["The full-metadata Read Pull Request State and initial Validate Agent Review have occurred", "Repair Hot-Fix Findings is next"],
+    "not_reachable_before_repair": ["Mark Review Ready", "Subsequent readiness Read Pull Request State and second Validate Agent Review", "Step 10 Merge"],
+    "repair_and_retry": [
+      "Resolve the finding on the task branch. Stale-head evidence requires a complete review of the current head; changing the record SHA alone is insufficient. A source edit is needed only if review discovers a defect.",
+      "Repeat step 9 from Produce Agent Review with fresh metadata and updated validation evidence. Inspect the complete target-to-head diff, affected definitions and callers, every criterion and failure paths. Fix required findings and run appropriate regressions.",
+      "Populate and Publish Planning Record on engineering, then Publish Pull Request to link that published record.",
+      "Read fresh full pull-request metadata and Validate Agent Review with published records. Any finding again routes directly to repair while draft.",
+      "Only a draft with passing evidence reaches Mark Review Ready using its node_id.",
+      "Read Pull Request State again and Validate Agent Review against that fresh metadata and the same published records; retain confirmed Review State or Failure. Repeat repair and review until validation and ready-state readback provide no finding."
+    ],
+    "merge_continuation": [
+      "After successful validation and ready-state readback, step 10 publishes check results and applies Merge Task Pull Requests.",
+      "Merge requires current passing test-plan and head evidence, protection and active rules, reviews, stable verified head, repository auto-close prerequisite and merge authorization.",
+      "A target requiring human approval ends in a ready-for-approval handoff; the agent cannot self-approve or bypass requirements. Merge Permission reserves default-branch merging for a person.",
+      "A confirmed merge follows Task Merge. Hot-fix issue delivery, eligible closure and board settlement are recorded, then control returns to the session."
+    ],
+    "outside_allowance": "Stop before Merge; keep the hot-fix held and PR draft; return all open findings.",
+    "record_currency": "For a hot-fix, a current record names the current head SHA and base_ref. Advancing the target SHA alone does not stale it. A stale head requires fresh review."
+  },
+  "key_sources": [
+    {"file": "skills/work-planner/modes/deliver-mode.md", "lines": "249-273", "sections": ["Run Delivery Session > 9. Review a Hot-Fix", "Verify Hot-Fix Readiness", "Repair Hot-Fix Findings"]},
+    {"file": "skills/work-planner/modes/deliver-mode.md", "lines": "275-282", "sections": ["Run Delivery Session > 10. Merge"]},
+    {"file": "skills/work-planner/artifacts/agent-review.md", "sections": ["Produce Agent Review", "Validate Agent Review", "Fields > Review Record", "Review Eligibility"]},
+    {"file": "skills/work-planner/artifacts/pull-request.md", "sections": ["Read Pull Request State", "Merge Task Pull Requests", "Fetch Merge Readiness", "Merge Delivery Pull Request", "Mark Review Ready", "Fields > State", "Merge Permission", "Published Reviews", "Review State", "Node Metadata", "Failure"]},
+    {"file": "skills/work-planner/artifacts/hotfix.md", "sections": ["Fields > Delivering Pull Request", "Delivery Unit", "Delivery Record"]}
+  ],
+  "actual_reads": [
+    {"file": "AGENTS.md", "extent": "whole"},
+    {"file": "skills/work-planner/SKILL.md", "extent": "whole"},
+    {"file": "skills/work-planner/rules.md", "extent": "whole"},
+    {"file": "skills/work-planner/conventions.md", "extent": "whole"},
+    {"file": "skills/work-planner/modes/deliver-mode.md", "extent": "whole; step 9 and step 10 reread separately"},
+    {"file": "skills/work-planner/artifacts/agent-review.md", "extent": "whole"},
+    {"file": "skills/work-planner/protocols/issue-delivery.md", "extent": "whole"},
+    {"file": "skills/work-planner/protocols/review-pull-request.md", "extent": "whole"},
+    {"file": "skills/work-planner/guidelines.md", "extent": "whole through initial returned beginning and recovered 150-256"},
+    {"file": "skills/work-planner/artifacts/pull-request.md", "extent": "Whole requested in truncated batch; complete recovered selected ranges 1-57,166-279,336-358,452-467,527-645,711-811; headings indexed across file"},
+    {"file": "skills/work-planner/artifacts/hotfix.md", "extent": "whole recovered separately"},
+    {"file": "skills/work-planner/artifacts/plan-change.md", "extent": "whole returned after initial batch truncation"},
+    {"file": "skills/work-planner/modes/revise-mode.md", "extent": "whole returned after initial batch truncation; read for disclosure rules, not executed"},
+    {"file": "skills/work-planner/configuration.md", "extent": "whole returned after initial batch truncation"},
+    {"file": "skills/work-planner/artifacts/planning-record.md", "extent": "whole returned after initial batch truncation"},
+    {"file": "skills/guidelines.md", "extent": "151-198: Progressive Disclosure, Disclosure Verification, Changes"},
+    {"file": "skills/work-planner/protocols/task-merge.md", "extent": "whole"},
+    {"file": "skills/work-planner/artifacts/delivery-branches.md", "extent": "1-180 requested; output truncated; 70-115 recovered including complete Update Task Branch; partial file read"},
+    {"file": "skills/work-planner/artifacts/issue.md", "extent": "1-160 returned; Confirm Repository Auto-Close also reread in 100-130"}
+  ],
+  "unresolved_prerequisites": [
+    {"issue": ".project/main/AGENTS.md is absent", "impact": "Cannot claim complete adoption of its instructions; no source changes made"},
+    {"issue": "Deliver whole-file prerequisite closure not loaded", "unread_direct_prerequisites": ["artifacts/lane.md", "artifacts/board.md", "artifacts/delivery-evidence.md", "artifacts/epic.md", "artifacts/delivery-plan.md", "artifacts/dispatch-batch.md", "artifacts/epic-issue-body.md", "artifacts/delivery-brief.md", "artifacts/work-item.md", "artifacts/pull-request-body.md", "artifacts/issue-body.md", "protocols/unit-dispatch.md", "modes/advance-mode.md", "modes/hoist-mode.md"], "partial_direct_prerequisites": ["artifacts/delivery-branches.md", "artifacts/issue.md", "artifacts/pull-request.md"], "impact": "Not a complete Deliver execution or disclosure prerequisite pass"},
+    {"issue": "Recursive prerequisites not fully read, including Hot-fix Body, Board, Board Delivery, Placement, Task Body, Acceptance Criteria and Task Merge closure/integration dependencies", "impact": "No full-workflow readiness or disclosure-conformance claim"},
+    {"issue": "No live PR/record, branch rules, checks, auto-close setting, approval or authority fetched", "impact": "Static interpretation only; actual ready/merge eligibility unverified"}
+  ],
+  "ambiguity": {
+    "initial_stale_head_branch": "None: continue directly to Repair Hot-Fix Findings explicitly skips remaining readiness actions.",
+    "repair_wording": "Fix it on the task branch is generic; stale evidence requires reviewing current head, not inventing a code change solely to clear metadata.",
+    "adjacent_unexercised_case": "After a failure only in the post-ready validation, the retry is explicit but step 9 does not explicitly invoke Mark Review Draft for the already-ready PR. Initial-draft scenario does not exercise that case."
+  },
+  "disclosure_observations": {
+    "full_disclosure_pass": false,
+    "structural_validation_run": false,
+    "live_workflow_execution": false,
+    "source_tests_or_scripts_run": false,
+    "unnecessary_content": "Broad reads included issue-delivery, review-pull-request, revise-mode and nonselected orchestration; not an optimal-disclosure claim.",
+    "truncation": "Seven-document batch truncated; relevant pull-request, hot-fix and guideline sections recovered. Later delivery-branches read truncated; complete Update Task Branch recovered. Complete prerequisite closure remains unresolved.",
+    "repeated_reads": "Hot-fix, guidelines and readiness steps repeated to recover complete output and verify exact routing.",
+    "context_savings_claim": false
+  },
+  "authority_observed": {"github_calls": 0, "source_mutations": 0, "tracker_mutations": 0, "worktree_mutations": 0, "graph_mutations": 0, "planning_record_mutations": 0, "only_written_artifact": "/tmp/project17-inline-hotfix-followup.json"},
+  "tool_issue": "Initial inline Python artifact writer was blocked by PreToolUse hook; used apply_patch to write only the requested /tmp artifact."
+}

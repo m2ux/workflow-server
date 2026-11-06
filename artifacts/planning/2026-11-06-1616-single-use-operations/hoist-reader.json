@@ -1,0 +1,139 @@
+{
+  "reader": "independent Hoist Leave reading check and preservation review",
+  "source_identity": {
+    "checkout": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace",
+    "remote": "git@github.com:m2ux/workflow-server.git",
+    "branch": "i17/e01/workspace",
+    "head": "5fdc535a8d0d29304293e782f97cdcfa11effd9a",
+    "baseline": "2d2e223451815c2a8986bf2848bdd0dd7e4be58d",
+    "tracked_and_untracked_status": "clean at start and final readback"
+  },
+  "authority": {
+    "source_and_tracker": "read only; no issue, board, comment, dispatch, merge or source mutation performed",
+    "local_output": "this evidence ledger only",
+    "scenario": "Hoist issue #1631; user confirmed Leave, retaining the source open; describe actions and stop before writes"
+  },
+  "fresh_issue_observation": {
+    "command": "env -u GH_TOKEN -u GITHUB_TOKEN gh issue view 1631 --repo m2ux/workflow-server --json number,title,url,state,body,comments,labels,projectItems",
+    "result": "success after network escalation; initial sandbox read could not connect",
+    "url": "https://github.com/m2ux/workflow-server/issues/1631",
+    "number": 1631,
+    "title": "Automatic Dispatch: Free Work Items Start Within Available Capacity",
+    "state": "OPEN",
+    "labels": ["enhancement", "bot:ai-assisted"],
+    "comments": [],
+    "projectItems": [],
+    "body_received_completely": true,
+    "body_summary": "Overview, three evidenced Problem facets, five Proposal facets, four unticked ACs, two pinned References at d0a62b8037bb1b8fdafac5bf0e0035ada8c64486",
+    "limitations": "gh issue view projection is not the complete REST issue JSON required by Fetch Tracker Issue; no complete repository issue collection was fetched"
+  },
+  "selected_route": {
+    "mode": "Hoist",
+    "confirmed_decision_reused": true,
+    "destination": "m2ux/workflow-server#1631 itself",
+    "disposition": "Leave / Left open",
+    "body_kind": "Standalone Body",
+    "decision_reason": "hoist-mode.md line 69 applies the caller's already settled placement without offering it again",
+    "actions_described_before_writes": [
+      "Fetch All Issues, List Orphans and inspect issue discussion and touching initiative/epic evidence remain the mode's discovery requirements; supplied confirmed placement avoids repeating the decision, not those explicit requirements.",
+      "Choose only Confirmed Destination > Leave. Retain source identity, current body and destination identity as Placement Result. Choose only Kept or Left Issue > Standalone Body; no transfer or hot-fix branch applies.",
+      "Populate the standalone template from the refreshed source problem, design and criteria, keeping evidence in Problem and design in Proposal. Stop before writing Output Body; no draft file was written during this walk.",
+      "If authorized to continue writes, Check Round of Edits against standalone/common conditions precedes publication; findings requiring content decisions remain pending for the user because no allowance was supplied.",
+      "Save Tracker Issue would preserve fields not selected for change, publish validated body/title/labels, fetch the saved record and compare intended fields. Stop before each Patch Issue Body, Retitle Tracker Issue, Add Issue Labels, Remove Issue Label or requested comment. The present source carries no type:* label and no hot-fix prefix.",
+      "Review would validate affected saved bodies again, apply only confirmed corrections through the same save/readback sequence and report remaining findings. No initiative gained a task or epic on Leave, so no graph inputs arise from this disposition.",
+      "Report source #1631 left open and any body corrections or unresolved findings. Leave changes no plan and creates no Plan Change entry under plan-change.md Change Kinds. No board, hot-fix-number, closure-comment or issue-close write belongs to this route."
+    ],
+    "execution_status": "described only; stopped before body-file and tracker writes",
+    "fresh_request_correctness": "decision routing established; full procedural completion and validation are not established"
+  },
+  "reading_ledger": {
+    "complete_files_received": [
+      "AGENTS.md",
+      "skills/work-planner/SKILL.md",
+      "skills/work-planner/rules.md",
+      "skills/work-planner/conventions.md",
+      "skills/work-planner/modes/hoist-mode.md",
+      "skills/work-planner/artifacts/issue.md",
+      "skills/work-planner/artifacts/placement.md",
+      "skills/work-planner/artifacts/hotfix-body.md",
+      "skills/work-planner/artifacts/plan-change.md",
+      "skills/work-planner/artifacts/standalone-body.md",
+      "skills/work-planner/artifacts/issue-body.md",
+      "skills/work-planner/artifacts/hotfix.md",
+      "skills/work-planner/guidelines.md",
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "skills/work-planner/artifacts/initiative-issue-body.md",
+      "skills/work-planner/artifacts/dependency-graph.md (complete across initial content and lines 65-145 recovery)",
+      "skills/work-planner/artifacts/repository-labels.md",
+      "skills/work-planner/artifacts/goal-trace.md (static review)",
+      "skills/work-planner/artifacts/review-finding.md (static review)",
+      "skills/work-planner/modes/align-mode.md (static review)",
+      "skills/work-planner/modes/propose-mode.md (static review)"
+    ],
+    "selected_sections_received": [
+      "skills/guidelines.md#progressive-disclosure",
+      "skills/guidelines.md#disclosure-verification",
+      "Prerequisites and opening lines only: board-queue.md, delivery-plan.md, delivery-branches.md, board.md, board-delivery.md, epic.md, work-item.md, pull-request.md, planning-record.md"
+    ],
+    "reuse": "Complete issue, issue-body, standalone-body, plan-change, hotfix-body, hotfix and other prerequisite content reused at the same pinned HEAD during subsequent static comparisons; re-reading hotfix/guidelines was truncation recovery, not a second independent run.",
+    "truncation": [
+      "One multi-file return explicitly truncated its middle (hotfix.md and guidelines.md). Both files were subsequently fetched independently and received completely.",
+      "A later three-file return truncated the middle of dependency-graph.md; lines 65-145 were subsequently fetched to recover the missing command/field range."
+    ],
+    "outstanding_prerequisites": [
+      "Referenced .project/main/AGENTS.md does not exist in this checkout; attempted read failed. No component override was invented.",
+      "Requirement Characteristics was named by issue-body and initiative-body, but not fully loaded in this walk.",
+      "The transitive whole-file prerequisites for board, queue, delivery, work-item, pull-request, agent-review, initiative, epic, lane, planning-record and configuration were not all fully loaded. Their outstanding content remains an evidence gap.",
+      "Actual discovery reads were not performed for every repository issue or touching initiative/epic; no candidate-classification claim is made.",
+      "Read order did not establish all prerequisites before their consumers. Reading a mode or inspecting dependency edges is not compliance with a strict read-first contract."
+    ],
+    "unrelated_context_observed": "A Leave-only request still caused full hot-fix operations, epic row/delivery mechanics and dependency/renumbering command bodies to enter context under unconditional whole-file requirements.",
+    "metrics_limit": "No token-savings comparison or comparable baseline live request was performed. File/line counts, where recorded in tool output, measure only those files."
+  },
+  "findings": [
+    {
+      "id": "H1",
+      "area": "disclosure",
+      "severity": "medium",
+      "problem": "Confirmed Leave still requires unrelated hot-fix, epic, initiative and delivery context through unconditional whole-file prerequisites; the selected route fails exclusion of unrelated content.",
+      "evidence": "hoist-mode.md:9-24 says Read these files first and includes all 12 prerequisites; lines 118-153 select only the Leave/Standalone route. Fresh reads actually received hot-fix body/status and epic delivery/renumbering instructions.",
+      "baseline_relation": "The new mode adds five direct prerequisite entries, but these files were already transitively reachable from baseline Placement/Hot-fix. Do not claim the total prerequisite closure increased by five. The broad-read problem is retained; no new semantic routing regression is established.",
+      "solution": "Place required common context and conditional branch context so the confirmed standalone route can reach its complete required context without loading other disposition instructions."
+    },
+    {
+      "id": "H2",
+      "area": "prerequisites",
+      "severity": "medium",
+      "problem": "The read-first contract contains prerequisite cycles, so a strict prerequisite-first order cannot be completed as written.",
+      "evidence": "hotfix-body.md:11 requires hotfix.md; hotfix.md:9 requires hotfix-body.md. delivery-branches.md:9 requires work-item.md; work-item.md:11 requires delivery-branches.md. rules.md:4 requires prerequisites first and permits reuse only of content already completely read.",
+      "baseline_relation": "Both cycles are already present at baseline; inspected baseline hotfix-body and delivery-branches/work-item headers and the hotfix diff preserve these edges. They remain unwaived blockers to claiming full compliant disclosure.",
+      "solution": "Make the required-read graph acyclic through correctly scoped common/conditional contexts; do not assume cycle breaking or reading once discharges an explicit read-first dependency."
+    }
+  ],
+  "static_preservation_review": {
+    "method": "git diff baseline..HEAD plus complete affected callers and owning sections; static comparison only unless explicitly identified as the fresh Leave request",
+    "hoist_destination_and_disposition": "All six destination alternatives retain baseline actions. Exactly-one destination and exactly-one disposition are explicit in lines 79, 124 and 128. The fresh Leave route selects only standalone rewrite and retains source open.",
+    "source_evidence_and_decisions": "Triage body/discussion and affected theme/criteria context remain; source evidence/design and planning-record references remain; caller-confirmed decisions, cross-initiative approval, allowance checks and held outcomes remain.",
+    "body_validation": "Check Round of Edits and resolving findings remain before Save Tracker Issue; review and repeated saved-body validation remain. Save's field-preservation and readback operation is unchanged.",
+    "hotfix_number_and_body": "Select Tracker Number retains all-state title lookup, next unused check and prefix selection; required labels are ensured; supplied number/theme/target and every former Populate Hot-fix Body condition are present inline. Save precedes board settlement.",
+    "hotfix_hold_and_status_order": "Unit-dispatch retains Record Dispatch Status In Progress plus confirmed result before worker start, with retained preparations requiring their hold. Deliver's explicit-user release still captures Development, refuses running/unrecorded hot-fixes, then places Ready and retains readback. Hotfix Settle Board Status is unchanged. These are static observations; no live hold/status operations ran.",
+    "transferred_work": "Each outcome remains one invariant; design goes to Proposal; source/planning-record References survive. Destination evidence is confirmed before one comment, not_planned close preserves body, then Fetch Tracker Issue checks state/reason and returns Saved Orphan or blocker. No live transfer ran.",
+    "align": "Reference repository enumeration, failed-visibility retention, snapshot validation, private-destination exception and user ownership survive. Standalone Non-Goals still fold into Proposal using the confirmed boundary and return the output body. No fresh Align request ran.",
+    "propose": "Template population preserves all title/problem/field conditions, complete local body, confirmed goal and no premature design/criteria/breakdown. Board lookup preserves selected proposals, missing-board path, permission gate, creation and Suggested placement. No fresh Propose request ran.",
+    "goal_trace": "Local, pinned and other source reads; unreadable/empty source findings with unevaluated criteria; trace gaps; all external-consumer, hidden-violation, independent-instrument, consumer-skew and changing-ground checks survive. Ranked results and continuation remain. No fresh goal-review request ran.",
+    "review_finding": "Source verification and quotation, missing/contradictory evidence, gap resolution before report, area grouping, one-at-a-time user decision, waiting and pending-state retention survive. No fresh review-finding execution ran.",
+    "new_behavioral_regressions_found": []
+  },
+  "environment_and_coverage_limits": [
+    "Read-only commands printed Failed to create stream fd warnings, but the cited successful reads returned their contents and status.",
+    "An unsandboxed inline Python graph inspection was blocked by the local hook. The requested sbx retry failed because bubblewrap could not create a namespace. No graph script result or transitive file/token count is claimed.",
+    "No formatter or live issue mutation was run. A successful description of confirmed Leave is not a successful end-to-end Hoist execution.",
+    "No independent baseline reader and no repeated HEAD reader were run by this agent; this is one fresh HEAD scenario plus static preservation checks.",
+    "No performance or consistency claim follows from this single walk, and the outstanding/cyclic prerequisite reads prevent a disclosure pass."
+  ],
+  "memory_used": {
+    "registry_ranges": ["MEMORY.md:48-54", "MEMORY.md:558-559"],
+    "purpose": "identity cross-check and general inline-constraint heuristic only; issue state and code identity refreshed live",
+    "rollout_ids": ["01a1a9e1-005f-73b3-b0fa-074f6b688f19", "01a163c4-9b8a-7f00-8dd7-95c1cf841ad0"]
+  }
+}

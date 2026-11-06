@@ -1,0 +1,1037 @@
+{
+  "base": "2d2e223451815c2a8986bf2848bdd0dd7e4be58d",
+  "original_operations": 100,
+  "retained_operations": 65,
+  "inlined_operations": 35,
+  "single_reference_operations_remaining": 0,
+  "commands_identical": 116,
+  "fields_identical": 36,
+  "changed_markdown": [
+    "skills/work-planner/artifacts/architecture-overview.md",
+    "skills/work-planner/artifacts/board-delivery.md",
+    "skills/work-planner/artifacts/board.md",
+    "skills/work-planner/artifacts/delivery-branches.md",
+    "skills/work-planner/artifacts/delivery-brief.md",
+    "skills/work-planner/artifacts/epic.md",
+    "skills/work-planner/artifacts/goal-trace.md",
+    "skills/work-planner/artifacts/hotfix-body.md",
+    "skills/work-planner/artifacts/hotfix.md",
+    "skills/work-planner/artifacts/initiative-issue-body.md",
+    "skills/work-planner/artifacts/initiative.md",
+    "skills/work-planner/artifacts/issue-body.md",
+    "skills/work-planner/artifacts/issue.md",
+    "skills/work-planner/artifacts/placement.md",
+    "skills/work-planner/artifacts/proposal-body.md",
+    "skills/work-planner/artifacts/pull-request-body.md",
+    "skills/work-planner/artifacts/pull-request.md",
+    "skills/work-planner/artifacts/review-finding.md",
+    "skills/work-planner/artifacts/standalone-body.md",
+    "skills/work-planner/guidelines.md",
+    "skills/work-planner/modes/align-mode.md",
+    "skills/work-planner/modes/deliver-mode.md",
+    "skills/work-planner/modes/hoist-mode.md",
+    "skills/work-planner/modes/propose-mode.md",
+    "skills/work-planner/modes/sync-mode.md",
+    "skills/work-planner/protocols/change-overview.md",
+    "skills/work-planner/protocols/epic-integration.md",
+    "skills/work-planner/protocols/issue-closure.md",
+    "skills/work-planner/protocols/unit-dispatch.md"
+  ],
+  "instruction_lines_matched": 177,
+  "instruction_lines_for_manual_review": [
+    {
+      "operation": "Populate Architecture Overview",
+      "destination": "skills/work-planner/protocols/change-overview.md",
+      "original": "- Take the graph [measurements](#measurements) supplied by the caller and check the proposed diagrams."
+    },
+    {
+      "operation": "Populate Delivery Brief",
+      "destination": "skills/work-planner/protocols/unit-dispatch.md",
+      "original": "Provide the [brief path](#brief-path) and any [missing context](#missing-context). The caller resolves gaps before dispatch."
+    },
+    {
+      "operation": "Check Epic Completion",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Provide the completion result in [Delivery State](#delivery-state), identifying remaining blockers. Passing normal delivery checks supplies the caller's closure evidence; the tracker issue's current Development-link gate still governs the write."
+    },
+    {
+      "operation": "Check Outside Threats",
+      "destination": "skills/work-planner/artifacts/goal-trace.md",
+      "original": "- Provide [Review Result](#review-result) with the evidenced threats and gaps to the requesting goal review."
+    },
+    {
+      "operation": "Open Hot-fix Issue",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Provide the [hot-fix number](#hot-fix-number) to the caller for rewriting and saving the issue's body, title and labels. The caller then invokes Apply [Settle Hot-fix Board Status](#settle-hot-fix-board-status \"\u0192\") as its [placement](placement.md#disposition-conditions) orders."
+    },
+    {
+      "operation": "Close Tracker Issue",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "- Provide an abandoned or incorrect Development link to the caller for the user's decision on its removal. A replacement pull request does not remove the requirement on a link still present."
+    },
+    {
+      "operation": "Audit Closure Evidence",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- An empty collection means none of the named issues is closed; provide nothing listed."
+    },
+    {
+      "operation": "Draft Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Provide [Placement Result](#placement-result) for the requester to offer and apply."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Use the source issue as the destination with disposition Kept. The caller rewrites its hot-fix body and keeps the issue open."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Use the source issue as the destination with disposition Leave. The caller rewrites its standalone body and keeps the issue open."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Provide [Placement Result](#placement-result) with the saved destination, identities of all affected bodies and confirmed disposition, including the destination initiative, epic and new row id for a new task or new epic, and the number for a hot-fix. The requester performs the rewrite or closure."
+    },
+    {
+      "operation": "Populate Pull Request Body",
+      "destination": "skills/work-planner/modes/deliver-mode.md",
+      "original": "Provide the [complete body file](#output-body) and any [unresolved evidence](#unresolved-evidence) links to the caller for publication."
+    },
+    {
+      "operation": "Merge Epic Pull Request",
+      "destination": "skills/work-planner/artifacts/pull-request.md",
+      "original": "Run [Submit Epic Merge](#submit-epic-merge \"\u0192\") with the exact head whose checks and target requirements were verified; provide a refusal without continuing."
+    },
+    {
+      "operation": "Read Head Evidence",
+      "destination": "skills/work-planner/artifacts/pull-request.md",
+      "original": "Provide [Head Checks](#head-checks) and [Head Status](#head-status), retaining missing or pending evidence as unresolved [Failure](#failure). The requester compares them with supplied target requirements and current reviews."
+    },
+    {
+      "operation": "Ready Hot-fix Pull Request",
+      "destination": "skills/work-planner/modes/deliver-mode.md",
+      "original": "- On a finding, provide it to the caller; the [pull request](#identity) stays a draft."
+    }
+  ],
+  "literal_values_preserved": [
+    {
+      "operation": "Create Epic Base",
+      "destination": "skills/work-planner/artifacts/delivery-branches.md",
+      "literal": "`main`"
+    },
+    {
+      "operation": "Create Epic Base",
+      "destination": "skills/work-planner/artifacts/delivery-branches.md",
+      "literal": "`i07/e00/main`"
+    },
+    {
+      "operation": "Subsume Orphan Work",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "literal": "`Tracked in [I07:E01](\u2026/issues/937) W04.`"
+    },
+    {
+      "operation": "Link Architecture Overview",
+      "destination": "skills/work-planner/protocols/change-overview.md",
+      "literal": "``"
+    },
+    {
+      "operation": "Link Architecture Overview",
+      "destination": "skills/work-planner/protocols/change-overview.md",
+      "literal": "`markdown\n- **R1.** [Architecture Overview](https://github.com/{owner}/{repo}/tree/engineering/artifacts/planning/2026-10-08-950-queue-placement/architecture-overview.md) \u2014 the change's structure, its flows, and the order to read the diff.\n`"
+    },
+    {
+      "operation": "Link Architecture Overview",
+      "destination": "skills/work-planner/protocols/change-overview.md",
+      "literal": "``"
+    }
+  ],
+  "matched_instructions": [
+    {
+      "operation": "Populate Architecture Overview",
+      "destination": "skills/work-planner/protocols/change-overview.md",
+      "original": "- The diagrams must meet [Measured Structure](#measured-structure) and [Diagrams](#diagrams)."
+    },
+    {
+      "operation": "Populate Architecture Overview",
+      "destination": "skills/work-planner/protocols/change-overview.md",
+      "original": "- Populate the overview from the [Template](#template) at the destination in [Overview File](#overview-file)."
+    },
+    {
+      "operation": "Populate Architecture Overview",
+      "destination": "skills/work-planner/protocols/change-overview.md",
+      "original": "- All populated fields must meet [Fields](#fields)."
+    },
+    {
+      "operation": "Populate Architecture Overview",
+      "destination": "skills/work-planner/protocols/change-overview.md",
+      "original": "- Pin each code reference to the [Pull Request Head](#pull-request-head)."
+    },
+    {
+      "operation": "Populate Architecture Overview",
+      "destination": "skills/work-planner/protocols/change-overview.md",
+      "original": "- Each reference must meet [Code References](#code-references)."
+    },
+    {
+      "operation": "Populate Architecture Overview",
+      "destination": "skills/work-planner/protocols/change-overview.md",
+      "original": "Provide the completed [Overview File](#overview-file) for registration in its planning record."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Read the issues, the board and its delivery records."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Apply [Read Tracker Issue](issue.md#read-tracker-issue \"\u0192\") for the [Saved Identities](#saved-identities)."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Apply [Read Board State](board.md#read-board-state \"\u0192\") for the selected board."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Apply [Fetch All Delivery Pull Requests](pull-request.md#fetch-all-delivery-pull-requests \"\u0192\") for its repositories and items."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Apply [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links \"\u0192\") for those records."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Fetch the published agent review records linked from each open epic integration pull request, retaining absent or unreadable evidence as a handoff blocker."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Apply [Read Board Configuration](board.md#read-board-configuration \"\u0192\")."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Run [Find User](board.md#find-user \"\u0192\")."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Retain these provided snapshots for the following computation."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Run [Compute Board Changes](#compute-board-changes \"\u0192\") to the captured evidence."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Fetch each unresolved issue."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Run [Compute Board Changes](#compute-board-changes \"\u0192\") again, adding the fetched off-board issue records to the retained evidence."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Run each emitted call, including the assignee calls, which act on the issue rather than the board item."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Apply [Read Board Configuration](board.md#read-board-configuration \"\u0192\") for each changed item to confirm its current status."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- If that item still shows the preceding status:"
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Repeat its emitted write call."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Apply [Read Board Configuration](board.md#read-board-configuration \"\u0192\") again for the same item. The item list can lag a write."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Fetch the issues and items again."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Run [Compute Board Changes](#compute-board-changes \"\u0192\") to the refreshed evidence, retaining every resolved off-board issue record."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next."
+    },
+    {
+      "operation": "Record Board Delivery",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "Provide [Confirmed Statuses](#confirmed-statuses) after every changed item has been confirmed, retaining any unresolved discrepancy."
+    },
+    {
+      "operation": "Copy Project Board",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "When [Selected Kind](#selected-kind) is proposals and no open board under [Board Owner](#board-owner) has the [proposals title](../configuration.md#proposals-board), Apply [Create Proposals Board](#create-proposals-board \"\u0192\"). The copy source and the title meet [Proposals](#proposals)."
+    },
+    {
+      "operation": "Copy Project Board",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- When the selected theme board is absent:"
+    },
+    {
+      "operation": "Copy Project Board",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Require the new theme's label and board before an initiative takes that theme."
+    },
+    {
+      "operation": "Copy Project Board",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "Provide the [Copied Board](#copied-board) after the selected creation path succeeds."
+    },
+    {
+      "operation": "Create Theme Board",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "Require the originating proposal record in [Theme Provenance](#theme-provenance) for a proposal-derived board; provide a missing-input finding when its designator is unavailable."
+    },
+    {
+      "operation": "Create Theme Board",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "Run [Find Board Template](#find-board-template \"\u0192\") under [Board Owner](#board-owner) with the exact [theme-template title](../configuration.md#theme-boards)."
+    },
+    {
+      "operation": "Create Theme Board",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "Use the provided number as the copy source."
+    },
+    {
+      "operation": "Create Theme Board",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "Run [Copy Board Template](#copy-board-template \"\u0192\") with that template number, the owner and the title required by [One Board Per Theme](#one-board-per-theme)."
+    },
+    {
+      "operation": "Create Theme Board",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "Retain the new board number. The copy carries the [theme-board fields](../configuration.md#theme-boards)."
+    },
+    {
+      "operation": "Create Theme Board",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "Run [Link Board to Repository](#link-board-to-repository \"\u0192\") with the owner, new board number and [repository](#repository)."
+    },
+    {
+      "operation": "Create Theme Board",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "Provide the [Copied Board](#copied-board) after linking succeeds."
+    },
+    {
+      "operation": "Locate Project Board",
+      "destination": "skills/work-planner/modes/propose-mode.md",
+      "original": "Run [Find Proposals Board](#find-proposals-board \"\u0192\") under [Board Owner](#board-owner) when [Board Selection](#board-selection) names proposals, or Run [Find Theme Board](#find-theme-board \"\u0192\") for its theme."
+    },
+    {
+      "operation": "Locate Project Board",
+      "destination": "skills/work-planner/modes/propose-mode.md",
+      "original": "Provide the [Selected Board](#selected-board) or an absent-board finding for the requester\u2019s selection or creation path."
+    },
+    {
+      "operation": "Create Epic Base",
+      "destination": "skills/work-planner/artifacts/delivery-branches.md",
+      "original": "Require confirmed [Prerequisite Evidence](#prerequisite-evidence) and a missing destination for [Epic-Base Name](#epic-base-name). Refuse a destination that already exists."
+    },
+    {
+      "operation": "Create Epic Base",
+      "destination": "skills/work-planner/artifacts/delivery-branches.md",
+      "original": "Run [Fetch Remote Branch](#fetch-remote-branch \"\u0192\") in the [project checkout](#project-checkout) with the corresponding long-lived [source branch](#source-branch), such as `main`."
+    },
+    {
+      "operation": "Create Epic Base",
+      "destination": "skills/work-planner/artifacts/delivery-branches.md",
+      "original": "- After a successful fetch:"
+    },
+    {
+      "operation": "Create Epic Base",
+      "destination": "skills/work-planner/artifacts/delivery-branches.md",
+      "original": "- Run [Publish Epic Base](#publish-epic-base \"\u0192\") in the project checkout with that remote source and the missing epic base name, such as `i07/e00/main`, meeting [Epic Bases](#epic-bases)."
+    },
+    {
+      "operation": "Create Epic Base",
+      "destination": "skills/work-planner/artifacts/delivery-branches.md",
+      "original": "- Provide [Branch Result](#branch-result) with the created branch, or [Failure](#failure)."
+    },
+    {
+      "operation": "Create Task Worktree",
+      "destination": "skills/work-planner/protocols/unit-dispatch.md",
+      "original": "Require [Prerequisite Evidence](#prerequisite-evidence) and names meeting [Task Branches](#task-branches)."
+    },
+    {
+      "operation": "Create Task Worktree",
+      "destination": "skills/work-planner/protocols/unit-dispatch.md",
+      "original": "Run [Fetch Remote Branch](#fetch-remote-branch \"\u0192\") in the [project checkout](#project-checkout) of the repository the work changes, passing the base; stop on failure."
+    },
+    {
+      "operation": "Create Task Worktree",
+      "destination": "skills/work-planner/protocols/unit-dispatch.md",
+      "original": "Run [Add Task Worktree](#add-task-worktree \"\u0192\") in the project checkout at [Worktree Path](#worktree-path) for the [task branch](#task-branch), rooted in the fetched [Base Branch](#base-branch)."
+    },
+    {
+      "operation": "Create Task Worktree",
+      "destination": "skills/work-planner/protocols/unit-dispatch.md",
+      "original": "- Provide [Worktree Result](#worktree-result) with the worktree path, branch and base, or [Failure](#failure)."
+    },
+    {
+      "operation": "Create Task Worktree",
+      "destination": "skills/work-planner/protocols/unit-dispatch.md",
+      "original": "- A unit that changes several long-lived branches runs this once for each epic base, with the branch and worktree [Task Branches](#task-branches) names for it."
+    },
+    {
+      "operation": "Read Target Requirements",
+      "destination": "skills/work-planner/artifacts/pull-request.md",
+      "original": "Run [Fetch Branch Protection](#fetch-branch-protection \"\u0192\") for [Target Branch](#target-branch) in [Repository](#repository), using [Output Files](#output-files) for the evidence destinations."
+    },
+    {
+      "operation": "Read Target Requirements",
+      "destination": "skills/work-planner/artifacts/pull-request.md",
+      "original": "Run [Fetch Active Branch Rules](#fetch-active-branch-rules \"\u0192\") for the same target."
+    },
+    {
+      "operation": "Read Target Requirements",
+      "destination": "skills/work-planner/artifacts/pull-request.md",
+      "original": "Provide [Target Requirements](#target-requirements) with both records, or [Failure](#failure) when a requirement is unreadable. A protection 404 does not establish the absence of active rules."
+    },
+    {
+      "operation": "Populate Delivery Brief",
+      "destination": "skills/work-planner/protocols/unit-dispatch.md",
+      "original": "- Write the [Work Identity](#work-identity) and [Planning Record](#planning-record) context, [Validation Scope](#validation-scope), [Change Autonomy](#change-autonomy) and [Execution Instructions](#execution-instructions) into the prompt file at [Output Path](#output-path) or where [Location](#location) puts it."
+    },
+    {
+      "operation": "Populate Delivery Brief",
+      "destination": "skills/work-planner/protocols/unit-dispatch.md",
+      "original": "- Each part must meet [Fields](#fields)."
+    },
+    {
+      "operation": "Check Epic Completion",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Apply [Check Epic Readiness](#check-epic-readiness \"\u0192\") against current delivery and verification evidence."
+    },
+    {
+      "operation": "Check Epic Completion",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Reconcile the expected bases with the task delivery targets."
+    },
+    {
+      "operation": "Check Epic Completion",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Confirm from [Base Merges](#base-merges) that every base has merged into its corresponding long-lived branch. An unknown or incomplete base list, or missing merge evidence, leaves completion unconfirmed even when every task is delivered and every criterion is ticked."
+    },
+    {
+      "operation": "Check Outside Threats",
+      "destination": "skills/work-planner/artifacts/goal-trace.md",
+      "original": "Check for anything outside [Plan Bodies](#plan-bodies) that reads, builds or ships the [Changed Surface](#changed-surface)."
+    },
+    {
+      "operation": "Check Outside Threats",
+      "destination": "skills/work-planner/artifacts/goal-trace.md",
+      "original": "Check for a skip, a fallback, or a fail-closed path that hides a violation."
+    },
+    {
+      "operation": "Check Outside Threats",
+      "destination": "skills/work-planner/artifacts/goal-trace.md",
+      "original": "Check that done has a threshold, a baseline, and an instrument that is independent of the thing measured. The baseline is fixed before the plan changes what it measures."
+    },
+    {
+      "operation": "Check Outside Threats",
+      "destination": "skills/work-planner/artifacts/goal-trace.md",
+      "original": "Check for skew between an artifact the plan produces and an implementation that reads it."
+    },
+    {
+      "operation": "Check Outside Threats",
+      "destination": "skills/work-planner/artifacts/goal-trace.md",
+      "original": "- Check for a change elsewhere that alters the ground the plan stands on."
+    },
+    {
+      "operation": "Populate Hot-fix Body",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Populate the standalone [Template](standalone-body.md#template) for [Hot-fix Identity](#hot-fix-identity) at the destination in [Output Body](#output-body)."
+    },
+    {
+      "operation": "Populate Hot-fix Body",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- The work must meet [Definition](#definition)."
+    },
+    {
+      "operation": "Populate Hot-fix Body",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- The title must meet the shared [Titles](issue-body.md#titles) conditions and the hot-fix [Titles](#titles)."
+    },
+    {
+      "operation": "Populate Hot-fix Body",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Name the confirmed [Target](#target) in the Overview."
+    },
+    {
+      "operation": "Populate Hot-fix Body",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Populate the Problem and Proposal from [Defect Evidence](#defect-evidence), meeting [Problem and Proposal](issue-body.md#problem-and-proposal)."
+    },
+    {
+      "operation": "Populate Hot-fix Body",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- All populated fields must meet [Fields](#fields)."
+    },
+    {
+      "operation": "Populate Hot-fix Body",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Provide the populated [Output Body](#output-body) for publication."
+    },
+    {
+      "operation": "Open Hot-fix Issue",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Apply [Select Tracker Number](issue.md#select-tracker-number \"\u0192\") in [Repository](#repository) using the hot-fix prefix letter to select a number for the source issue identified by [Hot-fix Identity](#hot-fix-identity)."
+    },
+    {
+      "operation": "Open Hot-fix Issue",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Apply [Ensure Repository Labels](repository-labels.md#ensure-repository-labels \"\u0192\") with the labels hot-fix [Titles](hotfix-body.md#titles) name."
+    },
+    {
+      "operation": "Hold Hot-fix Unit",
+      "destination": "skills/work-planner/protocols/unit-dispatch.md",
+      "original": "Apply [Record Dispatch Status](board-delivery.md#record-dispatch-status \"\u0192\") with [Hot-fix Identity](#hot-fix-identity) for In Progress and the supplied [Board Evidence](#board-evidence). That status is the hold [Delivery Unit](#delivery-unit) defines."
+    },
+    {
+      "operation": "Hold Hot-fix Unit",
+      "destination": "skills/work-planner/protocols/unit-dispatch.md",
+      "original": "Provide [Board Result](#board-result) with the confirmed status or discrepancy. The session starts only once it is confirmed."
+    },
+    {
+      "operation": "Release Hot-fix Hold",
+      "destination": "skills/work-planner/modes/deliver-mode.md",
+      "original": "- Apply [Capture Issue Development](issue.md#capture-issue-development \"\u0192\") for [Hot-fix Identity](#hot-fix-identity)."
+    },
+    {
+      "operation": "Release Hot-fix Hold",
+      "destination": "skills/work-planner/modes/deliver-mode.md",
+      "original": "- Refuse the release while its [Delivery Unit](#delivery-unit) is running or unrecorded, and provide the pull request that makes it so to the caller."
+    },
+    {
+      "operation": "Release Hot-fix Hold",
+      "destination": "skills/work-planner/modes/deliver-mode.md",
+      "original": "Apply [Place Issue on Board](board.md#place-issue-on-board \"\u0192\") with the board in [Board Evidence](#board-evidence), the hot-fix issue and Ready."
+    },
+    {
+      "operation": "Release Hot-fix Hold",
+      "destination": "skills/work-planner/modes/deliver-mode.md",
+      "original": "Provide [Board Result](#board-result) with the saved item and Status."
+    },
+    {
+      "operation": "Read Requirement Sources",
+      "destination": "skills/work-planner/artifacts/goal-trace.md",
+      "original": "Read each local source in [Requirement References](#requirement-references) at its checkout path, retaining any supplied [Source Evidence](#source-evidence)."
+    },
+    {
+      "operation": "Read Requirement Sources",
+      "destination": "skills/work-planner/artifacts/goal-trace.md",
+      "original": "For a pinned GitHub blob, Run [Fetch Source](#fetch-source \"\u0192\") with its repository, path and pinned revision, saving it at [Output Files](#output-files)."
+    },
+    {
+      "operation": "Read Requirement Sources",
+      "destination": "skills/work-planner/artifacts/goal-trace.md",
+      "original": "Fetch other URLs through the harness's web access."
+    },
+    {
+      "operation": "Read Requirement Sources",
+      "destination": "skills/work-planner/artifacts/goal-trace.md",
+      "original": "Record an unreadable or empty source as a [Sources](#sources) finding; its criteria remain unevaluated."
+    },
+    {
+      "operation": "Read Requirement Sources",
+      "destination": "skills/work-planner/artifacts/goal-trace.md",
+      "original": "Provide [Source Evidence](#source-evidence) with each source\u2019s contents and identity, and [Validation Findings](#validation-findings) for unreadable or empty sources."
+    },
+    {
+      "operation": "Check Initiative Completion",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Evaluate [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Verification Evidence](#verification-evidence) and [Development Evidence](#development-evidence) against [Delivery State](#delivery-state)."
+    },
+    {
+      "operation": "Check Initiative Completion",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Identify each missing, open or cancelled epic, each unverified or unticked criterion, and each unmerged or unreadable Development-linked pull request. Incomplete link evidence leaves completion unconfirmed."
+    },
+    {
+      "operation": "Check Initiative Completion",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Provide the completion result and its supporting issue identities, evidence revisions and blockers. Passing normal delivery checks supplies the caller's closure evidence; the tracker issue's current Development-link gate still governs the write."
+    },
+    {
+      "operation": "Check Reference Visibility",
+      "destination": "skills/work-planner/modes/align-mode.md",
+      "original": "Run [List Reference Repositories](#list-reference-repositories \"\u0192\") to [Body Record](#body-record) to identify the destination and cited repositories."
+    },
+    {
+      "operation": "Check Reference Visibility",
+      "destination": "skills/work-planner/modes/align-mode.md",
+      "original": "Run [Fetch Reference Repository](#fetch-reference-repository \"\u0192\") for each provided name; collect the objects into a JSON array at the snapshot path in [Output Files](#output-files). Retain failed fetches as unresolved visibility, never as public visibility."
+    },
+    {
+      "operation": "Check Reference Visibility",
+      "destination": "skills/work-planner/modes/align-mode.md",
+      "original": "Run [Validate Reference Visibility](#validate-reference-visibility \"\u0192\") with that snapshot and the issue record."
+    },
+    {
+      "operation": "Check Reference Visibility",
+      "destination": "skills/work-planner/modes/align-mode.md",
+      "original": "Provide [Visibility Findings](#visibility-findings) identifying each private reference on a public issue and each unavailable visibility. A private destination has no public-reference restriction; deciding how to replace or remove a private reference belongs to the requester."
+    },
+    {
+      "operation": "Close Tracker Issue",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "- Apply [Capture Issue Development](#capture-issue-development \"\u0192\") for the issue in [Identity](#identity), saving its current JSON and Development snapshot to [Output Files](#output-files)."
+    },
+    {
+      "operation": "Close Tracker Issue",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "- The issue's entire Development field establishes membership, across repositories and states. Titles, branch names, body mentions and a list filtered to one initiative do not. An empty field adds no [pull request](#identity) requirement."
+    },
+    {
+      "operation": "Close Tracker Issue",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Run [Check Issue Closure](#check-issue-closure \"\u0192\") with those two files."
+    },
+    {
+      "operation": "Close Tracker Issue",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "- Require the normal delivery checks in [Delivery Evidence](#delivery-evidence) to pass, every criterion to be verified and ticked, and every currently linked pull request to be merged."
+    },
+    {
+      "operation": "Close Tracker Issue",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "- Keep the issue open for an open, draft or closed-without-merge linked pull request, and for links never read."
+    },
+    {
+      "operation": "Close Tracker Issue",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Provide the confirmed [State](#state) or [Closure Findings](#closure-findings) identifying the closure blocker."
+    },
+    {
+      "operation": "Close Transferred Work",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Confirm [Transfer Evidence](#transfer-evidence) establishes that the destination contains the work and cites the source issue in [Identity](#identity)."
+    },
+    {
+      "operation": "Close Transferred Work",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Apply [Comment on Issue](#comment-on-issue \"\u0192\") with the destination reference and [Comment](#comment)."
+    },
+    {
+      "operation": "Close Transferred Work",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Run [Close as Not Planned](#close-as-not-planned \"\u0192\"), retaining the issue's body."
+    },
+    {
+      "operation": "Close Transferred Work",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Run [Fetch Tracker Issue](#fetch-tracker-issue \"\u0192\") to confirm its state and reason."
+    },
+    {
+      "operation": "Close Transferred Work",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Provide the confirmed [State](#state) and reason after the saved issue is read back."
+    },
+    {
+      "operation": "Close as Completed",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Apply [Capture Issue Development](#capture-issue-development \"\u0192\") immediately before closure."
+    },
+    {
+      "operation": "Close as Completed",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Run [Check Issue Closure](#check-issue-closure \"\u0192\") with the issue and Development files it wrote, using absolute evidence paths when changing directory."
+    },
+    {
+      "operation": "Close as Completed",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Require exit 0 and passing normal checks from [Delivery Evidence](#delivery-evidence); a sync report of closable does not permit skipping this gate."
+    },
+    {
+      "operation": "Close as Completed",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Immediately after the gate passes, Run [Set Completed State](#set-completed-state \"\u0192\") with the issue's [repository](#repository) and number and the passing evidence."
+    },
+    {
+      "operation": "Close as Completed",
+      "destination": "skills/work-planner/protocols/issue-closure.md",
+      "original": "Provide the saved [State](#state) or [Closure Findings](#closure-findings) with the failure."
+    },
+    {
+      "operation": "Audit Closure Evidence",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- Fetch only the closed issues in [Audit Selection](#audit-selection) using [Authenticated Access](#authenticated-access), saving evidence to [Output Files](#output-files):"
+    },
+    {
+      "operation": "Audit Closure Evidence",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- For named issues, Run [Fetch Selected Closed Issues](#fetch-selected-closed-issues \"\u0192\") with their numbers."
+    },
+    {
+      "operation": "Audit Closure Evidence",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "- For the whole [repository](#repository), Run [Fetch Closed Issues](#fetch-closed-issues \"\u0192\")."
+    },
+    {
+      "operation": "Audit Closure Evidence",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "Run [Capture Issue Links](#capture-issue-links \"\u0192\") with that collection; an unreadable relation is provided as a blocker and the sweep does not run."
+    },
+    {
+      "operation": "Audit Closure Evidence",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "Run [Sweep Closure Evidence](#sweep-closure-evidence \"\u0192\") with the collection and the issue-links file."
+    },
+    {
+      "operation": "Audit Closure Evidence",
+      "destination": "skills/work-planner/modes/sync-mode.md",
+      "original": "Provide [Closure Findings](#closure-findings) with each unsupported issue\u2019s state reason and findings, and each unevaluable issue as missing evidence. List not-planned closures separately for reference. The audit changes no issue."
+    },
+    {
+      "operation": "Draft Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Identify an existing task, a new task, a new epic, a new initiative, a hot-fix, or Leave for the orphan and candidate destinations in [Placement Inputs](#placement-inputs)."
+    },
+    {
+      "operation": "Draft Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Offer a hot-fix only for an orphan that meets the hot-fix [Definition](hotfix-body.md#definition), with the theme board it joins and its [target](hotfix-body.md#target): the declared long-lived branch the orphan's evidence places the defect on, the repository's default branch where it is declared and the evidence names no other."
+    },
+    {
+      "operation": "Draft Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Populate the placement meeting [Fields](#fields) and [Disposition Conditions](#disposition-conditions)."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Execute only the branch matching [Confirmed Placement](#confirmed-placement):"
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Add the orphan's outcomes to the task criteria."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Add its design to Proposal."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- When they exceed the epic's criteria, add epic criteria cited by the task row."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Apply [Save Tracker Issue](issue.md#save-tracker-issue \"\u0192\") with the affected bodies."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Apply [Populate Epic Issue Body](epic-issue-body.md#populate-epic-issue-body \"\u0192\") with the confirmed task scope, current epic context and output path."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Add the epic criteria the row's Coverage needs where the orphan's outcomes exceed the epic's, as [Destination Work](#destination-work) states."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Leave the row's Task cell holding the row id alone until the work is planned and the row gains its work-item file, as [Task Delivery](epic-issue-body.md#task-delivery) states."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Number the row where it can start, and keep its row id for the result."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- When movable rows change number, Apply [Check Dependencies and Numbering](dependency-graph.md#check-dependencies-and-numbering \"\u0192\") with the affected initiative and epic drafts and confirmed numbering map."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Apply [Save Tracker Issue](issue.md#save-tracker-issue \"\u0192\") with the checked bodies."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Apply [Populate Epic Issue Body](epic-issue-body.md#populate-epic-issue-body \"\u0192\"), carrying the orphan's work in a task row, and keep its row id for the result."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Apply [Draft Initiative Issue Body](initiative-issue-body.md#draft-initiative-issue-body \"\u0192\") with the covering row."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Apply [Save Tracker Issue](issue.md#save-tracker-issue \"\u0192\") with the epic."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Link its issue in the initiative row."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Apply [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body \"\u0192\") from the orphan's scoped problem and confirmed goal."
+    },
+    {
+      "operation": "Apply Issue Placement",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Apply [Save Tracker Issue](issue.md#save-tracker-issue \"\u0192\") with the populated initiative body."
+    },
+    {
+      "operation": "Rewrite Orphan Issue",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Carry evidence into Problem and design into Proposal."
+    },
+    {
+      "operation": "Rewrite Orphan Issue",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Pass a hot-fix its supplied number, theme label and target."
+    },
+    {
+      "operation": "Rewrite Orphan Issue",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Apply [Check Round of Edits](issue-body.md#check-round-of-edits \"\u0192\") with the populated body and selected kind conditions before publishing."
+    },
+    {
+      "operation": "Rewrite Orphan Issue",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Resolve findings."
+    },
+    {
+      "operation": "Rewrite Orphan Issue",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Apply [Save Tracker Issue](issue.md#save-tracker-issue \"\u0192\") with the validated body, title and labels, a hot-fix's being every label its [Titles](hotfix-body.md#titles) name."
+    },
+    {
+      "operation": "Rewrite Orphan Issue",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "For a hot-fix, Apply [Settle Hot-fix Board Status](hotfix.md#settle-hot-fix-board-status \"\u0192\") with the confirmed theme board and the saved issue."
+    },
+    {
+      "operation": "Rewrite Orphan Issue",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Provide [Saved Orphan](#saved-orphan) with the saved identity and a hot-fix\u2019s settled board item."
+    },
+    {
+      "operation": "Subsume Orphan Work",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Transfer the work in [Transfer Inputs](#transfer-inputs) to the taking issue."
+    },
+    {
+      "operation": "Subsume Orphan Work",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Make each outcome a criterion of one invariant."
+    },
+    {
+      "operation": "Subsume Orphan Work",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Put the design in Proposal."
+    },
+    {
+      "operation": "Subsume Orphan Work",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Cite the orphan and any planning record in References."
+    },
+    {
+      "operation": "Subsume Orphan Work",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "Prepare the comment file naming the taking epic and row, or the taking task issue, for example `Tracked in [I07:E01](\u2026/issues/937) W04.` The closure operation records it once."
+    },
+    {
+      "operation": "Subsume Orphan Work",
+      "destination": "skills/work-planner/modes/hoist-mode.md",
+      "original": "- Provide [Saved Orphan](#saved-orphan) with the confirmed closure or blocker."
+    },
+    {
+      "operation": "Populate Proposal Body",
+      "destination": "skills/work-planner/modes/propose-mode.md",
+      "original": "- Populate the [Template](#template) from [Proposal Context](#proposal-context) at the destination in [Output Body](#output-body)."
+    },
+    {
+      "operation": "Populate Proposal Body",
+      "destination": "skills/work-planner/modes/propose-mode.md",
+      "original": "- The title must meet the shared [Titles](issue-body.md#titles) conditions and the proposal [Titles](#titles)."
+    },
+    {
+      "operation": "Populate Proposal Body",
+      "destination": "skills/work-planner/modes/propose-mode.md",
+      "original": "- The Problem must meet the shared [Problem and Proposal](issue-body.md#problem-and-proposal) conditions."
+    },
+    {
+      "operation": "Populate Proposal Body",
+      "destination": "skills/work-planner/modes/propose-mode.md",
+      "original": "- All populated fields must meet [Fields](#fields)."
+    },
+    {
+      "operation": "Populate Proposal Body",
+      "destination": "skills/work-planner/modes/propose-mode.md",
+      "original": "Provide the populated [Output Body](#output-body) for publication."
+    },
+    {
+      "operation": "Populate Pull Request Body",
+      "destination": "skills/work-planner/modes/deliver-mode.md",
+      "original": "- Populate the [Template](#template) from [Change Evidence](#change-evidence), retaining applicable content in [Current Body](#current-body) and writing to [Output Body](#output-body). For an epic review, Apply [Populate Review Body](#populate-review-body \"\u0192\")."
+    },
+    {
+      "operation": "Populate Pull Request Body",
+      "destination": "skills/work-planner/modes/deliver-mode.md",
+      "original": "- All populated fields must meet [Fields](#fields)."
+    },
+    {
+      "operation": "Populate Pull Request Body",
+      "destination": "skills/work-planner/modes/deliver-mode.md",
+      "original": "Verify each result link against [Test Plan](#test-plan) before publishing the body."
+    },
+    {
+      "operation": "Link Architecture Overview",
+      "destination": "skills/work-planner/protocols/change-overview.md",
+      "original": "Add [Overview URL](#overview-url) as the Architecture Overview reference in the References of [Current Body](#current-body), creating that section in its [Template](#template) position when absent and writing to [Output Body](#output-body)."
+    },
+    {
+      "operation": "Link Architecture Overview",
+      "destination": "skills/work-planner/protocols/change-overview.md",
+      "original": "Preserve an existing row already naming the overview. The link uses the engineering-artifacts base URL so later files resolve from the same record."
+    },
+    {
+      "operation": "Link Architecture Overview",
+      "destination": "skills/work-planner/protocols/change-overview.md",
+      "original": "Provide the complete [updated body](#output-body) file for publication."
+    },
+    {
+      "operation": "Merge Epic Pull Request",
+      "destination": "skills/work-planner/artifacts/pull-request.md",
+      "original": "Require the supplied [Target Requirements](#target-requirements), [Readiness Evidence](#readiness-evidence) and [Merge Authorization](#merge-authorization)."
+    },
+    {
+      "operation": "Merge Epic Pull Request",
+      "destination": "skills/work-planner/artifacts/pull-request.md",
+      "original": "Run [Read Merge Result](#read-merge-result \"\u0192\") for that [pull request](#identity)."
+    },
+    {
+      "operation": "Merge Epic Pull Request",
+      "destination": "skills/work-planner/artifacts/pull-request.md",
+      "original": "Confirm the merged state, merge commit, [verified head](#verified-head) and target."
+    },
+    {
+      "operation": "Merge Epic Pull Request",
+      "destination": "skills/work-planner/artifacts/pull-request.md",
+      "original": "Provide [Merge Result](#merge-result) or [Failure](#failure) with the discrepancy."
+    },
+    {
+      "operation": "Read Head Evidence",
+      "destination": "skills/work-planner/artifacts/pull-request.md",
+      "original": "Run [Fetch Head Check Runs](#fetch-head-check-runs \"\u0192\") for the verified head."
+    },
+    {
+      "operation": "Read Head Evidence",
+      "destination": "skills/work-planner/artifacts/pull-request.md",
+      "original": "Run [Fetch Head Status](#fetch-head-status \"\u0192\") for the same SHA."
+    },
+    {
+      "operation": "Ready Epic Review",
+      "destination": "skills/work-planner/protocols/epic-integration.md",
+      "original": "Require [Epic Readiness](#epic-readiness) and Apply [Read Pull Request State](#read-pull-request-state \"\u0192\") for [Identity](#identity)."
+    },
+    {
+      "operation": "Ready Epic Review",
+      "destination": "skills/work-planner/protocols/epic-integration.md",
+      "original": "Run [Validate Agent Review](agent-review.md#validate-agent-review \"\u0192\") with the fresh metadata and [Published Reviews](#published-reviews). On a finding, Apply [Hold Epic Review](#hold-epic-review \"\u0192\") and stop. For a draft with passing evidence, Run [Mark Review Ready](#mark-review-ready \"\u0192\") with its node id."
+    },
+    {
+      "operation": "Ready Epic Review",
+      "destination": "skills/work-planner/protocols/epic-integration.md",
+      "original": "Apply [Read Pull Request State](#read-pull-request-state \"\u0192\") again with the same identity, then Run [Validate Agent Review](agent-review.md#validate-agent-review \"\u0192\") again with that fresh metadata and the same published records. For a changed revision, Apply [Hold Epic Review](#hold-epic-review \"\u0192\") and report the discrepancy. Provide [Review State](#review-state) only with current evidence, or [Failure](#failure) for the changed revision or discrepancy. Target review requirements still govern the merge."
+    },
+    {
+      "operation": "Ready Hot-fix Pull Request",
+      "destination": "skills/work-planner/modes/deliver-mode.md",
+      "original": "Apply [Read Pull Request State](#read-pull-request-state \"\u0192\") for its full metadata."
+    },
+    {
+      "operation": "Ready Hot-fix Pull Request",
+      "destination": "skills/work-planner/modes/deliver-mode.md",
+      "original": "- Run [Validate Agent Review](agent-review.md#validate-agent-review \"\u0192\") with that metadata and [Published Reviews](#published-reviews)."
+    },
+    {
+      "operation": "Ready Hot-fix Pull Request",
+      "destination": "skills/work-planner/modes/deliver-mode.md",
+      "original": "For a draft with passing evidence, Run [Mark Review Ready](#mark-review-ready \"\u0192\") with the node id its metadata names."
+    },
+    {
+      "operation": "Ready Hot-fix Pull Request",
+      "destination": "skills/work-planner/modes/deliver-mode.md",
+      "original": "Apply [Read Pull Request State](#read-pull-request-state \"\u0192\") again with the same identity, then Run [Validate Agent Review](agent-review.md#validate-agent-review \"\u0192\") again with that fresh metadata and the same published records. Provide [Review State](#review-state), or [Failure](#failure) with the changed revision or finding that leaves it unconfirmed."
+    },
+    {
+      "operation": "Populate Review Finding",
+      "destination": "skills/work-planner/artifacts/review-finding.md",
+      "original": "Verify the problem against the source in [Finding Evidence](#finding-evidence)."
+    },
+    {
+      "operation": "Populate Review Finding",
+      "destination": "skills/work-planner/artifacts/review-finding.md",
+      "original": "If evidence is missing or contradictory, provide that finding for the caller to resolve."
+    },
+    {
+      "operation": "Populate Review Finding",
+      "destination": "skills/work-planner/artifacts/review-finding.md",
+      "original": "- Populate the finding with its source quotation."
+    },
+    {
+      "operation": "Populate Review Finding",
+      "destination": "skills/work-planner/artifacts/review-finding.md",
+      "original": "- It must meet [Finding Content](#finding-content) and [Decision State](#decision-state)."
+    },
+    {
+      "operation": "Populate Review Finding",
+      "destination": "skills/work-planner/artifacts/review-finding.md",
+      "original": "Provide [Finding Result](#finding-result) with the finding and any pending decision."
+    },
+    {
+      "operation": "Revise Standalone Body",
+      "destination": "skills/work-planner/modes/align-mode.md",
+      "original": "Apply [Populate Standalone Body](#populate-standalone-body \"\u0192\") to [Current Body](#current-body) with [Confirmed Boundary](#confirmed-boundary), folding any Non-Goals into Proposal as a closing boundary and writing to [Output Body](#output-body)."
+    },
+    {
+      "operation": "Revise Standalone Body",
+      "destination": "skills/work-planner/modes/align-mode.md",
+      "original": "Provide the revised [Output Body](#output-body) for publication."
+    }
+  ]
+}
