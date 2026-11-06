@@ -11,13 +11,13 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 Read these files first.
 
 - [Board](../artifacts/board.md)
-- [Sync Mode](sync-mode.md "ƒ")
 - [Pull Request](../artifacts/pull-request.md)
 - [Board Queue](../artifacts/board-queue.md)
 - [Issue](../artifacts/issue.md)
 - [Repository Labels](../artifacts/repository-labels.md)
 - [Plan Change](../artifacts/plan-change.md)
 - [Guidelines](../guidelines.md)
+- [Sync Mode](sync-mode.md "ƒ")
 
 ## Procedure
 
@@ -41,11 +41,11 @@ Read these files first.
 - Apply [Fetch All Delivery Pull Requests](../artifacts/pull-request.md#fetch-all-delivery-pull-requests "ƒ") for the [repositories](../artifacts/board.md#repositories) and items Read Board State provided.
 - Apply [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links "ƒ") for those pull requests, which is where the issue each one delivers is read.
 - Apply [Read Board Configuration](../artifacts/board.md#read-board-configuration "ƒ") for the board fields.
-- Apply [Read Board Assignee](../artifacts/board.md#read-board-assignee "ƒ") for the assignee login.
+- Run [Find User](../artifacts/board.md#find-user "ƒ") for the assignee login.
 
 ### 4. Plan
 
-- Apply [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue "ƒ") with the selected board identity, current board items with Status, initiative pull request records and their issue-link snapshot, board fields, assignee login and an output directory such as `board/`.
+- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board.
 
 - Include every resolved off-board issue file and confirmed unplanned initiative identity.
 
@@ -57,7 +57,7 @@ Read these files first.
 
 - Add the provided file to the resolved off-board issue files.
 
-- Apply [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue "ƒ") with the current board items, initiative pull request records and their issue-link snapshot, board fields, assignee login, board identity and output directory, retaining every resolved issue file and confirmed unplanned initiative identity.
+- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board, retaining resolved issue files and confirmed unplanned initiative identities.
 
 - Repeat while references remain unresolved; an unavailable issue leaves the queue pending.
 
@@ -83,7 +83,7 @@ Read these files first.
 - Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the priority label each confirmed number names, for every repository holding one of those initiatives.
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with each initiative identity and its confirmed priority-label addition.
 - Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") again.
-- Apply [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue "ƒ") with the refreshed board items, the same initiative pull request records and their issue-link snapshot, board fields, assignee login, board identity and output directory, and every resolved off-board issue file and confirmed unplanned initiative identity.
+- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board using refreshed board items and the retained pull request and issue-link snapshots, retaining resolved issue files and confirmed unplanned initiative identities.
 
 - Resolve any further missing evidence through step 5.
 
@@ -95,7 +95,7 @@ Read these files first.
 - Once the queue is [complete](../artifacts/board-queue.md#completeness), run each proposed Status and assignee call it provided.
 
 - Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") again.
-- Apply [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue "ƒ") with the refreshed board items, the same initiative pull request records and their issue-link snapshot, board fields, assignee login, board identity and output directory, retaining every resolved off-board issue file and confirmed unplanned initiative identity.
+- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board using refreshed board items and the retained pull request and issue-link snapshots, retaining resolved issue files and confirmed unplanned initiative identities.
 - Resolve new missing evidence or decisions through steps 5 and 6.
 - Repeat this step until the refreshed queue is complete and contains no further call.
 

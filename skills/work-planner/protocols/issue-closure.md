@@ -37,7 +37,7 @@ Read these files first.
 - For an epic:
 - Apply [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches "ƒ") in the project checkout for the complete expected bases, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic.
 - Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for their merge evidence.
-- Apply [Check Epic Completion](../artifacts/epic.md#check-epic-completion "ƒ") with the current epic JSON, delivery records, complete issue-link snapshot, criterion verification evidence and those base records.
+- Apply [Check Epic Completion](../artifacts/epic.md#check-epic-completion "ƒ") against current delivery and criterion evidence and the confirmed base-merge records.
 
 #### Initiative Completion
 

@@ -123,7 +123,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - Every command has a sub-section named for what it does: Fetch issue, Run guard suite.
   - A script used several ways has a spec for each use.
 - **Local to the procedure.**
-  - A specification sits in the file whose procedure runs it, in a `## Commands` section at the end of that file.
+  - A specification sits in the file whose procedure runs it, in a `## Commands` section at the position its declared layout gives it.
   - A single catalog holds only those specifications most of whose entries have several callers. Where a block of a catalog has one caller, it belongs to that caller.
   - A caller is a procedure that runs the command. A sibling specification, and any passage of prose naming a command, does not make the file holding it a caller.
   - Reach is what a reader must load: a step's citation, a specification's citation, and a prerequisite. A specification citing another command reaches it without calling it, so reach measures retrieval and leaves placement to callers.

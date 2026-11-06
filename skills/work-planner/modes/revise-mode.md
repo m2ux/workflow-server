@@ -46,17 +46,17 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
 - The description, when the skill's reach changed.
 - One line per item, bold leads on their own line, and the declared step and detail structure for each family.
 - Each rule stated once, and no description of replaced behaviour left anywhere.
-- Every command inside the step that runs it.
+- Every invocation in its named Commands specification, with caller links and command-owned I/O contracts.
 - Every link and anchor resolving.
 - [Progressive disclosure](../../guidelines.md#progressive-disclosure), including complete common sections and caller prerequisites.
 - Fix each departure.
 
 ### 6. Verify
 
-- Follow [Run Tests](#run-tests "ƒ") when an executable script, its consumed template or a test changed.
+- Run [Run Tests](#run-tests "ƒ") when an executable script, its consumed template or a test changed.
 - When SKILL.md changes, confirm its frontmatter opens and closes with `---` and holds `name` and `description`.
-- Follow [Check Skill Files](#check-skill-files "ƒ") for every affected skill.
-- Follow [Compare Section Bodies](#compare-section-bodies "ƒ") when the change moves a section between files, and read each section it reports as added, removed or differing.
+- Run [Check Skill Files](#check-skill-files "ƒ") for every affected skill.
+- Run [Compare Section Bodies](#compare-section-bodies "ƒ") when the change moves a section between files, and read each section it reports as added, removed or differing.
 - Apply [disclosure verification](../../guidelines.md#disclosure-verification) with the skill's [representative scenarios](../guidelines.md#progressive-disclosure).
 - Resolve every required file, command and heading without an implicit external dependency.
 
@@ -66,17 +66,22 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
 - Push.
 - Report what changed in each file.
 
+## Outcomes
+
+- **The skill matches the request.**
+  The user has the change they asked for in the skill, committed and pushed.
+- **The guidelines hold.**
+  The change agrees with the guidelines, and a new rule the user stated for how the skill is written is part of that change.
+
+## Commands
+
 ### Run Tests
 
 Runs the skill's script tests.
 
-#### 1. Run Skill Tests
-
 <big><pre>
 cd "[**<workspace>**](#workspace "○")/skills/work-planner" && "[**<workspace>**](#workspace "○")/scripts/sbx" python3 -m unittest discover -s test
 </pre></big>
-
-#### 2. Provide Test Result
 
 Provide [Test Result](#test-result "●") to the requester.
 
@@ -84,15 +89,11 @@ Provide [Test Result](#test-result "●") to the requester.
 
 Checks the affected skill's files against the rules the shared skill guidelines state.
 
-#### 1. Check Affected Skills
-
 Repeat the skill argument for additional affected skills.
 
 <big><pre>
 cd "[**<workspace>**](#workspace "○")" && "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py "[**<skill-directory>**](#skill-directory "○")"
 </pre></big>
-
-#### 2. Provide Skill Check Result
 
 Provide [Skill Check Result](#skill-check-result "●") to the requester.
 
@@ -100,28 +101,17 @@ Provide [Skill Check Result](#skill-check-result "●") to the requester.
 
 Compares every third-level section's body between the change's base and its head, so a section damaged in a move is reported.
 
-#### 1. Compare Changed Sections
-
 - A relative link target is compared by its fragment alone, so a retargeted link is no difference.
 - Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
 - Exit 1 means a section was added, removed or differs.
 
 <big><pre>
-cd "[**<workspace>**](#workspace "○")" && \
-  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py \
+cd "[**<workspace>**](#workspace "○")" && &#92;
+  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py &#92;
   --compare "[**<base>**](#base "○")" "[**<head>**](#head "○")" "[**<skill-directory>**](#skill-directory "○")"
 </pre></big>
 
-#### 2. Provide Section Comparison
-
 Provide [Section Comparison](#section-comparison "●") to the requester.
-
-## Outcomes
-
-- **The skill matches the request.**
-  The user has the change they asked for in the skill, committed and pushed.
-- **The guidelines hold.**
-  The change agrees with the guidelines, and a new rule the user stated for how the skill is written is part of that change.
 
 ## Fields
 

@@ -9,37 +9,11 @@ Read these files first.
 - [Lane](lane.md)
 - [Delivery Plan](delivery-plan.md)
 
-## Operations
-
-### Plan Dispatch Batch
-
-One batch from current delivery and execution evidence.
-
-#### 1. Compute Admitted Dispatch Batch
-
-Apply [Compute Dispatch Batch](#compute-dispatch-batch "ƒ") to [Survey Evidence](#survey-evidence "○") and [Survey Board](#survey-board "○") within [Authorization](#authorization "○"), selecting [Requested Lane](#requested-lane "○") against [Session Inventory](#session-inventory "○"), [Free Slots](#free-slots "○") and retained [Preparations](#preparations "○").
-
-#### 2. Provide Batch Continuation
-
-Provide its [Batch](#batch "●") and continuation, meeting [Selection](#selection), or [Failure](#failure "●") with the named evidence error.
-
-### Validate Dispatch Start
-
-One selected unit's readiness to execute.
-
-#### 1. Check Immediate Start Evidence
-
-Apply [Check Dispatch Start](#check-dispatch-start "ƒ") for [Unit Identity](#unit-identity "○") in [Batch](#batch "○") with [Start Evidence](#start-evidence "○"), the actual [Session Inventory](#session-inventory "○") and [Free Slots](#free-slots "○").
-
-#### 2. Provide Validated Unit
-
-Provide the [validated unit](#validated-unit "●") or the named [blocker](#failure "●"), meeting [Start Readiness](#start-readiness).
+## Commands
 
 ### Compute Dispatch Batch
 
 Selects the next batch without tracker writes or worker execution.
-
-#### 1. Compute Dispatch Batch
 
 - Honor [Requested Lane](#requested-lane "○") when selecting units.
 
@@ -48,17 +22,15 @@ Selects the next batch without tracker writes or worker execution.
 - The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.
 
 <big><pre>
-cd "[**<workspace>**](#workspace "○")" && \
-  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py batch \
-  --authorization '[**<authorization-file>**](#authorization "○")' \
-  --plan '[**<dispatch-export-file>**](#survey-evidence "○")' \
-  --sessions '[**<session-inventory-file>**](#session-inventory "○")' \
-  --capacity [**<free-slot-count>**](#free-slots "○") \
-  --board [**<survey-board>**](#survey-board "○") \
+cd "[**<workspace>**](#workspace "○")" && &#92;
+  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py batch &#92;
+  --authorization '[**<authorization-file>**](#authorization "○")' &#92;
+  --plan '[**<dispatch-export-file>**](#survey-evidence "○")' &#92;
+  --sessions '[**<session-inventory-file>**](#session-inventory "○")' &#92;
+  --capacity [**<free-slot-count>**](#free-slots "○") &#92;
+  --board [**<survey-board>**](#survey-board "○") &#92;
   > '[**<batch-file>**](#batch "○")'
 </pre></big>
-
-#### 2. Provide Computed Dispatch Batch
 
 Provide [Batch](#batch "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
@@ -66,21 +38,17 @@ Provide [Batch](#batch "●") to the requester, or [Failure](#failure "●") if 
 
 Checks one selected unit immediately before execution.
 
-#### 1. Check Dispatch Start
-
 Exit 0 returns the selected unit; exit 1 names the blocking condition.
 
 <big><pre>
-cd "[**<workspace>**](#workspace "○")" && \
-  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py start \
-  --batch '[**<batch-file>**](#batch "○")' \
-  --unit [**<unit-identity>**](#unit-identity "○") \
-  --evidence '[**<start-evidence-file>**](#start-evidence "○")' \
-  --sessions '[**<session-inventory-file>**](#session-inventory "○")' \
+cd "[**<workspace>**](#workspace "○")" && &#92;
+  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py start &#92;
+  --batch '[**<batch-file>**](#batch "○")' &#92;
+  --unit [**<unit-identity>**](#unit-identity "○") &#92;
+  --evidence '[**<start-evidence-file>**](#start-evidence "○")' &#92;
+  --sessions '[**<session-inventory-file>**](#session-inventory "○")' &#92;
   --capacity [**<free-slot-count>**](#free-slots "○")
 </pre></big>
-
-#### 2. Provide Checked Dispatch Start
 
 Provide [Validated Unit](#validated-unit "●") to the requester, or [Failure](#failure "●") if the operation fails.
 

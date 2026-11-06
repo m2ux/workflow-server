@@ -9,19 +9,7 @@ Read these files first.
 - [Issue Body](issue-body.md)
 - [Epic Issue Body](epic-issue-body.md)
 
-## Operations
-
-### Record Task Delivery
-
-One task body with its confirmed delivery and verified criteria recorded.
-
-#### 1. Record Verified Delivery
-
-Apply [Sync Task Issue](#sync-task-issue "ƒ") to [Task Record](#task-record "○") with [Pull Request Records](#pull-request-records "○"), [Issue Links](#issue-links "○") and [Delivery Selection](#delivery-selection "○"), writing to [Output Body](#output-body "○"). Tick only criteria the requester has verified.
-
-#### 2. Provide Delivery Findings
-
-Provide [Output Body](#output-body "●") and [Delivery Findings](#delivery-findings "●"); the requester publishes comments and closes the tracker issue.
+## Commands
 
 ### Sync Task Issue
 
@@ -29,21 +17,19 @@ Records the pull request that delivers a task issue, open or merged, ticks verif
 
 An open pull request supplies verification evidence; completion requires its merge.
 
-#### 1. Sync Task Issue
-
 `<criterion-ids>` is a comma-separated list of verified criterion ids.
 
+- Tick only criteria the requester has verified. The requester publishes comments and closes the tracker issue.
+
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;task-json-file&gt;**](#task-record "○")' \
-  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' \
-  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' \
-  --pr [**&lt;pull-request-number&gt;**](#delivery-selection "○") \
-  --tick [**&lt;criterion-ids&gt;**](#delivery-selection "○") \
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;task-json-file&gt;**](#task-record "○")' &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' &#92;
+  --pr [**&lt;pull-request-number&gt;**](#delivery-selection "○") &#92;
+  --tick [**&lt;criterion-ids&gt;**](#delivery-selection "○") &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
-
-#### 2. Provide Recorded Task Issue
 
 Provide [Output Body](#output-body "●"), [Delivery Findings](#delivery-findings "●") to the requester.
 

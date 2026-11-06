@@ -14,23 +14,6 @@ Read these files first.
 
 ## Operations
 
-### Plan Board Changes
-
-The board changes implied by supplied delivery state.
-
-#### 1. Require Complete Link Snapshot
-
-Require the complete [Issue Link Snapshot](#issue-link-snapshot); refuse the computation without it.
-
-#### 2. Compute Delivery Calls
-
-- Supply the [Published Reviews](#published-reviews) linked from each open epic integration pull request; retain missing records as handoff blockers.
-- Run [Compute Board Changes](#compute-board-changes "ƒ").
-
-#### 3. Provide Proposed Changes
-
-Provide [Board Changes](#board-changes) with the generated calls and unresolved references. The requester gathers missing evidence, applies changes and confirms their live state.
-
 ### Record Epic Review
 
 One epic's review status on its board.
@@ -42,7 +25,7 @@ Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Revie
 #### 2. Read Configuration and Assignee
 
 - Apply [Read Board Configuration](board.md#read-board-configuration "ƒ").
-- Apply [Read Board Assignee](board.md#read-board-assignee "ƒ").
+- Run [Find User](board.md#find-user "ƒ").
 
 #### 3. Locate Epic Item
 
@@ -71,14 +54,14 @@ The board's status and assignees after its issues record delivery.
 - Apply [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links "ƒ") for those records.
 - Fetch the published agent review records linked from each open epic integration pull request, retaining absent or unreadable evidence as a handoff blocker.
 - Apply [Read Board Configuration](board.md#read-board-configuration "ƒ").
-- Apply [Read Board Assignee](board.md#read-board-assignee "ƒ").
+- Run [Find User](board.md#find-user "ƒ").
 - Retain these provided snapshots for the following computation.
 
 #### 2. Plan Delivery Changes
 
-- Apply [Plan Board Changes](#plan-board-changes "ƒ") to the captured evidence.
+- Run [Compute Board Changes](#compute-board-changes "ƒ") to the captured evidence.
 - Fetch each unresolved issue.
-- Apply [Plan Board Changes](#plan-board-changes "ƒ") again, adding the fetched off-board issue records to the retained evidence.
+- Run [Compute Board Changes](#compute-board-changes "ƒ") again, adding the fetched off-board issue records to the retained evidence.
 
 #### 3. Apply and Confirm Calls
 
@@ -93,7 +76,7 @@ The board's status and assignees after its issues record delivery.
 
 - Fetch the issues and items again.
 - Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes.
-- Apply [Plan Board Changes](#plan-board-changes "ƒ") to the refreshed evidence, retaining every resolved off-board issue record.
+- Run [Compute Board Changes](#compute-board-changes "ƒ") to the refreshed evidence, retaining every resolved off-board issue record.
 - Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
 
 #### 5. Provide Recorded Board Delivery
@@ -128,6 +111,9 @@ Computes membership, Status and assignee calls from supplied delivery evidence.
 - Missing published agent-review evidence holds the epic In Progress.
 
 - Pass each epic or task JSON file as a separate argument after its corresponding flag.
+
+- Require the complete [Issue Link Snapshot](#issue-link-snapshot "○"); refuse the computation without it.
+- Supply published review records linked from each open epic integration pull request; retain missing records as handoff blockers.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;

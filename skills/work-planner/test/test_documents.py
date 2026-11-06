@@ -19,14 +19,14 @@ def executable_scripts(paths):
     for path in paths:
         lines, fenced, headings = checker.scan(path)
         entry = checker.contract(path, {})
-        if not entry or entry.get('commands') != 'inline-html':
+        if not entry or entry.get('commands') != 'html':
             continue
-        steps = checker.procedure_spans(lines, fenced, headings, entry)
-        for start, level, title, end in checker.procedure_headings(lines, headings, entry):
-            if level != 3 or not called.get(path, {}).get(checker.anchor_of(title)):
+        for start, title in checker.specifications(headings, checker.held_section(entry)):
+            end = checker.heading_end(headings, start, 3, len(lines))
+            if not called.get(path, {}).get(checker.anchor_of(title)):
                 continue
             for first, last in checker.scan_blocks(lines).invocations:
-                if not (start < first <= last < end and first in steps):
+                if not (start < first <= last < end):
                     continue
                 for line in lines[first:last + 1]:
                     run.update(re.findall(r'skills/work-planner/scripts/([\w-]+)\.py', line))
@@ -52,10 +52,11 @@ class DocumentInterfaces(unittest.TestCase):
                             continue
                         destination = (path.parent / name).resolve()
                         if destination == path:
+                            self.assertNotEqual(sections[i], 'Prerequisites', 'a prerequisite cannot require its own document')
                             continue
                         if sections[i] == 'Prerequisites':
                             declared.add(destination)
-                        elif sections[i] in ('Procedure', 'Operations', 'Fields',
+                        elif sections[i] in ('Procedure', 'Operations', 'Commands', 'Fields',
                                              'Outcomes'):
                             used.add(destination)
                     self.assertEqual(declared, used)
@@ -113,7 +114,8 @@ class DocumentInterfaces(unittest.TestCase):
                     self.assertTrue(all(role in ('input', 'output', 'operation') for _, role in arguments),
                                     'an executable annotation has no role')
                     self.assertLessEqual({target for target, role in arguments if role == 'input'}, inputs)
-                    self.assertTrue(any(role == 'output' for _, role in contracts))
+                    self.assertFalse(any(role in ('input', 'output') for _, role in contracts),
+                                     'nested procedures carry no duplicate I/O contract')
                     self.assertFalse(any(re.match(r'^(?:\d+\. |\- )\*\*', line) for line in body))
                     self.assertFalse(any(line.startswith(('Result:', '**Result:')) for line in body))
 
@@ -206,8 +208,8 @@ class DocumentInterfaces(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             fixture = Path(directory)
             (fixture / 'structure.json').write_text(json.dumps({'artifacts': {
-                'sections': ['Operations', 'Fields'], 'procedures': 'Operations',
-                'steps': 'headings', 'commands': 'inline-html',
+                'sections': ['Operations', 'Commands', 'Fields'], 'procedures': 'Operations',
+                'steps': 'headings', 'commands': 'html', 'specifications': 'Commands',
             }}))
             path = fixture / 'artifacts/control.md'
             path.parent.mkdir()
@@ -215,11 +217,15 @@ class DocumentInterfaces(unittest.TestCase):
 
 ## Operations
 
-### Run Selected Tool
+### Inspect Selected Tool
 
 #### 1. Invoke Selected Tool
 
-Apply [Run Selected Tool](#run-selected-tool).
+Run [Run Selected Tool](#run-selected-tool).
+
+## Commands
+
+### Run Selected Tool
 
 <big><pre>python3 skills/work-planner/scripts/live.py</pre></big>
 
@@ -251,13 +257,13 @@ Apply [Run Selected Tool](#run-selected-tool).
                             self.assertEqual(fragment, '')
 
 
-RECORD_EPIC_DELIVERY = re.compile(
-    r'\b[Aa]pply\s+\[Record Epic Delivery\]\(')
+SYNC_EPIC_CALL = re.compile(
+    r'\b[Rr]un\s+\[Sync Epic\]\(')
 
 
 class EpicDeliveryCallers(unittest.TestCase):
     """Sync Epic reads the long-lived branch names at the epic's bases, so a
-    call to Record Epic Delivery without them never reports an epic closable."""
+    call to Sync Epic without them never reports an epic closable."""
 
     def calls(self):
         found = []
@@ -266,11 +272,11 @@ class EpicDeliveryCallers(unittest.TestCase):
             steps = checker.procedure_spans(lines, fenced, headings, checker.contract(path, {}))
             payload = checker.scan_blocks(lines).html_lines
             for index, line in enumerate(lines):
-                if index in steps and not fenced[index] and index not in payload and RECORD_EPIC_DELIVERY.search(line):
+                if index in steps and not fenced[index] and index not in payload and SYNC_EPIC_CALL.search(line):
                     found.append((f'{path.relative_to(ROOT)}:{index + 1}', line))
         return found
 
-    def test_record_epic_delivery_calls_pass_the_epic_bases(self):
+    def test_sync_epic_calls_pass_the_epic_bases(self):
         calls = self.calls()
         callers = {where.partition(':')[0] for where, _ in calls}
         self.assertTrue({'modes/deliver-mode.md', 'modes/sync-mode.md',
@@ -281,11 +287,11 @@ class EpicDeliveryCallers(unittest.TestCase):
             with self.subTest(call=where):
                 self.assertIn('epic bases', checker.LINK.sub(lambda match: match[0][1:match[0].index(']')], line).lower())
 
-    def test_record_epic_delivery_takes_the_epic_bases(self):
+    def test_sync_epic_takes_the_epic_bases(self):
         path = ROOT / 'artifacts' / 'epic-issue-body.md'
         lines, _, headings = checker.scan(path)
         start = next(i for i, level, title in headings
-                     if level == 3 and checker.anchor_of(title) == 'record-epic-delivery')
+                     if level == 3 and checker.anchor_of(title) == 'sync-epic')
         end = checker.heading_end(headings, start, 3, len(lines))
         section = '\n'.join(lines[start + 1:end])
         for target in checker.LINK.findall(section):
@@ -294,16 +300,16 @@ class EpicDeliveryCallers(unittest.TestCase):
                                       if level == 3 and checker.anchor_of(title) == target[1:])
                 contract_end = checker.heading_end(headings, contract_start, 3, len(lines))
                 section += '\n' + '\n'.join(lines[contract_start + 1:contract_end])
-        self.assertIn('fetched epic bases', section)
+        self.assertIn('epic bases', section)
         self.assertIn('`--revision`', section)
 
     def test_a_report_of_the_operation_is_not_a_call(self):
-        self.assertIsNone(RECORD_EPIC_DELIVERY.search(
-            'When [Record Epic Delivery](x.md) reports an epic base unmerged'))
-        self.assertIsNone(RECORD_EPIC_DELIVERY.search(
-            'When the preceding Record Epic Delivery call reports a row done'))
-        for verb in ('Run', 'Re-run', 'Repeat', 'Repeating'):
-            self.assertIsNone(RECORD_EPIC_DELIVERY.search(
-                f'{verb} [Record Epic Delivery](x.md) with the saved epic.'))
-        self.assertIsNotNone(RECORD_EPIC_DELIVERY.search(
-            'Apply [Record Epic Delivery](x.md) with the saved epic bases.'))
+        self.assertIsNone(SYNC_EPIC_CALL.search(
+            'When [Sync Epic](x.md) reports an epic base unmerged'))
+        self.assertIsNone(SYNC_EPIC_CALL.search(
+            'When the preceding Sync Epic call reports a row done'))
+        for verb in ('Apply', 'Reapply', 'Repeat', 'Repeating'):
+            self.assertIsNone(SYNC_EPIC_CALL.search(
+                f'{verb} [Sync Epic](x.md) with the saved epic.'))
+        self.assertIsNotNone(SYNC_EPIC_CALL.search(
+            'Run [Sync Epic](x.md) with the saved epic bases.'))

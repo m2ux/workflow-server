@@ -6,9 +6,9 @@ A board progress report for a selected window, formatted for pasting into Slack.
 
 Read these files first.
 
-- When no window start is supplied, read [Standup Configuration](../configuration.md#standup).
 - [Hot-fix Body](hotfix-body.md)
 - [Hot-fix](hotfix.md)
+- [Configuration](../configuration.md)
 
 ## Operations
 
@@ -18,11 +18,11 @@ The copyable report and any missing-evidence findings.
 
 #### 1. Require Complete Link Snapshot
 
-Require the complete [Issue Link Snapshot](#issue-link-snapshot "○").
+Require the complete [Issue Link Snapshot](#issue-link-snapshot).
 
 #### 2. Render Window Progress
 
-Apply [Summarise Progress](#summarise-progress "ƒ") to [Board Items](#board-items "○") and [Pull Request Records](#pull-request-records "○") with the link snapshot, using [Report Selection](#report-selection "○") and [Initiative Records](#initiative-records "○") and saving results at [Output Paths](#output-paths "○").
+Run [Summarise Progress](#summarise-progress "ƒ") for the selected reporting window.
 
 #### 3. Provide Unresolved Initiatives
 
@@ -35,18 +35,18 @@ If initiative references remain unresolved, provide them for the caller to suppl
 
 #### 5. Render Final Report
 
-Apply [Summarise Progress](#summarise-progress "ƒ") with the same inputs and the paragraph file as `--summary`.
+Run [Summarise Progress](#summarise-progress "ƒ") with the same inputs and the paragraph file as `--summary`.
 
 #### 6. Provide Report Findings
 
-- Provide [Report Result](#report-result "●") with the report and separate unresolved findings.
+- Provide [Report Result](#report-result) with the report and separate unresolved findings.
 - The report must meet [Fields](#fields).
+
+## Commands
 
 ### Summarise Progress
 
 Prints the standup from supplied board items, pull request records and their issue-link snapshot.
-
-#### 1. Summarise Progress
 
 - Select the reporting [window](#scope) from the supplied [Report Selection](#report-selection "○").
 - An initiative filter can be `I08` or `owner/repo:I08`.
@@ -55,18 +55,16 @@ Prints the standup from supplied board items, pull request records and their iss
 - The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/progress.py \
-  --items '[**&lt;board-items-file&gt;**](#board-items "○")' \
-  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' \
-  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot "○")' \
-  --since [**&lt;window-start-date&gt;**](#report-selection "○") \
-  --initiative [**&lt;initiative-filter&gt;**](#report-selection "○") \
-  --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records "○")' \
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/progress.py &#92;
+  --items '[**&lt;board-items-file&gt;**](#board-items "○")' &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot "○")' &#92;
+  --since [**&lt;window-start-date&gt;**](#report-selection "○") &#92;
+  --initiative [**&lt;initiative-filter&gt;**](#report-selection "○") &#92;
+  --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records "○")' &#92;
   --summary '[**&lt;management-paragraph-file&gt;**](#management-file "○")'
 </pre></big>
-
-#### 2. Provide Summarise Progress
 
 Provide [Report Result](#report-result "●") to the requester.
 

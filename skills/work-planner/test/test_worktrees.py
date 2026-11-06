@@ -33,7 +33,7 @@ def specs_creating_a_worktree():
         for position, (start, level, title) in enumerate(headings):
             if level == 2:
                 section = title
-            if section != 'Operations' or level != 3:
+            if section != 'Commands' or level != 3:
                 continue
             end = next((i for i, depth, _ in headings[position + 1:] if depth <= 3), len(lines))
             body = lines[start + 1:end]

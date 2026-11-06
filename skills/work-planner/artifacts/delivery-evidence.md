@@ -17,7 +17,7 @@ The pull requests and issue links that establish current delivery.
 
 #### 1. Fetch Delivery Evidence
 
-- Fetch the pull requests and links from [Selected Repositories](#selected-repositories "○") using [Authenticated Access](#authenticated-access "○"), saving them at [Snapshot Paths](#snapshot-paths "○").
+- Fetch the pull requests and links from [Selected Repositories](#selected-repositories) using [Authenticated Access](#authenticated-access), saving them at [Snapshot Paths](#snapshot-paths).
 - Apply [Read Initiative Pull Requests](pull-request.md#read-initiative-pull-requests "ƒ") with the fetched issue files.
 - Apply [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links "ƒ").
 - Apply [Access Development Links](pull-request.md#access-development-links "ƒ") for the actual complete link sets.
@@ -33,11 +33,11 @@ The pull requests and issue links that establish current delivery.
 - For a title with no prefix or only a matching initiative or task prefix, preserve its purpose and set the row’s owning epic prefix without another confirmation.
 - A correct title requires no repair; a title naming another epic remains a conflict requiring reconciliation.
 - Apply [Publish Pull Request](pull-request.md#publish-pull-request "ƒ") with the confirmed epic prefix and purpose.
-- Apply [Read Delivery Evidence](#read-delivery-evidence "ƒ") again with the same repositories, [initiative prefix](#initiative-prefix "○"), [issue records](#issue-records "○"), access and destinations after saving the title; provide its refreshed evidence and findings.
+- Apply [Read Delivery Evidence](#read-delivery-evidence "ƒ") again after saving the title, retaining the selected scope and snapshot destinations; provide its refreshed evidence and findings.
 
 #### 4. Provide Complete Evidence
 
-Provide the current [Pull Request Records](#pull-request-records "●"), [Issue-Link Snapshot](#issue-link-snapshot "●") and [Delivery Findings](#delivery-findings "●") to the requester, reporting incomplete evidence as [Failure](#failure "●").
+Provide the current [Pull Request Records](#pull-request-records), [Issue-Link Snapshot](#issue-link-snapshot) and [Delivery Findings](#delivery-findings) to the requester, reporting incomplete evidence as [Failure](#failure).
 
 ## Fields
 

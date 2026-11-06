@@ -51,7 +51,7 @@ Read these files first.
 
 - For task rows:
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the epic's current body.
-- For a new unit, Apply [Reserve Task Rows](../artifacts/epic-issue-body.md#reserve-task-rows "ƒ") for every row of the unit, with that body and the refreshed board items, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
+- For a new unit, Run [Reserve Row](../artifacts/epic-issue-body.md#reserve-row "ƒ") for every row of the unit, with that body and the refreshed board items, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
 - For a retained preparation, require every current row to hold its selected record; provide a changed hold as a blocker.
 - Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status "ƒ") for its task issues, where present, and its epic, requesting In Progress.
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the epic and confirm every selected row holds this record.
@@ -71,12 +71,12 @@ Read these files first.
 ### 4. Prepare the Session
 
 - Apply [Create Task Worktree](../artifacts/delivery-branches.md#create-task-worktree "ƒ") in the project checkout for each selected branch, base and worktree.
-- Apply [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief "ƒ") with the selected unit, its components, reserved folder, worktrees and provided bases, project and engineering checkouts, test obligations, board identity, run allowance and supplied session procedure.
+- Apply [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief "ƒ") for the selected unit from its confirmed preparation and captured component context.
 - Provide a missing-context finding before execution, retaining the hold.
 
 ### 5. Start the Worker
 
-- Apply [Validate Dispatch Start](../artifacts/dispatch-batch.md#validate-dispatch-start "ƒ") with the selected batch and unit, gathered start evidence, current observed sessions and actual free slots.
+- Run [Check Dispatch Start](../artifacts/dispatch-batch.md#check-dispatch-start "ƒ") with the selected batch and unit, gathered start evidence, current observed sessions and actual free slots.
 - Provide a capacity-only wait with the unit's preparation for the coordinator to retain and resume.
 - Start the unit through this session's sub-agent dispatch only after validation succeeds.
 - Supply the complete brief and its unit and engineering checkouts to the worker.

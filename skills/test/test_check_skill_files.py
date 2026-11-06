@@ -1719,22 +1719,22 @@ class DeclaredHeadingModels(unittest.TestCase):
     MODEL = {
         'SKILL.md': {'sections': ['Modes', 'Dependencies']},
         'modes': {
-            'sections': ['Prerequisites', 'Procedure', 'Outcomes'],
+            'sections': ['Prerequisites', 'Procedure', 'Outcomes', 'Commands'],
             'required': ['Procedure', 'Outcomes'], 'procedures': 'Procedure',
-            'steps': 'headings', 'commands': 'inline-html', 'link_roles': True,
+            'steps': 'headings', 'commands': 'html', 'specifications': 'Commands', 'link_roles': True,
             'preamble': ['../rules.md', '../conventions.md', '#outcomes'],
             'calls': {'artifacts': 'Apply', 'modes': 'Follow', 'protocols': 'Follow'},
         },
         'protocols': {
-            'sections': ['Prerequisites', 'Procedure'], 'required': ['Procedure'],
-            'procedures': 'Procedure', 'steps': 'headings', 'commands': 'inline-html', 'link_roles': True,
+            'sections': ['Prerequisites', 'Procedure', 'Commands'], 'required': ['Procedure'],
+            'procedures': 'Procedure', 'steps': 'headings', 'commands': 'html', 'specifications': 'Commands', 'link_roles': True,
             'preamble': ['../rules.md', '../conventions.md'],
             'calls': {'artifacts': 'Apply', 'modes': 'Follow', 'protocols': 'Follow'},
         },
         'artifacts': {
-            'sections': ['Prerequisites', 'Operations', 'Fields'],
+            'sections': ['Prerequisites', 'Operations', 'Commands', 'Fields'],
             'required': ['Fields'], 'procedures': 'Operations', 'steps': 'headings',
-            'commands': 'inline-html', 'contracts': 'Fields', 'link_roles': True,
+            'commands': 'html', 'specifications': 'Commands', 'contracts': 'Fields', 'link_roles': True, 'keeps_commands': True,
             'calls': {'artifacts': 'Apply'},
         },
     }
@@ -1748,13 +1748,23 @@ An inventory page from supplied evidence.
 
 #### 1. Fetch Inventory Page
 
+Run [Fetch Inventory Page](#fetch-inventory-page "ƒ").
+
+#### 2. Inspect Inventory Page
+
+Inspect the page against the requested inventory and provide findings.
+
+## Commands
+
+### Fetch Inventory Page
+
+Fetches one inventory page.
+
 Fetch the requested page using [Limit](#limit "○").
 
 <big><pre>
 inventory_fetch { [**limit**](#limit "○"), offset }
 </pre></big>
-
-#### 2. Provide Inventory Page
 
 Provide [Page](#page "●").
 
@@ -1907,10 +1917,10 @@ Keep the refreshed inventory.
         self.assertIn('heading step sequence', self.kinds())
 
     def test_each_artifact_operation_has_its_own_step_sequence(self):
-        second = self.INVENTORY.split('### Read Inventory', 1)[1].split('## Fields', 1)[0]
+        second = self.INVENTORY.split('### Read Inventory', 1)[1].split('## Commands', 1)[0]
         second = second.replace('1. Fetch Inventory Page', '1. Fetch Refreshed Page')
-        second = second.replace('2. Provide Inventory Page', '2. Provide Refreshed Page')
-        self.replace(self.inventory, '## Fields', '### Refresh Inventory' + second + '## Fields')
+        second = second.replace('2. Inspect Inventory Page', '2. Inspect Refreshed Page')
+        self.replace(self.inventory, '## Commands', '### Refresh Inventory' + second + '## Commands')
         self.assertEqual(self.findings(), [])
 
     def test_nested_step_detail_is_reported(self):
@@ -1968,16 +1978,16 @@ Keep the refreshed inventory.
         self.replace(self.inventory, '#limit "○"', '#limit "input"')
         self.replace(self.inventory, '#page "●"', '#page "output"')
         self.replace(self.mode, '#read-inventory "ƒ"', '#read-inventory "operation"')
-        self.assertIn('operation contract links', self.kinds())
+        self.assertIn('command contract links', self.kinds())
         self.assertIn('operation link role', self.kinds())
 
-    def test_each_operation_provides_a_contextual_output(self):
+    def test_each_command_provides_a_contextual_output(self):
         self.replace(self.inventory, 'Provide [Page](#page "●").', 'Provide the page.')
-        self.assertIn('operation contract links', self.kinds())
+        self.assertIn('command contract links', self.kinds())
 
     def test_input_links_cannot_select_an_operation_as_a_field(self):
         self.replace(self.inventory, '[Limit](#limit "○")', '[Limit](#read-inventory "○")')
-        self.assertIn('operation contract links', self.kinds())
+        self.assertIn('command contract links', self.kinds())
 
     def test_a_callable_link_requires_its_operation_title(self):
         self.replace(self.mode, '#read-inventory "ƒ"', '#read-inventory')
@@ -1993,7 +2003,7 @@ Keep the refreshed inventory.
         self.replace(self.inventory, '[**limit**](#limit "○")', 'limit')
         self.replace(self.inventory, '#### 1. Fetch Inventory Page',
                      '#### 1. Fetch [Limit](#limit "○")')
-        self.assertIn('operation contract links', self.kinds())
+        self.assertIn('command contract links', self.kinds())
 
     def test_role_titles_preserve_destinations_and_do_not_create_field_callers(self):
         self.assertEqual(checker.LINK.findall('[Limit](#limit "○")'), ['#limit'])
@@ -2032,14 +2042,14 @@ Keep the refreshed inventory.
         self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }', '')
         self.assertIn('malformed HTML invocation', self.kinds())
 
-    def test_an_html_invocation_belongs_to_its_executing_step(self):
+    def test_an_html_invocation_belongs_to_its_command_specification(self):
         command = '<big><pre>\ninventory_fetch { [**limit**](#limit "○"), offset }\n</pre></big>\n\n'
         self.replace(self.inventory, command, '')
         self.replace(self.inventory, '## Fields', command + '## Fields')
-        # It is still in the step until its next ancestor heading.
+        # The specification owns the invocation up to the next sibling or ancestor.
         self.assertEqual(self.findings(), [])
         self.replace(self.inventory, command + '## Fields', '## Fields\n\n' + command)
-        self.assertIn('invocation outside execution step', self.kinds())
+        self.assertIn('invocation outside command specification', self.kinds())
 
     def test_argument_links_resolve_even_among_shell_quoting(self):
         self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }',
@@ -2120,15 +2130,15 @@ Keep the refreshed inventory.
                      'Inspect [Limit](../artifacts/inventory.md#limit).')
         self.assertEqual(self.findings(), [])
 
-    def test_html_graphql_needs_its_own_step_rest_gap(self):
+    def test_html_graphql_needs_its_own_specification_rest_gap(self):
         self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }', 'gh api graphql -F query=@query.graphql')
         self.assertIn('GraphQL without a REST gap', self.kinds())
         self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "○").', 'Fetch the requested page using [Limit](#limit "○").\n\n**REST gap:** REST exposes no relation write.')
         self.assertNotIn('GraphQL without a REST gap', self.kinds())
 
-    def test_another_steps_rest_gap_cannot_cover_an_invocation(self):
+    def test_another_specifications_rest_gap_cannot_cover_an_invocation(self):
         self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }', 'gh api graphql -F query=@query.graphql')
-        self.replace(self.inventory, '## Fields', '#### 2. Retain Evidence\n\n**REST gap:** REST exposes no relation write.\n\n## Fields')
+        self.replace(self.inventory, '## Fields', '### Retain Evidence\n\n**REST gap:** REST exposes no relation write.\n\n## Fields')
         self.assertIn('GraphQL without a REST gap', self.kinds())
 
     def test_html_script_access_retains_interface_validation(self):
@@ -2165,7 +2175,7 @@ Keep the refreshed inventory.
         self.replace(self.inventory, '[**limit**](#limit "○")', 'limit')
         self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "○").',
                      FENCE + 'markdown\nUse [Limit](#limit "○").\n' + FENCE)
-        self.assertIn('operation contract links', self.kinds())
+        self.assertIn('command contract links', self.kinds())
 
     def test_literal_rest_gap_text_in_payload_is_not_evidence(self):
         self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }',
@@ -2197,7 +2207,7 @@ Keep the refreshed inventory.
             {'commands': 'fenced'}, {'contracts': 'Absent'}, {'preamble': 'rules.md'},
             {'preamble': []}, {'calls': {'artifacts': 'Run'}}, {'calls': []},
             {'keeps_commands': 'yes'}, {'link_roles': 'yes'}, {'unknown': True}, {'procedures': 'Absent'},
-            {'commands': 'inline-html', 'sections': ['Procedure', 'Commands'], 'procedures': 'Procedure'},
+            {'commands': 'html', 'sections': ['Procedure', 'Commands'], 'procedures': 'Procedure'},
         ]
         for values in invalid:
             with self.subTest(values=values):
@@ -2209,6 +2219,38 @@ Keep the refreshed inventory.
                     status = checker.main([str(self.skill)])
                 self.assertEqual(status, 1)
                 self.assertIn('unreadable structure', printed.getvalue())
+
+    def test_nested_calls_have_no_duplicate_io_contract(self):
+        self.replace(self.inventory, 'Run [Fetch Inventory Page](#fetch-inventory-page "ƒ").',
+                     'Run [Fetch Inventory Page](#fetch-inventory-page "ƒ") with [Limit](#limit "○").')
+        self.assertIn('command contract links', self.kinds())
+
+    def test_command_calls_use_run(self):
+        self.replace(self.inventory, 'Run [Fetch Inventory Page]', 'Apply [Fetch Inventory Page]')
+        self.assertIn('operation call verb', self.kinds())
+
+    def test_a_procedures_output_does_not_supply_the_command_contract(self):
+        self.replace(self.inventory, 'Provide [Page](#page "●").', 'Provide the page.')
+        self.replace(self.inventory, 'Inspect the page against the requested inventory and provide findings.',
+                     'Provide [Page](#page "●").')
+        self.assertIn('command contract links', self.kinds())
+
+    def test_entity_continuations_preserve_shell_tokenization(self):
+        self.assertEqual(checker.logical_command_lines('git &#92;\n  status'), ['git status'])
+
+    def test_a_pure_command_forwarder_is_redundant(self):
+        self.replace(self.inventory, 'Inspect the page against the requested inventory and provide findings.',
+                     'Provide the page.')
+        self.assertIn('redundant command wrapper', self.kinds())
+
+    def test_a_step_names_its_action_without_repeating_its_parent(self):
+        self.replace(self.inventory, '#### 1. Fetch Inventory Page', '#### 1. Read Inventory')
+        self.assertIn('repeated procedure title', self.kinds())
+
+    def test_a_specification_contains_exactly_one_invocation(self):
+        command = '<big><pre>\ninventory_fetch { [**limit**](#limit "○"), offset }\n</pre></big>'
+        self.replace(self.inventory, command, command + '\n\n' + command)
+        self.assertIn('malformed HTML invocation', self.kinds())
 
     def test_a_nonobject_model_is_refused(self):
         self.declare([])

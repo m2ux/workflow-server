@@ -6,7 +6,7 @@ A planning record is a folder. README.md is its entry point: it answers what the
 
 Read these files first.
 
-- [Planning Records Configuration](../configuration.md#planning-records)
+- [Configuration](../configuration.md)
 
 ## Operations
 
@@ -16,11 +16,11 @@ One planning directory and its artifact inventory.
 
 #### 1. Prepare Selected Record
 
-- Prepare the directory in [Record Selection](#record-selection "○") using the matching branch.
+- Prepare the directory in [Record Selection](#record-selection) using the matching branch.
 
 ##### New Record
 
-- Apply [Add Planning Record](#add-planning-record "ƒ") with the engineering checkout and supplied planning-folder path.
+- Run [Add Planning Record](#add-planning-record "ƒ") with the engineering checkout and supplied planning-folder path.
 - Populate README.md from the [Template](#template).
 
 ##### Existing Record
@@ -41,7 +41,7 @@ One planning directory and its artifact inventory.
 
 #### 3. Provide Populated Planning Record
 
-Provide [Planning Folder](#planning-folder "●") with the populated record and registered artifacts.
+Provide [Planning Folder](#planning-folder) with the populated record and registered artifacts.
 
 ### Publish Planning Record
 
@@ -49,23 +49,23 @@ The record's folder committed and pushed, so every link into it resolves for a r
 
 #### 1. Find Engineering Checkout
 
-Apply [Find Engineering Worktree](#find-engineering-worktree "ƒ") for [Planning Folder](#planning-folder "○").
+Run [Find Engineering Worktree](#find-engineering-worktree "ƒ") for [Planning Folder](#planning-folder).
 
 #### 2. Publish Planning Files
 
-- Apply [Commit Planning Record](#commit-planning-record "ƒ") using [Commit Message File](#commit-message-file "○").
+- Run [Commit Planning Record](#commit-planning-record "ƒ") using [Commit Message File](#commit-message-file).
 - Confirm the files this record wrote reached `origin/engineering`, meeting [Shared Worktree](#shared-worktree).
 - Report a rebase that stops on a conflict rather than rewriting the branch.
 
 #### 3. Provide Published Planning Record
 
-Provide [Publication Result](#publication-result "●") after confirming publication, or with the conflict that prevents it.
+Provide [Publication Result](#publication-result) after confirming publication, or with the conflict that prevents it.
+
+## Commands
 
 ### Find Engineering Worktree
 
 Prints the checkout holding the engineering branch, which is where every planning record is written.
-
-#### 1. Find Engineering Worktree
 
 The engineering branch has one long-lived worktree and takes no further one.
 
@@ -73,42 +73,34 @@ The engineering branch has one long-lived worktree and takes no further one.
 git -C '[**&lt;checkout&gt;**](#project-checkout "○")' worktree list | grep '\&#91;engineering\&#93;'
 </pre></big>
 
-#### 2. Provide Located Engineering Worktree
-
 Provide [Engineering Worktree](#engineering-worktree "●") to the requester.
 
 ### Commit Planning Record
 
 Commits everything pending in the engineering worktree and publishes the branch, so every record's links resolve.
 
-#### 1. Commit Planning Record
-
 - It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).
 - Planning records go straight to the branch; they take no pull request.
 - Pass the message through a file outside the worktree; the worktree is a linked one, so git writes here run unsandboxed.
 
 <big><pre>
-cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' && \
-  git add \
-  -A && \
-  (git diff \
-  --cached \
-  --quiet || git commit \
-  -F '[**&lt;message-file&gt;**](#commit-message-file "○")') && \
-  git fetch origin engineering && \
-  git rebase origin/engineering && \
+cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' && &#92;
+  git add &#92;
+  -A && &#92;
+  (git diff &#92;
+  --cached &#92;
+  --quiet || git commit &#92;
+  -F '[**&lt;message-file&gt;**](#commit-message-file "○")') && &#92;
+  git fetch origin engineering && &#92;
+  git rebase origin/engineering && &#92;
   git push
 </pre></big>
-
-#### 2. Provide Commit Planning Record
 
 Provide [Publication Result](#publication-result "●") to the requester.
 
 ### Add Planning Record
 
 Adds the folder for one planning record on the long-lived engineering worktree.
-
-#### 1. Add Planning Record
 
 - Run in the [Engineering Worktree](#engineering-worktree "○").
 
@@ -121,8 +113,6 @@ Adds the folder for one planning record on the long-lived engineering worktree.
 <big><pre>
 mkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder "○")'
 </pre></big>
-
-#### 2. Provide Added Planning Record
 
 Provide [Planning Folder](#planning-folder "●") to the requester.
 

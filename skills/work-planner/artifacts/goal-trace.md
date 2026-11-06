@@ -18,11 +18,11 @@ The draft checked against the initiative outcomes.
 
 #### 1. Identify Confirmed Goal Clauses
 
-Take the user’s stated and confirmed goal from [Goal Evidence](#goal-evidence "○") as clauses, each an outcome someone could observe.
+Take the user’s stated and confirmed goal from [Goal Evidence](#goal-evidence) as clauses, each an outcome someone could observe.
 
 #### 2. Build Goal Trace
 
-- Build the [Trace Table](#trace-table "●") from those clauses, the initiative criteria, the epics whose Coverage cells cite them and the epic criteria that deliver them.
+- Build the [Trace Table](#trace-table) from those clauses, the initiative criteria, the epics whose Coverage cells cite them and the epic criteria that deliver them.
 - Every goal clause has an initiative criterion that makes it true.
 - Every initiative criterion is delivered by an epic, and that epic's criteria make the criterion wholly true.
 - Every initiative criterion traces to a goal clause.
@@ -53,7 +53,7 @@ Apply [Check Outside Threats](#check-outside-threats "ƒ") with the current init
 - Rank the gaps, meeting [Gaps](#gaps).
 - Flag the few that most threaten the goal.
 - Record the trace table in the [planning record](planning-record.md), or give it to the user when the change has none.
-- Provide [Review Result](#review-result "●") with the trace and ranked findings.
+- Provide [Review Result](#review-result) with the trace and ranked findings.
 
 ### Check Outside Threats
 
@@ -61,7 +61,7 @@ An item the draft leaves open is a gap.
 
 #### 1. Check External Consumers
 
-Check for anything outside [Plan Bodies](#plan-bodies "○") that reads, builds or ships the [Changed Surface](#changed-surface "○").
+Check for anything outside [Plan Bodies](#plan-bodies) that reads, builds or ships the [Changed Surface](#changed-surface).
 
 #### 2. Check Hidden Violations
 
@@ -78,7 +78,7 @@ Check for skew between an artifact the plan produces and an implementation that 
 #### 5. Provide External Threats
 
 - Check for a change elsewhere that alters the ground the plan stands on.
-- Provide [Review Result](#review-result "●") with the evidenced threats and gaps to the requesting goal review.
+- Provide [Review Result](#review-result) with the evidenced threats and gaps to the requesting goal review.
 
 ## Fields
 

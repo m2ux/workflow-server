@@ -4,33 +4,39 @@
     "link_roles": true
   },
   "modes": {
-    "sections": ["Prerequisites", "Procedure", "Outcomes", "Fields", "Guidance"],
+    "sections": ["Prerequisites", "Procedure", "Outcomes", "Commands", "Fields", "Guidance"],
     "required": ["Procedure", "Outcomes"],
     "procedures": "Procedure",
     "steps": "headings",
-    "commands": "inline-html",
+    "commands": "html",
     "preamble": ["../rules.md", "../conventions.md", "#outcomes"],
     "calls": {"artifacts": "Apply", "modes": "Follow", "protocols": "Follow"},
-    "link_roles": true
+    "link_roles": true,
+    "specifications": "Commands",
+    "contracts": "Fields"
   },
   "protocols": {
-    "sections": ["Prerequisites", "Procedure", "Guidance"],
+    "sections": ["Prerequisites", "Procedure", "Commands", "Fields", "Guidance"],
     "required": ["Procedure"],
     "procedures": "Procedure",
     "steps": "headings",
-    "commands": "inline-html",
+    "commands": "html",
     "preamble": ["../rules.md", "../conventions.md"],
     "calls": {"artifacts": "Apply", "modes": "Follow", "protocols": "Follow"},
-    "link_roles": true
+    "link_roles": true,
+    "specifications": "Commands",
+    "contracts": "Fields"
   },
   "artifacts": {
-    "sections": ["Prerequisites", "Operations", "Fields", "Guidance"],
+    "sections": ["Prerequisites", "Operations", "Commands", "Fields", "Guidance"],
     "required": ["Fields"],
     "procedures": "Operations",
     "steps": "headings",
-    "commands": "inline-html",
+    "commands": "html",
     "contracts": "Fields",
     "calls": {"artifacts": "Apply"},
-    "link_roles": true
+    "link_roles": true,
+    "specifications": "Commands",
+    "keeps_commands": true
   }
 }

@@ -10,43 +10,43 @@ Current graph evidence for the supplied change.
 
 #### 1. Read Index Status
 
-Apply [Index Status](#index-status "ƒ") in the [review checkout](#review-checkout "○"). Every graph command runs there.
+Run [Index Status](#index-status "ƒ") in the [review checkout](#review-checkout). Every graph command runs there.
 
 #### 2. Refresh Absent or Stale Index
 
-- If the repository is unindexed or behind [Requested Revision](#requested-revision "○"):
-- Apply [Index Repository](#index-repository "ƒ") in the review checkout.
+- If the repository is unindexed or behind [Requested Revision](#requested-revision):
+- Run [Index Repository](#index-repository "ƒ") in the review checkout.
 - Confirm freshness.
 
 #### 3. Measure Change Surface
 
-Apply [Change Surface](#change-surface "ƒ") in the review checkout against the supplied base using `--base-ref`.
+Run [Change Surface](#change-surface "ƒ") in the review checkout against the supplied base using `--base-ref`.
 
 #### 4. Measure Changed Symbols
 
-For each changed symbol, Apply [Symbol Context](#symbol-context "ƒ") in the review checkout.
+For each changed symbol, Run [Symbol Context](#symbol-context "ƒ") in the review checkout.
 
 #### 5. Measure Reported Flows
 
-For each reported flow, Apply [Flow Trace](#flow-trace "ƒ") in the review checkout.
+For each reported flow, Run [Flow Trace](#flow-trace "ƒ") in the review checkout.
 
 #### 6. Check Response Freshness
 
 - Inspect the staleness block on every response. When an index is behind, discard its measurements.
-- Apply [Index Repository](#index-repository "ƒ") in the review checkout for the verified head, and confirm freshness.
-- Apply [Change Surface](#change-surface "ƒ") again for any discarded surface using the same [base branch](#base-branch "○") in the review checkout.
-- Apply [Symbol Context](#symbol-context "ƒ") again for each affected changed symbol in the review checkout.
-- Apply [Flow Trace](#flow-trace "ƒ") again for each affected reported flow in the review checkout.
+- Run [Index Repository](#index-repository "ƒ") in the review checkout for the verified head, and confirm freshness.
+- Run [Change Surface](#change-surface "ƒ") again for any discarded surface using the same [base branch](#base-branch) in the review checkout.
+- Run [Symbol Context](#symbol-context "ƒ") again for each affected changed symbol in the review checkout.
+- Run [Flow Trace](#flow-trace "ƒ") again for each affected reported flow in the review checkout.
 
 #### 7. Provide Current Measurements
 
-Provide [Graph Measurements](#graph-measurements "●") only when current with the supplied head and meeting [Fields](#fields), or a freshness blocker.
+Provide [Graph Measurements](#graph-measurements) only when current with the supplied head and meeting [Fields](#fields), or a freshness blocker.
+
+## Commands
 
 ### Index Status
 
 Reports whether the repository is indexed, and how far behind the index sits.
-
-#### 1. Index Status
 
 **Acts on:** the checkout it runs in.
 
@@ -56,15 +56,11 @@ Compare the indexed commit with [Requested Revision](#requested-revision "○").
 gitnexus status
 </pre></big>
 
-#### 2. Provide Index Status
-
 Provide [Index State](#index-state "●") to the requester.
 
 ### Index Repository
 
 Indexes the repository, which an unindexed or behind repository needs before any measurement.
-
-#### 1. Index Repository
 
 **Acts on:** the checkout it runs in.
 
@@ -74,15 +70,11 @@ Compare the indexed commit with [Requested Revision](#requested-revision "○").
 gitnexus analyze
 </pre></big>
 
-#### 2. Provide Index Repository
-
 Provide [Index State](#index-state "●") to the requester.
 
 ### Change Surface
 
 Reports the symbols a pull request's diff touches and the flows they sit in, against the base branch.
-
-#### 1. Change Surface
 
 **Acts on:** the checkout it runs in.
 
@@ -92,15 +84,11 @@ Compare against the pull request’s base to isolate its change from the branch�
 gitnexus detect-changes --scope compare --base-ref '[**&lt;base-branch&gt;**](#base-branch "○")'
 </pre></big>
 
-#### 2. Provide Change Surface
-
 Provide [Changed Symbols](#changed-symbols "●") to the requester.
 
 ### Symbol Context
 
 Reports one symbol's callers, its callees and the flows it sits in, each with the file it sits in.
-
-#### 1. Symbol Context
 
 **Acts on:** the checkout it runs in.
 
@@ -108,23 +96,17 @@ Reports one symbol's callers, its callees and the flows it sits in, each with th
 gitnexus context '[**&lt;symbol-identity&gt;**](#symbol-identity "○")'
 </pre></big>
 
-#### 2. Provide Symbol Context
-
 Provide [Symbol Relationships](#symbol-relationships "●") to the requester.
 
 ### Flow Trace
 
 Reports one flow's symbols in step order, the structure a sequence diagram is drawn from.
 
-#### 1. Flow Trace
-
 **Acts on:** the checkout it runs in.
 
 <big><pre>
 gitnexus query --query '[**&lt;flow-identity&gt;**](#flow-identity "○")' --limit 1
 </pre></big>
-
-#### 2. Provide Flow Trace
 
 Provide [Flow Traces](#flow-traces "●") to the requester.
 

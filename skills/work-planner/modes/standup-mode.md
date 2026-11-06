@@ -11,12 +11,12 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 Read these files first.
 
 - [Board](../artifacts/board.md)
-- [Sync Mode](sync-mode.md "ƒ")
 - [Pull Request](../artifacts/pull-request.md)
 - [Standup Report](../artifacts/standup-report.md)
 - [Issue](../artifacts/issue.md)
 - [Epic Issue Body](../artifacts/epic-issue-body.md)
 - [Issue Body](../artifacts/issue-body.md)
+- [Sync Mode](sync-mode.md "ƒ")
 
 ## Procedure
 
@@ -56,15 +56,15 @@ Read these files first.
 
 ### 4. Compose
 
-Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-report "ƒ") with the board items, initiative pull request records, complete issue-link snapshot, selected window and initiative filter, resolved off-board initiative records and output paths.
+Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-report "ƒ") for the selected board, reporting window and initiative filter.
 
 ### 5. Resolve Evidence
 
 - For each unresolved initiative:
 
-- Apply [Locate Initiative Issue](../artifacts/issue.md#locate-initiative-issue "ƒ").
+- Run [Find Initiative Issue](../artifacts/issue.md#find-initiative-issue "ƒ").
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for its current JSON.
-- Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-report "ƒ") again with all resolved initiative records, retaining the board items, pull requests, links, selected window and filter. An unavailable record remains a reported gap.
+- Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-report "ƒ") again with all resolved initiative records, retaining the selected window, filter and original snapshots. An unavailable record remains a reported gap.
 
 ### 6. Report
 
@@ -74,7 +74,7 @@ Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-re
 
 - For an epic the preceding Compose Standup Report call returns with an unreadable Work Breakdown:
 
-- Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format "ƒ") with the epic identity, current JSON, [epic template and field conditions](../artifacts/epic-issue-body.md#fields), required related evidence and output body path.
+- Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format "ƒ") for the selected epic against its [template and field conditions](../artifacts/epic-issue-body.md#fields).
 - If it confirms a saved correction, repeat steps 3–6 with refreshed records, retaining the selected board, window and initiative filter.
 - If it reports a blocker or no correction, provide the unresolved finding without repeating the same repair.
 

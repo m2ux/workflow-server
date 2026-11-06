@@ -52,9 +52,11 @@ whether a specification there belongs to its file whatever cites it. An
 explicit file-name entry selects that file before its directory or suffix
 entry; an entry point's section set takes only its explicit file entry. A
 file no entry covers takes the shared set. Heading-based entries declare
-`steps: "headings"` and their `procedures` section. `commands: "inline-html"`
-selects HTML invocations inside those steps. `contracts: "Fields"` selects
-contextual input/output links whose targets are third-level Fields contracts.
+`steps: "headings"` and their `procedures` section. `commands: "html"`
+selects enriched HTML invocations in the declared command specifications.
+`contracts: "Fields"` selects command input/output links whose targets are
+third-level Fields contracts. Procedures route calls and results; each
+command specification owns its complete contextual I/O contract.
 `link_roles: true` checks the ○, ● and ƒ link titles.
 `preamble` lists required intro link targets; `calls` maps target directory
 names to Apply or Follow. Malformed and unknown options fail declaration
@@ -69,9 +71,8 @@ sits; a prerequisite citation names a section the reader must already hold,
 so its target belongs in another file.
 
 The skill-wide checks read what a skill declares rather than guessing from
-its prose. A mode using command specifications reaches them by operation
-name; a mode selecting inline HTML executes invocations under heading
-steps. A skill's `vocabulary.json`
+its prose. A mode reaches command specifications by their names; HTML command
+payloads sit within those specifications. A skill's `vocabulary.json`
 names the terms its concepts retire, and each retired term is reported. A
 skill's guide repeating a shared rule's label in a section of the same title
 states one convention twice. A specification sending GraphQL states its REST
@@ -175,9 +176,9 @@ KINDS = (
     'mode without a trigger phrase', 'hard-wrapped line',
     'list step in heading model', 'indented detail in heading model',
     'heading step sequence', 'procedure without heading steps', 'procedure preamble missing',
-    'operation contract links', 'operation link role', 'fenced invocation in HTML model', 'malformed HTML invocation',
-    'invocation outside execution step', 'invocation argument contract', 'operation call verb',
-    'unwrapped shell invocation', 'duplicate command parameter prose',
+    'command contract links', 'operation link role', 'fenced invocation in HTML model', 'malformed HTML invocation',
+    'invocation outside command specification', 'invocation argument contract', 'operation call verb',
+    'unwrapped shell invocation', 'duplicate command parameter prose', 'redundant command wrapper', 'repeated procedure title',
 )
 OPERATIONS = KINDS + ('review',)
 
@@ -348,15 +349,15 @@ def validate_structure_entry(path, key, entry):
         raise ValueError(f'{path}: {key} link_roles must be boolean')
     if 'keeps_commands' in entry and not isinstance(entry['keeps_commands'], bool):
         raise ValueError(f'{path}: {key} keeps_commands must be boolean')
-    for field, value in (('steps', 'headings'), ('commands', 'inline-html')):
+    for field, value in (('steps', 'headings'), ('commands', 'html')):
         if field in entry and entry[field] != value:
             raise ValueError(f'{path}: {key} {field} must be {value}')
     if entry.get('steps') == 'headings' and not entry.get('procedures'):
         raise ValueError(f'{path}: {key} heading steps need a procedure section')
     if any(field in entry for field in ('commands', 'contracts', 'preamble', 'calls')) and entry.get('steps') != 'headings':
         raise ValueError(f'{path}: {key} procedure options need heading steps')
-    if entry.get('commands') == 'inline-html' and ('specifications' in entry or 'Commands' in sections):
-        raise ValueError(f'{path}: {key} inline commands belong in procedure steps')
+    if entry.get('commands') == 'html' and not entry.get('specifications'):
+        raise ValueError(f'{path}: {key} HTML commands need a specification section')
     if 'calls' in entry:
         calls = entry['calls']
         if (not isinstance(calls, dict) or not calls or not all(
@@ -511,7 +512,20 @@ def role_links(lines, fenced):
 
 def logical_command_lines(payload):
     """Unfold the invocation model’s token-boundary shell continuations."""
-    return re.sub(r'\\\n[ \t]*', '', payload).splitlines()
+    return re.sub(r'\\\n[ \t]*', '', html.unescape(payload)).splitlines()
+
+
+def command_target(path, target):
+    """Whether a heading link names a declared command specification."""
+    name, _, fragment = target.partition('#')
+    if not fragment or '://' in name or name.startswith('mailto:'):
+        return False
+    destination = (path.parent / name).resolve() if name else path
+    if not destination.is_file() or destination.suffix != '.md':
+        return False
+    entry = contract(destination, {}) or {}
+    return any(anchor_of(title) == anchor_of(fragment)
+               for _, title in specifications(scan(destination)[2], held_section(entry)))
 
 
 def operation_target(path, target):
@@ -523,6 +537,8 @@ def operation_target(path, target):
     if not destination.is_file() or destination.suffix != '.md':
         return False
     entry = contract(destination, {}) or {}
+    if command_target(path, target):
+        return True
     if not fragment:
         return entry.get('procedures') == 'Procedure' and entry.get('steps') == 'headings'
     lines, _, headings = scan(destination)
@@ -544,7 +560,7 @@ def link_roles(path, lines, fenced, entry):
         elif entry.get('link_roles') and role == 'operation' and not callable_target:
             yield index, 'operation link role', source
         if role in ('input', 'output') and not field_contract(path, target, entry.get('contracts', 'Fields')):
-            yield index, 'operation contract links', source
+            yield index, 'command contract links', source
 
 
 def heading_model(path, lines, fenced, headings, entry):
@@ -568,7 +584,10 @@ def heading_model(path, lines, fenced, headings, entry):
     parents, groups = {}, {}
     for index, level, title in headings:
         if index in inside and HEADING_STEP.match(title):
-            groups.setdefault(parents.get(level - 1), []).append((index, title))
+            parent = parents.get(level - 1)
+            groups.setdefault(parent, []).append((index, title))
+            if parent is not None and re.sub(r'^\d+\.\s+', '', title) == lines[parent].lstrip('# '):
+                yield index, 'repeated procedure title', title
         parents[level] = index
         for depth in [depth for depth in parents if depth > level]:
             del parents[depth]
@@ -593,26 +612,37 @@ def heading_model(path, lines, fenced, headings, entry):
                       if not fenced[index] and all(target in LINK.findall(lines[index]) for target in required)]
         if len(candidates) != 1:
             yield max(title, 0), 'procedure preamble missing', 'one intro line linking ' + ', '.join(required)
-    if section := entry.get('contracts'):
-        for index, level, title, end in scopes:
+    if entry.get('commands') == 'html':
+        for start, level, title, end in scopes:
             if level != 3 or HEADING_STEP.match(title):
                 continue
-            first_step = next((start for start, _, _, _ in steps if index < start < end), end)
-            roles = {role for line, _, role, _ in role_links(lines, fenced)
-                     if first_step < line < end and (line in commands or not HEADING.match(lines[line]))
-                     and role in ('input', 'output')}
-            for role in ('input', 'output'):
-                if role not in roles:
-                    yield index, 'operation contract links', f'{title}: contextual {role} link required'
-    if entry.get('commands') == 'inline-html':
-        yield from inline_commands(path, lines, fenced, entry, steps)
+            first = next((index for index, _, _, _ in steps if start < index < end), end)
+            body = [lines[index].removeprefix('- ').strip() for index in range(first + 1, end)
+                    if lines[index].strip() and not HEADING.match(lines[index]) and not fenced[index]]
+            if body and (match := re.fullmatch(r'Run (\[[^\]]+\]\([^\s)]+(?: "[^"]+")?\))\.', body[0])):
+                target = next(iter(LINK.finditer(match[1])), None)
+                if target and command_target(path, target[1]) and all(line.startswith('Provide ') for line in body[1:]):
+                    yield start, 'redundant command wrapper', 'caller can Run the command specification directly'
+        for index, target, role, source in role_links(lines, fenced):
+            if index in inside and role in ('input', 'output'):
+                yield index, 'command contract links', 'I/O roles belong to command specifications'
+        specs = [(index, title, heading_end(headings, index, 3, len(lines)))
+                 for index, title in specifications(headings, held_section(entry))]
+        if entry.get('contracts'):
+            for start, title, end in specs:
+                roles = {role for index, _, role, _ in role_links(lines, fenced)
+                         if start < index < end and not HEADING.match(lines[index])}
+                for role in ('input', 'output'):
+                    if role not in roles:
+                        yield start, 'command contract links', f'{title}: contextual {role} link required'
+        yield from html_commands(path, lines, fenced, entry, specs)
     if entry.get('calls'):
         yield from operation_calls(path, lines, fenced, entry,
                                    procedure_spans(lines, fenced, headings, entry))
 
 
-def inline_commands(path, lines, fenced, entry, steps):
-    """Invocation syntax, argument contracts and placement inside executing steps."""
+def html_commands(path, lines, fenced, entry, specs):
+    """Invocation syntax and contracts within named command specifications."""
     lexical = scan_blocks(lines)
     blocks, errors = lexical.invocations, lexical.errors
     for index, detail in errors:
@@ -620,9 +650,12 @@ def inline_commands(path, lines, fenced, entry, steps):
     for index, language in fence_openings(lines):
         if language in SHELL or language == 'tool':
             yield index, 'fenced invocation in HTML model', language or 'unlabelled'
+    for first, title, last in specs:
+        if sum(first < start <= end < last for start, end in blocks) != 1:
+            yield first, 'malformed HTML invocation', title + ': exactly one invocation required'
     for start, end in blocks:
-        if not any(index < start <= end < stop for index, _, _, stop in steps):
-            yield start, 'invocation outside execution step', 'place the invocation inside its numbered heading'
+        if not any(index < start <= end < stop for index, _, stop in specs):
+            yield start, 'invocation outside command specification', 'place the invocation in its named Commands specification'
         if lines[start] != lines[start].lstrip():
             yield start, 'indented detail in heading model', 'invocation wrapper must be flush'
         payload = '\n'.join(lines[start:end + 1]).strip()
@@ -652,7 +685,7 @@ def inline_commands(path, lines, fenced, entry, steps):
                     yield index, 'invocation argument contract', 'contract-backed arguments use bold links'
 
     if entry.get('link_roles'):
-        for start, _, _, end in steps:
+        for start, _, end in specs:
             parameters = {match[2] for first, last in blocks if start < first <= last < end
                           for index in range(first, last + 1) for match in ARGUMENT_LINK.finditer(lines[index])}
             for index in range(start + 1, end):
@@ -675,7 +708,7 @@ def operation_calls(path, lines, fenced, entry, inside):
         for match in LINK.finditer(text):
             name, _, fragment = match[1].partition('#')
             destination = (path.parent / name).resolve() if name else path
-            verb = entry['calls'].get(destination.parent.name)
+            verb = 'Run' if command_target(path, match[1]) else entry['calls'].get(destination.parent.name)
             if not verb or not destination.is_file():
                 continue
             if operation_target(path, match[1]) and not re.search(r'\b' + re.escape(verb) + r'\s+$', text[:match.start()]):
@@ -683,14 +716,14 @@ def operation_calls(path, lines, fenced, entry, inside):
 
 
 def html_interfaces(path, root, lines, fenced, headings, entry):
-    """Interface evidence scoped to the step that executes each HTML invocation."""
-    if not entry or entry.get('commands') != 'inline-html':
+    """Interface evidence belongs to the specification containing an invocation."""
+    if not entry or entry.get('commands') != 'html':
         return []
     blocks = scan_blocks(lines).invocations
-    steps = [(start, title, end) for start, _, title, end in procedure_headings(lines, headings, entry)
-             if HEADING_STEP.match(title)]
+    specs = [(start, title, heading_end(headings, start, 3, len(lines)))
+             for start, title in specifications(headings, held_section(entry))]
     found = []
-    for start, title, end in steps:
+    for start, title, end in specs:
         command_lines = [index for first, last in blocks if start < first and last < end
                          for index in range(first, last + 1)]
         graphql = any(GRAPHQL.search(lines[index]) or any(
@@ -877,7 +910,7 @@ def mode_commands(path, root, structures):
     if not path.name.endswith('-mode.md'):
         return []
     entry = contract(path, structures)
-    if (entry or {}).get('commands') == 'inline-html':
+    if (entry or {}).get('commands') == 'html':
         return []
     lines, _, headings = scan(path)
     held = specification_spans(headings, len(lines), held_section(entry))

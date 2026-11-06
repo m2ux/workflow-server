@@ -10,7 +10,7 @@ One finding verified against its supplied source.
 
 #### 1. Verify Supplied Problem
 
-Verify the problem against the source in [Finding Evidence](#finding-evidence "○").
+Verify the problem against the source in [Finding Evidence](#finding-evidence).
 
 #### 2. Provide Evidence Gaps
 
@@ -23,7 +23,7 @@ If evidence is missing or contradictory, provide that finding for the caller to 
 
 #### 4. Provide Finding Decision
 
-Provide [Finding Result](#finding-result "●") with the finding and any pending decision.
+Provide [Finding Result](#finding-result) with the finding and any pending decision.
 
 ### Report Review Finding
 
@@ -31,7 +31,7 @@ The verified findings presented for resolution.
 
 #### 1. Populate Verified Findings
 
-- Apply [Populate Review Finding](#populate-review-finding "ƒ") for each item in [Finding Set](#finding-set "○") with its area, severity, problem, solution and source evidence.
+- Apply [Populate Review Finding](#populate-review-finding "ƒ") for each item in [Finding Set](#finding-set).
 - Resolve any evidence gap before reporting it.
 - Group the provided findings by area.
 
@@ -40,7 +40,7 @@ The verified findings presented for resolution.
 - Put each pending decision to the user, one question at a time.
 - Wait for the answer.
 - Record the confirmed answer on the finding, meeting [Decision State](#decision-state).
-- Provide [Finding Result](#finding-result "●") with each confirmed resolution for application to its selected issue kind. A pending decision is provided without applying a change.
+- Provide [Finding Result](#finding-result) with each confirmed resolution for application to its selected issue kind. A pending decision is provided without applying a change.
 
 ## Fields
 

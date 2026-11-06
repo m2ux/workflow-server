@@ -13,26 +13,11 @@ Read these files first.
 - [Hot-fix](hotfix.md)
 - [Hot-fix Body](hotfix-body.md)
 
-## Operations
-
-### Plan Available Work
-
-One delivery plan from supplied board and delivery evidence.
-
-#### 1. Compute Available Units
-
-- Apply [Compute Available Work](#compute-available-work "ƒ") with [Board Items](#board-items "○"), [Pull Request Records](#pull-request-records "○") and [Issue-Link Snapshot](#issue-link-snapshot "○"), reading [Revision](#revision "○") in the [Project Checkout](#project-checkout "○") against [Epic-Base Names](#epic-base-names "○") and planning records in the [Engineering Worktree](#engineering-worktree "○"). Include [Off-Board Issues](#off-board-issues "○"), select the [Requested Lane](#requested-lane "○") and [Record Date](#record-date "○"), and write the dispatch data at [Dispatch-Export Path](#dispatch-export-path "○").
-- For each derived free unit, Apply [Determine Lane Admission](lane.md#determine-lane-admission "ƒ") within the computation, with its epic body, complete ids and the requested index.
-
-#### 2. Provide Delivery Plan
-
-Provide [Plan Report](#plan-report "●") and [Dispatch Export](#dispatch-export "●"), meeting [Fields](#fields), or [Failure](#failure "●") for incomplete evidence. The requester decides holds and dispatch, and supplies missing evidence for another pass.
+## Commands
 
 ### Compute Available Work
 
 Computes available work from supplied board and delivery snapshots.
-
-#### 1. Compute Available Work
 
 - Save the survey export at [Dispatch-Export Path](#dispatch-export-path "○").
 - Include each supplied [Off-Board Issues](#off-board-issues "○") file with `--others`.
@@ -45,20 +30,20 @@ Computes available work from supplied board and delivery snapshots.
 - Omit `--lane` when the run names no lane. Offered units meet [Admission](lane.md#admission).
 - Use `--dispatch-plan` when saving a [dispatch export](#dispatch-export "●").
 
+- The computation runs [Evaluate Lane Admission](lane.md#evaluate-lane-admission "ƒ") internally for each derived free unit under [Admission](lane.md#admission). The requester decides holds and dispatch, and supplies missing evidence for another pass.
+
 <big><pre>
-cd "[**<workspace>**](#workspace "○")" && \
-  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py \
-  --items '[**<board-items-file>**](#board-items "○")' \
-  --prs '[**<pull-request-records-file>**](#pull-request-records "○")' \
-  --links '[**<issue-link-snapshot-file>**](#issue-link-snapshot "○")' \
-  --project '[**<checkout>**](#project-checkout "○")' \
-  --revision '[**<revision>**](#revision "○")' \
-  --bases '[**<epic-base-names>**](#epic-base-names "○")' \
-  --engineering '[**<engineering-worktree>**](#engineering-worktree "○")' \
+cd "[**<workspace>**](#workspace "○")" && &#92;
+  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py &#92;
+  --items '[**<board-items-file>**](#board-items "○")' &#92;
+  --prs '[**<pull-request-records-file>**](#pull-request-records "○")' &#92;
+  --links '[**<issue-link-snapshot-file>**](#issue-link-snapshot "○")' &#92;
+  --project '[**<checkout>**](#project-checkout "○")' &#92;
+  --revision '[**<revision>**](#revision "○")' &#92;
+  --bases '[**<epic-base-names>**](#epic-base-names "○")' &#92;
+  --engineering '[**<engineering-worktree>**](#engineering-worktree "○")' &#92;
   --lane [**<lane-index>**](#requested-lane "○")
 </pre></big>
-
-#### 2. Provide Computed Available Work
 
 Provide [Plan Report](#plan-report "●"), [Dispatch Export](#dispatch-export "●") to the requester, or [Failure](#failure "●") if the operation fails.
 

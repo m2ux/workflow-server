@@ -10,51 +10,40 @@ A review record for the exact integration revision.
 
 #### 1. Review Complete Integration Diff
 
-Read the complete target-to-head diff, affected definitions and callers, and every criterion’s verification evidence using the [Review Inputs](#review-inputs "○"). Inspect behavior and failure paths; test counts alone do not establish review completion.
+Read the complete target-to-head diff, affected definitions and callers, and every criterion’s verification evidence using the [Review Inputs](#review-inputs). Inspect behavior and failure paths; test counts alone do not establish review completion.
 
 #### 2. Resolve Review Findings
 
 - Record findings with severity and disposition. A nonblocking deferred finding names its ticket.
 
-- When the findings require fixes under [Review Record](#review-record "●"):
+- When the findings require fixes under [Review Record](#review-record):
 - Fix every required finding on the reviewed branch.
 - Run appropriate regression checks.
-- Apply [Produce Agent Review](#produce-agent-review "ƒ") with fresh pull request metadata for the resulting head, the same checkout, criteria, updated validation evidence and planning destination, and provide that review’s record.
+- Apply [Produce Agent Review](#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence, then provide its review record to the requester and stop.
 
 #### 3. Write Revision Review Record
 
-Write a JSON list containing the [Review Record](#review-record "●"), with the full reviewed head and target SHAs, the `base_ref` a hot-fix's record carries, the scope actually inspected, findings and validation results. An empty findings list states that the review found no defect.
+Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the `base_ref` a hot-fix's record carries, the scope actually inspected, findings and validation results. An empty findings list states that the review found no defect.
 
 #### 4. Provide Review Evidence
 
 Provide the record for publication on the engineering branch. Evidence lives outside the reviewed branch, so publishing it does not change the head it identifies.
 
-### Check Agent Review
-
-The current review's handoff eligibility.
-
-#### 1. Validate Published Review Evidence
-
-Apply [Validate Agent Review](#validate-agent-review "ƒ") with the [Pull Request Record](#pull-request-record "○") and [Published Reviews](#published-reviews "○"). Missing or stale evidence, an incomplete record or an unresolved finding blocks handoff.
-
-#### 2. Provide Checked Revision
-
-Provide [Review Eligibility](#review-eligibility "●") and the head and target SHAs checked. Refresh both tips immediately before ready, board and user-handoff actions; a tip change that invalidates the record under [Review Record](#review-record) requires another review.
+## Commands
 
 ### Validate Agent Review
 
 Checks published review evidence against a freshly fetched integration pull request.
 
-#### 1. Validate Agent Review
+- Missing or stale evidence, an incomplete record or an unresolved finding blocks handoff.
+- Refresh both pull request tips immediately before ready, board and user-handoff actions. A tip change that invalidates [Review Record](#review-record) requires another review.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/agent_review.py \
-  --pr '[**&lt;pull-request-json-file&gt;**](#pull-request-record "○")' \
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/agent_review.py &#92;
+  --pr '[**&lt;pull-request-json-file&gt;**](#pull-request-record "○")' &#92;
   --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")'
 </pre></big>
-
-#### 2. Provide Validated Agent Review
 
 Provide [Review Eligibility](#review-eligibility "●") to the requester.
 

@@ -11,7 +11,6 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 Read these files first.
 
 - [Lane](../artifacts/lane.md)
-- [Propose Mode](propose-mode.md "ƒ")
 - [Guidelines](../guidelines.md)
 - [Planning Record](../artifacts/planning-record.md)
 - [Pull Request](../artifacts/pull-request.md)
@@ -23,10 +22,11 @@ Read these files first.
 - [Issue Body](../artifacts/issue-body.md)
 - [Epic](../artifacts/epic.md)
 - [Delivery Branches](../artifacts/delivery-branches.md)
-- [Sync Mode](sync-mode.md "ƒ")
 - [Review Finding](../artifacts/review-finding.md)
 - [Goal Trace](../artifacts/goal-trace.md)
 - [Dependency Graph](../artifacts/dependency-graph.md)
+- [Propose Mode](propose-mode.md "ƒ")
+- [Sync Mode](sync-mode.md "ƒ")
 
 ## Procedure
 
@@ -42,7 +42,7 @@ Read these files first.
 
 ### 2. Prepare the Planning Record
 
-- For an initiative, epic or complex plan, Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") with the record identity, folder and supplied evidence files.
+- For an initiative, epic or complex plan, Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") for the selected record with the supplied evidence files.
 - Use [Layout](../artifacts/planning-record.md#layout) for draft paths.
 - Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") for the record's folder.
 

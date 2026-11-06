@@ -21,12 +21,12 @@ Read these files first.
 - [Initiative Issue Body](../artifacts/initiative-issue-body.md)
 - [Board](../artifacts/board.md)
 - [Work Item](../artifacts/work-item.md)
-- [Understand Mode](understand-mode.md "ƒ")
 - [Board Delivery](../artifacts/board-delivery.md)
+- [Plan Change](../artifacts/plan-change.md)
+- [Epic Integration](../protocols/epic-integration.md "ƒ")
 - [Issue Closure](../protocols/issue-closure.md "ƒ")
 - [Review Pull Request](../protocols/review-pull-request.md "ƒ")
-- [Epic Integration](../protocols/epic-integration.md "ƒ")
-- [Plan Change](../artifacts/plan-change.md)
+- [Understand Mode](understand-mode.md "ƒ")
 
 ## Procedure
 
@@ -47,7 +47,7 @@ Read these files first.
 
 - Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body "ƒ"). For a rejected issue:
 
-- Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format "ƒ") with that issue identity, current JSON, kind template and field conditions, required related evidence and output body path.
+- Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format "ƒ") for the selected issue against its kind’s template and field conditions.
 - When it returns, fetch the saved body again.
 - Validate that saved body before continuing to the fetch step.
 - Provide a remaining format failure as a blocker.
@@ -55,7 +55,7 @@ Read these files first.
 ### 2. Fetch
 
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for each issue, including each task issue under an epic being synced, titled as [Titles](../artifacts/task-body.md#titles) states.
-- Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence "ƒ") with the selected repositories and initiative prefix, the fetched initiative, epic and task issue JSON, authenticated access and destination snapshot files.
+- Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence "ƒ") for the selected repositories and initiative against current issue records.
 - Use its provided pull request records, complete issue-link snapshot and findings in the following steps.
 - Apply [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close "ƒ") for the repository holding the issues, which gates every link, merge and closure this run makes.
 - Capture each issue's Development links.
@@ -81,16 +81,16 @@ Read these files first.
 
 ### 5. Sync Each Task Issue
 
-- For a task with a delivering pull request, open or merged, Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") with its current body, selected criteria, delivery evidence, revisions, named instruments and the project checkout.
+- For a task with a delivering pull request, open or merged, Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
 
-- Apply [Record Task Delivery](../artifacts/task-body.md#record-task-delivery "ƒ") with the task JSON, pull request records, complete issue-link snapshot, delivering pull request number, provided verified criterion ids and output body path.
+- Run [Sync Task Issue](../artifacts/task-body.md#sync-task-issue "ƒ") for the selected task and delivering pull request with the verified criterion ids.
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body before closure.
 - Once the pull request has merged, Apply [Comment on Issue](../artifacts/issue.md#comment-on-issue "ƒ") to record it: `Delivered by #950.`
 - Follow [Issue Closure](../protocols/issue-closure.md "ƒ") when it reports closable.
 
 ### 6. Sync Each Epic
 
-- Apply [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery "ƒ"), linking every match from the match step, open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at. Linking a pull request replaces the planning-record link on that task.
+- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ"), linking every match from the match step, open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at. Linking a pull request replaces the planning-record link on that task.
 
 - Handle the provided delivery findings:
 
@@ -166,13 +166,13 @@ Read these files first.
 - Apply [Revise Epic Rows](../artifacts/epic-issue-body.md#revise-epic-rows "ƒ") with the confirmed row.
 
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
-- Apply [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery "ƒ") again with the saved epic, refreshed task records and the same epic bases. An unanswered placement stays pending.
+- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the saved epic, refreshed task records and the same epic bases. An unanswered placement stays pending.
 
 **Open questions.**
 
 - Return to the select step for this epic.
 - Resolve the questions there.
-- Fetch the saved body, then Apply [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery "ƒ") again with the same epic bases.
+- Fetch the saved body, then Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the same epic bases.
 
 **Ready to verify.**
 
@@ -194,7 +194,7 @@ Read these files first.
 
 - Report each source and why to the user, with each check the run names not checked.
 - Leave an unmatched or in-flight pull request whose head is an epic base unmatched, since the run could not tell it from a task delivery.
-- Fetch each draft base, long-lived branch or review head named unread, and Apply [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery "ƒ") again with the same epic bases.
+- Fetch each draft base, long-lived branch or review head named unread, and Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the same epic bases.
 - The epic stays open until every epic base states the same readable declaration.
 
 **Source.**
@@ -205,18 +205,18 @@ Read these files first.
 
 - Report each check with the unevaluable sources that left it unread.
 
-- After applying the provided findings, Apply [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery "ƒ") again with the revised epic body and refreshed delivery records, retaining the complete issue-link snapshot, the same epic bases and output body path. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, unchanged, and unplaced are clear, apart from a pull request the user leaves unmatched.
+- After applying the provided findings, Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again for the refreshed epic evidence in the project checkout with the fetched epic bases. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, unchanged, and unplaced are clear, apart from a pull request the user leaves unmatched.
 
 ### 7. Verify
 
-- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the criteria reported ready to verify, supplying the current issue body, delivery findings, relevant delivery revisions, named instruments and the project checkout.
+- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
 
 - Retain the provided verified criterion ids and evidence for the tick step.
 
 - For an unresolved epic criterion requiring further work:
 
-- Apply [Plan Gap Task](../artifacts/epic-issue-body.md#plan-gap-task "ƒ") with the current epic JSON and body, delivered task row, unmet criterion ids, delivery records, complete issue-link snapshot, project checkout, fetched epic bases and output body path.
-- For each criterion it returns as already holding, Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") again with that criterion id, the current epic body, delivery findings, delivery revisions, named instruments and the project checkout.
+- Apply [Plan Gap Task](../artifacts/epic-issue-body.md#plan-gap-task "ƒ") for the delivered row and unmet criterion ids, using the project checkout and fetched epic bases.
+- For each criterion it returns as already holding, Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
 - Apply [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria "ƒ") with the provided verified ids, the current epic JSON, pull request records, complete issue-link snapshot and output body path, and Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
 - Resume with its recorded disposition; a criterion that cannot be confirmed stays unticked.
 
@@ -231,7 +231,7 @@ Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with e
 ### 10. Close
 
 - Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") for the initiative theme when the caller supplied no board identity. Report an absent board; integration still follows its own evidence gates.
-- When the preceding Record Epic Delivery call reports an epic base unmerged and names no open pull request, open it as a draft review pull request and leave the epic open. Epic Integration establishes readiness from the completed delivery evidence.
+- When the preceding Sync Epic call reports an epic base unmerged and names no open pull request, open it as a draft review pull request and leave the epic open. Epic Integration establishes readiness from the completed delivery evidence.
 
 - For each open epic pull request:
 
@@ -240,16 +240,16 @@ Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with e
 
 - Fetch the pull requests again after merging.
 
-- Apply [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery "ƒ") again with the refreshed records, the same project checkout and the same epic bases.
+- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the refreshed records, the same project checkout and the same epic bases.
 - Follow [Issue Closure](../protocols/issue-closure.md "ƒ") each epic the re-run reports closable.
 
 ### 11. Sync the Initiative
 
-- Apply [Record Initiative Delivery](../artifacts/initiative-issue-body.md#record-initiative-delivery "ƒ") with the epic JSON fetched after closing.
+- Run [Sync Initiative](../artifacts/initiative-issue-body.md#sync-initiative "ƒ") with the epic JSON fetched after closing.
 
 - For provided criteria ready to verify:
 
-- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") with their ids, current initiative body, delivery findings, delivery revisions, named instruments and the project checkout.
+- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
 - Apply [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria "ƒ") with provided verified ids, the initiative JSON, every linked epic record and output body file.
 - Report the remaining findings as pending.
 

@@ -22,11 +22,11 @@ Read these files first.
 
 ### 1. Fetch
 
-Apply [Read Repository Issues](../artifacts/issue.md#read-repository-issues "ƒ") for every issue.
+Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every issue.
 
 ### 2. List Candidates
 
-- Apply [Find Placement Candidates](../artifacts/placement.md#find-placement-candidates "ƒ") with the complete issue collection.
+- Run [List Orphans](../artifacts/placement.md#list-orphans "ƒ") with the complete issue collection.
 
 - Use its candidates and available destinations for triage.
 

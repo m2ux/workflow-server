@@ -11,13 +11,13 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 Read these files first.
 
 - [Issue](../artifacts/issue.md)
-- [Review Pull Request](review-pull-request.md "ƒ")
-- [Change Overview](change-overview.md "ƒ")
 - [Pull Request](../artifacts/pull-request.md)
 - [Delivery Branches](../artifacts/delivery-branches.md)
 - [Epic](../artifacts/epic.md)
 - [Board Delivery](../artifacts/board-delivery.md)
 - [Agent Review](../artifacts/agent-review.md)
+- [Change Overview](change-overview.md "ƒ")
+- [Review Pull Request](review-pull-request.md "ƒ")
 
 ## Procedure
 
@@ -54,7 +54,7 @@ Read these files first.
 
 ### 3. Merge or Hand Off
 
-- Refresh the review metadata and Apply [Check Agent Review](../artifacts/agent-review.md#check-agent-review "ƒ") with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding. Apply [Merge Delivery Pull Request](../artifacts/pull-request.md#merge-delivery-pull-request "ƒ") with the confirmed epic readiness, verified head, target requirements, repository prerequisite and passing evidence, and delivery kind epic, without asking for further confirmation.
+- Refresh the review metadata and Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding. Apply [Merge Delivery Pull Request](../artifacts/pull-request.md#merge-delivery-pull-request "ƒ") with the confirmed epic readiness, verified head, target requirements, repository prerequisite and passing evidence, and delivery kind epic, without asking for further confirmation.
 - Provide its handoff when a human reviewer must merge. A changed head requires fresh verification; a merge refusal returns to the readiness checks, and a repeated refusal is reported without retrying.
 
 ### 4. Confirm the Result

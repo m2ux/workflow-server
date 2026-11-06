@@ -16,7 +16,7 @@ vocabulary.
   paragraph, and a procedure subsection declares its own only where it
   differs from its file's.
 - A call naming a checkout other than its procedure's passes it: the
-  operation called names that checkout in contextual input links, the protocol or
+  operation called reaches a command whose input contract accepts that checkout, the protocol or
   mode called runs in it, or the command called acts wherever it is run.
 
 The walk reads the citation graph the skill check builds, so a call is a link
@@ -91,11 +91,11 @@ class Document:
         return None
 
     def inputs(self, start):
-        """Input names and owning Field definitions in this operation’s prose and commands."""
+        """Input names and owning Fields in this command specification."""
         _, end, _, _ = self.spans[start]
         contracts = []
         for index, target, role, _ in checker.role_links(self.lines, self.fenced):
-            if not (start < index < end and index in self.steps) or role != 'input':
+            if not (start < index < end) or role != 'input':
                 continue
             if index not in self.blocks.html_lines and checker.HEADING.match(self.lines[index]):
                 continue
@@ -130,12 +130,13 @@ class Document:
         return next((start for start in self.enclosing(index) if self.spans[start][2] == level), None)
 
     def commands(self):
-        """Executing HTML operations and their working-directory declarations."""
-        if self.entry.get('commands') != 'inline-html':
+        """Named command specifications and their working-directory declarations."""
+        if self.entry.get('commands') != 'html':
             return
         operations = {}
+        specifications = checker.specification_spans(self.headings, len(self.lines), checker.held_section(self.entry))
         for first, last in self.blocks.invocations:
-            if first not in self.steps:
+            if first not in specifications:
                 continue
             start = self.section(first, 3)
             if start is not None:
@@ -212,11 +213,16 @@ class Corpus:
         start = document.anchors.get(anchor)
         return document.spans[start][3] if start is not None else anchor
 
-    def accepts(self, destination, anchor, checkout):
+    def accepts(self, destination, anchor, checkout, visited=None):
         """Whether a section called with a checkout takes it: a command acts
-        wherever it is run, an operation names it in contextual input links, and a
+        wherever it is run, an operation reaches a command accepting that checkout, and a
         procedure runs in it."""
-        if (destination, anchor) in self.commands:
+        visited = set() if visited is None else visited
+        key = (destination, anchor)
+        if key in visited:
+            return False
+        visited.add(key)
+        if key in self.commands:
             return True
         document = self.documents.get(destination)
         if document is None:
@@ -228,7 +234,11 @@ class Corpus:
             return False
         if document.declared(start) == checkout:
             return True
-        return f'{checkout} checkout' in document.inputs(start).lower()
+        if checker.command_target(document.path, '#' + anchor):
+            return f'{checkout} checkout' in document.inputs(start).lower()
+        _, end, _, _ = document.spans[start]
+        return any(self.accepts(target, fragment, checkout, visited)
+                   for index, target, fragment in document.calls() if start < index < end)
 
 
 class ExecutingCheckoutEvidence(unittest.TestCase):
@@ -265,11 +275,9 @@ class ExecutingCheckoutEvidence(unittest.TestCase):
             path.parent.mkdir()
             path.write_text("""# Checkout Evidence
 
-## Operations
+## Commands
 
 ### Inspect Current Checkout
-
-#### 1. Inspect Current State
 
 **Acts on:** the checkout it runs in.
 
@@ -280,18 +288,16 @@ git status
 
 ### Inspect Explicit Checkout
 
-#### 1. Inspect Supplied State
-
 <big><pre>git -C '/tmp/control' status</pre></big>
 
 ### Inspect Undeclared Checkout
-
-#### 1. Inspect Undeclared State
 
 <big><pre>
 **Acts on:** the checkout it runs in.
 git status
 </pre></big>
+
+## Operations
 
 ### Unexecuted Operation
 
@@ -317,7 +323,7 @@ git status
 """)
             document = Document(path, {'sections': ['Operations', 'Fields'],
                                        'procedures': 'Operations', 'steps': 'headings',
-                                       'commands': 'inline-html'})
+                                       'commands': 'html', 'specifications': 'Commands'})
             commands = {title: (bare, declares) for _, title, bare, declares in document.commands()}
             self.assertEqual(commands, {
                 'Inspect Current Checkout': (True, True),
@@ -330,16 +336,16 @@ git status
             path = Path(directory) / 'artifacts/control.md'
             path.parent.mkdir()
             content = '\n'.join([
-                '# Contextual Input', '', '## Operations', '', '### Inspect Supplied State', '',
-                '[Review Checkout](#review-checkout "○")', '', '#### 1. Inspect Checkout', '',
+                '# Contextual Input', '', '## Commands', '', '### Inspect Supplied State', '',
+                'Inspect supplied checkout state.', '',
                 'Inspect the supplied state.', '',
                 '```markdown', 'Use [Review Checkout](#review-checkout "○").', '```', '',
-                '<big><pre>[Review Checkout](#review-checkout "○")</pre></big>', '',
+                '<big><pre>inspect</pre></big>', '',
                 'Provide [Review Checkout](#review-checkout "●").', '',
                 '## Fields', '', '### Review Checkout', '', 'The review checkout holding the change.', '',
             ])
             entry = {'sections': ['Operations', 'Fields'], 'procedures': 'Operations',
-                     'steps': 'headings', 'commands': 'inline-html'}
+                     'steps': 'headings', 'commands': 'html', 'specifications': 'Commands'}
             path.write_text(content)
             document = Document(path, entry)
             start = document.anchors['inspect-supplied-state']
@@ -385,7 +391,7 @@ Apply [Inspect Literal Target](#literal-target) in the review checkout.
 """)
             document = Document(path, {'sections': ['Operations', 'Fields'],
                                        'procedures': 'Operations', 'steps': 'headings',
-                                       'commands': 'inline-html'})
+                                       'commands': 'html', 'specifications': 'Commands'})
             self.assertEqual([anchor for _, _, anchor in document.calls()], ['live-target'])
 
 
@@ -467,7 +473,7 @@ class ProceduresDeclaringTheirCheckout(unittest.TestCase):
 class CallsIntoAnotherCheckout(unittest.TestCase):
     def test_a_call_into_another_checkout_passes_it(self):
         """A call naming a checkout other than its procedure's hands it over:
-        the operation takes it in contextual input links, the procedure runs in it, or
+        the operation reaches a command accepting it, the procedure runs in it, or
         the command acts wherever it is run. A call to a procedure running
         elsewhere names that checkout."""
         corpus = Corpus()

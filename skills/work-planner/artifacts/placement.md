@@ -23,7 +23,7 @@ One placement option from the supplied orphan and candidate destinations.
 
 #### 1. Select Candidate Destination
 
-- Identify an existing task, a new task, a new epic, a new initiative, a hot-fix, or Leave for the orphan and candidate destinations in [Placement Inputs](#placement-inputs "○").
+- Identify an existing task, a new task, a new epic, a new initiative, a hot-fix, or Leave for the orphan and candidate destinations in [Placement Inputs](#placement-inputs).
 - Offer a hot-fix only for an orphan that meets the hot-fix [Definition](hotfix-body.md#definition), with the theme board it joins and its [target](hotfix-body.md#target): the declared long-lived branch the orphan's evidence places the defect on, the repository's default branch where it is declared and the evidence names no other.
 
 #### 2. Populate Placement Fields
@@ -32,19 +32,7 @@ Populate the placement meeting [Fields](#fields) and [Disposition Conditions](#d
 
 #### 3. Provide Placement Option
 
-Provide [Placement Result](#placement-result "●") for the requester to offer and apply.
-
-### Find Placement Candidates
-
-The issue candidates and available destinations from supplied records.
-
-#### 1. List Repository Candidates
-
-Apply [List Orphans](#list-orphans "ƒ") to [Issue Collection](#issue-collection "○").
-
-#### 2. Provide Available Destinations
-
-Provide [Candidate Issues](#candidate-issues "●") and [Candidate Destinations](#candidate-destinations "●") with open initiative and epic destinations for investigation.
+Provide [Placement Result](#placement-result) for the requester to offer and apply.
 
 ### Apply Issue Placement
 
@@ -52,7 +40,7 @@ One selected destination for an orphan's work.
 
 #### 1. Apply Confirmed Destination
 
-- Execute only the branch matching [Confirmed Placement](#confirmed-placement "○"):
+- Execute only the branch matching [Confirmed Placement](#confirmed-placement):
 
 ##### Existing Task
 
@@ -93,7 +81,7 @@ One selected destination for an orphan's work.
 
 #### 2. Provide Saved Placement
 
-Provide [Placement Result](#placement-result "●") with the saved destination, identities of all affected bodies and confirmed disposition, including the destination initiative, epic and new row id for a new task or new epic, and the number for a hot-fix. The requester performs the rewrite or closure.
+Provide [Placement Result](#placement-result) with the saved destination, identities of all affected bodies and confirmed disposition, including the destination initiative, epic and new row id for a new task or new epic, and the number for a hot-fix. The requester performs the rewrite or closure.
 
 ### Rewrite Orphan Issue
 
@@ -101,7 +89,7 @@ One kept or left orphan rewritten in the layout of its destination kind.
 
 #### 1. Populate Selected Body
 
-- Apply [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body "ƒ"), Apply [Populate Hot-fix Body](hotfix-body.md#populate-hot-fix-body "ƒ") or Apply [Populate Standalone Body](standalone-body.md#populate-standalone-body "ƒ"), selecting the destination kind and evidence/design from [Rewrite Inputs](#rewrite-inputs "○").
+- Apply [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body "ƒ"), Apply [Populate Hot-fix Body](hotfix-body.md#populate-hot-fix-body "ƒ") or Apply [Populate Standalone Body](standalone-body.md#populate-standalone-body "ƒ"), selecting the destination kind and evidence/design from [Rewrite Inputs](#rewrite-inputs).
 - Carry evidence into Problem and design into Proposal.
 - Pass a hot-fix its supplied number, theme label and target.
 
@@ -117,7 +105,7 @@ For a hot-fix, Apply [Settle Hot-fix Board Status](hotfix.md#settle-hot-fix-boar
 
 #### 4. Provide Saved Identity
 
-Provide [Saved Orphan](#saved-orphan "●") with the saved identity and a hot-fix’s settled board item.
+Provide [Saved Orphan](#saved-orphan) with the saved identity and a hot-fix’s settled board item.
 
 ### Subsume Orphan Work
 
@@ -125,7 +113,7 @@ The work remains tracked by the taking issue.
 
 #### 1. Transfer Tracked Work
 
-- Transfer the work in [Transfer Inputs](#transfer-inputs "○") to the taking issue.
+- Transfer the work in [Transfer Inputs](#transfer-inputs) to the taking issue.
 - Make each outcome a criterion of one invariant.
 - Put the design in Proposal.
 - Cite the orphan and any planning record in References.
@@ -137,22 +125,20 @@ Prepare the comment file naming the taking epic and row, or the taking task issu
 #### 3. Close Transferred Orphan
 
 - Apply [Close Transferred Work](issue.md#close-transferred-work "ƒ") with the orphan identity, confirmed destination evidence and closure comment file, retaining the orphan's body.
-- Provide [Saved Orphan](#saved-orphan "●") with the confirmed closure or blocker.
+- Provide [Saved Orphan](#saved-orphan) with the confirmed closure or blocker.
+
+## Commands
 
 ### List Orphans
 
 Lists the hoist candidates, and the open initiatives and epics they could join.
 
-#### 1. List Orphans
-
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/orphans.py '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
 
-#### 2. Provide Listed Orphans
-
-Provide [Candidate Destinations](#candidate-destinations "●") to the requester.
+Provide [Candidate Issues](#candidate-issues "●") and [Candidate Destinations](#candidate-destinations "●") to the requester.
 
 ## Fields
 

@@ -22,24 +22,24 @@ Read these files first.
 ### 1. Hot-Fix
 
 - For a [hot-fix](../artifacts/hotfix.md), recorded as its [Delivery Record](../artifacts/hotfix.md#delivery-record) states:
-- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for each criterion it carries, with its current body, the delivering pull request, its merged revision, named instruments and the project checkout.
-- Apply [Record Hot-fix Delivery](../artifacts/hotfix.md#record-hot-fix-delivery "ƒ") with the provided verified criterion ids, the hot-fix JSON, pull request records, complete issue-link snapshot, delivering pull request number and output body file.
+- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
+- Run [Sync Hot-fix Issue](../artifacts/hotfix.md#sync-hot-fix-issue "ƒ") for the selected hot-fix and delivering pull request with the provided verified criterion ids.
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
 - Provide the saved identity and findings to the caller.
 
 ### 2. Task Issues
 
-- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for each criterion the delivered task covers, with its current body, delivery findings, delivery revisions, named instruments and the project checkout.
-- Apply [Record Task Delivery](../artifacts/task-body.md#record-task-delivery "ƒ") with the provided verified criterion ids.
+- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
+- Run [Sync Task Issue](../artifacts/task-body.md#sync-task-issue "ƒ") with the provided verified criterion ids.
 - Supply the issue JSON, pull request records, complete issue-link snapshot, delivering pull request number, verified criterion ids, and output body file.
 
 ### 3. Epic Rows
 
-- Apply [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery "ƒ") with the epic JSON, pull request records, complete issue-link snapshot, task issue records, confirmed task-to-pull-request matches, project checkout, fetched epic bases, and output body file.
+- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for the current epic in the project checkout with the fetched epic bases, retaining the confirmed task-to-pull-request matches.
 - Retain the provided epic body for criterion recording and publication.
 - Interpret the provided [Delivery Findings](../artifacts/epic.md#delivery-findings).
 - Apply [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body "ƒ") for a confirmed unplaced task.
-- Apply [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery "ƒ") again with the refreshed epic JSON and the same pull request records, complete issue-link snapshot, task issue records, confirmed task-to-pull-request matches, project checkout, fetched epic bases, and output body file.
+- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again for the refreshed epic evidence in the project checkout with the fetched epic bases, retaining the confirmed task-to-pull-request matches.
 
 ### 4. Coverage Agreement
 
@@ -48,12 +48,12 @@ Read these files first.
 
 ### 5. Criteria and Bodies
 
-- Use the epic body provided by Record Epic Delivery.
+- Use the epic body provided by Sync Epic.
 
 #### Remaining Criteria
 
 - When verified criterion ids remain unticked in that body:
-- Apply [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria "ƒ") with its updated JSON, pull request records, complete issue-link snapshot, those remaining ids and output body path.
+- Apply [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria "ƒ") for the provided verified criterion ids.
 - Retain the body provided by that Tick Verified Criteria call.
 
 #### Body Publication

@@ -11,13 +11,13 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 Read these files first.
 
 - [Delivery Evidence](../artifacts/delivery-evidence.md)
-- [Issue Delivery](issue-delivery.md "ƒ")
-- [Issue Closure](issue-closure.md "ƒ")
-- [Review Pull Request](review-pull-request.md "ƒ")
-- [Epic Integration](epic-integration.md "ƒ")
 - [Epic Issue Body](../artifacts/epic-issue-body.md)
 - [Initiative Issue Body](../artifacts/initiative-issue-body.md)
 - [Hot-fix](../artifacts/hotfix.md)
+- [Epic Integration](epic-integration.md "ƒ")
+- [Issue Closure](issue-closure.md "ƒ")
+- [Issue Delivery](issue-delivery.md "ƒ")
+- [Review Pull Request](review-pull-request.md "ƒ")
 
 ## Procedure
 
@@ -48,6 +48,6 @@ Follow [Review Pull Request](review-pull-request.md "ƒ") for the affected epic 
 
 - After every epic base has merged:
 - Refresh the evidence.
-- Apply [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery "ƒ") with the epic JSON, pull request records, complete issue-link snapshot, task issue records, project checkout, fetched epic bases, and output body file.
+- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for the current epic in the project checkout with the fetched epic bases.
 - Follow [Issue Closure](issue-closure.md "ƒ") when eligible.
-- Apply [Record Initiative Delivery](../artifacts/initiative-issue-body.md#record-initiative-delivery "ƒ") with the current initiative and every linked epic record. Initiative completion does not gate an epic merge. The epic entering review is the one board change a task merge makes, and the initiative is left to its own sync.
+- Run [Sync Initiative](../artifacts/initiative-issue-body.md#sync-initiative "ƒ") with the current initiative and every linked epic record. Initiative completion does not gate an epic merge. The epic entering review is the one board change a task merge makes, and the initiative is left to its own sync.

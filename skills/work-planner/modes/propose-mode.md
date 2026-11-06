@@ -32,7 +32,7 @@ Read these files first.
 
 ### 3. Draft the Body
 
-- Apply [Populate Proposal Body](../artifacts/proposal-body.md#populate-proposal-body "ƒ") with the confirmed problem, evidence, goal clauses, boundary and output body path. The local file is the source for the issue.
+- Apply [Populate Proposal Body](../artifacts/proposal-body.md#populate-proposal-body "ƒ") from the confirmed proposal context at the selected output path. The local file is the source for the issue.
 
 - Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") with the proposal prefix letter, and carry the provided proposal number in the title.
 - The goal clauses are the clauses the user confirmed. The Non-Goals are the boundary.

@@ -2,56 +2,17 @@
 
 A board-wide delivery lane, its task assignments and the units a request admits.
 
-## Operations
-
-### Read Task Lanes
-
-Lane assignments and malformed-cell findings from supplied task tables.
-
-#### 1. Read Task Lane Cells
-
-Apply [Read Lane Assignments](#read-lane-assignments "ƒ") to [Epic Body File](#epic-body-file "○") and provide [Lane Result](#lane-result "●") with the row-to-index map and findings, meeting [Assignments](#assignments).
-
-### Assign Task Lanes
-
-A task table with confirmed lane assignments.
-
-#### 1. Write Confirmed Lane Map
-
-- Apply [Write Lane Assignments](#write-lane-assignments "ƒ") to [Epic Body File](#epic-body-file "○") with [Confirmed Map](#confirmed-map "○"), writing to [Output Body](#output-body "○").
-- Refuse unknown task ids or malformed resulting cells.
-
-#### 2. Provide Updated Body
-
-Provide the [output body](#output-body "●") for the caller's full body and dependency validation.
-
-### Check Unit Lanes
-
-The common lane of a supplied work unit, or its assignment findings.
-
-#### 1. Check Complete Unit Lane
-
-Apply [Validate Lane Unit](#validate-lane-unit "ƒ") to [Epic Body File](#epic-body-file "○") with [Unit Task Ids](#unit-task-ids "○") and provide [Lane Result](#lane-result "●") with the common index or findings, meeting [Unit Consistency](#unit-consistency).
-
-### Determine Lane Admission
-
-The lane decision for one free unit and current request.
-
-#### 1. Evaluate Requested Lane
-
-Apply [Evaluate Lane Admission](#evaluate-lane-admission "ƒ") to [Epic Body File](#epic-body-file "○") with [Unit Task Ids](#unit-task-ids "○") and [Requested Index](#requested-index "○"), and provide [Lane Result](#lane-result "●") with its admitted flag and findings, meeting [Admission](#admission).
+## Commands
 
 ### Read Lane Assignments
 
 Reads raw task-table Lane cells through the Lane module.
 
-#### 1. Read Lane Assignments
+- Results meet [Assignments](#assignments).
 
 <big><pre>
 "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" read '[**&lt;epic-body-file&gt;**](#epic-body-file "○")'
 </pre></big>
-
-#### 2. Provide Read Lane Assignments
 
 Provide [Lane Result](#lane-result "●") to the requester.
 
@@ -59,16 +20,14 @@ Provide [Lane Result](#lane-result "●") to the requester.
 
 Writes confirmed assignments while preserving other body content.
 
-#### 1. Write Lane Assignments
+- Refuse unknown task ids or malformed resulting cells. The requester validates the complete body and dependencies before publication.
 
 <big><pre>
-"[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" assign \
-  '[**&lt;epic-body-file&gt;**](#epic-body-file "○")' \
-  --map '[**&lt;confirmed-map-file&gt;**](#confirmed-map "○")' \
+"[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" assign &#92;
+  '[**&lt;epic-body-file&gt;**](#epic-body-file "○")' &#92;
+  --map '[**&lt;confirmed-map-file&gt;**](#confirmed-map "○")' &#92;
   --out '[**&lt;output-body-path&gt;**](#output-body "○")'
 </pre></big>
-
-#### 2. Provide Written Lane Assignments
 
 Provide [Output Body](#output-body "●") to the requester.
 
@@ -76,15 +35,13 @@ Provide [Output Body](#output-body "●") to the requester.
 
 Reports a unit's common lane or assignment findings.
 
-#### 1. Validate Lane Unit
+- Results meet [Unit Consistency](#unit-consistency).
 
 <big><pre>
-"[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" check \
-  '[**&lt;epic-body-file&gt;**](#epic-body-file "○")' \
+"[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" check &#92;
+  '[**&lt;epic-body-file&gt;**](#epic-body-file "○")' &#92;
   --unit '[**&lt;task-ids&gt;**](#unit-task-ids "○")'
 </pre></big>
-
-#### 2. Provide Validated Lane Unit
 
 Provide [Lane Result](#lane-result "●") to the requester.
 
@@ -92,18 +49,16 @@ Provide [Lane Result](#lane-result "●") to the requester.
 
 Reports whether the request admits a valid unit.
 
-#### 1. Evaluate Lane Admission
-
 Omit the lane option when the request supplies none.
 
+- Results meet [Admission](#admission).
+
 <big><pre>
-"[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" admit \
-  '[**&lt;epic-body-file&gt;**](#epic-body-file "○")' \
-  --unit '[**&lt;task-ids&gt;**](#unit-task-ids "○")' \
+"[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" admit &#92;
+  '[**&lt;epic-body-file&gt;**](#epic-body-file "○")' &#92;
+  --unit '[**&lt;task-ids&gt;**](#unit-task-ids "○")' &#92;
   --lane '[**&lt;lane-index&gt;**](#requested-index "○")'
 </pre></big>
-
-#### 2. Provide Evaluate Lane Admission
 
 Provide [Lane Result](#lane-result "●") to the requester.
 
