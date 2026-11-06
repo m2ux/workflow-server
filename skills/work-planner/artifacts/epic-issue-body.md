@@ -295,21 +295,19 @@ The columns are `Task | Description | Coverage | Depends on | Joins | Lane | Don
 - **Reference form.**
   A table reference uses colons (`E01:W03`, `I05:E00:W02`), and every epic reference links to that epic's issue: `[E01:W03](…/issues/937)`. Prose uses a space (`E01 W03`).
 
-### Test Evidence
-
-A criterion receives an automatic tick when every task covering it is delivered and supplies an observing check in its linked pull requests. Every observing check must pass in a merged pull request; absent records, unreadable plans and incomplete checks supply no verification. Evidence applies only to the linked task's Coverage. Existing ticks are preserved, and explicitly verified criteria remain subject to delivery readiness.
+Work Breakdown contains its table. Explanatory prose belongs in Proposal. The body does not narrate execution order or how the tables work; Depends on carries the order.
 
 ### Acceptance Criteria
 
-An epic criterion must meet the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria). Contradictions between criteria in one epic are findings.
+The epic's collection of labelled criterion statements. An epic criterion must meet the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria). Contradictions between criteria in one epic are findings.
 
 ### Open Questions
 
-Each question holds only what is undecided and has a recommendation in the planning record. A settled point belongs in that record. No question remains when the epic starts.
+A collection of undecided question statements, each with a recommendation in the planning record. Settled points belong in that record. The collection is empty when the epic starts.
 
 ### Required Criteria
 
-A project states the criteria its epics must carry in `config/required-criteria.json` at its root. The file is a JSON array, and each entry is one required criterion with these fields, each a non-empty string except `paths`:
+The project's required-criterion declaration array. A project states the criteria its epics must carry in `config/required-criteria.json` at its root. The file is a JSON array, and each entry is one required criterion with these fields, each a non-empty string except `paths`:
 
 | Field | What it states |
 | --- | --- |
@@ -333,6 +331,8 @@ A project states the criteria its epics must carry in `config/required-criteria.
 
 ### Task Delivery
 
+Each task's delivery state consists of its Task-cell references, reservation or work-item identity, per-branch delivery links and completion state.
+
 - **Task ids.**
   - An unreserved task awaiting its pull request links its file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.
   - Every link on a task row names that row's id, and the row carries one delivery per long-lived branch its unit changes. A reserved task links only its planning folder: `[W01](…/2026-10-06-943-i07-e00-w01-queue-plan/)`. Every row of a joined unit links the one folder its first row names. The folder's README links each work-item file by the name the row's link carries. Releasing the reservation points the row to that file.
@@ -350,10 +350,6 @@ A project states the criteria its epics must carry in `config/required-criteria.
   An issue backing several tasks, such as an investigation, is a reference: the epic cites it under References, no row id links it, and its title carries no agent-engineering prefix.
 - **Work another issue takes.**
   It leaves the table. Its criteria go with it, or to another row that delivers them.
-
-### Breakdown Prose
-
-Work Breakdown contains its table. Explanatory prose belongs in Proposal. The body does not narrate execution order or how the tables work; Depends on carries the order.
 
 ### Epic Record
 
@@ -438,3 +434,9 @@ The supplied complete current epic body text.
 ### Draft Metadata
 
 The supplied draft title and labels, with the existing complete issue JSON when one is available for the body snapshot.
+
+## Guidance
+
+### Test Evidence
+
+A criterion receives an automatic tick when every task covering it is delivered and supplies an observing check in its linked pull requests. Every observing check must pass in a merged pull request; absent records, unreadable plans and incomplete checks supply no verification. Evidence applies only to the linked task's Coverage. Existing ticks are preserved, and explicitly verified criteria remain subject to delivery readiness.

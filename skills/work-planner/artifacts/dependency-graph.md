@@ -75,6 +75,13 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - It prints the proposed [Epic Priority](#epic-priority) of each epic, largest first.
 - Its supplied inputs are published body text or local drafts.
 
+- The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the components its rows declare. Epics sharing a number start together, so the number asserts they can run in parallel, and it holds a set only where both of these do.
+
+- **Prerequisite depth establishes when an epic may start.**
+  An epic with no prerequisite epic, one whose tasks are not yet written among them, carries the largest number, and each other epic takes one less than the smallest its prerequisites carry.
+- **Component contention establishes whether it can.**
+  An epic holding a row that contends with a row of an epic of the same depth takes the number below that depth, and the epics depending on it follow it down, as [Component Contention](#component-contention) states.
+
 ### Renumber Tasks
 
 Renumber one epic's tasks in the supplied files according to the given map and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
@@ -122,7 +129,7 @@ The initiative body and every epic body it links, published or as local drafts.
 
 ### Edges
 
-A task edge names the producing row for each output the depending row consumes. An edge a task's prose implies is carried explicitly.
+The collection of producer-to-consumer task-row references. A task edge names the producing row for each output the depending row consumes. An edge a task's prose implies is carried explicitly.
 
 - **An edge names rows, never an epic.**
   A row naming an epic gates its task on every row of that epic, including the rows it consumes nothing from, which is how a [whole-epic edge](#whole-epic-edges) the rows do not justify reaches the initiative.
@@ -135,7 +142,7 @@ A task edge names the producing row for each output the depending row consumes. 
 
 ### Whole-Epic Edges
 
-An initiative Depends on cell takes the epics it derives, as [Work Breakdown](initiative-issue-body.md#work-breakdown) states. It derives one only where every row of the dependent epic requires every row of the prerequisite, through the task edges alone: a task row names rows, so no cell can assert a whole epic that the rows do not already establish.
+The collection of initiative-table epic dependency references. An initiative Depends on cell takes the epics it derives, as [Work Breakdown](initiative-issue-body.md#work-breakdown) states. It derives one only where every row of the dependent epic requires every row of the prerequisite, through the task edges alone: a task row names rows, so no cell can assert a whole epic that the rows do not already establish.
 
 - **The edge is the coarsest gate the plan has.**
   It holds the dependent epic until the prerequisite closes, not until the row it consumes merges, and it drops the dependent a [priority](#epic-priority) number, so the board keeps it out of Ready while the prerequisite runs.
@@ -144,23 +151,11 @@ An initiative Depends on cell takes the epics it derives, as [Work Breakdown](in
 
 ### Epic Priority
 
-The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the components its rows declare. Epics sharing a number start together, so the number asserts they can run in parallel, and it holds a set only where both of these do.
-
-- **Prerequisite depth establishes when an epic may start.**
-  An epic with no prerequisite epic, one whose tasks are not yet written among them, carries the largest number, and each other epic takes one less than the smallest its prerequisites carry.
-- **Component contention establishes whether it can.**
-  An epic holding a row that contends with a row of an epic of the same depth takes the number below that depth, and the epics depending on it follow it down, as [Component Contention](#component-contention) states.
-
-### Component Contention
-
-Two task rows in different epics whose work items declare one [component](work-item.md#component) contend. Concurrent epics are two bases and two pull requests, so one component written from both is a merge conflict.
-
-- Rows of one epic are out of scope: they land on one base, in the order Depends on and [Joins](#joins) set, so one component written twice is a rebase on that base rather than a conflict between two of them. [Joins](#joins) proposes them as one unit.
-- A contending pair is answered by the number that separates its epics, or by moving the rows into one epic.
+A map from each supplied epic id to one positive integer priority, ordered largest first in the report. Equal priorities identify epics that may run in parallel under the derived dependency and component constraints.
 
 ### Joins
 
-The undelivered rows of one epic whose work items declare one [component](work-item.md#component) are a candidate unit: one pull request writes that file once, where separate ones each rebase on the last. Rows declaring different components need no accounting.
+The candidate joined units, each a set of task ids in one epic. The undelivered rows of one epic whose work items declare one [component](work-item.md#component) are a candidate unit: one pull request writes that file once, where separate ones each rebase on the last. Rows declaring different components need no accounting.
 
 - **A joined unit has one lane.**
   Joined rows must meet [Unit Consistency](lane.md#unit-consistency).
@@ -204,3 +199,12 @@ The supplied bodies rewritten in place, with reported ranges and unresolved renu
 ### Workspace
 
 The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+
+## Guidance
+
+### Component Contention
+
+Two task rows in different epics whose work items declare one [component](work-item.md#component) contend. Concurrent epics are two bases and two pull requests, so one component written from both is a merge conflict.
+
+- Rows of one epic are out of scope: they land on one base, in the order Depends on and [Joins](#joins) set, so one component written twice is a rebase on that base rather than a conflict between two of them. [Joins](#joins) proposes them as one unit.
+- A contending pair is answered by the number that separates its epics, or by moving the rows into one epic.

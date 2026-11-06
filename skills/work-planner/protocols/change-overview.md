@@ -51,7 +51,7 @@ Read these files first.
 - Reuse its folder identity when one exists; otherwise choose a planning-folder identity whose reference is the pull request number and whose slug comes from its title.
 - Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") to prepare that folder.
 - Take the graph [measurements](../artifacts/architecture-overview.md#measurements) from the evidence step and check the proposed diagrams.
-- The diagrams must meet [Measured Structure](../artifacts/architecture-overview.md#measured-structure) and [Diagrams](../artifacts/architecture-overview.md#diagrams).
+- The diagrams must meet [Diagrams](../artifacts/architecture-overview.md#diagrams).
 
 - Populate the overview from the [Template](../artifacts/architecture-overview.md#template) at the destination in [Overview File](../artifacts/architecture-overview.md#overview-file).
 - All populated fields must meet [Fields](../artifacts/architecture-overview.md#fields).
@@ -62,6 +62,14 @@ Read these files first.
 - Retain the completed [Overview File](../artifacts/architecture-overview.md#overview-file) for registration in its planning record.
 
 - A repeat replaces its overview while preserving the record’s other content.
+
+- The reader is an engineer meeting this codebase for the first time. A component, type or function carries the name the diff carries, so the document and the diff name one thing once. A term the codebase coins is defined where it first appears.
+
+- A component diagram's areas and edges, and a sequence's step order, are the ones measured over the graph. A boundary taken from the directory layout, and a call order traced by hand, are each a defect.
+
+- Items of one kind go in a bulleted list, never packed into a paragraph. Each opens with a bold lead naming the item, and its body is the line beneath.
+
+- About two hundred lines, diagrams counted.
 
 ### 3. Register the Overview
 

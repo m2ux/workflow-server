@@ -136,10 +136,6 @@ mkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder "○")'
 | [External reference] | [link] |
 ```
 
-### Shared Worktree
-
-The engineering branch has one worktree and every session writes its records there, so they share one index. A commit on engineering may include other sessions' uncommitted or unpushed work, a `design.md` amendment among them. A session confirms only that its own files reached `origin/engineering` after the push.
-
 ### Layout
 
 README.md is the one file the folder must hold. Any file beyond README.md is added as the work needs it.
@@ -169,7 +165,7 @@ Two paragraphs: the purpose of this work, and why it matters.
 
 ### Links
 
-External references only: a tracker issue, a parent epic, a pull request. An artifact of this plan is an Artifacts row.
+The README's external-reference table, with resource names and URLs. External references only: a tracker issue, a parent epic, a pull request. An artifact of this plan is an Artifacts row.
 
 ### Record Selection
 
@@ -194,3 +190,9 @@ The supplied local file holding the exact commit message. eg `/tmp/msg.txt`
 ### Publication Result
 
 The published planning files and confirmed remote branch, or a stopped publication with its conflict or other blocker.
+
+## Guidance
+
+### Shared Worktree
+
+The engineering branch has one worktree and every session writes its records there, so they share one index. A commit on engineering may include other sessions' uncommitted or unpushed work, a `design.md` amendment among them. A session confirms only that its own files reached `origin/engineering` after the push.

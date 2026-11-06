@@ -48,6 +48,8 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --capacity [**&lt;free-slot-count&gt;**](#free-slots "○")
 </pre></big>
 
+- The start names one selected unit, has a currently free harness slot and overlaps no held or running session. Its supplied evidence names that unit, the planning record confirmed on the remote engineering branch, and the record associated with its confirmed hold. For rows, that association is read from every live row reservation; for a hot-fix it is the run's record for the unit whose board hold was confirmed. The evidence is gathered in that order before execution; any missing, mismatched or unverified evidence blocks the start.
+
 ## Fields
 
 ### Authorization
@@ -69,10 +71,6 @@ The batch retains authorized, unoccupied units in survey order, bounded by free 
 ### Preparations
 
 A preparation is this run's selected unit with its published record, captured component context, confirmed hold, prepared worktrees and complete brief, awaiting an execution slot. It retains the selected batch for start validation and creates no worker session. The coordinator owns its continuation and supplies it for another call with current queue and hold evidence. Only preparations still admitted by the current queue contribute to capacity waiting; another run's held record supplies none.
-
-### Start Readiness
-
-The start names one selected unit, has a currently free harness slot and overlaps no held or running session. Its supplied evidence names that unit, the planning record confirmed on the remote engineering branch, and the record associated with its confirmed hold. For rows, that association is read from every live row reservation; for a hot-fix it is the run's record for the unit whose board hold was confirmed. The evidence is gathered in that order before execution; any missing, mismatched or unverified evidence blocks the start. eg `{"unit": "o/r#I07:E00:W01", "published_record": "2026-11-05-943-i07-e00-w01-work", "reserved_record": "2026-11-05-943-i07-e00-w01-work", "reservation_verified": true}`
 
 ### Survey Board
 
@@ -96,7 +94,7 @@ The repository-qualified identity of one selected unit.
 
 ### Start Evidence
 
-The planning publication and reservation evidence for the selected unit, as [Start Readiness](#start-readiness) describes.
+A JSON object with `unit` (the repository-qualified selected unit id), `published_record` and `reserved_record` (planning-folder identity strings), and `reservation_verified` (a boolean). It records confirmed remote publication and the associated live hold. eg `{"unit": "o/r#I07:E00:W01", "published_record": "2026-11-05-943-i07-e00-w01-work", "reserved_record": "2026-11-05-943-i07-e00-w01-work", "reservation_verified": true}`
 
 ### Validated Unit
 

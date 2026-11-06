@@ -108,6 +108,8 @@ Convert an unambiguous checked list and Test/Criteria table to the current plan 
 
 ### Review Body
 
+The epic review document, containing Overview, Changes and References sections.
+
 - Overview is one paragraph on what the base carries.
 - Changes holds one heading per area, with a bullet per functional change.
 - A Changes bullet states what the base does and carries no count of the corpus, such as how many specifications or files it holds. A count belongs in the unit's planning record, with the revision that produced it.
@@ -133,13 +135,6 @@ A task pull request carries a Test Plan.
   - Each evidence link is accessible to the pull request's readers and resolves to the intended section.
 - **Completion.**
   The test plan has passed when every row with a Test id carries ✓ as its result. Partial, failed and unexecuted checks remain incomplete.
-
-### Test Coverage
-
-- Every criterion a unit's Coverage names has an observing test in its work item and pull request. A criterion no test can observe remains in the [coverage report](issue-body.md#coverage-reports) and in a test-plan row with an empty Test cell.
-- The criterion selects the test kind: a unit test for one component, an integration test for a seam between components, and an end-to-end or system test for running-system behaviour. That evidence must meet [Coverage Reports](issue-body.md#coverage-reports).
-- An instrument that does not exist yet is work the task carries, as the verified rule defines. Use the project's own system test where it can observe the criterion.
-- One row per check, in execution order, followed by any unobserved criteria. Every criterion in the unit's Coverage appears in at least one row.
 
 ### Change Evidence
 
@@ -168,3 +163,12 @@ The unresolved evidence links and test-plan findings, with the identities and mi
 ### Workspace
 
 The absolute checkout holding the installed Work Planner scripts and sandbox helper.
+
+## Guidance
+
+### Test Coverage
+
+- Every criterion a unit's Coverage names has an observing test in its work item and pull request. A criterion no test can observe remains in the [coverage report](issue-body.md#coverage-reports) and in a test-plan row with an empty Test cell.
+- The criterion selects the test kind: a unit test for one component, an integration test for a seam between components, and an end-to-end or system test for running-system behaviour. That evidence must meet [Coverage Reports](issue-body.md#coverage-reports).
+- An instrument that does not exist yet is work the task carries, as the verified rule defines. Use the project's own system test where it can observe the criterion.
+- One row per check, in execution order, followed by any unobserved criteria. Every criterion in the unit's Coverage appears in at least one row.

@@ -194,37 +194,21 @@ The snapshot is a JSON array of fetched repository objects. Exit 1 means finding
 
 ### Titles
 
-- **Titles.**
-  - A title is a short name, a colon, and a subtitle stating the outcome.
-  - The name is two or three words and the subtitle a succinct summary of at most ten, in title case.
-  - A prefixed title separates its levels with colons, then the name.
-- **Bodies.**
-  - Every body keeps the section order of its kind template and the columns of that kind's table.
-  - Fill each `{{…}}` and delete a section the template marks as optional when it has nothing to say.
-- **Code references.**
-  A body references code as a link on the words it supports, a permalink pinned to a commit with its line anchors, never a bare `path:line`: `the [extrinsic type](…/blob/<sha>/runtime/src/lib.rs#L1231-L1232)`.
-- **Succinct items.**
-  Each Problem and Proposal item, and each of its sub-bullets, is at most two lines. A bold opener does not count toward the two. Several distinct points go in a bulleted list, never packed into those two lines.
-- **Bold leads.**
-  - A Problem or Proposal item that opens with a bold statement puts its body on the next line, indented under the bullet:
+The issue title string, with its kind's optional prefix.
 
-    ```markdown
-    - **Length is the only check on entry.**
-      The data source decodes the key and never checks its value.
-    ```
+- The title separates its name and outcome subtitle with a colon.
+- The name is two or three words and the subtitle a succinct summary of at most ten, in title case.
+- A prefixed title separates its levels with colons, then the name.
 
-  - A bulleted item with sub-bullets keeps the line introducing them on its bold statement's line:
+### Labels
 
-    ```markdown
-    - **Framing is undocumented.** Nothing describes:
-      - the runtime's extrinsic type;
-    ```
-- **Labels.**
-  - Add `enhancement`, `bug` and `tech-debt` as they apply.
-  - eg `workflows` for workflow-server.
-  - Only labels that exist are applied.
+The collection of repository label names attached to the issue.
+
+The collection includes `enhancement`, `bug` and `tech-debt` as applicable; every name identifies an existing repository label. eg `workflows` for workflow-server.
 
 ### Problem and Proposal
+
+The Problem and Proposal prose sections of an issue body. Their items carry the following content constraints.
 
 - **Friction.**
   A Problem states the friction as it is now. Its evidence is a count or a code link for that friction. A Problem does not describe the plan.
@@ -235,7 +219,7 @@ The snapshot is a JSON array of fetched repository objects. Exit 1 means finding
 
 ### Shared Acceptance Criteria
 
-An acceptance criterion must meet these. A kind adds its own under its Acceptance Criteria.
+A collection of labelled criterion statements; each criterion must meet these constraints. A kind adds its own under its Acceptance Criteria.
 
 - States an end state, not an activity.
 - Names or implies the instrument that observes it: a test, a guard, a command or a measure.
@@ -257,6 +241,8 @@ Criteria are labelled `AC1` onward, in ascending order. A criterion that leaves 
 
 ### Tables
 
+The kind's row table, whose shared cell values have these shapes.
+
 - **Done.**
   The last column. Its cell is empty while the row is open, and a tick, ✓, when the row is complete.
 - **Description.**
@@ -266,32 +252,45 @@ Criteria are labelled `AC1` onward, in ascending order. A criterion that leaves 
 - **Depends on.**
   References only, with no prose, and only what no other entry in the cell already implies.
 
-### Numbering
-
-Rows are numbered in the order they can start, so every dependency points to an earlier row. Numbering that does not follow start order is advisory.
-
-Work a pull request names keeps its number. Renumbering touches only a row no pull request names.
-
 ### Reference Form
 
-Tables write references with colons, the form the scripts read. Prose uses a space.
+A row reference string: colon-separated levels in table cells, as the scripts read them, and space-separated levels in prose.
 
 ### Body
 
-- **Stale references.**
-  A row number, issue link or decision wording agrees with the current plan.
-- **Body.**
-  A body states the plan as it is. It carries no change narrative. How the plan evolved belongs in the planning record and in commit and pull request bodies.
+The complete Markdown issue body with the sections and table columns defined by its kind template.
 
-### Stale References
+A body states the plan as it is. It carries no change narrative. How the plan evolved belongs in the planning record and in commit and pull request bodies.
 
 Task and epic numbers, issue links and wording must agree with the current decisions and bodies. References to superseded decisions are findings.
 
+- Every template placeholder is populated; optional sections are present only when they have content.
+- **Code references.**
+  A body references code as a link on the words it supports, a permalink pinned to a commit with its line anchors, never a bare `path:line`: `the [extrinsic type](…/blob/<sha>/runtime/src/lib.rs#L1231-L1232)`.
+- **Succinct items.**
+  Each Problem and Proposal item, and each of its sub-bullets, is at most two lines. A bold opener does not count toward the two. Several distinct points go in a bulleted list, never packed into those two lines.
+- **Bold leads.**
+  - A Problem or Proposal item that opens with a bold statement puts its body on the next line, indented under the bullet:
+
+    ```markdown
+    - **Length is the only check on entry.**
+      The data source decodes the key and never checks its value.
+    ```
+
+  - A bulleted item with sub-bullets keeps the line introducing them on its bold statement's line:
+
+    ```markdown
+    - **Framing is undocumented.** Nothing describes:
+      - the runtime's extrinsic type;
+    ```
+
 ### References
 
-An issue's References section does not link issues or pull requests on the same board. A public issue's References cite public repositories; unavailable visibility is unresolved.
+The issue body's collection of labelled source links and descriptions. An issue's References section does not link issues or pull requests on the same board. A public issue's References cite public repositories; unavailable visibility is unresolved.
 
 ### Coverage Reports
+
+A collection of entries identifying every criterion in the reviewed scope, its observing check and evidence, or why it is unobservable.
 
 - **Unobservable items.**
   An item a test cannot observe is named in the plan or the coverage report. It stays in the report.
@@ -302,6 +301,8 @@ An issue's References section does not link issues or pull requests on the same 
   A coverage report lists every acceptance criterion the work under review is specified to cover.
 
 ### Format Findings
+
+A collection of tagged findings with the following variants.
 
 - **Fixed.**
   Structural changes preserve the wording and are present in the provided body file, with a body diff.
@@ -383,3 +384,11 @@ The fetched epic base on the declaration's long-lived branch, or that long-lived
 ### Snapshot Metadata
 
 The supplied title and labels for the body, with the existing issue JSON when its identity and state are available.
+
+## Guidance
+
+### Numbering
+
+Rows are numbered in the order they can start, so every dependency points to an earlier row. Numbering that does not follow start order is advisory.
+
+Work a pull request names keeps its number. Renumbering touches only a row no pull request names.

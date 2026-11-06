@@ -86,6 +86,8 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - Require the complete [Issue Link Snapshot](#issue-link-snapshot "○"); refuse the computation without it.
 - Supply published review records linked from each open epic integration pull request; retain missing records as handoff blockers.
 
+- Assignee changes must follow [Assignees](board.md#assignees). A newly added issue receives its status on a subsequent pass using refreshed items. Apply [Status Changes](#status-changes) to the supplied evidence.
+
 ### Compute Dispatch Status
 
 Render board calls within the dispatch jurisdiction and provide [Board Changes](#board-changes "●") to the requester. A missing or failing agent review blocks the In Review write.
@@ -104,33 +106,17 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")'
 </pre></big>
 
+- Apply the dispatch jurisdiction in [Status Changes](#status-changes). Assignee changes must follow [Assignees](board.md#assignees).
+
 ## Fields
-
-### Status Changes
-
-An issue closed as completed is Done. Every board item whose issue is closed any other way is removed, whether or not an initiative, epic or task body cites it.
-
-An open initiative whose criteria are all ticked is In Review. An open epic whose criteria are all ticked is In Review only with current published [agent review evidence](agent-review.md#review-record); missing, stale or unresolved review evidence keeps it In Progress.
-
-An open epic with a criterion unticked is In Progress while it is [active](board-queue.md#epic-activity). An inactive one keeps Ready or Backlog; In Progress and In Review become Backlog, and one not yet on the board is added at Backlog.
-
-An initiative is In Progress when an epic its Work Breakdown lists is In Progress or In Review. An epic that has left that table is not read. Otherwise the initiative keeps the Status it holds, In Review becoming In Progress, and one not yet on the board is added at Backlog, so completed work alone starts no initiative. Delivery does not move an initiative or epic between Ready and Backlog.
-
-Only an initiative, an epic or a hot-fix stands In Review. An open task issue is In Progress while a delivery pull request, draft or ready, links it, and Done once that pull request merges into the epic base and the issue closes as completed. Every jurisdiction refuses a task set In Review.
-
-A task whose row links a reserved planning folder is In Progress. A work-item file link alone leaves the row available. Dispatch writes are limited to In Progress for held tasks and epics, and In Review for completed epics; the shared DISPATCH jurisdiction refuses other statuses and removals.
-
-Task readiness must meet [Task Eligibility](board-queue.md#task-eligibility). The caller supplies saved issue bodies and closure state.
-
-A task gated on an [unresolvable dependency](board-queue.md#unresolvable-dependencies) keeps the Status it holds: the row waits on no delivery, so no status follows from its gate. The run names the row and the entry and exits nonzero, as every reader of that cell does.
 
 ### Change Calls
 
-The result contains calls for issues to add, items to remove, Status to set and assignees to add or remove. Each call names its affected issue and board item. Assignees must follow [Assignees](board.md#assignees).
+A collection of executable calls for issues to add, items to remove, Status to set and assignees to add or remove. Each call names its affected issue and board item.
 
 ### Missing Evidence
 
-Unresolved issue references identify dependency records the caller must supply before a complete result. A newly added issue receives its status on a subsequent pass using refreshed items.
+A collection of unresolved issue references identifying dependency records missing from the supplied evidence. Each reference retains its repository and issue number.
 
 ### Resolved Issues
 
@@ -207,3 +193,23 @@ The supplied login assigned to work from Ready. eg `m2ux`
 ### Workspace
 
 The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+
+## Guidance
+
+### Status Changes
+
+An issue closed as completed is Done. Every board item whose issue is closed any other way is removed, whether or not an initiative, epic or task body cites it.
+
+An open initiative whose criteria are all ticked is In Review. An open epic whose criteria are all ticked is In Review only with current published [agent review evidence](agent-review.md#review-record); missing, stale or unresolved review evidence keeps it In Progress.
+
+An open epic with a criterion unticked is In Progress while it is [active](board-queue.md#epic-activity). An inactive one keeps Ready or Backlog; In Progress and In Review become Backlog, and one not yet on the board is added at Backlog.
+
+An initiative is In Progress when an epic its Work Breakdown lists is In Progress or In Review. An epic that has left that table is not read. Otherwise the initiative keeps the Status it holds, In Review becoming In Progress, and one not yet on the board is added at Backlog, so completed work alone starts no initiative. Delivery does not move an initiative or epic between Ready and Backlog.
+
+Only an initiative, an epic or a hot-fix stands In Review. An open task issue is In Progress while a delivery pull request, draft or ready, links it, and Done once that pull request merges into the epic base and the issue closes as completed. Every jurisdiction refuses a task set In Review.
+
+A task whose row links a reserved planning folder is In Progress. A work-item file link alone leaves the row available. Dispatch writes are limited to In Progress for held tasks and epics, and In Review for completed epics; the shared DISPATCH jurisdiction refuses other statuses and removals.
+
+Task readiness must meet [Task Eligibility](board-queue.md#task-eligibility). The caller supplies saved issue bodies and closure state.
+
+A task gated on an [unresolvable dependency](board-queue.md#unresolvable-dependencies) keeps the Status it holds: the row waits on no delivery, so no status follows from its gate. The run names the row and the entry and exits nonzero, as every reader of that cell does.

@@ -104,7 +104,14 @@ Where no API field carries it, put the setting to the user and take their explic
 
 #### 3. Provide Confirmed Setting
 
-Provide the confirmed value. An unconfirmed setting is a blocker, and an enabled one leaves the caller to obtain authorization before the repository is reconfigured.
+- Provide the confirmed value. An unconfirmed setting is a blocker, and an enabled one leaves the caller to obtain authorization before the repository is reconfigured.
+
+- GitHub's **Auto-close issues with merged linked pull requests** repository setting, which must be disabled before a delivery pull request is linked or merged, so that closure follows the criteria rather than the merge.
+
+- The setting is confirmed per repository and holds for the session; it is not inferred from an issue that stayed open.
+- No REST field and no GraphQL field of `gh` 2.46 carries it, so on such a host the user's explicit answer is the only source.
+- An enabled or unconfirmed setting blocks delivery links and merges until the setting is confirmed disabled. Changing the setting requires the user's explicit authorization.
+- The setting gates the links and merges that precede closure; the closure gate takes no input from it.
 
 ### Select Tracker Number
 
@@ -414,12 +421,7 @@ The issue is open or closed with its recorded completion reason. Completed work 
 
 ### Auto-Close Setting
 
-GitHub's **Auto-close issues with merged linked pull requests** repository setting, which must be disabled before a delivery pull request is linked or merged, so that closure follows the criteria rather than the merge.
-
-- The setting is confirmed per repository and holds for the session; it is not inferred from an issue that stayed open.
-- No REST field and no GraphQL field of `gh` 2.46 carries it, so on such a host the user's explicit answer is the only source.
-- An enabled or unconfirmed setting blocks delivery links and merges until the setting is confirmed disabled. Changing the setting requires the user's explicit authorization.
-- The setting gates the links and merges that precede closure; the closure gate takes no input from it.
+The repository's boolean **Auto-close issues with merged linked pull requests** setting, recorded as enabled or disabled with its repository identity and session confirmation evidence; an unknown value is unconfirmed. [Confirm Repository Auto-Close](#confirm-repository-auto-close "ƒ") establishes the value and the delivery gate.
 
 ### Repository
 

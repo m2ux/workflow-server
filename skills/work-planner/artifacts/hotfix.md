@@ -70,14 +70,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ## Fields
 
-### Board Status
-
-- An open hot-fix stands In Review while a [delivering pull request](#delivering-pull-request) of it is open and ready for review, and In Progress while one is an open draft.
-- Otherwise an open hot-fix is Ready, whatever any initiative's or epic's priority, and In Progress once it holds In Progress or In Review. It reaches the board as its [placement](placement.md#disposition-conditions) orders.
-- A closed hot-fix takes the status [Status Changes](board-delivery.md#status-changes) gives a closed issue.
-- No initiative or epic waits on a hot-fix, and a hot-fix waits on none.
-
 ### Delivery Unit
+
+The hot-fix unit record: its issue identity, board state, branch, target base, worktree and delivery evidence.
 
 - An open hot-fix Ready on the board is a delivery unit of its own, whatever any epic's state. Its issue is the unit's task issue; it has no row and no epic record.
 - Its Coverage is every criterion it carries. Its record folder takes its prefix and title name as a task id and Description.
@@ -95,6 +90,8 @@ A hot-fix's branch is cut from its [target](hotfix-body.md#target), which its `u
 
 ### Delivering Pull Request
 
+A repository-qualified reference to the hot-fix's delivering pull request.
+
 - A pull request delivers a hot-fix when its title opens with the hot-fix's prefix, `[F00] Purpose`, it lives in the hot-fix's repository, its base is the hot-fix's [target](hotfix-body.md#target), and its Development field links the hot-fix.
 - It is opened from the hot-fix's [branch](#branch), as a draft.
 - It is marked ready for review only once its review cycle is complete: its current [agent review](agent-review.md#review-record) leaves every finding fixed.
@@ -102,6 +99,8 @@ A hot-fix's branch is cut from its [target](hotfix-body.md#target), which its `u
 - A pull request into a branch the body named as its target before an edit stops counting, since the body names the current target.
 
 ### Delivery Record
+
+The hot-fix issue's criterion evidence, delivering pull-request reference and closure state.
 
 - A hot-fix's merge is recorded on its own issue alone: its criteria and delivering pull request, then its closure. It records nothing on an epic or initiative.
 - Its board item must follow [Board Status](#board-status) once the issue closes.
@@ -155,3 +154,12 @@ The absolute checkout holding the installed Work Planner scripts and sandbox hel
 ### Hot-fix Identity
 
 The supplied source or hot-fix issue's repository, number and URL.
+
+## Guidance
+
+### Board Status
+
+- An open hot-fix stands In Review while a [delivering pull request](#delivering-pull-request) of it is open and ready for review, and In Progress while one is an open draft.
+- Otherwise an open hot-fix is Ready, whatever any initiative's or epic's priority, and In Progress once it holds In Progress or In Review. It reaches the board as its [placement](placement.md#disposition-conditions) orders.
+- A closed hot-fix takes the status [Status Changes](board-delivery.md#status-changes) gives a closed issue.
+- No initiative or epic waits on a hot-fix, and a hot-fix waits on none.

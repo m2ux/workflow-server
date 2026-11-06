@@ -59,6 +59,8 @@ Provide the corrected [Output Body](#output-body) and [Validation Findings](#val
 
 ### Problem
 
+The proposal body's Problem prose section.
+
 - A Problem must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
 
 ### Goal

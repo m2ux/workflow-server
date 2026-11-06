@@ -287,7 +287,7 @@ When [Selected Kind](../artifacts/board.md#selected-kind) is proposals and no op
 
 - Use the provided number as the copy source.
 
-- Run [Copy Board Template](../artifacts/board.md#copy-board-template "ƒ") with that template number, the owner and the title required by [One Board Per Theme](../artifacts/board.md#one-board-per-theme).
+- Run [Copy Board Template](../artifacts/board.md#copy-board-template "ƒ") with that template number, the owner and the title required by [Theme Board Title](../artifacts/board.md#theme-board-title).
 
 - Retain the new board number. The copy carries the [theme-board fields](../configuration.md#theme-boards).
 
@@ -295,6 +295,8 @@ When [Selected Kind](../artifacts/board.md#selected-kind) is proposals and no op
 
 - Retain the [Copied Board](../artifacts/board.md#copied-board) after linking succeeds.
 - Require the new theme's label and board before an initiative takes that theme.
+
+- The theme board must hold the theme's initiatives, epics, task issues and hot-fixes.
 
 ##### 3. Retain Copied Board
 

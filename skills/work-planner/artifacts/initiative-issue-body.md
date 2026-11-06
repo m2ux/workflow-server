@@ -180,6 +180,8 @@ gh api 'repos/[**&lt;owner&gt;**](#source-evidence "○")/[**&lt;repository&gt;*
 
 ### Problem
 
+The initiative body's Problem prose section.
+
 - A Problem must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
 
 ### Proposal
@@ -199,6 +201,8 @@ The columns are `Epic | Description | Coverage | Depends on | Done`. The table h
 - An initiative dependency that only some tasks need, or that requires only part of its prerequisite epic, is overbroad. The output and its producing tasks establish the edge.
 - An epic depending on a later epic is a backward reference.
 - Epic numbering must meet [Numbering](issue-body.md#numbering).
+
+Work Breakdown contains its table. Explanatory prose belongs in Proposal. The body does not narrate execution order or how the tables work; Depends on carries the order.
 
 ### Initiative Acceptance Criteria
 
@@ -236,10 +240,6 @@ A marked source in References is a document the initiative's criteria answer to.
 - A requirement a marked source states that no criterion makes true, and no Non-Goal excludes, is a gap.
 - An epic is aligned against its initiative's marked sources, through the initiative criteria its row covers.
 - A marked source that cannot be read leaves its criteria unaligned until it is read.
-
-### Breakdown Prose
-
-Work Breakdown contains its table. Explanatory prose belongs in Proposal. The body does not narrate execution order or how the tables work; Depends on carries the order.
 
 ### Proposal Context
 

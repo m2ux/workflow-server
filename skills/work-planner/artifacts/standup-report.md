@@ -70,11 +70,13 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Scope
 
-When no start date is supplied, the window follows [Standup Configuration](../configuration.md#standup). A supplied start date selects another window, such as the previous working day for a daily standup. An initiative filter names one initiative, qualified by repository when its number is ambiguous.
+The report window and optional repository-qualified initiative filter. When no start date is supplied, the window follows [Standup Configuration](../configuration.md#standup). A supplied start date selects another window, such as the previous working day for a daily standup. An initiative filter names one initiative, qualified by repository when its number is ambiguous.
 
 Each repository numbers its own initiatives, and an initiative's epics and task issues may live in other repositories. Each item's place follows the Work Breakdown links, or for a task issue the pull request whose Development field links it. A pull request counts towards the epic of its reference in the epic's repository or its initiative's.
 
 ### Sections
+
+The report document's management paragraph, board link, initiative, Completed, In progress, Next, hot-fix and key sections.
 
 The management paragraph is set off by blank lines, with the board's link beneath the heading.
 
@@ -100,7 +102,7 @@ One plain-language paragraph describes what the window delivered as outcomes for
 
 ### Unresolved Evidence
 
-An unresolved initiative identifies its number and repository for the caller to fetch. An off-board dependency is blocked. An epic with unreadable Work Breakdown is summarised without tasks and provided as a finding. Unresolved lines are separate from the copyable report.
+A collection of unresolved initiative identities and dependency or unreadable-breakdown findings, separate from the report. An unresolved initiative identifies its number and repository for the caller to fetch. An off-board dependency is blocked. An epic with unreadable Work Breakdown is summarised without tasks and provided as a finding. Unresolved lines are separate from the copyable report.
 
 ### Report Selection
 

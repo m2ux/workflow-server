@@ -146,6 +146,10 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 
 - Retain the populated [Output Body](../artifacts/hotfix-body.md#output-body) for publication.
 
+- A hot-fix belongs to no initiative or epic, and names no Depends on or Joins.
+- It sits on its theme's board.
+- Its priority 10, which its [Titles](../artifacts/hotfix-body.md#titles) label carries, ranks it nowhere: the queue places it by its [Board Status](../artifacts/hotfix.md#board-status), outside the priority sets.
+
 ###### Standalone Body
 
 - For a standalone issue, Apply [Populate Standalone Body](../artifacts/standalone-body.md#populate-standalone-body "ƒ").

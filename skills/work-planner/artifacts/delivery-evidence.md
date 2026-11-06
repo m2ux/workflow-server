@@ -37,7 +37,9 @@ The pull requests and issue links that establish current delivery.
 
 #### 4. Provide Complete Evidence
 
-Provide the current [Pull Request Records](#pull-request-records), [Issue-Link Snapshot](#issue-link-snapshot) and [Delivery Findings](#delivery-findings) to the requester, reporting incomplete evidence as [Failure](#failure).
+- Provide the current [Pull Request Records](#pull-request-records), [Issue-Link Snapshot](#issue-link-snapshot) and [Delivery Findings](#delivery-findings) to the requester, reporting incomplete evidence as [Failure](#failure).
+
+- Evidence is complete when every pull request the plan links has a record, whatever its title. Incomplete evidence is a blocker, not a partial result.
 
 ## Fields
 
@@ -53,13 +55,9 @@ The complete set of Development links between those pull requests and the issues
 
 The per-epic [Delivery Findings](epic.md#delivery-findings) the evidence yields.
 
-### Completeness
-
-Evidence is complete when every pull request the plan links has a record, whatever its title. Incomplete evidence is a blocker, not a partial result.
-
 ### Named Delivery
 
-A pull request that delivers an epic carries that epic's reference in its title, as `[I07:E00] Purpose`.
+The reference to an epic-delivering pull request, whose title carries that epic's reference as `[I07:E00] Purpose`.
 
 ### Selected Repositories
 

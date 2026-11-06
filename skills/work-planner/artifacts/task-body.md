@@ -69,9 +69,13 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Open Questions
 
+The existing task issue's collection of unresolved question statements.
+
 - Each holds only what is undecided, and is resolved before the task starts.
 
 ### Acceptance Criteria
+
+The existing task issue's collection of labelled criterion statements.
 
 - A task criterion must meet the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria).
 

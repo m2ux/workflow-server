@@ -16,10 +16,12 @@ Read the complete target-to-head diff, affected definitions and callers, and eve
 
 - Record findings with severity and disposition. A nonblocking deferred finding names its ticket.
 
-- When the findings require fixes under [Review Record](#review-record):
+- When a blocking finding or any hot-fix finding requires a fix:
 - Fix every required finding on the reviewed branch.
 - Run appropriate regression checks.
 - Apply [Produce Agent Review](#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence, then provide its review record to the requester and stop.
+
+- Blocking findings, and every finding on a hot-fix's delivering pull request, must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff.
 
 #### 3. Write Revision Review Record
 
@@ -51,7 +53,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 Each record contains `pull_request` (the full GitHub URL), `head` and `base` (full commit SHAs), `url` (the published HTTPS record URL), `reviewer`, `reviewed_at`, `scope`, `criteria`, `validation` and `findings`. The scope describes the full integration diff and inspected callers; criteria and validation describe the evidence inspected and its results. The pull request body links the published record.
 
-Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. Blocking findings, and every finding on a hot-fix's delivering pull request, must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff. A record on a hot-fix's delivering pull request also carries `base_ref`, the name of its base branch. A record is current while it names the pull request's head and base SHAs. One on a hot-fix's delivering pull request is current while it names its head SHA and its base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. The last record for the same revision is authoritative.
+Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. A record on a hot-fix's delivering pull request also carries `base_ref`, the name of its base branch. A record is current while it names the pull request's head and base SHAs. One on a hot-fix's delivering pull request is current while it names its head SHA and its base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. The last record for the same revision is authoritative.
 
 ### Review Inputs
 

@@ -6,6 +6,8 @@ Populates one standalone issue body.
 
 Read these files first.
 
+- [Board](board.md)
+
 - [Issue Body](issue-body.md)
 - [Epic Issue Body](epic-issue-body.md)
 
@@ -21,6 +23,8 @@ One standalone issue body from its supplied scope.
 - The title must meet the shared [Titles](issue-body.md#titles) conditions and the standalone [Titles](#titles).
 - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
 - All populated fields must meet [Fields](#fields).
+
+- The issue's placement must follow [Standalone Issues](board.md#standalone-issues).
 
 #### 2. Provide Populated Standalone Body
 

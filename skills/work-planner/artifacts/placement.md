@@ -31,11 +31,11 @@ The selected issue or proposed work, with the criteria and design it takes.
 
 ### Disposition
 
-Kept, subsumed or left, with a reason. A referenced planning record is carried with the source reference.
+A tagged value: kept, subsumed or left, with its reason. A referenced planning record accompanies the source reference.
 
 ### Draft Bodies
 
-Each proposed body must meet its own kind's shape and states the result. It carries no account of how the work arrived. A source reference says what detail it holds.
+The collection of proposed complete issue-body documents, one per destination issue. Each proposed body must meet its own kind's shape and states the result. It carries no account of how the work arrived. A source reference says what detail it holds.
 
 ### Links
 
@@ -51,17 +51,6 @@ An initiative row identifies its epic issue. A task issue has its delivery link 
 | New initiative | An initiative | Kept or subsumed |
 | Hot-fix | A [hot-fix](hotfix-body.md#definition) on its theme board, with its target | Kept |
 | Leave | Work outside the initiative structure | Left open |
-
-### Disposition Conditions
-
-- **Existing task, new task and new epic.**
-  The source is subsumed, its work planned as an ordinary task row.
-- **Hot-fix.**
-  The source is kept, under the hot-fix layout, and is placed on its theme board once it is saved as a hot-fix.
-- **New initiative.**
-  A source with a planning-record reference is subsumed, with that folder cited beside the source in the destination. Otherwise the source is kept when its work needs its own discussion or evidence, and subsumed when its detail fits in rows, criteria and a reference.
-- **Existing criterion.**
-  Work an existing criterion already states is subsumed into the issue holding that criterion, without a new row; for cited standalone work this is usually the citing issue.
 
 ### Candidate Issues
 
@@ -106,3 +95,16 @@ The saved issue identity and settled hot-fix board item when applicable, or the 
 ### Workspace
 
 The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+
+## Guidance
+
+### Disposition Conditions
+
+- **Existing task, new task and new epic.**
+  The source is subsumed, its work planned as an ordinary task row.
+- **Hot-fix.**
+  The source is kept, under the hot-fix layout, and is placed on its theme board once it is saved as a hot-fix.
+- **New initiative.**
+  A source with a planning-record reference is subsumed, with that folder cited beside the source in the destination. Otherwise the source is kept when its work needs its own discussion or evidence, and subsumed when its detail fits in rows, criteria and a reference.
+- **Existing criterion.**
+  Work an existing criterion already states is subsumed into the issue holding that criterion, without a new row; for cited standalone work this is usually the citing issue.

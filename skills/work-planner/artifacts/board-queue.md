@@ -32,29 +32,12 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 </pre></big>
 
 - Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
-- Limit proposed writes to [Status Scope](#status-scope "○").
 
 - Repeat `--unplanned` for each supplied [Unplanned Initiative](#unplanned-initiatives "○").
 
 - The computation reads [Read Lane Assignments](lane.md#read-lane-assignments "ƒ") and runs [Validate Lane Unit](lane.md#validate-lane-unit "ƒ") internally with each complete free unit derived after queue placement.
 - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix’s, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
 - Distinguish pending decisions and missing evidence under [Completeness](#completeness). The requester supplies further evidence and confirmed decisions for another pass and applies the proposed changes.
-
-## Fields
-
-### Board Identity
-
-The queue belongs to one theme board, identified as `users/{owner}/projectsV2/{id}` or `orgs/{owner}/projectsV2/{id}`. Its source snapshots contain board items with Status, board fields, initiative pull requests and any off-board issues its rows depend on. eg `users/<owner>/projectsV2/9`
-
-### Priority Sets
-
-A parallel work map assigns a positive integer to each ranked initiative. Every initiative with the same number runs together as one set. One left unordered stays in Backlog.
-
-The epics of one initiative carry their own sets. Every epic with the same number starts together, and a number is compared only with its siblings'.
-
-A priority label is `priority:` and a positive integer. A larger number is higher, with no maximum. Two such labels on one issue count as the larger number.
-
-### Initiative Status
 
 - The highest priority set is In Progress, all together. The next set is Ready, all together. Lower sets stay in Backlog. When the highest set leaves In Progress, the Ready set moves to In Progress.
 - An initiative in Backlog with no priority label stays there. An initiative in Ready with no priority label moves to Backlog, as [Backlog Cascade](#backlog-cascade) states.
@@ -63,11 +46,7 @@ A priority label is `priority:` and a positive integer. A larger number is highe
 - An initiative confirmed unplanned follows the same wait, then moves to Backlog as [Backlog Cascade](#backlog-cascade) states.
 - An initiative In Review or Done remains in that state.
 
-### Hot-fix Placement
-
-Each hot-fix stands where its [Board Status](hotfix.md#board-status) places it.
-
-### Epic Status
+- Each hot-fix stands where its [Board Status](hotfix.md#board-status) places it.
 
 - On an initiative Ready or In Progress, an [active](#epic-activity) epic is In Progress even with open questions. A delivered task row alone is not activity.
 - On that initiative, an inactive epic can start when every entry of its initiative row's Depends on cell is delivered, every prerequisite epic that row names is closed as completed, all of each prerequisite's bases have merged into their long-lived branches, and the epic's Open Questions section is empty.
@@ -78,32 +57,23 @@ Each hot-fix stands where its [Board Status](hotfix.md#board-status) places it.
 - A Ready epic of an initiative that is neither Ready nor In Progress moves to Backlog. An epic is Ready only on an initiative Ready or In Progress.
 - An initiative kept In Progress only while its epics' work completes readies none of its epics: its active epics are In Progress, and its inactive epics in Ready or In Progress move to Backlog.
 
-### Backlog Cascade
+## Fields
 
-An initiative that moves to Backlog takes its unstarted epics with it, and each loses its assignees, as [Assignees](board.md#assignees) states. Board Delivery moves each Ready task issue of a Backlog epic to Backlog, as [Task Eligibility](#task-eligibility) states.
+### Board Identity
 
-An epic that is [active](#epic-activity), [handed off](#epic-handoff) or In Review is not released. The queue prints a `reconcile` line naming it, and the initiative and every one of its epics stay where they stand until the user finishes or releases that work.
+The theme board identity as `users/{owner}/projectsV2/{id}` or `orgs/{owner}/projectsV2/{id}`. eg `users/<owner>/projectsV2/9`
 
-### Epic Activity
+### Priority Sets
 
-An open epic is active while it has task work under way, and Board Delivery reads it the same way:
+A parallel work map is a mapping from initiative identity to positive integer priority. Every initiative with the same number runs together as one set. One left unordered stays in Backlog.
 
-- a task row links a reserved planning folder, as [Task Delivery](epic-issue-body.md#task-delivery) defines, or
-- an open pull request whose title names the epic, `[Ixx:Eyy]`, is not the epic's integration pull request, whose head is the epic base `ixx/eyy/<branch>` and whose base is `<branch>`.
+The epics of one initiative carry their own sets. Every epic with the same number starts together, and a number is compared only with its siblings'.
 
-A delivered row, and the integration pull request, are not activity.
-
-### Epic Handoff
-
-An open epic whose acceptance criteria are all ticked is handed off. Board Delivery places it In Review when its current agent review passes, and holds it In Progress while that review is missing or failing. The queue neither readies, parks nor releases it, and it holds its initiative In Progress as an epic In Review does.
-
-### Task Eligibility
-
-A task is Ready only when its epic is Ready or In Progress and every row its Depends on cell names is delivered. A row naming another epic's row waits for that row's outputs, as [Producer Outputs](delivery-branches.md#producer-outputs) states, and the rows beside it wait for nothing it waits on. The queue reads no checkout, so an output in the consumer's own repository stays unverified here, and the delivery survey, which reads one, is where such a row is found available. The queue contains no task issue changes; task status comes from the supplied delivery state.
+A priority label is `priority:` and a positive integer. A larger number is higher, with no maximum. Two such labels on one issue count as the larger number.
 
 ### Ready Units
 
-A Ready unit contains one unjoined row or all rows of a unit defined by [Joins](dependency-graph.md#joins). Every member must be free and undelivered and meet [Task Eligibility](#task-eligibility) under its epic's proposed status; row availability follows [Task Delivery](epic-issue-body.md#task-delivery). Units include rows with no linked work item. Status and assignee calls depend on priority and delivery state.
+A collection of units, each carrying initiative, epic and member task ids plus its [lane report label](lane.md#report-label). A unit contains one unjoined row or all rows of a unit defined by [Joins](dependency-graph.md#joins). Every member must be free and undelivered and meet [Task Eligibility](#task-eligibility) under its epic's proposed status; row availability follows [Task Delivery](epic-issue-body.md#task-delivery). Units include rows with no linked work item. Status and assignee calls depend on priority and delivery state.
 
 ### Proposed Changes
 
@@ -122,29 +92,6 @@ The queue contains calls for Status and assignee changes to initiatives, epics a
 | `invalid` | A task has an [assignment finding](lane.md#assignments), or a free unit fails [Unit Consistency](lane.md#unit-consistency) | Its affected rows and values; the invalid unit is not reported as Ready, and the run exits nonzero |
 | `rank` | An open initiative has an open epic with no priority label that is not [handed off](#epic-handoff) | That initiative and each such epic, for the user to rank |
 
-### Recommended Decisions
-
-The answer a caller applies where it resolves an `order` or `ask` line on its own.
-
-- For `order`, priority 1 on every open initiative already In Progress or named by an open pull request, and no number on the rest. Where no initiative qualifies, nothing is under way and the line has no recommended answer.
-- For `ask`, the number of the highest set already running, so the initiative joins it, or 1 where no initiative carries a priority label.
-
-### Unresolvable Dependencies
-
-A `Depends on` entry that names no row and links no issue, names an issue the run was not given, or names a row the epic it points to does not carry, cannot resolve. No delivery makes it readable, so it is told apart from a prerequisite that has not landed.
-
-- The report names the row and the entry as written, and a run that met one while deciding a placement exits nonzero.
-- The epic that row gates keeps the Status it holds. The run proposes no move for it, so a Ready epic stays Ready on an entry nobody can read.
-- Every entry of a cell is read, so a cell carrying two names both.
-
-### Completeness
-
-An `order` or `ask` line means a decision is pending. An unresolved issue reference means dependency evidence is missing. Either leaves the queue incomplete.
-
-Invalid lane assignments leave the unit report incomplete and the run exits nonzero. They do not supply placement or assignee inputs.
-
-A complete queue may still propose changes. Live board state has converged when a queue derived from refreshed items is complete and contains no further call. Every other [report line](#report-lines) remains reportable at that point.
-
 ### Resolved Issues
 
 The supplied off-board dependency issue files, each containing its complete issue record.
@@ -153,13 +100,9 @@ The supplied off-board dependency issue files, each containing its complete issu
 
 The confirmed initiatives left with no priority, each supplied as an issue number or `<owner>/<repo>#<issue-number>`.
 
-### Status Scope
-
-The permitted Status scope supplied for queue computation.
-
 ### Queue Result
 
-The proposed calls, report lines and unresolved references, retaining pending decisions, missing evidence and invalid assignments.
+A report containing proposed [changes](#proposed-changes), [Report Lines](#report-lines) and unresolved issue references, with the command exit status. The call files are written in [Output Directory](#output-directory). Pending decisions, missing evidence and invalid assignments remain explicit in the report; this is not a JSON envelope.
 
 ### Board Items
 
@@ -188,3 +131,44 @@ The supplied login assigned to work from Ready. eg `m2ux`
 ### Workspace
 
 The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+
+## Guidance
+
+### Backlog Cascade
+
+An initiative that moves to Backlog takes its unstarted epics with it, and each loses its assignees, as [Assignees](board.md#assignees) states. Board Delivery moves each Ready task issue of a Backlog epic to Backlog, as [Task Eligibility](#task-eligibility) states.
+
+An epic that is [active](#epic-activity), [handed off](#epic-handoff) or In Review is not released. The queue prints a `reconcile` line naming it, and the initiative and every one of its epics stay where they stand until the user finishes or releases that work.
+
+### Epic Activity
+
+An open epic is active while it has task work under way, and Board Delivery reads it the same way:
+
+- a task row links a reserved planning folder, as [Task Delivery](epic-issue-body.md#task-delivery) defines, or
+- an open pull request whose title names the epic, `[Ixx:Eyy]`, is not the epic's integration pull request, whose head is the epic base `ixx/eyy/<branch>` and whose base is `<branch>`.
+
+A delivered row, and the integration pull request, are not activity.
+
+### Epic Handoff
+
+An open epic whose acceptance criteria are all ticked is handed off. Board Delivery places it In Review when its current agent review passes, and holds it In Progress while that review is missing or failing. The queue neither readies, parks nor releases it, and it holds its initiative In Progress as an epic In Review does.
+
+### Task Eligibility
+
+A task is Ready only when its epic is Ready or In Progress and every row its Depends on cell names is delivered. A row naming another epic's row waits for that row's outputs, as [Producer Outputs](delivery-branches.md#producer-outputs) states, and the rows beside it wait for nothing it waits on. The queue reads no checkout, so an output in the consumer's own repository stays unverified here, and the delivery survey, which reads one, is where such a row is found available. The queue contains no task issue changes; task status comes from the supplied delivery state.
+
+### Unresolvable Dependencies
+
+A `Depends on` entry that names no row and links no issue, names an issue the run was not given, or names a row the epic it points to does not carry, cannot resolve. No delivery makes it readable, so it is told apart from a prerequisite that has not landed.
+
+- The report names the row and the entry as written, and a run that met one while deciding a placement exits nonzero.
+- The epic that row gates keeps the Status it holds. The run proposes no move for it, so a Ready epic stays Ready on an entry nobody can read.
+- Every entry of a cell is read, so a cell carrying two names both.
+
+### Completeness
+
+An `order` or `ask` line means a decision is pending. An unresolved issue reference means dependency evidence is missing. Either leaves the queue incomplete.
+
+Invalid lane assignments leave the unit report incomplete and the run exits nonzero. They do not supply placement or assignee inputs.
+
+A complete queue may still propose changes. Live board state has converged when a queue derived from refreshed items is complete and contains no further call. Every other [report line](#report-lines) remains reportable at that point.

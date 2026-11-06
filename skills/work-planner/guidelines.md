@@ -176,9 +176,9 @@ Read this before adding or changing an artifact.
 - **No mode, no protocol.**
   An artifact never links to a mode or a protocol, including by naming one in prose.
 - **Fields.**
-  Fields defines the artifact's shape and the conditions on its elements. Common field conditions hold for the family; a kind supplements them. Fields is a `##` section, with each named field or group under `###`. The kind's template is a subsection of Fields and holds that kind's table. Field conditions do not state user goals. A condition that gates an action sits in the procedure step that performs it.
+  Each field names one scalar or reference, a document, a collection, or a composite data object. State its shape, members, types and absent or empty cases where relevant, with examples using the actual representation. Fields defines the artifact's shape and the conditions on its elements. Common field conditions hold for the family; a kind supplements them. Fields is a `##` section, with each named field or group under `###`. The kind's template is a subsection of Fields and holds that kind's table. Field conditions do not state user goals. A condition that gates an action sits in the procedure step that performs it.
 - **No procedure in Fields.**
-  Fields define values, shape and invariants, including conditional constraints on valid state. Derivation, evidence gathering, execution and outcome handling belong to callable capabilities; invocations use named Commands specifications. Give a nameable derived result its owning artifact and operations.
+  Fields define values, shape and invariants, including conditional constraints on valid state. Derivation, evidence gathering, execution and outcome handling belong to callable capabilities; invocations use named Commands specifications. A rule used by one capability sits inline in that command's details or operation step. A shared policy has one linked home under its subject's Guidance. Reference counts guide placement; whole-section schema consumers also count. Do not manufacture a data object or an input contract for a policy. Give a nameable derived result its owning artifact and operations. Distinct command result shapes have distinct fields, with their actual serialization, findings, nullability and failure behavior; a generic result name must not conceal incompatible shapes.
 
 - **Name.**
   A file that populates a body is named `<subject>-body.md`. Its scope is that population. `issue-body.md` is the shared issue body. A kind file is `proposal-body.md`, `initiative-issue-body.md`, `epic-issue-body.md`, `task-body.md`, `standalone-body.md`, or `hotfix-body.md`.
@@ -189,7 +189,7 @@ Read this before adding or changing an artifact.
 - **Operations.**
   Every procedural sequence occupies a named `###` subsection under Operations, including a kind's population path. Operations itself contains no steps; incorporate any overarching sequence into the named operations that perform its constituent work. Omit Operations when the artifact has no operation. Each subsection uses an [opening](#procedure) and numbered heading steps. A kind step links to the common procedure unit it uses and adds only the further population. It does not copy the shared rules.
 - **Prerequisites.**
-  Prerequisites open with `Read these files first.` They list every file the artifact’s Operations, Commands or Fields link to. A kind lists `issue-body.md` because it links to it. The common file does not link to a kind.
+  Prerequisites open with `Read these files first.` They list every file the artifact’s Operations, Commands, Fields or Guidance link to. A kind lists `issue-body.md` because it links to it. The common file does not link to a kind.
 
 - **Operation steps.**
   Address instructions directly to the agent, following the [procedure rules](#procedure).

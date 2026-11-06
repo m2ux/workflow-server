@@ -221,6 +221,16 @@ Run in the [Checkout](#checkout "○").
 git merge --no-edit 'origin/[**&lt;source-branch&gt;**](#source-branch "○")'
 </pre></big>
 
+- Every worktree of a repository shares one stash list, so a delivery session that stashes names its entry with a message no other session's entry carries, and acts on that entry alone.
+
+- **Found.**
+  An entry is found by its message, never by its position in the list.
+- **Restored.**
+  An entry is restored with `git stash apply` on that entry's commit, never with a bare `git stash pop`, which takes whichever entry tops the list.
+- **Dropped.**
+  The session that made an entry drops it once restored, by the `stash@{<n>}` reference its message holds at that moment, since `git stash drop` takes no bare commit.
+- eg `git stash push -m "i11/e10/w29 before base merge"`, then `git stash list --format='%H %gd %s'` to find the entry, `git stash apply <entry-commit>`, and `git stash drop "stash@{<n>}"`.
+
 ### Push Epic Base
 
 Push the epic base checked out where it runs to its configured upstream and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -326,7 +336,7 @@ git -C '[**&lt;checkout&gt;**](#checkout "○")' status --porcelain --branch
 
 ### Branches
 
-A project states its long-lived branches in `config/branches` at its root, one name per line. A run reads the statement at the commit it evaluates, in the repository its checkout locates; which worktree the checkout is, and what its working files hold, choose nothing. The evaluated revision is fetched before it is read.
+The project's ordered long-lived branch names, declared in `config/branches` at its root, one name per line. A run reads the statement at the commit it evaluates, in the repository its checkout locates; which worktree the checkout is, and what its working files hold, choose nothing. The evaluated revision is fetched before it is read.
 
 - An epic sync evaluates each of its epic bases, such as `origin/i07/e00/main` and `origin/i07/e00/workflows`. Declarations that disagree across those bases leave the names unevaluable, and each is reported with its source.
 - A read of one epic's branches evaluates its epic base, such as `origin/i07/e00/main`.
@@ -338,6 +348,8 @@ A project states its long-lived branches in `config/branches` at its root, one n
 
 ### Epic Bases
 
+The epic's base-branch collection, one branch per changed long-lived branch.
+
 - Each long-lived branch an epic changes has a base branch, named for the initiative, the epic and that branch, and rooted in that long-lived branch. Its prerequisite epics are closed as completed with every delivery base merged.
 - eg `i07/e00/main` for an epic base cut from `main`.
 - The base's last segment is its long-lived branch, which gives the target it merges and is merged into.
@@ -347,31 +359,15 @@ A project states its long-lived branches in `config/branches` at its root, one n
 - A completed epic is delivered by merging each base into its long-lived branch. The epic stays open until every base has merged. Another epic still incomplete holds no base back unless it is a prerequisite.
 - An epic sync reports each open or merged pull request off these routes as `target`: a task pull request into anything but one of its epic's bases, and an integration pull request into anything but the long-lived branch its head names.
 
-### Producer Outputs
-
-A task row naming another epic's row starts once that row is delivered and each output it delivered is available at the consumer's base commit.
-
-- **The output.**
-  Each merged pull request the producer row links carries its merge commit, on the long-lived branch its base names. Each commit the row links is an output of its own.
-- **Available.**
-  The output is an ancestor of the consumer epic's base on that branch, as the remote holds it at the evaluated commit, or of the long-lived branch itself while the consumer has no base there. An output another repository holds is available once it has reached its long-lived branch: delivered there, or carried by an integration pull request merged after it.
-- **Not available.**
-  A merge into the producer's own base alone, a merge into a ref that is neither an epic base nor a long-lived branch, such as a task branch, an output recording no merge commit, a commit the checkout does not hold, and a consumer base moved to a commit without the output each leave the row waiting.
-- **Not gates.**
-  The producer epic's other rows and its closure.
-- **Record.**
-  Each reading names the producer row, the delivery, the output commit, the consumer revision and commit, and the answer. The integration, review and human-approval gates on each epic stand apart from it.
-- eg `#944 W02: E00:W01 #9 3f2a1c0d9b1e available at origin/i07/e01/main 8c4d2e7a1f30`.
-
 ### Review Worktrees
 
-A reviewed pull request is read in a detached worktree, named by its number under the `pr` folder of the worktree directory of the repository's main working tree.
+The detached checkout path for a reviewed pull request, named by its repository-local number under the `pr` folder of the worktree directory of the repository's main working tree.
 
 - eg `.worktrees/pr/950` for pull request 950.
 
 ### Task Branches
 
-A unit's task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`. The unit's pull request is opened from this branch into that base.
+A collection of task-branch, base-branch and worktree-path triples for the unit. Each task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`. The unit's pull request is opened from this branch into that base.
 
 - **Changed branches.**
   A unit changes the long-lived branches its rows' work items name in their [Component](work-item.md#component) declarations. A unit of an epic with one base changes that base.
@@ -384,18 +380,6 @@ A unit's task branch is cut from the epic base for the long-lived branch the uni
   A hot-fix works on the branch its [Branch](hotfix.md#branch) names.
 
 Each worktree is named by its branch under the worktree directory of the repository's main working tree.
-
-### Stash Entries
-
-Every worktree of a repository shares one stash list, so a delivery session that stashes names its entry with a message no other session's entry carries, and acts on that entry alone.
-
-- **Found.**
-  An entry is found by its message, never by its position in the list.
-- **Restored.**
-  An entry is restored with `git stash apply` on that entry's commit, never with a bare `git stash pop`, which takes whichever entry tops the list.
-- **Dropped.**
-  The session that made an entry drops it once restored, by the `stash@{<n>}` reference its message holds at that moment, since `git stash drop` takes no bare commit.
-- eg `git stash push -m "i11/e10/w29 before base merge"`, then `git stash list --format='%H %gd %s'` to find the entry, `git stash apply <entry-commit>`, and `git stash drop "stash@{<n>}"`.
 
 ### Epic Identity
 
@@ -508,3 +492,21 @@ The supplied evidence that the destination epic base does not exist.
 ### Successful Merge
 
 The successful result of merging the fetched source into the checked-out branch.
+
+## Guidance
+
+### Producer Outputs
+
+A task row naming another epic's row starts once that row is delivered and each output it delivered is available at the consumer's base commit.
+
+- **The output.**
+  Each merged pull request the producer row links carries its merge commit, on the long-lived branch its base names. Each commit the row links is an output of its own.
+- **Available.**
+  The output is an ancestor of the consumer epic's base on that branch, as the remote holds it at the evaluated commit, or of the long-lived branch itself while the consumer has no base there. An output another repository holds is available once it has reached its long-lived branch: delivered there, or carried by an integration pull request merged after it.
+- **Not available.**
+  A merge into the producer's own base alone, a merge into a ref that is neither an epic base nor a long-lived branch, such as a task branch, an output recording no merge commit, a commit the checkout does not hold, and a consumer base moved to a commit without the output each leave the row waiting.
+- **Not gates.**
+  The producer epic's other rows and its closure.
+- **Record.**
+  Each reading names the producer row, the delivery, the output commit, the consumer revision and commit, and the answer. The integration, review and human-approval gates on each epic stand apart from it.
+- eg `#944 W02: E00:W01 #9 3f2a1c0d9b1e available at origin/i07/e01/main 8c4d2e7a1f30`.

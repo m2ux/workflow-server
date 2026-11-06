@@ -19,8 +19,12 @@ Provide [Autonomy Result](#autonomy-result) as automatic where the supplied allo
 #### 3. Provide Held Change
 
 - Provide it as held otherwise, for the caller to settle as [Held Change](#held-change) states.
-- A change matching no kind is held, as is one matching [Initiative Creation](#initiative-creation) or [Hot-fix Creation](#hot-fix-creation).
+- A change matching no kind is held.
 - An absent [allowance](#allowance) holds every change, so a run the user drives decides nothing on their behalf.
+
+- A new initiative is outside every allowance. The work stays where it is, open and unplaced, until the user decides where it belongs.
+
+- A new hot-fix is outside every allowance, since it runs ahead of all queued work. The work stays where it is until the user decides it is a hot-fix.
 
 ### Record Plan Change
 
@@ -38,7 +42,7 @@ Provide the updated [Change List](#change-list) for publication and reporting.
 
 ### Allowance
 
-The caller names the change kinds its run applies without asking. A run the user drives directly is supplied none.
+A supplied set of [Change Kinds](#change-kinds) the run may apply without asking, or no allowance for a user-driven run.
 
 ### Change Kinds
 
@@ -50,16 +54,6 @@ The caller names the change kinds its run applies without asking. A run the user
 | Re-prioritisation | A priority label, a queue order or a board status |
 | Folded work | Criteria, scope or design added to an existing issue because the work in hand needs it |
 
-An option deciding to leave work where it is changes no plan, so it needs no allowance and takes no entry, unlike a change [held](#held-change) for the user to decide.
-
-### Initiative Creation
-
-A new initiative is outside every allowance. The work stays where it is, open and unplaced, until the user decides where it belongs.
-
-### Hot-fix Creation
-
-A new hot-fix is outside every allowance, since it runs ahead of all queued work. The work stays where it is until the user decides it is a hot-fix.
-
 ### Change List
 
 One list for the run, holding every change it applied and every change it held. It is what the run reports and what its record keeps.
@@ -67,12 +61,6 @@ One list for the run, holding every change it applied and every change it held. 
 ### Entry
 
 One line: the kind, the issue or row it concerns, and the option applied or recommended. The entry states the change, not the alternatives weighed against it.
-
-### Held Change
-
-A held change is left unapplied and its subject stays as it stands, so the next run sees the same decision. Its entry carries the recommended option, which is what the user is answering.
-
-A run working under an allowance records and reports a held change rather than asking, since the work it was dispatched for does not wait on an answer. A run supplied no allowance puts it to the user.
 
 ### Pending Change
 
@@ -85,3 +73,13 @@ The supplied change, its kind, applied or recommended option and affected issue 
 ### Autonomy Result
 
 The change classified as automatic or held, retaining its recommendation.
+
+## Guidance
+
+### Held Change
+
+A held change is left unapplied and its subject stays as it stands, so the next run sees the same decision. Its entry carries the recommended option, which is what the user is answering.
+
+A run working under an allowance records and reports a held change rather than asking, since the work it was dispatched for does not wait on an answer. A run supplied no allowance puts it to the user.
+
+An option deciding to leave work where it is changes no plan, so it needs no allowance and takes no entry, unlike a change [held](#held-change) for the user to decide.

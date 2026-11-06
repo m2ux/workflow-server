@@ -18,14 +18,20 @@ The verification evidence for a supplied set of criteria whose delivery is ready
 
 #### 1. Confirm Criterion Readiness
 
-- Confirm [Delivery Evidence](#delivery-evidence) establishes [Readiness](#readiness) for the [Criterion Selection](#criterion-selection) in the [Issue Body](#issue-body).
-- Provide evidence that fails Readiness as a blocker for that criterion.
+- Confirm [Delivery Evidence](#delivery-evidence) establishes readiness for the [Criterion Selection](#criterion-selection) in the [Issue Body](#issue-body).
+- Provide evidence that fails readiness as a blocker for that criterion.
+
+- A task criterion is ready to verify when its delivering pull request, open or merged, supplies readable evidence at the revision being checked. Epic criteria require their delivering rows to be delivered. An unreadable dependency leaves a criterion unready; tracker closure requires merged delivery.
 
 #### 2. Run Named Instruments
 
-- Run each criterion's named [instrument](#instrument) at the delivering pull request head for an open task, or its merged revision for delivered work, meeting [Instrument Checkout](#instrument-checkout).
+- Run each criterion's named [instrument](#instrument) at the delivering pull request head for an open task, or its merged revision for delivered work.
 - Run [Run at Revision](#run-at-revision "ƒ") with the [project checkout](#project-checkout), that revision and the instrument.
-- Record the result against the commit it reports, meeting [Instrument Result](#instrument-result).
+- Record the [Instrument Result](#instrument-result) against the commit it reports.
+
+- An instrument runs in a checkout of the project at the exact revision it is verifying, which the caller supplies. A checkout the caller is editing is not that revision, so a criterion verified against uncommitted work is unverified. A branch or tag is resolved to one commit before the run, and the checkout made for the run is removed after it whatever the instrument returns.
+
+- A criterion is verified only on a passing run of its named instrument, recorded against the tested revisions as [Coverage Reports](issue-body.md#coverage-reports) define. A failed, unavailable or inconclusive instrument leaves it unverified, and an unverified criterion is not ticked.
 
 #### 3. Provide Criterion Evidence
 
@@ -38,9 +44,11 @@ The confirmed criteria and completed rows recorded in an epic or initiative body
 
 #### 1. Record Verified Criteria
 
-- Record the criteria from [Issue Evidence](#issue-evidence), meeting [Tick State](#tick-state).
+- Record the criteria from [Issue Evidence](#issue-evidence).
 - For an epic, Run [Tick Epic Criteria](epic-issue-body.md#tick-epic-criteria "ƒ") with the verified criterion ids.
 - For an initiative, Run [Tick Initiative Criteria](initiative-issue-body.md#tick-initiative-criteria "ƒ") with the verified criterion ids.
+
+- A ticked criterion carries verification evidence. Epic criteria can derive that evidence from passed checks under [Test Evidence](epic-issue-body.md#test-evidence). Done on the row or table that cites it must follow [Tables](issue-body.md#tables) and [Work Breakdown](epic-issue-body.md#work-breakdown). A criterion refused as not ready to verify is provided unticked with what it is missing.
 
 #### 2. Provide Body Disposition
 
@@ -69,30 +77,17 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ## Fields
 
-- **Criterion.** The id of one acceptance criterion in the issue body that states it.
-- **Instrument.** The command, test or check the criterion names as the thing that observes it.
-- **Revision.**
-  The exact commit the instrument ran against: the open task pull request head or the delivered revision in its target branch.
+### Criterion
 
-### Readiness
-
-A task criterion is ready to verify when its delivering pull request, open or merged, supplies readable evidence at the revision being checked. Epic criteria require their delivering rows to be delivered. An unreadable dependency leaves a criterion unready; tracker closure requires merged delivery.
-
-### Instrument Checkout
-
-An instrument runs in a checkout of the project at the exact revision it is verifying, which the caller supplies. A checkout the caller is editing is not that revision, so a criterion verified against uncommitted work is unverified. A branch or tag is resolved to one commit before the run, and the checkout made for the run is removed after it whatever the instrument returns.
+The id of one acceptance criterion in its owning issue body.
 
 ### Instrument Result
 
-A criterion is verified only on a passing run of its named instrument, recorded against the tested revisions as [Coverage Reports](issue-body.md#coverage-reports) define. A failed, unavailable or inconclusive instrument leaves it unverified, and an unverified criterion is not ticked.
-
-### Tick State
-
-A ticked criterion carries verification evidence. Epic criteria can derive that evidence from passed checks under [Test Evidence](epic-issue-body.md#test-evidence). Done on the row or table that cites it must follow [Tables](issue-body.md#tables) and [Work Breakdown](epic-issue-body.md#work-breakdown). A criterion refused as not ready to verify is provided unticked with what it is missing.
+The first standard-output line is a JSON object with `revision`, the resolved commit SHA, and `checkout`, the temporary checkout path; subsequent standard output is the instrument's output. The result also carries the process exit status and standard error. Helper failure can omit the JSON header. The status and error cases are specified by [Run at Revision](#run-at-revision "ƒ"). eg `{"revision":"3f2a1c0d9b1e0000000000000000000000000000","checkout":"/tmp/criterion-check"}`
 
 ### Criterion Selection
 
-The supplied criterion ids selected for verification or confirmed as verified for recording.
+The supplied [Criterion](#criterion) ids selected for verification or confirmed as verified for recording.
 
 ### Issue Evidence
 

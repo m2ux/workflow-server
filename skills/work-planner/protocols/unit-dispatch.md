@@ -39,7 +39,7 @@ Read these files first.
 - For a hot-fix, use the component context its [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
 - Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") for the selected record folder.
 - Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") for that folder.
-- Retain its confirmed remote publication as the unit's [start evidence](../artifacts/dispatch-batch.md#start-readiness).
+- Retain its confirmed remote publication as the unit's [Start Evidence](../artifacts/dispatch-batch.md#start-evidence).
 
 ### 3. Hold the Unit
 

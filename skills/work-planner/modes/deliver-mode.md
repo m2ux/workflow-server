@@ -237,9 +237,10 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 8. Fix the Debt
 
-- Fix the technical debt this unit's validation finds, as [Debt](../artifacts/delivery-plan.md#debt) states.
+- A unit, including a hot-fix, fixes every debt item its validation finds, from running its tests, auditing the definitions it changed and reviewing its pull request, on its task branch, so its open pull request carries each fix before it merges.
+- Debt in code outside the unit's change is an issue of its own, arising from the delivery.
 
-- Carry each item that Debt leaves outside the unit's change into the arising-issues step.
+- Carry each item outside the unit's change into the arising-issues step.
 - Continue to the review step for a hot-fix unit, and to the merge step otherwise.
 
 #### 9. Review a Hot-Fix
@@ -278,7 +279,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 11. Arising Issues
 
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") for each issue that arose during delivery as a standalone issue with no agent-engineering prefix.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") for each issue that arose during delivery as a standalone issue with no agent-engineering prefix, following [Standalone Issues](../artifacts/board.md#standalone-issues).
 
 - Follow [Hoist Mode](hoist-mode.md "ƒ") in the project checkout with those new issue identities and the allowance the brief names, after the pull request is open and epic delivery is recorded.
 - Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with each placement it applied and each it held.

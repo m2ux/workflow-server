@@ -188,6 +188,8 @@ One pull request created or updated from supplied content and metadata.
 - For creation, Run [Open Task Pull Request](#open-task-pull-request "ƒ") or Run [Open Epic Pull Request](#open-epic-pull-request "ƒ") as the selected kind requires.
 - For a task or epic pull request with a delivery issue, Apply [Link Pull Request to Issue](#link-pull-request-to-issue "ƒ"), meeting [Issue Links](#issue-links).
 
+- A pull request outside epic delivery targets a long-lived branch. An open stacked pull request targets its long-lived branch once its base merges.
+
 #### 2. Update Selected Pull Fields
 
 For an existing [Identity](#identity), Run [Patch Pull Request Body](#patch-pull-request-body "ƒ"), Run [Retitle Pull Request](#retitle-pull-request "ƒ") or Run [Retarget Pull Request](#retarget-pull-request "ƒ") for the selected changes, preserving other fields.
@@ -590,20 +592,11 @@ A pull request is open, draft, ready for review, merged or closed without merge.
 
 ### Scope
 
-A task pull request delivers one task, or a set of tasks that name each other in Joins.
-
-### Other Pull Requests
-
-A pull request outside epic delivery targets a long-lived branch. An open stacked pull request targets its long-lived branch once its base merges.
-
-### Merge Permission
-
-The agent harness lets a delivery session merge a task pull request into an [epic base](delivery-branches.md#epic-bases), such as `i07/e00/main`, without a prompt. A merge into the default branch stays with a person.
-
-- **Claude Code.**
-  User settings (`~/.claude/settings.json`) grant it with an `autoMode.allow` rule and an `autoMode.environment` entry, each array keeping `"$defaults"`; auto mode reads neither from project settings. `claude auto-mode config` prints the rules in effect. eg `{"autoMode": {"environment": ["$defaults", "Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review"], "allow": ["$defaults", "Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review. Merges into the default branch are not covered"]}}`
+The task-id set delivered by the pull request. A task pull request delivers one task, or a set of tasks that name each other in Joins.
 
 ### Issue Links
+
+The set of Development relations between issue and pull-request identities.
 
 - GitHub shows the link in the pull request's Development field and in the issue's Linked pull requests field, which the project board reads.
 - A task pull request links the task's issue, and a review pull request links its epic's issue.
@@ -784,3 +777,12 @@ Authenticated tracker access for the selected repositories.
 ### Failure
 
 The operation and error, discrepancy or missing evidence that prevents a verified result. eg `failed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeCloseIssueReferences: Resource not accessible by integration`
+
+## Guidance
+
+### Merge Permission
+
+The agent harness lets a delivery session merge a task pull request into an [epic base](delivery-branches.md#epic-bases), such as `i07/e00/main`, without a prompt. A merge into the default branch stays with a person.
+
+- **Claude Code.**
+  User settings (`~/.claude/settings.json`) grant it with an `autoMode.allow` rule and an `autoMode.environment` entry, each array keeping `"$defaults"`; auto mode reads neither from project settings. `claude auto-mode config` prints the rules in effect. eg `{"autoMode": {"environment": ["$defaults", "Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review"], "allow": ["$defaults", "Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review. Merges into the default branch are not covered"]}}`

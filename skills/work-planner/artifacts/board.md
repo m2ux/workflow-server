@@ -242,45 +242,17 @@ gh api user --jq .login
 
 ### Themes
 
-Every initiative belongs to one theme, and each theme has one project board. Each project names its own themes.
+The project's named themes and their board associations. Each initiative has exactly one theme, and each theme has one project board. An initiative carries one `theme:*` label, and each of its epics carries the same one.
 
 Project examples are in [Themes](../configuration.md#themes).
 
-### One Theme
+### Theme Board Title
 
-An initiative carries one `theme:*` label, and each of its epics carries the same one.
-
-### One Board Per Theme
-
-- A proposal-derived board title is the originating proposal's exact `[Pxx]` designator, a space, the theme name, a colon, and its description: `[P03] Canon: Definitions Checked Against the Design Canon`. Preserve the proposal's digits exactly. A board with no originating proposal uses `Name: Description`.
-- It is linked to the repository.
-- It holds the theme's initiatives, their epics and their task issues, and its hot-fixes.
+A proposal-derived board title is the originating proposal's exact `[Pxx]` designator, a space, the theme name, a colon, and its description: `[P03] Canon: Definitions Checked Against the Design Canon`. Preserve the proposal's digits exactly. A board with no originating proposal uses `Name: Description`.
 
 ### Repositories
 
 A board's repositories are those its items' issues live in, read from each item's issue, deduplicated and ordered with the board's own repository first. An item whose issue is unreadable leaves the list incomplete, which is reported rather than filled by assumption.
-
-### Assignees
-
-An issue at Ready, In Progress, In Review or Done is assigned to the user; one in Backlog has no assignee. An assignee is set on the issue, not on the board item, so the call that changes one acts on the issue.
-
-### Standalone Issues
-
-A standalone issue sits on no board.
-
-### Proposals
-
-- The [configured board](../configuration.md#proposals-board) holds proposal issues, the incoming funnel for work that may become an initiative.
-- **Suggested.**
-  Raised, and nobody has taken it up. A new proposal lands here, with no assignee.
-- **Considering.**
-  Someone is weighing the goal, the evidence and the criteria. That person is the assignee.
-- **Approved.**
-  Qualified to become an initiative. The assignee is the user.
-- **Held.**
-  Not now. It stays on the board, with no assignee.
-- **Declined.**
-  It will not become an initiative. It has no assignee.
 
 ### Board Owner
 
@@ -385,3 +357,27 @@ The supplied local output path for the board items with Status and their complet
 ### Theme Name
 
 The supplied theme name, excluding any originating proposal designator. eg `Canon`
+
+## Guidance
+
+### Assignees
+
+An issue at Ready, In Progress, In Review or Done is assigned to the user; one in Backlog has no assignee. An assignee is set on the issue, not on the board item, so the call that changes one acts on the issue.
+
+### Proposals
+
+- The [configured board](../configuration.md#proposals-board) holds proposal issues, the incoming funnel for work that may become an initiative.
+- **Suggested.**
+  Raised, and nobody has taken it up. A new proposal lands here, with no assignee.
+- **Considering.**
+  Someone is weighing the goal, the evidence and the criteria. That person is the assignee.
+- **Approved.**
+  Qualified to become an initiative. The assignee is the user.
+- **Held.**
+  Not now. It stays on the board, with no assignee.
+- **Declined.**
+  It will not become an initiative. It has no assignee.
+
+### Standalone Issues
+
+A standalone issue sits on no board.

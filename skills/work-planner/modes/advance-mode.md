@@ -65,7 +65,12 @@ Read these files first.
 
 - Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy "ƒ") for each line, with the allowance the caller supplied.
 
-- For an automatic line, take its [recommended decision](../artifacts/board-queue.md#recommended-decisions) and Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with that decision.
+- For an automatic `order` or `ask` line, use these recommendations:
+
+- For `order`, priority 1 on every open initiative already In Progress or named by an open pull request, and no number on the rest. Where no initiative qualifies, nothing is under way and the line has no recommended answer.
+- For `ask`, the number of the highest set already running, so the initiative joins it, or 1 where no initiative carries a priority label.
+
+- For an automatic line, take its recommended decision and Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with that decision.
 - A held line, and an automatic one the recommendation leaves without an answer, is settled as [Held Change](../artifacts/plan-change.md#held-change) states, following the interview rules in the [guidelines](../guidelines.md#modes) where it reaches the user.
 - A line this mode records rather than asks leaves the queue pending, which the write step reads as incomplete.
 

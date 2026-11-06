@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import epic_body, git, hotfix, initiative_body, issue, item, links, pr, repository, run, url
+from fixtures import epic_body, git, hotfix, initiative_body, issue, item, lane_table, links, pr, repository, run, url
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT.parent / 'scripts'))
@@ -144,6 +144,39 @@ class DocumentedCommandBehavior(unittest.TestCase):
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertTrue(output.is_file(), 'the requested body is absent')
         self.assertIn(f'| [E00]({url("issues", 2)}) | Work | AC1 | | ✓ |', output.read_text())
+
+    def lane_result_example(self, heading):
+        lines, _, headings = checker.scan(ROOT / 'artifacts/lane.md')
+        start = next(index for index, depth, title in headings if depth == 3 and title == heading)
+        end = checker.heading_end(headings, start, 3, len(lines))
+        return json.loads(re.search(r'eg `([^`]+)`', '\n'.join(lines[start:end]))[1])
+
+    def test_lane_commands_provide_their_documented_flat_result_examples(self):
+        body = self.root / 'epic body.md'
+        body.write_text(lane_table(('W01', '', '02'), ('W02', '', '')))
+        examples = [('Read Lane Assignments', 'Assignment Read Result', {}, ()),
+                    ('Validate Lane Unit', 'Unit Lane Result', {'task-ids': 'W01'}, ()),
+                    ('Evaluate Lane Admission', 'Admission Result',
+                     {'task-ids': 'W01', 'lane-index': '02'}, ())]
+        for command, field, extra, omit in examples:
+            with self.subTest(command=command):
+                done = self.execute('lane.md', command, {'epic-body-file': body, **extra}, omit)
+                self.assertEqual(done.returncode, 0, done.stderr)
+                self.assertEqual(json.loads(done.stdout), self.lane_result_example(field))
+
+    def test_lane_result_distinguishes_invalid_and_valid_unlaned_units(self):
+        body = self.root / 'epic body.md'
+        for cell, expected, problems in [('', True, False), ('`2`', False, True)]:
+            with self.subTest(cell=cell):
+                body.write_text(lane_table(('W01', '', cell)))
+                done = self.execute('lane.md', 'Evaluate Lane Admission', {
+                    'epic-body-file': body, 'task-ids': 'W01', 'lane-index': '02',
+                }, omit=('--lane',))
+                result = json.loads(done.stdout)
+                self.assertEqual(done.returncode, int(problems), done.stderr)
+                self.assertIsNone(result['lane'])
+                self.assertEqual(result['admitted'], expected)
+                self.assertEqual(bool(result['problems']), problems)
 
     def test_development_snapshot_example_is_valid_closure_evidence(self):
         path = ROOT / 'artifacts/issue.md'

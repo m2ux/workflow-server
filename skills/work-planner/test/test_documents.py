@@ -57,7 +57,7 @@ class DocumentInterfaces(unittest.TestCase):
                         if sections[i] == 'Prerequisites':
                             declared.add(destination)
                         elif sections[i] in ('Procedure', 'Operations', 'Commands', 'Fields',
-                                             'Outcomes'):
+                                             'Outcomes', 'Guidance'):
                             used.add(destination)
                     self.assertEqual(declared, used)
 
