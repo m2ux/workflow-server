@@ -2,86 +2,66 @@
 
 A hot-fix's board status, delivery unit and branch, delivering pull requests, hold and delivery record.
 
-## Prerequisites
-
-Read these files first.
-
-- [Hot-fix Body](hotfix-body.md)
-- [Issue](issue.md)
-- [Board](board.md)
-- [Board Delivery](board-delivery.md)
-- [Placement](placement.md)
-- [Repository Labels](repository-labels.md)
-- [Agent Review](agent-review.md)
-
 ## Operations
 
-### *Open* Hot-fix Issue
-
-A source issue's hot-fix number and labels, ready for its body rewrite.
-
-**Inputs:** Repository and source issue identity.
-
-1. Run [Select Tracker Number](issue.md#select-tracker-number) with the hot-fix prefix letter.
-2. Run [Ensure Repository Labels](repository-labels.md#ensure-repository-labels) with the labels hot-fix [Titles](hotfix-body.md#titles) name.
-3. Return the hot-fix number to the caller, which rewrites and saves the issue's body, title and labels, then places it through [Settle Hot-fix Board Status](#settle-hot-fix-board-status), as its [placement](placement.md#disposition-conditions) orders.
-
-### *Hold* Hot-fix Unit
-
-One confirmed hot-fix unit held for its session.
-
-**Inputs:** Hot-fix issue, board identity, the board items the caller last read, field definitions, output directory and assignee login.
-
-1. Run [Record Dispatch Status](board-delivery.md#record-dispatch-status) with the hot-fix issue for In Progress and the supplied board evidence. That status is the hold [Delivery Unit](#delivery-unit) defines.
-2. Return the confirmed status, or the discrepancy, to the caller. The session starts only once it is confirmed.
-
-### *Release* Hot-fix Hold
-
-A held hot-fix returned to the work the delivery plan offers.
-
-**Inputs:** Board identity and the held hot-fix's issue identity.
-
-1. Run [Capture Issue Development](issue.md#capture-issue-development) for the hot-fix issue.
-   - Refuse the release while its [Delivery Unit](#delivery-unit) is running or unrecorded, and return the pull request that makes it so to the caller.
-2. Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and Ready.
-3. Return the saved item and its Status to the caller.
-
-### *Record* Hot-fix Delivery
-
-One hot-fix body with its confirmed delivery and verified criteria recorded.
-
-**Inputs:** Hot-fix JSON, pull request records, complete issue-link snapshot, delivering pull request number, verified criterion ids and output body file.
-
-1. Run [Sync Hot-fix Issue](#sync-hot-fix-issue) with the hot-fix JSON, records as `--prs`, snapshot as `--links`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
-2. Return the body and eligibility findings; the caller publishes the body and closes the tracker issue, as [Delivery Record](#delivery-record) states.
-
-### *Settle* Hot-fix Board Status
+### Settle Hot-fix Board Status
 
 One hot-fix's board item set where [Board Status](#board-status) places it.
 
-**Inputs:** Board identity and the hot-fix issue identity.
+#### 1. Read Current Issue
 
-1. Run [Read Tracker Issue](issue.md#read-tracker-issue) for the hot-fix's current state.
-2. Run [Read Board State](board.md#read-board-state) for its item and Status. A hot-fix with no item has no Status.
-3. Apply the status [Board Status](#board-status) gives that state and Status:
-   - **A status.**
-     - Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and that status, which adds the item where the board has none.
-   - **Off the board, with an item.**
-     - Run [Remove Board Item](board.md#remove-board-item) with the supplied board owner and number and the item id Read Board State returned.
-   - **Off the board, with no item.**
-     - Change nothing; the hot-fix already stands off the board.
-4. Return the settled item, its removal, or the unchanged board to the caller.
+Apply [Read Tracker Issue](issue.md#read-tracker-issue "ƒ") for the current state of [Hot-fix Identity](#hot-fix-identity).
+
+#### 2. Read Current Board
+
+Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Board Evidence](#board-evidence) to obtain the issue’s item and Status. A hot-fix with no item has no Status.
+
+#### 3. Apply Required Status
+
+- Apply the status [Board Status](#board-status) gives that state and Status:
+
+##### A Status
+
+- Apply [Place Issue on Board](board.md#place-issue-on-board "ƒ") with the supplied board, the hot-fix issue and that status, which adds the item where the board has none.
+
+##### Off the Board, With an Item
+
+- Run [Remove Board Item](board.md#remove-board-item "ƒ") with the supplied board owner and number and the item id Read Board State provided.
+
+##### Off the Board, With No Item
+
+- Change nothing; the hot-fix already stands off the board.
+
+#### 4. Provide Settled Board
+
+Provide [Board Result](#board-result) with the settled item, its removal, or the unchanged board.
+
+## Commands
+
+### Sync Hot-fix Issue
+
+Record the open or merged pull request delivering a hot-fix, tick verified criteria, report whether the hot-fix is closable, and provide [Output Body](#output-body "●") and [Delivery Findings](#delivery-findings "●") to the requester.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;hot-fix-json-file&gt;**](#hot-fix-record "○")' &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' &#92;
+  --pr [**&lt;pull-request-number&gt;**](#delivery-selection "○") &#92;
+  --tick '[**&lt;criterion-ids&gt;**](#delivery-selection "○")' &#92;
+  --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
+</pre></big>
+
+- A `--pr` that does not deliver the hot-fix is refused, naming the condition it fails.
+- `<criterion-ids>` is a comma-separated list of verified criterion ids.
+
+- Tick only criteria the requester has verified. The requester publishes the body and closes the tracker issue under [Delivery Record](#delivery-record).
 
 ## Fields
 
-### Board Status
-
-- An open hot-fix stands In Review while a [delivering pull request](#delivering-pull-request) of it is open and ready for review, and In Progress while one is an open draft.
-- Otherwise an open hot-fix is Ready, whatever any initiative's or epic's priority, and In Progress once it holds In Progress or In Review. It reaches the board as its [placement](placement.md#disposition-conditions) orders.
-- A closed hot-fix takes the status [Status Changes](board-delivery.md#status-changes) gives a closed issue.
-- No initiative or epic waits on a hot-fix, and a hot-fix waits on none.
-
 ### Delivery Unit
+
+The hot-fix unit record: its issue identity, board state, branch, target base, worktree and delivery evidence.
 
 - An open hot-fix Ready on the board is a delivery unit of its own, whatever any epic's state. Its issue is the unit's task issue; it has no row and no epic record.
 - Its Coverage is every criterion it carries. Its record folder takes its prefix and title name as a task id and Description.
@@ -99,6 +79,8 @@ A hot-fix's branch is cut from its [target](hotfix-body.md#target), which its `u
 
 ### Delivering Pull Request
 
+A repository-qualified reference to the hot-fix's delivering pull request.
+
 - A pull request delivers a hot-fix when its title opens with the hot-fix's prefix, `[F00] Purpose`, it lives in the hot-fix's repository, its base is the hot-fix's [target](hotfix-body.md#target), and its Development field links the hot-fix.
 - It is opened from the hot-fix's [branch](#branch), as a draft.
 - It is marked ready for review only once its review cycle is complete: its current [agent review](agent-review.md#review-record) leaves every finding fixed.
@@ -107,26 +89,66 @@ A hot-fix's branch is cut from its [target](hotfix-body.md#target), which its `u
 
 ### Delivery Record
 
+The hot-fix issue's criterion evidence, delivering pull-request reference and closure state.
+
 - A hot-fix's merge is recorded on its own issue alone: its criteria and delivering pull request, then its closure. It records nothing on an epic or initiative.
-- Its board item follows [Board Status](#board-status) once the issue closes.
+- Its board item must follow [Board Status](#board-status) once the issue closes.
 
-## Commands
+### Repository
 
-### Sync Hot-fix Issue
+The supplied repository owner and name.
 
-Records the pull request that delivers a hot-fix, open or merged, ticks verified criteria, and reports whether it is closable.
+### Hot-fix Record
 
-**Inputs:** Hot-fix JSON, pull request records, complete issue-link snapshot, delivering pull request number, verified criterion ids and output file.
+The supplied complete current hot-fix issue JSON. eg `issue-874.json`
 
-- A `--pr` that does not deliver the hot-fix is refused, naming the condition it fails.
-- `<criterion-ids>` is a comma-separated list of verified criterion ids.
+### Board Evidence
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py '<hot-fix-json-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --pr '<pull-request-number>' --tick '<criterion-ids>' --fix '<output-body-file>'
-```
+The supplied board identity, most recently read board items with Status and field definitions, output directory and assignee login when holding a unit.
 
-**Example:**
+### Pull Request Records
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-874.json --prs prs.json --links links.json --pr 950 --tick AC1 --fix fixed-874.md
-```
+The supplied current pull request records. eg `prs.json`
+
+### Issue Links
+
+The complete supplied issue-link snapshot. eg `links.json`
+
+### Delivery Selection
+
+Verified criterion ids may be empty when recording delivery without requesting criterion ticks.
+
+The confirmed delivering pull request number and the verified criterion ids. eg `pull-request-number: 950`, `criterion-ids: AC1`
+
+### Output Body
+
+The supplied local destination for the complete provided body. eg `fixed-874.md`
+
+### Hot-fix Number
+
+The selected hot-fix number for the source issue.
+
+### Board Result
+
+The confirmed saved item and Status, item removal, unchanged board or discrepancy.
+
+### Delivery Findings
+
+The resulting body and eligibility findings for the supplied hot-fix delivery.
+
+### Workspace
+
+The absolute checkout holding the installed Work Planner scripts and sandbox helper.
+
+### Hot-fix Identity
+
+The supplied source or hot-fix issue's repository, number and URL.
+
+## Guidance
+
+### Board Status
+
+- An open hot-fix stands In Review while a [delivering pull request](#delivering-pull-request) of it is open and ready for review, and In Progress while one is an open draft.
+- Otherwise an open hot-fix is Ready, whatever any initiative's or epic's priority, and In Progress once it holds In Progress or In Review. It reaches the board as its [placement](placement.md#disposition-conditions) orders.
+- A closed hot-fix takes the status [Status Changes](board-delivery.md#status-changes) gives a closed issue.
+- No initiative or epic waits on a hot-fix, and a hot-fix waits on none.

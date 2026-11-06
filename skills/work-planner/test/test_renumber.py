@@ -1,6 +1,4 @@
 """renumber.py rewrites an initiative's epic numbers, or one epic's task numbers, across issue bodies.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import json
 import tempfile

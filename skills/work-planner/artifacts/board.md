@@ -4,145 +4,363 @@ The theme or proposals board, its membership and each item's status.
 
 ## Operations
 
-### *Select* Project Board
+### Select Project Board
 
 The theme or proposals board the request names.
 
-**Inputs:** Board owner and either a theme name or the proposals-board selection.
+#### 1. Find Requested Board
 
-1. Run [Find Theme Board](#find-theme-board) for the named theme, or [Find Proposals Board](#find-proposals-board) when the request names proposals. The selection meets [Themes](#themes) or [Proposals](#proposals).
-2. Return a missing-selection result when neither a theme nor proposals is specified; the caller obtains that choice.
-3. Return the selected board number, or an absent-board result for [Copy Project Board](#copy-project-board). Work one board at a time.
+Run [Find Theme Board](#find-theme-board "ƒ") for the theme in [Board Selection](#board-selection) under [Board Owner](#board-owner), or Run [Find Proposals Board](#find-proposals-board "ƒ") when that selection names proposals. The selection must meet [Themes](#themes) or [Proposals](#proposals).
 
-### *Copy* Project Board
+#### 2. Provide Missing Selection
 
-A missing theme board, or a missing proposals board.
+Provide a missing-selection result when neither a theme nor proposals is specified; the caller obtains that choice.
 
-**Inputs:** Board owner, repository, selected board kind, theme title and originating proposal record when applicable.
+#### 3. Provide Selected Board
 
-1. When no open board is titled `Proposals`, run [Create Proposals Board](#create-proposals-board). The copy source and the title meet [Proposals](#proposals).
-2. When the selected theme board is absent:
-   - Run [Create Theme Board](#create-theme-board) with the owner, repository, theme title and originating proposal record when applicable.
-   - Require the new theme's label and board before an initiative takes that theme.
+Provide the [selected board](#selected-board) number, or an absent-board result for the caller’s creation path. Work one board at a time.
 
-### *Create* Proposals Board
+### Create Proposals Board
 
 A new proposals board linked to the supplied repository.
 
-**Inputs:** Board owner and repository.
+#### 1. Find Proposals Template
 
-1. Run [Find Board Template](#find-board-template) with the owner and the exact title `Proposals Template`.
-2. Use the returned number as the copy source.
-3. Run [Copy Board Template](#copy-board-template) with that template number, the owner and the title `Proposals`.
-4. Retain the new board number. The copy meets [Proposals](#proposals).
-5. Run [Link Board to Repository](#link-board-to-repository) with the owner, new board number and repository.
-6. Return the new board number after linking succeeds.
+Run [Find Board Template](#find-board-template "ƒ") under [Board Owner](#board-owner) with the exact [proposals-template title](../configuration.md#proposals-board).
 
-### *Create* Theme Board
+#### 2. Select Template Source
 
-A new theme board linked to the supplied repository.
+Use the provided number as the copy source.
 
-**Inputs:** Board owner, repository, theme title and originating proposal record when applicable.
+#### 3. Copy Proposals Template
 
-1. Require the originating proposal record for a proposal-derived board; return a missing-input finding when its designator is unavailable.
-2. Run [Find Board Template](#find-board-template) with the owner and the exact title `Initiative Template`.
-3. Use the returned number as the copy source.
-4. Run [Copy Board Template](#copy-board-template) with that template number, the owner and the title required by [One Board Per Theme](#one-board-per-theme).
-5. Retain the new board number. The copy carries the template's Status options: Backlog, Ready, In Progress, In Review and Done.
-6. Run [Link Board to Repository](#link-board-to-repository) with the owner, new board number and repository.
-7. Return the new board number after linking succeeds.
+Run [Copy Board Template](#copy-board-template "ƒ") with that template number, the owner and the [proposals title](../configuration.md#proposals-board).
 
-### *Place* Issue on Board
+#### 4. Retain New Board Number
+
+Retain the new board number. The copy must meet [Proposals](#proposals).
+
+#### 5. Link Copied Board
+
+Run [Link Board to Repository](#link-board-to-repository "ƒ") with the owner, new board number and [repository](#repository).
+
+#### 6. Provide Linked Board
+
+Provide the [Copied Board](#copied-board) after linking succeeds.
+
+### Place Issue on Board
 
 One issue's membership and initial status.
 
-**Inputs:** Board owner and number, issue id and selected initial status.
+#### 1. Read Status Options
 
-1. Run [Fetch Board Fields](#fetch-board-fields) for the Status options, using the caller's supplied board and issue identities.
-2. Run [Add Issue to Board](#add-issue-to-board) with the issue id.
-3. Run [Set Item Status](#set-item-status) with the caller's selected status and the matching field and option ids.
-4. Run [Fetch Board Item](#fetch-board-item) for the saved item.
+Run [Fetch Board Fields](#fetch-board-fields "ƒ") for the Status options at [Board Coordinates](#board-coordinates), using the supplied issue identity.
 
-### *Read* Board State
+#### 2. Add Supplied Issue
+
+Run [Add Issue to Board](#add-issue-to-board "ƒ") with the [issue id](#issue-id).
+
+#### 3. Set Initial Status
+
+Run [Set Item Status](#set-item-status "ƒ") with [Initial Status](#initial-status) and the matching field and option ids.
+
+#### 4. Read Saved Item
+
+Run [Fetch Board Item](#fetch-board-item "ƒ") for the saved item.
+
+#### 5. Provide Place Issue on Board
+
+Provide [Board Configuration](#board-configuration) with the confirmed saved item and Status options.
+
+### Read Board State
 
 The selected board's items and status fields.
 
-**Inputs:** Existing board owner and number, as [Select Project Board](#select-project-board) or [Copy Project Board](#copy-project-board) returns them, whether the caller ran that operation or carries its result.
+#### 1. Locate Board Status Field
 
-1. Run [Find Status Field](#find-status-field) for the board number.
-2. Run [Fetch Board Items with Status](#fetch-board-items-with-status), passing that field id and board number.
-3. Return the items, Status field, item ids and the board's [Repositories](#repositories) to the caller.
+Run [Find Status Field](#find-status-field "ƒ") for [Board Coordinates](#board-coordinates).
 
-### *Read* Board Assignee
+#### 2. Fetch Complete Board Items
 
-The authenticated login available for board assignments.
+Run [Fetch Board Items with Status](#fetch-board-items-with-status "ƒ"), passing that field id and board number.
 
-**Inputs:** Authenticated repository access.
+#### 3. Provide Board State
 
-1. Run [Find User](#find-user).
-2. Return its login for the caller's assignment decisions.
+Provide [Board State](#board-state) with the items, Status field, item ids and the board’s [Repositories](#repositories).
 
-### *Read* Board Configuration
+### Read Board Configuration
 
 One board's field definitions and requested item state.
 
-**Inputs:** Board owner and number, output paths and optional item identity.
+#### 1. Read Board Fields
 
-1. Run [Fetch Board Fields](#fetch-board-fields) for the supplied board.
-2. When a single item is requested for write confirmation, run [Fetch Board Item](#fetch-board-item). A list snapshot may lag a write.
-3. Return the field definitions and requested current item.
+Run [Fetch Board Fields](#fetch-board-fields "ƒ") for [Board Coordinates](#board-coordinates), saving the records at [Output Files](#output-files).
 
-### *Locate* Project Board
+#### 2. Read Requested Item
 
-The board identity matching a supplied purpose or theme.
+When [Optional Item](#optional-item) requests a single item for write confirmation, Run [Fetch Board Item](#fetch-board-item "ƒ"). A list snapshot may lag a write.
 
-**Inputs:** Owner and proposals-board purpose or theme title.
+#### 3. Provide Current Configuration
 
-1. Run [Find Proposals Board](#find-proposals-board) for proposals, or [Find Theme Board](#find-theme-board) for a theme.
-2. Return the identity or an absent-board finding for the caller's selection or creation path.
+Provide [Board Configuration](#board-configuration) with the field definitions and requested current item.
+
+## Commands
+
+### Find Board Template
+
+Print the number of the open board with the supplied exact template title and provide [Template Selection](#template-selection "●") to the requester.
+
+<big><pre>
+gh api &#92;
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2?per_page=100" &#92;
+  --jq '.&#91;&#93; | select(.closed | not) | select(.title == "[**&lt;template-title&gt;**](#template-selection "○")") | .number'
+</pre></big>
+
+### Copy Board Template
+
+Copy the supplied template into a new open board with the supplied title, print its number, and provide [Copied Board](#copied-board "●") to the requester.
+
+The copy's JSON is one project; `.number` identifies the new board.
+
+<big><pre>
+gh project copy [**&lt;template-number&gt;**](#template-selection "○") &#92;
+  --source-owner [**&lt;owner&gt;**](#board-owner "○") &#92;
+  --target-owner [**&lt;owner&gt;**](#board-owner "○") &#92;
+  --title '[**&lt;board-title&gt;**](#copy-title "○")' &#92;
+  --format json &#92;
+  --jq .number
+</pre></big>
+
+### Link Board to Repository
+
+Link one board to the supplied repository and provide [Link Result](#link-result "●") to the requester.
+
+<big><pre>
+gh project link [**&lt;board-number&gt;**](#board-coordinates "○") --owner [**&lt;owner&gt;**](#board-owner "○") --repo [**&lt;repo&gt;**](#repository "○")
+</pre></big>
+
+### Find Proposals Board
+
+Print the number of the open [proposals board](../configuration.md#proposals-board) and provide [Selected Board](#selected-board "●") to the requester.
+
+<big><pre>
+gh api &#92;
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2?per_page=100" &#92;
+  --jq '.&#91;&#93; | select(.closed | not) | select(.title == "Proposals") | .number'
+</pre></big>
+
+### Add Issue to Board
+
+Add the caller-supplied issue to a board, print the new item's id, and provide [Membership Result](#membership-result "●") to the requester.
+
+<big><pre>
+gh api --method POST users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items -f type=Issue -F id=[**&lt;issue-id&gt;**](#issue-id "○") --jq .id
+</pre></big>
+
+### Set Item Status
+
+Set one board item's Status and provide [Membership Result](#membership-result "●") to the requester.
+
+<big><pre>
+gh api &#92;
+  --method PATCH users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items/[**&lt;item-id&gt;**](#item-coordinates "○") &#92;
+  --input '[**&lt;status-input-file&gt;**](#status-input-file "○")' &#92;
+  --jq .id
+</pre></big>
+
+### Remove Board Item
+
+Remove one item from a board and provide [Membership Result](#membership-result "●") to the requester. Leave its issue as it stands.
+
+<big><pre>
+gh api --method DELETE users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items/[**&lt;item-id&gt;**](#item-coordinates "○")
+</pre></big>
+
+### Fetch Board Fields
+
+Save a board's fields and provide [Board Configuration](#board-configuration "●") to the requester.
+
+<big><pre>
+gh api --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/fields?per_page=100" &gt; '[**&lt;board-fields-file&gt;**](#board-fields-file "○")'
+</pre></big>
+
+### Find Theme Board
+
+Print the number of the open board matching the theme name after any proposal designator and provide [Selected Board](#selected-board "●") to the requester.
+
+<big><pre>
+gh api &#92;
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2?per_page=100" &#92;
+  --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub("^\\&#91;P&#91;0-9&#93;+\\&#93; "; "") | startswith("[**&lt;theme-name&gt;**](#theme-name "○"): ")) | .number'
+</pre></big>
+
+### Find Status Field
+
+Print the id of a board's Status field and provide [Status Field](#status-field "●") to the requester.
+
+<big><pre>
+gh api &#92;
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/fields?per_page=100" &#92;
+  --jq '.&#91;&#93; | select(.name == "Status") | .id'
+</pre></big>
+
+### Fetch Board Items with Status
+
+Save a board's items with their Status and complete issues and provide [Board State](#board-state "●") to the requester.
+
+<big><pre>
+gh api &#92;
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field "○")" &#92;
+  &gt; '[**&lt;board-items-file&gt;**](#board-items-file "○")'
+</pre></big>
+
+### Fetch Board Item
+
+Read one board item with its current Status and provide [Board Configuration](#board-configuration "●") to the requester.
+
+<big><pre>
+gh api "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items/[**&lt;item-id&gt;**](#item-coordinates "○")?fields=[**&lt;status-field-id&gt;**](#status-field "○")"
+</pre></big>
+
+### Find User
+
+Print the authenticated `gh` login and provide [Assignee Login](#assignee-login "●") to the requester. This user is assigned to work from Ready on.
+
+Require [Authenticated Access](#authenticated-access "○") before executing the command.
+
+<big><pre>
+gh api user --jq .login
+</pre></big>
 
 ## Fields
 
 ### Themes
 
-Every initiative belongs to one theme, and each theme has one project board. Each project names its own themes.
+The project's named themes and their board associations. Each initiative has exactly one theme, and each theme has one project board. An initiative carries one `theme:*` label, and each of its epics carries the same one.
 
-- **Example.**  workflow-server's themes.
+Project examples are in [Themes](../configuration.md#themes).
 
-| Theme | Label | Description |
-| --- | --- | --- |
-| Canon | `theme:canon` | Definitions Checked Against the Design Canon |
-| Language | `theme:language` | The Definition Language and Its Rules |
-| Mechanical | `theme:mechanical` | The Engine That Runs Definitions |
-| Delivery | `theme:delivery` | What Reaches Agents and Hosts |
-| Planning | `theme:planning` | [Project 17 — Process: How Work Is Planned and Delivered](https://github.com/users/m2ux/projects/17) |
+### Theme Board Title
 
-### One Theme
-
-An initiative carries one `theme:*` label, and each of its epics carries the same one.
-
-### One Board Per Theme
-
-- A proposal-derived board title is the originating proposal's exact `[Pxx]` designator, a space, the theme name, a colon, and its description: `[P03] Canon: Definitions Checked Against the Design Canon`. Preserve the proposal's digits exactly. A board with no originating proposal uses `Name: Description`.
-- It is linked to the repository.
-- It holds the theme's initiatives, their epics and their task issues, and its hot-fixes.
+A proposal-derived board title is the originating proposal's exact `[Pxx]` designator, a space, the theme name, a colon, and its description: `[P03] Canon: Definitions Checked Against the Design Canon`. Preserve the proposal's digits exactly. A board with no originating proposal uses `Name: Description`.
 
 ### Repositories
 
 A board's repositories are those its items' issues live in, read from each item's issue, deduplicated and ordered with the board's own repository first. An item whose issue is unreadable leaves the list incomplete, which is reported rather than filled by assumption.
 
+### Board Owner
+
+The supplied board owner.
+
+### Board Selection
+
+Either the supplied theme name or the proposals-board selection.
+
+### Board Coordinates
+
+The supplied existing board owner and number. eg `owner: m2ux`, `board-number: 13`
+
+### Repository
+
+The supplied repository name for the board link.
+
+### Theme Provenance
+
+The supplied theme title and originating proposal record when applicable.
+
+### Selected Kind
+
+The supplied selected board kind, with its theme title and proposal record when applicable.
+
+### Template Selection
+
+The supplied exact board-template title and its provided template number. The number is absent until the lookup succeeds.
+
+### Copy Title
+
+The supplied title for the copied board.
+
+### Selected Board
+
+The selected board number, an absent-board result or a missing-selection result.
+
+### Copied Board
+
+The new board owner and number. The number is absent until the copy succeeds.
+
+### Issue Id
+
+The supplied numeric issue id; it is distinct from the issue number. eg `3040123456`
+
+### Initial Status
+
+The initial Status selected by the caller.
+
+### Item Coordinates
+
+The supplied board item id and board coordinates. eg `board: users/m2ux/projectsV2/13`, `item-id: 1001`
+
+### Status Field
+
+The supplied Status field id and its option ids. eg `field-id: 419167630`, `option-id: OPTION`
+
+### Status Input File
+
+The local input file containing the selected Status field id as a JSON integer and option id as a JSON string, from the fetched board fields. eg `status-backlog.json`, `{"fields": [{"id": 419167630, "value": "OPTION"}]}`
+
+### Output Files
+
+The supplied local destinations for board-field or item snapshots.
+
+### Board State
+
+The provided items with their complete issues and Status, field and item ids, and repositories, retaining unreadable-issue findings.
+
+### Board Configuration
+
+The provided board-field definitions and requested current item state.
+
+### Authenticated Access
+
+The authenticated repository access supplied for the operation.
+
+### Assignee Login
+
+The authenticated login available for issue assignments.
+
+### Membership Result
+
+The added or removed board item id, or the saved Status provided for the item.
+
+### Optional Item
+
+The optional board item identity requested for write confirmation.
+
+### Link Result
+
+The repository link operation result for the supplied board.
+
+### Board Fields File
+
+The supplied local output path for the complete board-field definitions. eg `fields.json`
+
+### Board Items File
+
+The supplied local output path for the board items with Status and their complete issues. eg `items.json`
+
+### Theme Name
+
+The supplied theme name, excluding any originating proposal designator. eg `Canon`
+
+## Guidance
+
 ### Assignees
 
 An issue at Ready, In Progress, In Review or Done is assigned to the user; one in Backlog has no assignee. An assignee is set on the issue, not on the board item, so the call that changes one acts on the issue.
 
-### Standalone Issues
-
-A standalone issue sits on no board.
-
 ### Proposals
 
-- The board is titled `Proposals`. It holds proposal issues, the incoming funnel for work that may become an initiative.
-- Its copy source is the open board titled `Proposals Template`. That template carries Priority: High, Medium and Low, and its view is a board grouped by Status.
+- The [configured board](../configuration.md#proposals-board) holds proposal issues, the incoming funnel for work that may become an initiative.
 - **Suggested.**
   Raised, and nobody has taken it up. A new proposal lands here, with no assignee.
 - **Considering.**
@@ -154,188 +372,6 @@ A standalone issue sits on no board.
 - **Declined.**
   It will not become an initiative. It has no assignee.
 
-## Commands
+### Standalone Issues
 
-### Find Board Template
-
-Prints the number of the open board with the supplied exact template title.
-
-**Inputs:** Board owner and template title.
-
-```bash
-gh api --paginate "users/<owner>/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "<template-title>") | .number'
-```
-
-### Copy Board Template
-
-Copies the supplied template into a new open board with the supplied title and prints its number.
-
-**Inputs:** Board owner, template board number and new board title.
-
-- The copy's JSON is one project; `.number` identifies the new board.
-
-```bash
-gh project copy '<template-number>' --source-owner '<owner>' --target-owner '<owner>' --title '<board-title>' --format json --jq .number
-```
-
-### Link Board to Repository
-
-Links one board to the supplied repository.
-
-**Inputs:** Board owner, board number and repository.
-
-```bash
-gh project link '<board-number>' --owner '<owner>' --repo '<repo>'
-```
-
-### Find Proposals Board
-
-Prints the number of the open board titled `Proposals`.
-
-**Inputs:** Board owner.
-
-```bash
-gh api --paginate "users/<owner>/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "Proposals") | .number'
-```
-
-### Add Issue to Board
-
-Adds the caller-supplied issue id to a board and prints the new item's id. The input is the issue id, not its number.
-
-**Inputs:** Board owner and number, and issue id.
-
-```bash
-gh api --method POST 'users/<owner>/projectsV2/<board-number>/items' -f type=Issue -F 'id=<issue-id>' --jq .id
-```
-
-**Example:**
-
-```bash
-gh api --method POST 'users/<owner>/projectsV2/13/items' -f type=Issue -F id=3040123456 --jq .id
-```
-
-### Set Item Status
-
-Sets one board item's Status.
-
-**Inputs:** Board owner and number, item id, and input file containing the Status field id and selected option id.
-
-The input body names the Status field id and option id from [Fetch Board Fields](#fetch-board-fields): `{"fields":[{"id":<status-field-id>,"value":"<status-option-id>"}]}`. Substitute the field id as a JSON integer and the option id as a JSON string.
-
-**Example payload:** `{"fields":[{"id":419167630,"value":"OPTION"}]}`.
-
-```bash
-gh api --method PATCH 'users/<owner>/projectsV2/<board-number>/items/<item-id>' --input '<status-input-file>' --jq .id
-```
-
-**Example:**
-
-```bash
-gh api --method PATCH 'users/<owner>/projectsV2/13/items/1001' --input status-backlog.json --jq .id
-```
-
-### Remove Board Item
-
-Removes one item from a board, leaving its issue as it stands.
-
-**Inputs:** Board owner and number, and the item id [Read Board State](#read-board-state) returns.
-
-```bash
-gh api --method DELETE 'users/<owner>/projectsV2/<board-number>/items/<item-id>'
-```
-
-**Example:**
-
-```bash
-gh api --method DELETE 'users/<owner>/projectsV2/9/items/1001'
-```
-
-### Fetch Board Fields
-
-Saves a board's fields.
-
-**Inputs:** Board owner, board number and destination file.
-
-```bash
-gh api --paginate "users/<owner>/projectsV2/<board-number>/fields?per_page=100" > '<board-fields-file>'
-```
-
-**Example:**
-
-```bash
-gh api --paginate "users/<owner>/projectsV2/9/fields?per_page=100" > fields.json
-```
-
-### Find Theme Board
-
-Prints the number of the open board for one theme, by its theme name after any proposal designator.
-
-**Inputs:** Board owner and theme name.
-
-```bash
-gh api --paginate "users/<owner>/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title | sub("^\\[P[0-9]+\\] "; "") | startswith("<theme-name>: ")) | .number'
-```
-
-**Example:**
-
-```bash
-gh api --paginate "users/<owner>/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title | sub("^\\[P[0-9]+\\] "; "") | startswith("Canon: ")) | .number'
-```
-
-### Find Status Field
-
-Prints the id of a board's Status field.
-
-**Inputs:** Board owner and number.
-
-```bash
-gh api --paginate "users/<owner>/projectsV2/<board-number>/fields?per_page=100" --jq '.[] | select(.name == "Status") | .id'
-```
-
-**Example:**
-
-```bash
-gh api --paginate "users/<owner>/projectsV2/9/fields?per_page=100" --jq '.[] | select(.name == "Status") | .id'
-```
-
-### Fetch Board Items with Status
-
-Saves a board's items with their Status, each carrying its issue whole.
-
-**Inputs:** Board owner and number, Status field id and destination file.
-
-```bash
-gh api --paginate "users/<owner>/projectsV2/<board-number>/items?per_page=100&fields=<status-field-id>" > '<board-items-file>'
-```
-
-**Example:**
-
-```bash
-gh api --paginate "users/<owner>/projectsV2/9/items?per_page=100&fields=419167630" > items.json
-```
-
-### Fetch Board Item
-
-Reads one board item, including its current Status.
-
-**Inputs:** Board owner and number, item id and Status field id.
-
-```bash
-gh api "users/<owner>/projectsV2/<board-number>/items/<item-id>?fields=<status-field-id>"
-```
-
-**Example:**
-
-```bash
-gh api "users/<owner>/projectsV2/9/items/1001?fields=419167630"
-```
-
-### Find User
-
-Prints the login `gh` runs as, the user assigned to work from Ready on.
-
-**Inputs:** Authenticated repository access.
-
-```bash
-gh api user --jq .login
-```
+A standalone issue sits on no board.

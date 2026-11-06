@@ -1,6 +1,4 @@
 """hotfix.py: a hot-fix's identity, target, board status, delivering pull requests and delivery unit state.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import sys
 import unittest

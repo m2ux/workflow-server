@@ -2,34 +2,24 @@
 
 Populates one standalone issue body.
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue Body](issue-body.md)
-- [Epic Issue Body](epic-issue-body.md)
-
 ## Operations
 
-### *Populate* Standalone Body
+### Populate Standalone Body
 
 One standalone issue body from its supplied scope.
 
-**Inputs:** Problem, design, criteria, open questions and output path.
+#### 1. Populate Standalone Template
 
-- Populate the body from the [Template](#template) at the supplied output path.
-  - The title must meet the shared [Titles](issue-body.md#titles) conditions and the standalone [Titles](#titles).
-  - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
-  - All populated fields must meet [Fields](#fields).
+- Populate the [Template](#template) from [Issue Context](#issue-context) at the destination in [Output Body](#output-body).
+- The title must meet the shared [Titles](issue-body.md#titles) conditions and the standalone [Titles](#titles).
+- The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
+- All populated fields must meet [Fields](#fields).
 
-### *Revise* Standalone Body
+- The issue's placement must follow [Standalone Issues](board.md#standalone-issues).
 
-One standalone body with its confirmed boundary integrated.
+#### 2. Provide Populated Standalone Body
 
-**Inputs:** Current body, confirmed content and boundary decisions, and output path.
-
-1. Populate the body through [Populate Standalone Body](#populate-standalone-body), folding any Non-Goals into Proposal as a closing boundary.
-2. Return the revised file for publication.
+Provide the populated [Output Body](#output-body) for publication.
 
 ## Fields
 
@@ -69,3 +59,19 @@ One standalone body with its confirmed boundary integrated.
 ### Sections
 
 - A standalone issue has the [epic issue body](epic-issue-body.md)'s sections without the Work Breakdown table.
+
+### Issue Context
+
+The supplied problem, design, criteria and open questions for the standalone issue.
+
+### Current Body
+
+The supplied current complete standalone body.
+
+### Confirmed Boundary
+
+The confirmed content and boundary decisions for this body.
+
+### Output Body
+
+The supplied local destination for the complete body.

@@ -1,6 +1,4 @@
 """deps.py checks the task graph and proposes the rows that can share a pull request.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import io
 import os

@@ -1,7 +1,5 @@
 """The assignees board.py gives an issue for its Status, and an initiative's Status once its
 criteria are ticked.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import json
 import sys

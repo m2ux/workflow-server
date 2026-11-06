@@ -2,26 +2,22 @@
 
 The local plan for one task's work.
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue Body](issue-body.md)
-- [Pull Request Body](pull-request-body.md)
-- [Delivery Branches](delivery-branches.md)
-
 ## Operations
 
-### *Populate* Work Item
+### Populate Work Item
 
 One task's local implementation plan.
 
-**Inputs:** Task id, task scope, epic context, design, the component the implementation extends, supplied criteria and test requirements, and output file.
+#### 1. Populate Work Item File
 
-- Write the supplied task's file from [Template](#template), returning its path for registration in the planning record.
-  - Its name and content must meet [Identity](#identity) and [Sections](#sections).
-  - The supplied component must meet [Component](#component).
-  - The test row must meet [Test Coverage](pull-request-body.md#test-coverage), using the supplied criteria without copying them into the file.
+- Write the [Template](#template) from [Task Context](#task-context) at the destination in [Work Item File](#work-item-file).
+- Its name and content must meet [Identity](#identity) and [Sections](#sections).
+- The supplied component must meet [Component](#component).
+- The test row must meet [Test Coverage](pull-request-body.md#test-coverage), using the supplied criteria without copying them into the file.
+
+#### 2. Provide Populated Work Item
+
+Provide [Work Item File](#work-item-file) with its path for registration in the planning record.
 
 ## Fields
 
@@ -70,5 +66,13 @@ One declaration line ahead of the first heading, naming the single component the
 
 - Component names the component the Implementation part extends, meeting [Component](#component).
 - Overview states what the task delivers and why.
-- Problem and Proposal meet [Problem and Proposal](issue-body.md#problem-and-proposal); the Proposal starts with the scene.
+- Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal); the Proposal starts with the scene.
 - Work Breakdown decomposes the work into parts, such as analysis, plan, implementation, review and test. Its columns are Part and Description. The test row names the checks required by the work.
+
+### Task Context
+
+The supplied task id and scope, epic context, design, component, criteria and test requirements.
+
+### Work Item File
+
+The supplied local output path and the populated work item at that path. The file is absent until populated.

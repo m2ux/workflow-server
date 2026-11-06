@@ -25,9 +25,10 @@ GIT = ('git', '-c', 'user.email=t@t', '-c', 'user.name=T', '-c', 'init.defaultBr
 
 
 def specs_creating_a_worktree():
-    """Each Commands subsection whose block creates a worktree, with its prose."""
-    for path in sorted((ROOT / 'artifacts').glob('*.md')):
-        lines, _, headings = checker.scan(path)
+    """Each callable worktree-creating command and its non-payload prose."""
+    for path in (ROOT / 'artifacts' / 'delivery-branches.md',):
+        lines, fenced, headings = checker.scan(path)
+        payload = checker.scan_blocks(lines).html_lines
         section = None
         for position, (start, level, title) in enumerate(headings):
             if level == 2:
@@ -36,8 +37,11 @@ def specs_creating_a_worktree():
                 continue
             end = next((i for i, depth, _ in headings[position + 1:] if depth <= 3), len(lines))
             body = lines[start + 1:end]
-            if any(CREATES_WORKTREE in line for line in body):
-                yield path, title, body
+            if any(CREATES_WORKTREE in lines[i] and (fenced[i] or i in payload)
+                   for i in range(start + 1, end)):
+                prose = [lines[i] for i in range(start + 1, end)
+                         if not fenced[i] and i not in payload]
+                yield path, title, prose
 
 
 def git(*args, cwd):
@@ -50,13 +54,21 @@ class WorktreePlacement(unittest.TestCase):
         where that kind of worktree sits rather than leaving it to the
         caller's working directory."""
         found = list(specs_creating_a_worktree())
-        self.assertTrue(found, 'no command creates a worktree')
+        self.assertEqual({title for _, title, _ in found},
+                         {'Add Task Worktree', 'Add Epic Base Worktree', 'Add Review Worktree'})
+        self.assertEqual(len(found), 3)
         for path, title, body in found:
             with self.subTest(file=path.name, command=title):
                 prose = '\n'.join(line for line in body if not line.startswith(('```', 'git ')))
                 anchors = re.findall(r'\]\(#([a-z0-9-]+)\)', prose)
                 self.assertTrue(anchors, 'the spec cites no placement field')
-                fields = {checker.anchor_of(t) for _, level, t in checker.scan(path)[2] if level == 3}
+                fields = set()
+                section = None
+                for _, level, name in checker.scan(path)[2]:
+                    if level == 2:
+                        section = name
+                    elif level == 3 and section == 'Fields':
+                        fields.add(checker.anchor_of(name))
                 for anchor in anchors:
                     self.assertIn(anchor, fields)
 

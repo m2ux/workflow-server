@@ -2,23 +2,25 @@
 
 The body of an existing task issue, and the record of its delivery.
 
-## Prerequisites
+## Commands
 
-Read these files first.
+### Sync Task Issue
 
-- [Issue Body](issue-body.md)
-- [Epic Issue Body](epic-issue-body.md)
+Record the open or merged pull request delivering a task issue, tick verified criteria, report whether the task issue is closable, and provide [Output Body](#output-body "●") and [Delivery Findings](#delivery-findings "●") to the requester. Tick only criteria the requester has verified. The requester publishes comments and closes the tracker issue.
 
-## Operations
+An open pull request supplies verification evidence; completion requires its merge.
 
-### *Record* Task Delivery
+`<criterion-ids>` is a comma-separated list of verified criterion ids.
 
-One task body with its confirmed delivery and verified criteria recorded.
-
-**Inputs:** Task JSON, pull request records, complete issue-link snapshot, delivering pull request number, verified criterion ids and output body file.
-
-1. Run [Sync Task Issue](#sync-task-issue) with the task JSON, records as `--prs`, snapshot as `--links`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
-2. Return the body and eligibility findings; the caller publishes comments and closes the tracker issue.
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;task-json-file&gt;**](#task-record "○")' &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' &#92;
+  --pr [**&lt;pull-request-number&gt;**](#delivery-selection "○") &#92;
+  --tick '[**&lt;criterion-ids&gt;**](#delivery-selection "○")' &#92;
+  --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
+</pre></big>
 
 ## Fields
 
@@ -58,35 +60,47 @@ One task body with its confirmed delivery and verified criteria recorded.
 
 ### Open Questions
 
+The existing task issue's collection of unresolved question statements.
+
 - Each holds only what is undecided, and is resolved before the task starts.
 
 ### Acceptance Criteria
 
-- A task criterion meets the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria).
+The existing task issue's collection of labelled criterion statements.
+
+- A task criterion must meet the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria).
 
 ### Sections
 
 - A task has the [epic issue body](epic-issue-body.md)'s sections without the Work Breakdown table.
-- New task planning follows [Work Breakdown](epic-issue-body.md#work-breakdown). This body describes an existing task issue.
+- New task planning must follow [Work Breakdown](epic-issue-body.md#work-breakdown). This body describes an existing task issue.
 
-## Commands
+### Task Record
 
-### Sync Task Issue
+The supplied current task issue JSON. eg `issue-637.json`
 
-Records the pull request that delivers a task issue, open or merged, ticks verified criteria, and reports whether it is closable.
+### Pull Request Records
 
-An open pull request supplies verification evidence; completion requires its merge.
+The supplied current pull request records. eg `prs.json`
 
-**Inputs:** Task JSON, pull request records, complete issue-link snapshot, delivering pull request number, verified criterion ids and output file.
+### Issue Links
 
-`<criterion-ids>` is a comma-separated list of verified criterion ids.
+The complete supplied issue-link snapshot. eg `links.json`
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py '<task-json-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --pr '<pull-request-number>' --tick '<criterion-ids>' --fix '<output-body-file>'
-```
+### Delivery Selection
 
-**Example:**
+Verified criterion ids may be empty when recording delivery without requesting criterion ticks.
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-637.json --prs prs.json --links links.json --pr 950 --tick AC1 --fix fixed-637.md
-```
+The supplied delivering pull request number and verified criterion ids. eg `pull-request-number: 950`, `criterion-ids: AC1`
+
+### Output Body
+
+The supplied local destination for the complete provided body. eg `fixed-637.md`
+
+### Delivery Findings
+
+The resulting body and eligibility findings for the supplied task delivery.
+
+### Workspace
+
+The absolute checkout holding the installed Work Planner scripts and sandbox helper.

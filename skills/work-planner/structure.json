@@ -1,17 +1,42 @@
 {
+  "SKILL.md": {
+    "sections": ["Modes", "Dependencies"],
+    "link_roles": true
+  },
   "modes": {
-    "sections": ["Prerequisites", "Procedure", "Outcomes", "Guidance", "Operations"],
+    "sections": ["Procedure", "Outcomes", "Commands", "Fields", "Guidance"],
     "required": ["Procedure", "Outcomes"],
-    "specifications": "Operations"
+    "procedures": "Procedure",
+    "steps": "headings",
+    "commands": "html",
+    "preamble": ["../rules.md", "../conventions.md", "#outcomes"],
+    "calls": {"artifacts": "Apply", "modes": "Follow", "protocols": "Follow"},
+    "link_roles": true,
+    "specifications": "Commands",
+    "contracts": "Fields"
   },
   "protocols": {
-    "sections": ["Prerequisites", "Procedure", "Guidance"],
-    "required": ["Procedure"]
+    "sections": ["Procedure", "Commands", "Fields", "Guidance"],
+    "required": ["Procedure"],
+    "procedures": "Procedure",
+    "steps": "headings",
+    "commands": "html",
+    "preamble": ["../rules.md", "../conventions.md"],
+    "calls": {"artifacts": "Apply", "modes": "Follow", "protocols": "Follow"},
+    "link_roles": true,
+    "specifications": "Commands",
+    "contracts": "Fields"
   },
   "artifacts": {
-    "sections": ["Prerequisites", "Operations", "Fields", "Guidance", "Commands"],
+    "sections": ["Operations", "Commands", "Fields", "Guidance"],
     "required": ["Fields"],
     "procedures": "Operations",
+    "steps": "headings",
+    "commands": "html",
+    "contracts": "Fields",
+    "calls": {"artifacts": "Apply"},
+    "link_roles": true,
+    "specifications": "Commands",
     "keeps_commands": true
   }
 }
