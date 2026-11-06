@@ -1,0 +1,41 @@
+{
+  "run_before_hold": {
+    "action": "stop",
+    "units": [],
+    "pending": 0
+  },
+  "run_before_hold_start": "start has an unresolved dispatch blocker",
+  "run_mid_round_refill": {
+    "action": "stop",
+    "units": [],
+    "pending": 0
+  },
+  "run_mid_round_next_start": "start has an unresolved dispatch blocker",
+  "unit_then_independent": {
+    "action": "dispatch",
+    "units": [
+      {
+        "id": "o/r#I07:E00:W02",
+        "record": "captured-w02",
+        "report": "captured unit W02"
+      }
+    ],
+    "pending": 0
+  },
+  "capacity_start": "start needs a currently free harness slot",
+  "capacity_wait": {
+    "action": "wait",
+    "units": [],
+    "pending": 0
+  },
+  "capacity_resume": {
+    "id": "o/r#I07:E00:W01",
+    "record": "captured-w01",
+    "report": "captured unit W01"
+  },
+  "capacity_after_running": {
+    "action": "wait",
+    "units": [],
+    "pending": 0
+  }
+}

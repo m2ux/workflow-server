@@ -22,3 +22,33 @@ The implementation starts from the current workspace branch, including the merge
 | --- | --- |
 | Reviewed change | [PR #1636](https://github.com/m2ux/workflow-server/pull/1636) |
 | Fixes | [PR #1645](https://github.com/m2ux/workflow-server/pull/1645) |
+
+- [current-reconciliation.md](current-reconciliation.md) — current conflict-reconciliation evidence.
+
+- [current-planner.log](current-planner.log) — current conflict-reconciliation evidence.
+
+- [current-shared.log](current-shared.log) — current conflict-reconciliation evidence.
+
+- [current-checker.log](current-checker.log) — current conflict-reconciliation evidence.
+
+- [current-blockers.log](current-blockers.log) — current conflict-reconciliation evidence.
+
+- [current-documents.log](current-documents.log) — current conflict-reconciliation evidence.
+
+- [current-command-contracts.log](current-command-contracts.log) — current conflict-reconciliation evidence.
+
+- [current-checkouts.log](current-checkouts.log) — current conflict-reconciliation evidence.
+
+- [current-catalogue.log](current-catalogue.log) — current conflict-reconciliation evidence.
+
+- [current-review.md](current-review.md) — current conflict-reconciliation evidence.
+
+- [current-trace.md](current-trace.md) — current conflict-reconciliation evidence.
+
+- [current-observations.json](current-observations.json) — current conflict-reconciliation evidence.
+
+- [current-observations.py](current-observations.py) — current conflict-reconciliation evidence.
+
+- [current-pr.json](current-pr.json) — current conflict-reconciliation evidence.
+
+- [current-target-rules.json](current-target-rules.json) — current conflict-reconciliation evidence.
