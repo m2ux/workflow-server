@@ -9,3 +9,5 @@ The live E02 plan uses W12 for diagram fidelity and W13 for review scope, follow
 ## Links
 
 - [Epic](https://github.com/m2ux/workflow-server/issues/1615)
+
+- [numbering-review.md](numbering-review.md) — bounded live-body correction; existing rows/criteria are exact controls.
