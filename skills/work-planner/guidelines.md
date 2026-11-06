@@ -55,7 +55,7 @@ The skill is an object model in prose: an artifact owns state and callable capab
 - **Callable transformations.**
   Derivation, state or membership selection, evidence gathering, execution, refusals, retries and continuation belong in callable operations, with invocations in named Commands specifications. Declarative prose that derives a caller's action from evidence is behavior under this boundary.
 - **Boundary review.**
-  Classify every Fields section by its supplied evidence, produced result, owning subject and disposition. Candidate diagnostics identify the source and possible owner; semantic review distinguishes a transformation from an invariant. A conditional word alone establishes no violation.
+  For an ownership audit, classify every Fields section in the audited scope by its supplied evidence, produced result, owning subject and disposition. Candidate diagnostics identify the source and possible owner; semantic review distinguishes a transformation from an invariant. A conditional word alone establishes no violation.
 
 ### Policy Review
 
