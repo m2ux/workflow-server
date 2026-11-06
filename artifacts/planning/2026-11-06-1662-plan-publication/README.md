@@ -84,6 +84,11 @@ The target requires human approval; published agent review establishes the conte
 | [symbols.json](symbols.json) | Pinned graph receipt or overview verification evidence. |
 | [walk-context.json](walk-context.json) | Pinned graph receipt or overview verification evidence. |
 | [index.log](index.log) | Pinned graph receipt or overview verification evidence. |
+| [current-planner.log](current-planner.log) | Current exact-revision verification evidence. |
+| [current-checker.log](current-checker.log) | Current exact-revision verification evidence. |
+| [finalize_review_record.py](finalize_review_record.py) | Pinned graph receipt or overview verification evidence. |
+| [refresh_measurement_inputs.py](refresh_measurement_inputs.py) | Pinned graph receipt or overview verification evidence. |
+| [renew_artifacts.py](renew_artifacts.py) | Pinned graph receipt or overview verification evidence. |
 
 ## Links
 

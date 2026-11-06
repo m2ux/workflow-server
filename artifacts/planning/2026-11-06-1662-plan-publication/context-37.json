@@ -1,12 +1,11 @@
 {
   "status": "found",
   "symbol": {
-    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:SOURCE",
-    "name": "SOURCE",
-    "kind": "Variable",
-    "filePath": "skills/work-planner/test/test_plan_publication.py",
-    "startLine": 14,
-    "endLine": 14
+    "uid": "Section:skills/work-planner/test/README.md:L111:Documents",
+    "name": "Documents",
+    "filePath": "skills/work-planner/test/README.md",
+    "startLine": 111,
+    "endLine": 136
   },
   "epistemic": "exact",
   "incoming": {},

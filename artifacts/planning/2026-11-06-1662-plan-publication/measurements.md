@@ -2,13 +2,13 @@
 
 ## Revision and Freshness
 
-- Review checkout: `/home/mike1/projects/dev/workflow-server/.worktrees/pr/1662`; clean detached HEAD.
+- Review checkout: `/home/mike1/projects/dev/workflow-server/.worktrees/pr/1662-581c525137d0`; clean detached HEAD.
 - Pull request: `https://github.com/m2ux/workflow-server/pull/1662`.
-- Head: `6d1ff1453bc40256c9c4803df762e8d665d62624`.
-- Comparison base: `9a924cfdda903ca64257449d8b5bf2ff762725ce` (`workspace`).
-- Storage: `/tmp/deliver17-20261106/gitnexus-e05`; every invocation sets `GITNEXUS_STORAGE_PATH` to this path and runs from the review checkout.
+- Head: `581c525137d0779649ad97e89370bafbde927d34`.
+- Comparison base: `50da3794d96e816a1938e1643a0f79fc0596bc37` (`workspace`).
+- Storage: `/tmp/deliver17-20261106/gitnexus-e05-final`; every invocation sets `GITNEXUS_STORAGE_PATH` to this path and runs from the review checkout.
 - GitNexus CLI: `1.6.12`; initial index uses `analyze --index-only` with two workers. No tracked source or generated agent guide is changed.
-- Indexed at `2026-11-06T11:36:49.764Z`; metadata carries the exact full head. Initial and final status report index content matching all 201 covered files and up-to-date status. The metadata's overall file count is 203; these are distinct reported counts, not interchangeable coverage claims.
+- Indexed at `2026-11-06T11:50:24.597Z`; metadata carries the exact full head. Initial and final status report index content matching all 203 covered files and up-to-date status. The metadata's overall file count is 205; these are distinct reported counts, not interchangeable coverage claims.
 - Raw context/Cypher responses do not emit the contract's `staleness` JSON block. Exact metadata, initial/final status and unchanged checkout supply the available freshness evidence; no absent staleness field is fabricated.
 
 The [index receipt](index-receipt.json), [initial status](index-status-initial.log), [final status](index-status-final.log) and [analysis log](index-analyze.log) preserve those observations.
@@ -74,3 +74,11 @@ Additional [walk](walk-context.json), [section](section-context.json), [parse](p
 From the pinned review checkout, set the storage override before every invocation. The measuring script contains the exact UID selection and `context --limit 200` loop. The raw path query uses incoming Cypher syntax to avoid a local shell-hook false positive while retaining the measured call direction from scenario to scanner.
 
 The overview's diagrams use only the listed `CONTAINS` and `CALLS` measurements. All source-specific publication gates are cited independently at the full reviewed head.
+
+## Refreshed Integration Evidence
+
+The target now includes the completed E04 integration. The new base-to-head diff is rechecked in full: the same three E05 files comprise 389 added and 13 removed lines. Plan Mode, the publication fixture and the selected owning save/read/body/goal/dependency contracts and parser helpers are byte-identical to the previously reviewed source; the catalogue also preserves the E04 module/coverage rows. The complete repository tree is not claimed equal to the initial task tree.
+
+All 46 symbol contexts and the containment/call-path queries are rerun from the clean new detached checkout against the correct `gitnexus-e05-final` index. The index accidentally built from the main project checkout is excluded; no receipt from `gitnexus-e05-refreshed` is used. Raw relationship identifiers belong to this fresh index rather than the prior index.
+
+The exact current criterion log identifies this head and reports 14 publication tests passed. The combined current planner suite reports 1004 tests run, 1003 passed and one opt-in live Development-link check skipped; the checker reports 59 files and zero findings. These supplement the historical task logs. Previous receipts remain available through the engineering branch's published history.

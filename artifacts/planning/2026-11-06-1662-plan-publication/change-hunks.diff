@@ -44,18 +44,18 @@ index 7b8d1c0b8..ebfa4af9e 100644
 +- Resolve findings in the drafts and repeat Epic Publication and Saved Validation with the affected bodies, retaining every saved issue identity; unresolved findings block delivery preparation.
 +- Continue only when the saved-context checks pass.
 diff --git a/skills/work-planner/test/README.md b/skills/work-planner/test/README.md
-index 61f4921c7..d7d5200f8 100644
+index 32d74bbf4..14d085088 100644
 --- a/skills/work-planner/test/README.md
 +++ b/skills/work-planner/test/README.md
 @@ -10 +10 @@ Work Planner plans work as GitHub issues and keeps that plan true until the work
 -  Modes, protocols and artifacts are instructions an agent follows. Six modules check their shape: resolving links, contextual command contracts, selected checkout inputs, planning-record publication, worktree placement and this catalogue.
 +  Modes, protocols and artifacts are instructions an agent follows. The modules check their shape: resolving links, contextual command contracts, selected checkout inputs, planning-record publication, worktree placement and this catalogue.
-@@ -61 +61 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
+@@ -62 +62 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 -These modules read the skill's own documents rather than a script.
 +These modules exercise the skill's instruction routes and document contracts.
-@@ -68,0 +69 @@ These modules read the skill's own documents rather than a script.
+@@ -70,0 +71 @@ These modules read the skill's own documents rather than a script.
 +| [test_plan_publication](test_plan_publication.py) | Plan publication validates confirmed saved epic and parent identities |
-@@ -122 +123 @@ One row per script in `../scripts`, then one per document the prose tests read.
+@@ -127 +128 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 -| [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (8) |
 +| [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (8), [test_plan_publication](test_plan_publication.py) (14) |
 diff --git a/skills/work-planner/test/test_plan_publication.py b/skills/work-planner/test/test_plan_publication.py

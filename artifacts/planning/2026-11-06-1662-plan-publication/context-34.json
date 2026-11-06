@@ -1,11 +1,11 @@
 {
   "status": "found",
   "symbol": {
-    "uid": "Section:skills/work-planner/test/README.md:L77:Coverage",
-    "name": "Coverage",
+    "uid": "Section:skills/work-planner/test/README.md:L25:Catalogue",
+    "name": "Catalogue",
     "filePath": "skills/work-planner/test/README.md",
-    "startLine": 77,
-    "endLine": 131
+    "startLine": 25,
+    "endLine": 78
   },
   "epistemic": "exact",
   "incoming": {},

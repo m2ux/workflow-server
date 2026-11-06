@@ -1,11 +1,11 @@
 {
   "status": "found",
   "symbol": {
-    "uid": "Section:skills/work-planner/test/README.md:L1:Work Planner Test Suite",
-    "name": "Work Planner Test Suite",
-    "filePath": "skills/work-planner/test/README.md",
-    "startLine": 1,
-    "endLine": 156
+    "uid": "Section:skills/work-planner/modes/plan-mode.md:L75:Epic Publication",
+    "name": "Epic Publication",
+    "filePath": "skills/work-planner/modes/plan-mode.md",
+    "startLine": 75,
+    "endLine": 87
   },
   "epistemic": "exact",
   "incoming": {},

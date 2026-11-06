@@ -1,11 +1,11 @@
 {
   "status": "found",
   "symbol": {
-    "uid": "Section:skills/work-planner/modes/plan-mode.md:L61:6. Publish",
-    "name": "6. Publish",
+    "uid": "Section:skills/work-planner/modes/plan-mode.md:L1:Plan Mode",
+    "name": "Plan Mode",
     "filePath": "skills/work-planner/modes/plan-mode.md",
-    "startLine": 61,
-    "endLine": 100
+    "startLine": 1,
+    "endLine": 163
   },
   "epistemic": "exact",
   "incoming": {},

@@ -1,11 +1,11 @@
 {
   "status": "found",
   "symbol": {
-    "uid": "Section:skills/work-planner/modes/plan-mode.md:L68:Parent Identity",
-    "name": "Parent Identity",
+    "uid": "Section:skills/work-planner/modes/plan-mode.md:L7:Procedure",
+    "name": "Procedure",
     "filePath": "skills/work-planner/modes/plan-mode.md",
-    "startLine": 68,
-    "endLine": 74
+    "startLine": 7,
+    "endLine": 150
   },
   "epistemic": "exact",
   "incoming": {},

@@ -1,11 +1,11 @@
 {
   "status": "found",
   "symbol": {
-    "uid": "Section:skills/work-planner/test/README.md:L59:Prose Tests",
-    "name": "Prose Tests",
+    "uid": "Section:skills/work-planner/test/README.md:L5:What Is Under Test",
+    "name": "What Is Under Test",
     "filePath": "skills/work-planner/test/README.md",
-    "startLine": 59,
-    "endLine": 76
+    "startLine": 5,
+    "endLine": 15
   },
   "epistemic": "exact",
   "incoming": {},

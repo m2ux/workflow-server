@@ -3,8 +3,8 @@ import re
 from pathlib import Path
 
 out = Path('/tmp/deliver17-20261106/e05-overview')
-checkout = Path('/home/mike1/projects/dev/workflow-server/.worktrees/pr/1662')
-head = '6d1ff1453bc40256c9c4803df762e8d665d62624'
+checkout = Path('/home/mike1/projects/dev/workflow-server/.worktrees/pr/1662-581c525137d0')
+head = '581c525137d0779649ad97e89370bafbde927d34'
 overview = (out/'overview.md').read_text()
 measurements = (out/'measurements.md').read_text()
 for text in (overview, measurements):

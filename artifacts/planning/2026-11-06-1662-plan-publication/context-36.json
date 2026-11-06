@@ -1,12 +1,11 @@
 {
   "status": "found",
   "symbol": {
-    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:ROOT",
-    "name": "ROOT",
-    "kind": "Variable",
-    "filePath": "skills/work-planner/test/test_plan_publication.py",
-    "startLine": 13,
-    "endLine": 13
+    "uid": "Section:skills/work-planner/test/README.md:L79:Coverage",
+    "name": "Coverage",
+    "filePath": "skills/work-planner/test/README.md",
+    "startLine": 79,
+    "endLine": 136
   },
   "epistemic": "exact",
   "incoming": {},

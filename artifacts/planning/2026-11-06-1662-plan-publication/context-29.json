@@ -1,11 +1,11 @@
 {
   "status": "found",
   "symbol": {
-    "uid": "Section:skills/work-planner/modes/plan-mode.md:L88:Saved Validation",
-    "name": "Saved Validation",
+    "uid": "Section:skills/work-planner/modes/plan-mode.md:L68:Parent Identity",
+    "name": "Parent Identity",
     "filePath": "skills/work-planner/modes/plan-mode.md",
-    "startLine": 88,
-    "endLine": 100
+    "startLine": 68,
+    "endLine": 74
   },
   "epistemic": "exact",
   "incoming": {},

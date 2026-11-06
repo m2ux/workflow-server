@@ -53,6 +53,7 @@
 | [context-45.json](context-45.json) | Exact changed-symbol context and relationship receipt. |
 | [context-46.json](context-46.json) | Exact changed-symbol context and relationship receipt. |
 | [context-manifest.json](context-manifest.json) | Exact changed-symbol context and relationship receipt. |
+| [finalize_review_record.py](finalize_review_record.py) | Local measurement or artifact verification helper. |
 | [index-analyze.log](index-analyze.log) | Raw graph, revision or indexing evidence. |
 | [index-receipt.json](index-receipt.json) | Raw graph, revision or indexing evidence. |
 | [index-status-final.log](index-status-final.log) | Raw graph, revision or indexing evidence. |
@@ -63,6 +64,8 @@
 | [nested-fixture-path.json](nested-fixture-path.json) | Raw graph, revision or indexing evidence. |
 | [overview.md](overview.md) | Reviewer-facing architecture overview and measured diagrams. |
 | [parse-context.json](parse-context.json) | Raw graph, revision or indexing evidence. |
+| [refresh_measurement_inputs.py](refresh_measurement_inputs.py) | Local measurement or artifact verification helper. |
+| [renew_artifacts.py](renew_artifacts.py) | Local measurement or artifact verification helper. |
 | [scan-blocks-context.json](scan-blocks-context.json) | Raw graph, revision or indexing evidence. |
 | [section-calls.json](section-calls.json) | Raw graph, revision or indexing evidence. |
 | [section-context.json](section-context.json) | Raw graph, revision or indexing evidence. |

@@ -12,6 +12,11 @@
   "incoming": {
     "calls": [
       {
+        "uid": "Function:skills/work-planner/test/test_hotfix_readiness.py:walk",
+        "name": "walk",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      },
+      {
         "uid": "Function:skills/work-planner/test/test_plan_mode.py:steps",
         "name": "steps",
         "filePath": "skills/work-planner/test/test_plan_mode.py"

@@ -298,10 +298,36 @@
     "staleness": "not emitted by CLI"
   },
   {
+    "uid": "Function:skills/work-planner/test/test_plan_publication.py:body",
+    "name": "body",
+    "file": "skills/work-planner/test/test_plan_publication.py",
+    "output": "context-24.json",
+    "counts": {
+      "incoming.calls": 2
+    },
+    "processes": 0,
+    "cap": 200,
+    "staleness": "not emitted by CLI"
+  },
+  {
+    "uid": "Function:skills/work-planner/test/test_plan_publication.py:walk",
+    "name": "walk",
+    "file": "skills/work-planner/test/test_plan_publication.py",
+    "output": "context-25.json",
+    "counts": {
+      "incoming.calls": 14,
+      "outgoing.calls": 1,
+      "outgoing.accesses": 1
+    },
+    "processes": 0,
+    "cap": 200,
+    "staleness": "not emitted by CLI"
+  },
+  {
     "uid": "Section:skills/work-planner/modes/plan-mode.md:L1:Plan Mode",
     "name": "Plan Mode",
     "file": "skills/work-planner/modes/plan-mode.md",
-    "output": "context-24.json",
+    "output": "context-26.json",
     "counts": {},
     "processes": 0,
     "cap": 200,
@@ -311,7 +337,7 @@
     "uid": "Section:skills/work-planner/modes/plan-mode.md:L7:Procedure",
     "name": "Procedure",
     "file": "skills/work-planner/modes/plan-mode.md",
-    "output": "context-25.json",
+    "output": "context-27.json",
     "counts": {},
     "processes": 0,
     "cap": 200,
@@ -321,7 +347,7 @@
     "uid": "Section:skills/work-planner/modes/plan-mode.md:L61:6. Publish",
     "name": "6. Publish",
     "file": "skills/work-planner/modes/plan-mode.md",
-    "output": "context-26.json",
+    "output": "context-28.json",
     "counts": {},
     "processes": 0,
     "cap": 200,
@@ -331,7 +357,7 @@
     "uid": "Section:skills/work-planner/modes/plan-mode.md:L68:Parent Identity",
     "name": "Parent Identity",
     "file": "skills/work-planner/modes/plan-mode.md",
-    "output": "context-27.json",
+    "output": "context-29.json",
     "counts": {},
     "processes": 0,
     "cap": 200,
@@ -341,7 +367,7 @@
     "uid": "Section:skills/work-planner/modes/plan-mode.md:L75:Epic Publication",
     "name": "Epic Publication",
     "file": "skills/work-planner/modes/plan-mode.md",
-    "output": "context-28.json",
+    "output": "context-30.json",
     "counts": {},
     "processes": 0,
     "cap": 200,
@@ -351,7 +377,7 @@
     "uid": "Section:skills/work-planner/modes/plan-mode.md:L88:Saved Validation",
     "name": "Saved Validation",
     "file": "skills/work-planner/modes/plan-mode.md",
-    "output": "context-29.json",
+    "output": "context-31.json",
     "counts": {},
     "processes": 0,
     "cap": 200,
@@ -361,7 +387,7 @@
     "uid": "Section:skills/work-planner/test/README.md:L1:Work Planner Test Suite",
     "name": "Work Planner Test Suite",
     "file": "skills/work-planner/test/README.md",
-    "output": "context-30.json",
+    "output": "context-32.json",
     "counts": {},
     "processes": 0,
     "cap": 200,
@@ -371,7 +397,7 @@
     "uid": "Section:skills/work-planner/test/README.md:L5:What Is Under Test",
     "name": "What Is Under Test",
     "file": "skills/work-planner/test/README.md",
-    "output": "context-31.json",
+    "output": "context-33.json",
     "counts": {},
     "processes": 0,
     "cap": 200,
@@ -381,26 +407,6 @@
     "uid": "Section:skills/work-planner/test/README.md:L25:Catalogue",
     "name": "Catalogue",
     "file": "skills/work-planner/test/README.md",
-    "output": "context-32.json",
-    "counts": {},
-    "processes": 0,
-    "cap": 200,
-    "staleness": "not emitted by CLI"
-  },
-  {
-    "uid": "Section:skills/work-planner/test/README.md:L59:Prose Tests",
-    "name": "Prose Tests",
-    "file": "skills/work-planner/test/README.md",
-    "output": "context-33.json",
-    "counts": {},
-    "processes": 0,
-    "cap": 200,
-    "staleness": "not emitted by CLI"
-  },
-  {
-    "uid": "Section:skills/work-planner/test/README.md:L77:Coverage",
-    "name": "Coverage",
-    "file": "skills/work-planner/test/README.md",
     "output": "context-34.json",
     "counts": {},
     "processes": 0,
@@ -408,8 +414,8 @@
     "staleness": "not emitted by CLI"
   },
   {
-    "uid": "Section:skills/work-planner/test/README.md:L109:Documents",
-    "name": "Documents",
+    "uid": "Section:skills/work-planner/test/README.md:L60:Prose Tests",
+    "name": "Prose Tests",
     "file": "skills/work-planner/test/README.md",
     "output": "context-35.json",
     "counts": {},
@@ -418,9 +424,9 @@
     "staleness": "not emitted by CLI"
   },
   {
-    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:ROOT",
-    "name": "ROOT",
-    "file": "skills/work-planner/test/test_plan_publication.py",
+    "uid": "Section:skills/work-planner/test/README.md:L79:Coverage",
+    "name": "Coverage",
+    "file": "skills/work-planner/test/README.md",
     "output": "context-36.json",
     "counts": {},
     "processes": 0,
@@ -428,67 +434,11 @@
     "staleness": "not emitted by CLI"
   },
   {
-    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:SOURCE",
-    "name": "SOURCE",
-    "file": "skills/work-planner/test/test_plan_publication.py",
+    "uid": "Section:skills/work-planner/test/README.md:L111:Documents",
+    "name": "Documents",
+    "file": "skills/work-planner/test/README.md",
     "output": "context-37.json",
     "counts": {},
-    "processes": 0,
-    "cap": 200,
-    "staleness": "not emitted by CLI"
-  },
-  {
-    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:CALL",
-    "name": "CALL",
-    "file": "skills/work-planner/test/test_plan_publication.py",
-    "output": "context-38.json",
-    "counts": {},
-    "processes": 0,
-    "cap": 200,
-    "staleness": "not emitted by CLI"
-  },
-  {
-    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:PLACEHOLDER",
-    "name": "PLACEHOLDER",
-    "file": "skills/work-planner/test/test_plan_publication.py",
-    "output": "context-39.json",
-    "counts": {},
-    "processes": 0,
-    "cap": 200,
-    "staleness": "not emitted by CLI"
-  },
-  {
-    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:Tracker.save.saved@92:8",
-    "name": "saved",
-    "file": "skills/work-planner/test/test_plan_publication.py",
-    "output": "context-40.json",
-    "counts": {
-      "incoming.accesses": 1
-    },
-    "processes": 0,
-    "cap": 200,
-    "staleness": "not emitted by CLI"
-  },
-  {
-    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:Tracker.validate.parent@113:8",
-    "name": "parent",
-    "file": "skills/work-planner/test/test_plan_publication.py",
-    "output": "context-41.json",
-    "counts": {
-      "incoming.accesses": 1
-    },
-    "processes": 0,
-    "cap": 200,
-    "staleness": "not emitted by CLI"
-  },
-  {
-    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:Tracker.validate.epics@114:8",
-    "name": "epics",
-    "file": "skills/work-planner/test/test_plan_publication.py",
-    "output": "context-42.json",
-    "counts": {
-      "incoming.accesses": 1
-    },
     "processes": 0,
     "cap": 200,
     "staleness": "not emitted by CLI"
@@ -497,7 +447,7 @@
     "uid": "Class:skills/work-planner/test/test_plan_publication.py:Tracker",
     "name": "Tracker",
     "file": "skills/work-planner/test/test_plan_publication.py",
-    "output": "context-43.json",
+    "output": "context-38.json",
     "counts": {
       "incoming.imports": 1,
       "outgoing.has_method": 9
@@ -510,7 +460,7 @@
     "uid": "Class:skills/work-planner/test/test_plan_publication.py:SavedPlanPublication",
     "name": "SavedPlanPublication",
     "file": "skills/work-planner/test/test_plan_publication.py",
-    "output": "context-44.json",
+    "output": "context-39.json",
     "counts": {
       "incoming.imports": 1,
       "outgoing.has_method": 14
@@ -520,26 +470,76 @@
     "staleness": "not emitted by CLI"
   },
   {
-    "uid": "Function:skills/work-planner/test/test_plan_publication.py:body",
-    "name": "body",
+    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:ROOT",
+    "name": "ROOT",
     "file": "skills/work-planner/test/test_plan_publication.py",
-    "output": "context-45.json",
+    "output": "context-40.json",
+    "counts": {},
+    "processes": 0,
+    "cap": 200,
+    "staleness": "not emitted by CLI"
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:SOURCE",
+    "name": "SOURCE",
+    "file": "skills/work-planner/test/test_plan_publication.py",
+    "output": "context-41.json",
+    "counts": {},
+    "processes": 0,
+    "cap": 200,
+    "staleness": "not emitted by CLI"
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:CALL",
+    "name": "CALL",
+    "file": "skills/work-planner/test/test_plan_publication.py",
+    "output": "context-42.json",
+    "counts": {},
+    "processes": 0,
+    "cap": 200,
+    "staleness": "not emitted by CLI"
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:PLACEHOLDER",
+    "name": "PLACEHOLDER",
+    "file": "skills/work-planner/test/test_plan_publication.py",
+    "output": "context-43.json",
+    "counts": {},
+    "processes": 0,
+    "cap": 200,
+    "staleness": "not emitted by CLI"
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:Tracker.save.saved@92:8",
+    "name": "saved",
+    "file": "skills/work-planner/test/test_plan_publication.py",
+    "output": "context-44.json",
     "counts": {
-      "incoming.calls": 2
+      "incoming.accesses": 1
     },
     "processes": 0,
     "cap": 200,
     "staleness": "not emitted by CLI"
   },
   {
-    "uid": "Function:skills/work-planner/test/test_plan_publication.py:walk",
-    "name": "walk",
+    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:Tracker.validate.parent@113:8",
+    "name": "parent",
+    "file": "skills/work-planner/test/test_plan_publication.py",
+    "output": "context-45.json",
+    "counts": {
+      "incoming.accesses": 1
+    },
+    "processes": 0,
+    "cap": 200,
+    "staleness": "not emitted by CLI"
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:Tracker.validate.epics@114:8",
+    "name": "epics",
     "file": "skills/work-planner/test/test_plan_publication.py",
     "output": "context-46.json",
     "counts": {
-      "incoming.calls": 14,
-      "outgoing.calls": 1,
-      "outgoing.accesses": 1
+      "incoming.accesses": 1
     },
     "processes": 0,
     "cap": 200,

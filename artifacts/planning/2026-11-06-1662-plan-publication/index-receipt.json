@@ -1,16 +1,16 @@
 {
-  "repoPath": "/home/mike1/projects/dev/workflow-server/.worktrees/pr/1662",
-  "lastCommit": "6d1ff1453bc40256c9c4803df762e8d665d62624",
-  "indexedAt": "2026-11-06T11:36:49.764Z",
+  "repoPath": "/home/mike1/projects/dev/workflow-server/.worktrees/pr/1662-581c525137d0",
+  "lastCommit": "581c525137d0779649ad97e89370bafbde927d34",
+  "indexedAt": "2026-11-06T11:50:24.597Z",
   "indexCoverage": {
     "maxFileSizeBytes": 524288,
     "dirtyPaths": []
   },
   "stats": {
-    "files": 203,
-    "nodes": 5524,
-    "edges": 14851,
-    "communities": 197,
+    "files": 205,
+    "nodes": 5592,
+    "edges": 15008,
+    "communities": 202,
     "processes": 312,
     "embeddings": 0
   },

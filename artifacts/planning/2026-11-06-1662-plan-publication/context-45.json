@@ -1,24 +1,19 @@
 {
   "status": "found",
   "symbol": {
-    "uid": "Function:skills/work-planner/test/test_plan_publication.py:body",
-    "name": "body",
-    "kind": "Function",
+    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:Tracker.validate.parent@113:8",
+    "name": "parent",
+    "kind": "Variable",
     "filePath": "skills/work-planner/test/test_plan_publication.py",
-    "startLine": 19,
-    "endLine": 21
+    "startLine": 114,
+    "endLine": 114
   },
   "epistemic": "exact",
   "incoming": {
-    "calls": [
+    "accesses": [
       {
         "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.__init__#8",
         "name": "__init__",
-        "filePath": "skills/work-planner/test/test_plan_publication.py"
-      },
-      {
-        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.parent_body#0",
-        "name": "parent_body",
         "filePath": "skills/work-planner/test/test_plan_publication.py"
       }
     ]

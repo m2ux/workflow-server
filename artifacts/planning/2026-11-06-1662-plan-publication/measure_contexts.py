@@ -15,7 +15,7 @@ selected = [row for row in rows if
              ((row[2].endswith('plan-mode.md') and row[1] in plan) or
               (row[2].endswith('README.md') and row[1] in catalogue)))]
 assert len(selected) == 46, len(selected)
-env = dict(os.environ, GITNEXUS_STORAGE_PATH='/tmp/deliver17-20261106/gitnexus-e05')
+env = dict(os.environ, GITNEXUS_STORAGE_PATH='/tmp/deliver17-20261106/gitnexus-e05-final')
 manifest = []
 for index, row in enumerate(selected, 1):
     result = subprocess.run(['gitnexus','context','--uid',row[0],'--limit','200'],
