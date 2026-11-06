@@ -31,7 +31,7 @@ Faults found in the skill before its move have no plan that the move respects.
 | [E02](https://github.com/m2ux/workflow-server/issues/1615) | Skill Separation | AC1 | [E01](https://github.com/m2ux/workflow-server/issues/1616) | |
 | [E03](https://github.com/m2ux/workflow-server/issues/1625) | Delivery Lanes | AC1 | | ✓ |
 | [E04](https://github.com/m2ux/workflow-server/issues/1654) | Delivery Failure Recovery | AC1 | [E01](https://github.com/m2ux/workflow-server/issues/1616) | |
-| [E05](https://github.com/m2ux/workflow-server/issues/0) | Plan Publication | AC1 | [E01](https://github.com/m2ux/workflow-server/issues/1616) | |
+| [E05](https://github.com/m2ux/workflow-server/issues/1655) | Plan Publication | AC1 | [E01](https://github.com/m2ux/workflow-server/issues/1616) | |
 
 ## Acceptance Criteria
 

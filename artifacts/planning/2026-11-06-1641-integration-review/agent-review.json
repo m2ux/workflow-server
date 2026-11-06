@@ -1,0 +1,63 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1641",
+    "head": "b5ee78f3fb524445c0b811b38aff04c08e45628e",
+    "base": "e25ecb70d7d37562bacd25271c1c49f11d539093",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-06-1641-integration-review/agent-review.json",
+    "reviewer": "Codex integration review with three fresh-context instruction consumers",
+    "reviewed_at": "2026-11-06T10:46:49.151346+00:00",
+    "scope": "Full 72-file current integration diff e25ecb70d7d37562bacd25271c1c49f11d539093..b5ee78f3fb524445c0b811b38aff04c08e45628e, migration fidelity against 03d353300ca4804194fd50d316d73e3bf1270d1d, shared checker/formatter definitions and consumers, final corpus contracts, failure paths and current-target test catalogue. Earlier all-file/template/command/field evidence is carried forward with exact source limits; final changed routes are independently checked. No live tracker/graph or exhaustive prose-semantic proof.",
+    "criteria": "AC1\u2013AC8 assessed against the aligned saved E01 contract: declared model acceptance/rejection, common files, mode/protocol heading/call routes, all command-family contracts and installed activation. All eight task PRs confirmed merged into the epic base; criteria and evidence mapping are in review.md.",
+    "validation": "Final planner 959 run: 958 pass, one opt-in skip; shared checker 280 pass; installed model 59 files/zero findings; all nine original Template fields identical; all 116 original shell specs accounted for with eight explained token changes; fresh board/planning/delivery consumers and prior repeated Standup/Understand/Revise receipts retain reading limits. Current target requires one human approval; no required status checks are declared.",
+    "findings": [
+      {
+        "description": "Proposal lost discovery of shared Body/Labels after prerequisite removal and field separation; draft and shared validation now select these conditions explicitly.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/00a1d092855fee3b20ad735b8721bbcc8a970d13"
+      },
+      {
+        "description": "Issue Closure linked pull request identity to Issue, and Issue Delivery named a removed Record Task Delivery capability; links now bind to the correct subject and produced task body.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/00a1d092855fee3b20ad735b8721bbcc8a970d13"
+      },
+      {
+        "description": "Current target test catalogue omitted E01 command consumers and carried stale descriptions/counts; catalogue and root Markdown discovery now match the actual tests without weakened checks.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/3223aee0e83766bf9ef5727662ce3626115a27ae"
+      },
+      {
+        "description": "Match Pull Requests repeated its linked output contract in a separate result-shape sentence; the command states that contract once.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b5ee78f3fb524445c0b811b38aff04c08e45628e"
+      },
+      {
+        "description": "Epic review wording described superseded commands-in-steps and retained Prerequisites; the saved epic now reflects the final explicitly approved authoring model while preserving all task identities and criterion labels.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-06-1641-integration-review/epic-readback.json"
+      },
+      {
+        "description": "Inherited selected-context/policy boundaries, retained-preparation worktree selection and Board Status ownership remain scoped E02 work; no complete disclosure or universal prose-semantic conformance is claimed.",
+        "severity": "nonblocking",
+        "disposition": "deferred",
+        "ticket": "https://github.com/m2ux/workflow-server/issues/1615"
+      },
+      {
+        "description": "Inherited hot-fix draft restoration, epic refusal handling and task merge verified-head binding are planned in E04, including the newly authorized AC8/W02 guarantee.",
+        "severity": "nonblocking",
+        "disposition": "deferred",
+        "ticket": "https://github.com/m2ux/workflow-server/issues/1654"
+      },
+      {
+        "description": "Inherited new-epic publication under an existing initiative lacks explicit epic/parent save sequencing; the user-approved E05 owns this correction and observing fixtures.",
+        "severity": "nonblocking",
+        "disposition": "deferred",
+        "ticket": "https://github.com/m2ux/workflow-server/issues/1655"
+      }
+    ]
+  }
+]

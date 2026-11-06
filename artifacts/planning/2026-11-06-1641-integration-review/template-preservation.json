@@ -1,0 +1,47 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/architecture-overview.md",
+    "sha256": "2aa7439a6ab71972d875bf6fbc9c054c1df36a125e948ed817689373f12f3eea",
+    "identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "sha256": "4f2aa78325c52ba0b19d0a32cfa39d0fe72e5652568a1119a26d81a5a4d56bf1",
+    "identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "sha256": "a5df83e7363621eb18d7fe6e48017f5cea64cc51031c7272e662c7c02afdc2d5",
+    "identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "sha256": "66e6992f304b0c3ab25778293bc641f8d0f3f2dbfaacb4b647e5e52e3b197aba",
+    "identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/proposal-body.md",
+    "sha256": "bdc75fca23e32f42132630e53c746b75897171e9e20575c0323fc79c90f5c657",
+    "identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "sha256": "840eabf588f620a8170457b178c9a7be68834d641fd6fb6c0e8a7c6953194168",
+    "identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/standalone-body.md",
+    "sha256": "9f497dd1e26c22121a9448decfb0d90072bc3be69a864443e07d498ce807cb01",
+    "identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "sha256": "a7d1f23b0e45dba6ae1b2367c32c1a497b4b7dba1acaaf96a4642079ff8de237",
+    "identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/work-item.md",
+    "sha256": "d424b97acbcd7320b87bb3454b9f344e307e62c57ddbdc17496b7befb7528550",
+    "identical": true
+  }
+]

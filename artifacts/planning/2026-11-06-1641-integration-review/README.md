@@ -32,13 +32,13 @@ The user approved both inherited follow-ups and confirmed priority 6 for new E05
 
 Draft format checks pass for E04 and E05. The full supplied task-edge graph exits 0 with all epic bodies; the four changed/relevant E04/E05 work items have no cross-epic component contention. Component coverage for other rows is explicitly incomplete, including E02's future audit map; this is not a whole-board concurrency guarantee. Longest chains and every unchecked component are retained in followup-dependencies.log. The graph's relative 2/1 priorities correspond to the confirmed existing 7/6 levels; no existing priority changes.
 
-The E05 draft's issue 0 link in the initiative is an unpublished identity placeholder. It is replaced by the created issue number, then the complete saved initiative and epic bodies are revalidated before reporting publication.
+E05 is published as #1655. The saved initiative uses its actual issue identity; exact body/metadata readbacks and saved format checks pass. Its board item confirms Backlog and it remains unassigned.
 
 ## Review Verification
 
-The source fixes close the proposal shared-context loss, the wrong Pull Request identity link and the stale Record Task Delivery name. Bringing target e25ecb70 into E01 exposes a catalogue mismatch; the catalogue and root-document discovery now describe the actual tests without weakening their checks. The final source is 3223aee0e83766bf9ef5727662ce3626115a27ae. Full planner: 959 run, 958 pass, one opt-in skip. Shared checker: 280 pass. Installed model: 59 files, zero findings. No live tracker or GitNexus workflow is established by those local results.
+The source fixes close the proposal shared-context loss, the wrong Pull Request identity link and the stale Record Task Delivery name. Bringing target e25ecb70 into E01 exposes a catalogue mismatch; the catalogue and root-document discovery now describe the actual tests without weakening their checks. The final source is b5ee78f3fb524445c0b811b38aff04c08e45628e; the final DRY pass removes one repeated output-shape sentence. Full planner: 959 run, 958 pass, one opt-in skip. Shared checker: 280 pass. Installed model: 59 files, zero findings. No live tracker or GitNexus workflow is established by those local results.
 
-The fresh board, planning and delivery consumers retain actual reads and truncation/overread limits under readers/. The planning reader finds and confirms the proposal fix at 00a1d0928; later source changes affect only the test catalogue and target test documentation. The unchanged Standup/Understand/Revise routes retain their repeated source-manifest-bound evidence in ../2026-11-06-1616-context-links/. Integration review evidence will identify final target/head and the completed fixed/deferred findings.
+The fresh board, planning and delivery consumers retain actual reads and truncation/overread limits under readers/. The planning reader finds and confirms the proposal fix at 00a1d0928; later source changes affect only the test catalogue and target test documentation. The unchanged Standup/Understand/Revise routes retain their repeated source-manifest-bound evidence in ../2026-11-06-1616-context-links/. The current review identifies the final target/head and completed fixed/deferred findings in agent-review.json and review.md.
 
 ## Current Artifacts
 
@@ -82,3 +82,21 @@ The fresh board, planning and delivery consumers retain actual reads and truncat
 | [shared-tests.log](shared-tests.log) | Captured source, plan, consumer receipt or validation evidence |
 | [target-protection.json](target-protection.json) | Captured source, plan, consumer receipt or validation evidence |
 | [target-rules.json](target-rules.json) | Captured source, plan, consumer receipt or validation evidence |
+
+## Published Review
+
+[Human review](review.md) and [revision-bound record](agent-review.json) describe the full integration diff, five fixed findings and three ticketed baseline follow-ups. Head: b5ee78f3fb524445c0b811b38aff04c08e45628e; target: e25ecb70d7d37562bacd25271c1c49f11d539093. Full planner 958 pass/one skip; shared checker 280 pass; installed model 59 files/zero findings. Task PRs are confirmed merged; integration remains open pending required human approval.
+
+| Artifact | Purpose |
+| --- | --- |
+| [review.md](review.md) | Final review, source identity or exact saved evidence |
+| [agent-review.json](agent-review.json) | Final review, source identity or exact saved evidence |
+| [delivery-pulls.json](delivery-pulls.json) | Final review, source identity or exact saved evidence |
+| [source-manifest.json](source-manifest.json) | Final review, source identity or exact saved evidence |
+| [template-preservation.json](template-preservation.json) | Final review, source identity or exact saved evidence |
+| [e04-readback.json](e04-readback.json) | Final review, source identity or exact saved evidence |
+| [e05-readback.json](e05-readback.json) | Final review, source identity or exact saved evidence |
+| [initiative-readback.json](initiative-readback.json) | Final review, source identity or exact saved evidence |
+| [initiative-format.log](initiative-format.log) | Final review, source identity or exact saved evidence |
+| [e05-board-readback.json](e05-board-readback.json) | Final review, source identity or exact saved evidence |
+| [pr-body.md](pr-body.md) | Final review, source identity or exact saved evidence |

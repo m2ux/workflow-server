@@ -53,3 +53,7 @@ The known pre-cutover input fault in #1630 traces to initiative AC1 through E03 
 | Checks identify observed and similar candidates while accepting legitimate constraints | AC1 | E02 AC9 | E02 W09 | User request, with positive/negative specimens |
 
 The initiative criterion, epic order and E01 producer edge are preserved. Known consumer updates are joined with the extraction; additional components discovered by the audit receive rows before dispatch. The existing E02 prose/script/one-home fix rows are refined by that audit, as their Proposal already requires. This plan does not claim a universal automatic prose classifier or implement the future performed-operation verifier.
+
+## Integration Review Follow-ups, 6 November 2026
+
+The confirmed pre-extraction goal maps task merge head binding to initiative AC1 through E04 AC8/W02, in its existing W02/W03 unit. Existing-initiative publication maps to initiative AC1 through E05 AC1–AC3/W01. E05 priority 6 is confirmed; its whole-epic prerequisite is E01, with task consumption recorded as E01:W08. The extraction must include their actual merge commits; planning these issues supplies no delivery evidence.
