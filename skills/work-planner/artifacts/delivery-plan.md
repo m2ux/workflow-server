@@ -2,27 +2,37 @@
 
 The available units, held rows and hot-fixes, blocked work and merge candidates for one board.
 
-## Prerequisites
+## Commands
 
-Read these files first.
+### Compute Available Work
 
-- [Lane](lane.md)
-- [Epic Issue Body](epic-issue-body.md)
-- [Delivery Branches](delivery-branches.md)
-- [Work Item](work-item.md)
-- [Hot-fix](hotfix.md)
-- [Hot-fix Body](hotfix-body.md)
+Compute available work from supplied board and delivery snapshots and provide [Plan Report](#plan-report "●") and [Dispatch Export](#dispatch-export "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
-## Operations
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py &#92;
+  --items '[**&lt;board-items-file&gt;**](#board-items "○")' &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot "○")' &#92;
+  --project '[**&lt;checkout&gt;**](#project-checkout "○")' &#92;
+  --revision '[**&lt;revision&gt;**](#revision "○")' &#92;
+  --bases '[**&lt;epic-base-names&gt;**](#epic-base-names "○")' &#92;
+  --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' &#92;
+  --lane [**&lt;lane-index&gt;**](#requested-lane "○") &#92;
+  --dispatch-plan '[**&lt;dispatch-export-file&gt;**](#dispatch-export-path "○")'
+</pre></big>
 
-### *Plan* Available Work
+- Include each supplied [Off-Board Issues](#off-board-issues "○") file with `--others`.
 
-One delivery plan from supplied board and delivery evidence.
+- Read each row’s own links from the epic body to determine whether its work is under way.
 
-**Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue files, optional requested lane index, optional record date and optional dispatch-export path.
+- Fetch the project checkout’s remote epic bases and long-lived branches before reading producer outputs against them.
+- Read each free row’s work-item file from the supplied engineering worktree.
+- Use `--date` to override the [record date](#record-date "○").
+- Omit `--lane` when the run names no lane. Offered units must meet [Admission](lane.md#admission).
+- Omit `--dispatch-plan` when no dispatch export is requested.
 
-1. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter. The computation applies [Determine Lane Admission](lane.md#determine-lane-admission) to each derived free unit with its epic body, complete ids and the requested index.
-2. Return the plan meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
+- The computation runs [Evaluate Lane Admission](lane.md#evaluate-lane-admission "ƒ") internally for each derived free unit under [Admission](lane.md#admission). The requester decides holds and dispatch, and supplies missing evidence for another pass.
 
 ## Fields
 
@@ -33,11 +43,6 @@ A unit is one task row or tasks that name each other in Joins, as [Work Breakdow
 ### Hot-fix Units
 
 A hot-fix is a unit as its [Delivery Unit](hotfix.md#delivery-unit) states, with the branch, base and worktree its [Branch](hotfix.md#branch) names.
-
-### Debt
-
-- A unit fixes every debt item its validation finds, from running its tests, auditing the definitions it changed and reviewing its pull request, on its task branch, so its open pull request carries each fix before it merges.
-- Debt in code outside the unit's change is an issue of its own, arising from the delivery.
 
 ### Report Lines
 
@@ -61,30 +66,58 @@ The long-lived branch names are the ones [Branches](delivery-branches.md#branche
 
 The optional JSON export holds exactly the available units in report order. Each entry has a repository-qualified `id`, its `record` folder and its complete `report` line. Joined rows share one entry, such as `o/r#I07:E00:W01+W02`; a hot-fix uses `o/r#F02`. Diagnostic, held and blocked lines remain in the report and create no export entry.
 
-## Commands
+### Board Items
 
-### Compute Available Work
+The current board-items snapshot file, including each issue body. eg `items.json`
 
-Computes available work from supplied board and delivery snapshots.
+### Pull Request Records
 
-**Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue records, optional requested lane index, optional record date and optional dispatch-export path.
+The current pull request records snapshot file. eg `prs.json`
 
-- `--items`, `--prs` and `--links` receive the supplied snapshots. A row's own links, which say whether its work is under way, are read from the epic body.
-- `--project` is the checkout and `--revision` the evaluated revision; `--bases` is its comma-separated epic-base list.
-- `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run.
-- `--engineering` is the engineering worktree, where each free row's work-item file is read.
-- `--others` supplies each resolved off-board issue; `--date` selects another record date.
-- `--lane <id>` supplies the requested bare decimal index. Omit it when the run names no lane. The offered units meet [Admission](lane.md#admission).
-- `--dispatch-plan '<dispatch-export-file>'` writes the [dispatch export](#dispatch-export).
+### Issue-Link Snapshot
 
-`<epic-base-names>` is a comma-separated list of full epic-base branch names.
+The complete Development relation snapshot file. eg `links.json`
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --project '<checkout>' --revision '<revision>' --bases '<epic-base-names>' --engineering '<engineering-worktree>' --lane '<lane-index>'
-```
+### Epic-Base Names
 
-**Example:**
+A comma-separated list of full epic-base branch names. eg `i07/e00/main,i07/e00/workflows`
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '<checkout>' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '<checkout>/.engineering' --lane 2
-```
+### Engineering Worktree
+
+The engineering checkout where each free row’s linked work-item file is read. eg `<checkout>/.engineering`
+
+### Off-Board Issues
+
+Each resolved off-board issue record supplied through `--others`.
+
+### Requested Lane
+
+The optional requested bare decimal lane index; absent when the run names no lane, meeting [Index](lane.md#index). eg `2`
+
+### Record Date
+
+The optional input selecting the planning-folder day, as [Branch Context](#branch-context) states.
+
+### Dispatch-Export Path
+
+The optional destination file for the dispatch export; absent when no export is requested.
+
+### Plan Report
+
+The computed report. Its units and diagnostic lines must meet [Report Lines](#report-lines).
+
+### Workspace
+
+The checkout holding the installed skill, its scripts and tests.
+
+### Project Checkout
+
+The project repository checkout supplied for branch and delivery reads or writes.
+
+### Revision
+
+The fetched commit or revision evaluated by the run. eg `origin/workspace`
+
+### Failure
+
+The operation and error, discrepancy or missing evidence that prevents a verified result.

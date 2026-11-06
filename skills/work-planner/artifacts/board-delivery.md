@@ -2,82 +2,189 @@
 
 The membership, status and assignee changes that record delivery on one board.
 
-## Prerequisites
-
-Read these files first.
-
-- [Board Queue](board-queue.md)
-- [Board](board.md)
-- [Issue](issue.md)
-- [Pull Request](pull-request.md)
-- [Agent Review](agent-review.md)
-
 ## Operations
 
-### *Plan* Board Changes
-
-The board changes implied by supplied delivery state.
-
-**Inputs:** Initiative JSON, epic and task records, fresh REST pull request records, published agent review records fetched from their linked planning records, complete issue-link snapshot, board identity, fields and items, output directory, assignee login and resolved off-board issue files.
-
-1. Require the complete pull-request issue-link snapshot; refuse the computation without it.
-2. Supply the published agent review records linked from each open epic integration pull request; retain missing records as handoff blockers. Run [Compute Board Changes](#compute-board-changes), mapping the supplied records and board context to its parameters.
-3. Return the generated calls and unresolved references, meeting [Fields](#fields). The caller gathers missing evidence, applies changes and confirms their live state.
-
-### *Record* Epic Review
+### Record Epic Review
 
 One epic's review status on its board.
 
-**Inputs:** Epic issue identity, board identity, requested status (In Review or In Progress), fresh pull request records, published agent review records and output paths.
+#### 1. Read Board State
 
-1. Run [Read Board State](board.md#read-board-state) for the supplied board to obtain its items and Status field.
-2. Run [Read Board Configuration](board.md#read-board-configuration) with the board identity and output paths for the Status option ids.
-   - Run [Read Board Assignee](board.md#read-board-assignee) for the dispatch assignee login.
-3. Match the epic's issue to its board item.
-   - Return an absent item as a finding and stop. The status write below needs it.
-4. Run [Record Dispatch Status](#record-dispatch-status) with the epic as the review identity for In Review or the progress identity for In Progress, fresh pull request and published agent review records, and the fetched board evidence, meeting [Status Changes](#status-changes).
-   - Repeat the write and read the item again when it still shows the preceding status. The item list can lag a write.
-5. Return the confirmed status or the discrepancy left for the caller.
+Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Review Selection](#review-selection).
 
-### *Record* Board Delivery
+#### 2. Read Configuration and Assignee
 
-The board's status and assignees after its issues record delivery.
+- Apply [Read Board Configuration](board.md#read-board-configuration "ƒ").
+- Run [Find User](board.md#find-user "ƒ").
 
-**Inputs:** Saved initiative, epic and task identities, board identity, output directory, and the repositories the board's issues live in.
+#### 3. Locate Epic Item
 
-1. Read the issues, the board and its delivery records.
-   - Run [Read Tracker Issue](issue.md#read-tracker-issue) for the saved initiative, epic and task identities.
-   - Run [Read Board State](board.md#read-board-state) for the selected board.
-   - Run [Fetch All Delivery Pull Requests](pull-request.md#fetch-all-delivery-pull-requests) for its repositories and items.
-   - Run [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links) for those records.
-   - Fetch the published agent review records linked from each open epic integration pull request, retaining absent or unreadable evidence as a handoff blocker.
-   - Run [Read Board Configuration](board.md#read-board-configuration) with the board and output paths.
-   - Run [Read Board Assignee](board.md#read-board-assignee) for the assignment login.
-   - Pass these returned snapshots to Plan Board Changes.
-2. Run [Plan Board Changes](#plan-board-changes) with the initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, and assignee login.
-   - Fetch each unresolved issue.
-   - Pass the fetched files to Plan Board Changes as resolved off-board issue files.
-3. Run each emitted call, including the assignee calls, which act on the issue rather than the board item.
-   - Run [Read Board Configuration](board.md#read-board-configuration) with the board identity, output paths and changed item identity to confirm its current status.
-   - If that item still shows the preceding status:
-     - Repeat its write.
-     - Repeat the same item read. The item list can lag a write.
-4. Fetch the issues and items again.
-   - Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes.
-   - Run [Plan Board Changes](#plan-board-changes) with the refreshed initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, assignee login, and every resolved off-board issue file.
-   - Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
+- Match the epic's issue to its board item.
+- Provide an absent item as a finding and stop. The status write below needs it.
 
-### *Record* Dispatch Status
+#### 4. Write and Confirm Review Status
+
+- Apply [Record Dispatch Status](#record-dispatch-status "ƒ") with the epic as the review identity for In Review or the progress identity for In Progress, as [Review Selection](#review-selection) requests, meeting [Status Changes](#status-changes).
+- When the item still shows the preceding status, Apply [Record Dispatch Status](#record-dispatch-status "ƒ") again for the same review or progress identity. Apply [Read Board Configuration](board.md#read-board-configuration "ƒ") for the same item to confirm the write. The item list can lag a write.
+
+#### 5. Provide Confirmed Status
+
+Provide [Confirmed Statuses](#confirmed-statuses) with the confirmed status or the discrepancy left for the requester.
+
+### Record Dispatch Status
 
 The task and epic statuses owned by a delivery dispatch.
 
-**Inputs:** Board items, board identity, field definitions, output directory, assignee login, held task and epic issue numbers for In Progress, and complete epic numbers for In Review, fresh pull request records and published agent review records.
+#### 1. Compute Dispatch Calls
 
-1. Run [Compute Dispatch Status](#compute-dispatch-status) with the supplied identities, board evidence, fresh pull request records and published agent review records. A missing or failing agent review blocks the In Review write.
-2. Apply each returned call and confirm each affected item through [Read Board Configuration](board.md#read-board-configuration).
-3. Return the saved statuses or unresolved discrepancies.
+Run [Compute Dispatch Status](#compute-dispatch-status "ƒ").
+
+#### 2. Apply and Confirm Calls
+
+- Run each provided call.
+- Apply [Read Board Configuration](board.md#read-board-configuration "ƒ") for each affected item to confirm the write.
+
+#### 3. Provide Saved Statuses
+
+Provide [Confirmed Statuses](#confirmed-statuses) with saved statuses or unresolved discrepancies.
+
+## Commands
+
+### Compute Board Changes
+
+Compute membership, Status and assignee calls from supplied delivery evidence and provide [Board Changes](#board-changes "●") to the requester.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record "○")' &#92;
+  --epics '[**&lt;epic-json-file&gt;**](#epic-records "○")' &#92;
+  --tasks '[**&lt;task-json-file&gt;**](#task-records "○")' &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot "○")' &#92;
+  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")' &#92;
+  --board [**&lt;board-identity&gt;**](#board-identity "○") &#92;
+  --fields '[**&lt;board-fields-file&gt;**](#board-fields "○")' &#92;
+  --items '[**&lt;board-items-file&gt;**](#board-items "○")' &#92;
+  --out '[**&lt;output-directory&gt;**](#output-directory "○")' &#92;
+  --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")'
+</pre></big>
+
+- Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
+
+- Missing published agent-review evidence holds the epic In Progress.
+
+- Pass each epic or task JSON file as a separate argument after its corresponding flag.
+
+- Require the complete [Issue Link Snapshot](#issue-link-snapshot "○"); refuse the computation without it.
+- Supply published review records linked from each open epic integration pull request; retain missing records as handoff blockers.
+
+- Assignee changes must follow [Assignees](board.md#assignees). A newly added issue receives its status on a subsequent pass using refreshed items. Apply [Status Changes](#status-changes) to the supplied evidence.
+
+### Compute Dispatch Status
+
+Render board calls within the dispatch jurisdiction and provide [Board Changes](#board-changes "●") to the requester. A missing or failing agent review blocks the In Review write. Apply the dispatch jurisdiction in [Status Changes](#status-changes). Assignee changes must follow [Assignees](board.md#assignees).
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py &#92;
+  --items '[**&lt;board-items-file&gt;**](#board-items "○")' &#92;
+  --board [**&lt;board-identity&gt;**](#board-identity "○") &#92;
+  --fields '[**&lt;board-fields-file&gt;**](#board-fields "○")' &#92;
+  --out '[**&lt;output-directory&gt;**](#output-directory "○")' &#92;
+  --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")' &#92;
+  --progress '[**&lt;held-issue-numbers&gt;**](#dispatch-selection "○")' &#92;
+  --review '[**&lt;complete-epic-numbers&gt;**](#dispatch-selection "○")' &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")'
+</pre></big>
 
 ## Fields
+
+### Change Calls
+
+A collection of executable calls for issues to add, items to remove, Status to set and assignees to add or remove. Each call names its affected issue and board item.
+
+### Missing Evidence
+
+A collection of unresolved issue references identifying dependency records missing from the supplied evidence. Each reference retains its repository and issue number.
+
+### Resolved Issues
+
+The supplied resolved off-board dependency issue records, each at its local file path.
+
+### Review Selection
+
+The epic issue identity, board identity and requested Status: In Review or In Progress.
+
+### Saved Identities
+
+The saved initiative, epic and task identities, board identity, output directory and repositories the board issues live in.
+
+### Dispatch Selection
+
+The supplied comma-separated held task and epic issue numbers for In Progress, and complete epic numbers for In Review. Either list can be empty when no write of that kind is selected.
+
+### Board Changes
+
+The generated membership, Status and assignee calls and unresolved references.
+
+### Confirmed Statuses
+
+The saved item statuses or unresolved discrepancies provided after item readback.
+
+### Initiative Record
+
+The supplied complete current initiative JSON at its local file path. eg `issue-936.json`
+
+### Epic Records
+
+The supplied complete current epic JSON records, each at a separate local file path. eg `issue-943.json issue-937.json`
+
+### Task Records
+
+The supplied complete current task issue JSON records, each at a separate local file path. eg `issue-637.json`
+
+### Pull Request Records
+
+The supplied freshly fetched complete REST pull request records, one JSON object per nonempty line at the local file path. eg `prs.json`
+
+### Published Reviews
+
+The JSON list of published agent-review records fetched from their linked planning records, at its local file path.
+
+### Issue Link Snapshot
+
+The supplied complete pull-request issue-link snapshot at its local file path. eg `links.json`
+
+### Board Identity
+
+The supplied users/owner/projectsV2/number or orgs/owner/projectsV2/number board identity. eg `users/m2ux/projectsV2/9`
+
+### Board Fields
+
+The supplied board field definitions at their local snapshot path. eg `fields.json`
+
+### Board Items
+
+The supplied board items with Status and their complete issue records, at the local paginated snapshot path. eg `items.json`
+
+### Output Directory
+
+The supplied local directory receiving generated calls. eg `board/`
+
+### Output Paths
+
+The supplied local paths for fetched evidence and generated calls.
+
+### Assignee Login
+
+The supplied login assigned to work from Ready. eg `m2ux`
+
+### Workspace
+
+The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+
+## Guidance
 
 ### Status Changes
 
@@ -93,49 +200,6 @@ Only an initiative, an epic or a hot-fix stands In Review. An open task issue is
 
 A task whose row links a reserved planning folder is In Progress. A work-item file link alone leaves the row available. Dispatch writes are limited to In Progress for held tasks and epics, and In Review for completed epics; the shared DISPATCH jurisdiction refuses other statuses and removals.
 
-Task readiness meets [Task Eligibility](board-queue.md#task-eligibility). The caller supplies saved issue bodies and closure state.
+Task readiness must meet [Task Eligibility](board-queue.md#task-eligibility). The caller supplies saved issue bodies and closure state.
 
 A task gated on an [unresolvable dependency](board-queue.md#unresolvable-dependencies) keeps the Status it holds: the row waits on no delivery, so no status follows from its gate. The run names the row and the entry and exits nonzero, as every reader of that cell does.
-
-### Change Calls
-
-The result contains calls for issues to add, items to remove, Status to set and assignees to add or remove. Each call names its affected issue and board item. Assignees follow [Assignees](board.md#assignees).
-
-### Missing Evidence
-
-Unresolved issue references identify dependency records the caller must supply before a complete result. A newly added issue receives its status on a subsequent pass using refreshed items.
-
-## Commands
-
-### Compute Board Changes
-
-Computes membership, Status and assignee calls from supplied delivery evidence.
-
-**Inputs:** Initiative JSON, epic and task JSON records, pull request and complete issue-link snapshots, board identity, board fields and items, output directory, assignee login and resolved off-board issue records.
-
-- `--epics`, `--tasks`, `--prs` and `--links` receive the related records and complete link snapshot. `--agent-reviews` supplies the published review records fetched from the open epic pull requests; absent evidence holds those epics In Progress.
-- `--board`, `--fields` and `--items` identify the current board state.
-- `--out` receives the call files; `--assignee` is the supplied login.
-- `--others` supplies each resolved dependency issue.
-
-Pass each epic or task JSON file as a separate argument after its corresponding flag.
-
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/board.py '<initiative-json-file>' --epics '<epic-json-file>' --tasks '<task-json-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --agent-reviews '<review-records-file>' --board '<board-identity>' --fields '<board-fields-file>' --items '<board-items-file>' --out '<output-directory>' --assignee '<assignee-login>'
-```
-
-**Example:**
-
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --links links.json --board 'users/<owner>/projectsV2/9' --fields fields.json --items items.json --out board/ --assignee m2ux
-```
-
-### Compute Dispatch Status
-
-Renders board calls within the dispatch jurisdiction.
-
-**Inputs:** Board items, board identity, fields, output directory, assignee, comma-separated held task and epic numbers, and comma-separated complete epic numbers, fresh pull request records and published agent review records.
-
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '<board-items-file>' --board '<board-identity>' --fields '<board-fields-file>' --out '<output-directory>' --assignee '<assignee-login>' --progress '<held-issue-numbers>' --review '<complete-epic-numbers>' --prs '<pull-request-records-file>' --agent-reviews '<review-records-file>'
-```

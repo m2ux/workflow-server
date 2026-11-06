@@ -2,86 +2,126 @@
 
 Populates one initiative body. The body states the goal as criteria and lists the epics that deliver them.
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue Body](issue-body.md)
-- [Requirement Characteristics](../references/requirement-characteristics.md)
-- [Initiative](initiative.md)
-
 ## Operations
 
-### *Populate* Initiative Issue Body
+### Populate Initiative Issue Body
 
 One initiative body and its local validation findings.
 
-**Inputs:** Scoped proposal, confirmed goal clauses, requirement sources, epic summaries and output path.
+#### 1. Draft Scoped Body
 
-1. Populate the body through [Draft Initiative Issue Body](#draft-initiative-issue-body).
-2. Follow [Check Round of Edits](issue-body.md#check-round-of-edits).
-3. Return the populated body and its local format findings to the caller.
+Apply [Draft Initiative Issue Body](#draft-initiative-issue-body "ƒ") with [Proposal Context](#proposal-context) and destinations in [Output Files](#output-files).
 
-### *Draft* Initiative Issue Body
+#### 2. Check Current Round
+
+Apply [Check Round of Edits](issue-body.md#check-round-of-edits "ƒ").
+
+#### 3. Provide Draft Findings
+
+Provide [Output Files](#output-files) with the populated body and [Validation Findings](#validation-findings).
+
+### Draft Initiative Issue Body
 
 One initiative body, scoped to one proposal.
 
-**Inputs:** Scoped proposal, confirmed goal clauses, requirement sources, epic summaries and output path.
+#### 1. Populate Initiative Template
 
-1. Populate the body from the [Template](#template) into a local file at the supplied output path.
-   - That file must be the source for every later edit.
-   - All populated fields must meet [Fields](#fields).
-2. Derive the Problem and Non-Goals from the proposal this initiative is scoped to.
-   - The Problem must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
-   - Each Non-Goal must meet [Non-Goals](#non-goals).
-3. Write the acceptance criteria before the Work Breakdown, so each row's Coverage can cite them.
-   - Each criterion must come from a confirmed clause and meet [Initiative Acceptance Criteria](#initiative-acceptance-criteria).
-   - The criteria must come from the requirements sources the proposal references. Where the proposal references none, they must come from the proposal's body alone.
-4. Populate the shared table through [Write Issue Table](issue-body.md#write-issue-table).
-5. Fill the initiative-specific cells.
-   - Each row must meet [Work Breakdown](#work-breakdown).
-   - An item a test cannot observe must stay named as [Coverage Reports](issue-body.md#coverage-reports) define.
+- Populate the [Template](#template) into the local destination in [Output Files](#output-files).
+- That file must be the source for every later edit.
+- All populated fields must meet [Fields](#fields).
 
-### *Record* Initiative Delivery
+#### 2. Derive Problem and Boundary
 
-One initiative body with its epic delivery recorded.
+- Derive the Problem and Non-Goals from [Proposal Context](#proposal-context).
+- The Problem must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
+- Each Non-Goal must meet [Non-Goals](#non-goals).
 
-**Inputs:** Initiative JSON, every linked epic's current JSON and optional output body file.
+#### 3. Write Source-Based Criteria
 
-1. Run [Sync Initiative](#sync-initiative) with the initiative and all linked epic records as `--epics`, supplying `--fix` when an output body is requested.
-2. Return the body and [Delivery Findings](initiative.md#delivery-findings) from the supplied initiative and epic records. Delivery eligibility follows [Delivery State](initiative.md#delivery-state).
+- Write the acceptance criteria before the Work Breakdown, so each row's Coverage can cite them.
+- Each criterion must come from a confirmed clause and meet [Initiative Acceptance Criteria](#initiative-acceptance-criteria).
+- The criteria must come from the requirements sources the proposal references. Where the proposal references none, they must come from the proposal's body alone.
 
-### *Record* Initiative Criteria
+#### 4. Populate Shared Table
 
-Verified criteria and completed rows in one initiative body.
+Apply [Write Issue Table](issue-body.md#write-issue-table "ƒ") with the supplied row data.
 
-**Inputs:** Initiative JSON, every linked epic's current JSON, verified criterion ids and output body file.
+#### 5. Fill Initiative Cells
 
-1. Run [Tick Initiative Criteria](#tick-initiative-criteria) with the initiative, linked epics as `--epics`, verified ids as `--tick` and output as `--fix`. Refuse criteria not ready to verify.
-2. Return the body and refused criteria.
+- Fill the initiative-specific cells.
+- Each row must meet [Work Breakdown](#work-breakdown).
+- An item a test cannot observe must stay named as [Coverage Reports](issue-body.md#coverage-reports) define.
 
-### *Validate* Initiative Body
+#### 6. Provide Draft Initiative Issue Body
+
+Provide [Output Files](#output-files) with the populated initiative body.
+
+### Validate Initiative Body
 
 The body's local format and field findings.
 
-**Inputs:** Initiative JSON, every linked epic JSON, source evidence and output file.
+#### 1. Validate Kind Conditions
 
-1. Call [Validate Issue Body](issue-body.md#validate-issue-body) with the current body, local [Fields](#fields), supplied related evidence and output file, supplying each linked epic as `--epic`.
-2. Use its current title for the initiative row.
-3. Include excluded names in Problem and Proposal and criterion/source departures in the findings.
-4. Return the corrected body, mechanical diff and unresolved findings for the caller.
+Apply [Validate Issue Body](issue-body.md#validate-issue-body "ƒ") against local [Fields](#fields) and the supplied epic and source evidence.
 
-### *Read* Requirement Sources
+#### 2. Retain Current Title
 
-The requirements evidence used to validate an initiative's criteria.
+Use its current title for the initiative row.
 
-**Inputs:** Initiative References, checkout, authenticated source access and destination files.
+#### 3. Identify Source Departures
 
-1. Read each local source at its checkout path.
-2. For a pinned GitHub blob, run [Fetch Source](#fetch-source) with its repository, path, pinned revision and output file.
-3. Fetch other URLs through the harness's web access.
-4. Record an unreadable or empty source as a [Sources](#sources) finding; its criteria remain unevaluated.
-5. Return each source's contents and identity with those findings.
+Include excluded names in Problem and Proposal and criterion/source departures in the findings.
+
+#### 4. Provide Local Findings
+
+Provide [Output Files](#output-files) with the corrected body and [Validation Findings](#validation-findings) containing the mechanical diff and unresolved findings.
+
+## Commands
+
+### Sync Initiative
+
+Report an initiative's delivery state against its epics, tick Done on an epic row whose issue is closed as completed, and provide [Delivery Findings](initiative.md#delivery-findings "●") and, when a body was requested, [Output Files](#output-files "●") to the requester. A row whose epic it is not given keeps its Done cell and is reported unchanged.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record "○")' &#92;
+  --epics '[**&lt;epic-json-file&gt;**](#epic-records "○")' &#92;
+  --fix '[**&lt;output-body-file&gt;**](#output-files "○")'
+</pre></big>
+
+- Omit `--fix` when only a delivery report is requested.
+
+- It takes every linked epic's current JSON. Delivery findings should follow [Delivery State](initiative.md#delivery-state).
+
+- Pass every epic JSON file as a separate argument after `--epics`.
+
+### Tick Initiative Criteria
+
+Tick confirmed initiative criteria and completed rows, refusing criteria not ready to verify, and provide [Output Files](#output-files "●") and [Criterion Selection](#criterion-selection "●") to the requester.
+
+Pass every epic JSON file as a separate argument after `--epics`. `<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection "○").
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record "○")' &#92;
+  --epics '[**&lt;epic-json-file&gt;**](#epic-records "○")' &#92;
+  --tick '[**&lt;criterion-ids&gt;**](#criterion-selection "○")' &#92;
+  --fix '[**&lt;output-body-file&gt;**](#output-files "○")'
+</pre></big>
+
+### Fetch Source
+
+Save one GitHub source at the revision its permalink pins and provide [Source Evidence](#source-evidence "●") to the requester.
+
+Run in the repository checkout.
+
+<big><pre>
+gh api 'repos/[**&lt;owner&gt;**](#source-evidence "○")/[**&lt;repository&gt;**](#source-evidence "○")/contents/[**&lt;source-path&gt;**](#source-evidence "○")?ref=[**&lt;revision&gt;**](#source-evidence "○")' &#92;
+  --jq .content &#92;
+  | base64 &#92;
+  -d &#92;
+  &gt; '[**&lt;source-file&gt;**](#output-files "○")'
+</pre></big>
 
 ## Fields
 
@@ -132,7 +172,9 @@ The requirements evidence used to validate an initiative's criteria.
 
 ### Problem
 
-- A Problem meets [Problem and Proposal](issue-body.md#problem-and-proposal).
+The initiative body's Problem prose section.
+
+- A Problem must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
 
 ### Proposal
 
@@ -150,11 +192,13 @@ The columns are `Epic | Description | Coverage | Depends on | Done`. The table h
 - Depends on names epics only. A cell that names a task fails. Name a prerequisite epic only when every task or joined unit in the dependent epic requires every task in that prerequisite epic, directly or through its dependencies. The consumed output and the work producing it establish that requirement. Dependencies on selected tasks remain in the task tables. An edge another named whole-epic prerequisite already implies is omitted.
 - An initiative dependency that only some tasks need, or that requires only part of its prerequisite epic, is overbroad. The output and its producing tasks establish the edge.
 - An epic depending on a later epic is a backward reference.
-- Epic numbering meets [Numbering](issue-body.md#numbering).
+- Epic numbering must meet [Numbering](issue-body.md#numbering).
+
+Work Breakdown contains its table. Explanatory prose belongs in Proposal. The body does not narrate execution order or how the tables work; Depends on carries the order.
 
 ### Initiative Acceptance Criteria
 
-An initiative criterion meets the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria) and [Requirement Characteristics](../references/requirement-characteristics.md), and:
+An initiative criterion must meet the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria) and [Requirement Characteristics](../references/requirement-characteristics.md), and:
 
 - **No counts.**
   An initiative criterion carries no counts or figures, which go stale: it measures against a named baseline or check ("against the baseline", "as the budget test measures it"). A figure stays only where it is the criterion's own target, such as a bound it holds to.
@@ -189,62 +233,38 @@ A marked source in References is a document the initiative's criteria answer to.
 - An epic is aligned against its initiative's marked sources, through the initiative criteria its row covers.
 - A marked source that cannot be read leaves its criteria unaligned until it is read.
 
-### Breakdown Prose
+### Proposal Context
 
-Work Breakdown contains its table. Explanatory prose belongs in Proposal. The body does not narrate execution order or how the tables work; Depends on carries the order.
+The scoped proposal, confirmed goal clauses, requirement sources and epic summaries supplied for drafting.
 
-## Commands
+### Initiative Record
 
-### Sync Initiative
+The supplied complete current initiative issue JSON. eg `issue-936.json`
 
-Reports an initiative's delivery state against its epics, and ticks Done on an epic row whose issue is closed as completed. A row whose epic it is not given keeps its Done cell and is reported unchanged.
+### Epic Records
 
-**Inputs:** Initiative JSON, every linked epic record and optional output body file.
+Every linked epic's current JSON. eg `issue-943.json issue-937.json`
 
-- It takes every linked epic's current JSON. Delivery findings follow [Delivery State](initiative.md#delivery-state).
+### Source Evidence
 
-Pass every epic JSON file as a separate argument after `--epics`.
+The source locations, checkout paths and authenticated source access supplied for reading, with the contents and source identities once read. A pinned GitHub source has its repository owner and name, path and pinned revision, URL-encoded for the request. eg `repository: m2ux/workflow-server`, `source-path: docs/spec.md`, `revision: 4a217fe6`
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py '<initiative-json-file>' --epics '<epic-json-file>'
-```
+### Output Files
 
-**Example:**
+The supplied local destinations for source contents or a complete body; the body output is optional when only a delivery report is requested. eg `output-body-file: fixed-936.md`, `source-file: source-R1.md`
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json
-```
+### Criterion Selection
 
-### Tick Initiative Criteria
+The supplied verified criterion ids. eg `AC2`
 
-Ticks confirmed initiative criteria, refusing any not ready to verify, and ticks completed rows.
+### Validation Findings
 
-**Inputs:** Current initiative JSON, every linked epic JSON, verified criterion ids and destination body file.
+The corrected body, mechanical diff and unresolved findings, including unreadable or empty requirement sources.
 
-Pass every epic JSON file as a separate argument after `--epics`. `<criterion-ids>` is a comma-separated list of verified criterion ids.
+### Workspace
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py '<initiative-json-file>' --epics '<epic-json-file>' --tick '<criterion-ids>' --fix '<output-body-file>'
-```
+The absolute checkout holding the installed Work Planner scripts and sandbox helper.
 
-**Example:**
+### Requirement References
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json --tick AC2 --fix fixed-936.md
-```
-
-### Fetch Source
-
-Saves one GitHub source at the revision its permalink pins.
-
-**Inputs:** Repository owner and name, source path, pinned revision and destination file. URL-encode the path and revision for the request.
-
-```bash
-gh api 'repos/<owner>/<repository>/contents/<source-path>?ref=<revision>' --jq .content | base64 -d > '<source-file>'
-```
-
-**Example:**
-
-```bash
-gh api 'repos/m2ux/workflow-server/contents/docs/spec.md?ref=4a217fe6' --jq .content | base64 -d > source-R1.md
-```
+The supplied initiative References entries identifying the requirements sources to read.

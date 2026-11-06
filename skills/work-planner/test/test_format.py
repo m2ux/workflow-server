@@ -5,7 +5,6 @@ import re
 import subprocess
 import sys
 import tempfile
-import textwrap
 import unittest
 from pathlib import Path
 
@@ -542,7 +541,7 @@ def guide_section(heading: str) -> str:
 
 
 def guide_example() -> str:
-    return textwrap.dedent(re.search(r'```json\n(.*?)\n\s*```', guide_section('Required Criteria'), re.DOTALL)[1])
+    return re.search(r'\beg (`+)(.*?)\1', guide_section('Required Criteria'))[2]
 
 
 AUDIT = Required(tuple(json.loads(guide_example())), 'the guide example')
@@ -661,7 +660,7 @@ class RequiredPaths(unittest.TestCase):
 
 class ProjectVocabulary(unittest.TestCase):
     def test_a_projects_required_criterion_stands_only_in_the_guide_example(self):
-        example = re.search(r'```json\n.*?\n\s*```', guide_section('Required Criteria'), re.DOTALL)[0]
+        example = guide_example()
         terms = {term.casefold() for entry in AUDIT.criteria for term in (entry['phrase'], entry['row'])}
         skill = SCRIPTS.parent
         sources = [p for p in sorted(skill.rglob('*')) if p.suffix in ('.md', '.py', '.json') and 'test' not in p.parts]

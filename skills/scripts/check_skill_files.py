@@ -6,19 +6,21 @@ code fence both cost the reader the content they were promised.
 
 Fenced blocks and code spans hold specimen text, so a link inside one is a
 placeholder rather than a reference, and a heading inside one belongs to the
-template it illustrates rather than to the document. A template's `{{...}}`
-stands for text the author supplies, so it is measured where it lands rather
+template it illustrates rather than to the document. HTML invocations hold
+executable command text: their payload is opaque to Markdown headings and
+fences, while bold argument links are actual contract references. A
+template's `{{...}}` stands for text the author supplies, so it is measured where it lands rather
 than here.
 
 Placement is judged by use. A command specification belongs to the procedure
 that runs it, so a specification exactly one file cites, that file not the
 one holding it, names a caller it should be sitting in. One test decides
 every citing file alike, the file holding the specification included: a file
-is a caller where a procedure of it carries the citation. A procedure is a
-top-level section carrying a numbered step, whatever its heading names it:
-the step is the author stating that the reader performs these, in this
-order, and is the only place a file records that. Prose runs nothing
-whatever its mood, order or count, so a sibling specification, a statement
+is a caller where a procedure of it carries the citation. The selected model
+identifies execution steps: numbered list items in the shared model, or
+numbered headings under a declared procedure section. The
+step is the author stating what the reader performs and in which order.
+Prose runs nothing whatever its mood, order or count, so a sibling specification, a statement
 of what a command does, and a sentence routing three commands in sequence
 all name a command without running it. A skill's entry point holds no
 command of its own, so a
@@ -37,16 +39,30 @@ what a scenario reads, which a retrieval walk measures.
 
 The top-level sections of a file carrying a procedure are the set the guidelines
 name, in the order they name them, Procedure among them, so the reader knows
-what the file carries before opening it. A skill's entry point takes the set
-the guidelines name for it whatever it carries. Any other file carrying no
-procedure keeps its own shape.
+what the file carries before opening it. An explicit entry-point contract
+selects its section set; an entry point with none takes the shared set. Any
+other file carrying no procedure keeps its own shape.
 
 A skill that adds directories of its own declares what they carry in its
-`structure.json`, keyed by a directory name or by a `*suffix` its filenames
-end with. An entry states the sections those files may take, in order, which
+`structure.json`, keyed by an exact file name, a directory name or a
+`*suffix` its filenames end with. An entry states the sections those files
+may take, in order, which
 of them are required, the section holding their command specifications, and
-whether a specification there belongs to its file whatever cites it. A file
-no entry covers takes the shared set.
+whether a specification there belongs to its file whatever cites it. An
+explicit file-name entry selects that file before its directory or suffix
+entry; an entry point's section set takes only its explicit file entry. A
+file no entry covers takes the shared set. Heading-based entries declare
+`steps: "headings"` and their `procedures` section. `commands: "html"`
+selects enriched HTML invocations in the declared command specifications.
+`contracts: "Fields"` selects command input/output links whose targets are
+third-level Fields contracts. Procedures route calls and results; each
+command specification owns its complete contextual I/O contract.
+`link_roles: true` checks the ○, ● and ƒ link titles.
+`preamble` lists required intro link targets; `calls` maps target directory
+names to Apply or Follow. Malformed and unknown options fail declaration
+validation before a partial model can run.
+Each declared option has one validator; the parser preserves invocation
+payload and reads its bold argument links as required contract citations.
 
 A prerequisite citation is recognised by the canonical form the guidelines
 state, `Read [Name](target) first.`, which separates it from a selection
@@ -55,8 +71,8 @@ sits; a prerequisite citation names a section the reader must already hold,
 so its target belongs in another file.
 
 The skill-wide checks read what a skill declares rather than guessing from
-its prose. A mode file reaches a command by its operation's name, so a shell
-block outside its specifications is reported. A skill's `vocabulary.json`
+its prose. A mode reaches command specifications by their names; HTML command
+payloads sit within those specifications. A skill's `vocabulary.json`
 names the terms its concepts retire, and each retired term is reported. A
 skill's guide repeating a shared rule's label in a section of the same title
 states one convention twice. A specification sending GraphQL states its REST
@@ -82,16 +98,21 @@ not read.
 
 import argparse
 import difflib
+import html
 import json
 import re
+import shlex
 import subprocess
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 FENCE = re.compile(r'^\s*(`{3,}|~{3,})')
 RULE = re.compile(r'^\s*(-{3,}|\*{3,}|_{3,})\s*$')
 HEADING = re.compile(r'^(#{1,6})\s+(.*)$')
-LINK = re.compile(r'\[[^\]]*\]\(([^)]+)\)')
+LINK_DESTINATION = r'([^)]+?)(?:\s+"(?:\\.|[^"\\])*")?'
+LINK = re.compile(r'\[[^\]]*\]\(' + LINK_DESTINATION + r'\)')
+ROLE_TITLES = {'○': 'input', '●': 'output', 'ƒ': 'operation'}
 CODE_SPAN = re.compile(r'`[^`]*`')
 PLACEHOLDER = re.compile(r'\{\{.*\}\}|\{[a-z_]+\}|^[.…\s]*$')
 PREREQUISITE = re.compile(r'Read ((?:\[[^\]]+\]\([^)]+\)(?:,\s*)?)+) first\.')
@@ -153,6 +174,11 @@ KINDS = (
     'GraphQL without a REST gap', 'Projects classic interface',
     'house rule no operation decides', 'ambiguous house rule', 'declared rule absent',
     'mode without a trigger phrase', 'hard-wrapped line',
+    'list step in heading model', 'indented detail in heading model',
+    'heading step sequence', 'procedure without heading steps', 'procedure preamble missing',
+    'command contract links', 'operation link role', 'fenced invocation in HTML model', 'malformed HTML invocation',
+    'invocation outside command specification', 'invocation argument contract', 'unescaped HTML in invocation', 'operation call verb',
+    'unwrapped shell invocation', 'duplicate command parameter prose', 'redundant command wrapper', 'repeated procedure title',
 )
 OPERATIONS = KINDS + ('review',)
 
@@ -174,26 +200,71 @@ def scan(path):
     return parse(path.read_text())
 
 
-def parse(text):
-    """Each line of a text with the fence state it sits in, and its headings."""
-    lines = text.splitlines()
-    fenced = []
-    inside = None
-    for line in lines:
-        if inside:
+@dataclass(frozen=True)
+class BlockSpans:
+    """The lexical contexts shared by structural, citation and invocation checks."""
+    fenced: list[bool]
+    invocations: list[tuple[int, int]]
+    errors: list[tuple[int, str]]
+    openings: list[tuple[int, str]]
+
+    @property
+    def html_lines(self):
+        return {index for start, end in self.invocations for index in range(start, end + 1)}
+
+
+def scan_blocks(lines):
+    """Fence and HTML boundaries from one lexical state, preserving every input line."""
+    fenced, invocations, errors, openings = [], [], [], []
+    fence = None
+    invocation = None
+    for index, line in enumerate(lines):
+        if fence:
             fenced.append(True)
-            if re.fullmatch(r'\s*' + re.escape(inside[0]) + '{' + str(len(inside)) + r',}\s*', line):
-                inside = None
+            if re.fullmatch(r'\s*' + re.escape(fence[0]) + '{' + str(len(fence)) + r',}\s*', line):
+                fence = None
+            continue
+        opening = re.match(r'^\s*<big><pre>', line)
+        closing = re.search(r'</pre></big>\s*$', line)
+        if invocation is not None:
+            fenced.append(False)
+            if opening:
+                errors.append((index, 'nested invocation wrapper'))
+            if closing:
+                invocations.append((invocation, index))
+                invocation = None
             continue
         if match := FENCE.match(line):
             fenced.append(True)
-            inside = match[1]
+            fence = match[1]
+            words = line.strip()[len(fence):].split()
+            openings.append((index, words[0].lower() if words else ''))
             continue
         fenced.append(False)
+        if opening:
+            if closing:
+                invocations.append((index, index))
+            else:
+                invocation = index
+        elif closing:
+            errors.append((index, 'closing invocation wrapper has no opening'))
+        elif re.match(r'^\s*<(?:big|pre)(?:\s[^>]*)?>', line, re.I):
+            errors.append((index, 'expected <big><pre>'))
+    if invocation is not None:
+        errors.append((invocation, 'invocation wrapper is not closed'))
+        invocations.append((invocation, len(lines) - 1))
+    return BlockSpans(fenced, invocations, errors, openings)
+
+
+def parse(text):
+    """Unchanged text lines, Markdown-fence state and headings outside command payload."""
+    lines = text.splitlines()
+    blocks = scan_blocks(lines)
+    commands = blocks.html_lines
     headings = [(index, len(match.group(1)), match.group(2))
                 for index, line in enumerate(lines)
-                if not fenced[index] and (match := HEADING.match(line))]
-    return lines, fenced, headings
+                if not blocks.fenced[index] and index not in commands and (match := HEADING.match(line))]
+    return lines, blocks.fenced, headings
 
 
 def frontmatter(lines):
@@ -207,11 +278,14 @@ def frontmatter(lines):
 
 
 def targets(path, lines, fenced):
-    """Every link target outside fences and code spans, with its line."""
+    """Ordinary Markdown links and bold HTML argument targets, with their source lines."""
+    commands = scan_blocks(lines).html_lines
     for index, line in enumerate(lines):
         if fenced[index]:
             continue
-        for target in LINK.findall(CODE_SPAN.sub('', line)):
+        found = ([match[2] for match in ARGUMENT_LINK.finditer(line)] if index in commands
+                 else LINK.findall(CODE_SPAN.sub('', line)))
+        for target in found:
             if '://' in target or target.startswith('mailto:') or PLACEHOLDER.search(target):
                 continue
             yield index, target
@@ -240,16 +314,63 @@ def loaded(path):
         structure = json.loads(path.read_text())
     except json.JSONDecodeError as error:
         raise ValueError(f'{path}: {error}') from error
+    if not isinstance(structure, dict):
+        raise ValueError(f'{path}: structure must be an object')
     for key, entry in structure.items():
-        if not isinstance(entry, dict) or not entry.get('sections'):
-            raise ValueError(f'{path}: {key} states no sections')
+        validate_structure_entry(path, key, entry)
     return structure
 
 
+def validate_structure_entry(path, key, entry):
+    """A complete typed file contract, refused before any selected file is checked."""
+    if not isinstance(entry, dict) or not entry.get('sections'):
+        raise ValueError(f'{path}: {key} states no sections')
+    allowed = {'sections', 'required', 'procedures', 'specifications', 'keeps_commands',
+               'steps', 'commands', 'contracts', 'preamble', 'calls', 'link_roles'}
+    unknown = set(entry) - allowed
+    if unknown:
+        raise ValueError(f'{path}: {key} has unknown options: {", ".join(sorted(unknown))}')
+    if not key or '*' in key[1:] or key == '*' or '/' in key or key in {'.', '..'}:
+        raise ValueError(f'{path}: invalid file selector {key!r}')
+    for field in ('sections', 'required', 'preamble'):
+        if field not in entry:
+            continue
+        values = entry[field]
+        if (not isinstance(values, list) or not all(isinstance(v, str) and v.strip() for v in values)
+                or len(set(values)) != len(values) or (field == 'preamble' and not values)):
+            raise ValueError(f'{path}: {key} {field} must be distinct nonempty strings')
+    sections = entry['sections']
+    if any(value not in sections for value in entry.get('required', ())):
+        raise ValueError(f'{path}: {key} requires an undeclared section')
+    for field in ('procedures', 'specifications', 'contracts'):
+        if field in entry and (not isinstance(entry[field], str) or entry[field] not in sections):
+            raise ValueError(f'{path}: {key} {field} must name a declared section')
+    if 'link_roles' in entry and not isinstance(entry['link_roles'], bool):
+        raise ValueError(f'{path}: {key} link_roles must be boolean')
+    if 'keeps_commands' in entry and not isinstance(entry['keeps_commands'], bool):
+        raise ValueError(f'{path}: {key} keeps_commands must be boolean')
+    for field, value in (('steps', 'headings'), ('commands', 'html')):
+        if field in entry and entry[field] != value:
+            raise ValueError(f'{path}: {key} {field} must be {value}')
+    if entry.get('steps') == 'headings' and not entry.get('procedures'):
+        raise ValueError(f'{path}: {key} heading steps need a procedure section')
+    if any(field in entry for field in ('commands', 'contracts', 'preamble', 'calls')) and entry.get('steps') != 'headings':
+        raise ValueError(f'{path}: {key} procedure options need heading steps')
+    if entry.get('commands') == 'html' and not entry.get('specifications'):
+        raise ValueError(f'{path}: {key} HTML commands need a specification section')
+    if 'calls' in entry:
+        calls = entry['calls']
+        if (not isinstance(calls, dict) or not calls or not all(
+                isinstance(name, str) and name and '/' not in name and verb in ('Apply', 'Follow')
+                for name, verb in calls.items())):
+            raise ValueError(f'{path}: {key} calls must map target directories to Apply or Follow')
+
+
 def contract(path, cache):
-    """The entry covering this file: its directory's, or the one whose
-    `*suffix` its name ends with. A file no entry covers has none."""
+    """The exact-file, directory or suffix entry covering this file, in that order."""
     structure = structure_at(path.parent, cache)
+    if entry := structure.get(path.name):
+        return entry
     if entry := structure.get(path.parent.name):
         return entry
     return next((entry for key, entry in structure.items()
@@ -291,14 +412,15 @@ def held_section(entry):
 
 
 def procedure_spans(lines, fenced, headings, entry=None):
-    """Line indices held by the file's procedures. A procedure is a top-level
-    section carrying a numbered step, whatever its heading names it, and runs
-    until the next heading of its own level or above, so the steps under a
-    sub-heading belong to it. A command specification is neither, so its lines
-    are read out before the steps are counted. A section a skill's structure
-    names as holding procedures is one whatever its step count, which is how a
-    single-bullet procedure counts as one."""
+    """Execution regions selected by the file model. Heading models use the
+    numbered step sections. List models use top-level sections carrying
+    numbered steps, excluding command specifications; a declared procedure
+    section also holds single-step procedures."""
+    if (entry or {}).get('steps') == 'headings':
+        return {index for start, level, title, end in procedure_headings(lines, headings, entry)
+                if HEADING_STEP.match(title) for index in range(start, end)}
     specifications_here = specification_spans(headings, len(lines), held_section(entry))
+    commands = scan_blocks(lines).html_lines
     tops = [index for index, level, _ in headings if level <= 2]
     spans = set()
     for position, start in enumerate(tops):
@@ -306,7 +428,7 @@ def procedure_spans(lines, fenced, headings, entry=None):
         body = [index for index in range(start, end) if index not in specifications_here]
         named = (entry or {}).get('procedures')
         if (named and lines[start] == f'## {named}') or any(
-                ORDERED.match(lines[index]) and not fenced[index] for index in body):
+                ORDERED.match(lines[index]) and not fenced[index] and index not in commands for index in body):
             spans.update(body)
     return spans
 
@@ -331,9 +453,301 @@ def citations(paths, structures=None):
     return cited, called
 
 
+HEADING_STEP = re.compile(r'^(\d+)\.\s+\S')
+ARGUMENT_LINK = re.compile(r'\[\*\*([^*\]\n]+)\*\*\]\(' + LINK_DESTINATION + r'\)')
+
+
+def heading_end(headings, start, level, total):
+    """The boundary before the next sibling or ancestor heading."""
+    return next((index for index, depth, _ in headings if index > start and depth <= level), total)
+
+
+def procedure_headings(lines, headings, entry):
+    """Headings inside the declared procedure section, with their boundaries."""
+    section = entry.get('procedures')
+    for start, level, title in headings:
+        if level != 2 or title != section:
+            continue
+        end = heading_end(headings, start, level, len(lines))
+        for index, depth, name in headings:
+            if start < index < end:
+                yield index, depth, name, heading_end(headings, index, depth, end)
+
+
+def field_contract(path, target, section):
+    """Whether a local heading link names a third-level field contract."""
+    name, _, fragment = target.partition('#')
+    if not fragment or '://' in name or name.startswith('mailto:'):
+        return False
+    destination = (path.parent / name).resolve() if name else path
+    if not destination.is_file():
+        return False
+    current = ''
+    for _, level, title in scan(destination)[2]:
+        if level == 2:
+            current = title
+        if level == 3 and current == section and anchor_of(title) == anchor_of(fragment):
+            return True
+    return False
+
+
+def link_role(match):
+    """The semantic role identified by one Markdown link's symbol title."""
+    title = re.search(r'\s+"((?:\\.|[^"\\])*)"\)$', match[0])
+    return ROLE_TITLES.get(title[1], '') if title else ''
+
+
+def role_links(lines, fenced):
+    """Explicit role links in prose and bold invocation annotations, outside specimens."""
+    commands = scan_blocks(lines).html_lines
+    for index, line in enumerate(lines):
+        if fenced[index]:
+            continue
+        matches = (ARGUMENT_LINK.finditer(line) if index in commands
+                   else LINK.finditer(CODE_SPAN.sub('', line)))
+        for match in matches:
+            target = match[2] if index in commands else match[1]
+            yield index, target, link_role(match), match[0]
+
+
+def logical_command_lines(payload):
+    """Unfold the invocation model’s token-boundary shell continuations."""
+    return re.sub(r'\\\n[ \t]*', '', html.unescape(payload)).splitlines()
+
+
+def command_target(path, target):
+    """Whether a heading link names a declared command specification."""
+    name, _, fragment = target.partition('#')
+    if not fragment or '://' in name or name.startswith('mailto:'):
+        return False
+    destination = (path.parent / name).resolve() if name else path
+    if not destination.is_file() or destination.suffix != '.md':
+        return False
+    entry = contract(destination, {}) or {}
+    return any(anchor_of(title) == anchor_of(fragment)
+               for _, title in specifications(scan(destination)[2], held_section(entry)))
+
+
+def operation_target(path, target):
+    """Whether a link selects a callable entry point or named procedure."""
+    name, _, fragment = target.partition('#')
+    if '://' in name or name.startswith('mailto:'):
+        return False
+    destination = (path.parent / name).resolve() if name else path
+    if not destination.is_file() or destination.suffix != '.md':
+        return False
+    entry = contract(destination, {}) or {}
+    if command_target(path, target):
+        return True
+    if not fragment:
+        return entry.get('procedures') == 'Procedure' and entry.get('steps') == 'headings'
+    lines, _, headings = scan(destination)
+    for start, depth, title, end in procedure_headings(lines, headings, entry):
+        if (depth == 3 and not HEADING_STEP.match(title)
+                and anchor_of(title) == anchor_of(fragment)):
+            return True
+    return fragment == 'procedure' and entry.get('procedures') == 'Procedure'
+
+
+def link_roles(path, lines, fenced, entry):
+    """Role titles select Field contracts or callable operations."""
+    if not entry or not (entry.get('link_roles') or entry.get('contracts')):
+        return
+    for index, target, role, source in role_links(lines, fenced):
+        callable_target = operation_target(path, target)
+        if entry.get('link_roles') and callable_target and role != 'operation':
+            yield index, 'operation link role', source
+        elif entry.get('link_roles') and role == 'operation' and not callable_target:
+            yield index, 'operation link role', source
+        if role in ('input', 'output') and not field_contract(path, target, entry.get('contracts', 'Fields')):
+            yield index, 'command contract links', source
+
+
+def heading_model(path, lines, fenced, headings, entry):
+    """Findings selected by a heading-based procedure declaration."""
+    if not entry or entry.get('steps') != 'headings':
+        return
+    inside = {index for start, level, title in headings
+              if level == 2 and title == entry['procedures']
+              for index in range(start, heading_end(headings, start, level, len(lines)))}
+    commands = scan_blocks(lines).html_lines
+    scopes = list(procedure_headings(lines, headings, entry))
+    steps = [(index, level, title, end) for index, level, title, end in scopes
+             if HEADING_STEP.match(title)]
+    for index, line in enumerate(lines):
+        if index not in inside or fenced[index] or index in commands:
+            continue
+        if ORDERED.match(line):
+            yield index, 'list step in heading model', line.strip()
+        if INDENTED.match(line):
+            yield index, 'indented detail in heading model', line.strip()
+    parents, groups = {}, {}
+    for index, level, title in headings:
+        if index in inside and HEADING_STEP.match(title):
+            parent = parents.get(level - 1)
+            groups.setdefault(parent, []).append((index, title))
+            if parent is not None and re.sub(r'^\d+\.\s+', '', title) == lines[parent].lstrip('# '):
+                yield index, 'repeated procedure title', title
+        parents[level] = index
+        for depth in [depth for depth in parents if depth > level]:
+            del parents[depth]
+    for group in groups.values():
+        for expected, (index, title) in enumerate(group, 1):
+            if int(HEADING_STEP.match(title)[1]) != expected:
+                yield index, 'heading step sequence', f'expected {expected}. in this procedure'
+    roots = [(index, level, title) for index, level, title in headings
+             if level == 2 and title == entry['procedures']]
+    for index, level, title in roots:
+        end = heading_end(headings, index, level, len(lines))
+        if not any(index < start < end for start, _, _, _ in steps):
+            yield index, 'procedure without heading steps', title
+    for index, level, title, end in scopes:
+        if level == 3 and not HEADING_STEP.match(title) and not any(
+                index < start < end for start, _, _, _ in steps):
+            yield index, 'procedure without heading steps', title
+    if required := entry.get('preamble'):
+        title = next((index for index, level, _ in headings if level == 1), -1)
+        end = next((index for index, level, _ in headings if index > title and level <= 2), len(lines))
+        candidates = [index for index in range(title + 1, end)
+                      if not fenced[index] and all(target in LINK.findall(lines[index]) for target in required)]
+        if len(candidates) != 1:
+            yield max(title, 0), 'procedure preamble missing', 'one intro line linking ' + ', '.join(required)
+    if entry.get('commands') == 'html':
+        for start, level, title, end in scopes:
+            if level != 3 or HEADING_STEP.match(title):
+                continue
+            first = next((index for index, _, _, _ in steps if start < index < end), end)
+            body = [lines[index].removeprefix('- ').strip() for index in range(first + 1, end)
+                    if lines[index].strip() and not HEADING.match(lines[index]) and not fenced[index]]
+            if body and (match := re.fullmatch(r'Run (\[[^\]]+\]\([^\s)]+(?: "[^"]+")?\))\.', body[0])):
+                target = next(iter(LINK.finditer(match[1])), None)
+                if target and command_target(path, target[1]) and all(line.startswith('Provide ') for line in body[1:]):
+                    yield start, 'redundant command wrapper', 'caller can Run the command specification directly'
+        for index, target, role, source in role_links(lines, fenced):
+            if index in inside and role in ('input', 'output'):
+                yield index, 'command contract links', 'I/O roles belong to command specifications'
+        specs = [(index, title, heading_end(headings, index, 3, len(lines)))
+                 for index, title in specifications(headings, held_section(entry))]
+        if entry.get('contracts'):
+            for start, title, end in specs:
+                roles = {role for index, _, role, _ in role_links(lines, fenced)
+                         if start < index < end and not HEADING.match(lines[index])}
+                for role in ('input', 'output'):
+                    if role not in roles:
+                        yield start, 'command contract links', f'{title}: contextual {role} link required'
+        yield from html_commands(path, lines, fenced, entry, specs)
+    if entry.get('calls'):
+        yield from operation_calls(path, lines, fenced, entry,
+                                   procedure_spans(lines, fenced, headings, entry))
+
+
+def html_commands(path, lines, fenced, entry, specs):
+    """Invocation syntax and contracts within named command specifications."""
+    lexical = scan_blocks(lines)
+    blocks, errors = lexical.invocations, lexical.errors
+    for index, detail in errors:
+        yield index, 'malformed HTML invocation', detail
+    for index, language in fence_openings(lines):
+        if language in SHELL or language == 'tool':
+            yield index, 'fenced invocation in HTML model', language or 'unlabelled'
+    for first, title, last in specs:
+        if sum(first < start <= end < last for start, end in blocks) != 1:
+            yield first, 'malformed HTML invocation', title + ': exactly one invocation required'
+    for start, end in blocks:
+        if not any(index < start <= end < stop for index, _, stop in specs):
+            yield start, 'invocation outside command specification', 'place the invocation in its named Commands specification'
+        if lines[start] != lines[start].lstrip():
+            yield start, 'indented detail in heading model', 'invocation wrapper must be flush'
+        payload = '\n'.join(lines[start:end + 1]).strip()
+        payload = payload.removeprefix('<big><pre>').removesuffix('</pre></big>')
+        if not payload.strip():
+            yield start, 'malformed HTML invocation', 'invocation is empty'
+        for index in range(start, end + 1):
+            literal = lines[index]
+            if index == start:
+                literal = literal.removeprefix('<big><pre>')
+            if index == end:
+                literal = literal.removesuffix('</pre></big>')
+            if re.search(r'[<>]', literal):
+                yield index, 'unescaped HTML in invocation', 'encode literal angle brackets as &lt; and &gt;'
+            for match in ARGUMENT_LINK.finditer(lines[index]):
+                role = link_role(match)
+                if entry.get('link_roles') and role == 'operation':
+                    continue
+                if not field_contract(path, match[2], entry.get('contracts', 'Fields')):
+                    yield index, 'invocation argument contract', match[2]
+                if entry.get('link_roles') and role not in ('input', 'output'):
+                    yield index, 'invocation argument contract', 'argument links identify their input/output role'
+            visible = html.unescape(ARGUMENT_LINK.sub(lambda match: match[1], lines[index])).strip()
+            if entry.get('link_roles') and len(visible) > 120 and not visible.endswith('\\'):
+                try:
+                    words = shlex.split(visible)
+                except ValueError:
+                    words = []
+                if sum(word.startswith('--') or (word.startswith('-') and len(word) == 2) for word in words) >= 2:
+                    yield index, 'unwrapped shell invocation', 'split option/value groups with shell continuations'
+            ordinary = ARGUMENT_LINK.sub('', lines[index])
+            for match in LINK.finditer(ordinary):
+                if field_contract(path, match[1], entry.get('contracts', 'Fields')):
+                    yield index, 'invocation argument contract', 'contract-backed arguments use bold links'
+
+    if entry.get('link_roles'):
+        for start, _, end in specs:
+            parameters = {match[2] for first, last in blocks if start < first <= last < end
+                          for index in range(first, last + 1) for match in ARGUMENT_LINK.finditer(lines[index])}
+            for index in range(start + 1, end):
+                if fenced[index] or index in lexical.html_lines:
+                    continue
+                matches = list(LINK.finditer(lines[index]))
+                bare = LINK.sub('', lines[index])
+                if len(matches) >= 2 and all(match[1] in parameters for match in matches) and re.fullmatch(
+                        r'(?:- )?Run (?:the following|the|this) command using[\s,.]*(?:and[\s,.]*)*', bare):
+                    yield index, 'duplicate command parameter prose', 'command annotations already bind these parameters'
+
+
+def operation_calls(path, lines, fenced, entry, inside):
+    """The declared routing verb on an actual operation call, excluding field citations."""
+    commands = scan_blocks(lines).html_lines
+    for index, line in enumerate(lines):
+        if index not in inside or index in commands or fenced[index]:
+            continue
+        text = CODE_SPAN.sub('', line)
+        for match in LINK.finditer(text):
+            name, _, fragment = match[1].partition('#')
+            destination = (path.parent / name).resolve() if name else path
+            verb = 'Run' if command_target(path, match[1]) else entry['calls'].get(destination.parent.name)
+            if not verb or not destination.is_file():
+                continue
+            if operation_target(path, match[1]) and not re.search(r'\b' + re.escape(verb) + r'\s+$', text[:match.start()]):
+                yield index, 'operation call verb', f'{verb} {match[0]}'
+
+
+def html_interfaces(path, root, lines, fenced, headings, entry):
+    """Interface evidence belongs to the specification containing an invocation."""
+    if not entry or entry.get('commands') != 'html':
+        return []
+    blocks = scan_blocks(lines).invocations
+    specs = [(start, title, heading_end(headings, start, 3, len(lines)))
+             for start, title in specifications(headings, held_section(entry))]
+    found = []
+    for start, title, end in specs:
+        command_lines = [index for first, last in blocks if start < first and last < end
+                         for index in range(first, last + 1)]
+        graphql = any(GRAPHQL.search(lines[index]) or any(
+            GRAPHQL.search(script.read_text()) for script in script_of(path, lines[index]))
+                      for index in command_lines)
+        if graphql and not any(not fenced[index] and index not in command_lines
+                               and REST_GAP.match(lines[index]) for index in range(start + 1, end)):
+            found.append(finding(path, root, start, 'GraphQL without a REST gap', title))
+    return found
+
+
+
 def check(path, root, cache, cited, called, structures=None):
     lines, fenced, headings = scan(path)
     skip = frontmatter(lines)
+    commands = scan_blocks(lines).html_lines
+    specimens = [fenced[index] or index in commands for index in range(len(lines))]
     found = []
 
     def report(index, kind, detail=''):
@@ -378,7 +792,9 @@ def check(path, root, cache, cited, called, structures=None):
     # takes it whether or not it carries a step.
     measured = ()
     if path.name == 'SKILL.md':
-        measured = sections_against(headings, ENTRY_SECTIONS)
+        selected = structure_at(path.parent, {} if structures is None else structures).get(path.name)
+        measured = sections_against(headings, selected['sections'] if selected else ENTRY_SECTIONS,
+                                    selected.get('required', ()) if selected else ())
     elif entry or procedure_spans(lines, fenced, headings):
         allowed = tuple(entry['sections']) if entry else SECTIONS
         required = tuple(entry.get('required', ())) if entry else ('Procedure',)
@@ -395,7 +811,7 @@ def check(path, root, cache, cited, called, structures=None):
             report(index, 'unresolved anchor', target)
 
     for index, line in enumerate(lines):
-        if fenced[index] or index in skip or RULE.match(line):
+        if specimens[index] or index in skip or RULE.match(line):
             continue
         if match := BULLET.match(line):
             gap, rest = match.group(2), match.group(3)
@@ -429,9 +845,9 @@ def check(path, root, cache, cited, called, structures=None):
     run = 0
     start = 0
     for index, line in enumerate(lines):
-        if not line.strip() and not fenced[index]:
+        if not line.strip() and not specimens[index]:
             continue
-        structural = (fenced[index] or index in skip
+        structural = (specimens[index] or index in skip
                       or line.lstrip().startswith(('-', '|', '>', '#', '*'))
                       or INDENTED.match(line))
         if structural:
@@ -452,7 +868,7 @@ def check(path, root, cache, cited, called, structures=None):
         if index and lines[index - 1].strip() and index - 1 not in skip:
             report(index, 'heading without a blank line above', title)
 
-    for index, detail in mixed_moods(lines, fenced, headings):
+    for index, detail in mixed_moods(lines, specimens, headings, entry):
         report(index, 'parallel section in another mood', detail)
 
     if lines and not lines[-1].strip():
@@ -470,8 +886,13 @@ def check(path, root, cache, cited, called, structures=None):
     if path.name == 'SKILL.md':
         for index, name in untriggered_modes(lines, headings, skip):
             report(index, 'mode without a trigger phrase', name)
-    for index, text in hard_wraps(lines, fenced, headings, skip):
+    for index, text in hard_wraps(lines, specimens, headings, skip):
         report(index, 'hard-wrapped line', text)
+    for index, kind, detail in link_roles(path, lines, fenced, entry):
+        report(index, kind, detail)
+
+    for index, kind, detail in heading_model(path, lines, fenced, headings, entry):
+        report(index, kind, detail)
     return found
 
 
@@ -484,17 +905,8 @@ def finding(path, root, index, kind, detail=''):
 
 
 def fence_openings(lines):
-    """Each code block's opening line with its info string's first word,
-    lower-cased, empty where the block names no language."""
-    inside = None
-    for index, line in enumerate(lines):
-        if inside:
-            if re.fullmatch(r'\s*' + re.escape(inside[0]) + '{' + str(len(inside)) + r',}\s*', line):
-                inside = None
-        elif match := FENCE.match(line):
-            inside = match[1]
-            words = line.strip()[len(match[1]):].split()
-            yield index, words[0].lower() if words else ''
+    """Each Markdown fence opening and language outside HTML command payload."""
+    yield from scan_blocks(lines).openings
 
 
 def mode_commands(path, root, structures):
@@ -504,8 +916,11 @@ def mode_commands(path, root, structures):
     file is named `<mode>-mode.md`, as the guidelines name it."""
     if not path.name.endswith('-mode.md'):
         return []
+    entry = contract(path, structures)
+    if (entry or {}).get('commands') == 'html':
+        return []
     lines, _, headings = scan(path)
-    held = specification_spans(headings, len(lines), held_section(contract(path, structures)))
+    held = specification_spans(headings, len(lines), held_section(entry))
     return [finding(path, root, index, 'command spelled out in a mode', lines[index].strip())
             for index, language in fence_openings(lines)
             if language in SHELL and index not in held]
@@ -550,7 +965,9 @@ def retired_terms(path, root, cache):
         return []
     if path.suffix == '.md':
         lines, fenced, _ = scan(path)
-        lines = ['' if fenced[index] else CODE_SPAN.sub('', line) for index, line in enumerate(lines)]
+        commands = scan_blocks(lines).html_lines
+        lines = ['' if fenced[index] or index in commands else CODE_SPAN.sub('', line)
+                 for index, line in enumerate(lines)]
     else:
         lines = path.read_text().splitlines()
     return [finding(path, root, index, 'retired term', f'{old} for {term}')
@@ -564,8 +981,9 @@ def labelled_rules(path):
     keyed by the anchors of its section and its label, with its line."""
     lines, fenced, _ = scan(path)
     section = ''
+    commands = scan_blocks(lines).html_lines
     for index, line in enumerate(lines):
-        if fenced[index]:
+        if fenced[index] or index in commands:
             continue
         if line.startswith('## '):
             section = anchor_of(line[3:])
@@ -609,18 +1027,19 @@ def script_of(path, line):
 
 
 def interfaces(path, root, structures):
-    """Interface check: GitHub is reached through REST wherever REST supports
-    the operation, so a specification whose command sends GraphQL, itself or
-    through a script it runs, states its REST gap; and Projects (classic) is
-    reached nowhere, so any trace of it is reported whatever else stands."""
+    """GitHub commands carry REST-gap evidence in their governing specification
+    or execution step when they send GraphQL, including through a script.
+    Every trace of Projects (classic) is reported."""
     lines, fenced, headings = scan(path) if path.suffix == '.md' else (
         path.read_text().splitlines(), [], [])
     found = [finding(path, root, index, 'Projects classic interface', match[0])
              for index, line in enumerate(lines) if (match := CLASSIC.search(line))]
     if path.suffix != '.md':
         return found
+    entry = contract(path, structures)
+    found += html_interfaces(path, root, lines, fenced, headings, entry)
     total = len(lines)
-    for start, title in specifications(headings, held_section(contract(path, structures))):
+    for start, title in specifications(headings, held_section(entry)):
         end = next((index for index, level, _ in headings if index > start and level <= 3), total)
         span = range(start, end)
         graphql = any(fenced[index] and (GRAPHQL.search(lines[index]) or any(
@@ -800,7 +1219,7 @@ def mood(sentence, verbs):
     return None
 
 
-def mixed_moods(lines, fenced, headings):
+def mixed_moods(lines, fenced, headings, entry=None):
     """Each section stated in another mood than its parallel siblings. Sibling
     headings whose titles end in the same word, such as Main Coverage and
     Docker Coverage, state the same kind of thing, so they open in one mood:
@@ -825,7 +1244,8 @@ def mixed_moods(lines, fenced, headings):
             continue
         found = mood(opening, verbs)
         if found:
-            key = (parent.get(level - 1), level, words[-1].lower())
+            role = bool(HEADING_STEP.match(title)) if (entry or {}).get('steps') == 'headings' else None
+            key = (parent.get(level - 1), level, words[-1].lower(), role)
             groups.setdefault(key, []).append((index, title.strip(), found))
     for members in groups.values():
         _, first_title, first_mood = members[0]
@@ -950,12 +1370,14 @@ def citation_kinds(path, entry=None):
     """Each link target of a file with the kind of citation it stands in.
 
     A step runs its target, so it alone makes a caller. A command
-    specification's text states what running it needs, and a prerequisite
+    specification, an HTML argument and a linked operation contract state
+    required evidence without calling its target, and a prerequisite
     names what the reader must already hold, so each is required reach
     without running anything. Any other link is descriptive: the reader may
     follow it and need not."""
     lines, fenced, headings = scan(path)
     steps = procedure_spans(lines, fenced, headings, entry)
+    commands = scan_blocks(lines).html_lines
     held = specification_spans(headings, len(lines), held_section(entry))
     listed = set()
     tops = [index for index, level, _ in headings if level <= 2]
@@ -966,7 +1388,11 @@ def citation_kinds(path, entry=None):
     kinds = []
     for index, target in targets(path, lines, fenced):
         sentences = PREREQUISITE.findall(CODE_SPAN.sub('', lines[index]))
-        if index in steps:
+        contextual_contract = any(match[1] == target and link_role(match) in ('input', 'output')
+                                  for match in LINK.finditer(CODE_SPAN.sub('', lines[index])))
+        if index in commands or contextual_contract:
+            kind = SPECIFICATION
+        elif index in steps:
             kind = STEP
         elif index in held:
             kind = SPECIFICATION

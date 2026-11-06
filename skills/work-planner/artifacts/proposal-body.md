@@ -2,33 +2,19 @@
 
 Populates one proposal body.
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue Body](issue-body.md)
-
 ## Operations
 
-### *Populate* Proposal Body
-
-One proposal body from a confirmed problem and goal.
-
-**Inputs:** Confirmed problem, evidence, goal clauses, boundary and output path.
-
-- Populate the body from the [Template](#template) at the supplied output path.
-  - The title must meet the shared [Titles](issue-body.md#titles) conditions and the proposal [Titles](#titles).
-  - The Problem must meet the shared [Problem and Proposal](issue-body.md#problem-and-proposal) conditions.
-  - All populated fields must meet [Fields](#fields).
-
-### *Validate* Proposal Body
+### Validate Proposal Body
 
 The body's local format and field findings.
 
-**Inputs:** Proposal issue JSON and output file.
+#### 1. Validate Kind Conditions
 
-1. Call [Validate Issue Body](issue-body.md#validate-issue-body) with the current body, local [Fields](#fields), supplied related evidence and output file, using the proposal field conditions and required title and label metadata.
-2. Return the corrected body, mechanical diff and unresolved findings for the caller.
+Apply [Validate Issue Body](issue-body.md#validate-issue-body "ƒ") to [Proposal Record](#proposal-record) against local [Fields](#fields), using the supplied related evidence and [Output Body](#output-body), proposal field conditions and required title and label metadata.
+
+#### 2. Provide Local Findings
+
+Provide the corrected [Output Body](#output-body) and [Validation Findings](#validation-findings), including the mechanical diff and unresolved findings.
 
 ## Fields
 
@@ -67,7 +53,9 @@ The body's local format and field findings.
 
 ### Problem
 
-- A Problem meets [Problem and Proposal](issue-body.md#problem-and-proposal).
+The proposal body's Problem prose section.
+
+- A Problem must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
 
 ### Goal
 
@@ -82,3 +70,19 @@ The body's local format and field findings.
 ### Sections
 
 - Overview, Problem, Goal and Non-Goals are present in that order. References follows when it has content.
+
+### Proposal Context
+
+The confirmed problem, evidence, goal clauses and boundary supplied for this proposal.
+
+### Proposal Record
+
+The supplied current proposal issue JSON.
+
+### Output Body
+
+The supplied local destination for the complete body.
+
+### Validation Findings
+
+The corrected body, mechanical diff and unresolved format or field findings.

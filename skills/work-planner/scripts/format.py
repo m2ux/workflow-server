@@ -210,7 +210,7 @@ def template_body(kind: str) -> str:
     for line in path.read_text().splitlines(keepends=True):
         if fence:
             marker, capture = fence
-            if re.fullmatch(re.escape(marker[0]) + '{' + str(len(marker)) + r',}\s*', line):
+            if re.fullmatch(r' {0,3}' + re.escape(marker[0]) + '{' + str(len(marker)) + r',}\s*', line):
                 if capture:
                     found.append(''.join(body))
                 fence = None

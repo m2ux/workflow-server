@@ -2,30 +2,11 @@
 
 The instructions and context supplied to one delivery session.
 
-## Prerequisites
-
-Read these files first.
-
-- [Pull Request Body](pull-request-body.md)
-- [Plan Change](plan-change.md)
-
-## Operations
-
-### *Populate* Delivery Brief
-
-One complete prompt file for a confirmed delivery unit.
-
-**Inputs:** Epic or hot-fix URL, task ids, Descriptions, each task's component, criteria, test obligations, each task branch with its base and worktree, the project checkout, reserved folder, engineering worktree, board identity, change allowance, supplied session procedure and output path.
-
-1. Write the supplied identity, context and execution instructions to the prompt file, at the supplied output path or where [Location](#location) puts it.
-   - Each part must meet [Fields](#fields).
-2. Return the brief path and any missing context. The caller resolves gaps before dispatch.
-
 ## Fields
 
 ### Location
 
-The brief is a working file, not part of the delivered change, so it sits in a working directory outside every repository it names. Absent a supplied path it takes the session's scratchpad, named for the unit.
+The brief's local working-file path, outside every repository it names because the brief is not part of the delivered change. Absent a supplied path, it is the session's scratchpad named for the unit.
 
 ### Work Identity
 
@@ -37,7 +18,7 @@ The brief names the reserved planning folder and engineering worktree. Each task
 
 ### Validation Scope
 
-The brief carries the tests required by the unit's criteria, meeting [Test Coverage](pull-request-body.md#test-coverage). It identifies the work item's test rows and requires implementation and verification of that scope.
+The mapping from the unit's criteria to the work item's required test rows, with instructions requiring implementation and verification of that scope. The mapping must meet [Test Coverage](pull-request-body.md#test-coverage).
 
 ### Change Autonomy
 
@@ -45,4 +26,16 @@ The brief names the supplied [allowance](plan-change.md#allowance): the plan cha
 
 ### Execution Instructions
 
-The caller supplies the session procedure and its invocation context. The brief includes that procedure with its planning, publication, merge, debt and arising-issue obligations, plus the confirmed decisions and evidence needed to execute it. A missing instruction or prerequisite is a finding returned to the caller.
+The supplied session-procedure reference and invocation context, including its planning, publication, merge, debt and arising-issue obligations, with the confirmed decisions and evidence needed to execute it. A missing instruction or prerequisite is a finding provided to the caller.
+
+### Output Path
+
+The prompt-file destination; absent when Location selects the session scratchpad.
+
+### Brief Path
+
+The completed working prompt file path.
+
+### Missing Context
+
+Any required context missing from the supplied brief inputs.

@@ -4,24 +4,105 @@ The indexed symbols, relationships and ordered flows for a repository revision.
 
 ## Operations
 
-### *Measure* Repository Change
+### Measure Repository Change
 
 Current graph evidence for the supplied change.
 
-**Inputs:** Review checkout, verified head commit and base branch.
+#### 1. Read Index Status
 
-1. Run [Index Status](#index-status) in the review checkout. Every graph command runs there.
-2. If the repository is unindexed or behind the verified head:
-   - Run [Index Repository](#index-repository) in the review checkout.
-   - Confirm freshness.
-3. Run [Change Surface](#change-surface) in the review checkout against the supplied base using `--base-ref`.
-4. For each changed symbol, run [Symbol Context](#symbol-context) in the review checkout.
-5. For each reported flow, run [Flow Trace](#flow-trace) in the review checkout.
-6. Inspect the staleness block on every response. For a behind index:
-   - Discard its measurements.
-   - Reindex.
-   - Repeat the affected measurements.
-7. Return only evidence current with the supplied head, meeting [Fields](#fields), or a freshness blocker.
+Run [Index Status](#index-status "ƒ") in the [review checkout](#review-checkout).
+
+#### 2. Refresh Absent or Stale Index
+
+- If the repository is unindexed or behind [Requested Revision](#requested-revision):
+- Run [Index Repository](#index-repository "ƒ") in the review checkout.
+- Confirm freshness.
+
+#### 3. Measure Change Surface
+
+Run [Change Surface](#change-surface "ƒ") in the review checkout against the supplied base using `--base-ref`.
+
+#### 4. Measure Changed Symbols
+
+For each changed symbol, Run [Symbol Context](#symbol-context "ƒ") in the review checkout.
+
+#### 5. Measure Reported Flows
+
+For each reported flow, Run [Flow Trace](#flow-trace "ƒ") in the review checkout.
+
+#### 6. Check Response Freshness
+
+Inspect the staleness block on every response.
+
+##### When the Index Is Behind
+
+- Discard that response’s measurements.
+- Run [Index Repository](#index-repository "ƒ") in the review checkout for the verified head, and confirm freshness.
+- Run [Change Surface](#change-surface "ƒ") again for any discarded surface using the same [base branch](#base-branch) in the review checkout.
+- Run [Symbol Context](#symbol-context "ƒ") again for each affected changed symbol in the review checkout.
+- Run [Flow Trace](#flow-trace "ƒ") again for each affected reported flow in the review checkout.
+
+#### 7. Provide Current Measurements
+
+Provide [Graph Measurements](#graph-measurements) only when current with the supplied head and meeting [Fields](#fields), or a freshness blocker.
+
+## Commands
+
+### Index Status
+
+Report whether the repository is indexed and how far behind the index sits, and provide [Index State](#index-state "●") to the requester.
+
+Compare the indexed commit with [Requested Revision](#requested-revision "○").
+
+Run in the [Review Checkout](#review-checkout "○").
+
+<big><pre>
+gitnexus status
+</pre></big>
+
+### Index Repository
+
+Index the repository and provide [Index State](#index-state "●") to the requester. An unindexed or behind repository needs indexing before any measurement.
+
+Compare the indexed commit with [Requested Revision](#requested-revision "○").
+
+Run in the [Review Checkout](#review-checkout "○").
+
+<big><pre>
+gitnexus analyze
+</pre></big>
+
+### Change Surface
+
+Report the symbols touched by the pull request's diff and their flows against the base branch, and provide [Changed Symbols](#changed-symbols "●") to the requester.
+
+Compare against the pull request’s base to isolate its change from the branch’s full history.
+
+Run in the [Review Checkout](#review-checkout "○").
+
+<big><pre>
+gitnexus detect-changes --scope compare --base-ref '[**&lt;base-branch&gt;**](#base-branch "○")'
+</pre></big>
+
+### Symbol Context
+
+Report one symbol's callers, callees and containing flows with their file locations, and provide [Symbol Relationships](#symbol-relationships "●") to the requester.
+
+Run in the [Review Checkout](#review-checkout "○").
+
+<big><pre>
+gitnexus context '[**&lt;symbol-identity&gt;**](#symbol-identity "○")'
+</pre></big>
+
+### Flow Trace
+
+Report one flow's symbols in step order and provide [Flow Traces](#flow-traces "●") to the requester. The sequence diagram is drawn from that ordered structure.
+
+Run in the [Review Checkout](#review-checkout "○").
+
+<big><pre>
+gitnexus query --query '[**&lt;flow-identity&gt;**](#flow-identity "○")' --limit 1
+</pre></big>
 
 ## Fields
 
@@ -45,84 +126,30 @@ Each changed symbol has callers, callees, containing flows and file locations. F
 
 Each flow contains symbols in step order. Each `process_symbols` entry includes `step_index`, file and lines. Those ordered measurements supply sequence-diagram participants and interactions. A manually inferred call order does not establish a graph trace.
 
-## Commands
+### Review Checkout
 
-### Index Status
+The supplied checkout in which graph commands run.
 
-Reports whether the repository is indexed, and how far behind the index sits.
+### Requested Revision
 
-**Inputs:** Requested revision.
+The verified head commit supplied for measurement.
 
-**Acts on:** the checkout it runs in.
+### Base Branch
 
-```bash
-gitnexus status
-```
+The supplied comparison base branch. eg `main`
 
-### Index Repository
+### Symbol Identity
 
-Indexes the repository, which an unindexed or behind repository needs before any measurement.
+One symbol identity provided by the supplied change surface. eg `reserveRow`
 
-**Inputs:** Requested revision.
+### Flow Identity
 
-**Acts on:** the checkout it runs in.
+One flow identity provided by the supplied change surface. eg `Queue Placement`
 
-```bash
-gitnexus analyze
-```
+### Graph Measurements
 
-### Change Surface
+The measured revision, freshness, changed symbols, relationships and ordered flow traces, or a freshness blocker.
 
-Reports the symbols a pull request's diff touches and the flows they sit in, against the base branch.
+### Index State
 
-**Inputs:** Comparison base branch.
-
-**Acts on:** the checkout it runs in.
-
-- `--base-ref` is the pull request's base, so the surface is the change rather than the branch's whole history.
-
-```bash
-gitnexus detect-changes --scope compare --base-ref '<base-branch>'
-```
-
-**Example:**
-
-```bash
-gitnexus detect-changes --scope compare --base-ref main
-```
-
-### Symbol Context
-
-Reports one symbol's callers, its callees and the flows it sits in, each with the file it sits in.
-
-**Inputs:** Symbol identity from the supplied change surface.
-
-**Acts on:** the checkout it runs in.
-
-```bash
-gitnexus context '<symbol-identity>'
-```
-
-**Example:**
-
-```bash
-gitnexus context reserveRow
-```
-
-### Flow Trace
-
-Reports one flow's symbols in step order, the structure a sequence diagram is drawn from.
-
-**Inputs:** Flow identity from the supplied change surface. The result meets [Flow Traces](#flow-traces).
-
-**Acts on:** the checkout it runs in.
-
-```bash
-gitnexus query --query '<flow-identity>' --limit 1
-```
-
-**Example:**
-
-```bash
-gitnexus query --query "Queue Placement" --limit 1
-```
+The index status and indexed revision reported for the checkout.

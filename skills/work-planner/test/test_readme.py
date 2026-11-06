@@ -75,7 +75,7 @@ def without_extension(text: str) -> str:
 
 
 FOLDERS = ('modes', 'artifacts', 'protocols', 'references')
-WHOLE_SKILL = frozenset([f'{folder}/' for folder in FOLDERS] + ['SKILL.md', 'guidelines.md'])
+WHOLE_SKILL = frozenset([f'{folder}/' for folder in FOLDERS] + [path.name for path in ROOT.glob('*.md')])
 
 
 @functools.lru_cache(maxsize=None)
@@ -96,7 +96,7 @@ def documents(name: str) -> frozenset[str]:
     folders = {f'{folder}/' for folder in re.findall(r"ROOT / '(\w+)'", text) if folder in FOLDERS}
     folders = {folder for folder in folders if not any(file.startswith(folder) for file in files)}
     found = files | folders
-    found |= {filename for filename in ('SKILL.md', 'guidelines.md') if f"'{filename}'" in text}
+    found |= {filename for filename in (path.name for path in ROOT.glob('*.md')) if f"'{filename}'" in text}
     if "SKILLS.glob('*/SKILL.md')" in text:
         found.add('*/SKILL.md')
     return frozenset(found)

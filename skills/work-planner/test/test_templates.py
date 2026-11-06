@@ -53,6 +53,21 @@ class ArtifactTemplates(unittest.TestCase):
             '## Fields\n\n### Template\n\n~~~markdown\n## Overview\n~~~\n'
             '### Examples\n\n```markdown\n## Wrong\n```\n'), '## Overview\n')
 
+    def test_final_indented_specimens_close_without_entering_the_template(self):
+        prefix = '# Epic\n\n## Fields\n\n### Template\n\n```markdown\n## Overview\n```\n'
+        for marker in ('```', '~~~'):
+            for indent in range(4):
+                with self.subTest(marker=marker, indent=indent):
+                    gap = ' ' * indent
+                    specimen = f'### Example\n\n{gap}{marker}json\n{{"required": true}}\n{gap}{marker}\n'
+                    self.assertEqual(self.read_specimen(prefix + specimen), '## Overview\n')
+
+    def test_an_indented_closing_fence_keeps_character_and_length_requirements(self):
+        prefix = '# Epic\n\n## Fields\n\n### Template\n\n````markdown\n## Overview\n'
+        for closing in ('   ```\n', '   ~~~~\n', '    ````\n'):
+            with self.subTest(closing=closing), self.assertRaisesRegex(ValueError, 'Fields / Template'):
+                self.read_specimen(prefix + closing)
+
     def test_missing_unclosed_empty_and_ambiguous_templates_fail(self):
         prefix = '# Epic\n\n## Fields\n\n### Template\n\n'
         for text in ('# Epic\n', prefix + '```markdown\n## Overview\n',
