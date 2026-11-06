@@ -1,0 +1,12 @@
+{
+  "reason": "Two policy tasks received numbers from an unpublished wider refinement before that refinement was published. The live epic ended at W11. The coordinator corrects the two new task/criterion identities to follow the live plan.",
+  "mapping": {
+    "W26": "W12",
+    "W28": "W13",
+    "AC41": "AC19",
+    "AC43": "AC20"
+  },
+  "preserved": "W01\u2013W11, task source bytes, full preparation head, holds and all unrelated issue content.",
+  "boundary": "Both workers returned at a safe boundary with no task commit, remote task branch or PR. W26 has one owner-rule edit and untracked graph capture; W28 is clean.",
+  "draft": "The broader component/refactoring proposal remains unpublished and is not the authority for live task numbering."
+}
