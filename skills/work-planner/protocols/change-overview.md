@@ -2,8 +2,6 @@
 
 The published architecture overview, planning record and pull request link that explain one pull request's change.
 
-**Runs in:** the project checkout.
-
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ## Prerequisites

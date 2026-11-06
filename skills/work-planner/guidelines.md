@@ -68,7 +68,7 @@ These rules govern named command and access specifications. Procedural operation
   The calling step names the operation it applies. Its invocation does not name that caller.
 
 - **Execution.**
-  Run a command in the checkout of the repository it addresses. Resolve placeholders from the supplied inputs before execution. Use `orgs/<owner>` for an organisation's board and `users/<owner>` for a user's board.
+  Scope execution location to the command or performing step. A command that depends on its working checkout identifies that checkout through a linked input field in its specification; callers select the required checkout in step prose. Run a command in the checkout of the repository it addresses. Resolve placeholders from the supplied inputs before execution. Use `orgs/<owner>` for an organisation's board and `users/<owner>` for a user's board.
 - **Placed paths.**
   A command that creates a worktree or other lasting location takes a path its caller composes. Its specification cites the field that places that kind and states that the path resolves against the directory the command runs in.
 

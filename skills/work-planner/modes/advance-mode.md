@@ -2,8 +2,6 @@
 
 Decides which initiatives, epics and hot-fixes on a theme board are underway and which are next, from current recorded delivery.
 
-**Runs in:** the project checkout.
-
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Prerequisites

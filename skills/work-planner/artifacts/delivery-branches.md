@@ -165,8 +165,6 @@ Print one epic's base branch names with one name per line and provide [Epic-Base
 
 - Run in the [Project Checkout](#project-checkout "○").
 
-**Acts on:** the checkout it runs in.
-
 - A base is `<epic-branch-prefix>/<name>` whose `<name>` is a [long-lived branch](#branches), named as [Epic Bases](#epic-bases) states.
 - The prefix has the form `i<initiative-number>/e<epic-number>`. **Example:** `i07/e00`; a corresponding base is `i07/e00/main`.
 
@@ -198,8 +196,6 @@ Fetch one source branch from origin and provide [Branch Result](#branch-result "
 
 Run in the [Checkout](#checkout "○").
 
-**Acts on:** the checkout it runs in.
-
 <big><pre>
 git fetch origin '[**&lt;source-branch&gt;**](#source-branch "○")'
 </pre></big>
@@ -211,8 +207,6 @@ Create a remote epic base from the fetched source branch and provide [Branch Res
 - Run in the [Project Checkout](#project-checkout "○").
 - Require [Missing Destination](#missing-destination "○"), [Prerequisite Evidence](#prerequisite-evidence "○") before executing the command.
 
-**Acts on:** the checkout it runs in.
-
 <big><pre>
 git push origin 'origin/[**&lt;source-branch&gt;**](#source-branch "○"):refs/heads/[**&lt;epic-base&gt;**](#epic-base-name "○")'
 </pre></big>
@@ -222,8 +216,6 @@ git push origin 'origin/[**&lt;source-branch&gt;**](#source-branch "○"):refs/h
 Merge one fetched remote branch into the branch of the checkout it runs in and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 Run in the [Checkout](#checkout "○").
-
-**Acts on:** the checkout it runs in.
 
 <big><pre>
 git merge --no-edit 'origin/[**&lt;source-branch&gt;**](#source-branch "○")'
@@ -236,8 +228,6 @@ Push the epic base checked out where it runs to its configured upstream and prov
 - Run in the [Checkout](#checkout "○").
 - Require [Successful Merge](#successful-merge "○") before executing the command.
 
-**Acts on:** the checkout it runs in.
-
 <big><pre>
 git push
 </pre></big>
@@ -249,8 +239,6 @@ Push the head of the checkout it runs in to its named remote task branch and pro
 - Run in the [Unit Checkout](#unit-checkout "○").
 - Require [Successful Merge](#successful-merge "○") before executing the command.
 
-**Acts on:** the checkout it runs in.
-
 <big><pre>
 git push origin 'HEAD:refs/heads/[**&lt;task-branch&gt;**](#task-branch "○")'
 </pre></big>
@@ -261,8 +249,6 @@ Create a task branch and worktree at the fetched base and provide [Worktree Resu
 
 - Run in the [Project Checkout](#project-checkout "○").
 - Require [Prerequisite Evidence](#prerequisite-evidence "○") before executing the command.
-
-**Acts on:** the checkout it runs in.
 
 - The path resolves against the directory the command runs in, so supply it as [Task Branches](#task-branches) anchors it rather than relative to a linked worktree.
 
@@ -276,8 +262,6 @@ Fetch one pull request head into FETCH_HEAD and provide [Checkout Commit](#check
 
 Run in the [Project Checkout](#project-checkout "○").
 
-**Acts on:** the checkout it runs in.
-
 <big><pre>
 git fetch origin pull/[**&lt;pull-request-number&gt;**](#pull-request-number "○")/head
 </pre></big>
@@ -287,8 +271,6 @@ git fetch origin pull/[**&lt;pull-request-number&gt;**](#pull-request-number "�
 Create the worktree for an existing epic base and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Run in the [Project Checkout](#project-checkout "○").
-
-**Acts on:** the checkout it runs in.
 
 - The path resolves against the directory the command runs in, so supply it as [Epic Bases](#epic-bases) anchors it rather than relative to a linked worktree.
 
@@ -301,8 +283,6 @@ git worktree add '[**&lt;worktree-path&gt;**](#worktree-path "○")' '[**&lt;epi
 Create a detached worktree at the fetched review head and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Run in the [Project Checkout](#project-checkout "○").
-
-**Acts on:** the checkout it runs in.
 
 - The path resolves against the directory the command runs in, so supply it as [Review Worktrees](#review-worktrees) anchors it rather than relative to a linked worktree.
 

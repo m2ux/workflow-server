@@ -2,8 +2,6 @@
 
 The draft pull request and body that present one epic base's delivered changes for review.
 
-**Runs in:** the project checkout.
-
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ## Prerequisites

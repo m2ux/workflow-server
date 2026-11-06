@@ -2,8 +2,6 @@
 
 The task and epic bodies, or a hot-fix's body, brought to what one pull request's delivery establishes.
 
-**Runs in:** the project checkout.
-
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ## Prerequisites

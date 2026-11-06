@@ -2,8 +2,6 @@
 
 Changes the skill itself: SKILL.md, its modes, artifacts, references and scripts.
 
-**Runs in:** the project checkout.
-
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Prerequisites

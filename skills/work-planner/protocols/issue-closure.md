@@ -2,8 +2,6 @@
 
 Fresh closure evidence assembled across an issue and its linked pull requests, and the closure it permits.
 
-**Runs in:** the project checkout.
-
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ## Prerequisites

@@ -2,8 +2,6 @@
 
 What the task, epic, board and initiative records, or a hot-fix's issue, become after one confirmed task merge.
 
-**Runs in:** the project checkout.
-
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ## Prerequisites

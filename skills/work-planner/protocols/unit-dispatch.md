@@ -2,8 +2,6 @@
 
 One admitted unit held, prepared and started in its delivery session.
 
-**Runs in:** the project checkout.
-
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ## Prerequisites

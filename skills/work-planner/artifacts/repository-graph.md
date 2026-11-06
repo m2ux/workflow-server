@@ -10,7 +10,7 @@ Current graph evidence for the supplied change.
 
 #### 1. Read Index Status
 
-Run [Index Status](#index-status "ƒ") in the [review checkout](#review-checkout). Every graph command runs there.
+Run [Index Status](#index-status "ƒ") in the [review checkout](#review-checkout).
 
 #### 2. Refresh Absent or Stale Index
 
@@ -52,9 +52,9 @@ Provide [Graph Measurements](#graph-measurements) only when current with the sup
 
 Report whether the repository is indexed and how far behind the index sits, and provide [Index State](#index-state "●") to the requester.
 
-**Acts on:** the checkout it runs in.
-
 Compare the indexed commit with [Requested Revision](#requested-revision "○").
+
+Run in the [Review Checkout](#review-checkout "○").
 
 <big><pre>
 gitnexus status
@@ -64,9 +64,9 @@ gitnexus status
 
 Index the repository and provide [Index State](#index-state "●") to the requester. An unindexed or behind repository needs indexing before any measurement.
 
-**Acts on:** the checkout it runs in.
-
 Compare the indexed commit with [Requested Revision](#requested-revision "○").
+
+Run in the [Review Checkout](#review-checkout "○").
 
 <big><pre>
 gitnexus analyze
@@ -76,9 +76,9 @@ gitnexus analyze
 
 Report the symbols touched by the pull request's diff and their flows against the base branch, and provide [Changed Symbols](#changed-symbols "●") to the requester.
 
-**Acts on:** the checkout it runs in.
-
 Compare against the pull request’s base to isolate its change from the branch’s full history.
+
+Run in the [Review Checkout](#review-checkout "○").
 
 <big><pre>
 gitnexus detect-changes --scope compare --base-ref '[**&lt;base-branch&gt;**](#base-branch "○")'
@@ -88,7 +88,7 @@ gitnexus detect-changes --scope compare --base-ref '[**&lt;base-branch&gt;**](#b
 
 Report one symbol's callers, callees and containing flows with their file locations, and provide [Symbol Relationships](#symbol-relationships "●") to the requester.
 
-**Acts on:** the checkout it runs in.
+Run in the [Review Checkout](#review-checkout "○").
 
 <big><pre>
 gitnexus context '[**&lt;symbol-identity&gt;**](#symbol-identity "○")'
@@ -98,7 +98,7 @@ gitnexus context '[**&lt;symbol-identity&gt;**](#symbol-identity "○")'
 
 Report one flow's symbols in step order and provide [Flow Traces](#flow-traces "●") to the requester. The sequence diagram is drawn from that ordered structure.
 
-**Acts on:** the checkout it runs in.
+Run in the [Review Checkout](#review-checkout "○").
 
 <big><pre>
 gitnexus query --query '[**&lt;flow-identity&gt;**](#flow-identity "○")' --limit 1

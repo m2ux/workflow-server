@@ -2,8 +2,6 @@
 
 One epic base merged into its long-lived branch, on current branch, epic and pull-request evidence.
 
-**Runs in:** the project checkout.
-
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ## Prerequisites

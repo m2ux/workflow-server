@@ -2,8 +2,6 @@
 
 Brings the chosen standalone issues into the agent-engineering structure, or leaves them open according to the user's decision.
 
-**Runs in:** the project checkout.
-
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Prerequisites

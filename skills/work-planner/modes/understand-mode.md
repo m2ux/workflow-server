@@ -2,8 +2,6 @@
 
 Explains the named pull request's changes through a measured architecture overview and publishes that overview for its reviewer.
 
-**Runs in:** the project checkout.
-
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Prerequisites

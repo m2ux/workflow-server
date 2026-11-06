@@ -2,8 +2,6 @@
 
 Keeps an authorized theme-board scope moving through delivery while eligible work and execution capacity permit it.
 
-**Runs in:** the project checkout.
-
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Prerequisites
@@ -174,8 +172,6 @@ The continuing coordinator for one authorized delivery scope.
 
 The authorized unit carried from its supplied brief through implementation and delivery.
 
-**Runs in:** the unit checkout.
-
 #### 1. Read the Brief
 
 - Read the supplied [Delivery Brief](../artifacts/delivery-brief.md).
@@ -207,7 +203,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 6. Implement
 
-- Deliver the work in the worktree, with every test the work item names, as [Tables](../artifacts/issue-body.md#tables) state.
+- Deliver each task branch in the unit checkout its [Work Identity](../artifacts/delivery-brief.md#work-identity) names, with every test the work item names, as [Tables](../artifacts/issue-body.md#tables) state.
 
 - Group the unit's work items by the component each declares, and give each group to the sub-agent dispatch this session provides when the unit has more than one group and [actual free slots](../artifacts/dispatch-batch.md#session-inventory) permit it.
 - Give each sub-agent the unit's worktree, its group's work items, and the criteria those work items cover.

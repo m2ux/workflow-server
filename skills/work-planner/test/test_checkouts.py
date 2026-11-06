@@ -1,26 +1,9 @@
-"""Each command acting on its checkout is run in a named one.
+"""Checkout-sensitive commands consume linked input contracts.
 
-A command whose block runs git or GitNexus where it stands acts on whichever
-checkout it runs in: the same merge lands on an epic base or on a unit's task
-branch depending only on the directory. The skill names its checkouts once, in the
-common Conventions, and the tests here hold every call to that
-vocabulary.
-
-- A command running git or GitNexus in its working directory declares that it acts on
-  the checkout it runs in, and a command taking its checkout as an argument
-  does not.
-- An artifact operation declares no checkout of its own. One whose steps run
-  an acting command acts on a checkout too, so every call to either names one
-  from the vocabulary on the line that makes it.
-- Each mode and protocol declares the checkout it runs in under its opening
-  paragraph, and a procedure subsection declares its own only where it
-  differs from its file's.
-- A call naming a checkout other than its procedure's passes it: the
-  operation called reaches a command whose input contract accepts that checkout, the protocol or
-  mode called runs in it, or the command called acts wherever it is run.
-
-The walk reads the citation graph the skill check builds, so a call is a link
-inside a procedure step.
+The citation graph follows actual procedural calls to their command owners.
+Every git or GitNexus command that depends on its working directory has a
+checkout input, and callers select a checkout from the shared vocabulary.
+Literal examples and field/output citations establish no execution context.
 """
 import re
 import sys
@@ -33,12 +16,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT.parent / 'scripts'))
 import check_skill_files as checker
 
-ACTS_ON = '**Acts on:** the checkout it runs in.'
-RUNS_IN = re.compile(r'^\*\*Runs in:\*\* the (.+) checkout\.$')
 WHERE_IT_STANDS = re.compile(r'^\s*(git (?!-C )|gitnexus )')
 VOCABULARY_LEAD = re.compile(r'^(\s*)- \*\*Checkouts\.\*\*')
 VOCABULARY_ENTRY = re.compile(r'^\s+- `([^`]+)`')
-PROCEDURE_FOLDERS = ('modes', 'protocols')
 
 
 def vocabulary():
@@ -77,19 +57,6 @@ class Document:
     def name(self):
         return str(self.path.relative_to(ROOT))
 
-    def lead(self, start):
-        """The lines between a heading and the heading after it."""
-        following = next((index for index, _, _ in self.headings if index > start), len(self.lines))
-        return [self.lines[index] for index in range(start + 1, following)
-                if not self.fenced[index] and index not in self.blocks.html_lines]
-
-    def declared(self, start):
-        """The checkout a heading's own lead declares it runs in."""
-        for line in self.lead(start):
-            if match := RUNS_IN.match(line.strip()):
-                return match[1]
-        return None
-
     def inputs(self, start):
         """Input names and owning Fields in this command specification."""
         _, end, _, _ = self.spans[start]
@@ -117,20 +84,12 @@ class Document:
                 if start < index < end]
         return [start for start, _ in sorted(held, key=lambda item: -item[1])]
 
-    def runs_in(self, index):
-        """The checkout the procedure holding a line runs in: the nearest
-        declaration on a heading that encloses it."""
-        for start in self.enclosing(index):
-            if found := self.declared(start):
-                return found
-        return None
-
     def section(self, index, level):
         """The heading of the given level holding a line."""
         return next((start for start in self.enclosing(index) if self.spans[start][2] == level), None)
 
     def commands(self):
-        """Named command specifications and their working-directory declarations."""
+        """Named command specifications and their linked checkout inputs."""
         if self.entry.get('commands') != 'html':
             return
         operations = {}
@@ -146,10 +105,8 @@ class Document:
         for start, payload in operations.items():
             _, end, _, title = self.spans[start]
             bare = any(WHERE_IT_STANDS.match(line) for line in payload)
-            declares = any(self.lines[index].strip() == ACTS_ON
-                           for index in range(start + 1, end)
-                           if not self.fenced[index] and index not in self.blocks.html_lines)
-            yield start, title, bare, declares
+            checkout_input = bool(re.search(r'\bcheckout\b', self.inputs(start), re.I))
+            yield start, title, bare, checkout_input
 
     def calls(self):
         """Each link a procedure step carries, with its destination."""
@@ -180,8 +137,8 @@ class Corpus:
         self.documents = documents()
         self.commands = set()
         for path, document in self.documents.items():
-            for start, title, bare, declares in document.commands():
-                if bare or declares:
+            for start, title, bare, checkout_input in document.commands():
+                if bare:
                     self.commands.add((path, checker.anchor_of(title)))
         self.acting = set(self.commands)
         changed = True
@@ -214,29 +171,23 @@ class Corpus:
         return document.spans[start][3] if start is not None else anchor
 
     def accepts(self, destination, anchor, checkout, visited=None):
-        """Whether a section called with a checkout takes it: a command acts
-        wherever it is run, an operation reaches a command accepting that checkout, and a
-        procedure runs in it."""
+        """Whether the selected capability reaches a command input for this checkout."""
         visited = set() if visited is None else visited
         key = (destination, anchor)
         if key in visited:
             return False
         visited.add(key)
-        if key in self.commands:
-            return True
         document = self.documents.get(destination)
         if document is None:
             return False
-        if not anchor:
-            return bool(document.headings) and document.declared(document.headings[0][0]) == checkout
-        start = document.anchors.get(anchor)
+        start = document.anchors.get(anchor) if anchor else document.headings[0][0]
         if start is None:
             return False
-        if document.declared(start) == checkout:
-            return True
-        if checker.command_target(document.path, '#' + anchor):
-            return f'{checkout} checkout' in document.inputs(start).lower()
-        _, end, _, _ = document.spans[start]
+        if anchor and checker.command_target(document.path, '#' + anchor):
+            inputs = document.inputs(start).lower()
+            return bool(re.search(re.escape(checkout) + r' (?:checkout|worktree)\b', inputs)
+                        or re.search(r'^checkout$', inputs, re.M))
+        end = document.spans[start][1]
         return any(self.accepts(target, fragment, checkout, visited)
                    for index, target, fragment in document.calls() if start < index < end)
 
@@ -269,17 +220,19 @@ class ExecutingCheckoutEvidence(unittest.TestCase):
             self.assertTrue(Document(path).steps)
             self.assertFalse(list(Document(path).commands()))
 
-    def test_only_executing_html_supplies_command_and_declaration_evidence(self):
+    def test_named_commands_use_input_contracts_as_checkout_evidence(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'artifacts/control.md'
             path.parent.mkdir()
             path.write_text("""# Checkout Evidence
 
+Use [Checkout](#checkout "○").
+
 ## Commands
 
 ### Inspect Current Checkout
 
-**Acts on:** the checkout it runs in.
+Use [Checkout](#checkout "○").
 
 <big><pre>
 git status
@@ -290,10 +243,13 @@ git status
 
 <big><pre>git -C '/tmp/control' status</pre></big>
 
-### Inspect Undeclared Checkout
+### Inspect Unbound Checkout
+
+```markdown
+Use [Checkout](#checkout "○").
+```
 
 <big><pre>
-**Acts on:** the checkout it runs in.
 git status
 </pre></big>
 
@@ -312,7 +268,7 @@ git status
 
 #### 1. Inspect Literal State
 
-**Acts on:** the checkout it runs in.
+Use [Checkout](#checkout "○").
 
 <big><pre>git status</pre></big>
 ````
@@ -320,15 +276,19 @@ git status
 ### Unexecuted Field
 
 <big><pre>git status</pre></big>
+
+### Checkout
+
+The selected working checkout.
 """)
             document = Document(path, {'sections': ['Operations', 'Fields'],
                                        'procedures': 'Operations', 'steps': 'headings',
                                        'commands': 'html', 'specifications': 'Commands'})
-            commands = {title: (bare, declares) for _, title, bare, declares in document.commands()}
+            commands = {title: (bare, checkout_input) for _, title, bare, checkout_input in document.commands()}
             self.assertEqual(commands, {
                 'Inspect Current Checkout': (True, True),
                 'Inspect Explicit Checkout': (False, False),
-                'Inspect Undeclared Checkout': (True, False),
+                'Inspect Unbound Checkout': (True, False),
             })
 
     def test_inputs_require_actual_step_prose_or_command_annotations(self):
@@ -397,23 +357,19 @@ Apply [Inspect Literal Target](#literal-target) in the review checkout.
 
 class CheckoutVocabulary(unittest.TestCase):
     def test_conventions_name_the_checkouts(self):
-        """The vocabulary every declaration and call draws from."""
+        """The vocabulary every checkout-selecting call draws from."""
         names = vocabulary()
         self.assertTrue(names, 'conventions.md states no Checkouts')
         self.assertEqual(len(names), len(set(names)))
 
 
 class CommandsActingOnTheirCheckout(unittest.TestCase):
-    def test_a_command_running_git_where_it_stands_declares_it(self):
-        """Git without `-C`, and GitNexus, act on the working directory, so the command
-        says so; one naming its checkout as an argument does not."""
+    def test_working_directory_commands_link_their_checkout_input(self):
         for path, document in documents().items():
-            for start, title, bare, declares in document.commands():
-                with self.subTest(file=document.name, command=title):
-                    self.assertEqual(declares, bare,
-                                     f'{document.name}: {title} runs git where it stands'
-                                     if bare else f'{document.name}: {title} declares a '
-                                     'checkout but runs no git where it stands')
+            for start, title, bare, checkout_input in document.commands():
+                if bare:
+                    with self.subTest(file=document.name, command=title):
+                        self.assertTrue(checkout_input, f'{document.name}: {title} lacks a checkout input')
 
     def test_each_call_to_an_acting_section_names_a_checkout(self):
         """A call to an acting command, or to an operation reaching one,
@@ -432,78 +388,32 @@ class CommandsActingOnTheirCheckout(unittest.TestCase):
                                 'naming no checkout')
 
 
-class ProceduresDeclaringTheirCheckout(unittest.TestCase):
-    def test_each_mode_and_protocol_declares_where_it_runs(self):
-        names = vocabulary()
-        for folder in PROCEDURE_FOLDERS:
-            for path in sorted((ROOT / folder).glob('*.md')):
-                document = Document(path)
-                with self.subTest(file=document.name):
-                    self.assertTrue(document.headings)
-                    self.assertIn(document.declared(document.headings[0][0]), names,
-                                  f'{document.name} declares no checkout from the vocabulary')
+class SelectedCheckoutContracts(unittest.TestCase):
+    def test_checkout_roles_follow_command_and_transitive_input_contracts(self):
+        corpus = Corpus()
+        graph = (ROOT / 'artifacts/repository-graph.md').resolve()
+        branches = (ROOT / 'artifacts/delivery-branches.md').resolve()
+        for anchor in ('index-status', 'measure-repository-change'):
+            with self.subTest(operation=anchor):
+                self.assertTrue(corpus.accepts(graph, anchor, 'review'))
+                self.assertFalse(corpus.accepts(graph, anchor, 'unit'))
+        self.assertTrue(corpus.accepts(branches, 'push-task-branch', 'unit'))
+        self.assertFalse(corpus.accepts(branches, 'push-task-branch', 'project'))
 
-    def test_a_subsection_declares_only_a_differing_checkout(self):
-        """A subsection's declaration names a checkout from the vocabulary,
-        and one restating its file's would add nothing."""
-        names = vocabulary()
-        for path, document in documents().items():
-            if path.parent.name not in PROCEDURE_FOLDERS:
-                continue
-            outer = document.declared(document.headings[0][0]) if document.headings else None
-            for start, level, title in document.headings[1:]:
-                found = document.declared(start)
-                if found is None:
-                    continue
-                with self.subTest(file=document.name, section=title):
-                    self.assertIn(found, names)
-                    self.assertNotEqual(found, outer,
-                                        f'{document.name}: {title} restates its file\'s checkout')
-
-    def test_an_artifact_declares_no_checkout(self):
-        """An operation runs where its caller names, so it carries none."""
-        for path, document in documents().items():
-            if path.parent.name != 'artifacts':
-                continue
-            for start, level, title in document.headings:
-                with self.subTest(file=document.name, section=title):
-                    self.assertIsNone(document.declared(start))
-
-
-class CallsIntoAnotherCheckout(unittest.TestCase):
-    def test_a_call_into_another_checkout_passes_it(self):
-        """A call naming a checkout other than its procedure's hands it over:
-        the operation reaches a command accepting it, the procedure runs in it, or
-        the command acts wherever it is run. A call to a procedure running
-        elsewhere names that checkout."""
+    def test_selected_checkouts_reach_accepting_command_inputs(self):
         corpus = Corpus()
         lines = {}
         for document, index, destination, anchor in corpus.calls():
-            lines.setdefault((document.path.resolve(), index), []).append((destination, anchor))
+            if checker.operation_target(document.path, str(destination) + ('#' + anchor if anchor else '')):
+                lines.setdefault((document.path.resolve(), index), []).append((destination, anchor))
         for (path, index), callees in lines.items():
             document = corpus.documents[path]
-            own = document.runs_in(index)
-            if own is None:
-                continue
-            where = f'{document.name}:{index + 1}'
-            line = document.lines[index]
-            for checkout in sorted(named(line, corpus.names) - {own}):
-                with self.subTest(call=where, checkout=checkout):
-                    self.assertTrue(
-                        any(corpus.accepts(destination, anchor, checkout)
-                            for destination, anchor in callees),
-                        f'{where} names the {checkout} checkout, which '
-                        f'{", ".join(corpus.title(d, a) for d, a in callees)} does not take')
-            for destination, anchor in callees:
-                callee = corpus.documents.get(destination)
-                if callee is None or anchor or destination.parent.name not in PROCEDURE_FOLDERS:
-                    continue
-                theirs = callee.declared(callee.headings[0][0]) if callee.headings else None
-                if theirs and theirs != own:
-                    with self.subTest(call=where, callee=callee.name):
-                        self.assertIn(f'the {theirs} checkout', line,
-                                      f'{where} runs {callee.name} in the {theirs} checkout '
-                                      'without naming it')
+            for checkout in sorted(named(document.lines[index], corpus.names)):
+                with self.subTest(call=f'{document.name}:{index + 1}', checkout=checkout):
+                    self.assertTrue(any(corpus.accepts(destination, anchor, checkout)
+                                        for destination, anchor in callees),
+                                    f'{document.name}:{index + 1} selects the {checkout} checkout '
+                                    'without an accepting command input')
 
 
 if __name__ == '__main__':
