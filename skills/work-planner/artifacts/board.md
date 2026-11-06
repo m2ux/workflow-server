@@ -187,7 +187,7 @@ gh api --method DELETE users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/
 Save a board's fields and provide [Board Configuration](#board-configuration "●") to the requester.
 
 <big><pre>
-gh api --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/fields?per_page=100" > '[**&lt;board-fields-file&gt;**](#board-fields-file "○")'
+gh api --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/fields?per_page=100" &gt; '[**&lt;board-fields-file&gt;**](#board-fields-file "○")'
 </pre></big>
 
 ### Find Theme Board

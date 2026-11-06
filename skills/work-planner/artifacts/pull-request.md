@@ -285,8 +285,8 @@ Point a pull request at another base branch, such as its epic's base branch, and
 
 <big><pre>
 gh api &#92;
-  --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") &#92;
-  -f base='[**<target-branch>**](#base-branch "○")' &#92;
+  --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○") &#92;
+  -f base='[**&lt;target-branch&gt;**](#base-branch "○")' &#92;
   --jq .base.ref
 </pre></big>
 
@@ -295,7 +295,7 @@ gh api &#92;
 Replace a pull request's title and provide [Title](#title "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
-gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") -f title='[**<title>**](#title "○")' --jq .title
+gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○") -f title='[**&lt;title&gt;**](#title "○")' --jq .title
 </pre></big>
 
 ### Open Task Pull Request
@@ -307,11 +307,11 @@ Create a pull request from a unit's branch to its base and provide [Identity](#i
 
 <big><pre>
 gh api &#92;
-  --method POST repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls &#92;
-  -f title='[**<title>**](#title "○")' &#92;
-  -f head='[**<task-branch>**](#head-branch "○")' &#92;
-  -f base='[**<base>**](#base-branch "○")' &#92;
-  -F 'body=@[**<body-file>**](#body-file "○")' &#92;
+  --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls &#92;
+  -f title='[**&lt;title&gt;**](#title "○")' &#92;
+  -f head='[**&lt;task-branch&gt;**](#head-branch "○")' &#92;
+  -f base='[**&lt;base&gt;**](#base-branch "○")' &#92;
+  -F 'body=@[**&lt;body-file&gt;**](#body-file "○")' &#92;
   --jq .html_url
 </pre></big>
 
@@ -324,12 +324,12 @@ Create the draft pull request from an epic base to its long-lived target and pro
 
 <big><pre>
 gh api &#92;
-  --method POST repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls &#92;
-  -f title='[**<title>**](#title "○")' &#92;
-  -f head='[**<epic-base>**](#head-branch "○")' &#92;
-  -f base='[**<long-lived-base>**](#base-branch "○")' &#92;
+  --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls &#92;
+  -f title='[**&lt;title&gt;**](#title "○")' &#92;
+  -f head='[**&lt;epic-base&gt;**](#head-branch "○")' &#92;
+  -f base='[**&lt;long-lived-base&gt;**](#base-branch "○")' &#92;
   -F draft=true &#92;
-  -F 'body=@[**<body-file>**](#body-file "○")' &#92;
+  -F 'body=@[**&lt;body-file&gt;**](#body-file "○")' &#92;
   --jq .html_url
 </pre></big>
 
@@ -343,7 +343,7 @@ Merge the task pull request into its base and provide [Merge Result](#merge-resu
 - The merge method is a merge commit.
 
 <big><pre>
-gh api --method PUT repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○")/merge -f merge_method=merge --jq .merged
+gh api --method PUT repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/merge -f merge_method=merge --jq .merged
 </pre></big>
 
 ### Patch Pull Request Body
@@ -353,7 +353,7 @@ Replace a pull request's body and provide [Identity](#identity "●") to the req
 The file is the whole body. The issue a pull request delivers is linked on the pull request itself, so this call leaves that link standing.
 
 <big><pre>
-gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") -F 'body=@[**<body-file>**](#body-file "○")' --jq .html_url
+gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○") -F 'body=@[**&lt;body-file&gt;**](#body-file "○")' --jq .html_url
 </pre></big>
 
 ### Find Review Pull Request
@@ -361,7 +361,7 @@ gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repos
 Find the open pull request whose head is the supplied epic base and provide [Review Number](#review-number "●") to the requester, or [Failure](#failure "●") if the operation fails. If none exists, provide no result.
 
 <big><pre>
-gh api "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=open&head=[**<owner>**](#repository "○"):[**<epic-base>**](#head-branch "○")" --jq '.[0].number'
+gh api "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls?state=open&head=[**&lt;owner&gt;**](#repository "○"):[**&lt;epic-base&gt;**](#head-branch "○")" --jq '.[0].number'
 </pre></big>
 
 ### Submit Epic Merge
@@ -374,9 +374,9 @@ Merge the epic base into its long-lived target at the supplied head and provide 
 
 <big><pre>
 gh api &#92;
-  --method PUT repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○")/merge &#92;
+  --method PUT repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/merge &#92;
   -f merge_method=merge &#92;
-  -f sha=[**<head-sha>**](#verified-head "○") &#92;
+  -f sha=[**&lt;head-sha&gt;**](#verified-head "○") &#92;
   --jq '{merged, message, sha}'
 </pre></big>
 
@@ -385,7 +385,7 @@ gh api &#92;
 Read the merge state, merge commit, head and base of a pull request and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
-gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") &#92;
+gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○") &#92;
   --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'
 </pre></big>
 
@@ -403,10 +403,10 @@ Add one pull request to an issue's Development relation, read the relation back 
 - Exit 1 prints `failed:` with the operation, the step and the tracker's error, or `discrepancy:` with the relation read back.
 
 <big><pre>
-cd "[**<workspace>**](#workspace "○")" && &#92;
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   python3 skills/work-planner/scripts/development-link.py add &#92;
-  --issue [**<issue-owner>**](#issue-identity "○")/[**<issue-repo>**](#issue-identity "○")#[**<issue-number>**](#issue-identity "○") &#92;
-  --pull [**<pr-owner>**](#identity "○")/[**<pr-repo>**](#identity "○")#[**<pull-request-number>**](#identity "○")
+  --issue [**&lt;issue-owner&gt;**](#issue-identity "○")/[**&lt;issue-repo&gt;**](#issue-identity "○")#[**&lt;issue-number&gt;**](#issue-identity "○") &#92;
+  --pull [**&lt;pr-owner&gt;**](#identity "○")/[**&lt;pr-repo&gt;**](#identity "○")#[**&lt;pull-request-number&gt;**](#identity "○")
 </pre></big>
 
 ### Remove Development Link
@@ -422,10 +422,10 @@ Remove one pull request from an issue's Development relation, read the relation 
 - Exit 1 prints `failed:` or `discrepancy:` with the operation, step and tracker error, or the relation read back.
 
 <big><pre>
-cd "[**<workspace>**](#workspace "○")" && &#92;
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   python3 skills/work-planner/scripts/development-link.py remove &#92;
-  --issue [**<issue-owner>**](#issue-identity "○")/[**<issue-repo>**](#issue-identity "○")#[**<issue-number>**](#issue-identity "○") &#92;
-  --pull [**<pr-owner>**](#identity "○")/[**<pr-repo>**](#identity "○")#[**<pull-request-number>**](#identity "○")
+  --issue [**&lt;issue-owner&gt;**](#issue-identity "○")/[**&lt;issue-repo&gt;**](#issue-identity "○")#[**&lt;issue-number&gt;**](#issue-identity "○") &#92;
+  --pull [**&lt;pr-owner&gt;**](#identity "○")/[**&lt;pr-repo&gt;**](#identity "○")#[**&lt;pull-request-number&gt;**](#identity "○")
 </pre></big>
 
 ### Capture Pull Request Links
@@ -443,10 +443,10 @@ Write the complete issue-link snapshot for a pull request collection from the pu
 - A call the tracker refuses outright, such as a rejected credential, exits 1 with `GraphQL read failed:` and what `gh` reported, and writes nothing.
 
 <big><pre>
-cd "[**<workspace>**](#workspace "○")" && &#92;
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   python3 skills/work-planner/scripts/links-by-pull-request.py &#92;
-  --prs '[**<pull-request-records-file>**](#pull-request-records "○")' &#92;
-  --out '[**<issue-link-snapshot-file>**](#link-snapshot-path "○")'
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --out '[**&lt;issue-link-snapshot-file&gt;**](#link-snapshot-path "○")'
 </pre></big>
 
 ### Save Pull Request Snapshot
@@ -454,7 +454,7 @@ cd "[**<workspace>**](#workspace "○")" && &#92;
 Replace the destination file with one complete pull request response and provide [Pull Request Record](#pull-request-record "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
-gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") > '[**<pull-request-json-file>**](#output-files "○")'
+gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○") &gt; '[**&lt;pull-request-json-file&gt;**](#output-files "○")'
 </pre></big>
 
 ### Fetch Pull Request Reviews
@@ -462,7 +462,7 @@ gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pu
 Save every review on one pull request and provide [Reviews](#reviews "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○")/reviews?per_page=100' > '[**<reviews-file>**](#output-files "○")'
+gh api --paginate 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/reviews?per_page=100' &gt; '[**&lt;reviews-file&gt;**](#output-files "○")'
 </pre></big>
 
 ### Fetch Initiative Pull Requests
@@ -473,9 +473,9 @@ Use [Collection Path](#collection-path "○") for the saved collection.
 
 <big><pre>
 gh api &#92;
-  --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" &#92;
-  --jq '.[] | select(.title | startswith("[**<initiative-prefix>**](#initiative-prefix "○")"))' &#92;
-  &gt; '[**<pull-request-records-file>**](#pull-request-records "○")'
+  --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls?state=all&per_page=100" &#92;
+  --jq '.[] | select(.title | startswith("[**&lt;initiative-prefix&gt;**](#initiative-prefix "○")"))' &#92;
+  &gt; '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")'
 </pre></big>
 
 ### Fetch Linked Pull Requests
@@ -492,10 +492,10 @@ Append each pull request linked by the plan but missing from the collection, reg
 - Exit 0 means every linked pull request is in the collection. Exit 1 names each unreadable relation or pull request and appends nothing; the caller treats it as a blocker.
 
 <big><pre>
-cd "[**<workspace>**](#workspace "○")" && &#92;
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   python3 skills/work-planner/scripts/linked-pull-requests.py &#92;
-  --prs '[**<pull-request-records-file>**](#pull-request-records "○")' &#92;
-  --issues '[**<issue-file>**](#issue-records "○")' ...
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --issues '[**&lt;issue-file&gt;**](#issue-records "○")' ...
 </pre></big>
 
 ### Fetch Repository Delivery Pull Requests
@@ -506,9 +506,9 @@ Use [Collection Path](#collection-path "○") for the saved collection.
 
 <big><pre>
 gh api &#92;
-  --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" &#92;
+  --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls?state=all&per_page=100" &#92;
   --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' &#92;
-  &gt; '[**<pull-request-records-file>**](#pull-request-records "○")'
+  &gt; '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")'
 </pre></big>
 
 ### Append Repository Delivery Pull Requests
@@ -519,9 +519,9 @@ Use [Collection Path](#collection-path "○") for the saved collection.
 
 <big><pre>
 gh api &#92;
-  --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" &#92;
+  --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls?state=all&per_page=100" &#92;
   --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' &#92;
-  &gt;&gt; '[**<pull-request-records-file>**](#pull-request-records "○")'
+  &gt;&gt; '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")'
 </pre></big>
 
 ### Fetch Pull Request Files
@@ -530,9 +530,9 @@ Save the paths a pull request changes and provide [Changed Paths](#changed-paths
 
 <big><pre>
 gh api &#92;
-  --paginate repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○")/files &#92;
+  --paginate repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/files &#92;
   --jq '.[].filename' &#92;
-  &gt; '[**<changed-paths-file>**](#output-files "○")'
+  &gt; '[**&lt;changed-paths-file&gt;**](#output-files "○")'
 </pre></big>
 
 ### Fetch Head Check Runs
@@ -540,7 +540,7 @@ gh api &#92;
 Save every check run for one exact commit and provide [Head Checks](#head-checks "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/commits/[**<head-sha>**](#verified-head "○")/check-runs?per_page=100' > '[**<check-runs-file>**](#output-files "○")'
+gh api --paginate 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/commits/[**&lt;head-sha&gt;**](#verified-head "○")/check-runs?per_page=100' &gt; '[**&lt;check-runs-file&gt;**](#output-files "○")'
 </pre></big>
 
 ### Fetch Head Status
@@ -548,7 +548,7 @@ gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#reposito
 Save commit status evidence for one exact commit and provide [Head Status](#head-status "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/commits/[**<head-sha>**](#verified-head "○")/status?per_page=100' > '[**<commit-status-file>**](#output-files "○")'
+gh api --paginate 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/commits/[**&lt;head-sha&gt;**](#verified-head "○")/status?per_page=100' &gt; '[**&lt;commit-status-file&gt;**](#output-files "○")'
 </pre></big>
 
 ### Mark Review Ready
@@ -566,7 +566,7 @@ Mark a draft pull request ready for review and provide [Review State](#review-st
   ```
 
 <big><pre>
-gh api graphql -F query=@'[**<query-file>**](#query-file "○")' --jq .data.markPullRequestReadyForReview.pullRequest.isDraft
+gh api graphql -F query=@'[**&lt;query-file&gt;**](#query-file "○")' --jq .data.markPullRequestReadyForReview.pullRequest.isDraft
 </pre></big>
 
 ### Mark Review Draft
@@ -574,7 +574,7 @@ gh api graphql -F query=@'[**<query-file>**](#query-file "○")' --jq .data.mark
 Mark an open integration pull request with blocked handoff evidence as draft and provide [Review State](#review-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
-gh pr ready [**<pull-request-number>**](#identity "○") --undo --repo [**<owner>**](#repository "○")/[**<repository>**](#repository "○")
+gh pr ready [**&lt;pull-request-number&gt;**](#identity "○") --undo --repo [**&lt;owner&gt;**](#repository "○")/[**&lt;repository&gt;**](#repository "○")
 </pre></big>
 
 ## Fields

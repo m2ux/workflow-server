@@ -1942,7 +1942,7 @@ Keep the refreshed inventory.
     def test_command_annotation_can_supply_the_output(self):
         self.replace(self.inventory, 'Provide [Page](#page "●").', 'The page is available.')
         self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }',
-                     'inventory_fetch { [**limit**](#limit "○"), offset } > [**page**](#page "●")')
+                     'inventory_fetch { [**limit**](#limit "○"), offset } &gt; [**page**](#page "●")')
         self.assertEqual(self.findings(), [])
 
     def test_command_transformation_annotation_resolves_its_callable(self):
@@ -2051,13 +2051,32 @@ Keep the refreshed inventory.
         self.replace(self.inventory, command + '## Fields', '## Fields\n\n' + command)
         self.assertIn('invocation outside command specification', self.kinds())
 
+    def test_raw_html_in_invocations_is_rejected(self):
+        for payload in ('[**<limit>**](#limit "○")', "'<workspace>'", '>', '>>', '<'):
+            with self.subTest(payload=payload):
+                self.inventory.write_text(self.INVENTORY.replace(
+                    'inventory_fetch {', 'inventory_fetch ' + payload + ' {'))
+                self.assertIn('unescaped HTML in invocation', self.kinds())
+
+    def test_encoded_invocation_literals_preserve_contracts(self):
+        for payload in ('[**&lt;limit&gt;**](#limit "○")', "'&lt;workspace&gt;'", '&gt;', '&gt;&gt;', '&lt;'):
+            with self.subTest(payload=payload):
+                self.inventory.write_text(self.INVENTORY.replace(
+                    'inventory_fetch {', 'inventory_fetch ' + payload + ' {'))
+                self.assertEqual(self.findings(), [])
+
+    def test_inline_invocation_wrappers_are_not_literal_html(self):
+        self.replace(self.inventory, '<big><pre>\ninventory_fetch { [**limit**](#limit "○"), offset }\n</pre></big>',
+                     '<big><pre>inventory_fetch { [**limit**](#limit "○"), offset }</pre></big>')
+        self.assertEqual(self.findings(), [])
+
     def test_argument_links_resolve_even_among_shell_quoting(self):
         self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit "○"), offset }',
-                     "cmd --literal '<workspace>' \\\n  --input `[**limit**](#limit \"○\")` --json '{\"key\": \"value\"}'")
+                     "cmd --literal '&lt;workspace&gt;' \\\n  --input `[**limit**](#limit \"○\")` --json '{\"key\": \"value\"}'")
         self.assertEqual(self.findings(), [])
 
     def test_literal_brackets_before_argument_links_keep_their_contracts(self):
-        for redirection in ('>', '>>'):
+        for redirection in ('&gt;', '&gt;&gt;'):
             with self.subTest(redirection=redirection):
                 command = ('gh api --paginate "repos/o/r/pulls?state=all&per_page=100" '
                            '--jq \'.[] | select(.title | startswith("[I") or startswith("[F"))\' '

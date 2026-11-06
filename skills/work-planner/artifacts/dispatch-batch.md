@@ -22,14 +22,14 @@ Select the next batch without tracker writes or worker execution and provide [Ba
 - The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.
 
 <big><pre>
-cd "[**<workspace>**](#workspace "○")" && &#92;
-  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py batch &#92;
-  --authorization '[**<authorization-file>**](#authorization "○")' &#92;
-  --plan '[**<dispatch-export-file>**](#survey-evidence "○")' &#92;
-  --sessions '[**<session-inventory-file>**](#session-inventory "○")' &#92;
-  --capacity [**<free-slot-count>**](#free-slots "○") &#92;
-  --board [**<survey-board>**](#survey-board "○") &#92;
-  &gt; '[**<batch-file>**](#batch "○")'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py batch &#92;
+  --authorization '[**&lt;authorization-file&gt;**](#authorization "○")' &#92;
+  --plan '[**&lt;dispatch-export-file&gt;**](#survey-evidence "○")' &#92;
+  --sessions '[**&lt;session-inventory-file&gt;**](#session-inventory "○")' &#92;
+  --capacity [**&lt;free-slot-count&gt;**](#free-slots "○") &#92;
+  --board [**&lt;survey-board&gt;**](#survey-board "○") &#92;
+  &gt; '[**&lt;batch-file&gt;**](#batch "○")'
 </pre></big>
 
 ### Check Dispatch Start
@@ -39,13 +39,13 @@ Check one selected unit immediately before execution and provide [Validated Unit
 Exit 0 returns the selected unit; exit 1 names the blocking condition.
 
 <big><pre>
-cd "[**<workspace>**](#workspace "○")" && &#92;
-  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py start &#92;
-  --batch '[**<batch-file>**](#batch "○")' &#92;
-  --unit [**<unit-identity>**](#unit-identity "○") &#92;
-  --evidence '[**<start-evidence-file>**](#start-evidence "○")' &#92;
-  --sessions '[**<session-inventory-file>**](#session-inventory "○")' &#92;
-  --capacity [**<free-slot-count>**](#free-slots "○")
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py start &#92;
+  --batch '[**&lt;batch-file&gt;**](#batch "○")' &#92;
+  --unit [**&lt;unit-identity&gt;**](#unit-identity "○") &#92;
+  --evidence '[**&lt;start-evidence-file&gt;**](#start-evidence "○")' &#92;
+  --sessions '[**&lt;session-inventory-file&gt;**](#session-inventory "○")' &#92;
+  --capacity [**&lt;free-slot-count&gt;**](#free-slots "○")
 </pre></big>
 
 ## Fields

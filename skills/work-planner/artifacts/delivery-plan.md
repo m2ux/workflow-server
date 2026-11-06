@@ -32,17 +32,17 @@ Compute available work from supplied board and delivery snapshots and provide [P
 - The computation runs [Evaluate Lane Admission](lane.md#evaluate-lane-admission "ƒ") internally for each derived free unit under [Admission](lane.md#admission). The requester decides holds and dispatch, and supplies missing evidence for another pass.
 
 <big><pre>
-cd "[**<workspace>**](#workspace "○")" && &#92;
-  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py &#92;
-  --items '[**<board-items-file>**](#board-items "○")' &#92;
-  --prs '[**<pull-request-records-file>**](#pull-request-records "○")' &#92;
-  --links '[**<issue-link-snapshot-file>**](#issue-link-snapshot "○")' &#92;
-  --project '[**<checkout>**](#project-checkout "○")' &#92;
-  --revision '[**<revision>**](#revision "○")' &#92;
-  --bases '[**<epic-base-names>**](#epic-base-names "○")' &#92;
-  --engineering '[**<engineering-worktree>**](#engineering-worktree "○")' &#92;
-  --lane [**<lane-index>**](#requested-lane "○") &#92;
-  --dispatch-plan '[**<dispatch-export-file>**](#dispatch-export-path "○")'
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py &#92;
+  --items '[**&lt;board-items-file&gt;**](#board-items "○")' &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot "○")' &#92;
+  --project '[**&lt;checkout&gt;**](#project-checkout "○")' &#92;
+  --revision '[**&lt;revision&gt;**](#revision "○")' &#92;
+  --bases '[**&lt;epic-base-names&gt;**](#epic-base-names "○")' &#92;
+  --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' &#92;
+  --lane [**&lt;lane-index&gt;**](#requested-lane "○") &#92;
+  --dispatch-plan '[**&lt;dispatch-export-file&gt;**](#dispatch-export-path "○")'
 </pre></big>
 
 ## Fields

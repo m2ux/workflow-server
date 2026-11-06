@@ -21,7 +21,7 @@
   "operations/direction": ["review"],
   "operations/execution": ["review"],
   "operations/placed-paths": ["review"],
-  "operations/parameter-placeholders": ["invocation argument contract", "review"],
+  "operations/parameter-placeholders": ["invocation argument contract", "unescaped HTML in invocation", "review"],
   "operations/concrete-examples": ["review"],
   "operations/local-scripts": ["review"],
   "operations/bodies": ["review"],

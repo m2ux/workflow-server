@@ -80,7 +80,7 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
 Run the skill's script tests and provide [Test Result](#test-result "●") to the requester.
 
 <big><pre>
-cd "[**<workspace>**](#workspace "○")/skills/work-planner" && "[**<workspace>**](#workspace "○")/scripts/sbx" python3 -m unittest discover -s test
+cd "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner" && "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 -m unittest discover -s test
 </pre></big>
 
 ### Check Skill Files
@@ -90,7 +90,7 @@ Check the affected skill's files against the rules the shared skill guidelines s
 Repeat the skill argument for additional affected skills.
 
 <big><pre>
-cd "[**<workspace>**](#workspace "○")" && "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py "[**<skill-directory>**](#skill-directory "○")"
+cd "[**&lt;workspace&gt;**](#workspace "○")" && "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py "[**&lt;skill-directory&gt;**](#skill-directory "○")"
 </pre></big>
 
 ### Compare Section Bodies
@@ -102,9 +102,9 @@ Compare every third-level section's body between the change's base and its head 
 - Exit 1 means a section was added, removed or differs.
 
 <big><pre>
-cd "[**<workspace>**](#workspace "○")" && &#92;
-  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py &#92;
-  --compare "[**<base>**](#base "○")" "[**<head>**](#head "○")" "[**<skill-directory>**](#skill-directory "○")"
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py &#92;
+  --compare "[**&lt;base&gt;**](#base "○")" "[**&lt;head&gt;**](#head "○")" "[**&lt;skill-directory&gt;**](#skill-directory "○")"
 </pre></big>
 
 ## Fields

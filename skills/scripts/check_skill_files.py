@@ -177,7 +177,7 @@ KINDS = (
     'list step in heading model', 'indented detail in heading model',
     'heading step sequence', 'procedure without heading steps', 'procedure preamble missing',
     'command contract links', 'operation link role', 'fenced invocation in HTML model', 'malformed HTML invocation',
-    'invocation outside command specification', 'invocation argument contract', 'operation call verb',
+    'invocation outside command specification', 'invocation argument contract', 'unescaped HTML in invocation', 'operation call verb',
     'unwrapped shell invocation', 'duplicate command parameter prose', 'redundant command wrapper', 'repeated procedure title',
 )
 OPERATIONS = KINDS + ('review',)
@@ -663,6 +663,13 @@ def html_commands(path, lines, fenced, entry, specs):
         if not payload.strip():
             yield start, 'malformed HTML invocation', 'invocation is empty'
         for index in range(start, end + 1):
+            literal = lines[index]
+            if index == start:
+                literal = literal.removeprefix('<big><pre>')
+            if index == end:
+                literal = literal.removesuffix('</pre></big>')
+            if re.search(r'[<>]', literal):
+                yield index, 'unescaped HTML in invocation', 'encode literal angle brackets as &lt; and &gt;'
             for match in ARGUMENT_LINK.finditer(lines[index]):
                 role = link_role(match)
                 if entry.get('link_roles') and role == 'operation':

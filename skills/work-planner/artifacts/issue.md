@@ -162,7 +162,7 @@ Save an issue's body alone and provide [Issue Body](#issue-body "●") to the re
 Run in the repository checkout.
 
 <big><pre>
-gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") --jq .body > '[**&lt;output-body-file&gt;**](#output-files "○")'
+gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") --jq .body &gt; '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
 
 ### Retitle Tracker Issue
@@ -215,7 +215,7 @@ Save one complete issue as JSON for the issue-reading scripts and provide [Issue
 - Use [Output Files](#output-files "○") to select the destination.
 
 <big><pre>
-gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") > '[**&lt;issue-json-file&gt;**](#issue-record "○")'
+gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") &gt; '[**&lt;issue-json-file&gt;**](#issue-record "○")'
 </pre></big>
 
 ### Check Issue Closure
@@ -339,7 +339,7 @@ Save every issue in the repository and provide [Issue Collection](#issue-collect
 - Use [Output Files](#output-files "○") to select the destination.
 
 <big><pre>
-gh api --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=all&per_page=100" > '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
+gh api --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=all&per_page=100" &gt; '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
 
 ### Fetch Closed Issues
@@ -350,7 +350,7 @@ Save every closed issue in the repository and provide [Issue Collection](#issue-
 - Use [Output Files](#output-files "○") to select the destination.
 
 <big><pre>
-gh api --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=closed&per_page=100" > '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
+gh api --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=closed&per_page=100" &gt; '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
 
 ### Fetch Selected Closed Issues

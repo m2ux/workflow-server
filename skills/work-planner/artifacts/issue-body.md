@@ -177,7 +177,7 @@ Read one listed repository's visibility with the authenticated repository API an
 - Save each object with its `full_name` and `private` fields; combine the objects into the caller's JSON array. A failed fetch supplies no visibility.
 
 <big><pre>
-gh api repos/[**&lt;owner&gt;**](#reference-repositories "○")/[**&lt;repo&gt;**](#reference-repositories "○") > '[**&lt;repository-json-file&gt;**](#output-files "○")'
+gh api repos/[**&lt;owner&gt;**](#reference-repositories "○")/[**&lt;repo&gt;**](#reference-repositories "○") &gt; '[**&lt;repository-json-file&gt;**](#output-files "○")'
 </pre></big>
 
 ### Validate Reference Visibility
