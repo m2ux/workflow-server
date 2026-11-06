@@ -1,0 +1,1298 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "field": "Instrument",
+    "start": 110,
+    "end": 112,
+    "language": "text",
+    "content": "<workspace>/scripts/sbx python3 -m pytest skills/work-planner/test -q",
+    "before": "Each selected criterion's named command, test or check, with its command arguments.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "field": "Project Checkout",
+    "start": 120,
+    "end": 122,
+    "language": "text",
+    "content": "/projects/workflow-server",
+    "before": "The supplied checkout of the project in which the instrument is run.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "field": "Revision",
+    "start": 130,
+    "end": 132,
+    "language": "text",
+    "content": "i11/e16/workspace",
+    "before": "The branch, tag or commit supplied for verification.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/architecture-overview.md",
+    "field": "Template",
+    "start": 33,
+    "end": 115,
+    "language": "markdown",
+    "content": "# Architecture Overview \u2014 {{Change Name}}\n\n> architecture-overview \u00b7 [{{owner/repo#950}}]({{pull request URL}}) \u00b7 {{YYYY-MM-DD}}\n\n## Summary\n\n{{Three sentences at most: what the change does, which part of the system it lands in, and what it makes possible.}}\n\n## Structure\n\n{{One paragraph placing the change: the areas it reaches and what each is for.}}\n\n```mermaid\n---\ntitle: Components \u2014 {{Change Name}}\n---\nflowchart LR\n    Caller([Caller])\n\n    subgraph Area [{{Area Name}}]\n        Entry[{{Module}}]\n        Store[({{Store}})]\n    end\n\n    Caller -->|{{interaction}}| Entry\n    Entry -->|{{interaction}}| Store\n\n    style Entry fill:#c8e6c9,stroke:#2e7d32\n    style Store fill:#f5f5f5,stroke:#9e9e9e\n```\n\n### {{Area Name}}\n\n- **{{Element}}.**\n  {{What it is responsible for, and what the change gives it.}}\n\n## Behaviour\n\n{{One sentence naming the flows below.}}\n\n### {{Flow Name}}\n\n{{One sentence: what starts this flow and what it yields.}}\n\n```mermaid\n---\ntitle: Sequence \u2014 {{Flow Name}}\n---\nsequenceDiagram\n    actor Caller\n    participant Entry as {{Module}}\n    participant Store as {{Store}}\n\n    Caller->>Entry: {{call}}\n    Entry->>Store: {{read or write}}\n    Store-->>Entry: {{result}}\n    Entry-->>Caller: {{result}}\n```\n\n- **{{Step}}.**\n  {{What happens here, and the condition it rests on.}}\n\n## What Changed\n\n### {{Area Name}}\n\n- **{{Element}}.**\n  {{The behaviour it now has.}}\n\n## Reading Order\n\n1. **[{{file}}]({{permalink}})** \u2014 {{why the diff starts here}}.\n\n## Risks and Watch Points\n\n- **{{Risk}}.**\n  {{What can go wrong, and where the reviewer sees it.}}\n\n## References\n\n- **R1.** [{{Title}}]({{URL}}) \u2014 {{what the reader finds there}}.",
+    "before": "## Fields\n\n### Template\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Initiative Record",
+    "start": 208,
+    "end": 210,
+    "language": "text",
+    "content": "issue-936.json",
+    "before": "The supplied complete current initiative JSON at its local file path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Epic Records",
+    "start": 218,
+    "end": 220,
+    "language": "text",
+    "content": "issue-943.json issue-937.json",
+    "before": "The supplied complete current epic JSON records, each at a separate local file path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Task Records",
+    "start": 228,
+    "end": 230,
+    "language": "text",
+    "content": "issue-637.json",
+    "before": "The supplied complete current task issue JSON records, each at a separate local file path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Pull Request Records",
+    "start": 238,
+    "end": 240,
+    "language": "text",
+    "content": "prs.json",
+    "before": "The supplied freshly fetched complete REST pull request records, one JSON object per nonempty line at the local file path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Issue Link Snapshot",
+    "start": 252,
+    "end": 254,
+    "language": "text",
+    "content": "links.json",
+    "before": "The supplied complete pull-request issue-link snapshot at its local file path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Board Identity",
+    "start": 262,
+    "end": 264,
+    "language": "text",
+    "content": "users/m2ux/projectsV2/9",
+    "before": "The supplied users/owner/projectsV2/number or orgs/owner/projectsV2/number board identity.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Board Fields",
+    "start": 272,
+    "end": 274,
+    "language": "text",
+    "content": "fields.json",
+    "before": "The supplied board field definitions at their local snapshot path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Board Items",
+    "start": 282,
+    "end": 284,
+    "language": "text",
+    "content": "items.json",
+    "before": "The supplied board items with Status and their complete issue records, at the local paginated snapshot path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Output Directory",
+    "start": 292,
+    "end": 294,
+    "language": "text",
+    "content": "board/",
+    "before": "The supplied local directory receiving generated calls.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Assignee Login",
+    "start": 306,
+    "end": 308,
+    "language": "text",
+    "content": "m2ux",
+    "before": "The supplied login assigned to work from Ready.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Board Identity",
+    "start": 50,
+    "end": 52,
+    "language": "text",
+    "content": "users/<owner>/projectsV2/9",
+    "before": "The queue belongs to one theme board, identified as `users/{owner}/projectsV2/{id}` or `orgs/{owner}/projectsV2/{id}`. Its source snapshots contain board items with Status, board fields, initiative pull requests and any off-board issues its rows depend on.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Board Items",
+    "start": 175,
+    "end": 177,
+    "language": "text",
+    "content": "items.json",
+    "before": "The supplied current board items with Status and their complete issue records, at the local paginated snapshot path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Pull Request Records",
+    "start": 185,
+    "end": 187,
+    "language": "text",
+    "content": "prs.json",
+    "before": "The supplied complete initiative and hot-fix pull request records, one JSON object per nonempty line at the local file path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Issue Link Snapshot",
+    "start": 195,
+    "end": 197,
+    "language": "text",
+    "content": "links.json",
+    "before": "The complete supplied pull-request issue-link snapshot at its local JSON path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Board Fields",
+    "start": 205,
+    "end": 207,
+    "language": "text",
+    "content": "fields.json",
+    "before": "The supplied board-field definitions at their local snapshot path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Output Directory",
+    "start": 215,
+    "end": 217,
+    "language": "text",
+    "content": "board/",
+    "before": "The supplied local directory receiving proposed calls.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Assignee Login",
+    "start": 225,
+    "end": 227,
+    "language": "text",
+    "content": "m2ux",
+    "before": "The supplied login assigned to work from Ready.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Board Coordinates",
+    "start": 360,
+    "end": 363,
+    "language": "text",
+    "content": "owner: m2ux\nboard-number: 13",
+    "before": "The supplied existing board owner and number.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Issue Id",
+    "start": 399,
+    "end": 401,
+    "language": "text",
+    "content": "3040123456",
+    "before": "The supplied numeric issue id; it is distinct from the issue number.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Item Coordinates",
+    "start": 413,
+    "end": 416,
+    "language": "text",
+    "content": "board: users/m2ux/projectsV2/13\nitem-id: 1001",
+    "before": "The supplied board item id and board coordinates.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Status Field",
+    "start": 424,
+    "end": 427,
+    "language": "text",
+    "content": "field-id: 419167630\noption-id: OPTION",
+    "before": "The supplied Status field id and its option ids.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Status Input File",
+    "start": 435,
+    "end": 437,
+    "language": "text",
+    "content": "status-backlog.json",
+    "before": "The local input file containing the selected Status field id as a JSON integer and option id as a JSON string, from the fetched board fields.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Status Input File",
+    "start": 441,
+    "end": 443,
+    "language": "json",
+    "content": "{\"fields\":[{\"id\":419167630,\"value\":\"OPTION\"}]}",
+    "before": "```\n\n**Example contents:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Board Fields File",
+    "start": 483,
+    "end": 485,
+    "language": "text",
+    "content": "fields.json",
+    "before": "The supplied local output path for the complete board-field definitions.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Board Items File",
+    "start": 493,
+    "end": 495,
+    "language": "text",
+    "content": "items.json",
+    "before": "The supplied local output path for the board items with Status and their complete issues.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Theme Name",
+    "start": 503,
+    "end": 505,
+    "language": "text",
+    "content": "Canon",
+    "before": "The supplied theme name, excluding any originating proposal designator.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Epic Identity",
+    "start": 480,
+    "end": 482,
+    "language": "text",
+    "content": "i07/e00",
+    "before": "The initiative and epic identifier, with an epic branch prefix of `i<initiative-number>/e<epic-number>`.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Epic-Base Name",
+    "start": 502,
+    "end": 504,
+    "language": "text",
+    "content": "i07/e00/main",
+    "before": "The full epic-base branch name.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Task Branch",
+    "start": 512,
+    "end": 514,
+    "language": "text",
+    "content": "i07/e00/w01-queue-plan",
+    "before": "The destination task branch name.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Base Branch",
+    "start": 522,
+    "end": 524,
+    "language": "text",
+    "content": "i07/e00/main",
+    "before": "The fetched base from which the task branch is rooted.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Worktree Path",
+    "start": 532,
+    "end": 534,
+    "language": "text",
+    "content": ".worktrees/i07/e00/w01-queue-plan",
+    "before": "The caller-composed lasting path, resolved against the checkout running the command and placed under the project\u2019s worktree directory.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Pull Request Number",
+    "start": 542,
+    "end": 544,
+    "language": "text",
+    "content": "950",
+    "before": "The repository-local pull request number.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Target Branch",
+    "start": 556,
+    "end": 558,
+    "language": "text",
+    "content": "main",
+    "before": "The long-lived target branch whose current protection and active rules govern readiness.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Output Files",
+    "start": 566,
+    "end": 569,
+    "language": "text",
+    "content": "branch-protection-file: protection.json\nbranch-rules-file: branch-rules.json",
+    "before": "Destination paths for the requested protection and active-rule responses.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Revision",
+    "start": 625,
+    "end": 627,
+    "language": "text",
+    "content": "origin/i07/e00/main",
+    "before": "The fetched commit or revision evaluated by the run.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Board Items",
+    "start": 90,
+    "end": 92,
+    "language": "text",
+    "content": "items.json",
+    "before": "The current board-items snapshot file, including each issue body.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Pull Request Records",
+    "start": 100,
+    "end": 102,
+    "language": "text",
+    "content": "prs.json",
+    "before": "The current pull request records snapshot file.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Issue-Link Snapshot",
+    "start": 110,
+    "end": 112,
+    "language": "text",
+    "content": "links.json",
+    "before": "The complete Development relation snapshot file.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Epic-Base Names",
+    "start": 120,
+    "end": 122,
+    "language": "text",
+    "content": "i07/e00/main,i07/e00/workflows",
+    "before": "A comma-separated list of full epic-base branch names.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Engineering Worktree",
+    "start": 130,
+    "end": 132,
+    "language": "text",
+    "content": "<checkout>/.engineering",
+    "before": "The engineering checkout where each free row\u2019s linked work-item file is read.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Requested Lane",
+    "start": 144,
+    "end": 146,
+    "language": "text",
+    "content": "2",
+    "before": "The optional requested bare decimal lane index; absent when the run names no lane, meeting [Index](lane.md#index).\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Revision",
+    "start": 174,
+    "end": 176,
+    "language": "text",
+    "content": "origin/workspace",
+    "before": "The fetched commit or revision evaluated by the run.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "field": "Dependency Files",
+    "start": 189,
+    "end": 196,
+    "language": "text",
+    "content": "I=/drafts/live-936.md\nE00=/drafts/live-943.md\nE01=/drafts/live-937.md\nE00:W01=/drafts/e00/w01.md\nE01:W01=/drafts/e01/w01.md\nR=/records/joins.md",
+    "before": "The initiative body file, each epic id and body file, each task id and work-item file, and each record file accounting for split candidate units. Files are absolute paths.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "field": "Renumber Inputs",
+    "start": 204,
+    "end": 211,
+    "language": "text",
+    "content": "initiative-number: 07\nepic-number: 1\ntask-number-map: 7:3,3:5\naffected-body-file: live-*.md\nepic-number-map: 6:0,0:1\nbody-file: live-936.md live-943.md",
+    "before": "The initiative number, epic number for task renumbering, owning epic body for task renumbering, confirmed numbering map and affected body files, with explicitly authorized outside-initiative files when supplied.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "field": "Pull Request Records",
+    "start": 219,
+    "end": 221,
+    "language": "text",
+    "content": "prs.json",
+    "before": "The supplied current complete pull request records, one JSON object per nonempty line at the local file path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "field": "Authorization",
+    "start": 56,
+    "end": 58,
+    "language": "json",
+    "content": "{\"board\": \"users/o/projectsV2/7\", \"scope\": [\"o/r#I07\"], \"lane\": null}",
+    "before": "### Authorization\n\nOne run records its board identity, scope selectors and requested lane in a JSON object. The scope is the selected board (`[\"*\"]`), or a list of repository-qualified initiative, epic, task or hot-fix identities, such as `o/r#I07`, `o/r#I07:E00`, `o/r#I07:E00:W01` or `o/r#F02`. Every row of a joined unit must fall within that scope. An explicit joined selector, `o/r#I07:E00:W01+W02`, authorizes both rows. The requested lane meets [Index](lane.md#index), represented as `null` when none is requested.\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "field": "Session Inventory",
+    "start": 68,
+    "end": 70,
+    "language": "json",
+    "content": "[{\"unit\": \"o/r#I07:E00:W01\", \"session\": \"worker-1\", \"state\": \"running\"}]",
+    "before": "### Session Inventory\n\nThe harness supplies each observed session's `unit`, `session` identity and `state`: `preparing`, `running`, `review`, `blocked` or `completed`. Every state except `completed` holds its rows against another start. Only observed execution changes justify a state update. Free capacity is the harness's actual available worker slots, accounting for the coordinator, other sessions and component contributors; a review or blocked label alone frees no slot.\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "field": "Start Readiness",
+    "start": 84,
+    "end": 86,
+    "language": "json",
+    "content": "{\"unit\": \"o/r#I07:E00:W01\", \"published_record\": \"2026-11-05-943-i07-e00-w01-work\", \"reserved_record\": \"2026-11-05-943-i07-e00-w01-work\", \"reservation_verified\": true}",
+    "before": "### Start Readiness\n\nThe start names one selected unit, has a currently free harness slot and overlaps no held or running session. Its supplied evidence names that unit, the planning record confirmed on the remote engineering branch, and the record associated with its confirmed hold. For rows, that association is read from every live row reservation; for a hot-fix it is the run's record for the unit whose board hold was confirmed. The evidence is gathered in that order before execution; any missing, mismatched or unverified evidence blocks the start.\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Template",
+    "start": 212,
+    "end": 242,
+    "language": "markdown",
+    "content": "## Overview\n\n{{One paragraph: what this epic delivers and why it exists within the initiative.}}\n\n## Problem\n\n{{The friction as it is now. Bullets for distinct facets, sub-bullets for several items.}}\n\n## Proposal\n\n{{The design, in bullets or paragraphs, each opening with a bold statement, and its body on the next line.}}\n\n## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | {{What the task delivers, at most eight words}} | AC{{n}}, AC{{m}} | {{Earlier task in this epic, [Exx:Wyy](\u2026) or [Exx](\u2026) in an earlier epic, or #issue}} | {{Tasks that can land in the same pull request}} | {{Lane index, or empty}} | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** {{An end state of one invariant. It ends by naming its instrument.}}\n\n## Open Questions\n\n- {{An undecided point the epic cannot start without, with a recommendation in the planning record. Resolve every one before the first task starts, then delete the section.}}\n\n## References\n\n- **R1.** [Planning record]({{PLANNING_RECORD_URL}}) \u2014 {{What the reader finds there.}}",
+    "before": "## Fields\n\n### Template\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Required Criteria",
+    "start": 333,
+    "end": 343,
+    "language": "json",
+    "content": "  [\n    {\n      \"branch\": \"workflows\",\n      \"paths\": [\"corpus\"],\n      \"criterion\": \"The definitions this epic changes carry no outstanding confirmed finding, one neither fixed on the epic's branch nor taken by an issue, as the canon audit's coverage report shows.\",\n      \"phrase\": \"canon audit\",\n      \"row\": \"Canon audit of the changed definitions\"\n    }\n  ]",
+    "before": "  A revision resolving to no commit, unreadable JSON, a value other than an array, or an entry lacking a field or stating `paths` as anything but a non-empty list of non-empty strings leaves the project's required criteria unevaluable. The check reports that and names the fault, and reports no epic as lacking a criterion.\n- **Example.**\n  workflow-server requires its corpus audit of work that changes the workflow definitions under `corpus` on `workflows`:\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Epic Record",
+    "start": 375,
+    "end": 377,
+    "language": "text",
+    "content": "issue-943.json",
+    "before": "The supplied complete current epic issue JSON.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Pull Request Records",
+    "start": 393,
+    "end": 395,
+    "language": "text",
+    "content": "prs.json",
+    "before": "The supplied current pull request records for the epic.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Issue Links",
+    "start": 403,
+    "end": 405,
+    "language": "text",
+    "content": "links.json",
+    "before": "The complete supplied issue-link snapshot.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Task Records",
+    "start": 413,
+    "end": 415,
+    "language": "text",
+    "content": "issue-637.json",
+    "before": "The supplied task issue JSON files.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Delivery Matches",
+    "start": 423,
+    "end": 425,
+    "language": "text",
+    "content": "W01=950,W01=951,W02=950",
+    "before": "The confirmed task-to-pull-request matches supplied by the caller.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Epic Bases",
+    "start": 441,
+    "end": 444,
+    "language": "text",
+    "content": "origin/i07/e00/main\norigin/i07/e00/workflows",
+    "before": "The fetched epic bases supplied for recording delivery, each identified by its revision.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Output Body",
+    "start": 452,
+    "end": 454,
+    "language": "text",
+    "content": "fixed-943.md",
+    "before": "The supplied local output path for the complete body.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Criterion Selection",
+    "start": 462,
+    "end": 464,
+    "language": "text",
+    "content": "AC1,AC3",
+    "before": "The supplied verified criterion ids, or the unmet criterion ids and their delivery evidence for gap planning.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Task Selection",
+    "start": 472,
+    "end": 474,
+    "language": "text",
+    "content": "W01,W02",
+    "before": "The confirmed task ids for the selected delivery units. A release selection also carries the supplied explicit user decision releasing the hold.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Board Items",
+    "start": 482,
+    "end": 484,
+    "language": "text",
+    "content": "items.json",
+    "before": "The supplied current board items, including Status.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Planning Folder",
+    "start": 492,
+    "end": 494,
+    "language": "text",
+    "content": "https://github.com/<owner>/<repo>/tree/engineering/artifacts/planning",
+    "before": "The existing supplied planning-folder identity, planning-records base URL and the date the record is opened.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Engineering Worktree",
+    "start": 502,
+    "end": 504,
+    "language": "text",
+    "content": ".engineering",
+    "before": "The supplied engineering checkout containing the planning records.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "field": "Epic Record",
+    "start": 146,
+    "end": 148,
+    "language": "text",
+    "content": "issue-943.json",
+    "before": "The supplied complete current epic issue JSON.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "field": "Pull Request Records",
+    "start": 164,
+    "end": 166,
+    "language": "text",
+    "content": "prs.json",
+    "before": "The supplied current pull request records for the epic.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "field": "Issue Links",
+    "start": 174,
+    "end": 176,
+    "language": "text",
+    "content": "links.json",
+    "before": "The complete supplied snapshot of the pull requests' Development-linked issues.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "field": "Output Body",
+    "start": 192,
+    "end": 194,
+    "language": "text",
+    "content": "epic-body.md",
+    "before": "The supplied local scratch destination for the corrected epic body.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "field": "Hot-fix Record",
+    "start": 164,
+    "end": 166,
+    "language": "text",
+    "content": "issue-874.json",
+    "before": "The supplied complete current hot-fix issue JSON.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "field": "Pull Request Records",
+    "start": 178,
+    "end": 180,
+    "language": "text",
+    "content": "prs.json",
+    "before": "The supplied current pull request records.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "field": "Issue Links",
+    "start": 188,
+    "end": 190,
+    "language": "text",
+    "content": "links.json",
+    "before": "The complete supplied issue-link snapshot.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "field": "Delivery Selection",
+    "start": 200,
+    "end": 203,
+    "language": "text",
+    "content": "pull-request-number: 950\ncriterion-ids: AC1",
+    "before": "The confirmed delivering pull request number and the verified criterion ids.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "field": "Output Body",
+    "start": 211,
+    "end": 213,
+    "language": "text",
+    "content": "fixed-874.md",
+    "before": "The supplied local destination for the complete provided body.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "field": "Template",
+    "start": 161,
+    "end": 196,
+    "language": "markdown",
+    "content": "## Overview\n\n{{One paragraph: what the initiative achieves, stated as the end state. Name the goal the reviews will test against.}}\n\n## Problem\n\n{{One sentence on the friction, then one bullet per facet. Each bullet opens with a bold statement, and its body is on the next line.}}\n\n- **{{Facet}}.**\n  {{The evidence.}}\n\n## Proposal\n\n- **{{Move}}.**\n  {{What is done, within two lines.}}\n\n## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) | {{The epic's title name, the part before the colon}} | AC{{n}}, AC{{m}} | {{Earlier epic}} | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** {{One invariant. It is specific, measurable, achievable, relevant, and time-bound. It carries no stale count. It names no initiative, epic, task, or issue. It states what the initiative achieves as a whole, and it ends by naming its instrument.}}\n\n## Non-Goals\n\n- {{One succinct sentence on what this initiative does not do. It names no initiative, epic, task or issue, and no owner.}}\n\n## References\n\n- **R1.** [{{Title}}]({{URL}}) \u2014 {{What the reader finds there.}}\n- **R2.** **Source.** [{{Title}}]({{URL}}) \u2014 {{The requirements this initiative's criteria answer to.}}",
+    "before": "## Fields\n\n### Template\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "field": "Initiative Record",
+    "start": 277,
+    "end": 279,
+    "language": "text",
+    "content": "issue-936.json",
+    "before": "The supplied complete current initiative issue JSON.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "field": "Epic Records",
+    "start": 287,
+    "end": 289,
+    "language": "text",
+    "content": "issue-943.json issue-937.json",
+    "before": "Every linked epic's current JSON.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "field": "Source Evidence",
+    "start": 297,
+    "end": 301,
+    "language": "text",
+    "content": "repository: m2ux/workflow-server\nsource-path: docs/spec.md\nrevision: 4a217fe6",
+    "before": "The source locations, checkout paths and authenticated source access supplied for reading, with the contents and source identities once read. A pinned GitHub source has its repository owner and name, path and pinned revision, URL-encoded for the request.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "field": "Output Files",
+    "start": 309,
+    "end": 312,
+    "language": "text",
+    "content": "output-body-file: fixed-936.md\nsource-file: source-R1.md",
+    "before": "The supplied local destinations for source contents or a complete body; the body output is optional when only a delivery report is requested.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "field": "Criterion Selection",
+    "start": 320,
+    "end": 322,
+    "language": "text",
+    "content": "AC2",
+    "before": "The supplied verified criterion ids.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Output Files",
+    "start": 356,
+    "end": 359,
+    "language": "text",
+    "content": "output-body-file: fixed.md\nrepository-json-file: repository.json",
+    "before": "The supplied local destinations for a corrected complete body, a body-snapshot JSON record or repository visibility evidence.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Repository Snapshot",
+    "start": 375,
+    "end": 377,
+    "language": "text",
+    "content": "repositories.json",
+    "before": "The supplied JSON array of fetched repository objects, each retaining full_name and private.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Body Record",
+    "start": 393,
+    "end": 395,
+    "language": "text",
+    "content": "issue.json",
+    "before": "The complete current issue-shaped JSON record: a saved tracker issue record, or a local [Body Snapshot](#body-snapshot) for an unpublished draft.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Initiative Record",
+    "start": 403,
+    "end": 405,
+    "language": "text",
+    "content": "initiative.json",
+    "before": "The complete parent initiative JSON used to resolve an epic's cross-epic references.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Epic Records",
+    "start": 413,
+    "end": 415,
+    "language": "text",
+    "content": "epic.json",
+    "before": "Every linked epic's complete current JSON, supplied separately when validating an initiative's row titles and structure.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Pull Request Records",
+    "start": 423,
+    "end": 425,
+    "language": "text",
+    "content": "prs.json",
+    "before": "The current complete REST pull request snapshot as one JSON object per nonempty line, used to determine which declared branches and paths the epic changes.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Changed File Records",
+    "start": 433,
+    "end": 435,
+    "language": "text",
+    "content": "950=changed-950.txt",
+    "before": "Each pull request number paired with its local changed-paths file as `NUMBER=FILE`; the file contains one tracker-supplied changed path per line.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Evaluated Revision",
+    "start": 447,
+    "end": 449,
+    "language": "text",
+    "content": "origin/i07/e00/workspace",
+    "before": "The fetched epic base on the declaration's long-lived branch, or that long-lived branch while the epic has no base on it.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Identity",
+    "start": 501,
+    "end": 503,
+    "language": "text",
+    "content": "943",
+    "before": "The issue has its repository, number and URL. A new issue has its repository before creation supplies its number and URL.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Repository",
+    "start": 532,
+    "end": 534,
+    "language": "text",
+    "content": "m2ux/workflow-server",
+    "before": "The tracker repository owner and name. Commands use these supplied values as owner and repo, or repository.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Issue Record",
+    "start": 542,
+    "end": 544,
+    "language": "text",
+    "content": "issue-943.json",
+    "before": "The complete current tracker issue JSON at the supplied local path, carrying its [Identity](#identity), [Content](#content) and [State](#state).\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Output Files",
+    "start": 552,
+    "end": 554,
+    "language": "text",
+    "content": "live-943.md",
+    "before": "The supplied local destinations for the requested issue, body, discussion, collection or Development evidence.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Issue Changes",
+    "start": 570,
+    "end": 572,
+    "language": "text",
+    "content": "body.md",
+    "before": "The supplied complete body file, title and labels for creation, or the selected body and metadata changes for an existing issue, with an optional comment file.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Comment",
+    "start": 584,
+    "end": 587,
+    "language": "text",
+    "content": "comment-text: Delivered by #950.\ncomment-file: comment-874.md",
+    "before": "The supplied exact comment text, as one line or a complete local file, with the reviewer identity and addressed feedback for a reply. A posted comment also has its saved URL.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Development Snapshot",
+    "start": 607,
+    "end": 609,
+    "language": "text",
+    "content": "links-943.json",
+    "before": "A complete issue-links file, keyed by issue number and carrying its repository identity. Each issue maps to all Development pull requests across repositories and states, or an empty array after a complete empty read.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Development Snapshot",
+    "start": 613,
+    "end": 617,
+    "language": "json",
+    "content": "{\n  \"943\": [{\"repo\": \"owner/repo\", \"number\": 980, \"state\": \"MERGED\"}]\n}",
+    "before": "```\n\n**Example contents:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Issue Collection",
+    "start": 625,
+    "end": 627,
+    "language": "text",
+    "content": "closed-issues.json",
+    "before": "One supplied tracker issue JSON or a collection of issue records. Pull request entries carry a pull_request field.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Audit Selection",
+    "start": 635,
+    "end": 637,
+    "language": "text",
+    "content": "637, 943, 946",
+    "before": "The supplied issue numbers to audit, separated by commas, or the selection of every closed issue in the repository.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Closure Findings",
+    "start": 645,
+    "end": 650,
+    "language": "text",
+    "content": "unsupported: owner/repo#943 closed as completed: acceptance criteria are missing or unticked; owner/repo#980 not merged (closed) - Work Title\nunevaluable: owner/repo#944 closed as completed: Development links not captured - Other Title\nnot planned: owner/repo#945 closed as not_planned: acceptance criteria are missing or unticked - Moved Title\n1 unsupported, 1 unevaluable, 1 not planned",
+    "before": "The closure gate verdict or the sweep results, retaining each issue identity, state reason and finding, with execution failures identified.\n\n**Example output:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Tracker Prefix",
+    "start": 658,
+    "end": 661,
+    "language": "text",
+    "content": "initiative-prefix: [I08]\nprefix-letter: I",
+    "before": "The supplied kind prefix letter, initiative prefix or existing prefixed titles. An initiative prefix includes the initiative id and its enclosing brackets.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "field": "Issue Collection",
+    "start": 202,
+    "end": 204,
+    "language": "text",
+    "content": "issues.json",
+    "before": "The complete supplied repository issue collection, at its local JSON file path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "field": "Template",
+    "start": 116,
+    "end": 136,
+    "language": "markdown",
+    "content": "# [Descriptive name] \u2014 [Month Year]\n\n> [Classifier] \u00b7 Created [YYYY-MM-DD]\n\n## Executive Summary\n\n[Two paragraphs on the purpose of this work and why it matters.]\n\n## Artifacts\n\n| Artifact | What it holds |\n| --- | --- |\n| [Name](file.md) | What this artifact holds |\n\n## Links\n\n| Resource | Link |\n| --- | --- |\n| [External reference] | [link] |",
+    "before": "## Fields\n\n### Template\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "field": "Layout",
+    "start": 146,
+    "end": 150,
+    "language": "text",
+    "content": "./\n\u251c\u2500\u2500 README.md\n\u2514\u2500\u2500 \u2026",
+    "before": "### Layout\n\nREADME.md is the one file the folder must hold. Any file beyond README.md is added as the work needs it.\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "field": "Planning Folder",
+    "start": 183,
+    "end": 185,
+    "language": "text",
+    "content": "artifacts/planning/2026-10-15-950-queue-plan",
+    "before": "The supplied folder path and its registered artifact files, meeting [Layout](#layout). A new folder is absent until created.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "field": "Engineering Worktree",
+    "start": 193,
+    "end": 195,
+    "language": "text",
+    "content": ".engineering",
+    "before": "The checkout holding the engineering branch, as an absolute path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "field": "Commit Message File",
+    "start": 207,
+    "end": 209,
+    "language": "text",
+    "content": "/tmp/msg.txt",
+    "before": "The supplied local file holding the exact commit message.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/proposal-body.md",
+    "field": "Template",
+    "start": 43,
+    "end": 66,
+    "language": "markdown",
+    "content": "## Overview\n\n{{One paragraph: the problem this proposal scopes. Name the goal the clauses state.}}\n\n## Problem\n\n{{One sentence on the friction, then one bullet per facet. Each bullet opens with a bold statement, and its body is on the next line.}}\n\n- **{{Facet}}.**\n  {{The evidence.}}\n\n## Goal\n\n- {{A clause: an outcome someone could observe. Not a description of the change.}}\n\n## Non-Goals\n\n- {{One succinct sentence on what this proposal does not do. It names no initiative, epic, task or issue, and no owner.}}\n\n## References\n\n- **R1.** [{{Title}}]({{URL}}) \u2014 {{What the reader finds there. Delete the section when there is none.}}",
+    "before": "## Fields\n\n### Template\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "field": "Template",
+    "start": 107,
+    "end": 134,
+    "language": "markdown",
+    "content": "## Overview\n\n{{One paragraph: what this pull request delivers and why.}}\n\n## Changes\n\n{{One sentence on what changed and why it was needed. Then one heading per area the changes sit in. A heading is two to five words, in title case, such as Queue Placement or Task Readiness. Under each heading, one bullet per functional change in that area. The bullet opens with a bold lead, as the scheme's Bold leads rule lays one out. The change is at most two lines, the lead included: the lead names what it does, and the behavior is the single line under it.}}\n\n### {{Queue Placement}}\n\n- **{{What it does.}}**\n  {{The behavior as it is.}}\n\n## Test Plan\n\n| Test | Description | Coverage | Pass |\n| --- | --- | --- | --- |\n| T1 | {{Check name, per [Test Plan](#test-plan).}} | {{Observed criteria, if any.}} | [{{Result}}]({{Planning document URL#test-section}}) |\n\n## Open Questions\n\n- {{An undecided point. Resolve it, then delete the section.}}\n\n## References\n\n- **R1.** [{{Title}}]({{URL}}) \u2014 {{What the reader finds there. The issue this pull request delivers is not a reference: the Development field carries that link, as [Issue Links](pull-request.md#issue-links) state. Delete the section when there is none.}}",
+    "before": "## Fields\n\n### Template\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "field": "Pull Request Record",
+    "start": 194,
+    "end": 196,
+    "language": "text",
+    "content": "pr-950.json",
+    "before": "The supplied current REST pull request JSON.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "field": "Output Body",
+    "start": 208,
+    "end": 210,
+    "language": "text",
+    "content": "fixed-950.md",
+    "before": "The supplied local destination for the complete body.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Merge Permission",
+    "start": 645,
+    "end": 658,
+    "language": "json",
+    "content": "  {\n    \"autoMode\": {\n      \"environment\": [\n        \"$defaults\",\n        \"Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review\"\n      ],\n      \"allow\": [\n        \"$defaults\",\n        \"Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review. Merges into the default branch are not covered\"\n      ]\n    }\n  }",
+    "before": "\n- **Claude Code.**\n  User settings (`~/.claude/settings.json`) grant it with an `autoMode.allow` rule and an `autoMode.environment` entry, each array keeping `\"$defaults\"`; auto mode reads neither from project settings. `claude auto-mode config` prints the rules in effect.\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Identity",
+    "start": 676,
+    "end": 679,
+    "language": "text",
+    "content": "m2ux/workflow-server#950\n950",
+    "before": "The pull request\u2019s repository-qualified identity, or its repository and local number. A new pull request has no saved identity until creation succeeds.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Issue Identity",
+    "start": 719,
+    "end": 721,
+    "language": "text",
+    "content": "m2ux/workflow-server#637",
+    "before": "The delivery issue\u2019s repository-qualified identity; absent where the work carries no issue of its own.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Pull Request Records",
+    "start": 733,
+    "end": 735,
+    "language": "text",
+    "content": "prs.json",
+    "before": "Complete pull request REST responses stored as JSON lines, from one or more repositories. Each record includes its repository identity and `html_url`.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Issue-Link Snapshot",
+    "start": 743,
+    "end": 751,
+    "language": "json",
+    "content": "[\n  {\n    \"repo\": \"owner/repo\",\n    \"number\": 950,\n    \"closingIssuesReferences\": [{\"repo\": \"owner/repo\", \"number\": 637}]\n  }\n]",
+    "before": "The complete saved Development snapshot, with one entry per pull request and every linked issue\u2019s repository and number, or an empty array.\n\n**Example contents:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Link-Snapshot Path",
+    "start": 759,
+    "end": 761,
+    "language": "text",
+    "content": "links.json",
+    "before": "The supplied destination for a complete Development snapshot. The snapshot is absent before a successful capture writes it.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Development Relation",
+    "start": 769,
+    "end": 773,
+    "language": "text",
+    "content": "issue m2ux/workflow-server#637: m2ux/workflow-server#950\npull request m2ux/workflow-server#950: m2ux/workflow-server#637\nverified: add m2ux/workflow-server#950 -> m2ux/workflow-server#637",
+    "before": "The issue and pull request identities verified from both ends, or an explicit unreadable or failed relation.\n\n**Example output:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Issue Records",
+    "start": 785,
+    "end": 787,
+    "language": "text",
+    "content": "issue-936.json issue-943.json issue-637.json",
+    "before": "The fetched plan issues supplied as issue files, or board items containing their complete issues.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Initiative Prefix",
+    "start": 799,
+    "end": 801,
+    "language": "text",
+    "content": "[I07",
+    "before": "The opening bracket and initiative id matched against task and epic titles.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Output Files",
+    "start": 809,
+    "end": 815,
+    "language": "text",
+    "content": "pull-request-json-file: epic-pr.json\nreviews-file: reviews.json\nchanged-paths-file: changed-files.txt\ncheck-runs-file: checks.json\ncommit-status-file: status.json",
+    "before": "The caller-supplied destinations for complete metadata, changed-paths, reviews, protection, rules, check and status snapshots, selected by the operation.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Body File",
+    "start": 839,
+    "end": 841,
+    "language": "text",
+    "content": "body.md",
+    "before": "The complete populated body text supplied through a file.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Title",
+    "start": 849,
+    "end": 852,
+    "language": "text",
+    "content": "[I07:E00] Purpose\n[F00] Reject Bad Keys",
+    "before": "The complete selected pull request title.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Head Branch",
+    "start": 860,
+    "end": 864,
+    "language": "text",
+    "content": "task-branch: i07/e00/w01-purpose\nhot-fix-branch: f00-key-validation\nepic-base: i07/e00/main",
+    "before": "The task branch or epic-base head selected for creation.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Base Branch",
+    "start": 872,
+    "end": 876,
+    "language": "text",
+    "content": "target-branch: i07/e00/main\nbase: i07/e00/main\nlong-lived-base: main",
+    "before": "The task base, epic\u2019s long-lived target or replacement base selected by the operation.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Failure",
+    "start": 940,
+    "end": 942,
+    "language": "text",
+    "content": "failed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeCloseIssueReferences: Resource not accessible by integration",
+    "before": "The operation and error, discrepancy or missing evidence that prevents a verified result.\n\n**Example output:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "field": "Base Branch",
+    "start": 142,
+    "end": 144,
+    "language": "text",
+    "content": "main",
+    "before": "The supplied comparison base branch.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "field": "Symbol Identity",
+    "start": 152,
+    "end": 154,
+    "language": "text",
+    "content": "reserveRow",
+    "before": "One symbol identity provided by the supplied change surface.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "field": "Flow Identity",
+    "start": 162,
+    "end": 164,
+    "language": "text",
+    "content": "Queue Placement",
+    "before": "One flow identity provided by the supplied change surface.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/standalone-body.md",
+    "field": "Template",
+    "start": 44,
+    "end": 68,
+    "language": "markdown",
+    "content": "## Overview\n\n{{One paragraph: what this issue asks for and why.}}\n\n## Problem\n\n{{The friction as it is now. Bullets for distinct facets, sub-bullets for several items.}}\n\n## Proposal\n\n{{The design, in bullets or paragraphs, each opening with a bold statement, and its body on the next line.}}\n\n## Acceptance Criteria\n\n- [ ] **AC1.** {{An end state of one invariant. It ends by naming its instrument.}}\n\n## Open Questions\n\n- {{An undecided point the work cannot start without. Resolve every one before the work starts, then delete the section.}}\n\n## References\n\n- **R1.** [{{Title}}]({{URL}}) \u2014 {{What the reader finds there. Delete the section when there is none.}}",
+    "before": "## Fields\n\n### Template\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "field": "Report Selection",
+    "start": 110,
+    "end": 113,
+    "language": "text",
+    "content": "window-start-date: 2026-09-21\ninitiative-filter: I08",
+    "before": "The optional window start uses `YYYY-MM-DD`. The optional initiative filter is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "field": "Initiative Records",
+    "start": 121,
+    "end": 123,
+    "language": "text",
+    "content": "issue-946.json",
+    "before": "The supplied resolved off-board initiative JSON records, each at a separate local file path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "field": "Management File",
+    "start": 135,
+    "end": 137,
+    "language": "text",
+    "content": "summary.txt",
+    "before": "The optional local file holding the management paragraph. It is absent before the paragraph is written.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "field": "Board Items",
+    "start": 149,
+    "end": 151,
+    "language": "text",
+    "content": "items.json",
+    "before": "The supplied board items with Status and their complete issue records, at the local paginated snapshot path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "field": "Pull Request Records",
+    "start": 159,
+    "end": 161,
+    "language": "text",
+    "content": "prs.json",
+    "before": "The supplied current complete pull request records, one JSON object per nonempty line at the local file path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "field": "Issue Link Snapshot",
+    "start": 169,
+    "end": 171,
+    "language": "text",
+    "content": "links.json",
+    "before": "The complete supplied pull-request issue-link snapshot at its local JSON path.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "field": "Template",
+    "start": 37,
+    "end": 61,
+    "language": "markdown",
+    "content": "## Overview\n\n{{One paragraph: what this task delivers and why it exists within the epic.}}\n\n## Problem\n\n{{The friction as it is now. Bullets for distinct facets, sub-bullets for several items.}}\n\n## Proposal\n\n{{The design, in bullets or paragraphs, each opening with a bold statement, and its body on the next line.}}\n\n## Acceptance Criteria\n\n- [ ] **AC1.** {{An end state of one invariant. It ends by naming its instrument.}}\n\n## Open Questions\n\n- {{An undecided point the task cannot start without. Resolve every one before the task starts, then delete the section.}}\n\n## References\n\n- **R1.** [{{Title}}]({{URL}}) \u2014 {{What the reader finds there. Delete the section when there is none.}}",
+    "before": "## Fields\n\n### Template\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "field": "Task Record",
+    "start": 88,
+    "end": 90,
+    "language": "text",
+    "content": "issue-637.json",
+    "before": "The supplied current task issue JSON.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "field": "Pull Request Records",
+    "start": 98,
+    "end": 100,
+    "language": "text",
+    "content": "prs.json",
+    "before": "The supplied current pull request records.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "field": "Issue Links",
+    "start": 108,
+    "end": 110,
+    "language": "text",
+    "content": "links.json",
+    "before": "The complete supplied issue-link snapshot.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "field": "Delivery Selection",
+    "start": 120,
+    "end": 123,
+    "language": "text",
+    "content": "pull-request-number: 950\ncriterion-ids: AC1",
+    "before": "The supplied delivering pull request number and verified criterion ids.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "field": "Output Body",
+    "start": 131,
+    "end": 133,
+    "language": "text",
+    "content": "fixed-637.md",
+    "before": "The supplied local destination for the complete provided body.\n\n**Example:**\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/work-item.md",
+    "field": "Template",
+    "start": 33,
+    "end": 57,
+    "language": "markdown",
+    "content": "**Component:** {{The long-lived branch and path of the one component this task's implementation extends}}\n\n## Overview\n\n{{What this task delivers and why.}}\n\n## Problem\n\n{{The present friction.}}\n\n## Proposal\n\n{{The scene, then the design. Lists of distinct items use bullets.}}\n\n## Work Breakdown\n\n| Part | Description |\n| --- | --- |\n| Analysis | {{The evidence to gather}} |\n| Plan | {{The decisions and design}} |\n| Implementation | {{The work to perform}} |\n| Review | {{The review of that work}} |\n| Test | {{The checks required by the work, including the project's system test when applicable}} |",
+    "before": "## Fields\n\n### Template\n"
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "field": "Skill Directory",
+    "start": 121,
+    "end": 123,
+    "language": "text",
+    "content": "skills/work-planner",
+    "before": "Affected skill directory. Comparison takes each skill directory the move touches.\n\n**Example:**\n"
+  }
+]
