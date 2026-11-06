@@ -25,6 +25,15 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | [E01 body](bodies/e01.md) | Skill Style scope, command presentation and checker/migration criteria |
 | [E02 body](bodies/e02.md) | Skill Separation body with task-table lanes |
 | [E02 SOLID guidelines](e02/solid-guidelines.md) | The SOLID guidelines draft E02 W01 lands |
+| [E02 Field boundaries](e02/fields-and-transformations.md) | Confirmed Status Changes extraction, whole-skill candidate audit and regression matrix |
+| [E02 W06](e02/w06.md) | Board Status owns the proposed status-change contract and its transformations. |
+| [E02 W07](e02/w07.md) | Board Delivery obtains status decisions through Board Status and applies their results. |
+| [E02 W08](e02/w08.md) | Hot-fix uses the extracted status contract through its owning procedure. |
+| [E02 W09](e02/w09.md) | Work Planner checks report hidden-transform candidates under Fields with useful evidence. |
+| [E02 plan review](e02/fields-plan-review.md) | Goal/coverage review, checks and explicit evidence limits |
+| [E02 format result](e02/fields-format.log) | Final draft has no format or decision findings |
+| [E02 dependency result](e02/fields-dependencies.log) | Join, ordering and dependency checks with retained baseline advisory |
+| [E02 plan audit](e02/fields-plan-audit.json) | Exact new joined unit, components and preserved producer edge |
 | [E03 body](bodies/e03.md) | The Delivery Lanes epic body as saved |
 | [E03 W01](e03/w01.md) | Work item declares an optional lane |
 | [E03 W02](e03/w02.md) | Task table carries the lane column |

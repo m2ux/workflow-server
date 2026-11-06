@@ -1,0 +1,25 @@
+{
+  "issue": 1615,
+  "tasks": 9,
+  "criteria": 10,
+  "joined_unit": [
+    "E02:W06",
+    "E02:W07",
+    "E02:W08"
+  ],
+  "join_has_internal_dependency": false,
+  "component_files": {
+    "E02:W06": "workspace:skills/work-planner/artifacts/board-status.md",
+    "E02:W07": "workspace:skills/work-planner/artifacts/board-delivery.md",
+    "E02:W08": "workspace:skills/work-planner/artifacts/hotfix.md",
+    "E02:W09": "workspace:skills/scripts/check_skill_files.py"
+  },
+  "producer_dependency": "E01:W08",
+  "source_implementation_changed": false,
+  "scope": "Planning revision only; no guideline/check implementation or dispatch.",
+  "limits": [
+    "Existing bare W01\u2013W05 audit-driven fix rows retain their pre-dispatch refinement requirement.",
+    "The dependency report retains the pre-existing E03 W14 numbering advisory; no E03 row is revised.",
+    "Cross-epic component-contention checks are complete only for supplied work-item declarations; this pass supplies the four new E02 components."
+  ]
+}

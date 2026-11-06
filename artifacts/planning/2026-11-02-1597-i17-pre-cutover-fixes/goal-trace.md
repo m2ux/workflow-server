@@ -43,3 +43,13 @@ The initiative goal and criterion are unchanged. No marked external requirement 
 ## E03 Arising Input Trace, 4 November 2026
 
 The known pre-cutover input fault in #1630 traces to initiative AC1 through E03 AC15 and W14. It enforces the existing within-epic delivery shape and adds no cross-epic delivery capability.
+
+## E02 Fields and Transformations, 6 November 2026
+
+| Confirmed clause | Initiative criterion | Epic criteria | Delivering rows | Source |
+| --- | --- | --- | --- | --- |
+| State the shape/operation boundary and identify similar hidden behavior | AC1 | E02 AC1, AC2, AC10 | Existing E02 W01, W02 | User request, 6 November |
+| Give Status Changes a cohesive artifact home and preserve its behavior | AC1 | E02 AC5, AC6, AC7, AC8 | Existing one-home audit fixes and E02 W06–W08 | User-confirmed Board Status extraction |
+| Checks identify observed and similar candidates while accepting legitimate constraints | AC1 | E02 AC9 | E02 W09 | User request, with positive/negative specimens |
+
+The initiative criterion, epic order and E01 producer edge are preserved. Known consumer updates are joined with the extraction; additional components discovered by the audit receive rows before dispatch. The existing E02 prose/script/one-home fix rows are refined by that audit, as their Proposal already requires. This plan does not claim a universal automatic prose classifier or implement the future performed-operation verifier.

@@ -131,3 +131,11 @@ The user confirms checker capability in E01 W01 and installed model adoption in 
 ## Checker Acceptance Scope, 5 November 2026
 
 The user confirms Work Planner as the sole acceptance scope. Specimen fixtures verify its proposed model in AC1; the installed Work Planner check supplies AC8's zero-finding gate. The 68 existing findings in other skills are baseline evidence, not work assigned to this delivery. Their files remain unchanged.
+
+## Fields and Transformations, 6 November 2026
+
+- The user places the Status Changes extraction in E02 and requires guidelines/tests to identify this and similar candidates.
+- Existing W01/W02 and AC1/AC2 gain the field/operation boundary and an exhaustive Fields classification. New W06–W09 and AC6–AC10 preserve existing row/criterion identities and priority.
+- W06–W08 are one joined unit so the artifact and both known caller components remain valid together. They share the existing general-fix prerequisites and carry extraction regressions in that same unit. W09 supplies the reusable checker feature and its own positive/negative fixtures afterward.
+- Candidate detection reports evidence for review; conditional constraints and literal examples are valid. The audit settles semantic ownership and adds any further component rows before dispatch.
+- The plan remains unlaned and waits for E01 W08 on workspace. No source implementation or delivery start is included in this planning request.

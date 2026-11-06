@@ -10,8 +10,8 @@ The skill's procedure files are an object model written in prose.
 | --- | --- |
 | Class | An artifact or protocol file |
 | Public method | An operation (`### *Verb* Subject`) or a protocol entered whole |
-| Method call | A link to an operation heading, or a "Follow"/"Run" of a protocol |
-| Private method | A command under `## Commands`, reached only from its own file's operations |
+| Method call | A ƒ-tagged link to a called operation, protocol or procedure |
+| Private method | An invocation inside its owning operation’s executing step |
 | Object state and its type | `## Fields`: the shape the file owns and the conditions on it |
 | Interface | A general artifact's operations and fields that each kind supplies |
 | Implementation | A kind's file, which fills that interface for one kind of work |
@@ -25,11 +25,22 @@ A call goes down the layers (mode, then protocol, then artifact), never up. That
 - **Call operations, not internals.**
   Another file reaches an artifact through its operations and its published fields. It never runs that artifact's commands, and never restates its steps or conditions.
 - **Commands are private.**
-  A command heading is linked only from an operation in its own file. A caller needing that capability calls the operation that wraps it.
+  An invocation lives inside its owning operation’s executing step. A caller needing that capability calls the operation.
 - **Fields are the contract.**
   A field another file links to is part of the artifact's public shape. Keep it stable, and change its callers in the same change when it moves.
 - **One file, one subject.**
   An operation that changes another subject's state is a call to that subject's operation, never a copy of its steps.
+
+## Field Boundaries
+
+- **Shape and invariants.**
+  Fields define values, types, permitted states and constraints that hold on the artifact. A conditional invariant or a schema example is valid field content.
+- **Transformations.**
+  Derivation, state/membership selection, command execution, evidence gathering, refusals, retries and continuation belong in callable Operations. Apply this distinction to declarative prose as well as imperative steps: a field that computes what a caller should do from supplied evidence hides behavior.
+- **Artifact ownership.**
+  Apply [Single Responsibility](#s-single-responsibility) to the derived result and its operations. Keep subject-specific policy with its subject and make callers consume the published result.
+- **Candidate review.**
+  Audit every Fields section against this boundary. Record its classification, consumed evidence, produced decision, candidate owning subject and disposition. Checks report review candidates with source locations; semantic review confirms them. The presence of a conditional word alone proves no breach.
 
 ## S: Single Responsibility
 
@@ -90,3 +101,7 @@ E02's audit asks these questions of each file.
 5. Does a general file link down to a kind, or a lower layer link up to a higher one?
 6. Does every prerequisite exist because of a link the file makes?
 7. For scripts: does a general script branch on a kind, or reimplement a rule another module owns?
+
+8. Does a Fields section define a shape/invariant, or derive a decision, invoke work or route its outcome under [Field Boundaries](#field-boundaries)?
+9. Does a derived result need its own artifact home, and do callers consume its explicit contract rather than reconstruct its policy?
+10. Do candidate checks include the observed breach and valid counterexamples, with semantic review for ambiguous prose?
