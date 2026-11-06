@@ -8,8 +8,6 @@ Read these files first.
 
 - [Board Queue](board-queue.md)
 - [Board](board.md)
-- [Issue](issue.md)
-- [Pull Request](pull-request.md)
 - [Agent Review](agent-review.md)
 
 ## Operations
@@ -40,48 +38,6 @@ Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Revie
 #### 5. Provide Confirmed Status
 
 Provide [Confirmed Statuses](#confirmed-statuses) with the confirmed status or the discrepancy left for the requester.
-
-### Record Board Delivery
-
-The board's status and assignees after its issues record delivery.
-
-#### 1. Read Current Delivery Evidence
-
-- Read the issues, the board and its delivery records.
-- Apply [Read Tracker Issue](issue.md#read-tracker-issue "ƒ") for the [Saved Identities](#saved-identities).
-- Apply [Read Board State](board.md#read-board-state "ƒ") for the selected board.
-- Apply [Fetch All Delivery Pull Requests](pull-request.md#fetch-all-delivery-pull-requests "ƒ") for its repositories and items.
-- Apply [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links "ƒ") for those records.
-- Fetch the published agent review records linked from each open epic integration pull request, retaining absent or unreadable evidence as a handoff blocker.
-- Apply [Read Board Configuration](board.md#read-board-configuration "ƒ").
-- Run [Find User](board.md#find-user "ƒ").
-- Retain these provided snapshots for the following computation.
-
-#### 2. Plan Delivery Changes
-
-- Run [Compute Board Changes](#compute-board-changes "ƒ") to the captured evidence.
-- Fetch each unresolved issue.
-- Run [Compute Board Changes](#compute-board-changes "ƒ") again, adding the fetched off-board issue records to the retained evidence.
-
-#### 3. Apply and Confirm Calls
-
-- Run each emitted call, including the assignee calls, which act on the issue rather than the board item.
-- Apply [Read Board Configuration](board.md#read-board-configuration "ƒ") for each changed item to confirm its current status.
-
-- If that item still shows the preceding status:
-- Repeat its emitted write call.
-- Apply [Read Board Configuration](board.md#read-board-configuration "ƒ") again for the same item. The item list can lag a write.
-
-#### 4. Recompute Refreshed Board
-
-- Fetch the issues and items again.
-- Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes.
-- Run [Compute Board Changes](#compute-board-changes "ƒ") to the refreshed evidence, retaining every resolved off-board issue record.
-- Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
-
-#### 5. Provide Recorded Board Delivery
-
-Provide [Confirmed Statuses](#confirmed-statuses) after every changed item has been confirmed, retaining any unresolved discrepancy.
 
 ### Record Dispatch Status
 

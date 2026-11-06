@@ -52,7 +52,18 @@ Read these files first.
 - Locate any existing overview record for this pull request number before creating a record.
 - Reuse its folder identity when one exists; otherwise choose a planning-folder identity whose reference is the pull request number and whose slug comes from its title.
 - Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") to prepare that folder.
-- Apply [Populate Architecture Overview](../artifacts/architecture-overview.md#populate-architecture-overview "ƒ") with the measured structure and flows, verified head, pinned code links and overview path. A repeat replaces its overview while preserving the record's other content.
+- Take the graph [measurements](../artifacts/architecture-overview.md#measurements) from the evidence step and check the proposed diagrams.
+- The diagrams must meet [Measured Structure](../artifacts/architecture-overview.md#measured-structure) and [Diagrams](../artifacts/architecture-overview.md#diagrams).
+
+- Populate the overview from the [Template](../artifacts/architecture-overview.md#template) at the destination in [Overview File](../artifacts/architecture-overview.md#overview-file).
+- All populated fields must meet [Fields](../artifacts/architecture-overview.md#fields).
+
+- Pin each code reference to the [Pull Request Head](../artifacts/architecture-overview.md#pull-request-head).
+- Each reference must meet [Code References](../artifacts/architecture-overview.md#code-references).
+
+- Retain the completed [Overview File](../artifacts/architecture-overview.md#overview-file) for registration in its planning record.
+
+- A repeat replaces its overview while preserving the record’s other content.
 
 ### 3. Register the Overview
 
@@ -61,6 +72,16 @@ Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planni
 ### 4. Publish and Link
 
 - Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") for the record's folder, so the overview resolves.
-- Apply [Link Architecture Overview](../artifacts/pull-request-body.md#link-architecture-overview "ƒ") with the current body and published overview URL.
+- Use the current body and published overview URL.
+
+- Add [Overview URL](../artifacts/pull-request-body.md#overview-url) as the Architecture Overview reference in the References of [Current Body](../artifacts/pull-request-body.md#current-body), creating that section in its [Template](../artifacts/pull-request-body.md#template) position when absent and writing to [Output Body](../artifacts/pull-request-body.md#output-body).
+
+- Preserve an existing row already naming the overview. The link uses the engineering-artifacts base URL so later files resolve from the same record.
+
+```markdown
+- **R1.** [Architecture Overview](https://github.com/{owner}/{repo}/tree/engineering/artifacts/planning/2026-10-08-950-queue-placement/architecture-overview.md) — the change's structure, its flows, and the order to read the diff.
+```
+
+- Retain the complete [updated body](../artifacts/pull-request-body.md#output-body) file for publication.
 - Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with the provided file.
 - Provide the pull request, record folder, published overview, diagrams and References row to the caller.

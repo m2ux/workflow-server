@@ -48,7 +48,15 @@ Read these files first.
 #### Current Review Handoff
 
 - Follow [Review Pull Request](review-pull-request.md "ƒ") requesting handoff, with confirmed epic readiness, fresh metadata, checkout, criteria, validation evidence and planning destination. Resume only with current agent review evidence. If review fixes changed the head, refresh criterion verification, Apply [Check Epic Readiness](../artifacts/epic.md#check-epic-readiness "ƒ") again for that head and Follow [Change Overview](change-overview.md "ƒ") again for the updated integration diff.
-- Apply [Ready Epic Review](../artifacts/pull-request.md#ready-epic-review "ƒ") with the confirmed epic readiness, review identity and published agent review records.
+- Use the confirmed epic readiness, review identity and published agent review records.
+
+- Require [Epic Readiness](../artifacts/pull-request.md#epic-readiness) and Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for [Identity](../artifacts/pull-request.md#identity).
+
+- Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with the fresh metadata and [Published Reviews](../artifacts/pull-request.md#published-reviews). On a finding, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") and stop. For a draft with passing evidence, Run [Mark Review Ready](../artifacts/pull-request.md#mark-review-ready "ƒ") with its node id.
+
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again with the same identity, then Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records. For a changed revision, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") and report the discrepancy. Provide [Review State](../artifacts/pull-request.md#review-state) only with current evidence, or [Failure](../artifacts/pull-request.md#failure) for the changed revision or discrepancy. Target review requirements still govern the merge.
+
+- On a readiness failure, stop this handoff before requesting In Review.
 - Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") requesting In Review, with the epic, board identity, fresh pull request records and published agent review records. Report an absent board item; integration is not gated on board membership.
 - Apply [Fetch Merge Readiness](../artifacts/pull-request.md#fetch-merge-readiness "ƒ") for the exact current head and target. A conflict, failed or pending check, unmet epic condition or incomplete evidence blocks handoff; Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") again and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") requesting In Progress before returning that blocker. Pending required human approval is provided to the next step as a human handoff, with merge blocked.
 

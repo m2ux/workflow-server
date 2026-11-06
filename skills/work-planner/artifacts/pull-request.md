@@ -8,7 +8,6 @@ Read these files first.
 
 - [Issue](issue.md)
 - [Delivery Branches](delivery-branches.md)
-- [Agent Review](agent-review.md)
 - [Hot-fix](hotfix.md)
 
 ## Operations
@@ -28,7 +27,27 @@ One task or epic pull request's merge result, or its handoff for human approval.
 #### 2. Merge Approved Delivery
 
 - When approval permits the agent to merge and [Repository Prerequisite](#repository-prerequisite) is confirmed, select the merge operation from [Kind](#kind):
-- Run [Merge Pull Request](#merge-pull-request "ƒ") for a task or Apply [Merge Epic Pull Request](#merge-epic-pull-request "ƒ") for an epic, passing the verified [readiness evidence](#readiness-evidence) and authorization result. For an epic, also supply the [target requirements](#target-requirements) and exact verified head SHA.
+
+##### Task Merge
+
+- For a task, Run [Merge Pull Request](#merge-pull-request "ƒ") with the verified [readiness evidence](#readiness-evidence) and authorization result.
+
+##### Epic Merge
+
+- For an epic, use the verified readiness evidence, authorization, [target requirements](#target-requirements) and exact verified head SHA:
+
+- Require the supplied [Target Requirements](#target-requirements), [Readiness Evidence](#readiness-evidence) and [Merge Authorization](#merge-authorization).
+
+- Run [Submit Epic Merge](#submit-epic-merge "ƒ") with the exact head whose checks and target requirements were verified; provide a refusal without continuing.
+
+- Run [Read Merge Result](#read-merge-result "ƒ") for that [pull request](#identity).
+
+- Confirm the merged state, merge commit, [verified head](#verified-head) and target.
+
+- Retain [Merge Result](#merge-result) or [Failure](#failure) with the discrepancy.
+
+##### Merge Refusals
+
 - If GitHub refuses the merge, provide [Failure](#failure) with the refusal for fresh verification.
 - If the agent's own permission layer refuses it, the harness declines to run the merge command and GitHub returns nothing. On a target with no review requirement, that refusal is neither a handoff for approval nor a branch blocker. Provide the pull request as ready and verified, naming the refusal and the [merge permission](#merge-permission) it lacks, and stop merge attempts. A later Deliver run merges it in its merge step or reports the missing permission; neither asks the user to approve it.
 
@@ -99,30 +118,6 @@ Apply [Fetch Pull Request Issue Links](#fetch-pull-request-issue-links "ƒ") wit
 #### 4. Provide Relation Evidence
 
 Provide verified [Development Relation](#development-relation) and refreshed [Issue-Link Snapshot](#issue-link-snapshot), or [Failure](#failure) for an unverified edit or read.
-
-### Merge Epic Pull Request
-
-The epic's verified merge into its long-lived target.
-
-#### 1. Require Epic Merge Evidence
-
-Require the supplied [Target Requirements](#target-requirements), [Readiness Evidence](#readiness-evidence) and [Merge Authorization](#merge-authorization).
-
-#### 2. Submit Verified Epic Merge
-
-Run [Submit Epic Merge](#submit-epic-merge "ƒ") with the exact head whose checks and target requirements were verified; provide a refusal without continuing.
-
-#### 3. Read Epic Merge Result
-
-Run [Read Merge Result](#read-merge-result "ƒ") for that [pull request](#identity).
-
-#### 4. Confirm Exact Merge State
-
-Confirm the merged state, merge commit, [verified head](#verified-head) and target.
-
-#### 5. Provide Epic Merge Result
-
-Provide [Merge Result](#merge-result) or [Failure](#failure) with the discrepancy.
 
 ### Fetch All Delivery Pull Requests
 
@@ -205,22 +200,6 @@ Apply [Read Pull Request State](#read-pull-request-state "ƒ") again.
 
 Provide the saved [Pull Request Record](#pull-request-record) or [Failure](#failure) with the discrepancy.
 
-### Read Head Evidence
-
-The check-run and status evidence for one literal head commit.
-
-#### 1. Fetch Literal Head Checks
-
-Run [Fetch Head Check Runs](#fetch-head-check-runs "ƒ") for the verified head.
-
-#### 2. Fetch Literal Head Status
-
-Run [Fetch Head Status](#fetch-head-status "ƒ") for the same SHA.
-
-#### 3. Provide Current Head Evidence
-
-Provide [Head Checks](#head-checks) and [Head Status](#head-status), retaining missing or pending evidence as unresolved [Failure](#failure). The requester compares them with supplied target requirements and current reviews.
-
 ### Merge Task Pull Requests
 
 Merges each open task pull request whose test plan has passed.
@@ -258,13 +237,25 @@ The current pull request's readiness against its target requirements and head ch
 
 #### 2. Read Current Target Requirements
 
-- Apply [Read Target Requirements](delivery-branches.md#read-target-requirements "ƒ") with the repository and [Base Branch](#base-branch), saving protection/rules evidence at [Output Files](#output-files).
+- Use the repository and [Base Branch](#base-branch) as the [target branch](delivery-branches.md#target-branch), saving protection/rules evidence at [Output Files](#output-files).
+
+- Run [Fetch Branch Protection](delivery-branches.md#fetch-branch-protection "ƒ") for [Target Branch](delivery-branches.md#target-branch) in [Repository](delivery-branches.md#repository), using [Output Files](delivery-branches.md#output-files) for the evidence destinations.
+
+- Run [Fetch Active Branch Rules](delivery-branches.md#fetch-active-branch-rules "ƒ") for the same target.
+
+- Retain [Target Requirements](delivery-branches.md#target-requirements) with both records, or [Failure](delivery-branches.md#failure) when a requirement is unreadable. A protection 404 does not establish the absence of active rules.
 - Carry any unresolved requirement into the readiness result.
 
 #### 3. Read Literal Head Evidence
 
 - Read the head evidence.
-- Apply [Read Head Evidence](#read-head-evidence "ƒ") with the exact head SHA and check/status output paths.
+- Use the exact head SHA and check/status output paths.
+
+- Run [Fetch Head Check Runs](#fetch-head-check-runs "ƒ") for the verified head.
+
+- Run [Fetch Head Status](#fetch-head-status "ƒ") for the same SHA.
+
+- Retain [Head Checks](#head-checks) and [Head Status](#head-status), retaining missing or pending evidence as unresolved [Failure](#failure). The requester compares them with supplied target requirements and current reviews.
 - Apply [Read Pull Request State](#read-pull-request-state "ƒ") for reviews with the pull request identity and reviews output path. A missing or pending check, blocked merge state or unmet required review leaves readiness unresolved.
 
 #### 4. Confirm Stable Pull Head
@@ -284,43 +275,6 @@ Apply [Read Pull Request State](#read-pull-request-state "ƒ") for full metadata
 #### 2. Confirm Review Draft State
 
 Apply [Read Pull Request State](#read-pull-request-state "ƒ") again with the same identity and provide [Review State](#review-state) with the confirmed draft state, or [Failure](#failure) with the discrepancy.
-
-### Ready Epic Review
-
-The complete epic's pull request made ready for review.
-
-#### 1. Require Complete Epic Evidence
-
-Require [Epic Readiness](#epic-readiness) and Apply [Read Pull Request State](#read-pull-request-state "ƒ") for [Identity](#identity).
-
-#### 2. Check Published Review Evidence
-
-Run [Validate Agent Review](agent-review.md#validate-agent-review "ƒ") with the fresh metadata and [Published Reviews](#published-reviews). On a finding, Apply [Hold Epic Review](#hold-epic-review "ƒ") and stop. For a draft with passing evidence, Run [Mark Review Ready](#mark-review-ready "ƒ") with its node id.
-
-#### 3. Confirm Current Review State
-
-Apply [Read Pull Request State](#read-pull-request-state "ƒ") again with the same identity, then Run [Validate Agent Review](agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records. For a changed revision, Apply [Hold Epic Review](#hold-epic-review "ƒ") and report the discrepancy. Provide [Review State](#review-state) only with current evidence, or [Failure](#failure) for the changed revision or discrepancy. Target review requirements still govern the merge.
-
-### Ready Hot-fix Pull Request
-
-A hot-fix's draft delivering pull request made ready for review once its review cycle is complete.
-
-#### 1. Read Current Hot-Fix Metadata
-
-Apply [Read Pull Request State](#read-pull-request-state "ƒ") for its full metadata.
-
-#### 2. Check Published Hot-Fix Review
-
-- Run [Validate Agent Review](agent-review.md#validate-agent-review "ƒ") with that metadata and [Published Reviews](#published-reviews).
-- On a finding, provide it to the caller; the [pull request](#identity) stays a draft.
-
-#### 3. Mark Verified Hot-Fix Ready
-
-For a draft with passing evidence, Run [Mark Review Ready](#mark-review-ready "ƒ") with the node id its metadata names.
-
-#### 4. Confirm Hot-Fix Review State
-
-Apply [Read Pull Request State](#read-pull-request-state "ƒ") again with the same identity, then Run [Validate Agent Review](agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records. Provide [Review State](#review-state), or [Failure](#failure) with the changed revision or finding that leaves it unconfirmed.
 
 ## Commands
 

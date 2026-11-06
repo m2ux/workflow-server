@@ -53,7 +53,23 @@ Read these files first.
 - Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body "ƒ"), Apply [Validate Initiative Body](../artifacts/initiative-issue-body.md#validate-initiative-body "ƒ") or Apply [Validate Epic Body](../artifacts/epic-issue-body.md#validate-epic-body "ƒ") for that kind.
 - Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body "ƒ") with [task field conditions](../artifacts/task-body.md#fields) or [standalone field conditions](../artifacts/standalone-body.md#fields) for those bodies.
 - Supply the fetched context and output files.
-- Apply [Check Reference Visibility](../artifacts/issue-body.md#check-reference-visibility "ƒ") for each issue being aligned; carry its findings to the content-decisions step.
+
+#### Reference Visibility
+
+- For each issue being aligned:
+
+- Run [List Reference Repositories](../artifacts/issue-body.md#list-reference-repositories "ƒ") to [Body Record](../artifacts/issue-body.md#body-record) to identify the destination and cited repositories.
+
+- Run [Fetch Reference Repository](../artifacts/issue-body.md#fetch-reference-repository "ƒ") for each provided name; collect the objects into a JSON array at the snapshot path in [Output Files](../artifacts/issue-body.md#output-files). Retain failed fetches as unresolved visibility, never as public visibility.
+
+- Run [Validate Reference Visibility](../artifacts/issue-body.md#validate-reference-visibility "ƒ") with that snapshot and the issue record.
+
+- Retain [Visibility Findings](../artifacts/issue-body.md#visibility-findings) identifying each private reference on a public issue and each unavailable visibility. A private destination has no public-reference restriction; deciding how to replace or remove a private reference belongs to the requester.
+
+- Carry the visibility findings to the content-decisions step.
+
+#### Validation Findings
+
 - Route the provided [Format Findings](../artifacts/issue-body.md#format-findings) through the following steps.
 
 ### 4. Publish Mechanical Fixes
@@ -75,7 +91,17 @@ Read these files first.
 - Apply [Apply Body Corrections](../artifacts/issue-body.md#apply-body-corrections "ƒ") with confirmed local resolutions, using the selected kind's template and field conditions.
 - Move initiative boundaries found as Non-Goals in an epic or task into the initiative's Non-Goals.
 - Remove the misplaced section.
-- For a standalone body, Apply [Revise Standalone Body](../artifacts/standalone-body.md#revise-standalone-body "ƒ").
+
+#### Standalone Boundary
+
+- For a standalone body:
+
+- Apply [Populate Standalone Body](../artifacts/standalone-body.md#populate-standalone-body "ƒ") to [Current Body](../artifacts/standalone-body.md#current-body) with [Confirmed Boundary](../artifacts/standalone-body.md#confirmed-boundary), folding any Non-Goals into Proposal as a closing boundary and writing to [Output Body](../artifacts/standalone-body.md#output-body).
+
+- Retain the revised [Output Body](../artifacts/standalone-body.md#output-body) for publication.
+
+#### Other Content Corrections
+
 - Apply [Revise Epic Rows](../artifacts/epic-issue-body.md#revise-epic-rows "ƒ") with confirmed task splits and Coverage corrections.
 - Replace an epic a task row names with the rows it consumes when correcting dependencies through the dependency step.
 

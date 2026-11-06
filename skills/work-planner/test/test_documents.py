@@ -61,6 +61,35 @@ class DocumentInterfaces(unittest.TestCase):
                             used.add(destination)
                     self.assertEqual(declared, used)
 
+    def test_artifact_operations_have_multiple_linked_references(self):
+        paths = sorted(path for path in ROOT.rglob('*.md') if 'test' not in path.relative_to(ROOT).parts)
+        references = {}
+        for path in paths:
+            lines, fenced, headings = checker.scan(path)
+            if path.parent.name != 'artifacts':
+                continue
+            section = next((i for i, depth, title in headings
+                            if depth == 2 and title == 'Operations'), None)
+            if section is None:
+                continue
+            end = checker.heading_end(headings, section, 2, len(lines))
+            for start, depth, title in headings:
+                if section < start < end and depth == 3:
+                    references[(path.resolve(), checker.anchor_of(title))] = []
+        for path in paths:
+            lines, fenced, _ = checker.scan(path)
+            for index, target in checker.targets(path, lines, fenced):
+                name, _, fragment = target.partition('#')
+                destination = (path.parent / name).resolve() if name else path.resolve()
+                key = destination, checker.anchor_of(fragment)
+                if key in references:
+                    references[key].append(f'{path.relative_to(ROOT)}:{index + 1}')
+        self.assertTrue(references)
+        for (path, operation), sites in references.items():
+            with self.subTest(file=path.name, operation=operation):
+                self.assertGreaterEqual(len(sites), 2,
+                                        f'one linked use belongs in its caller: {sites}')
+
     def test_calls_go_down_the_layer_stack(self):
         """A mode aggregates protocol calls as an application calls services,
         so a call reaches the layer below it. A protocol that runs a mode, or

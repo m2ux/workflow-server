@@ -11,23 +11,6 @@ Read these files first.
 
 ## Operations
 
-### Populate Pull Request Body
-
-One pull request body from supplied change and validation evidence.
-
-#### 1. Populate Change Body
-
-- Populate the [Template](#template) from [Change Evidence](#change-evidence), retaining applicable content in [Current Body](#current-body) and writing to [Output Body](#output-body). For an epic review, Apply [Populate Review Body](#populate-review-body "ƒ").
-- All populated fields must meet [Fields](#fields).
-
-#### 2. Verify Evidence Links
-
-Verify each result link against [Test Plan](#test-plan) before publishing the body.
-
-#### 3. Provide Complete Body
-
-Provide the [complete body file](#output-body) and any [unresolved evidence](#unresolved-evidence) links to the caller for publication.
-
 ### Populate Review Body
 
 The current change carried by one epic base.
@@ -47,26 +30,6 @@ The current change carried by one epic base.
 #### 3. Provide Updated Body
 
 Provide the complete [updated body](#output-body) file to the caller.
-
-### Link Architecture Overview
-
-One pull request body referencing its published overview.
-
-#### 1. Add Published Reference
-
-Add [Overview URL](#overview-url) as the Architecture Overview reference in the References of [Current Body](#current-body), creating that section in its [Template](#template) position when absent and writing to [Output Body](#output-body).
-
-#### 2. Preserve Existing Reference
-
-Preserve an existing row already naming the overview. The link uses the engineering-artifacts base URL so later files resolve from the same record.
-
-```markdown
-- **R1.** [Architecture Overview](https://github.com/{owner}/{repo}/tree/engineering/artifacts/planning/2026-10-08-950-queue-placement/architecture-overview.md) — the change's structure, its flows, and the order to read the diff.
-```
-
-#### 3. Provide Linked Overview Body
-
-Provide the complete [updated body](#output-body) file for publication.
 
 ### Repair Test Plan
 

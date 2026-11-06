@@ -14,6 +14,7 @@ Read these files first.
 - [Repository Labels](../artifacts/repository-labels.md)
 - [Issue](../artifacts/issue.md)
 - [Board](../artifacts/board.md)
+- [Issue Body](../artifacts/issue-body.md)
 
 ## Procedure
 
@@ -32,7 +33,16 @@ Read these files first.
 
 ### 3. Draft the Body
 
-- Apply [Populate Proposal Body](../artifacts/proposal-body.md#populate-proposal-body "ƒ") from the confirmed proposal context at the selected output path. The local file is the source for the issue.
+- Use the confirmed proposal context and selected output path.
+
+- Populate the [Template](../artifacts/proposal-body.md#template) from [Proposal Context](../artifacts/proposal-body.md#proposal-context) at the destination in [Output Body](../artifacts/proposal-body.md#output-body).
+- The title must meet the shared [Titles](../artifacts/issue-body.md#titles) conditions and the proposal [Titles](../artifacts/proposal-body.md#titles).
+- The Problem must meet the shared [Problem and Proposal](../artifacts/issue-body.md#problem-and-proposal) conditions.
+- All populated fields must meet [Fields](../artifacts/proposal-body.md#fields).
+
+- Retain the populated [Output Body](../artifacts/proposal-body.md#output-body) for publication.
+
+- The local file is the source for the issue.
 
 - Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") with the proposal prefix letter, and carry the provided proposal number in the title.
 - The goal clauses are the clauses the user confirmed. The Non-Goals are the boundary.
@@ -62,7 +72,11 @@ Read these files first.
 
 ### 7. Place
 
-- Apply [Locate Project Board](../artifacts/board.md#locate-project-board "ƒ") for proposals.
+- Select proposals as [Board Selection](../artifacts/board.md#board-selection).
+
+- Run [Find Proposals Board](../artifacts/board.md#find-proposals-board "ƒ") under [Board Owner](../artifacts/board.md#board-owner) when [Board Selection](../artifacts/board.md#board-selection) names proposals, or Run [Find Theme Board](../artifacts/board.md#find-theme-board "ƒ") for its theme.
+
+- Retain the [Selected Board](../artifacts/board.md#selected-board) or an absent-board finding for the requester’s selection or creation path.
 
 - For an absent board, Apply [Create Proposals Board](../artifacts/board.md#create-proposals-board "ƒ").
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the saved issue id.

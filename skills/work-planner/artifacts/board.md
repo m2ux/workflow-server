@@ -26,24 +26,6 @@ Provide a missing-selection result when neither a theme nor proposals is specifi
 
 Provide the [selected board](#selected-board) number, or an absent-board result for the caller’s creation path. Work one board at a time.
 
-### Copy Project Board
-
-A missing theme board, or a missing proposals board.
-
-#### 1. Create Absent Proposals Board
-
-When [Selected Kind](#selected-kind) is proposals and no open board under [Board Owner](#board-owner) has the [proposals title](../configuration.md#proposals-board), Apply [Create Proposals Board](#create-proposals-board "ƒ"). The copy source and the title meet [Proposals](#proposals).
-
-#### 2. Create Absent Theme Board
-
-- When the selected theme board is absent:
-- Apply [Create Theme Board](#create-theme-board "ƒ") with the owner, [repository](#repository), theme title and originating proposal record when applicable.
-- Require the new theme's label and board before an initiative takes that theme.
-
-#### 3. Provide Copied Project Board
-
-Provide the [Copied Board](#copied-board) after the selected creation path succeeds.
-
 ### Create Proposals Board
 
 A new proposals board linked to the supplied repository.
@@ -69,38 +51,6 @@ Retain the new board number. The copy meets [Proposals](#proposals).
 Run [Link Board to Repository](#link-board-to-repository "ƒ") with the owner, new board number and [repository](#repository).
 
 #### 6. Provide Linked Board
-
-Provide the [Copied Board](#copied-board) after linking succeeds.
-
-### Create Theme Board
-
-A new theme board linked to the supplied repository.
-
-#### 1. Check Theme Provenance
-
-Require the originating proposal record in [Theme Provenance](#theme-provenance) for a proposal-derived board; provide a missing-input finding when its designator is unavailable.
-
-#### 2. Find Theme Template
-
-Run [Find Board Template](#find-board-template "ƒ") under [Board Owner](#board-owner) with the exact [theme-template title](../configuration.md#theme-boards).
-
-#### 3. Select Template Source
-
-Use the provided number as the copy source.
-
-#### 4. Copy Theme Template
-
-Run [Copy Board Template](#copy-board-template "ƒ") with that template number, the owner and the title required by [One Board Per Theme](#one-board-per-theme).
-
-#### 5. Retain New Board Number
-
-Retain the new board number. The copy carries the [theme-board fields](../configuration.md#theme-boards).
-
-#### 6. Link Copied Board
-
-Run [Link Board to Repository](#link-board-to-repository "ƒ") with the owner, new board number and [repository](#repository).
-
-#### 7. Provide Linked Board
 
 Provide the [Copied Board](#copied-board) after linking succeeds.
 
@@ -159,18 +109,6 @@ When [Optional Item](#optional-item) requests a single item for write confirmati
 #### 3. Provide Current Configuration
 
 Provide [Board Configuration](#board-configuration) with the field definitions and requested current item.
-
-### Locate Project Board
-
-The board identity matching a supplied purpose or theme.
-
-#### 1. Find Requested Purpose
-
-Run [Find Proposals Board](#find-proposals-board "ƒ") under [Board Owner](#board-owner) when [Board Selection](#board-selection) names proposals, or Run [Find Theme Board](#find-theme-board "ƒ") for its theme.
-
-#### 2. Provide Matching Board
-
-Provide the [Selected Board](#selected-board) or an absent-board finding for the requester’s selection or creation path.
 
 ## Commands
 

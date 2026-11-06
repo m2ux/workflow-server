@@ -107,9 +107,27 @@ The continuing coordinator for one authorized delivery scope.
 
 - Reconcile each held record with actual harness sessions and the retained inventory, resuming the existing session when available and reporting an absent session without creating a duplicate.
 
-- Release a hold only when the user explicitly requested it:
+##### Requested Hold Release
 
-- Run [Release Row](../artifacts/epic-issue-body.md#release-row "ƒ") with the engineering worktree and Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body, or Apply [Release Hot-fix Hold](../artifacts/hotfix.md#release-hot-fix-hold "ƒ") for a hot-fix.
+- Release a hold only when the user explicitly requested it.
+
+###### Task Row Hold
+
+- For a task-row hold, Run [Release Row](../artifacts/epic-issue-body.md#release-row "ƒ") with the engineering worktree, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
+
+###### Hot-Fix Hold
+
+- For a hot-fix hold:
+
+- Apply [Capture Issue Development](../artifacts/issue.md#capture-issue-development "ƒ") for [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity).
+- Refuse the release while its [Delivery Unit](../artifacts/hotfix.md#delivery-unit) is running or unrecorded, and provide the pull request that makes it so to the caller.
+
+- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with the board in [Board Evidence](../artifacts/hotfix.md#board-evidence), the hot-fix issue and Ready.
+
+- Retain [Board Result](../artifacts/hotfix.md#board-result) with the saved item and Status.
+
+##### Survey Continuation
+
 - Repeat the survey with refreshed items and delivery evidence after a release.
 
 - Retain held, blocked, undeclared and unresolved findings for the report.
@@ -201,7 +219,16 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 7. Open the Pull Request
 
-- Apply [Populate Pull Request Body](../artifacts/pull-request-body.md#populate-pull-request-body "ƒ") with the unit's change, tasks, criteria and validation evidence. Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with the provided body to open the unit's pull request from each task branch its work changes into its base, so the title, the base, the Test Plan, and the issue links meet [Titles](../artifacts/pull-request-body.md#titles), [Branches](../artifacts/delivery-branches.md#branches), [Test Coverage](../artifacts/pull-request-body.md#test-coverage), and [Issue Links](../artifacts/pull-request.md#issue-links).
+- Use the unit’s change, tasks, criteria and validation evidence.
+
+- Populate the [Template](../artifacts/pull-request-body.md#template) from [Change Evidence](../artifacts/pull-request-body.md#change-evidence), retaining applicable content in [Current Body](../artifacts/pull-request-body.md#current-body) and writing to [Output Body](../artifacts/pull-request-body.md#output-body). For an epic review, Apply [Populate Review Body](../artifacts/pull-request-body.md#populate-review-body "ƒ").
+- All populated fields must meet [Fields](../artifacts/pull-request-body.md#fields).
+
+- Verify each result link against [Test Plan](../artifacts/pull-request-body.md#test-plan) before publishing the body.
+
+- Retain the [complete body file](../artifacts/pull-request-body.md#output-body) and any [unresolved evidence](../artifacts/pull-request-body.md#unresolved-evidence) links for publication.
+
+- Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with the provided body to open the unit's pull request from each task branch its work changes into its base, so the title, the base, the Test Plan, and the issue links meet [Titles](../artifacts/pull-request-body.md#titles), [Branches](../artifacts/delivery-branches.md#branches), [Test Coverage](../artifacts/pull-request-body.md#test-coverage), and [Issue Links](../artifacts/pull-request.md#issue-links).
 
 - Apply [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close "ƒ") for the repository, where the session holds no confirmed setting.
 - Supply that setting and the unit's task issue, where one exists, so the pull request opens linked to it.
@@ -226,8 +253,17 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 - Apply [Produce Agent Review](../artifacts/agent-review.md#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence.
 - Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") with its provided record, then Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") with that record.
 - Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") to link that published record from the pull request body.
-- Apply [Ready Hot-fix Pull Request](../artifacts/pull-request.md#ready-hot-fix-pull-request "ƒ") with the pull request and the published records.
-- For each provided finding, fix it on the task branch and repeat this step from Produce Agent Review, until Ready Hot-fix Pull Request returns none.
+- Use the pull request and published review records.
+
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for its full metadata.
+
+- Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with that metadata and [Published Reviews](../artifacts/pull-request.md#published-reviews).
+- On a finding, retain it for this step’s repair loop; the [pull request](../artifacts/pull-request.md#identity) stays a draft.
+
+- For a draft with passing evidence, Run [Mark Review Ready](../artifacts/pull-request.md#mark-review-ready "ƒ") with the node id its metadata names.
+
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again with the same identity, then Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records. Provide [Review State](../artifacts/pull-request.md#review-state), or [Failure](../artifacts/pull-request.md#failure) with the changed revision or finding that leaves it unconfirmed.
+- For each provided finding, fix it on the task branch and repeat this step from Produce Agent Review, until review validation and ready-state readback provide no finding.
 - A finding the session cannot fix within its allowance stops it before the merge step. The hot-fix stays held and its pull request a draft, and the session returns each open finding in its result.
 
 #### 10. Merge
@@ -272,5 +308,6 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
   The user reads what delivery changed in the plan, and work needing an initiative is left open for them to decide.
 
 ## Guidance
+
 - **Allowance.**
   This mode's runs, and every session they dispatch, apply each kind in [Change Kinds](../artifacts/plan-change.md#change-kinds). A change outside them is held and reported.

@@ -2,24 +2,6 @@
 
 An initiative's epic delivery, criterion verification and completion state.
 
-## Operations
-
-### Check Initiative Completion
-
-The initiative's normal delivery result before tracker closure.
-
-#### 1. Evaluate Supplied Evidence
-
-Evaluate [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Verification Evidence](#verification-evidence) and [Development Evidence](#development-evidence) against [Delivery State](#delivery-state).
-
-#### 2. Identify Missing Conditions
-
-Identify each missing, open or cancelled epic, each unverified or unticked criterion, and each unmerged or unreadable Development-linked pull request. Incomplete link evidence leaves completion unconfirmed.
-
-#### 3. Provide Completion Result
-
-Provide the completion result and its supporting issue identities, evidence revisions and blockers. Passing normal delivery checks supplies the caller's closure evidence; the tracker issue's current Development-link gate still governs the write.
-
 ## Fields
 
 ### Identity

@@ -31,7 +31,17 @@ Take the user’s stated and confirmed goal from [Goal Evidence](#goal-evidence)
 
 #### 3. Read Marked Requirement Sources
 
-- Apply [Read Requirement Sources](initiative-issue-body.md#read-requirement-sources "ƒ") with the initiative References, checkout, authenticated access and output files.
+- Use the initiative References, checkout, authenticated access and output files for the source evidence.
+
+- Read each local source in [Requirement References](initiative-issue-body.md#requirement-references) at its checkout path, retaining any supplied [Source Evidence](initiative-issue-body.md#source-evidence).
+
+- For a pinned GitHub blob, Run [Fetch Source](initiative-issue-body.md#fetch-source "ƒ") with its repository, path and pinned revision, saving it at [Output Files](initiative-issue-body.md#output-files).
+
+- Fetch other URLs through the harness's web access.
+
+- Record an unreadable or empty source as a [Sources](initiative-issue-body.md#sources) finding; its criteria remain unevaluated.
+
+- Retain [Source Evidence](initiative-issue-body.md#source-evidence) with each source’s contents and identity, and [Validation Findings](initiative-issue-body.md#validation-findings) for unreadable or empty sources.
 - Extend the trace table with the source requirement each criterion answers to. Each unmatched requirement, each criterion that departs from the one it cites, and each source that could not be read is a gap [Sources](initiative-issue-body.md#sources) names.
 
 #### 4. Check Acceptance Criteria
@@ -46,7 +56,18 @@ Check each criterion against the [shared acceptance criteria](issue-body.md#shar
 
 #### 6. Check Outside Threats
 
-Apply [Check Outside Threats](#check-outside-threats "ƒ") with the current initiative and epic bodies or drafts, and the artifacts and consumers the plan changes.
+- Check the current initiative and epic bodies or drafts, and the artifacts and consumers the plan changes. An item the draft leaves open is a gap.
+
+- Check for anything outside [Plan Bodies](#plan-bodies) that reads, builds or ships the [Changed Surface](#changed-surface).
+
+- Check for a skip, a fallback, or a fail-closed path that hides a violation.
+
+- Check that done has a threshold, a baseline, and an instrument that is independent of the thing measured. The baseline is fixed before the plan changes what it measures.
+
+- Check for skew between an artifact the plan produces and an implementation that reads it.
+
+- Check for a change elsewhere that alters the ground the plan stands on.
+- Retain [Review Result](#review-result) with the evidenced threats and gaps to the requesting goal review.
 
 #### 7. Provide Ranked Gaps
 
@@ -54,31 +75,6 @@ Apply [Check Outside Threats](#check-outside-threats "ƒ") with the current init
 - Flag the few that most threaten the goal.
 - Record the trace table in the [planning record](planning-record.md), or give it to the user when the change has none.
 - Provide [Review Result](#review-result) with the trace and ranked findings.
-
-### Check Outside Threats
-
-An item the draft leaves open is a gap.
-
-#### 1. Check External Consumers
-
-Check for anything outside [Plan Bodies](#plan-bodies) that reads, builds or ships the [Changed Surface](#changed-surface).
-
-#### 2. Check Hidden Violations
-
-Check for a skip, a fallback, or a fail-closed path that hides a violation.
-
-#### 3. Check Completion Instrument
-
-Check that done has a threshold, a baseline, and an instrument that is independent of the thing measured. The baseline is fixed before the plan changes what it measures.
-
-#### 4. Check Consumer Alignment
-
-Check for skew between an artifact the plan produces and an implementation that reads it.
-
-#### 5. Provide External Threats
-
-- Check for a change elsewhere that alters the ground the plan stands on.
-- Provide [Review Result](#review-result) with the evidenced threats and gaps to the requesting goal review.
 
 ## Fields
 

@@ -26,18 +26,6 @@ One standalone issue body from its supplied scope.
 
 Provide the populated [Output Body](#output-body) for publication.
 
-### Revise Standalone Body
-
-One standalone body with its confirmed boundary integrated.
-
-#### 1. Apply Confirmed Boundary
-
-Apply [Populate Standalone Body](#populate-standalone-body "ƒ") to [Current Body](#current-body) with [Confirmed Boundary](#confirmed-boundary), folding any Non-Goals into Proposal as a closing boundary and writing to [Output Body](#output-body).
-
-#### 2. Provide Revised Body
-
-Provide the revised [Output Body](#output-body) for publication.
-
 ## Fields
 
 ### Template

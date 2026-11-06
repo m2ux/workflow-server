@@ -84,30 +84,6 @@ Include excluded names in Problem and Proposal and criterion/source departures i
 
 Provide [Output Files](#output-files) with the corrected body and [Validation Findings](#validation-findings) containing the mechanical diff and unresolved findings.
 
-### Read Requirement Sources
-
-The requirements evidence used to validate an initiative's criteria.
-
-#### 1. Read Local Sources
-
-Read each local source in [Requirement References](#requirement-references) at its checkout path, retaining any supplied [Source Evidence](#source-evidence).
-
-#### 2. Fetch Pinned Sources
-
-For a pinned GitHub blob, Run [Fetch Source](#fetch-source "ƒ") with its repository, path and pinned revision, saving it at [Output Files](#output-files).
-
-#### 3. Fetch Other URLs
-
-Fetch other URLs through the harness's web access.
-
-#### 4. Record Unreadable Sources
-
-Record an unreadable or empty source as a [Sources](#sources) finding; its criteria remain unevaluated.
-
-#### 5. Provide Source Evidence
-
-Provide [Source Evidence](#source-evidence) with each source’s contents and identity, and [Validation Findings](#validation-findings) for unreadable or empty sources.
-
 ## Commands
 
 ### Sync Initiative

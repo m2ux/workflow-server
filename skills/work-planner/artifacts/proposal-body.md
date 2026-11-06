@@ -10,21 +10,6 @@ Read these files first.
 
 ## Operations
 
-### Populate Proposal Body
-
-One proposal body from a confirmed problem and goal.
-
-#### 1. Populate Proposal Template
-
-- Populate the [Template](#template) from [Proposal Context](#proposal-context) at the destination in [Output Body](#output-body).
-- The title must meet the shared [Titles](issue-body.md#titles) conditions and the proposal [Titles](#titles).
-- The Problem must meet the shared [Problem and Proposal](issue-body.md#problem-and-proposal) conditions.
-- All populated fields must meet [Fields](#fields).
-
-#### 2. Provide Populated Proposal Body
-
-Provide the populated [Output Body](#output-body) for publication.
-
 ### Validate Proposal Body
 
 The body's local format and field findings.

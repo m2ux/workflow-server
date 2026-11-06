@@ -2,31 +2,6 @@
 
 The architecture overview explains one pull request's changes to the engineer who reviews them: where the change sits in the system, how it behaves, and in what order to read the diff. Its reader knows software and does not know this codebase. It lives in a planning record.
 
-## Operations
-
-### Populate Architecture Overview
-
-One architecture overview from supplied measurements.
-
-#### 1. Check Measured Diagrams
-
-- Take the graph [measurements](#measurements) supplied by the caller and check the proposed diagrams.
-- The diagrams must meet [Measured Structure](#measured-structure) and [Diagrams](#diagrams).
-
-#### 2. Populate Overview File
-
-- Populate the overview from the [Template](#template) at the destination in [Overview File](#overview-file).
-- All populated fields must meet [Fields](#fields).
-
-#### 3. Pin Code References
-
-- Pin each code reference to the [Pull Request Head](#pull-request-head).
-- Each reference must meet [Code References](#code-references).
-
-#### 4. Provide Overview File
-
-Provide the completed [Overview File](#overview-file) for registration in its planning record.
-
 ## Fields
 
 ### Template

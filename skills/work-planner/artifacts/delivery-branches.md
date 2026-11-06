@@ -35,29 +35,19 @@ Require the caller's confirmed [prerequisite evidence](#prerequisite-evidence) b
 
 #### 5. Create Missing Epic Bases
 
-Apply [Create Epic Base](#create-epic-base "ƒ") in the project checkout for each missing base, passing the corresponding long-lived branch, epic base name and confirmed prerequisite evidence.
+- For each missing base in the project checkout, use its corresponding long-lived branch, epic base name and confirmed prerequisites:
+
+- Require confirmed [Prerequisite Evidence](#prerequisite-evidence) and a missing destination for [Epic-Base Name](#epic-base-name). Refuse a destination that already exists.
+
+- Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the corresponding long-lived [source branch](#source-branch), such as `main`.
+
+- After a successful fetch:
+- Run [Publish Epic Base](#publish-epic-base "ƒ") in the project checkout with that remote source and the missing epic base name, such as `i07/e00/main`, meeting [Epic Bases](#epic-bases).
+- Retain [Branch Result](#branch-result) with the created branch, or [Failure](#failure).
 
 #### 6. Provide Prepare Delivery Bases
 
 Provide [Epic-Base Names](#epic-base-names) after preparation, or [Failure](#failure) when preparation cannot complete.
-
-### Create Epic Base
-
-The missing epic branch rooted in its remote long-lived branch.
-
-#### 1. Require Missing Destination
-
-Require confirmed [Prerequisite Evidence](#prerequisite-evidence) and a missing destination for [Epic-Base Name](#epic-base-name). Refuse a destination that already exists.
-
-#### 2. Fetch Long-Lived Source
-
-Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the corresponding long-lived [source branch](#source-branch), such as `main`.
-
-#### 3. Publish Missing Epic Base
-
-- After a successful fetch:
-- Run [Publish Epic Base](#publish-epic-base "ƒ") in the project checkout with that remote source and the missing epic base name, such as `i07/e00/main`, meeting [Epic Bases](#epic-bases).
-- Provide [Branch Result](#branch-result) with the created branch, or [Failure](#failure).
 
 ### Update Epic Base
 
@@ -111,28 +101,6 @@ Run [Merge Remote Branch](#merge-remote-branch "ƒ") in the unit checkout with t
 - Run [Push Task Branch](#push-task-branch "ƒ") in the unit checkout with [Task Branch](#task-branch) as destination.
 - Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
 
-### Create Task Worktree
-
-The worktree and branch one unit's session works in.
-
-#### 1. Require Unit Prerequisites
-
-Require [Prerequisite Evidence](#prerequisite-evidence) and names meeting [Task Branches](#task-branches).
-
-#### 2. Fetch Task Base
-
-Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) of the repository the work changes, passing the base; stop on failure.
-
-#### 3. Add Unit Worktree
-
-Run [Add Task Worktree](#add-task-worktree "ƒ") in the project checkout at [Worktree Path](#worktree-path) for the [task branch](#task-branch), rooted in the fetched [Base Branch](#base-branch).
-
-#### 4. Provide Unit Checkout
-
-- Provide [Worktree Result](#worktree-result) with the worktree path, branch and base, or [Failure](#failure).
-
-- A unit that changes several long-lived branches runs this once for each epic base, with the branch and worktree [Task Branches](#task-branches) names for it.
-
 ### Create Pull Request Worktree
 
 The detached worktree where the graph reads the reviewed change.
@@ -172,22 +140,6 @@ Run [Read Checkout Revision](#read-checkout-revision "ƒ") in the selected revie
 #### 8. Provide Review Checkout
 
 Provide [Worktree Result](#worktree-result) with the selected detached worktree path and head, or [Failure](#failure) with the discrepancy before measuring.
-
-### Read Target Requirements
-
-The protection and active rules governing one target branch.
-
-#### 1. Fetch Target Protection
-
-Run [Fetch Branch Protection](#fetch-branch-protection "ƒ") for [Target Branch](#target-branch) in [Repository](#repository), using [Output Files](#output-files) for the evidence destinations.
-
-#### 2. Fetch Active Target Rules
-
-Run [Fetch Active Branch Rules](#fetch-active-branch-rules "ƒ") for the same target.
-
-#### 3. Provide Target Requirements
-
-Provide [Target Requirements](#target-requirements) with both records, or [Failure](#failure) when a requirement is unreadable. A protection 404 does not establish the absence of active rules.
 
 ### Read Delivery Branches
 

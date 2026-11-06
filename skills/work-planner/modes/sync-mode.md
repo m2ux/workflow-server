@@ -27,6 +27,7 @@ Read these files first.
 - [Issue Closure](../protocols/issue-closure.md "ƒ")
 - [Review Pull Request](../protocols/review-pull-request.md "ƒ")
 - [Understand Mode](understand-mode.md "ƒ")
+- [Configuration](../configuration.md)
 
 ## Procedure
 
@@ -268,9 +269,80 @@ Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with e
 - When the board is absent:
 
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the originating proposal identified in the initiative's [References](../artifacts/initiative-issue-body.md#references); provide unresolved provenance before board creation for a proposal-derived initiative.
-- Apply [Copy Project Board](../artifacts/board.md#copy-project-board "ƒ") with the owner, repository, theme title and originating proposal record when applicable.
 
-- Apply [Record Board Delivery](../artifacts/board-delivery.md#record-board-delivery "ƒ") after the issue bodies and closures are saved.
+#### Missing Board
+
+- When the selected board is absent, use the owner, repository, theme title and originating proposal record when applicable.
+
+##### 1. Create Absent Proposals Board
+
+When [Selected Kind](../artifacts/board.md#selected-kind) is proposals and no open board under [Board Owner](../artifacts/board.md#board-owner) has the [proposals title](../configuration.md#proposals-board), Apply [Create Proposals Board](../artifacts/board.md#create-proposals-board "ƒ"). The copy source and the title meet [Proposals](../artifacts/board.md#proposals).
+
+##### 2. Create Absent Theme Board
+
+- When the selected theme board is absent:
+- Use the owner, [repository](../artifacts/board.md#repository), theme title and originating proposal record when applicable.
+
+- Require the originating proposal record in [Theme Provenance](../artifacts/board.md#theme-provenance) for a proposal-derived board; provide a missing-input finding when its designator is unavailable.
+
+- Run [Find Board Template](../artifacts/board.md#find-board-template "ƒ") under [Board Owner](../artifacts/board.md#board-owner) with the exact [theme-template title](../configuration.md#theme-boards).
+
+- Use the provided number as the copy source.
+
+- Run [Copy Board Template](../artifacts/board.md#copy-board-template "ƒ") with that template number, the owner and the title required by [One Board Per Theme](../artifacts/board.md#one-board-per-theme).
+
+- Retain the new board number. The copy carries the [theme-board fields](../configuration.md#theme-boards).
+
+- Run [Link Board to Repository](../artifacts/board.md#link-board-to-repository "ƒ") with the owner, new board number and [repository](../artifacts/board.md#repository).
+
+- Retain the [Copied Board](../artifacts/board.md#copied-board) after linking succeeds.
+- Require the new theme's label and board before an initiative takes that theme.
+
+##### 3. Provide Copied Project Board
+
+Retain the [Copied Board](../artifacts/board.md#copied-board) after the selected creation path succeeds.
+
+#### Saved Board Delivery
+
+- After the issue bodies and closures are saved:
+
+##### 1. Read Current Delivery Evidence
+
+- Read the issues, the board and its delivery records.
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the [Saved Identities](../artifacts/board-delivery.md#saved-identities).
+- Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for the selected board.
+- Apply [Fetch All Delivery Pull Requests](../artifacts/pull-request.md#fetch-all-delivery-pull-requests "ƒ") for its repositories and items.
+- Apply [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links "ƒ") for those records.
+- Fetch the published agent review records linked from each open epic integration pull request, retaining absent or unreadable evidence as a handoff blocker.
+- Apply [Read Board Configuration](../artifacts/board.md#read-board-configuration "ƒ").
+- Run [Find User](../artifacts/board.md#find-user "ƒ").
+- Retain these provided snapshots for the following computation.
+
+##### 2. Plan Delivery Changes
+
+- Run [Compute Board Changes](../artifacts/board-delivery.md#compute-board-changes "ƒ") to the captured evidence.
+- Fetch each unresolved issue.
+- Run [Compute Board Changes](../artifacts/board-delivery.md#compute-board-changes "ƒ") again, adding the fetched off-board issue records to the retained evidence.
+
+##### 3. Apply and Confirm Calls
+
+- Run each emitted call, including the assignee calls, which act on the issue rather than the board item.
+- Apply [Read Board Configuration](../artifacts/board.md#read-board-configuration "ƒ") for each changed item to confirm its current status.
+
+- If that item still shows the preceding status:
+- Repeat its emitted write call.
+- Apply [Read Board Configuration](../artifacts/board.md#read-board-configuration "ƒ") again for the same item. The item list can lag a write.
+
+##### 4. Recompute Refreshed Board
+
+- Fetch the issues and items again.
+- Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes.
+- Run [Compute Board Changes](../artifacts/board-delivery.md#compute-board-changes "ƒ") to the refreshed evidence, retaining every resolved off-board issue record.
+- Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
+
+##### 5. Provide Recorded Board Delivery
+
+Retain [Confirmed Statuses](../artifacts/board-delivery.md#confirmed-statuses) after every changed item has been confirmed, retaining any unresolved discrepancy.
 
 ### 13. Explain Each Change Entering Review
 
@@ -284,7 +356,24 @@ Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with e
 - Provide saved delivery results and unresolved findings to the caller, or present them to the user for a direct request.
 
 - Report queue decisions unevaluated by this run.
-- Apply [Audit Closure Evidence](../artifacts/issue.md#audit-closure-evidence "ƒ") for the repository holding the issues, naming the initiative, epics and tasks this run touched. Report each unsupported and unevaluable issue it returns, with its state reason and findings, and the not-planned closures apart. This run changes none of them.
+
+#### Closure Evidence Audit
+
+- Select the repository holding the issues and the initiative, epics and tasks this run touched as [Audit Selection](../artifacts/issue.md#audit-selection).
+
+- Fetch only the closed issues in [Audit Selection](../artifacts/issue.md#audit-selection) using [Authenticated Access](../artifacts/issue.md#authenticated-access), saving evidence to [Output Files](../artifacts/issue.md#output-files):
+- For named issues, Run [Fetch Selected Closed Issues](../artifacts/issue.md#fetch-selected-closed-issues "ƒ") with their numbers.
+- For the whole [repository](../artifacts/issue.md#repository), Run [Fetch Closed Issues](../artifacts/issue.md#fetch-closed-issues "ƒ").
+- An empty collection means none of the named issues is closed; retain an empty audit result and continue to the per-issue report.
+
+- Run [Capture Issue Links](../artifacts/issue.md#capture-issue-links "ƒ") with that collection; an unreadable relation is provided as a blocker and the sweep does not run.
+
+- Run [Sweep Closure Evidence](../artifacts/issue.md#sweep-closure-evidence "ƒ") with the collection and the issue-links file.
+
+- Retain [Closure Findings](../artifacts/issue.md#closure-findings) with each unsupported issue’s state reason and findings, and each unevaluable issue as missing evidence. List not-planned closures separately for reference. The audit changes no issue.
+
+#### Per-Issue Report
+
 - Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, test plan disagreements, what was closed, each board and assignee change, and each overview written. What the report names about criteria is [Coverage Reports](../artifacts/issue-body.md#coverage-reports).
 
 ## Outcomes

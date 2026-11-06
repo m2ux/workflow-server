@@ -158,16 +158,16 @@ Read this before adding or changing an artifact.
 - **Descriptions.**
   Describe the artifact's subject and contents directly. Omit inconsequential implementation qualifiers such as virtual. Distinguish proposed changes from applied state where the caller needs that distinction; a queue is not itself proposed merely because its changes await application.
 - **Prose API.**
-  Artifact operations form a prose API addressed by subsection titles. They perform substantive selection, sequencing, decisions or validation for their subject. Callers Apply operation links or Run command specifications, identifying meaningful context and routing results. Related artifacts supply evidence rather than being managed through the operation.
+  Shared artifact operations form a prose API addressed by subsection titles. They perform substantive selection, sequencing, decisions or validation for their subject. Callers Apply operation links or Run command specifications, identifying meaningful context and routing results. Related artifacts supply evidence rather than being managed through the operation.
 
 - **Operation inputs.**
   A calling step names only the selections or refreshed evidence needed to distinguish the call. The called command specification owns its complete input/output contract and CLI parameter bindings.
 
 - **Operation scope.**
-  An operation exists because a procedure calls it. Classify the work by its subject and behaviour, not its verb or script name: a read that sequences access steps is an operation, and a plan that derives an artifact's state is an operation.
+  An operation exists because a procedure calls it. Classify the work by its subject and behaviour, not its verb or script name: a read that sequences access steps is an operation, and a plan that derives an artifact's state is an operation. Inline an artifact operation with exactly one linked reference into that procedural caller, preserving its selections, guards, ordered actions and result continuation. Field definitions and command specifications keep their owning homes; operations with multiple references remain shared.
   - Reading, inspecting, planning, populating and validating are shapes an operation can take, not a set an artifact fills. A sibling operation is no reason to add its counterpart, and a wrapper whose body is one call to another operation is that operation.
 - **Bodies and lifecycle.**
-  A body artifact populates and validates document content. A subject artifact owns its readiness and completion checks from supplied evidence. Reading evidence about related artifacts does not make a check orchestration; coordinating changes to those artifacts does. Creation, metadata, linking and closure belong to the artifact for the tracked object.
+  A body artifact defines document content and its shared population or validation operations. A subject artifact owns its readiness and completion checks from supplied evidence. Reading evidence about related artifacts does not make a check orchestration; coordinating changes to those artifacts does. Creation, metadata, linking and closure belong to the artifact for the tracked object.
 - **No mode, no protocol.**
   An artifact never links to a mode or a protocol, including by naming one in prose.
 - **Fields.**

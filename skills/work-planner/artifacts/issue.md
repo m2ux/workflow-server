@@ -56,57 +56,6 @@ Compare the saved fields with the intended body and metadata.
 
 Provide [Issue Record](#issue-record) after the saved fields match the intended body and metadata.
 
-### Close Tracker Issue
-
-Verified completion of an issue and its linked delivery.
-
-#### 1. Capture Current Development
-
-- Apply [Capture Issue Development](#capture-issue-development "ƒ") for the issue in [Identity](#identity), saving its current JSON and Development snapshot to [Output Files](#output-files).
-- The issue's entire Development field establishes membership, across repositories and states. Titles, branch names, body mentions and a list filtered to one initiative do not. An empty field adds no [pull request](#identity) requirement.
-
-#### 2. Check Closure Evidence
-
-Run [Check Issue Closure](#check-issue-closure "ƒ") with those two files.
-
-#### 3. Require Completed Delivery
-
-- Require the normal delivery checks in [Delivery Evidence](#delivery-evidence) to pass, every criterion to be verified and ticked, and every currently linked pull request to be merged.
-- Keep the issue open for an open, draft or closed-without-merge linked pull request, and for links never read.
-- Provide an abandoned or incorrect Development link to the caller for the user's decision on its removal. A replacement pull request does not remove the requirement on a link still present.
-
-#### 4. Close Verified Issue
-
-Apply [Close as Completed](#close-as-completed "ƒ"), which repeats the gate immediately before the write.
-
-#### 5. Provide Closed Tracker Issue
-
-Provide the confirmed [State](#state) or [Closure Findings](#closure-findings) identifying the closure blocker.
-
-### Close Transferred Work
-
-An issue whose work is tracked by another issue.
-
-#### 1. Confirm Destination Evidence
-
-Confirm [Transfer Evidence](#transfer-evidence) establishes that the destination contains the work and cites the source issue in [Identity](#identity).
-
-#### 2. Comment With Destination
-
-Apply [Comment on Issue](#comment-on-issue "ƒ") with the destination reference and [Comment](#comment).
-
-#### 3. Close Transferred Issue
-
-Run [Close as Not Planned](#close-as-not-planned "ƒ"), retaining the issue's body.
-
-#### 4. Confirm Saved State
-
-Run [Fetch Tracker Issue](#fetch-tracker-issue "ƒ") to confirm its state and reason.
-
-#### 5. Provide Closed Transferred Work
-
-Provide the confirmed [State](#state) and reason after the saved issue is read back.
-
 ### Comment on Issue
 
 The supplied discussion text saved on one issue.
@@ -125,30 +74,6 @@ When replying to feedback already folded into the body, compose a precise, factu
 
 Provide the saved [comment](#comment) URL.
 
-### Close as Completed
-
-An issue closed after its final evidence check.
-
-#### 1. Capture Fresh Development
-
-Apply [Capture Issue Development](#capture-issue-development "ƒ") immediately before closure.
-
-#### 2. Run Fresh Closure Gate
-
-Run [Check Issue Closure](#check-issue-closure "ƒ") with the issue and Development files it wrote, using absolute evidence paths when changing directory.
-
-#### 3. Require Passing Evidence
-
-Require exit 0 and passing normal checks from [Delivery Evidence](#delivery-evidence); a sync report of closable does not permit skipping this gate.
-
-#### 4. Set Completed State
-
-Immediately after the gate passes, Run [Set Completed State](#set-completed-state "ƒ") with the issue's [repository](#repository) and number and the passing evidence.
-
-#### 5. Provide Saved State
-
-Provide the saved [State](#state) or [Closure Findings](#closure-findings) with the failure.
-
 ### Capture Issue Development
 
 The issue's current content and its Development pull requests, as GitHub exposes them.
@@ -164,29 +89,6 @@ Run [Capture Issue Links](#capture-issue-links "ƒ") with that file, saving `lin
 #### 3. Provide Captured Files
 
 Provide [Issue Record](#issue-record) and [Development Snapshot](#development-snapshot), or the unreadable relation.
-
-### Audit Closure Evidence
-
-Each closed issue in one repository whose criteria or Development links do not support its closure, with the reason it was closed.
-
-#### 1. Fetch Selected Closed Issues
-
-- Fetch only the closed issues in [Audit Selection](#audit-selection) using [Authenticated Access](#authenticated-access), saving evidence to [Output Files](#output-files):
-- For named issues, Run [Fetch Selected Closed Issues](#fetch-selected-closed-issues "ƒ") with their numbers.
-- For the whole [repository](#repository), Run [Fetch Closed Issues](#fetch-closed-issues "ƒ").
-- An empty collection means none of the named issues is closed; provide nothing listed.
-
-#### 2. Read Complete Development
-
-Run [Capture Issue Links](#capture-issue-links "ƒ") with that collection; an unreadable relation is provided as a blocker and the sweep does not run.
-
-#### 3. Run Closure Sweep
-
-Run [Sweep Closure Evidence](#sweep-closure-evidence "ƒ") with the collection and the issue-links file.
-
-#### 4. Provide Audit Findings
-
-Provide [Closure Findings](#closure-findings) with each unsupported issue’s state reason and findings, and each unevaluable issue as missing evidence. List not-planned closures separately for reference. The audit changes no issue.
 
 ### Confirm Repository Auto-Close
 

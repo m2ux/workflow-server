@@ -60,8 +60,21 @@ Read these files first.
 
 - For a hot-fix unit:
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the hot-fix's current body.
-- For a new unit, Apply [Hold Hot-fix Unit](../artifacts/hotfix.md#hold-hot-fix-unit "ƒ") with that issue, board identity and refreshed board items.
+
+##### New Hot-Fix Unit
+
+- For a new unit, use that issue, board identity and refreshed board items.
+
+- Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status "ƒ") with [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity) for In Progress and the supplied [Board Evidence](../artifacts/hotfix.md#board-evidence). That status is the hold [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
+
+- Retain [Board Result](../artifacts/hotfix.md#board-result) with the confirmed status or discrepancy. The session starts only once it is confirmed.
+
+##### Retained Hot-Fix Preparation
+
 - For a retained preparation, require its current board hold to remain confirmed.
+
+##### Confirmed Hot-Fix Hold
+
 - Retain the confirmed hold for this record.
 
 #### Hold Result
@@ -70,8 +83,28 @@ Read these files first.
 
 ### 4. Prepare the Session
 
-- Apply [Create Task Worktree](../artifacts/delivery-branches.md#create-task-worktree "ƒ") in the project checkout for each selected branch, base and worktree.
-- Apply [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief "ƒ") for the selected unit from its confirmed preparation and captured component context.
+#### Unit Checkouts
+
+- For each selected branch, base and worktree in the project checkout:
+
+- Require [Prerequisite Evidence](../artifacts/delivery-branches.md#prerequisite-evidence) and names meeting [Task Branches](../artifacts/delivery-branches.md#task-branches).
+
+- Run [Fetch Remote Branch](../artifacts/delivery-branches.md#fetch-remote-branch "ƒ") in the [project checkout](../artifacts/delivery-branches.md#project-checkout) of the repository the work changes, passing the base; stop on failure.
+
+- Run [Add Task Worktree](../artifacts/delivery-branches.md#add-task-worktree "ƒ") in the project checkout at [Worktree Path](../artifacts/delivery-branches.md#worktree-path) for the [task branch](../artifacts/delivery-branches.md#task-branch), rooted in the fetched [Base Branch](../artifacts/delivery-branches.md#base-branch).
+
+- Retain [Worktree Result](../artifacts/delivery-branches.md#worktree-result) with the worktree path, branch and base, or [Failure](../artifacts/delivery-branches.md#failure).
+
+- A unit that changes several long-lived branches runs this once for each epic base, with the branch and worktree [Task Branches](../artifacts/delivery-branches.md#task-branches) names for it.
+
+#### Delivery Brief
+
+- Use the selected unit, confirmed preparation and captured component context.
+
+- Write the [Work Identity](../artifacts/delivery-brief.md#work-identity) and [Planning Record](../artifacts/delivery-brief.md#planning-record) context, [Validation Scope](../artifacts/delivery-brief.md#validation-scope), [Change Autonomy](../artifacts/delivery-brief.md#change-autonomy) and [Execution Instructions](../artifacts/delivery-brief.md#execution-instructions) into the prompt file at [Output Path](../artifacts/delivery-brief.md#output-path) or where [Location](../artifacts/delivery-brief.md#location) puts it.
+- Each part must meet [Fields](../artifacts/delivery-brief.md#fields).
+
+- Retain the [brief path](../artifacts/delivery-brief.md#brief-path) and any [missing context](../artifacts/delivery-brief.md#missing-context). Resolve gaps before dispatch.
 - Provide a missing-context finding before execution, retaining the hold.
 
 ### 5. Start the Worker

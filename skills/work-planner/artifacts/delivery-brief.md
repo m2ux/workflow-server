@@ -9,21 +9,6 @@ Read these files first.
 - [Pull Request Body](pull-request-body.md)
 - [Plan Change](plan-change.md)
 
-## Operations
-
-### Populate Delivery Brief
-
-One complete prompt file for a confirmed delivery unit.
-
-#### 1. Write Complete Delivery Brief
-
-- Write the [Work Identity](#work-identity) and [Planning Record](#planning-record) context, [Validation Scope](#validation-scope), [Change Autonomy](#change-autonomy) and [Execution Instructions](#execution-instructions) into the prompt file at [Output Path](#output-path) or where [Location](#location) puts it.
-- Each part must meet [Fields](#fields).
-
-#### 2. Provide Brief Context
-
-Provide the [brief path](#brief-path) and any [missing context](#missing-context). The caller resolves gaps before dispatch.
-
 ## Fields
 
 ### Location

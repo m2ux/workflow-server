@@ -134,26 +134,6 @@ The saved format corrections for one issue and any unresolved content findings.
 - Apply [Validate Issue Body](#validate-issue-body "ƒ") again with the saved JSON and the same kind conditions, context and output path.
 - Provide saved [Body Evidence](#body-evidence), whether a correction was made, and [Format Findings](#format-findings). A remaining failure is a blocker.
 
-### Check Reference Visibility
-
-Repository visibility for the destination issue and its References entries.
-
-#### 1. Identify Reference Repositories
-
-Run [List Reference Repositories](#list-reference-repositories "ƒ") to [Body Record](#body-record) to identify the destination and cited repositories.
-
-#### 2. Fetch Repository Visibility
-
-Run [Fetch Reference Repository](#fetch-reference-repository "ƒ") for each provided name; collect the objects into a JSON array at the snapshot path in [Output Files](#output-files). Retain failed fetches as unresolved visibility, never as public visibility.
-
-#### 3. Validate Reference Snapshot
-
-Run [Validate Reference Visibility](#validate-reference-visibility "ƒ") with that snapshot and the issue record.
-
-#### 4. Provide Visibility Findings
-
-Provide [Visibility Findings](#visibility-findings) identifying each private reference on a public issue and each unavailable visibility. A private destination has no public-reference restriction; deciding how to replace or remove a private reference belongs to the requester.
-
 ## Commands
 
 ### Check Body Format

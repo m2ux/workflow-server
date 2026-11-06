@@ -11,55 +11,9 @@ Read these files first.
 - [Board](board.md)
 - [Board Delivery](board-delivery.md)
 - [Placement](placement.md)
-- [Repository Labels](repository-labels.md)
 - [Agent Review](agent-review.md)
 
 ## Operations
-
-### Open Hot-fix Issue
-
-A source issue's hot-fix number and labels, ready for its body rewrite.
-
-#### 1. Select Hot-fix Number
-
-Apply [Select Tracker Number](issue.md#select-tracker-number "ƒ") in [Repository](#repository) using the hot-fix prefix letter to select a number for the source issue identified by [Hot-fix Identity](#hot-fix-identity).
-
-#### 2. Ensure Required Labels
-
-Apply [Ensure Repository Labels](repository-labels.md#ensure-repository-labels "ƒ") with the labels hot-fix [Titles](hotfix-body.md#titles) name.
-
-#### 3. Provide Selected Number
-
-Provide the [hot-fix number](#hot-fix-number) to the caller for rewriting and saving the issue's body, title and labels. The caller then invokes Apply [Settle Hot-fix Board Status](#settle-hot-fix-board-status "ƒ") as its [placement](placement.md#disposition-conditions) orders.
-
-### Hold Hot-fix Unit
-
-One confirmed hot-fix unit held for its session.
-
-#### 1. Record Dispatch Hold
-
-Apply [Record Dispatch Status](board-delivery.md#record-dispatch-status "ƒ") with [Hot-fix Identity](#hot-fix-identity) for In Progress and the supplied [Board Evidence](#board-evidence). That status is the hold [Delivery Unit](#delivery-unit) defines.
-
-#### 2. Provide Confirmed Hold
-
-Provide [Board Result](#board-result) with the confirmed status or discrepancy. The session starts only once it is confirmed.
-
-### Release Hot-fix Hold
-
-A hot-fix whose released hold makes it available to the delivery plan.
-
-#### 1. Read Current Development
-
-- Apply [Capture Issue Development](issue.md#capture-issue-development "ƒ") for [Hot-fix Identity](#hot-fix-identity).
-- Refuse the release while its [Delivery Unit](#delivery-unit) is running or unrecorded, and provide the pull request that makes it so to the caller.
-
-#### 2. Provide Unit to Ready
-
-Apply [Place Issue on Board](board.md#place-issue-on-board "ƒ") with the board in [Board Evidence](#board-evidence), the hot-fix issue and Ready.
-
-#### 3. Provide Saved Status
-
-Provide [Board Result](#board-result) with the saved item and Status.
 
 ### Settle Hot-fix Board Status
 
