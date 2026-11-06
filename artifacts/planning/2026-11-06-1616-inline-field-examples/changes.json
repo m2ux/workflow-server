@@ -1,0 +1,1515 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "field": "Revision",
+    "language": "text",
+    "before": "i11/e16/workspace",
+    "values": [
+      "i11/e16/workspace"
+    ],
+    "after": "eg `i11/e16/workspace`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "field": "Project Checkout",
+    "language": "text",
+    "before": "/projects/workflow-server",
+    "values": [
+      "/projects/workflow-server"
+    ],
+    "after": "eg `/projects/workflow-server`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "field": "Instrument",
+    "language": "text",
+    "before": "<workspace>/scripts/sbx python3 -m pytest skills/work-planner/test -q",
+    "values": [
+      "<workspace>/scripts/sbx python3 -m pytest skills/work-planner/test -q"
+    ],
+    "after": "eg `<workspace>/scripts/sbx python3 -m pytest skills/work-planner/test -q`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Assignee Login",
+    "language": "text",
+    "before": "m2ux",
+    "values": [
+      "m2ux"
+    ],
+    "after": "eg `m2ux`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Output Directory",
+    "language": "text",
+    "before": "board/",
+    "values": [
+      "board/"
+    ],
+    "after": "eg `board/`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Board Items",
+    "language": "text",
+    "before": "items.json",
+    "values": [
+      "items.json"
+    ],
+    "after": "eg `items.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Board Fields",
+    "language": "text",
+    "before": "fields.json",
+    "values": [
+      "fields.json"
+    ],
+    "after": "eg `fields.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Board Identity",
+    "language": "text",
+    "before": "users/m2ux/projectsV2/9",
+    "values": [
+      "users/m2ux/projectsV2/9"
+    ],
+    "after": "eg `users/m2ux/projectsV2/9`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Issue Link Snapshot",
+    "language": "text",
+    "before": "links.json",
+    "values": [
+      "links.json"
+    ],
+    "after": "eg `links.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Pull Request Records",
+    "language": "text",
+    "before": "prs.json",
+    "values": [
+      "prs.json"
+    ],
+    "after": "eg `prs.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Task Records",
+    "language": "text",
+    "before": "issue-637.json",
+    "values": [
+      "issue-637.json"
+    ],
+    "after": "eg `issue-637.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Epic Records",
+    "language": "text",
+    "before": "issue-943.json issue-937.json",
+    "values": [
+      "issue-943.json issue-937.json"
+    ],
+    "after": "eg `issue-943.json issue-937.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "field": "Initiative Record",
+    "language": "text",
+    "before": "issue-936.json",
+    "values": [
+      "issue-936.json"
+    ],
+    "after": "eg `issue-936.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Assignee Login",
+    "language": "text",
+    "before": "m2ux",
+    "values": [
+      "m2ux"
+    ],
+    "after": "eg `m2ux`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Output Directory",
+    "language": "text",
+    "before": "board/",
+    "values": [
+      "board/"
+    ],
+    "after": "eg `board/`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Board Fields",
+    "language": "text",
+    "before": "fields.json",
+    "values": [
+      "fields.json"
+    ],
+    "after": "eg `fields.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Issue Link Snapshot",
+    "language": "text",
+    "before": "links.json",
+    "values": [
+      "links.json"
+    ],
+    "after": "eg `links.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Pull Request Records",
+    "language": "text",
+    "before": "prs.json",
+    "values": [
+      "prs.json"
+    ],
+    "after": "eg `prs.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Board Items",
+    "language": "text",
+    "before": "items.json",
+    "values": [
+      "items.json"
+    ],
+    "after": "eg `items.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "field": "Board Identity",
+    "language": "text",
+    "before": "users/<owner>/projectsV2/9",
+    "values": [
+      "users/<owner>/projectsV2/9"
+    ],
+    "after": "eg `users/<owner>/projectsV2/9`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Theme Name",
+    "language": "text",
+    "before": "Canon",
+    "values": [
+      "Canon"
+    ],
+    "after": "eg `Canon`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Board Items File",
+    "language": "text",
+    "before": "items.json",
+    "values": [
+      "items.json"
+    ],
+    "after": "eg `items.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Board Fields File",
+    "language": "text",
+    "before": "fields.json",
+    "values": [
+      "fields.json"
+    ],
+    "after": "eg `fields.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Status Input File",
+    "language": "json",
+    "before": "{\"fields\":[{\"id\":419167630,\"value\":\"OPTION\"}]}",
+    "values": [
+      "{\"fields\": [{\"id\": 419167630, \"value\": \"OPTION\"}]}"
+    ],
+    "after": "eg `{\"fields\": [{\"id\": 419167630, \"value\": \"OPTION\"}]}`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Status Input File",
+    "language": "text",
+    "before": "status-backlog.json",
+    "values": [
+      "status-backlog.json"
+    ],
+    "after": "eg `status-backlog.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Status Field",
+    "language": "text",
+    "before": "field-id: 419167630\noption-id: OPTION",
+    "values": [
+      "field-id: 419167630",
+      "option-id: OPTION"
+    ],
+    "after": "eg `field-id: 419167630`, `option-id: OPTION`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Item Coordinates",
+    "language": "text",
+    "before": "board: users/m2ux/projectsV2/13\nitem-id: 1001",
+    "values": [
+      "board: users/m2ux/projectsV2/13",
+      "item-id: 1001"
+    ],
+    "after": "eg `board: users/m2ux/projectsV2/13`, `item-id: 1001`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Issue Id",
+    "language": "text",
+    "before": "3040123456",
+    "values": [
+      "3040123456"
+    ],
+    "after": "eg `3040123456`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "field": "Board Coordinates",
+    "language": "text",
+    "before": "owner: m2ux\nboard-number: 13",
+    "values": [
+      "owner: m2ux",
+      "board-number: 13"
+    ],
+    "after": "eg `owner: m2ux`, `board-number: 13`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Revision",
+    "language": "text",
+    "before": "origin/i07/e00/main",
+    "values": [
+      "origin/i07/e00/main"
+    ],
+    "after": "eg `origin/i07/e00/main`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Output Files",
+    "language": "text",
+    "before": "branch-protection-file: protection.json\nbranch-rules-file: branch-rules.json",
+    "values": [
+      "branch-protection-file: protection.json",
+      "branch-rules-file: branch-rules.json"
+    ],
+    "after": "eg `branch-protection-file: protection.json`, `branch-rules-file: branch-rules.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Target Branch",
+    "language": "text",
+    "before": "main",
+    "values": [
+      "main"
+    ],
+    "after": "eg `main`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Pull Request Number",
+    "language": "text",
+    "before": "950",
+    "values": [
+      "950"
+    ],
+    "after": "eg `950`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Worktree Path",
+    "language": "text",
+    "before": ".worktrees/i07/e00/w01-queue-plan",
+    "values": [
+      ".worktrees/i07/e00/w01-queue-plan"
+    ],
+    "after": "eg `.worktrees/i07/e00/w01-queue-plan`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Base Branch",
+    "language": "text",
+    "before": "i07/e00/main",
+    "values": [
+      "i07/e00/main"
+    ],
+    "after": "eg `i07/e00/main`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Task Branch",
+    "language": "text",
+    "before": "i07/e00/w01-queue-plan",
+    "values": [
+      "i07/e00/w01-queue-plan"
+    ],
+    "after": "eg `i07/e00/w01-queue-plan`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Epic-Base Name",
+    "language": "text",
+    "before": "i07/e00/main",
+    "values": [
+      "i07/e00/main"
+    ],
+    "after": "eg `i07/e00/main`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "field": "Epic Identity",
+    "language": "text",
+    "before": "i07/e00",
+    "values": [
+      "i07/e00"
+    ],
+    "after": "eg `i07/e00`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Revision",
+    "language": "text",
+    "before": "origin/workspace",
+    "values": [
+      "origin/workspace"
+    ],
+    "after": "eg `origin/workspace`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Requested Lane",
+    "language": "text",
+    "before": "2",
+    "values": [
+      "2"
+    ],
+    "after": "eg `2`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Engineering Worktree",
+    "language": "text",
+    "before": "<checkout>/.engineering",
+    "values": [
+      "<checkout>/.engineering"
+    ],
+    "after": "eg `<checkout>/.engineering`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Epic-Base Names",
+    "language": "text",
+    "before": "i07/e00/main,i07/e00/workflows",
+    "values": [
+      "i07/e00/main,i07/e00/workflows"
+    ],
+    "after": "eg `i07/e00/main,i07/e00/workflows`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Issue-Link Snapshot",
+    "language": "text",
+    "before": "links.json",
+    "values": [
+      "links.json"
+    ],
+    "after": "eg `links.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Pull Request Records",
+    "language": "text",
+    "before": "prs.json",
+    "values": [
+      "prs.json"
+    ],
+    "after": "eg `prs.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "field": "Board Items",
+    "language": "text",
+    "before": "items.json",
+    "values": [
+      "items.json"
+    ],
+    "after": "eg `items.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "field": "Pull Request Records",
+    "language": "text",
+    "before": "prs.json",
+    "values": [
+      "prs.json"
+    ],
+    "after": "eg `prs.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "field": "Renumber Inputs",
+    "language": "text",
+    "before": "initiative-number: 07\nepic-number: 1\ntask-number-map: 7:3,3:5\naffected-body-file: live-*.md\nepic-number-map: 6:0,0:1\nbody-file: live-936.md live-943.md",
+    "values": [
+      "initiative-number: 07",
+      "epic-number: 1",
+      "task-number-map: 7:3,3:5",
+      "affected-body-file: live-*.md",
+      "epic-number-map: 6:0,0:1",
+      "body-file: live-936.md live-943.md"
+    ],
+    "after": "eg `initiative-number: 07`, `epic-number: 1`, `task-number-map: 7:3,3:5`, `affected-body-file: live-*.md`, `epic-number-map: 6:0,0:1`, `body-file: live-936.md live-943.md`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "field": "Dependency Files",
+    "language": "text",
+    "before": "I=/drafts/live-936.md\nE00=/drafts/live-943.md\nE01=/drafts/live-937.md\nE00:W01=/drafts/e00/w01.md\nE01:W01=/drafts/e01/w01.md\nR=/records/joins.md",
+    "values": [
+      "I=/drafts/live-936.md",
+      "E00=/drafts/live-943.md",
+      "E01=/drafts/live-937.md",
+      "E00:W01=/drafts/e00/w01.md",
+      "E01:W01=/drafts/e01/w01.md",
+      "R=/records/joins.md"
+    ],
+    "after": "eg `I=/drafts/live-936.md`, `E00=/drafts/live-943.md`, `E01=/drafts/live-937.md`, `E00:W01=/drafts/e00/w01.md`, `E01:W01=/drafts/e01/w01.md`, `R=/records/joins.md`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "field": "Start Readiness",
+    "language": "json",
+    "before": "{\"unit\": \"o/r#I07:E00:W01\", \"published_record\": \"2026-11-05-943-i07-e00-w01-work\", \"reserved_record\": \"2026-11-05-943-i07-e00-w01-work\", \"reservation_verified\": true}",
+    "values": [
+      "{\"unit\": \"o/r#I07:E00:W01\", \"published_record\": \"2026-11-05-943-i07-e00-w01-work\", \"reserved_record\": \"2026-11-05-943-i07-e00-w01-work\", \"reservation_verified\": true}"
+    ],
+    "after": "eg `{\"unit\": \"o/r#I07:E00:W01\", \"published_record\": \"2026-11-05-943-i07-e00-w01-work\", \"reserved_record\": \"2026-11-05-943-i07-e00-w01-work\", \"reservation_verified\": true}`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "field": "Session Inventory",
+    "language": "json",
+    "before": "[{\"unit\": \"o/r#I07:E00:W01\", \"session\": \"worker-1\", \"state\": \"running\"}]",
+    "values": [
+      "[{\"unit\": \"o/r#I07:E00:W01\", \"session\": \"worker-1\", \"state\": \"running\"}]"
+    ],
+    "after": "eg `[{\"unit\": \"o/r#I07:E00:W01\", \"session\": \"worker-1\", \"state\": \"running\"}]`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "field": "Authorization",
+    "language": "json",
+    "before": "{\"board\": \"users/o/projectsV2/7\", \"scope\": [\"o/r#I07\"], \"lane\": null}",
+    "values": [
+      "{\"board\": \"users/o/projectsV2/7\", \"scope\": [\"o/r#I07\"], \"lane\": null}"
+    ],
+    "after": "eg `{\"board\": \"users/o/projectsV2/7\", \"scope\": [\"o/r#I07\"], \"lane\": null}`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Engineering Worktree",
+    "language": "text",
+    "before": ".engineering",
+    "values": [
+      ".engineering"
+    ],
+    "after": "eg `.engineering`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Planning Folder",
+    "language": "text",
+    "before": "https://github.com/<owner>/<repo>/tree/engineering/artifacts/planning",
+    "values": [
+      "https://github.com/<owner>/<repo>/tree/engineering/artifacts/planning"
+    ],
+    "after": "eg `https://github.com/<owner>/<repo>/tree/engineering/artifacts/planning`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Board Items",
+    "language": "text",
+    "before": "items.json",
+    "values": [
+      "items.json"
+    ],
+    "after": "eg `items.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Task Selection",
+    "language": "text",
+    "before": "W01,W02",
+    "values": [
+      "W01,W02"
+    ],
+    "after": "eg `W01,W02`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Criterion Selection",
+    "language": "text",
+    "before": "AC1,AC3",
+    "values": [
+      "AC1,AC3"
+    ],
+    "after": "eg `AC1,AC3`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Output Body",
+    "language": "text",
+    "before": "fixed-943.md",
+    "values": [
+      "fixed-943.md"
+    ],
+    "after": "eg `fixed-943.md`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Epic Bases",
+    "language": "text",
+    "before": "origin/i07/e00/main\norigin/i07/e00/workflows",
+    "values": [
+      "origin/i07/e00/main",
+      "origin/i07/e00/workflows"
+    ],
+    "after": "eg `origin/i07/e00/main`, `origin/i07/e00/workflows`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Delivery Matches",
+    "language": "text",
+    "before": "W01=950,W01=951,W02=950",
+    "values": [
+      "W01=950,W01=951,W02=950"
+    ],
+    "after": "eg `W01=950,W01=951,W02=950`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Task Records",
+    "language": "text",
+    "before": "issue-637.json",
+    "values": [
+      "issue-637.json"
+    ],
+    "after": "eg `issue-637.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Issue Links",
+    "language": "text",
+    "before": "links.json",
+    "values": [
+      "links.json"
+    ],
+    "after": "eg `links.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Pull Request Records",
+    "language": "text",
+    "before": "prs.json",
+    "values": [
+      "prs.json"
+    ],
+    "after": "eg `prs.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Epic Record",
+    "language": "text",
+    "before": "issue-943.json",
+    "values": [
+      "issue-943.json"
+    ],
+    "after": "eg `issue-943.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "field": "Required Criteria",
+    "language": "json",
+    "before": "  [\n    {\n      \"branch\": \"workflows\",\n      \"paths\": [\"corpus\"],\n      \"criterion\": \"The definitions this epic changes carry no outstanding confirmed finding, one neither fixed on the epic's branch nor taken by an issue, as the canon audit's coverage report shows.\",\n      \"phrase\": \"canon audit\",\n      \"row\": \"Canon audit of the changed definitions\"\n    }\n  ]",
+    "values": [
+      "[{\"branch\": \"workflows\", \"paths\": [\"corpus\"], \"criterion\": \"The definitions this epic changes carry no outstanding confirmed finding, one neither fixed on the epic's branch nor taken by an issue, as the canon audit's coverage report shows.\", \"phrase\": \"canon audit\", \"row\": \"Canon audit of the changed definitions\"}]"
+    ],
+    "after": "eg `[{\"branch\": \"workflows\", \"paths\": [\"corpus\"], \"criterion\": \"The definitions this epic changes carry no outstanding confirmed finding, one neither fixed on the epic's branch nor taken by an issue, as the canon audit's coverage report shows.\", \"phrase\": \"canon audit\", \"row\": \"Canon audit of the changed definitions\"}]`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "field": "Output Body",
+    "language": "text",
+    "before": "epic-body.md",
+    "values": [
+      "epic-body.md"
+    ],
+    "after": "eg `epic-body.md`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "field": "Issue Links",
+    "language": "text",
+    "before": "links.json",
+    "values": [
+      "links.json"
+    ],
+    "after": "eg `links.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "field": "Pull Request Records",
+    "language": "text",
+    "before": "prs.json",
+    "values": [
+      "prs.json"
+    ],
+    "after": "eg `prs.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "field": "Epic Record",
+    "language": "text",
+    "before": "issue-943.json",
+    "values": [
+      "issue-943.json"
+    ],
+    "after": "eg `issue-943.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "field": "Output Body",
+    "language": "text",
+    "before": "fixed-874.md",
+    "values": [
+      "fixed-874.md"
+    ],
+    "after": "eg `fixed-874.md`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "field": "Delivery Selection",
+    "language": "text",
+    "before": "pull-request-number: 950\ncriterion-ids: AC1",
+    "values": [
+      "pull-request-number: 950",
+      "criterion-ids: AC1"
+    ],
+    "after": "eg `pull-request-number: 950`, `criterion-ids: AC1`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "field": "Issue Links",
+    "language": "text",
+    "before": "links.json",
+    "values": [
+      "links.json"
+    ],
+    "after": "eg `links.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "field": "Pull Request Records",
+    "language": "text",
+    "before": "prs.json",
+    "values": [
+      "prs.json"
+    ],
+    "after": "eg `prs.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "field": "Hot-fix Record",
+    "language": "text",
+    "before": "issue-874.json",
+    "values": [
+      "issue-874.json"
+    ],
+    "after": "eg `issue-874.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "field": "Criterion Selection",
+    "language": "text",
+    "before": "AC2",
+    "values": [
+      "AC2"
+    ],
+    "after": "eg `AC2`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "field": "Output Files",
+    "language": "text",
+    "before": "output-body-file: fixed-936.md\nsource-file: source-R1.md",
+    "values": [
+      "output-body-file: fixed-936.md",
+      "source-file: source-R1.md"
+    ],
+    "after": "eg `output-body-file: fixed-936.md`, `source-file: source-R1.md`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "field": "Source Evidence",
+    "language": "text",
+    "before": "repository: m2ux/workflow-server\nsource-path: docs/spec.md\nrevision: 4a217fe6",
+    "values": [
+      "repository: m2ux/workflow-server",
+      "source-path: docs/spec.md",
+      "revision: 4a217fe6"
+    ],
+    "after": "eg `repository: m2ux/workflow-server`, `source-path: docs/spec.md`, `revision: 4a217fe6`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "field": "Epic Records",
+    "language": "text",
+    "before": "issue-943.json issue-937.json",
+    "values": [
+      "issue-943.json issue-937.json"
+    ],
+    "after": "eg `issue-943.json issue-937.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "field": "Initiative Record",
+    "language": "text",
+    "before": "issue-936.json",
+    "values": [
+      "issue-936.json"
+    ],
+    "after": "eg `issue-936.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Evaluated Revision",
+    "language": "text",
+    "before": "origin/i07/e00/workspace",
+    "values": [
+      "origin/i07/e00/workspace"
+    ],
+    "after": "eg `origin/i07/e00/workspace`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Changed File Records",
+    "language": "text",
+    "before": "950=changed-950.txt",
+    "values": [
+      "950=changed-950.txt"
+    ],
+    "after": "eg `950=changed-950.txt`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Pull Request Records",
+    "language": "text",
+    "before": "prs.json",
+    "values": [
+      "prs.json"
+    ],
+    "after": "eg `prs.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Epic Records",
+    "language": "text",
+    "before": "epic.json",
+    "values": [
+      "epic.json"
+    ],
+    "after": "eg `epic.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Initiative Record",
+    "language": "text",
+    "before": "initiative.json",
+    "values": [
+      "initiative.json"
+    ],
+    "after": "eg `initiative.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Body Record",
+    "language": "text",
+    "before": "issue.json",
+    "values": [
+      "issue.json"
+    ],
+    "after": "eg `issue.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Repository Snapshot",
+    "language": "text",
+    "before": "repositories.json",
+    "values": [
+      "repositories.json"
+    ],
+    "after": "eg `repositories.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "field": "Output Files",
+    "language": "text",
+    "before": "output-body-file: fixed.md\nrepository-json-file: repository.json",
+    "values": [
+      "output-body-file: fixed.md",
+      "repository-json-file: repository.json"
+    ],
+    "after": "eg `output-body-file: fixed.md`, `repository-json-file: repository.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Tracker Prefix",
+    "language": "text",
+    "before": "initiative-prefix: [I08]\nprefix-letter: I",
+    "values": [
+      "initiative-prefix: [I08]",
+      "prefix-letter: I"
+    ],
+    "after": "eg `initiative-prefix: [I08]`, `prefix-letter: I`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Closure Findings",
+    "language": "text",
+    "before": "unsupported: owner/repo#943 closed as completed: acceptance criteria are missing or unticked; owner/repo#980 not merged (closed) - Work Title\nunevaluable: owner/repo#944 closed as completed: Development links not captured - Other Title\nnot planned: owner/repo#945 closed as not_planned: acceptance criteria are missing or unticked - Moved Title\n1 unsupported, 1 unevaluable, 1 not planned",
+    "values": [
+      "unsupported: owner/repo#943 closed as completed: acceptance criteria are missing or unticked; owner/repo#980 not merged (closed) - Work Title",
+      "unevaluable: owner/repo#944 closed as completed: Development links not captured - Other Title",
+      "not planned: owner/repo#945 closed as not_planned: acceptance criteria are missing or unticked - Moved Title",
+      "1 unsupported, 1 unevaluable, 1 not planned"
+    ],
+    "after": "eg `unsupported: owner/repo#943 closed as completed: acceptance criteria are missing or unticked; owner/repo#980 not merged (closed) - Work Title`, `unevaluable: owner/repo#944 closed as completed: Development links not captured - Other Title`, `not planned: owner/repo#945 closed as not_planned: acceptance criteria are missing or unticked - Moved Title`, `1 unsupported, 1 unevaluable, 1 not planned`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Audit Selection",
+    "language": "text",
+    "before": "637, 943, 946",
+    "values": [
+      "637, 943, 946"
+    ],
+    "after": "eg `637, 943, 946`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Issue Collection",
+    "language": "text",
+    "before": "closed-issues.json",
+    "values": [
+      "closed-issues.json"
+    ],
+    "after": "eg `closed-issues.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Development Snapshot",
+    "language": "json",
+    "before": "{\n  \"943\": [{\"repo\": \"owner/repo\", \"number\": 980, \"state\": \"MERGED\"}]\n}",
+    "values": [
+      "{\"943\": [{\"repo\": \"owner/repo\", \"number\": 980, \"state\": \"MERGED\"}]}"
+    ],
+    "after": "eg `{\"943\": [{\"repo\": \"owner/repo\", \"number\": 980, \"state\": \"MERGED\"}]}`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Development Snapshot",
+    "language": "text",
+    "before": "links-943.json",
+    "values": [
+      "links-943.json"
+    ],
+    "after": "eg `links-943.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Comment",
+    "language": "text",
+    "before": "comment-text: Delivered by #950.\ncomment-file: comment-874.md",
+    "values": [
+      "comment-text: Delivered by #950.",
+      "comment-file: comment-874.md"
+    ],
+    "after": "eg `comment-text: Delivered by #950.`, `comment-file: comment-874.md`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Issue Changes",
+    "language": "text",
+    "before": "body.md",
+    "values": [
+      "body.md"
+    ],
+    "after": "eg `body.md`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Output Files",
+    "language": "text",
+    "before": "live-943.md",
+    "values": [
+      "live-943.md"
+    ],
+    "after": "eg `live-943.md`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Issue Record",
+    "language": "text",
+    "before": "issue-943.json",
+    "values": [
+      "issue-943.json"
+    ],
+    "after": "eg `issue-943.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Repository",
+    "language": "text",
+    "before": "m2ux/workflow-server",
+    "values": [
+      "m2ux/workflow-server"
+    ],
+    "after": "eg `m2ux/workflow-server`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "field": "Identity",
+    "language": "text",
+    "before": "943",
+    "values": [
+      "943"
+    ],
+    "after": "eg `943`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "field": "Issue Collection",
+    "language": "text",
+    "before": "issues.json",
+    "values": [
+      "issues.json"
+    ],
+    "after": "eg `issues.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "field": "Commit Message File",
+    "language": "text",
+    "before": "/tmp/msg.txt",
+    "values": [
+      "/tmp/msg.txt"
+    ],
+    "after": "eg `/tmp/msg.txt`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "field": "Engineering Worktree",
+    "language": "text",
+    "before": ".engineering",
+    "values": [
+      ".engineering"
+    ],
+    "after": "eg `.engineering`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "field": "Planning Folder",
+    "language": "text",
+    "before": "artifacts/planning/2026-10-15-950-queue-plan",
+    "values": [
+      "artifacts/planning/2026-10-15-950-queue-plan"
+    ],
+    "after": "eg `artifacts/planning/2026-10-15-950-queue-plan`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "field": "Output Body",
+    "language": "text",
+    "before": "fixed-950.md",
+    "values": [
+      "fixed-950.md"
+    ],
+    "after": "eg `fixed-950.md`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "field": "Pull Request Record",
+    "language": "text",
+    "before": "pr-950.json",
+    "values": [
+      "pr-950.json"
+    ],
+    "after": "eg `pr-950.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Failure",
+    "language": "text",
+    "before": "failed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeCloseIssueReferences: Resource not accessible by integration",
+    "values": [
+      "failed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeCloseIssueReferences: Resource not accessible by integration"
+    ],
+    "after": "eg `failed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeCloseIssueReferences: Resource not accessible by integration`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Base Branch",
+    "language": "text",
+    "before": "target-branch: i07/e00/main\nbase: i07/e00/main\nlong-lived-base: main",
+    "values": [
+      "target-branch: i07/e00/main",
+      "base: i07/e00/main",
+      "long-lived-base: main"
+    ],
+    "after": "eg `target-branch: i07/e00/main`, `base: i07/e00/main`, `long-lived-base: main`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Head Branch",
+    "language": "text",
+    "before": "task-branch: i07/e00/w01-purpose\nhot-fix-branch: f00-key-validation\nepic-base: i07/e00/main",
+    "values": [
+      "task-branch: i07/e00/w01-purpose",
+      "hot-fix-branch: f00-key-validation",
+      "epic-base: i07/e00/main"
+    ],
+    "after": "eg `task-branch: i07/e00/w01-purpose`, `hot-fix-branch: f00-key-validation`, `epic-base: i07/e00/main`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Title",
+    "language": "text",
+    "before": "[I07:E00] Purpose\n[F00] Reject Bad Keys",
+    "values": [
+      "[I07:E00] Purpose",
+      "[F00] Reject Bad Keys"
+    ],
+    "after": "eg `[I07:E00] Purpose`, `[F00] Reject Bad Keys`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Body File",
+    "language": "text",
+    "before": "body.md",
+    "values": [
+      "body.md"
+    ],
+    "after": "eg `body.md`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Output Files",
+    "language": "text",
+    "before": "pull-request-json-file: epic-pr.json\nreviews-file: reviews.json\nchanged-paths-file: changed-files.txt\ncheck-runs-file: checks.json\ncommit-status-file: status.json",
+    "values": [
+      "pull-request-json-file: epic-pr.json",
+      "reviews-file: reviews.json",
+      "changed-paths-file: changed-files.txt",
+      "check-runs-file: checks.json",
+      "commit-status-file: status.json"
+    ],
+    "after": "eg `pull-request-json-file: epic-pr.json`, `reviews-file: reviews.json`, `changed-paths-file: changed-files.txt`, `check-runs-file: checks.json`, `commit-status-file: status.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Initiative Prefix",
+    "language": "text",
+    "before": "[I07",
+    "values": [
+      "[I07"
+    ],
+    "after": "eg `[I07`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Issue Records",
+    "language": "text",
+    "before": "issue-936.json issue-943.json issue-637.json",
+    "values": [
+      "issue-936.json issue-943.json issue-637.json"
+    ],
+    "after": "eg `issue-936.json issue-943.json issue-637.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Development Relation",
+    "language": "text",
+    "before": "issue m2ux/workflow-server#637: m2ux/workflow-server#950\npull request m2ux/workflow-server#950: m2ux/workflow-server#637\nverified: add m2ux/workflow-server#950 -> m2ux/workflow-server#637",
+    "values": [
+      "issue m2ux/workflow-server#637: m2ux/workflow-server#950",
+      "pull request m2ux/workflow-server#950: m2ux/workflow-server#637",
+      "verified: add m2ux/workflow-server#950 -> m2ux/workflow-server#637"
+    ],
+    "after": "eg `issue m2ux/workflow-server#637: m2ux/workflow-server#950`, `pull request m2ux/workflow-server#950: m2ux/workflow-server#637`, `verified: add m2ux/workflow-server#950 -> m2ux/workflow-server#637`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Link-Snapshot Path",
+    "language": "text",
+    "before": "links.json",
+    "values": [
+      "links.json"
+    ],
+    "after": "eg `links.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Issue-Link Snapshot",
+    "language": "json",
+    "before": "[\n  {\n    \"repo\": \"owner/repo\",\n    \"number\": 950,\n    \"closingIssuesReferences\": [{\"repo\": \"owner/repo\", \"number\": 637}]\n  }\n]",
+    "values": [
+      "[{\"repo\": \"owner/repo\", \"number\": 950, \"closingIssuesReferences\": [{\"repo\": \"owner/repo\", \"number\": 637}]}]"
+    ],
+    "after": "eg `[{\"repo\": \"owner/repo\", \"number\": 950, \"closingIssuesReferences\": [{\"repo\": \"owner/repo\", \"number\": 637}]}]`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Pull Request Records",
+    "language": "text",
+    "before": "prs.json",
+    "values": [
+      "prs.json"
+    ],
+    "after": "eg `prs.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Issue Identity",
+    "language": "text",
+    "before": "m2ux/workflow-server#637",
+    "values": [
+      "m2ux/workflow-server#637"
+    ],
+    "after": "eg `m2ux/workflow-server#637`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Identity",
+    "language": "text",
+    "before": "m2ux/workflow-server#950\n950",
+    "values": [
+      "m2ux/workflow-server#950",
+      "950"
+    ],
+    "after": "eg `m2ux/workflow-server#950`, `950`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "field": "Merge Permission",
+    "language": "json",
+    "before": "  {\n    \"autoMode\": {\n      \"environment\": [\n        \"$defaults\",\n        \"Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review\"\n      ],\n      \"allow\": [\n        \"$defaults\",\n        \"Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review. Merges into the default branch are not covered\"\n      ]\n    }\n  }",
+    "values": [
+      "{\"autoMode\": {\"environment\": [\"$defaults\", \"Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review\"], \"allow\": [\"$defaults\", \"Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review. Merges into the default branch are not covered\"]}}"
+    ],
+    "after": "eg `{\"autoMode\": {\"environment\": [\"$defaults\", \"Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review\"], \"allow\": [\"$defaults\", \"Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review. Merges into the default branch are not covered\"]}}`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "field": "Flow Identity",
+    "language": "text",
+    "before": "Queue Placement",
+    "values": [
+      "Queue Placement"
+    ],
+    "after": "eg `Queue Placement`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "field": "Symbol Identity",
+    "language": "text",
+    "before": "reserveRow",
+    "values": [
+      "reserveRow"
+    ],
+    "after": "eg `reserveRow`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "field": "Base Branch",
+    "language": "text",
+    "before": "main",
+    "values": [
+      "main"
+    ],
+    "after": "eg `main`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "field": "Issue Link Snapshot",
+    "language": "text",
+    "before": "links.json",
+    "values": [
+      "links.json"
+    ],
+    "after": "eg `links.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "field": "Pull Request Records",
+    "language": "text",
+    "before": "prs.json",
+    "values": [
+      "prs.json"
+    ],
+    "after": "eg `prs.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "field": "Board Items",
+    "language": "text",
+    "before": "items.json",
+    "values": [
+      "items.json"
+    ],
+    "after": "eg `items.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "field": "Management File",
+    "language": "text",
+    "before": "summary.txt",
+    "values": [
+      "summary.txt"
+    ],
+    "after": "eg `summary.txt`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "field": "Initiative Records",
+    "language": "text",
+    "before": "issue-946.json",
+    "values": [
+      "issue-946.json"
+    ],
+    "after": "eg `issue-946.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "field": "Report Selection",
+    "language": "text",
+    "before": "window-start-date: 2026-09-21\ninitiative-filter: I08",
+    "values": [
+      "window-start-date: 2026-09-21",
+      "initiative-filter: I08"
+    ],
+    "after": "eg `window-start-date: 2026-09-21`, `initiative-filter: I08`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "field": "Output Body",
+    "language": "text",
+    "before": "fixed-637.md",
+    "values": [
+      "fixed-637.md"
+    ],
+    "after": "eg `fixed-637.md`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "field": "Delivery Selection",
+    "language": "text",
+    "before": "pull-request-number: 950\ncriterion-ids: AC1",
+    "values": [
+      "pull-request-number: 950",
+      "criterion-ids: AC1"
+    ],
+    "after": "eg `pull-request-number: 950`, `criterion-ids: AC1`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "field": "Issue Links",
+    "language": "text",
+    "before": "links.json",
+    "values": [
+      "links.json"
+    ],
+    "after": "eg `links.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "field": "Pull Request Records",
+    "language": "text",
+    "before": "prs.json",
+    "values": [
+      "prs.json"
+    ],
+    "after": "eg `prs.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "field": "Task Record",
+    "language": "text",
+    "before": "issue-637.json",
+    "values": [
+      "issue-637.json"
+    ],
+    "after": "eg `issue-637.json`",
+    "rendered_values_identical": true
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "field": "Skill Directory",
+    "language": "text",
+    "before": "skills/work-planner",
+    "values": [
+      "skills/work-planner"
+    ],
+    "after": "eg `skills/work-planner`",
+    "rendered_values_identical": true
+  }
+]

@@ -1,0 +1,25 @@
+.........................................................................................................................................................................................................................................................................................................................................................................................................s..................................E......................................................................................................................................................................................................................................................................................................................................................................................................................
+======================================================================
+ERROR: test_format (unittest.loader._FailedTest.test_format)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_format
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/unittest/loader.py", line 426, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/usr/lib/python3.14/unittest/loader.py", line 367, in _get_module_from_name
+    __import__(name)
+    ~~~~~~~~~~^^^^^^
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_format.py", line 550, in <module>
+    AUDIT = Required(tuple(json.loads(guide_example())), 'the guide example')
+                                      ~~~~~~~~~~~~~^^
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_format.py", line 547, in guide_example
+    return textwrap.dedent(re.search(r'```json\n(.*?)\n\s*```', guide_section('Required Criteria'), re.DOTALL)[1])
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+TypeError: 'NoneType' object is not subscriptable
+
+
+----------------------------------------------------------------------
+Ran 835 tests in 38.611s
+
+FAILED (errors=1, skipped=1)
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace (name more with SBX_EXTRA_ROOTS=dir1:dir2)

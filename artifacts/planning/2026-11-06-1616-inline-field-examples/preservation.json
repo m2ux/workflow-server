@@ -1,0 +1,203 @@
+{
+  "base": "beb5c86f9682ebb70918ff4de20b2c140d71464f",
+  "converted": 134,
+  "files": {
+    "skills/work-planner/artifacts/acceptance-criteria.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 3
+    },
+    "skills/work-planner/artifacts/board-delivery.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 10
+    },
+    "skills/work-planner/artifacts/board-queue.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 7
+    },
+    "skills/work-planner/artifacts/board.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 9
+    },
+    "skills/work-planner/artifacts/delivery-branches.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 9
+    },
+    "skills/work-planner/artifacts/delivery-plan.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 7
+    },
+    "skills/work-planner/artifacts/dependency-graph.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 3
+    },
+    "skills/work-planner/artifacts/dispatch-batch.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 3
+    },
+    "skills/work-planner/artifacts/epic-issue-body.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 13
+    },
+    "skills/work-planner/artifacts/epic.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 4
+    },
+    "skills/work-planner/artifacts/hotfix.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 5
+    },
+    "skills/work-planner/artifacts/initiative-issue-body.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 5
+    },
+    "skills/work-planner/artifacts/issue-body.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 8
+    },
+    "skills/work-planner/artifacts/issue.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 12
+    },
+    "skills/work-planner/artifacts/placement.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 1
+    },
+    "skills/work-planner/artifacts/planning-record.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 3
+    },
+    "skills/work-planner/artifacts/pull-request-body.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 2
+    },
+    "skills/work-planner/artifacts/pull-request.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 15
+    },
+    "skills/work-planner/artifacts/repository-graph.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 3
+    },
+    "skills/work-planner/artifacts/standup-report.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 6
+    },
+    "skills/work-planner/artifacts/task-body.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 5
+    },
+    "skills/work-planner/modes/revise-mode.md": {
+      "invocations_identical": true,
+      "content_before_fields_identical": true,
+      "existing_inline_values_identical": true,
+      "examples": 1
+    }
+  },
+  "json_contents_preserved": true,
+  "scalar_values_preserved": true,
+  "remaining_structural_blocks": [
+    {
+      "file": "skills/work-planner/artifacts/architecture-overview.md",
+      "field": "Template",
+      "language": "markdown"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "field": "Template",
+      "language": "markdown"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "field": "Template",
+      "language": "markdown"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "field": "Titles",
+      "language": "markdown"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "field": "Titles",
+      "language": "markdown"
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "field": "Template",
+      "language": "markdown"
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "field": "Layout",
+      "language": "text"
+    },
+    {
+      "file": "skills/work-planner/artifacts/proposal-body.md",
+      "field": "Template",
+      "language": "markdown"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request-body.md",
+      "field": "Template",
+      "language": "markdown"
+    },
+    {
+      "file": "skills/work-planner/artifacts/standalone-body.md",
+      "field": "Template",
+      "language": "markdown"
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "field": "Template",
+      "language": "markdown"
+    },
+    {
+      "file": "skills/work-planner/artifacts/work-item.md",
+      "field": "Template",
+      "language": "markdown"
+    }
+  ],
+  "inline_values": 173
+}

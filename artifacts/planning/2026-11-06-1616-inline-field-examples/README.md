@@ -14,6 +14,15 @@ Command invocations, structural templates, diagrams and field definitions keep t
 | --- | --- |
 | [Plan](plan.md) | Scope, new writing rule and validation |
 | [Original Specimens](before.json) | Fenced field examples and structural templates at the original source |
+| [Validation](validation.md) | Exact source, preservation, reader correction and final checks |
+| [Example Changes](changes.json) | Original values and their inline representations |
+| [Preservation](preservation.json) | Scalar/JSON/rendered-value and command preservation |
+| [Verification Instrument](verify-inline-examples.py) | Repeatable comparison against the original source |
+| [Source Manifest](source.json) | Exact revised source and file hashes |
+| [Planner Tests](planner-tests.log) | Final complete suite and opt-in skip |
+| [Shared Tests](shared-tests.log) | Shared checker regression results |
+| [Installed Checker](installed-checker.log) | Installed model result |
+| [Reader Migration Finding](reader-migration-failure.log) | Intermediate failure exposing the fence-dependent test helper |
 
 ## Links
 
