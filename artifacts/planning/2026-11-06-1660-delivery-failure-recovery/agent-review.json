@@ -1,0 +1,14 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1660",
+    "head": "ff94f4a28ee0134a10f46ba571a9795f5e6841f1",
+    "base": "9a924cfdda903ca64257449d8b5bf2ff762725ce",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-06-1660-delivery-failure-recovery/agent-review.json",
+    "reviewer": "Codex integration reviewer /root/e04_w01",
+    "reviewed_at": "2026-11-06T11:29:56Z",
+    "scope": "Complete workspace target-to-head integration diff, all seven changed files, both source-route fixture modules, test catalogue reconciliation, and affected Deliver, Pull Request, Agent Review, Review Pull Request and Epic Integration definitions/callers. Reviewed draft restoration and readback ordering, current-head review checks, distinct raw mutation/readback/result contracts, exact verified SHA on task and epic mutations, human and harness permission boundaries, terminal refusal handling, bounded fresh-verification retry and success-only confirmation.",
+    "criteria": "AC1-AC3 verified through 12 hot-fix route fixtures and repeated fresh-reader records; AC4-AC5 and AC8 through the shared merge-owner contracts, captured mutation arguments, moving-head refusal fixtures, current workspace/epic-base rule snapshots and source review; AC6-AC7 through terminal caller routes, fresh evidence before the sole retry, repeated-refusal termination and readback discrepancy fixtures. Both focused instruments pass at the exact integration merge revision ff94f4a28ee0134a10f46ba571a9795f5e6841f1.",
+    "validation": "Reviewed exact merged-revision hot-fix and outcome instrument logs: 12 and 19 tests pass. Combined Work Planner suite runs 990 tests with 989 passed and one opt-in live test skipped; its tested task tree and integration head share tree 453f641faccc109bcc70874f2f2d919ff24ccd24. Shared suite passes 280 tests; installed checker reports 59 files and zero findings. Integration diff whitespace check passes and detached review checkout is clean. Two independent source-reading receipts cover seven captured scenarios; source blobs match the integrated definitions. Offline route execution, fresh-agent interpretation and actual tracker operations remain separate evidence categories. Recorded broad-context overhead remains the existing E02 disclosure work; no current prerequisite cycle, context-saving result or live tracker acceptance is asserted.",
+    "findings": []
+  }
+]
