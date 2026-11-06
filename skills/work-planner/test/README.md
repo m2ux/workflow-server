@@ -7,7 +7,7 @@ Work Planner plans work as GitHub issues and keeps that plan true until the work
 - **The scripts.**
   Twenty-three programs read those issue bodies, board items and pull request records, and report what a run should change. Most modules here hold one script to the rules its own docstring states.
 - **The prose.**
-  Modes, protocols and artifacts are instructions an agent follows. Six modules check their shape: resolving links, contextual command contracts, selected checkout inputs, planning-record publication, worktree placement and this catalogue.
+  Modes, protocols and artifacts are instructions an agent follows. The modules check their shape: resolving links, contextual command contracts, selected checkout inputs, planning-record publication, worktree placement and this catalogue.
 - **Neither against a live tracker.**
   Issue, board and pull request state arrives in shapes pinned in [fixtures](fixtures.py). A test writes those shapes to a temporary directory and runs a script over them.
 
@@ -59,7 +59,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 
 ### Prose Tests
 
-These modules read the skill's own documents rather than a script.
+These modules exercise the skill's instruction routes and document contracts.
 
 | Module | What it guards |
 | --- | --- |
@@ -68,6 +68,7 @@ These modules read the skill's own documents rather than a script.
 | [test_merge_outcomes](test_merge_outcomes.py) | Merge instructions bind verified heads and select terminal or bounded recovery routes |
 | [test_modes](test_modes.py) | Mode summaries in each skill's [SKILL](../SKILL.md) |
 | [test_plan_mode](test_plan_mode.py) | Plan Mode keeps a plan in one home: its planning record on the engineering branch |
+| [test_plan_publication](test_plan_publication.py) | Plan publication validates confirmed saved epic and parent identities |
 | [test_readme](test_readme.py) | The test folder's README names every module and every script, and its rows match what the folder holds |
 | [test_worktrees](test_worktrees.py) | Every worktree the skill creates is placed by a field, and git places a relative path where the command runs |
 
@@ -124,7 +125,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [conventions](../conventions.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
 | [guidelines](../guidelines.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
 | `modes/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
-| [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (8) |
+| [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (8), [test_plan_publication](test_plan_publication.py) (14) |
 | `protocols/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
 | `references/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
 | [rules](../rules.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |

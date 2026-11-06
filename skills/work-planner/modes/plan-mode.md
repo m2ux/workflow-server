@@ -65,19 +65,36 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Take the positive integer the user confirms for each epic.
 - Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the required definitions, the priority label each confirmed number names among them, before saving the issues.
 
-- For a new initiative:
+#### Parent Identity
 
-- Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") with the initiative prefix letter.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") for it, using temporary epic-row links until issue identities exist.
-- Save the epics in dependency order, each carrying its confirmed priority label.
-- Replace every temporary link in the initiative and epic bodies with the saved issue identity.
-- Confirm no unresolved epic placeholder remains.
+- For a new initiative, Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") with the initiative prefix letter.
+- For a new initiative, Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") for its draft with temporary epic-row links.
+- For an existing initiative, retain its confirmed issue identity.
+- On a failed save or disagreeing saved fields, provide the failure evidence and stop before further publication, saved-plan validation or delivery preparation.
 
-- Apply [Validate Epic Body](../artifacts/epic-issue-body.md#validate-epic-body "ƒ") with the saved initiative context.
+#### Epic Publication
 
-- Apply [Validate Initiative Body](../artifacts/initiative-issue-body.md#validate-initiative-body "ƒ") with every saved epic.
-- Resolve findings.
-- Save the corrected bodies.
+- For each new or revised epic in dependency order:
+
+- Replace its temporary prerequisite links with the confirmed issue identities already provided by saves.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with its intended body and confirmed priority label, retaining an existing epic's issue identity.
+- On a failed save or disagreeing saved fields, provide the failure evidence and stop before saving a dependent epic, validating the saved plan or preparing delivery.
+- Use the provided saved identity in the initiative row and each dependent draft.
+
+- After every epic is saved, confirm no unresolved epic placeholder remains in the initiative or epic bodies.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") for the initiative with its complete intended rows, for either parent path.
+- On a failed parent save or disagreeing saved fields, provide the failure evidence and stop before saved-plan validation or delivery preparation.
+
+#### Saved Validation
+
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the initiative and every epic its saved Work Breakdown names.
+- On unreadable or disagreeing saved context, provide the discrepancy and stop before validation or delivery preparation.
+- Apply [Validate Epic Body](../artifacts/epic-issue-body.md#validate-epic-body "ƒ") for each epic with that fresh saved initiative context.
+- Apply [Validate Initiative Body](../artifacts/initiative-issue-body.md#validate-initiative-body "ƒ") with every fresh saved epic.
+- Apply [Review Initiative Goal](../artifacts/goal-trace.md#review-initiative-goal "ƒ") with the fresh saved bodies and retained goal clauses and sources.
+- Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "ƒ") with the fresh saved bodies and the provided work-item files.
+- Resolve findings in the drafts and repeat Epic Publication and Saved Validation with the affected bodies, retaining every saved issue identity; unresolved findings block delivery preparation.
+- Continue only when the saved-context checks pass.
 - Update the planning record with evidence, decisions and issue links.
 - Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") for the record's folder.
 
