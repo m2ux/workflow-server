@@ -1,0 +1,34 @@
+[
+  {
+    "file": "artifacts/board-delivery.md",
+    "command": "Compute Dispatch Status",
+    "line": 91,
+    "before": "Render board calls within the dispatch jurisdiction and provide [Board Changes](#board-changes \"\u25cf\") to the requester. A missing or failing agent review blocks the In Review write.",
+    "after": "- Apply the dispatch jurisdiction in [Status Changes](#status-changes). Assignee changes must follow [Assignees](board.md#assignees).",
+    "plain_prose": true
+  },
+  {
+    "file": "artifacts/dispatch-batch.md",
+    "command": "Check Dispatch Start",
+    "line": 35,
+    "before": "Check one selected unit immediately before execution and provide [Validated Unit](#validated-unit \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.\n\nExit 0 returns the selected unit; exit 1 names the blocking condition.",
+    "after": "- The start names one selected unit, has a currently free harness slot and overlaps no held or running session. Its supplied evidence names that unit, the planning record confirmed on the remote engineering branch, and the record associated with its confirmed hold. For rows, that association is read from every live row reservation; for a hot-fix it is the run's record for the unit whose board hold was confirmed. The evidence is gathered in that order before execution; any missing, mismatched or unverified evidence blocks the start.",
+    "plain_prose": true
+  },
+  {
+    "file": "artifacts/lane.md",
+    "command": "Write Lane Assignments",
+    "line": 18,
+    "before": "Write confirmed assignments while preserving other body content and provide [Output Body](#output-body \"\u25cf\") to the requester.",
+    "after": "- Refuse unknown task ids or malformed resulting cells. The requester validates the complete body and dependencies before publication.",
+    "plain_prose": true
+  },
+  {
+    "file": "artifacts/task-body.md",
+    "command": "Sync Task Issue",
+    "line": 14,
+    "before": "Record the open or merged pull request delivering a task issue, tick verified criteria, report whether the task issue is closable, and provide [Output Body](#output-body \"\u25cf\") and [Delivery Findings](#delivery-findings \"\u25cf\") to the requester.\n\nAn open pull request supplies verification evidence; completion requires its merge.\n\n`<criterion-ids>` is a comma-separated list of verified criterion ids.",
+    "after": "- Tick only criteria the requester has verified. The requester publishes comments and closes the tracker issue.",
+    "plain_prose": true
+  }
+]
