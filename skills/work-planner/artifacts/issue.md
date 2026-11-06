@@ -279,17 +279,6 @@ gh api \
   --jq .number
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api \
-  --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues \
-  -f title='[**&lt;title&gt;**](#issue-changes "○")' \
-  -F body=@body.md \
-  -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names "○")' \
-  --jq .number
-</pre></big>
-
 #### 2. Provide Created Tracker Issue
 
 Provide [Identity](#identity "●") to the requester.
@@ -304,12 +293,6 @@ Run in the repository checkout.
 
 <big><pre>
 gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") -F 'body=@[**&lt;body-file&gt;**](#issue-changes "○")' --jq .number
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/943 -F body=@body.md --jq .number
 </pre></big>
 
 #### 2. Provide Patch Issue Body
@@ -328,12 +311,6 @@ Run in the repository checkout.
 gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") --jq .body > '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/943 --jq .body > live-943.md
-</pre></big>
-
 #### 2. Provide Fetched Issue Body
 
 Provide [Issue Body](#issue-body "●") to the requester.
@@ -348,12 +325,6 @@ Run in the repository checkout.
 
 <big><pre>
 gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") -f title='[**&lt;title&gt;**](#issue-changes "○")' --jq .title
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/943 -f title='[**&lt;title&gt;**](#issue-changes "○")' --jq .title
 </pre></big>
 
 #### 2. Provide Retitled Tracker Issue
@@ -374,12 +345,6 @@ Adds labels to an issue.
 gh api --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/labels -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names "○")' --jq '.&#91;&#93;.name'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/943/labels -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names "○")' --jq '.&#91;&#93;.name'
-</pre></big>
-
 #### 2. Provide Added Issue Labels
 
 Provide [Label Names](#label-names "●") to the requester.
@@ -394,12 +359,6 @@ Run in the repository checkout.
 
 <big><pre>
 gh api --method DELETE 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/labels/[**&lt;label&gt;**](#label-names "○")' --jq '.&#91;&#93;.name'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api --method DELETE 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/943/labels/[**&lt;label&gt;**](#label-names "○")' --jq '.&#91;&#93;.name'
 </pre></big>
 
 #### 2. Provide Removed Issue Label
@@ -418,12 +377,6 @@ Run in the repository checkout.
 gh api --paginate repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/comments
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api --paginate repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/874/comments
-</pre></big>
-
 #### 2. Provide Fetched Issue Comments
 
 Provide [Discussion](#discussion "●") to the requester.
@@ -439,12 +392,6 @@ Saves an issue whole, as JSON, for the scripts that read issues.
 
 <big><pre>
 gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") > '[**&lt;issue-json-file&gt;**](#issue-record "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/943 > issue-943.json
 </pre></big>
 
 #### 2. Provide Fetched Tracker Issue
@@ -466,15 +413,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/closure.py \
   --issue '[**&lt;issue-json-file&gt;**](#issue-record "○")' \
   --development '[**&lt;issue-links-file&gt;**](#development-snapshot "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/closure.py \
-  --issue issue-943.json \
-  --development links-943.json
 </pre></big>
 
 #### 2. Provide Checked Issue Closure
@@ -502,24 +440,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --issue-links '[**&lt;issue-links-file&gt;**](#development-snapshot "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/closure-sweep.py \
-  --issues closed-issues.json \
-  --issue-links issue-links.json
-</pre></big>
-
-**Example output:**
-
-```text
-unsupported: owner/repo#943 closed as completed: acceptance criteria are missing or unticked; owner/repo#980 not merged (closed) - Work Title
-unevaluable: owner/repo#944 closed as completed: Development links not captured - Other Title
-not planned: owner/repo#945 closed as not_planned: acceptance criteria are missing or unticked - Moved Title
-1 unsupported, 1 unevaluable, 1 not planned
-```
-
 #### 2. Provide Sweep Closure Evidence
 
 Provide [Closure Findings](#closure-findings "●") to the requester.
@@ -541,12 +461,6 @@ gh api \
   --jq .state
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/874 -f state=closed -f state_reason=not_planned --jq .state
-</pre></big>
-
 #### 2. Provide Closed as Not Planned
 
 Provide [State](#state "●") to the requester.
@@ -564,12 +478,6 @@ gh api \
   --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/comments \
   -f body='[**&lt;comment-text&gt;**](#comment "○")' \
   --jq .html_url
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/637/comments -f body='Delivered by #950.' --jq .html_url
 </pre></big>
 
 #### 2. Provide Post Inline Comment
@@ -591,12 +499,6 @@ gh api \
   --jq .html_url
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/874/comments -F body=@comment-874.md --jq .html_url
-</pre></big>
-
 #### 2. Provide Post Comment File
 
 Provide [Comment](#comment "●") to the requester.
@@ -616,12 +518,6 @@ gh api \
   -f state=closed \
   -f state_reason=completed \
   --jq .state
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/943 -f state=closed -f state_reason=completed --jq .state
 </pre></big>
 
 #### 2. Provide Saved Completed State
@@ -653,23 +549,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --out '[**&lt;issue-links-file&gt;**](#development-snapshot "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  python3 skills/work-planner/scripts/links-by-issue.py \
-  --issues issue-943.json \
-  --out links-943.json
-</pre></big>
-
-**Example payload:**
-
-```json
-{
-  "943": [{"repo": "owner/repo", "number": 980, "state": "MERGED"}]
-}
-```
-
 #### 2. Provide Capture Issue Links
 
 Provide [Development Snapshot](#development-snapshot "●") to the requester.
@@ -687,12 +566,6 @@ Saves every issue in the repository; the scripts skip the pull requests among th
 gh api --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=all&per_page=100" > '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=all&per_page=100" > issues.json
-</pre></big>
-
 #### 2. Provide Fetched All Issues
 
 Provide [Issue Collection](#issue-collection "●") to the requester.
@@ -708,12 +581,6 @@ Saves every closed issue in the repository; the scripts skip the pull requests a
 
 <big><pre>
 gh api --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=closed&per_page=100" > '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=closed&per_page=100" > closed-issues.json
 </pre></big>
 
 #### 2. Provide Fetched Closed Issues
@@ -736,15 +603,6 @@ gh api \
   > '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api \
-  --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=closed&per_page=100" \
-  --jq '.&#91;&#93; | select(&#91;.number&#93; | inside(&#91;637, 943, 946&#93;))' \
-  > closed-issues.json
-</pre></big>
-
 #### 2. Provide Fetched Selected Closed Issues
 
 Provide [Issue Collection](#issue-collection "●") to the requester.
@@ -765,14 +623,6 @@ gh api \
   --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith("[**&lt;initiative-prefix&gt;**](#tracker-prefix "○")")) | .number'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api \
-  --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=all&per_page=100" \
-  --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith("&#91;I08&#93;")) | .number'
-</pre></big>
-
 #### 2. Provide Located Initiative Issue
 
 Provide [Identity](#identity "●"), [Tracker Number](#tracker-number "●") to the requester.
@@ -791,14 +641,6 @@ gh api \
   --jq '.&#91;&#93; | select(.title | test("^\\&#91;[**&lt;prefix-letter&gt;**](#tracker-prefix "○")&#91;0-9&#93;{2}\\&#93;")) | .title'
 </pre></big>
 
-**Example:** Initiatives in one repository.
-
-<big><pre>
-gh api \
-  --paginate 'repos/m2ux/workflow-server/issues?state=all&per_page=100' \
-  --jq '.&#91;&#93; | select(.title | test("^\\&#91;I&#91;0-9&#93;{2}\\&#93;")) | .title'
-</pre></big>
-
 #### 2. Provide Listed Prefixed Titles
 
 Provide [Tracker Prefix](#tracker-prefix "●") to the requester.
@@ -808,6 +650,12 @@ Provide [Tracker Prefix](#tracker-prefix "●") to the requester.
 ### Identity
 
 The issue has its repository, number and URL. A new issue has its repository before creation supplies its number and URL.
+
+**Example:**
+
+```text
+943
+```
 
 ### Content
 
@@ -834,13 +682,31 @@ GitHub's **Auto-close issues with merged linked pull requests** repository setti
 
 The tracker repository owner and name. Commands use these supplied values as owner and repo, or repository.
 
+**Example:**
+
+```text
+m2ux/workflow-server
+```
+
 ### Issue Record
 
 The complete current tracker issue JSON at the supplied local path, carrying its [Identity](#identity), [Content](#content) and [State](#state).
 
+**Example:**
+
+```text
+issue-943.json
+```
+
 ### Output Files
 
 The supplied local destinations for the requested issue, body, discussion, collection or Development evidence.
+
+**Example:**
+
+```text
+live-943.md
+```
 
 ### Closure Evidence Paths
 
@@ -854,6 +720,12 @@ Whether the supplied request needs the issue discussion.
 
 The supplied complete body file, title and labels for creation, or the selected body and metadata changes for an existing issue, with an optional comment file.
 
+**Example:**
+
+```text
+body.md
+```
+
 ### Label Names
 
 The supplied repository label names for creation, addition or removal. An assignment names an existing repository label.
@@ -861,6 +733,13 @@ The supplied repository label names for creation, addition or removal. An assign
 ### Comment
 
 The supplied exact comment text, as one line or a complete local file, with the reviewer identity and addressed feedback for a reply. A posted comment also has its saved URL.
+
+**Example:**
+
+```text
+comment-text: Delivered by #950.
+comment-file: comment-874.md
+```
 
 ### Delivery Evidence
 
@@ -878,21 +757,63 @@ Authenticated access to the repository and its issue Development relations.
 
 A complete issue-links file, keyed by issue number and carrying its repository identity. Each issue maps to all Development pull requests across repositories and states, or an empty array after a complete empty read.
 
+**Example:**
+
+```text
+links-943.json
+```
+
+**Example contents:**
+
+```json
+{
+  "943": [{"repo": "owner/repo", "number": 980, "state": "MERGED"}]
+}
+```
+
 ### Issue Collection
 
 One supplied tracker issue JSON or a collection of issue records. Pull request entries carry a pull_request field.
+
+**Example:**
+
+```text
+closed-issues.json
+```
 
 ### Audit Selection
 
 The supplied issue numbers to audit, separated by commas, or the selection of every closed issue in the repository.
 
+**Example:**
+
+```text
+637, 943, 946
+```
+
 ### Closure Findings
 
 The closure gate verdict or the sweep results, retaining each issue identity, state reason and finding, with execution failures identified.
 
+**Example output:**
+
+```text
+unsupported: owner/repo#943 closed as completed: acceptance criteria are missing or unticked; owner/repo#980 not merged (closed) - Work Title
+unevaluable: owner/repo#944 closed as completed: Development links not captured - Other Title
+not planned: owner/repo#945 closed as not_planned: acceptance criteria are missing or unticked - Moved Title
+1 unsupported, 1 unevaluable, 1 not planned
+```
+
 ### Tracker Prefix
 
 The supplied kind prefix letter, initiative prefix or existing prefixed titles. An initiative prefix includes the initiative id and its enclosing brackets.
+
+**Example:**
+
+```text
+initiative-prefix: [I08]
+prefix-letter: I
+```
 
 ### Tracker Number
 

@@ -66,20 +66,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --summary '[**&lt;management-paragraph-file&gt;**](#management-file "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/progress.py \
-  --items items.json \
-  --prs prs.json \
-  --links links.json \
-  --since 2026-09-21 \
-  --initiative I08 \
-  --initiatives issue-946.json \
-  --summary summary.txt
-</pre></big>
-
 #### 2. Provide Summarise Progress
 
 Provide [Report Result](#report-result "●") to the requester.
@@ -124,9 +110,22 @@ An unresolved initiative identifies its number and repository for the caller to 
 
 The optional window start uses `YYYY-MM-DD`. The optional initiative filter is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories.
 
+**Example:**
+
+```text
+window-start-date: 2026-09-21
+initiative-filter: I08
+```
+
 ### Initiative Records
 
 The supplied resolved off-board initiative JSON records, each at a separate local file path.
+
+**Example:**
+
+```text
+issue-946.json
+```
 
 ### Output Paths
 
@@ -136,6 +135,12 @@ The supplied report and paragraph output paths.
 
 The optional local file holding the management paragraph. It is absent before the paragraph is written.
 
+**Example:**
+
+```text
+summary.txt
+```
+
 ### Report Result
 
 The rendered copyable report and separate unresolved evidence findings.
@@ -144,13 +149,31 @@ The rendered copyable report and separate unresolved evidence findings.
 
 The supplied board items with Status and their complete issue records, at the local paginated snapshot path.
 
+**Example:**
+
+```text
+items.json
+```
+
 ### Pull Request Records
 
 The supplied current complete pull request records, one JSON object per nonempty line at the local file path.
 
+**Example:**
+
+```text
+prs.json
+```
+
 ### Issue Link Snapshot
 
 The complete supplied pull-request issue-link snapshot at its local JSON path.
+
+**Example:**
+
+```text
+links.json
+```
 
 ### Workspace
 

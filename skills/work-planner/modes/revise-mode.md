@@ -92,12 +92,6 @@ Repeat the skill argument for additional affected skills.
 cd "[**<workspace>**](#workspace "○")" && "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py "[**<skill-directory>**](#skill-directory "○")"
 </pre></big>
 
-**Example:** Work Planner in the selected checkout.
-
-<big><pre>
-cd "[**<workspace>**](#workspace "○")" && "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py skills/work-planner
-</pre></big>
-
 #### 2. Provide Skill Check Result
 
 Provide [Skill Check Result](#skill-check-result "●") to the requester.
@@ -138,6 +132,12 @@ Checkout containing the installed skill, its scripts and tests.
 ### Skill Directory
 
 Affected skill directory. Comparison takes each skill directory the move touches.
+
+**Example:**
+
+```text
+skills/work-planner
+```
 
 ### Base
 

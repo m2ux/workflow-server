@@ -203,21 +203,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json \
-  --prs prs.json \
-  --links links.json \
-  --tasks issue-637.json \
-  --link W01=950,W01=951,W02=950 \
-  --project '[**&lt;checkout&gt;**](#project-checkout "○")' \
-  --revision origin/i07/e00/main \
-  --revision origin/i07/e00/workflows \
-  --fix fixed-943.md
-</pre></big>
-
 #### 2. Provide Recorded Epic
 
 Provide [Output Body](#output-body "●"), [Delivery Findings](epic.md#delivery-findings "●") to the requester.
@@ -237,17 +222,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' \
   --tick [**&lt;criterion-ids&gt;**](#criterion-selection "○") \
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json \
-  --prs prs.json \
-  --links links.json \
-  --tick AC1,AC3 \
-  --fix fixed-943.md
 </pre></big>
 
 #### 2. Provide Ticked Epic Criteria
@@ -276,18 +250,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py \
-  --epic issue-943.json \
-  --reserve W01,W02 \
-  --items items.json \
-  --records https://github.com/[**&lt;owner&gt;**](#planning-folder "○")/[**&lt;repo&gt;**](#planning-folder "○")/tree/engineering/artifacts/planning \
-  --fix fixed-943.md
-</pre></big>
-
 #### 2. Provide Reserved Row
 
 Provide [Output Body](#output-body "●"), [Row Result](#row-result "●") to the requester.
@@ -311,17 +273,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --release [**&lt;task-ids&gt;**](#task-selection "○") \
   --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' \
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py \
-  --epic issue-943.json \
-  --release W01 \
-  --engineering .engineering \
-  --fix fixed-943.md
 </pre></big>
 
 #### 2. Provide Released Row
@@ -493,6 +444,12 @@ Work Breakdown contains its table. Explanatory prose belongs in Proposal. The bo
 
 The supplied complete current epic issue JSON.
 
+**Example:**
+
+```text
+issue-943.json
+```
+
 ### Initiative Context
 
 The supplied current initiative context, epic scope and criteria.
@@ -505,17 +462,41 @@ The proposed task rows or confirmed row changes, including descriptions, Coverag
 
 The supplied current pull request records for the epic.
 
+**Example:**
+
+```text
+prs.json
+```
+
 ### Issue Links
 
 The complete supplied issue-link snapshot.
+
+**Example:**
+
+```text
+links.json
+```
 
 ### Task Records
 
 The supplied task issue JSON files.
 
+**Example:**
+
+```text
+issue-637.json
+```
+
 ### Delivery Matches
 
 The confirmed task-to-pull-request matches supplied by the caller.
+
+**Example:**
+
+```text
+W01=950,W01=951,W02=950
+```
 
 ### Project Checkout
 
@@ -529,29 +510,72 @@ The fetched revision supplied for evaluation at the project checkout.
 
 The fetched epic bases supplied for recording delivery, each identified by its revision.
 
+**Example:**
+
+```text
+origin/i07/e00/main
+origin/i07/e00/workflows
+```
+
 ### Output Body
 
 The supplied local output path for the complete body.
+
+**Example:**
+
+```text
+fixed-943.md
+```
 
 ### Criterion Selection
 
 The supplied verified criterion ids, or the unmet criterion ids and their delivery evidence for gap planning.
 
+**Example:**
+
+```text
+AC1,AC3
+```
+
 ### Task Selection
 
 The confirmed task ids for the selected delivery units. A release selection also carries the supplied explicit user decision releasing the hold.
+
+**Example:**
+
+```text
+W01,W02
+```
 
 ### Board Items
 
 The supplied current board items, including Status.
 
+**Example:**
+
+```text
+items.json
+```
+
 ### Planning Folder
 
 The existing supplied planning-folder identity, planning-records base URL and the date the record is opened.
 
+**Example:**
+
+```text
+https://github.com/<owner>/<repo>/tree/engineering/artifacts/planning
+```
+
 ### Engineering Worktree
 
 The supplied engineering checkout containing the planning records.
+
+**Example:**
+
+```text
+.engineering
+```
 
 ### Validation Findings
 

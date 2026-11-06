@@ -262,12 +262,6 @@ Adds the caller-supplied issue to a board and prints the new item's id.
 gh api --method POST users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items -f type=Issue -F id=[**&lt;issue-id&gt;**](#issue-id "○") --jq .id
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api --method POST users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/13/items -f type=Issue -F id=3040123456 --jq .id
-</pre></big>
-
 #### 2. Provide Added Issue to Board
 
 Provide [Membership Result](#membership-result "●") to the requester.
@@ -278,21 +272,11 @@ Sets one board item's Status.
 
 #### 1. Set Item Status
 
-The input body names the Status field id and option id from the fetched board fields: `{"fields":[{"id":<status-field-id>,"value":"<status-option-id>"}]}`. Substitute the field id as a JSON integer and the option id as a JSON string.
-
-**Example payload:** `{"fields":[{"id":419167630,"value":"OPTION"}]}`.
-
 <big><pre>
 gh api \
   --method PATCH users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items/[**&lt;item-id&gt;**](#item-coordinates "○") \
   --input '[**&lt;status-input-file&gt;**](#status-input-file "○")' \
   --jq .id
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api --method PATCH users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/13/items/1001 --input status-backlog.json --jq .id
 </pre></big>
 
 #### 2. Provide Saved Item Status
@@ -309,12 +293,6 @@ Removes one item from a board, leaving its issue as it stands.
 gh api --method DELETE users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items/[**&lt;item-id&gt;**](#item-coordinates "○")
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api --method DELETE users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/9/items/1001
-</pre></big>
-
 #### 2. Provide Removed Board Item
 
 Provide [Membership Result](#membership-result "●") to the requester.
@@ -327,12 +305,6 @@ Saves a board's fields.
 
 <big><pre>
 gh api --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/fields?per_page=100" > '[**&lt;board-fields-file&gt;**](#board-fields-file "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/9/fields?per_page=100" > fields.json
 </pre></big>
 
 #### 2. Provide Fetched Board Fields
@@ -351,14 +323,6 @@ gh api \
   --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub("^\\&#91;P&#91;0-9&#93;+\\&#93; "; "") | startswith("[**&lt;theme-name&gt;**](#theme-name "○"): ")) | .number'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api \
-  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2?per_page=100" \
-  --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub("^\\&#91;P&#91;0-9&#93;+\\&#93; "; "") | startswith("Canon: ")) | .number'
-</pre></big>
-
 #### 2. Provide Located Theme Board
 
 Provide [Selected Board](#selected-board "●") to the requester.
@@ -372,14 +336,6 @@ Prints the id of a board's Status field.
 <big><pre>
 gh api \
   --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/fields?per_page=100" \
-  --jq '.&#91;&#93; | select(.name == "Status") | .id'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api \
-  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/9/fields?per_page=100" \
   --jq '.&#91;&#93; | select(.name == "Status") | .id'
 </pre></big>
 
@@ -399,12 +355,6 @@ gh api \
   > '[**&lt;board-items-file&gt;**](#board-items-file "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/9/items?per_page=100&fields=419167630" > items.json
-</pre></big>
-
 #### 2. Provide Fetched Board Items with Status
 
 Provide [Board State](#board-state "●") to the requester.
@@ -417,12 +367,6 @@ Reads one board item, including its current Status.
 
 <big><pre>
 gh api "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items/[**&lt;item-id&gt;**](#item-coordinates "○")?fields=[**&lt;status-field-id&gt;**](#status-field "○")"
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/9/items/1001?fields=419167630"
 </pre></big>
 
 #### 2. Provide Fetched Board Item
@@ -501,6 +445,13 @@ Either the supplied theme name or the proposals-board selection.
 
 The supplied existing board owner and number.
 
+**Example:**
+
+```text
+owner: m2ux
+board-number: 13
+```
+
 ### Repository
 
 The supplied repository name for the board link.
@@ -533,6 +484,12 @@ The new board owner and number. The number is absent until the copy succeeds.
 
 The supplied numeric issue id; it is distinct from the issue number.
 
+**Example:**
+
+```text
+3040123456
+```
+
 ### Initial Status
 
 The initial Status selected by the caller.
@@ -541,13 +498,39 @@ The initial Status selected by the caller.
 
 The supplied board item id and board coordinates.
 
+**Example:**
+
+```text
+board: users/m2ux/projectsV2/13
+item-id: 1001
+```
+
 ### Status Field
 
 The supplied Status field id and its option ids.
 
+**Example:**
+
+```text
+field-id: 419167630
+option-id: OPTION
+```
+
 ### Status Input File
 
-The local input file containing the selected Status field and option ids in the exact JSON payload shown in the executing step.
+The local input file containing the selected Status field id as a JSON integer and option id as a JSON string, from the fetched board fields.
+
+**Example:**
+
+```text
+status-backlog.json
+```
+
+**Example contents:**
+
+```json
+{"fields":[{"id":419167630,"value":"OPTION"}]}
+```
 
 ### Output Files
 
@@ -585,10 +568,28 @@ The repository link operation result for the supplied board.
 
 The supplied local output path for the complete board-field definitions.
 
+**Example:**
+
+```text
+fields.json
+```
+
 ### Board Items File
 
 The supplied local output path for the board items with Status and their complete issues.
 
+**Example:**
+
+```text
+items.json
+```
+
 ### Theme Name
 
 The supplied theme name, excluding any originating proposal designator.
+
+**Example:**
+
+```text
+Canon
+```

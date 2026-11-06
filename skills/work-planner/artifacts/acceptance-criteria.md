@@ -67,18 +67,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   -- [**&lt;instrument-command&gt;**](#instrument "○")
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  python3 skills/work-planner/scripts/revision-check.py \
-  --project /projects/workflow-server \
-  --revision i11/e16/workspace \
-  -- "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 \
-  -m pytest skills/work-planner/test \
-  -q
-</pre></big>
-
 #### 2. Provide Executed at Revision
 
 Provide [Instrument Result](#instrument-result "●") to the requester.
@@ -122,13 +110,31 @@ The supplied delivery findings and delivering revisions for the selected criteri
 
 Each selected criterion's named command, test or check, with its command arguments.
 
+**Example:**
+
+```text
+<workspace>/scripts/sbx python3 -m pytest skills/work-planner/test -q
+```
+
 ### Project Checkout
 
 The supplied checkout of the project in which the instrument is run.
 
+**Example:**
+
+```text
+/projects/workflow-server
+```
+
 ### Revision
 
 The branch, tag or commit supplied for verification.
+
+**Example:**
+
+```text
+i11/e16/workspace
+```
 
 ### Verification Evidence
 

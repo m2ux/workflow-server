@@ -75,15 +75,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   '[**&lt;epic-id&gt;**](#dependency-files "○")=[**&lt;epic-body-file&gt;**](#dependency-files "○")' '[**&lt;epic-id&gt;**](#dependency-files "○"):[**&lt;task-id&gt;**](#dependency-files "○")=[**&lt;work-item-file&gt;**](#dependency-files "○")' 'R=[**&lt;record-file&gt;**](#dependency-files "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deps.py I=/drafts/live-936.md \
-  E00=/drafts/live-943.md E01=/drafts/live-937.md E00:W01=/drafts/e00/w01.md E01:W01=/drafts/e01/w01.md \
-  R=/records/joins.md
-</pre></big>
-
 #### 2. Provide Checked Dependencies
 
 Provide [Graph Result](#graph-result "●") to the requester.
@@ -110,17 +101,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --tasks [**&lt;task-number-map&gt;**](#renumber-inputs "○") '[**&lt;affected-body-file&gt;**](#renumber-inputs "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py \
-  --initiative 07 \
-  --epic 1 \
-  --own live-937.md \
-  --tasks 7:3,3:5 live-*.md
-</pre></big>
-
 #### 2. Provide Renumber Tasks
 
 Provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
@@ -140,16 +120,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --initiative [**&lt;initiative-number&gt;**](#renumber-inputs "○") \
   --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' \
   --map [**&lt;epic-number-map&gt;**](#renumber-inputs "○") '[**&lt;body-file&gt;**](#renumber-inputs "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py \
-  --initiative 07 \
-  --prs prs.json \
-  --map 6:0,0:1 live-936.md live-943.md
 </pre></big>
 
 #### 2. Provide Renumber Epics
@@ -231,13 +201,41 @@ The supplied initiative and epic bodies or local drafts, work-item files for tas
 
 The initiative body file, each epic id and body file, each task id and work-item file, and each record file accounting for split candidate units. Files are absolute paths.
 
+**Example:**
+
+```text
+I=/drafts/live-936.md
+E00=/drafts/live-943.md
+E01=/drafts/live-937.md
+E00:W01=/drafts/e00/w01.md
+E01:W01=/drafts/e01/w01.md
+R=/records/joins.md
+```
+
 ### Renumber Inputs
 
 The initiative number, epic number for task renumbering, owning epic body for task renumbering, confirmed numbering map and affected body files, with explicitly authorized outside-initiative files when supplied.
 
+**Example:**
+
+```text
+initiative-number: 07
+epic-number: 1
+task-number-map: 7:3,3:5
+affected-body-file: live-*.md
+epic-number-map: 6:0,0:1
+body-file: live-936.md live-943.md
+```
+
 ### Pull Request Records
 
 The supplied current complete pull request records, one JSON object per nonempty line at the local file path.
+
+**Example:**
+
+```text
+prs.json
+```
 
 ### Graph Result
 

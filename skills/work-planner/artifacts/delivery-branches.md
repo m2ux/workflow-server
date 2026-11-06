@@ -222,12 +222,6 @@ Prints one epic's base branch names, one per line.
 git ls-remote --heads origin 'refs/heads/[**<epic-branch-prefix>**](#epic-identity "○")/*' | cut -f2 | sed 's|refs/heads/||'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-git ls-remote --heads origin 'refs/heads/i07/e00/*' | cut -f2 | sed 's|refs/heads/||'
-</pre></big>
-
 #### 2. Provide Listed Epic Bases
 
 Provide [Epic-Base Names](#epic-base-names "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -250,16 +244,6 @@ cd "[**<workspace>**](#workspace "○")" && \
   --names \
   --project '[**<checkout>**](#project-checkout "○")' \
   --revision '[**<revision>**](#revision "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-cd "[**<workspace>**](#workspace "○")" && \
-  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py \
-  --names \
-  --project '[**<checkout>**](#project-checkout "○")' \
-  --revision origin/i07/e00/main
 </pre></big>
 
 #### 2. Provide Listed Long-Lived Branches
@@ -355,12 +339,6 @@ Pushes the head of the checkout it runs in to its named remote task branch.
 git push origin 'HEAD:refs/heads/[**<task-branch>**](#task-branch "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-git push origin HEAD:refs/heads/i07/e00/w01-queue-plan
-</pre></big>
-
 #### 2. Provide Published Task Branch
 
 Provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -382,12 +360,6 @@ Creates a task branch and worktree at the fetched base.
 git worktree add '[**<worktree-path>**](#worktree-path "○")' -b '[**<task-branch>**](#task-branch "○")' 'origin/[**<base>**](#base-branch "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-git worktree add .worktrees/i07/e00/w01-queue-plan -b i07/e00/w01-queue-plan origin/i07/e00/main
-</pre></big>
-
 #### 2. Provide Added Task Worktree
 
 Provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -404,12 +376,6 @@ Run in the [Project Checkout](#project-checkout "○").
 
 <big><pre>
 git fetch origin pull/[**<pull-request-number>**](#pull-request-number "○")/head
-</pre></big>
-
-**Example:**
-
-<big><pre>
-git fetch origin pull/950/head
 </pre></big>
 
 #### 2. Provide Fetched Review Head
@@ -430,12 +396,6 @@ Creates the worktree for an existing epic base.
 
 <big><pre>
 git worktree add '[**<worktree-path>**](#worktree-path "○")' '[**<epic-base>**](#epic-base-name "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-git worktree add .worktrees/i07/e00/main i07/e00/main
 </pre></big>
 
 #### 2. Provide Added Epic Base Worktree
@@ -472,12 +432,6 @@ Saves the target branch protection response.
 gh api 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/branches/[**<target-branch>**](#target-branch "○")/protection' > '[**<branch-protection-file>**](#output-files "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/branches/main/protection > protection.json
-</pre></big>
-
 #### 2. Provide Fetched Branch Protection
 
 Provide [Target Requirements](#target-requirements "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -490,12 +444,6 @@ Saves every active rule for the target branch.
 
 <big><pre>
 gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/rules/branches/[**<target-branch>**](#target-branch "○")' > '[**<branch-rules-file>**](#output-files "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api --paginate repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/rules/branches/main > branch-rules.json
 </pre></big>
 
 #### 2. Provide Fetched Active Branch Rules
@@ -614,7 +562,13 @@ Every worktree of a repository shares one stash list, so a delivery session that
 
 ### Epic Identity
 
-The initiative and epic identifier, with an epic branch prefix of `i<initiative-number>/e<epic-number>`; **Example:** `i07/e00`.
+The initiative and epic identifier, with an epic branch prefix of `i<initiative-number>/e<epic-number>`.
+
+**Example:**
+
+```text
+i07/e00
+```
 
 ### Changed Branches
 
@@ -632,21 +586,51 @@ The source branch name without the `origin/` prefix.
 
 The full epic-base branch name.
 
+**Example:**
+
+```text
+i07/e00/main
+```
+
 ### Task Branch
 
 The destination task branch name.
+
+**Example:**
+
+```text
+i07/e00/w01-queue-plan
+```
 
 ### Base Branch
 
 The fetched base from which the task branch is rooted.
 
+**Example:**
+
+```text
+i07/e00/main
+```
+
 ### Worktree Path
 
 The caller-composed lasting path, resolved against the checkout running the command and placed under the project’s worktree directory.
 
+**Example:**
+
+```text
+.worktrees/i07/e00/w01-queue-plan
+```
+
 ### Pull Request Number
 
 The repository-local pull request number.
+
+**Example:**
+
+```text
+950
+```
 
 ### Verified Head
 
@@ -656,9 +640,22 @@ The literal verified head commit used to read a reviewed change.
 
 The long-lived target branch whose current protection and active rules govern readiness.
 
+**Example:**
+
+```text
+main
+```
+
 ### Output Files
 
 Destination paths for the requested protection and active-rule responses.
+
+**Example:**
+
+```text
+branch-protection-file: protection.json
+branch-rules-file: branch-rules.json
+```
 
 ### Branch Names
 
@@ -711,6 +708,12 @@ The supplied repository checkout in which a git operation acts; callers name the
 ### Revision
 
 The fetched commit or revision evaluated by the run.
+
+**Example:**
+
+```text
+origin/i07/e00/main
+```
 
 ### Failure
 

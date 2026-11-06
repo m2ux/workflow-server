@@ -92,12 +92,6 @@ Compare against the pull request’s base to isolate its change from the branch�
 gitnexus detect-changes --scope compare --base-ref '[**&lt;base-branch&gt;**](#base-branch "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gitnexus detect-changes --scope compare --base-ref main
-</pre></big>
-
 #### 2. Provide Change Surface
 
 Provide [Changed Symbols](#changed-symbols "●") to the requester.
@@ -114,12 +108,6 @@ Reports one symbol's callers, its callees and the flows it sits in, each with th
 gitnexus context '[**&lt;symbol-identity&gt;**](#symbol-identity "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gitnexus context reserveRow
-</pre></big>
-
 #### 2. Provide Symbol Context
 
 Provide [Symbol Relationships](#symbol-relationships "●") to the requester.
@@ -134,12 +122,6 @@ Reports one flow's symbols in step order, the structure a sequence diagram is dr
 
 <big><pre>
 gitnexus query --query '[**&lt;flow-identity&gt;**](#flow-identity "○")' --limit 1
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gitnexus query --query "Queue Placement" --limit 1
 </pre></big>
 
 #### 2. Provide Flow Trace
@@ -180,13 +162,31 @@ The verified head commit supplied for measurement.
 
 The supplied comparison base branch.
 
+**Example:**
+
+```text
+main
+```
+
 ### Symbol Identity
 
 One symbol identity provided by the supplied change surface.
 
+**Example:**
+
+```text
+reserveRow
+```
+
 ### Flow Identity
 
 One flow identity provided by the supplied change surface.
+
+**Example:**
+
+```text
+Queue Placement
+```
 
 ### Graph Measurements
 

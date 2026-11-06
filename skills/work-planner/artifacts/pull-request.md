@@ -347,12 +347,6 @@ gh api \
   --jq .base.ref
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/950 -f base=i07/e00/main --jq .base.ref
-</pre></big>
-
 #### 2. Provide Retargeted Pull Request
 
 Provide [Base Branch](#base-branch "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -365,12 +359,6 @@ Replaces a pull request's title.
 
 <big><pre>
 gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") -f title='[**<title>**](#title "○")' --jq .title
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/950 -f title='[I07:E00] Purpose' --jq .title
 </pre></big>
 
 #### 2. Provide Retitled Pull Request
@@ -393,31 +381,6 @@ gh api \
   -f head='[**<task-branch>**](#head-branch "○")' \
   -f base='[**<base>**](#base-branch "○")' \
   -F 'body=@[**<body-file>**](#body-file "○")' \
-  --jq .html_url
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api \
-  --method POST repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls \
-  -f title='[I07:E00] Purpose' \
-  -f head=i07/e00/w01-purpose \
-  -f base=i07/e00/main \
-  -F body=@body.md \
-  --jq .html_url
-</pre></big>
-
-**Example:** A hot-fix's delivering pull request.
-
-<big><pre>
-gh api \
-  --method POST repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls \
-  -f title='[F00] Reject Bad Keys' \
-  -f head=f00-key-validation \
-  -f base=workspace \
-  -F body=@body.md \
-  -F draft=true \
   --jq .html_url
 </pre></big>
 
@@ -445,19 +408,6 @@ gh api \
   --jq .html_url
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api \
-  --method POST repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls \
-  -f title='[I07:E00] Name' \
-  -f head=i07/e00/main \
-  -f base=main \
-  -F draft=true \
-  -F body=@body.md \
-  --jq .html_url
-</pre></big>
-
 #### 2. Provide Open Epic Pull Request
 
 Provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -477,12 +427,6 @@ Merges the task pull request into its base.
 gh api --method PUT repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○")/merge -f merge_method=merge --jq .merged
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api --method PUT repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/950/merge -f merge_method=merge --jq .merged
-</pre></big>
-
 #### 2. Provide Merged Pull Request
 
 Provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -499,12 +443,6 @@ The file is the whole body. The issue a pull request delivers is linked on the p
 gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") -F 'body=@[**<body-file>**](#body-file "○")' --jq .html_url
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/950 -F body=@pr-950.md --jq .html_url
-</pre></big>
-
 #### 2. Provide Patch Pull Request Body
 
 Provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -517,12 +455,6 @@ Returns the open pull request whose head is the supplied epic base, or no result
 
 <big><pre>
 gh api "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=open&head=[**<owner>**](#repository "○"):[**<epic-base>**](#head-branch "○")" --jq '.[0].number'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=open&head=[**<owner>**](#repository "○"):i07/e00/main" --jq '.[0].number'
 </pre></big>
 
 #### 2. Provide Located Review Pull Request
@@ -547,16 +479,6 @@ gh api \
   --jq '{merged, message, sha}'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api \
-  --method PUT repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/980/merge \
-  -f merge_method=merge \
-  -f sha=[**<head-sha>**](#verified-head "○") \
-  --jq '{merged, message, sha}'
-</pre></big>
-
 #### 2. Provide Submit Epic Merge
 
 Provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -570,12 +492,6 @@ Returns a pull request's merge state, merge commit, head and base.
 <big><pre>
 gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") \
   --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/980 --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'
 </pre></big>
 
 #### 2. Provide Read Merge Result
@@ -604,23 +520,6 @@ cd "[**<workspace>**](#workspace "○")" && \
   --pull [**<pr-owner>**](#identity "○")/[**<pr-repo>**](#identity "○")#[**<pull-request-number>**](#identity "○")
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**<workspace>**](#workspace "○")" && \
-  python3 skills/work-planner/scripts/development-link.py add \
-  --issue m2ux/workflow-server#637 \
-  --pull m2ux/workflow-server#950
-</pre></big>
-
-**Example output:**
-
-```text
-issue m2ux/workflow-server#637: m2ux/workflow-server#950
-pull request m2ux/workflow-server#950: m2ux/workflow-server#637
-verified: add m2ux/workflow-server#950 -> m2ux/workflow-server#637
-```
-
 #### 2. Provide Saved Development Link
 
 Provide [Development Relation](#development-relation "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -645,21 +544,6 @@ cd "[**<workspace>**](#workspace "○")" && \
   --issue [**<issue-owner>**](#issue-identity "○")/[**<issue-repo>**](#issue-identity "○")#[**<issue-number>**](#issue-identity "○") \
   --pull [**<pr-owner>**](#identity "○")/[**<pr-repo>**](#identity "○")#[**<pull-request-number>**](#identity "○")
 </pre></big>
-
-**Example:**
-
-<big><pre>
-cd "[**<workspace>**](#workspace "○")" && \
-  python3 skills/work-planner/scripts/development-link.py remove \
-  --issue m2ux/workflow-server#637 \
-  --pull m2ux/workflow-server#950
-</pre></big>
-
-**Example output:**
-
-```text
-failed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeCloseIssueReferences: Resource not accessible by integration
-```
 
 #### 2. Provide Removed Development Link
 
@@ -688,27 +572,6 @@ cd "[**<workspace>**](#workspace "○")" && \
   --out '[**<issue-link-snapshot-file>**](#link-snapshot-path "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**<workspace>**](#workspace "○")" && \
-  python3 skills/work-planner/scripts/links-by-pull-request.py \
-  --prs prs.json \
-  --out links.json
-</pre></big>
-
-**Example payload:**
-
-```json
-[
-  {
-    "repo": "owner/repo",
-    "number": 950,
-    "closingIssuesReferences": [{"repo": "owner/repo", "number": 637}]
-  }
-]
-```
-
 #### 2. Provide Capture Pull Request Links
 
 Provide [Issue-Link Snapshot](#issue-link-snapshot "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -723,12 +586,6 @@ Saves one complete pull request response, replacing the destination file.
 gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") > '[**<pull-request-json-file>**](#output-files "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/980 > epic-pr.json
-</pre></big>
-
 #### 2. Provide Save Pull Request Snapshot
 
 Provide [Pull Request Record](#pull-request-record "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -741,12 +598,6 @@ Saves every review on one pull request.
 
 <big><pre>
 gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○")/reviews?per_page=100' > '[**<reviews-file>**](#output-files "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/980/reviews?per_page=100' > reviews.json
 </pre></big>
 
 #### 2. Provide Fetched Pull Request Reviews
@@ -766,15 +617,6 @@ gh api \
   --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" \
   --jq '.[] | select(.title | startswith("[**<initiative-prefix>**](#initiative-prefix "○")"))' \
   > '[**<pull-request-records-file>**](#pull-request-records "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api \
-  --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" \
-  --jq '.[] | select(.title | startswith("[I07"))' \
-  > prs.json
 </pre></big>
 
 #### 2. Provide Fetched Initiative Pull Requests
@@ -803,15 +645,6 @@ cd "[**<workspace>**](#workspace "○")" && \
   --issues '[**<issue-file>**](#issue-records "○")' ...
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**<workspace>**](#workspace "○")" && \
-  python3 skills/work-planner/scripts/linked-pull-requests.py \
-  --prs prs.json \
-  --issues issue-936.json issue-943.json issue-637.json
-</pre></big>
-
 #### 2. Provide Fetched Linked Pull Requests
 
 Provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -829,15 +662,6 @@ gh api \
   --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" \
   --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' \
   > '[**<pull-request-records-file>**](#pull-request-records "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api \
-  --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" \
-  --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' \
-  > prs.json
 </pre></big>
 
 #### 2. Provide Fetched Repository Delivery Pull Requests
@@ -859,15 +683,6 @@ gh api \
   >> '[**<pull-request-records-file>**](#pull-request-records "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api \
-  --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" \
-  --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' \
-  >> prs.json
-</pre></big>
-
 #### 2. Provide Appended Repository Delivery Pull Requests
 
 Provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -885,12 +700,6 @@ gh api \
   > '[**<changed-paths-file>**](#output-files "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api --paginate repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/950/files --jq '.[].filename' > changed-files.txt
-</pre></big>
-
 #### 2. Provide Fetched Pull Request Files
 
 Provide [Changed Paths](#changed-paths "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -905,12 +714,6 @@ Saves every check run for one exact commit.
 gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/commits/[**<head-sha>**](#verified-head "○")/check-runs?per_page=100' > '[**<check-runs-file>**](#output-files "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/commits/[**<head-sha>**](#verified-head "○")/check-runs?per_page=100' > checks.json
-</pre></big>
-
 #### 2. Provide Fetched Head Check Runs
 
 Provide [Head Checks](#head-checks "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -923,12 +726,6 @@ Saves commit status evidence for one exact commit.
 
 <big><pre>
 gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/commits/[**<head-sha>**](#verified-head "○")/status?per_page=100' > '[**<commit-status-file>**](#output-files "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/commits/[**<head-sha>**](#verified-head "○")/status?per_page=100' > status.json
 </pre></big>
 
 #### 2. Provide Fetched Head Status
@@ -1023,6 +820,13 @@ The agent harness lets a delivery session merge a task pull request into an [epi
 
 The pull request’s repository-qualified identity, or its repository and local number. A new pull request has no saved identity until creation succeeds.
 
+**Example:**
+
+```text
+m2ux/workflow-server#950
+950
+```
+
 ### Kind
 
 The selected task or epic delivery kind.
@@ -1059,6 +863,12 @@ The requested read, addition or removal of a Development relation.
 
 The delivery issue’s repository-qualified identity; absent where the work carries no issue of its own.
 
+**Example:**
+
+```text
+m2ux/workflow-server#637
+```
+
 ### Removal Decision
 
 The user decision authorizing removal of the supplied abandoned or incorrect Development link.
@@ -1067,17 +877,49 @@ The user decision authorizing removal of the supplied abandoned or incorrect Dev
 
 Complete pull request REST responses stored as JSON lines, from one or more repositories. Each record includes its repository identity and `html_url`.
 
+**Example:**
+
+```text
+prs.json
+```
+
 ### Issue-Link Snapshot
 
 The complete saved Development snapshot, with one entry per pull request and every linked issue’s repository and number, or an empty array.
+
+**Example contents:**
+
+```json
+[
+  {
+    "repo": "owner/repo",
+    "number": 950,
+    "closingIssuesReferences": [{"repo": "owner/repo", "number": 637}]
+  }
+]
+```
 
 ### Link-Snapshot Path
 
 The supplied destination for a complete Development snapshot. The snapshot is absent before a successful capture writes it.
 
+**Example:**
+
+```text
+links.json
+```
+
 ### Development Relation
 
 The issue and pull request identities verified from both ends, or an explicit unreadable or failed relation.
+
+**Example output:**
+
+```text
+issue m2ux/workflow-server#637: m2ux/workflow-server#950
+pull request m2ux/workflow-server#950: m2ux/workflow-server#637
+verified: add m2ux/workflow-server#950 -> m2ux/workflow-server#637
+```
 
 ### Repository List
 
@@ -1087,17 +929,39 @@ The ordered repositories included in a board delivery fetch.
 
 The fetched plan issues supplied as issue files, or board items containing their complete issues.
 
+**Example:**
+
+```text
+issue-936.json issue-943.json issue-637.json
+```
+
 ### Collection Path
 
 The JSON-lines pull request collection destination. It is absent before a fresh fetch creates it; an append receives the existing collection.
 
 ### Initiative Prefix
 
-The opening bracket and initiative id matched against task and epic titles, such as `[I07`.
+The opening bracket and initiative id matched against task and epic titles.
+
+**Example:**
+
+```text
+[I07
+```
 
 ### Output Files
 
 The caller-supplied destinations for complete metadata, changed-paths, reviews, protection, rules, check and status snapshots, selected by the operation.
+
+**Example:**
+
+```text
+pull-request-json-file: epic-pr.json
+reviews-file: reviews.json
+changed-paths-file: changed-files.txt
+check-runs-file: checks.json
+commit-status-file: status.json
+```
 
 ### Record Selection
 
@@ -1119,17 +983,46 @@ Every page of reviews for the selected pull request.
 
 The complete populated body text supplied through a file.
 
+**Example:**
+
+```text
+body.md
+```
+
 ### Title
 
 The complete selected pull request title.
+
+**Example:**
+
+```text
+[I07:E00] Purpose
+[F00] Reject Bad Keys
+```
 
 ### Head Branch
 
 The task branch or epic-base head selected for creation.
 
+**Example:**
+
+```text
+task-branch: i07/e00/w01-purpose
+hot-fix-branch: f00-key-validation
+epic-base: i07/e00/main
+```
+
 ### Base Branch
 
 The task base, epic’s long-lived target or replacement base selected by the operation.
+
+**Example:**
+
+```text
+target-branch: i07/e00/main
+base: i07/e00/main
+long-lived-base: main
+```
 
 ### Selected Changes
 
@@ -1190,3 +1083,9 @@ Authenticated tracker access for the selected repositories.
 ### Failure
 
 The operation and error, discrepancy or missing evidence that prevents a verified result.
+
+**Example output:**
+
+```text
+failed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeCloseIssueReferences: Resource not accessible by integration
+```

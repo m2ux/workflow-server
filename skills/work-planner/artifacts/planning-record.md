@@ -100,21 +100,6 @@ cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' && \
   git push
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd .engineering && \
-  git add \
-  -A && \
-  (git diff \
-  --cached \
-  --quiet || git commit \
-  -F /tmp/msg.txt) && \
-  git fetch origin engineering && \
-  git rebase origin/engineering && \
-  git push
-</pre></big>
-
 #### 2. Provide Commit Planning Record
 
 Provide [Publication Result](#publication-result "●") to the requester.
@@ -135,12 +120,6 @@ Adds the folder for one planning record on the long-lived engineering worktree.
 
 <big><pre>
 mkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-mkdir -p artifacts/planning/2026-10-15-950-queue-plan
 </pre></big>
 
 #### 2. Provide Added Planning Record
@@ -216,9 +195,21 @@ The supplied record identity, folder path, artifact files and external links.
 
 The supplied folder path and its registered artifact files, meeting [Layout](#layout). A new folder is absent until created.
 
+**Example:**
+
+```text
+artifacts/planning/2026-10-15-950-queue-plan
+```
+
 ### Engineering Worktree
 
 The checkout holding the engineering branch, as an absolute path.
+
+**Example:**
+
+```text
+.engineering
+```
 
 ### Project Checkout
 
@@ -227,6 +218,12 @@ Any supplied checkout of the project.
 ### Commit Message File
 
 The supplied local file holding the exact commit message.
+
+**Example:**
+
+```text
+/tmp/msg.txt
+```
 
 ### Publication Result
 

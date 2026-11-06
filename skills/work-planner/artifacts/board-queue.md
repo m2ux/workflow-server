@@ -55,20 +55,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py \
-  --items items.json \
-  --prs prs.json \
-  --links links.json \
-  --board users/[**&lt;owner&gt;**](#board-identity "○")/projectsV2/9 \
-  --fields fields.json \
-  --out board/ \
-  --assignee m2ux
-</pre></big>
-
 #### 2. Provide Computed Board Queue
 
 Provide [Queue Result](#queue-result "●") to the requester.
@@ -78,6 +64,12 @@ Provide [Queue Result](#queue-result "●") to the requester.
 ### Board Identity
 
 The queue belongs to one theme board, identified as `users/{owner}/projectsV2/{id}` or `orgs/{owner}/projectsV2/{id}`. Its source snapshots contain board items with Status, board fields, initiative pull requests and any off-board issues its rows depend on.
+
+**Example:**
+
+```text
+users/<owner>/projectsV2/9
+```
 
 ### Priority Sets
 
@@ -198,25 +190,61 @@ The proposed calls, report lines and unresolved references, retaining pending de
 
 The supplied current board items with Status and their complete issue records, at the local paginated snapshot path.
 
+**Example:**
+
+```text
+items.json
+```
+
 ### Pull Request Records
 
 The supplied complete initiative and hot-fix pull request records, one JSON object per nonempty line at the local file path.
+
+**Example:**
+
+```text
+prs.json
+```
 
 ### Issue Link Snapshot
 
 The complete supplied pull-request issue-link snapshot at its local JSON path.
 
+**Example:**
+
+```text
+links.json
+```
+
 ### Board Fields
 
 The supplied board-field definitions at their local snapshot path.
+
+**Example:**
+
+```text
+fields.json
+```
 
 ### Output Directory
 
 The supplied local directory receiving proposed calls.
 
+**Example:**
+
+```text
+board/
+```
+
 ### Assignee Login
 
 The supplied login assigned to work from Ready.
+
+**Example:**
+
+```text
+m2ux
+```
 
 ### Workspace
 

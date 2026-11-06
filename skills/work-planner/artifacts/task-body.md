@@ -43,18 +43,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-637.json \
-  --prs prs.json \
-  --links links.json \
-  --pr 950 \
-  --tick AC1 \
-  --fix fixed-637.md
-</pre></big>
-
 #### 2. Provide Recorded Task Issue
 
 Provide [Output Body](#output-body "●"), [Delivery Findings](#delivery-findings "●") to the requester.
@@ -112,21 +100,52 @@ Provide [Output Body](#output-body "●"), [Delivery Findings](#delivery-finding
 
 The supplied current task issue JSON.
 
+**Example:**
+
+```text
+issue-637.json
+```
+
 ### Pull Request Records
 
 The supplied current pull request records.
+
+**Example:**
+
+```text
+prs.json
+```
 
 ### Issue Links
 
 The complete supplied issue-link snapshot.
 
+**Example:**
+
+```text
+links.json
+```
+
 ### Delivery Selection
 
 The supplied delivering pull request number and verified criterion ids.
 
+**Example:**
+
+```text
+pull-request-number: 950
+criterion-ids: AC1
+```
+
 ### Output Body
 
 The supplied local destination for the complete provided body.
+
+**Example:**
+
+```text
+fixed-637.md
+```
 
 ### Delivery Findings
 

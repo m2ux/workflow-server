@@ -58,21 +58,6 @@ cd "[**<workspace>**](#workspace "○")" && \
   --lane [**<lane-index>**](#requested-lane "○")
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**<workspace>**](#workspace "○")" && \
-  "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py \
-  --items items.json \
-  --prs prs.json \
-  --links links.json \
-  --project '[**<checkout>**](#project-checkout "○")' \
-  --revision origin/workspace \
-  --bases i07/e00/main,i07/e00/workflows \
-  --engineering '[**<checkout>**](#project-checkout "○")/.engineering' \
-  --lane 2
-</pre></big>
-
 #### 2. Provide Computed Available Work
 
 Provide [Plan Report](#plan-report "●"), [Dispatch Export](#dispatch-export "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -118,21 +103,51 @@ The optional JSON export holds exactly the available units in report order. Each
 
 The current board-items snapshot file, including each issue body.
 
+**Example:**
+
+```text
+items.json
+```
+
 ### Pull Request Records
 
 The current pull request records snapshot file.
+
+**Example:**
+
+```text
+prs.json
+```
 
 ### Issue-Link Snapshot
 
 The complete Development relation snapshot file.
 
+**Example:**
+
+```text
+links.json
+```
+
 ### Epic-Base Names
 
 A comma-separated list of full epic-base branch names.
 
+**Example:**
+
+```text
+i07/e00/main,i07/e00/workflows
+```
+
 ### Engineering Worktree
 
 The engineering checkout where each free row’s linked work-item file is read.
+
+**Example:**
+
+```text
+<checkout>/.engineering
+```
 
 ### Off-Board Issues
 
@@ -141,6 +156,12 @@ Each resolved off-board issue record supplied through `--others`.
 ### Requested Lane
 
 The optional requested bare decimal lane index; absent when the run names no lane, meeting [Index](lane.md#index).
+
+**Example:**
+
+```text
+2
+```
 
 ### Record Date
 
@@ -165,6 +186,12 @@ The project repository checkout supplied for branch and delivery reads or writes
 ### Revision
 
 The fetched commit or revision evaluated by the run.
+
+**Example:**
+
+```text
+origin/workspace
+```
 
 ### Failure
 

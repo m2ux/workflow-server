@@ -150,14 +150,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --epics '[**&lt;epic-json-file&gt;**](#epic-records "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-936.json \
-  --epics issue-943.json issue-937.json
-</pre></big>
-
 #### 2. Provide Recorded Initiative
 
 Provide [Output Files](#output-files "●"), [Delivery Findings](initiative.md#delivery-findings "●") to the requester.
@@ -178,16 +170,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --fix '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-936.json \
-  --epics issue-943.json issue-937.json \
-  --tick AC2 \
-  --fix fixed-936.md
-</pre></big>
-
 #### 2. Provide Ticked Initiative Criteria
 
 Provide [Output Files](#output-files "●"), [Criterion Selection](#criterion-selection "●") to the requester.
@@ -206,16 +188,6 @@ gh api 'repos/[**&lt;owner&gt;**](#source-evidence "○")/[**&lt;repository&gt;*
   | base64 \
   -d \
   > '[**&lt;source-file&gt;**](#output-files "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-gh api 'repos/m2ux/workflow-server/contents/docs/spec.md?ref=4a217fe6' \
-  --jq .content \
-  | base64 \
-  -d \
-  > source-R1.md
 </pre></big>
 
 #### 2. Provide Fetched Source
@@ -340,21 +312,54 @@ The scoped proposal, confirmed goal clauses, requirement sources and epic summar
 
 The supplied complete current initiative issue JSON.
 
+**Example:**
+
+```text
+issue-936.json
+```
+
 ### Epic Records
 
 Every linked epic's current JSON.
+
+**Example:**
+
+```text
+issue-943.json issue-937.json
+```
 
 ### Source Evidence
 
 The source locations, checkout paths and authenticated source access supplied for reading, with the contents and source identities once read. A pinned GitHub source has its repository owner and name, path and pinned revision, URL-encoded for the request.
 
+**Example:**
+
+```text
+repository: m2ux/workflow-server
+source-path: docs/spec.md
+revision: 4a217fe6
+```
+
 ### Output Files
 
 The supplied local destinations for source contents or a complete body; the body output is optional when only a delivery report is requested.
 
+**Example:**
+
+```text
+output-body-file: fixed-936.md
+source-file: source-R1.md
+```
+
 ### Criterion Selection
 
 The supplied verified criterion ids.
+
+**Example:**
+
+```text
+AC2
+```
 
 ### Validation Findings
 

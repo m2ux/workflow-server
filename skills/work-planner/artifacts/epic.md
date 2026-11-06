@@ -97,16 +97,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --fix '[**&lt;epic-body-file&gt;**](#output-body "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json \
-  --prs prs.json \
-  --links links.json \
-  --fix epic-body.md
-</pre></big>
-
 #### 2. Provide Match Pull Requests
 
 Provide [Delivery Findings](#delivery-findings "●") to the requester.
@@ -156,6 +146,12 @@ A coverage disagreement identifies the pull request and row, a criterion absent 
 
 The supplied complete current epic issue JSON.
 
+**Example:**
+
+```text
+issue-943.json
+```
+
 ### Initiative Evidence
 
 The current initiative body and row, including each prerequisite the row names.
@@ -168,9 +164,21 @@ The current issue and base-merge records for every prerequisite named by the ini
 
 The supplied current pull request records for the epic.
 
+**Example:**
+
+```text
+prs.json
+```
+
 ### Issue Links
 
 The complete supplied snapshot of the pull requests' Development-linked issues.
+
+**Example:**
+
+```text
+links.json
+```
 
 ### Verification Evidence
 
@@ -183,6 +191,12 @@ The complete expected epic-base list and each base's merge evidence into its cor
 ### Output Body
 
 The supplied local scratch destination for the corrected epic body.
+
+**Example:**
+
+```text
+epic-body.md
+```
 
 ### Workspace
 

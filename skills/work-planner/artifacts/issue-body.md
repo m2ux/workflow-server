@@ -171,14 +171,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   --fix '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && \
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/format.py issue.json \
-  --fix fixed.md
-</pre></big>
-
 #### 2. Provide Checked Body Format
 
 Provide [Format Findings](#format-findings "●") to the requester.
@@ -191,12 +183,6 @@ List repository names from the issue destination and References section.
 
 <big><pre>
 [**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py repositories '[**&lt;issue-json-file&gt;**](#body-record "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py repositories issue-943.json
 </pre></big>
 
 #### 2. Provide Listed Reference Repositories
@@ -217,12 +203,6 @@ Read one listed repository's visibility with the authenticated repository API.
 gh api repos/[**&lt;owner&gt;**](#reference-repositories "○")/[**&lt;repo&gt;**](#reference-repositories "○") > '[**&lt;repository-json-file&gt;**](#output-files "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-gh api repos/{owner}/{repo} > repository.json
-</pre></big>
-
 #### 2. Provide Fetched Reference Repository
 
 Provide [Repository Snapshot](#repository-snapshot "●") to the requester.
@@ -237,12 +217,6 @@ The snapshot is a JSON array of fetched repository objects. Exit 1 means finding
 
 <big><pre>
 [**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py references '[**&lt;issue-json-file&gt;**](#body-record "○")' --repositories '[**&lt;repositories-json-file&gt;**](#repository-snapshot "○")'
-</pre></big>
-
-**Example:**
-
-<big><pre>
-[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py references issue-943.json --repositories repositories.json
 </pre></big>
 
 #### 2. Provide Validated Reference Visibility
@@ -391,6 +365,13 @@ The confirmed local resolutions, criterion changes and selected decisions to kee
 
 The supplied local destinations for a corrected complete body, a body-snapshot JSON record or repository visibility evidence.
 
+**Example:**
+
+```text
+output-body-file: fixed.md
+repository-json-file: repository.json
+```
+
 ### Body Snapshot
 
 A local issue-shaped JSON record retaining the body's exact text, title and labels, plus the existing issue's identity and state when supplied. An unpublished draft uses `number: null` and `state: "open"`; labels are strings or objects with a name.
@@ -403,6 +384,12 @@ The destination repository and the repositories cited in References, identified 
 
 The supplied JSON array of fetched repository objects, each retaining full_name and private.
 
+**Example:**
+
+```text
+repositories.json
+```
+
 ### Visibility Findings
 
 Findings carrying the issue identity, cited repository identities and their observed visibility or missing evidence.
@@ -414,6 +401,12 @@ The absolute checkout holding the installed Work Planner scripts and sandbox hel
 ### Body Record
 
 The complete current issue-shaped JSON record: a saved tracker issue record, or a local [Body Snapshot](#body-snapshot) for an unpublished draft.
+
+**Example:**
+
+```text
+issue.json
+```
 
 ### Snapshot Metadata
 

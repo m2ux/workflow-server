@@ -101,12 +101,6 @@ Convert an unambiguous checked list and Test/Criteria table to the current plan 
 [**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py plan '[**&lt;pull-request-json-file&gt;**](#pull-request-record "○")' --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py plan pr-950.json --fix fixed-950.md
-</pre></big>
-
 #### 2. Provide Converted Test Plan
 
 Provide [Output Body](#output-body "●"), [Unresolved Evidence](#unresolved-evidence "●") to the requester.
@@ -200,6 +194,12 @@ The optional existing complete pull request body.
 
 The supplied current REST pull request JSON.
 
+**Example:**
+
+```text
+pr-950.json
+```
+
 ### Overview URL
 
 The published architecture overview URL on the engineering branch.
@@ -207,6 +207,12 @@ The published architecture overview URL on the engineering branch.
 ### Output Body
 
 The supplied local destination for the complete body.
+
+**Example:**
+
+```text
+fixed-950.md
+```
 
 ### Unresolved Evidence
 

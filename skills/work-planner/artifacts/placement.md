@@ -150,12 +150,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && \
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/orphans.py '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
 
-**Example:**
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/orphans.py issues.json
-</pre></big>
-
 #### 2. Provide Listed Orphans
 
 Provide [Candidate Destinations](#candidate-destinations "●") to the requester.
@@ -219,6 +213,12 @@ The current orphan body, candidate destinations, proposed work and supplied plan
 ### Issue Collection
 
 The complete supplied repository issue collection, at its local JSON file path.
+
+**Example:**
+
+```text
+issues.json
+```
 
 ### Confirmed Placement
 
