@@ -1,0 +1,260 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "line": 42,
+    "before": "- For an epic, Run [Tick Epic Criteria](epic-issue-body.md#tick-epic-criteria \"\u0192\") with the issue JSON, pull request records, complete issue-link snapshot, [verified criterion ids](#criterion-selection) and [output body file](#output-body).",
+    "after": "- For an epic, Run [Tick Epic Criteria](epic-issue-body.md#tick-epic-criteria \"\u0192\") with the verified criterion ids."
+  },
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "line": 43,
+    "before": "- For an initiative, Run [Tick Initiative Criteria](initiative-issue-body.md#tick-initiative-criteria \"\u0192\") with the issue JSON, every linked epic record, verified criterion ids and output body file.",
+    "after": "- For an initiative, Run [Tick Initiative Criteria](initiative-issue-body.md#tick-initiative-criteria \"\u0192\") with the verified criterion ids."
+  },
+  {
+    "file": "skills/work-planner/artifacts/agent-review.md",
+    "line": 22,
+    "before": "- Apply [Produce Agent Review](#produce-agent-review \"\u0192\") with fresh pull request metadata for the resulting head, the same checkout, criteria, updated validation evidence and planning destination, and provide that review\u2019s record.",
+    "after": "- Apply [Produce Agent Review](#produce-agent-review \"\u0192\") for the resulting head with fresh metadata and updated validation evidence."
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-evidence.md",
+    "line": 36,
+    "before": "- Apply [Read Delivery Evidence](#read-delivery-evidence \"\u0192\") again with the same repositories, [initiative prefix](#initiative-prefix), [issue records](#issue-records), access and destinations after saving the title; provide its refreshed evidence and findings.",
+    "after": "- Apply [Read Delivery Evidence](#read-delivery-evidence \"\u0192\") again after saving the title, retaining the selected scope and snapshot destinations; provide its refreshed evidence and findings."
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "line": 128,
+    "before": "- Apply [Apply Body Corrections](#apply-body-corrections \"\u0192\") with the current body, kind template and conditions, related context, confirmed resolution and output path.",
+    "after": "- Apply [Apply Body Corrections](#apply-body-corrections \"\u0192\") to the current body using the confirmed resolution."
+  },
+  {
+    "file": "skills/work-planner/artifacts/review-finding.md",
+    "line": 34,
+    "before": "- Apply [Populate Review Finding](#populate-review-finding \"\u0192\") for each item in [Finding Set](#finding-set) with its area, severity, problem, solution and source evidence.",
+    "after": "- Apply [Populate Review Finding](#populate-review-finding \"\u0192\") for each item in [Finding Set](#finding-set)."
+  },
+  {
+    "file": "skills/work-planner/modes/advance-mode.md",
+    "line": 48,
+    "before": "- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue \"\u0192\") with the selected board identity, current board items with Status, initiative pull request records and their issue-link snapshot, board fields, assignee login and an output directory such as `board/`.",
+    "after": "- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue \"\u0192\") for the selected board."
+  },
+  {
+    "file": "skills/work-planner/modes/advance-mode.md",
+    "line": 60,
+    "before": "- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue \"\u0192\") with the current board items, initiative pull request records and their issue-link snapshot, board fields, assignee login, board identity and output directory, retaining every resolved issue file and confirmed unplanned initiative identity.",
+    "after": "- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue \"\u0192\") for the selected board, retaining resolved issue files and confirmed unplanned initiative identities."
+  },
+  {
+    "file": "skills/work-planner/modes/advance-mode.md",
+    "line": 86,
+    "before": "- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue \"\u0192\") with the refreshed board items, the same initiative pull request records and their issue-link snapshot, board fields, assignee login, board identity and output directory, and every resolved off-board issue file and confirmed unplanned initiative identity.",
+    "after": "- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue \"\u0192\") for the selected board using refreshed board items and the retained pull request and issue-link snapshots, retaining resolved issue files and confirmed unplanned initiative identities."
+  },
+  {
+    "file": "skills/work-planner/modes/advance-mode.md",
+    "line": 98,
+    "before": "- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue \"\u0192\") with the refreshed board items, the same initiative pull request records and their issue-link snapshot, board fields, assignee login, board identity and output directory, retaining every resolved off-board issue file and confirmed unplanned initiative identity.",
+    "after": "- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue \"\u0192\") for the selected board using refreshed board items and the retained pull request and issue-link snapshots, retaining resolved issue files and confirmed unplanned initiative identities."
+  },
+  {
+    "file": "skills/work-planner/modes/align-mode.md",
+    "line": 116,
+    "before": "- Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering \"\u0192\") with those bodies, those work-item files, current pull request records, confirmed maps when any, and explicitly authorized outside-initiative files.",
+    "after": "- Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering \"\u0192\") for the selected bodies and work-item files, applying confirmed maps only within the explicitly authorized scope."
+  },
+  {
+    "file": "skills/work-planner/modes/align-mode.md",
+    "line": 129,
+    "before": "- For each epic being aligned, Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic \"\u0192\") with its current JSON, provided pull request records and complete issue-link snapshot, task records, confirmed matches, project checkout, fetched epic bases and output body file:",
+    "after": "- For each epic being aligned, Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic \"\u0192\") for the current epic in the project checkout with the fetched epic bases, retaining the confirmed task-to-pull-request matches:"
+  },
+  {
+    "file": "skills/work-planner/modes/align-mode.md",
+    "line": 134,
+    "before": "- Apply [Plan Gap Task](../artifacts/epic-issue-body.md#plan-gap-task \"\u0192\") with the current epic JSON and body, delivered task row, unmet criterion ids, delivery records, complete issue-link snapshot, project checkout, fetched epic bases and output body path.",
+    "after": "- Apply [Plan Gap Task](../artifacts/epic-issue-body.md#plan-gap-task \"\u0192\") for the delivered row and unmet criterion ids, using the project checkout and fetched epic bases."
+  },
+  {
+    "file": "skills/work-planner/modes/align-mode.md",
+    "line": 155,
+    "before": "- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") with those criterion ids, current initiative body, delivery findings, delivery revisions, named instruments and the project checkout.",
+    "after": "- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") for the selected criterion ids against current delivery evidence in the project checkout."
+  },
+  {
+    "file": "skills/work-planner/modes/align-mode.md",
+    "line": 191,
+    "before": "- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic \"\u0192\") again with the saved epic JSON, current task records, pull request records, complete issue-link snapshot, the project checkout, the fetched epic bases and the same output body file. An unanswered placement stays pending.",
+    "after": "- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic \"\u0192\") again for the refreshed epic evidence in the project checkout with the fetched epic bases. An unanswered placement stays pending."
+  },
+  {
+    "file": "skills/work-planner/modes/deliver-mode.md",
+    "line": 98,
+    "before": "- Run [Compute Available Work](../artifacts/delivery-plan.md#compute-available-work \"\u0192\") with current items, pull requests, complete issue links, project checkout, evaluated revision, epic bases, engineering worktree, resolved off-board issues, the authorization's optional requested lane index and selected record date, requesting its dispatch export.",
+    "after": "- Run [Compute Available Work](../artifacts/delivery-plan.md#compute-available-work \"\u0192\") for the selected board and the authorization\u2019s requested lane in the project checkout, using the selected record date and requesting a dispatch export."
+  },
+  {
+    "file": "skills/work-planner/modes/deliver-mode.md",
+    "line": 106,
+    "before": "- For delivery discrepancies, Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence \"\u0192\") with the affected initiative, epic and task records, then repeat the survey with its results.",
+    "after": "- For delivery discrepancies, Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence \"\u0192\") for the selected repositories and initiative against current issue records."
+  },
+  {
+    "file": "skills/work-planner/modes/deliver-mode.md",
+    "line": 131,
+    "before": "- Observe current harness sessions and free capacity, then Run [Compute Dispatch Batch](../artifacts/dispatch-batch.md#compute-dispatch-batch \"\u0192\") with the fixed authorization, current dispatch export, survey board and requested lane, observed inventory, free slots and admitted preparations awaiting capacity.",
+    "after": "- Observe current harness sessions and free capacity, then Run [Compute Dispatch Batch](../artifacts/dispatch-batch.md#compute-dispatch-batch \"\u0192\") for the fixed authorization and current survey, including admitted preparations awaiting capacity."
+  },
+  {
+    "file": "skills/work-planner/modes/deliver-mode.md",
+    "line": 226,
+    "before": "- Apply [Produce Agent Review](../artifacts/agent-review.md#produce-agent-review \"\u0192\") with the pull request's fresh metadata, the unit checkout, its criteria, validation evidence and planning destination.",
+    "after": "- Apply [Produce Agent Review](../artifacts/agent-review.md#produce-agent-review \"\u0192\") for the resulting head with fresh metadata and updated validation evidence."
+  },
+  {
+    "file": "skills/work-planner/modes/plan-mode.md",
+    "line": 45,
+    "before": "- For an initiative, epic or complex plan, Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record \"\u0192\") with the record identity, folder and supplied evidence files.",
+    "after": "- For an initiative, epic or complex plan, Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record \"\u0192\") for the selected record with the supplied evidence files."
+  },
+  {
+    "file": "skills/work-planner/modes/propose-mode.md",
+    "line": 35,
+    "before": "- Apply [Populate Proposal Body](../artifacts/proposal-body.md#populate-proposal-body \"\u0192\") with the confirmed problem, evidence, goal clauses, boundary and output body path. The local file is the source for the issue.",
+    "after": "- Apply [Populate Proposal Body](../artifacts/proposal-body.md#populate-proposal-body \"\u0192\") from the confirmed proposal context at the selected output path. The local file is the source for the issue."
+  },
+  {
+    "file": "skills/work-planner/modes/standup-mode.md",
+    "line": 59,
+    "before": "Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-report \"\u0192\") with the board items, initiative pull request records, complete issue-link snapshot, selected window and initiative filter, resolved off-board initiative records and output paths.",
+    "after": "Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-report \"\u0192\") for the selected board, reporting window and initiative filter."
+  },
+  {
+    "file": "skills/work-planner/modes/standup-mode.md",
+    "line": 67,
+    "before": "- Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-report \"\u0192\") again with all resolved initiative records, retaining the board items, pull requests, links, selected window and filter. An unavailable record remains a reported gap.",
+    "after": "- Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-report \"\u0192\") again with all resolved initiative records, retaining the selected window, filter and original snapshots. An unavailable record remains a reported gap."
+  },
+  {
+    "file": "skills/work-planner/modes/standup-mode.md",
+    "line": 77,
+    "before": "- Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format \"\u0192\") with the epic identity, current JSON, [epic template and field conditions](../artifacts/epic-issue-body.md#fields), required related evidence and output body path.",
+    "after": "- Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format \"\u0192\") for the selected issue against its kind\u2019s template and field conditions."
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "line": 50,
+    "before": "- Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format \"\u0192\") with that issue identity, current JSON, kind template and field conditions, required related evidence and output body path.",
+    "after": "- Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format \"\u0192\") for the selected issue against its kind\u2019s template and field conditions."
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "line": 58,
+    "before": "- Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence \"\u0192\") with the selected repositories and initiative prefix, the fetched initiative, epic and task issue JSON, authenticated access and destination snapshot files.",
+    "after": "- Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence \"\u0192\") for the selected repositories and initiative against current issue records."
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "line": 84,
+    "before": "- For a task with a delivering pull request, open or merged, Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") with its current body, selected criteria, delivery evidence, revisions, named instruments and the project checkout.",
+    "after": "- For a task with a delivering pull request, open or merged, Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") for the selected criterion ids against current delivery evidence in the project checkout."
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "line": 86,
+    "before": "- Run [Sync Task Issue](../artifacts/task-body.md#sync-task-issue \"\u0192\") with the task JSON, pull request records, complete issue-link snapshot, delivering pull request number, provided verified criterion ids and output body path.",
+    "after": "- Run [Sync Task Issue](../artifacts/task-body.md#sync-task-issue \"\u0192\") for the selected task and delivering pull request with the verified criterion ids."
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "line": 208,
+    "before": "- After applying the provided findings, Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic \"\u0192\") again with the revised epic body and refreshed delivery records, retaining the complete issue-link snapshot, the same epic bases and output body path. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, unchanged, and unplaced are clear, apart from a pull request the user leaves unmatched.",
+    "after": "- After applying the provided findings, Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic \"\u0192\") again for the refreshed epic evidence in the project checkout with the fetched epic bases. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, unchanged, and unplaced are clear, apart from a pull request the user leaves unmatched."
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "line": 212,
+    "before": "- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") for the criteria reported ready to verify, supplying the current issue body, delivery findings, relevant delivery revisions, named instruments and the project checkout.",
+    "after": "- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") for the selected criterion ids against current delivery evidence in the project checkout."
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "line": 218,
+    "before": "- Apply [Plan Gap Task](../artifacts/epic-issue-body.md#plan-gap-task \"\u0192\") with the current epic JSON and body, delivered task row, unmet criterion ids, delivery records, complete issue-link snapshot, project checkout, fetched epic bases and output body path.",
+    "after": "- Apply [Plan Gap Task](../artifacts/epic-issue-body.md#plan-gap-task \"\u0192\") for the delivered row and unmet criterion ids, using the project checkout and fetched epic bases."
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "line": 219,
+    "before": "- For each criterion it returns as already holding, Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") again with that criterion id, the current epic body, delivery findings, delivery revisions, named instruments and the project checkout.",
+    "after": "- For each criterion it returns as already holding, Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") for the selected criterion ids against current delivery evidence in the project checkout."
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "line": 252,
+    "before": "- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") with their ids, current initiative body, delivery findings, delivery revisions, named instruments and the project checkout.",
+    "after": "- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") for the selected criterion ids against current delivery evidence in the project checkout."
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-closure.md",
+    "line": 40,
+    "before": "- Apply [Check Epic Completion](../artifacts/epic.md#check-epic-completion \"\u0192\") with the current epic JSON, delivery records, complete issue-link snapshot, criterion verification evidence and those base records.",
+    "after": "- Apply [Check Epic Completion](../artifacts/epic.md#check-epic-completion \"\u0192\") against current delivery and criterion evidence and the confirmed base-merge records."
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-delivery.md",
+    "line": 25,
+    "before": "- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") for each criterion it carries, with its current body, the delivering pull request, its merged revision, named instruments and the project checkout.",
+    "after": "- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") for the selected criterion ids against current delivery evidence in the project checkout."
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-delivery.md",
+    "line": 26,
+    "before": "- Run [Sync Hot-fix Issue](../artifacts/hotfix.md#sync-hot-fix-issue \"\u0192\") with the provided verified criterion ids, the hot-fix JSON, pull request records, complete issue-link snapshot, delivering pull request number and output body file.",
+    "after": "- Run [Sync Hot-fix Issue](../artifacts/hotfix.md#sync-hot-fix-issue \"\u0192\") for the selected hot-fix and delivering pull request with the provided verified criterion ids."
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-delivery.md",
+    "line": 32,
+    "before": "- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") for each criterion the delivered task covers, with its current body, delivery findings, delivery revisions, named instruments and the project checkout.",
+    "after": "- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria \"\u0192\") for the selected criterion ids against current delivery evidence in the project checkout."
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-delivery.md",
+    "line": 38,
+    "before": "- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic \"\u0192\") with the epic JSON, pull request records, complete issue-link snapshot, task issue records, confirmed task-to-pull-request matches, project checkout, fetched epic bases, and output body file.",
+    "after": "- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic \"\u0192\") for the current epic in the project checkout with the fetched epic bases, retaining the confirmed task-to-pull-request matches."
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-delivery.md",
+    "line": 42,
+    "before": "- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic \"\u0192\") again with the refreshed epic JSON and the same pull request records, complete issue-link snapshot, task issue records, confirmed task-to-pull-request matches, project checkout, fetched epic bases, and output body file.",
+    "after": "- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic \"\u0192\") again for the refreshed epic evidence in the project checkout with the fetched epic bases, retaining the confirmed task-to-pull-request matches."
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-delivery.md",
+    "line": 56,
+    "before": "- Apply [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria \"\u0192\") with its updated JSON, pull request records, complete issue-link snapshot, those remaining ids and output body path.",
+    "after": "- Apply [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria \"\u0192\") for the provided verified criterion ids."
+  },
+  {
+    "file": "skills/work-planner/protocols/review-pull-request.md",
+    "line": 54,
+    "before": "- Apply [Produce Agent Review](../artifacts/agent-review.md#produce-agent-review \"\u0192\") with the fresh review metadata, checkout, epic criteria, validation evidence and planning destination.",
+    "after": "- Apply [Produce Agent Review](../artifacts/agent-review.md#produce-agent-review \"\u0192\") for the resulting head with fresh metadata and updated validation evidence."
+  },
+  {
+    "file": "skills/work-planner/protocols/task-merge.md",
+    "line": 51,
+    "before": "- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic \"\u0192\") with the epic JSON, pull request records, complete issue-link snapshot, task issue records, project checkout, fetched epic bases, and output body file.",
+    "after": "- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic \"\u0192\") for the current epic in the project checkout with the fetched epic bases."
+  },
+  {
+    "file": "skills/work-planner/protocols/unit-dispatch.md",
+    "line": 74,
+    "before": "- Apply [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief \"\u0192\") with the selected unit, its components, reserved folder, worktrees and provided bases, project and engineering checkouts, test obligations, board identity, run allowance and supplied session procedure.",
+    "after": "- Apply [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief \"\u0192\") for the selected unit from its confirmed preparation and captured component context."
+  }
+]

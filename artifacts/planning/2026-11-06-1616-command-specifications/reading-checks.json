@@ -1,0 +1,50 @@
+{
+  "scope": "Independent fresh-context dry runs of Standup, Revise and Understand; read-only, no network or writes.",
+  "status": "partial",
+  "observed_head": "59fd21e8fccf9737fc4aba10acfd08623f45f1b6",
+  "revision_limit": "Readers inspected in-flight files. HEAD alone does not identify the bytes read; their results are not validation of the final committed source.",
+  "scenarios": [
+    {
+      "reader": "command_layout_board_read",
+      "route": "Standup with captured board/PR/link placeholders, since 2026-11-01 through 2026-11-06",
+      "result": "partial",
+      "findings": [
+        "Whole supporting-artifact batch truncated at 40079 original tokens.",
+        "Reader did not complete transitive artifact prerequisites.",
+        "Hot-fix, Hot-fix Body and Delivery Branches contain prerequisite cycles.",
+        "progress.py exposes --since, not a requested closed upper bound.",
+        "Explicit board coordinates and missing Sync checkpoint require care.",
+        "No report was generated and no placeholders were executed."
+      ]
+    },
+    {
+      "reader": "command_layout_revision_read",
+      "route": "Bounded Hot-fix Body edit, installed check and comparison against origin/workspace",
+      "result": "partial",
+      "findings": [
+        "Initial combined guidelines read truncated; full separate reads recovered it.",
+        "Selected command specifications and their input/output Fields resolve.",
+        "Comparison reads committed git trees, so a dirty working tree is not included in a HEAD comparison.",
+        "Consumer prerequisite closure remained cyclic and incomplete.",
+        "No actual edit or validation commands were executed."
+      ]
+    },
+    {
+      "reader": "command_layout_graph_read",
+      "route": "Understand PR 1641 with prepared review checkout and captured metadata",
+      "result": "partial",
+      "findings": [
+        "Graph command route and freshness checks are discoverable and retain the named review checkout.",
+        "Combined PR/Delivery Branches read truncated; reader recovered both.",
+        "Reader loaded unnecessary shared guidelines and did not satisfy all artifact prerequisites before artifact bodies.",
+        "Planning Record self prerequisite was observed during migration and removed before final validation.",
+        "No live GitNexus or GitHub validation occurred."
+      ]
+    }
+  ],
+  "claims": [
+    "Structural preservation and local regression results are separate from reader behavior.",
+    "No clean selective-disclosure, repeated-consistency, token-savings or external-workflow claim is made."
+  ],
+  "follow_up": "Review the existing prerequisite cycles and broad whole-document dependencies separately from command-layout correctness."
+}

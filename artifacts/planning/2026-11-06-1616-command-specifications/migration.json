@@ -1,0 +1,1048 @@
+{
+  "extracted": [
+    [
+      "skills/work-planner/artifacts/acceptance-criteria.md",
+      "Run at Revision"
+    ],
+    [
+      "skills/work-planner/artifacts/agent-review.md",
+      "Validate Agent Review"
+    ],
+    [
+      "skills/work-planner/artifacts/board-queue.md",
+      "Compute Board Queue"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Find Board Template"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Copy Board Template"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Link Board to Repository"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Find Proposals Board"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Add Issue to Board"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Set Item Status"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Remove Board Item"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Fetch Board Fields"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Find Theme Board"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Find Status Field"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Fetch Board Items with Status"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Fetch Board Item"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Find User"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "List Epic Bases"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "List Long-Lived Branches"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "Fetch Remote Branch"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "Publish Epic Base"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "Merge Remote Branch"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "Push Epic Base"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "Push Task Branch"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "Add Task Worktree"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "Fetch Review Head"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "Add Epic Base Worktree"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "Add Review Worktree"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "Fetch Branch Protection"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "Fetch Active Branch Rules"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "Read Checkout Revision"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "Read Checkout Status"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-plan.md",
+      "Compute Available Work"
+    ],
+    [
+      "skills/work-planner/artifacts/dependency-graph.md",
+      "Check Dependencies"
+    ],
+    [
+      "skills/work-planner/artifacts/dependency-graph.md",
+      "Renumber Tasks"
+    ],
+    [
+      "skills/work-planner/artifacts/dependency-graph.md",
+      "Renumber Epics"
+    ],
+    [
+      "skills/work-planner/artifacts/dispatch-batch.md",
+      "Compute Dispatch Batch"
+    ],
+    [
+      "skills/work-planner/artifacts/dispatch-batch.md",
+      "Check Dispatch Start"
+    ],
+    [
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "Sync Epic"
+    ],
+    [
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "Tick Epic Criteria"
+    ],
+    [
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "Reserve Row"
+    ],
+    [
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "Release Row"
+    ],
+    [
+      "skills/work-planner/artifacts/epic.md",
+      "Match Pull Requests"
+    ],
+    [
+      "skills/work-planner/artifacts/hotfix.md",
+      "Sync Hot-fix Issue"
+    ],
+    [
+      "skills/work-planner/artifacts/initiative-issue-body.md",
+      "Sync Initiative"
+    ],
+    [
+      "skills/work-planner/artifacts/initiative-issue-body.md",
+      "Tick Initiative Criteria"
+    ],
+    [
+      "skills/work-planner/artifacts/initiative-issue-body.md",
+      "Fetch Source"
+    ],
+    [
+      "skills/work-planner/artifacts/issue-body.md",
+      "Check Body Format"
+    ],
+    [
+      "skills/work-planner/artifacts/issue-body.md",
+      "List Reference Repositories"
+    ],
+    [
+      "skills/work-planner/artifacts/issue-body.md",
+      "Fetch Reference Repository"
+    ],
+    [
+      "skills/work-planner/artifacts/issue-body.md",
+      "Validate Reference Visibility"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Create Tracker Issue"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Patch Issue Body"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Fetch Issue Body"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Retitle Tracker Issue"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Add Issue Labels"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Remove Issue Label"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Fetch Issue Comments"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Fetch Tracker Issue"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Check Issue Closure"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Sweep Closure Evidence"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Close as Not Planned"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Post Inline Comment"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Post Comment File"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Set Completed State"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Capture Issue Links"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Fetch All Issues"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Fetch Closed Issues"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Fetch Selected Closed Issues"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Find Initiative Issue"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "List Prefixed Titles"
+    ],
+    [
+      "skills/work-planner/artifacts/lane.md",
+      "Read Lane Assignments"
+    ],
+    [
+      "skills/work-planner/artifacts/lane.md",
+      "Write Lane Assignments"
+    ],
+    [
+      "skills/work-planner/artifacts/lane.md",
+      "Validate Lane Unit"
+    ],
+    [
+      "skills/work-planner/artifacts/lane.md",
+      "Evaluate Lane Admission"
+    ],
+    [
+      "skills/work-planner/artifacts/placement.md",
+      "List Orphans"
+    ],
+    [
+      "skills/work-planner/artifacts/planning-record.md",
+      "Find Engineering Worktree"
+    ],
+    [
+      "skills/work-planner/artifacts/planning-record.md",
+      "Commit Planning Record"
+    ],
+    [
+      "skills/work-planner/artifacts/planning-record.md",
+      "Add Planning Record"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request-body.md",
+      "Convert Test Plan"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Retarget Pull Request"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Retitle Pull Request"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Open Task Pull Request"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Open Epic Pull Request"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Merge Pull Request"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Patch Pull Request Body"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Find Review Pull Request"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Submit Epic Merge"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Read Merge Result"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Set Development Link"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Remove Development Link"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Capture Pull Request Links"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Save Pull Request Snapshot"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Fetch Pull Request Reviews"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Fetch Initiative Pull Requests"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Fetch Linked Pull Requests"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Fetch Repository Delivery Pull Requests"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Append Repository Delivery Pull Requests"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Fetch Pull Request Files"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Fetch Head Check Runs"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Fetch Head Status"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Mark Review Ready"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Mark Review Draft"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-graph.md",
+      "Index Status"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-graph.md",
+      "Index Repository"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-graph.md",
+      "Change Surface"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-graph.md",
+      "Symbol Context"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-graph.md",
+      "Flow Trace"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-labels.md",
+      "List Labels"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-labels.md",
+      "Create Label"
+    ],
+    [
+      "skills/work-planner/artifacts/standup-report.md",
+      "Summarise Progress"
+    ],
+    [
+      "skills/work-planner/artifacts/task-body.md",
+      "Sync Task Issue"
+    ],
+    [
+      "skills/work-planner/modes/revise-mode.md",
+      "Run Tests"
+    ],
+    [
+      "skills/work-planner/modes/revise-mode.md",
+      "Check Skill Files"
+    ],
+    [
+      "skills/work-planner/modes/revise-mode.md",
+      "Compare Section Bodies"
+    ]
+  ],
+  "removed": [
+    [
+      "skills/work-planner/artifacts/agent-review.md",
+      "Check Agent Review",
+      "Validate Agent Review"
+    ],
+    [
+      "skills/work-planner/artifacts/board-delivery.md",
+      "Plan Board Changes",
+      "Compute Board Changes"
+    ],
+    [
+      "skills/work-planner/artifacts/board-queue.md",
+      "Plan Board Queue",
+      "Compute Board Queue"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "Read Board Assignee",
+      "Find User"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-plan.md",
+      "Plan Available Work",
+      "Compute Available Work"
+    ],
+    [
+      "skills/work-planner/artifacts/dispatch-batch.md",
+      "Plan Dispatch Batch",
+      "Compute Dispatch Batch"
+    ],
+    [
+      "skills/work-planner/artifacts/dispatch-batch.md",
+      "Validate Dispatch Start",
+      "Check Dispatch Start"
+    ],
+    [
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "Record Epic Delivery",
+      "Sync Epic"
+    ],
+    [
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "Record Epic Criteria",
+      "Tick Epic Criteria"
+    ],
+    [
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "Reserve Task Rows",
+      "Reserve Row"
+    ],
+    [
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "Release Task Rows",
+      "Release Row"
+    ],
+    [
+      "skills/work-planner/artifacts/hotfix.md",
+      "Record Hot-fix Delivery",
+      "Sync Hot-fix Issue"
+    ],
+    [
+      "skills/work-planner/artifacts/initiative-issue-body.md",
+      "Record Initiative Delivery",
+      "Sync Initiative"
+    ],
+    [
+      "skills/work-planner/artifacts/initiative-issue-body.md",
+      "Record Initiative Criteria",
+      "Tick Initiative Criteria"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Read Issue Development",
+      "Capture Issue Links"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Read Repository Issues",
+      "Fetch All Issues"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "Locate Initiative Issue",
+      "Find Initiative Issue"
+    ],
+    [
+      "skills/work-planner/artifacts/lane.md",
+      "Read Task Lanes",
+      "Read Lane Assignments"
+    ],
+    [
+      "skills/work-planner/artifacts/lane.md",
+      "Assign Task Lanes",
+      "Write Lane Assignments"
+    ],
+    [
+      "skills/work-planner/artifacts/lane.md",
+      "Check Unit Lanes",
+      "Validate Lane Unit"
+    ],
+    [
+      "skills/work-planner/artifacts/lane.md",
+      "Determine Lane Admission",
+      "Evaluate Lane Admission"
+    ],
+    [
+      "skills/work-planner/artifacts/placement.md",
+      "Find Placement Candidates",
+      "List Orphans"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "Locate Review Pull Request",
+      "Find Review Pull Request"
+    ],
+    [
+      "skills/work-planner/artifacts/task-body.md",
+      "Record Task Delivery",
+      "Sync Task Issue"
+    ]
+  ],
+  "command_targets": [
+    [
+      "skills/work-planner/artifacts/acceptance-criteria.md",
+      "run-at-revision"
+    ],
+    [
+      "skills/work-planner/artifacts/agent-review.md",
+      "validate-agent-review"
+    ],
+    [
+      "skills/work-planner/artifacts/board-delivery.md",
+      "compute-board-changes"
+    ],
+    [
+      "skills/work-planner/artifacts/board-delivery.md",
+      "compute-dispatch-status"
+    ],
+    [
+      "skills/work-planner/artifacts/board-queue.md",
+      "compute-board-queue"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "add-issue-to-board"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "copy-board-template"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "fetch-board-fields"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "fetch-board-item"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "fetch-board-items-with-status"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "find-board-template"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "find-proposals-board"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "find-status-field"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "find-theme-board"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "find-user"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "link-board-to-repository"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "remove-board-item"
+    ],
+    [
+      "skills/work-planner/artifacts/board.md",
+      "set-item-status"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "add-epic-base-worktree"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "add-review-worktree"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "add-task-worktree"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "fetch-active-branch-rules"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "fetch-branch-protection"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "fetch-remote-branch"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "fetch-review-head"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "list-epic-bases"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "list-long-lived-branches"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "merge-remote-branch"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "publish-epic-base"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "push-epic-base"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "push-task-branch"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "read-checkout-revision"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "read-checkout-status"
+    ],
+    [
+      "skills/work-planner/artifacts/delivery-plan.md",
+      "compute-available-work"
+    ],
+    [
+      "skills/work-planner/artifacts/dependency-graph.md",
+      "check-dependencies"
+    ],
+    [
+      "skills/work-planner/artifacts/dependency-graph.md",
+      "renumber-epics"
+    ],
+    [
+      "skills/work-planner/artifacts/dependency-graph.md",
+      "renumber-tasks"
+    ],
+    [
+      "skills/work-planner/artifacts/dispatch-batch.md",
+      "check-dispatch-start"
+    ],
+    [
+      "skills/work-planner/artifacts/dispatch-batch.md",
+      "compute-dispatch-batch"
+    ],
+    [
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "release-row"
+    ],
+    [
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "reserve-row"
+    ],
+    [
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "sync-epic"
+    ],
+    [
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "tick-epic-criteria"
+    ],
+    [
+      "skills/work-planner/artifacts/epic.md",
+      "match-pull-requests"
+    ],
+    [
+      "skills/work-planner/artifacts/hotfix.md",
+      "sync-hot-fix-issue"
+    ],
+    [
+      "skills/work-planner/artifacts/initiative-issue-body.md",
+      "fetch-source"
+    ],
+    [
+      "skills/work-planner/artifacts/initiative-issue-body.md",
+      "sync-initiative"
+    ],
+    [
+      "skills/work-planner/artifacts/initiative-issue-body.md",
+      "tick-initiative-criteria"
+    ],
+    [
+      "skills/work-planner/artifacts/issue-body.md",
+      "check-body-format"
+    ],
+    [
+      "skills/work-planner/artifacts/issue-body.md",
+      "fetch-reference-repository"
+    ],
+    [
+      "skills/work-planner/artifacts/issue-body.md",
+      "list-reference-repositories"
+    ],
+    [
+      "skills/work-planner/artifacts/issue-body.md",
+      "validate-reference-visibility"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "add-issue-labels"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "capture-issue-links"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "check-issue-closure"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "close-as-not-planned"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "create-tracker-issue"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "fetch-all-issues"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "fetch-closed-issues"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "fetch-issue-body"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "fetch-issue-comments"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "fetch-selected-closed-issues"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "fetch-tracker-issue"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "find-initiative-issue"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "list-prefixed-titles"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "patch-issue-body"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "post-comment-file"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "post-inline-comment"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "remove-issue-label"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "retitle-tracker-issue"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "set-completed-state"
+    ],
+    [
+      "skills/work-planner/artifacts/issue.md",
+      "sweep-closure-evidence"
+    ],
+    [
+      "skills/work-planner/artifacts/lane.md",
+      "evaluate-lane-admission"
+    ],
+    [
+      "skills/work-planner/artifacts/lane.md",
+      "read-lane-assignments"
+    ],
+    [
+      "skills/work-planner/artifacts/lane.md",
+      "validate-lane-unit"
+    ],
+    [
+      "skills/work-planner/artifacts/lane.md",
+      "write-lane-assignments"
+    ],
+    [
+      "skills/work-planner/artifacts/placement.md",
+      "list-orphans"
+    ],
+    [
+      "skills/work-planner/artifacts/planning-record.md",
+      "add-planning-record"
+    ],
+    [
+      "skills/work-planner/artifacts/planning-record.md",
+      "commit-planning-record"
+    ],
+    [
+      "skills/work-planner/artifacts/planning-record.md",
+      "find-engineering-worktree"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request-body.md",
+      "convert-test-plan"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "append-repository-delivery-pull-requests"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "capture-pull-request-links"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "fetch-head-check-runs"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "fetch-head-status"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "fetch-initiative-pull-requests"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "fetch-linked-pull-requests"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "fetch-pull-request-files"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "fetch-pull-request-reviews"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "fetch-repository-delivery-pull-requests"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "find-review-pull-request"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "mark-review-draft"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "mark-review-ready"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "merge-pull-request"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "open-epic-pull-request"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "open-task-pull-request"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "patch-pull-request-body"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "read-merge-result"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "remove-development-link"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "retarget-pull-request"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "retitle-pull-request"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "save-pull-request-snapshot"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "set-development-link"
+    ],
+    [
+      "skills/work-planner/artifacts/pull-request.md",
+      "submit-epic-merge"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-graph.md",
+      "change-surface"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-graph.md",
+      "flow-trace"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-graph.md",
+      "index-repository"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-graph.md",
+      "index-status"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-graph.md",
+      "symbol-context"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-labels.md",
+      "create-label"
+    ],
+    [
+      "skills/work-planner/artifacts/repository-labels.md",
+      "list-labels"
+    ],
+    [
+      "skills/work-planner/artifacts/standup-report.md",
+      "summarise-progress"
+    ],
+    [
+      "skills/work-planner/artifacts/task-body.md",
+      "sync-task-issue"
+    ],
+    [
+      "skills/work-planner/modes/revise-mode.md",
+      "check-skill-files"
+    ],
+    [
+      "skills/work-planner/modes/revise-mode.md",
+      "compare-section-bodies"
+    ],
+    [
+      "skills/work-planner/modes/revise-mode.md",
+      "run-tests"
+    ]
+  ]
+}
