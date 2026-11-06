@@ -1,0 +1,89 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.__init__#8",
+    "name": "__init__",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_plan_publication.py",
+    "startLine": 27,
+    "endLine": 53
+  },
+  "epistemic": "lower-bound",
+  "boundaries": [
+    "1 call site invoking `__init__` was dropped at index time because the receiver's type could not be established (e.g. an unresolved constructor, factory or chained expression). Those callers are absent from this result — actual impact may be higher."
+  ],
+  "causes": {
+    "scopeExtractionFiles": 0,
+    "receiverTyping": 1,
+    "dispatchBoundary": 0,
+    "externalBoundary": 0,
+    "undecidedSatisfaction": 0,
+    "callableValueReferences": 0
+  },
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_plan_publication.py:Tracker",
+        "name": "Tracker",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/test/fixtures.py:epic_body",
+        "name": "epic_body",
+        "filePath": "skills/work-planner/test/fixtures.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/fixtures.py:issue",
+        "name": "issue",
+        "filePath": "skills/work-planner/test/fixtures.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/test_plan_publication.py:body",
+        "name": "body",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.parent_body#0",
+        "name": "parent_body",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.tag#1",
+        "name": "tag",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      }
+    ],
+    "accesses": [
+      {
+        "uid": "Property:skills/workflow-canon/scripts/guard_report.py:GuardRun.findings",
+        "name": "findings",
+        "filePath": "skills/workflow-canon/scripts/guard_report.py"
+      },
+      {
+        "uid": "Property:skills/workflow-canon/scripts/guard_report.py:parse.current@50:4",
+        "name": "current",
+        "filePath": "skills/workflow-canon/scripts/guard_report.py"
+      },
+      {
+        "uid": "Variable:skills/work-planner/test/test_plan_publication.py:Tracker.save.saved@92:8",
+        "name": "saved",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Variable:skills/work-planner/test/test_plan_publication.py:Tracker.validate.epics@114:8",
+        "name": "epics",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Variable:skills/work-planner/test/test_plan_publication.py:Tracker.validate.parent@113:8",
+        "name": "parent",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      }
+    ]
+  },
+  "processes": []
+}

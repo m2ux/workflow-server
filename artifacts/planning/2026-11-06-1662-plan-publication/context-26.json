@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/modes/plan-mode.md:L61:6. Publish",
+    "name": "6. Publish",
+    "filePath": "skills/work-planner/modes/plan-mode.md",
+    "startLine": 61,
+    "endLine": 100
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

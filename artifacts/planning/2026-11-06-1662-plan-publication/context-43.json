@@ -1,0 +1,71 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Class:skills/work-planner/test/test_plan_publication.py:Tracker",
+    "name": "Tracker",
+    "kind": "Class",
+    "filePath": "skills/work-planner/test/test_plan_publication.py",
+    "startLine": 24,
+    "endLine": 134
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "imports": [
+      {
+        "uid": "File:skills/work-planner/test/README.md",
+        "name": "README.md",
+        "filePath": "skills/work-planner/test/README.md"
+      }
+    ]
+  },
+  "outgoing": {
+    "has_method": [
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.__init__#8",
+        "name": "__init__",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.ordered_epics#0",
+        "name": "ordered_epics",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.parent_body#0",
+        "name": "parent_body",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.read#1",
+        "name": "read",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.reference#1",
+        "name": "reference",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.replace_prerequisites#0",
+        "name": "replace_prerequisites",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.save#2",
+        "name": "save",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.tag#1",
+        "name": "tag",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.validate#1",
+        "name": "validate",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      }
+    ]
+  },
+  "processes": []
+}

@@ -1,0 +1,34 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.read#1",
+    "name": "read",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_plan_publication.py",
+    "startLine": 101,
+    "endLine": 110
+  },
+  "epistemic": "lower-bound",
+  "boundaries": [
+    "7 call sites invoking `read` were dropped at index time because the receiver's type could not be established (e.g. an unresolved constructor, factory or chained expression). Those callers are absent from this result — actual impact may be higher."
+  ],
+  "causes": {
+    "scopeExtractionFiles": 0,
+    "receiverTyping": 7,
+    "dispatchBoundary": 0,
+    "externalBoundary": 0,
+    "undecidedSatisfaction": 0,
+    "callableValueReferences": 0
+  },
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_plan_publication.py:Tracker",
+        "name": "Tracker",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      }
+    ]
+  },
+  "outgoing": {},
+  "processes": []
+}

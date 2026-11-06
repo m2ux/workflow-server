@@ -1,0 +1,21 @@
+Changes: 3 files, 46 symbols
+Affected processes: 0
+Risk level: low
+
+Changed symbols:
+  Section Plan Mode → skills/work-planner/modes/plan-mode.md
+  Section Procedure → skills/work-planner/modes/plan-mode.md
+  Section 6. Publish → skills/work-planner/modes/plan-mode.md
+  Section Parent Identity → skills/work-planner/modes/plan-mode.md
+  Section Epic Publication → skills/work-planner/modes/plan-mode.md
+  Section Saved Validation → skills/work-planner/modes/plan-mode.md
+  Section Work Planner Test Suite → skills/work-planner/test/README.md
+  Section What Is Under Test → skills/work-planner/test/README.md
+  Section Catalogue → skills/work-planner/test/README.md
+  Section Prose Tests → skills/work-planner/test/README.md
+  Section Coverage → skills/work-planner/test/README.md
+  Section Documents → skills/work-planner/test/README.md
+  Variable ROOT → skills/work-planner/test/test_plan_publication.py
+  Variable SOURCE → skills/work-planner/test/test_plan_publication.py
+  Variable CALL → skills/work-planner/test/test_plan_publication.py
+... and 31 more

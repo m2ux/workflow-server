@@ -1,0 +1,23 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.replace_prerequisites#0",
+    "name": "replace_prerequisites",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_plan_publication.py",
+    "startLine": 79,
+    "endLine": 82
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_plan_publication.py:Tracker",
+        "name": "Tracker",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      }
+    ]
+  },
+  "outgoing": {},
+  "processes": []
+}

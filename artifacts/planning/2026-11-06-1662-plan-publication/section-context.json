@@ -1,0 +1,81 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Function:skills/work-planner/test/test_plan_mode.py:section",
+    "name": "section",
+    "kind": "Function",
+    "filePath": "skills/work-planner/test/test_plan_mode.py",
+    "startLine": 25,
+    "endLine": 40
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/test/test_plan_mode.py:steps",
+        "name": "steps",
+        "filePath": "skills/work-planner/test/test_plan_mode.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/test_plan_publication.py:walk",
+        "name": "walk",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_mode.py:DraftsInTheRecord.test_the_record_layout_holds_the_drafts#0",
+        "name": "test_the_record_layout_holds_the_drafts",
+        "filePath": "skills/work-planner/test/test_plan_mode.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_mode.py:PublishedOnEngineering.test_publishing_commits_and_pushes_the_engineering_branch#0",
+        "name": "test_publishing_commits_and_pushes_the_engineering_branch",
+        "filePath": "skills/work-planner/test/test_plan_mode.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_mode.py:SectionReads.test_a_literal_heading_cannot_supply_a_missing_operation#0",
+        "name": "test_a_literal_heading_cannot_supply_a_missing_operation",
+        "filePath": "skills/work-planner/test/test_plan_mode.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_mode.py:SectionReads.test_literal_headings_and_commands_do_not_supply_execution_evidence#0",
+        "name": "test_literal_headings_and_commands_do_not_supply_execution_evidence",
+        "filePath": "skills/work-planner/test/test_plan_mode.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:anchor_of",
+        "name": "anchor_of",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:anchor_of",
+        "name": "anchor_of",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:heading_end",
+        "name": "heading_end",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:logical_command_lines",
+        "name": "logical_command_lines",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:parse",
+        "name": "parse",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:scan_blocks",
+        "name": "scan_blocks",
+        "filePath": "skills/scripts/check_skill_files.py"
+      }
+    ]
+  },
+  "processes": []
+}

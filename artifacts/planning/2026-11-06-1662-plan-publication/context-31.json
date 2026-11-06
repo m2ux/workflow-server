@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/test/README.md:L5:What Is Under Test",
+    "name": "What Is Under Test",
+    "filePath": "skills/work-planner/test/README.md",
+    "startLine": 5,
+    "endLine": 15
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

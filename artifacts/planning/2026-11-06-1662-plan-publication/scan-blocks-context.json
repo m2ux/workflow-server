@@ -1,0 +1,191 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Function:skills/scripts/check_skill_files.py:scan_blocks",
+    "name": "scan_blocks",
+    "kind": "Function",
+    "filePath": "skills/scripts/check_skill_files.py",
+    "startLine": 216,
+    "endLine": 256
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "calls": [
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:check",
+        "name": "check",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:citation_kinds",
+        "name": "citation_kinds",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:fence_openings",
+        "name": "fence_openings",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:heading_model",
+        "name": "heading_model",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:html_commands",
+        "name": "html_commands",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:html_interfaces",
+        "name": "html_interfaces",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:labelled_rules",
+        "name": "labelled_rules",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:operation_calls",
+        "name": "operation_calls",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:parse",
+        "name": "parse",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:procedure_spans",
+        "name": "procedure_spans",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:retired_terms",
+        "name": "retired_terms",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:role_links",
+        "name": "role_links",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:targets",
+        "name": "targets",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/test_command_contracts.py:arguments",
+        "name": "arguments",
+        "filePath": "skills/work-planner/test/test_command_contracts.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/test_documents.py:executable_scripts",
+        "name": "executable_scripts",
+        "filePath": "skills/work-planner/test/test_documents.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/test_plan_mode.py:section",
+        "name": "section",
+        "filePath": "skills/work-planner/test/test_plan_mode.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/test_worktrees.py:specs_creating_a_worktree",
+        "name": "specs_creating_a_worktree",
+        "filePath": "skills/work-planner/test/test_worktrees.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_checkouts.py:Document.__init__#2",
+        "name": "__init__",
+        "filePath": "skills/work-planner/test/test_checkouts.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_documents.py:DocumentInterfaces.test_artifact_operations_bind_arguments_at_their_use_and_consecutive_steps#0",
+        "name": "test_artifact_operations_bind_arguments_at_their_use_and_consecutive_steps",
+        "filePath": "skills/work-planner/test/test_documents.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_documents.py:EpicDeliveryCallers.calls#0",
+        "name": "calls",
+        "filePath": "skills/work-planner/test/test_documents.py"
+      }
+    ]
+  },
+  "outgoing": {},
+  "processes": [
+    {
+      "id": "proc_130_main",
+      "name": "Main → Scan_blocks",
+      "step_index": 6,
+      "step_count": 6
+    },
+    {
+      "id": "proc_176_operation_calls",
+      "name": "Operation_calls → Scan_blocks",
+      "step_index": 6,
+      "step_count": 6
+    },
+    {
+      "id": "proc_18_link_roles",
+      "name": "Link_roles → Scan_blocks",
+      "step_index": 6,
+      "step_count": 6
+    },
+    {
+      "id": "proc_199_doubled_conventions",
+      "name": "Doubled_conventions → Scan_blocks",
+      "step_index": 5,
+      "step_count": 5
+    },
+    {
+      "id": "proc_214_heading_model",
+      "name": "Heading_model → Scan_blocks",
+      "step_index": 5,
+      "step_count": 5
+    },
+    {
+      "id": "proc_225_html_commands",
+      "name": "Html_commands → Scan_blocks",
+      "step_index": 5,
+      "step_count": 5
+    },
+    {
+      "id": "proc_235_reach",
+      "name": "Reach → Scan_blocks",
+      "step_index": 5,
+      "step_count": 5
+    },
+    {
+      "id": "proc_242_undecided_rules",
+      "name": "Undecided_rules → Scan_blocks",
+      "step_index": 5,
+      "step_count": 5
+    },
+    {
+      "id": "proc_249_anchors",
+      "name": "Anchors → Scan_blocks",
+      "step_index": 4,
+      "step_count": 4
+    },
+    {
+      "id": "proc_256_interfaces",
+      "name": "Interfaces → Scan_blocks",
+      "step_index": 4,
+      "step_count": 4
+    },
+    {
+      "id": "proc_263_mode_commands",
+      "name": "Mode_commands → Scan_blocks",
+      "step_index": 4,
+      "step_count": 4
+    },
+    {
+      "id": "proc_269_retired_terms",
+      "name": "Retired_terms → Scan_blocks",
+      "step_index": 4,
+      "step_count": 4
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Variable:skills/work-planner/test/test_plan_publication.py:ROOT",
+    "name": "ROOT",
+    "kind": "Variable",
+    "filePath": "skills/work-planner/test/test_plan_publication.py",
+    "startLine": 13,
+    "endLine": 13
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

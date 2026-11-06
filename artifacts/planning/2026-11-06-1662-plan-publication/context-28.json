@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/modes/plan-mode.md:L75:Epic Publication",
+    "name": "Epic Publication",
+    "filePath": "skills/work-planner/modes/plan-mode.md",
+    "startLine": 75,
+    "endLine": 87
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

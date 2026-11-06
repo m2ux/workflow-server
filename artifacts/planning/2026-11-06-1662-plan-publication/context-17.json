@@ -1,0 +1,31 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_plan_publication.py:SavedPlanPublication.test_new_parent_save_failure_stops_before_epic_creation#0",
+    "name": "test_new_parent_save_failure_stops_before_epic_creation",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_plan_publication.py",
+    "startLine": 303,
+    "endLine": 307
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_plan_publication.py:SavedPlanPublication",
+        "name": "SavedPlanPublication",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/test/test_plan_publication.py:walk",
+        "name": "walk",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      }
+    ]
+  },
+  "processes": []
+}

@@ -1,0 +1,20 @@
+{
+  "repoPath": "/home/mike1/projects/dev/workflow-server/.worktrees/pr/1662",
+  "lastCommit": "6d1ff1453bc40256c9c4803df762e8d665d62624",
+  "indexedAt": "2026-11-06T11:36:49.764Z",
+  "indexCoverage": {
+    "maxFileSizeBytes": 524288,
+    "dirtyPaths": []
+  },
+  "stats": {
+    "files": 203,
+    "nodes": 5524,
+    "edges": 14851,
+    "communities": 197,
+    "processes": 312,
+    "embeddings": 0
+  },
+  "analysisFeatures": {
+    "graph.class-framework-annotations": 1
+  }
+}

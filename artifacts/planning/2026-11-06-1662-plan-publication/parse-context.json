@@ -1,0 +1,114 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Function:skills/scripts/check_skill_files.py:parse",
+    "name": "parse",
+    "kind": "Function",
+    "filePath": "skills/scripts/check_skill_files.py",
+    "startLine": 259,
+    "endLine": 267
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "calls": [
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:bodies",
+        "name": "bodies",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:scan",
+        "name": "scan",
+        "filePath": "skills/scripts/check_skill_files.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/test_plan_mode.py:section",
+        "name": "section",
+        "filePath": "skills/work-planner/test/test_plan_mode.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/scripts/check_skill_files.py:scan_blocks",
+        "name": "scan_blocks",
+        "filePath": "skills/scripts/check_skill_files.py"
+      }
+    ]
+  },
+  "processes": [
+    {
+      "id": "proc_130_main",
+      "name": "Main → Scan_blocks",
+      "step_index": 5,
+      "step_count": 6
+    },
+    {
+      "id": "proc_176_operation_calls",
+      "name": "Operation_calls → Scan_blocks",
+      "step_index": 5,
+      "step_count": 6
+    },
+    {
+      "id": "proc_18_link_roles",
+      "name": "Link_roles → Scan_blocks",
+      "step_index": 5,
+      "step_count": 6
+    },
+    {
+      "id": "proc_199_doubled_conventions",
+      "name": "Doubled_conventions → Scan_blocks",
+      "step_index": 4,
+      "step_count": 5
+    },
+    {
+      "id": "proc_214_heading_model",
+      "name": "Heading_model → Scan_blocks",
+      "step_index": 4,
+      "step_count": 5
+    },
+    {
+      "id": "proc_225_html_commands",
+      "name": "Html_commands → Scan_blocks",
+      "step_index": 4,
+      "step_count": 5
+    },
+    {
+      "id": "proc_235_reach",
+      "name": "Reach → Scan_blocks",
+      "step_index": 4,
+      "step_count": 5
+    },
+    {
+      "id": "proc_242_undecided_rules",
+      "name": "Undecided_rules → Scan_blocks",
+      "step_index": 4,
+      "step_count": 5
+    },
+    {
+      "id": "proc_249_anchors",
+      "name": "Anchors → Scan_blocks",
+      "step_index": 3,
+      "step_count": 4
+    },
+    {
+      "id": "proc_256_interfaces",
+      "name": "Interfaces → Scan_blocks",
+      "step_index": 3,
+      "step_count": 4
+    },
+    {
+      "id": "proc_263_mode_commands",
+      "name": "Mode_commands → Scan_blocks",
+      "step_index": 3,
+      "step_count": 4
+    },
+    {
+      "id": "proc_269_retired_terms",
+      "name": "Retired_terms → Scan_blocks",
+      "step_index": 3,
+      "step_count": 4
+    }
+  ]
+}

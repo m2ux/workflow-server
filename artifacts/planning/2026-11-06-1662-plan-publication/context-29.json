@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/modes/plan-mode.md:L88:Saved Validation",
+    "name": "Saved Validation",
+    "filePath": "skills/work-planner/modes/plan-mode.md",
+    "startLine": 88,
+    "endLine": 100
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

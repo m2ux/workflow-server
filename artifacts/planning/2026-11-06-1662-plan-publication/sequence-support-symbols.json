@@ -1,0 +1,4 @@
+{
+  "markdown": "| id | name | file | startLine | endLine |\n| --- | --- | --- | --- | --- |\n| Function:skills/scripts/check_skill_files.py:scan_blocks | scan_blocks | skills/scripts/check_skill_files.py | 215 | 255 |\n| Function:skills/scripts/check_skill_files.py:parse | parse | skills/scripts/check_skill_files.py | 258 | 266 |\n| Function:skills/work-planner/test/test_plan_mode.py:section | section | skills/work-planner/test/test_plan_mode.py | 24 | 39 |",
+  "row_count": 3
+}

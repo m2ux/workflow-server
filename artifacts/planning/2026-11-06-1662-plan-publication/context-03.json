@@ -1,0 +1,35 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.reference#1",
+    "name": "reference",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_plan_publication.py",
+    "startLine": 59,
+    "endLine": 62
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_plan_publication.py:Tracker",
+        "name": "Tracker",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      }
+    ],
+    "calls": [
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.parent_body#0",
+        "name": "parent_body",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_plan_publication.py:Tracker.parent_body#0",
+        "name": "parent_body",
+        "filePath": "skills/work-planner/test/test_plan_publication.py"
+      }
+    ]
+  },
+  "outgoing": {},
+  "processes": []
+}

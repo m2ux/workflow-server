@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/test/README.md:L59:Prose Tests",
+    "name": "Prose Tests",
+    "filePath": "skills/work-planner/test/README.md",
+    "startLine": 59,
+    "endLine": 76
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

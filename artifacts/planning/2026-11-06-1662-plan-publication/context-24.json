@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/modes/plan-mode.md:L1:Plan Mode",
+    "name": "Plan Mode",
+    "filePath": "skills/work-planner/modes/plan-mode.md",
+    "startLine": 1,
+    "endLine": 163
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}
