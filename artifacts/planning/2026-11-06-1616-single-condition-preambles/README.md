@@ -23,3 +23,13 @@ Review the four prose moves and the updated guideline. Compare invocation blocks
 | Artifact | What it holds |
 | --- | --- |
 | [Inventory](inventory.json) | All single-item command detail lists and exact pre-edit prose |
+| [Validation](validation.md) | Source, reviewed moves, checks and verification limits |
+| [Preservation](preservation.json) | Exact invocation/template/heading/link comparison |
+| [Verification script](verify.py) | Reproducible inventory-based comparison |
+| [Model](model.log) | Installed model result |
+| [Document tests](documents.log) | Existing document consumer result |
+| [Command tests](commands.log) | Existing executable command consumer result |
+
+## Result
+
+Committed and pushed as `d6be48053b4d74333d742a140df5e187e6c344d9`. All four sole prose items accompany their command preambles without bullets, with the rule in the existing guideline. Twenty-eight consumer tests pass and the installed model reports zero findings. Invocation blocks, templates, headings, links and reading boundaries are preserved. PR #1641 remains draft.
