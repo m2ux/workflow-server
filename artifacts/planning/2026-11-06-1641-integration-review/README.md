@@ -100,3 +100,7 @@ The fresh board, planning and delivery consumers retain actual reads and truncat
 | [initiative-format.log](initiative-format.log) | Final review, source identity or exact saved evidence |
 | [e05-board-readback.json](e05-board-readback.json) | Final review, source identity or exact saved evidence |
 | [pr-body.md](pr-body.md) | Final review, source identity or exact saved evidence |
+
+## Confirmed Handoff
+
+[Saved handoff](handoff.json) and [board readback](board-readback.json): E01 In Review; PR #1641 open and non-draft, awaiting required human approval. The fetched published review passes against both current tips after the board write. E04/E05 follow-ups are published; E05 is confirmed Backlog. No merge is performed.

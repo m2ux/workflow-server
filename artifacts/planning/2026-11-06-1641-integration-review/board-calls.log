@@ -1,0 +1,3 @@
+users/m2ux/projectsV2/17: Status field 422017304
+  set #1616 [I17:E01] Skill Style: The Groundwork for Prosiform Compliance: In Progress → In Review: gh api --method PATCH users/m2ux/projectsV2/17/items/291152098 --input /tmp/project17-review-board-calls/status-in-review.json
+  current: 0, to do: 1

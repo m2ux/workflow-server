@@ -79,3 +79,7 @@ The independent readers inspect hypothetical offline routes without live board a
 - [Board reader](readers/board/report.md), [planning reader and fix verification](readers/planning/report.md), [delivery reader](readers/delivery/report.md)
 - [Command comparison](command-comparison.json), [template preservation](template-preservation.json), [source identities](source-manifest.json)
 - [Authorized follow-ups](followups.md), [dependency graph](followup-dependencies.log)
+
+## Saved Handoff
+
+The published review was fetched from engineering and validated against fresh saved PR metadata. PR #1641 is open, non-draft and mergeable, with merge blocked by the required human approval. Project 17 item 291152098 directly confirms E01 In Review. The source head and target match the review record after the board write; the integration remains unmerged. E05 item 295854942 confirms Backlog at priority 6. Exact final identities are in handoff.json.

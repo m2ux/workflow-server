@@ -1,0 +1,18 @@
+{
+  "pull_request": "https://github.com/m2ux/workflow-server/pull/1641",
+  "head": "b5ee78f3fb524445c0b811b38aff04c08e45628e",
+  "base": "e25ecb70d7d37562bacd25271c1c49f11d539093",
+  "draft": false,
+  "mergeable": true,
+  "mergeable_state": "blocked",
+  "board_status": "In Review",
+  "review_record": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-06-1641-integration-review/agent-review.json",
+  "published_review_matches": true,
+  "review_validator": "current agent review: no unresolved findings",
+  "human_approval_required": 1,
+  "merged": false,
+  "e04_followup": "https://github.com/m2ux/workflow-server/issues/1654",
+  "e05_followup": "https://github.com/m2ux/workflow-server/issues/1655",
+  "e05_priority": 6,
+  "e05_status": "Backlog"
+}
