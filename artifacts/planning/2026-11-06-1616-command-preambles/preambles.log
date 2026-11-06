@@ -1,0 +1,347 @@
+000 skills/work-planner/artifacts/acceptance-criteria.md ### Run at Revision
+Run one instrument in a detached checkout at the commit resolved by a branch, tag or commit and provide [Instrument Result](#instrument-result "●") to the requester. The run creates and removes the checkout.
+
+001 skills/work-planner/artifacts/agent-review.md ### Validate Agent Review
+Check published review evidence against a freshly fetched integration pull request and provide [Review Eligibility](#review-eligibility "●") to the requester.
+
+002 skills/work-planner/artifacts/board-delivery.md ### Compute Board Changes
+Compute membership, Status and assignee calls from supplied delivery evidence and provide [Board Changes](#board-changes "●") to the requester.
+
+003 skills/work-planner/artifacts/board-delivery.md ### Compute Dispatch Status
+Render board calls within the dispatch jurisdiction and provide [Board Changes](#board-changes "●") to the requester. A missing or failing agent review blocks the In Review write.
+
+004 skills/work-planner/artifacts/board-queue.md ### Compute Board Queue
+Print proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue and provide [Queue Result](#queue-result "●") to the requester. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
+
+005 skills/work-planner/artifacts/board.md ### Find Board Template
+Print the number of the open board with the supplied exact template title and provide [Template Selection](#template-selection "●") to the requester.
+
+006 skills/work-planner/artifacts/board.md ### Copy Board Template
+Copy the supplied template into a new open board with the supplied title, print its number, and provide [Copied Board](#copied-board "●") to the requester.
+
+007 skills/work-planner/artifacts/board.md ### Link Board to Repository
+Link one board to the supplied repository and provide [Link Result](#link-result "●") to the requester.
+
+008 skills/work-planner/artifacts/board.md ### Find Proposals Board
+Print the number of the open [proposals board](../configuration.md#proposals-board) and provide [Selected Board](#selected-board "●") to the requester.
+
+009 skills/work-planner/artifacts/board.md ### Add Issue to Board
+Add the caller-supplied issue to a board, print the new item's id, and provide [Membership Result](#membership-result "●") to the requester.
+
+010 skills/work-planner/artifacts/board.md ### Set Item Status
+Set one board item's Status and provide [Membership Result](#membership-result "●") to the requester.
+
+011 skills/work-planner/artifacts/board.md ### Remove Board Item
+Remove one item from a board and provide [Membership Result](#membership-result "●") to the requester. Leave its issue as it stands.
+
+012 skills/work-planner/artifacts/board.md ### Fetch Board Fields
+Save a board's fields and provide [Board Configuration](#board-configuration "●") to the requester.
+
+013 skills/work-planner/artifacts/board.md ### Find Theme Board
+Print the number of the open board matching the theme name after any proposal designator and provide [Selected Board](#selected-board "●") to the requester.
+
+014 skills/work-planner/artifacts/board.md ### Find Status Field
+Print the id of a board's Status field and provide [Status Field](#status-field "●") to the requester.
+
+015 skills/work-planner/artifacts/board.md ### Fetch Board Items with Status
+Save a board's items with their Status and complete issues and provide [Board State](#board-state "●") to the requester.
+
+016 skills/work-planner/artifacts/board.md ### Fetch Board Item
+Read one board item with its current Status and provide [Board Configuration](#board-configuration "●") to the requester.
+
+017 skills/work-planner/artifacts/board.md ### Find User
+Print the authenticated `gh` login and provide [Assignee Login](#assignee-login "●") to the requester. This user is assigned to work from Ready on.
+
+018 skills/work-planner/artifacts/delivery-branches.md ### List Epic Bases
+Print one epic's base branch names with one name per line and provide [Epic-Base Names](#epic-base-names "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+019 skills/work-planner/artifacts/delivery-branches.md ### List Long-Lived Branches
+Print the long-lived branch names with one name per line and provide [Branch Names](#branch-names "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+020 skills/work-planner/artifacts/delivery-branches.md ### Fetch Remote Branch
+Fetch one source branch from origin and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+021 skills/work-planner/artifacts/delivery-branches.md ### Publish Epic Base
+Create a remote epic base from the fetched source branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+022 skills/work-planner/artifacts/delivery-branches.md ### Merge Remote Branch
+Merge one fetched remote branch into the branch of the checkout it runs in and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+023 skills/work-planner/artifacts/delivery-branches.md ### Push Epic Base
+Push the epic base checked out where it runs to its configured upstream and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+024 skills/work-planner/artifacts/delivery-branches.md ### Push Task Branch
+Push the head of the checkout it runs in to its named remote task branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+025 skills/work-planner/artifacts/delivery-branches.md ### Add Task Worktree
+Create a task branch and worktree at the fetched base and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+026 skills/work-planner/artifacts/delivery-branches.md ### Fetch Review Head
+Fetch one pull request head into FETCH_HEAD and provide [Checkout Commit](#checkout-commit "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+027 skills/work-planner/artifacts/delivery-branches.md ### Add Epic Base Worktree
+Create the worktree for an existing epic base and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+028 skills/work-planner/artifacts/delivery-branches.md ### Add Review Worktree
+Create a detached worktree at the fetched review head and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+029 skills/work-planner/artifacts/delivery-branches.md ### Fetch Branch Protection
+Save the target branch protection response and provide [Target Requirements](#target-requirements "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+030 skills/work-planner/artifacts/delivery-branches.md ### Fetch Active Branch Rules
+Save every active rule for the target branch and provide [Target Requirements](#target-requirements "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+031 skills/work-planner/artifacts/delivery-branches.md ### Read Checkout Revision
+Resolve one revision to its commit in the selected checkout and provide [Checkout Commit](#checkout-commit "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+032 skills/work-planner/artifacts/delivery-branches.md ### Read Checkout Status
+Report branch or detached-HEAD state and tracked and untracked changes in one checkout and provide [Checkout Status](#checkout-status "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+033 skills/work-planner/artifacts/delivery-plan.md ### Compute Available Work
+Compute available work from supplied board and delivery snapshots and provide [Plan Report](#plan-report "●") and [Dispatch Export](#dispatch-export "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+034 skills/work-planner/artifacts/dependency-graph.md ### Check Dependencies
+Check the task dependency graph across the supplied epics, include the initiative's Depends on cells when `I=` is supplied, and provide [Graph Result](#graph-result "●") to the requester.
+
+035 skills/work-planner/artifacts/dependency-graph.md ### Renumber Tasks
+Renumber one epic's tasks in the supplied files according to the given map and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
+
+036 skills/work-planner/artifacts/dependency-graph.md ### Renumber Epics
+Renumber an initiative's epics across supplied body files and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
+
+037 skills/work-planner/artifacts/dispatch-batch.md ### Compute Dispatch Batch
+Select the next batch without tracker writes or worker execution and provide [Batch](#batch "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+038 skills/work-planner/artifacts/dispatch-batch.md ### Check Dispatch Start
+Check one selected unit immediately before execution and provide [Validated Unit](#validated-unit "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+039 skills/work-planner/artifacts/epic-issue-body.md ### Sync Epic
+Link each named task id to the open or merged pull requests naming the epic it is delivered through, tick Done on completed rows, and provide [Output Body](#output-body "●") and [Delivery Findings](epic.md#delivery-findings "●") to the requester.
+
+040 skills/work-planner/artifacts/epic-issue-body.md ### Tick Epic Criteria
+Tick confirmed epic criteria and completed rows, refusing criteria not ready to verify, and provide [Output Body](#output-body "●") and [Criterion Selection](#criterion-selection "●") to the requester.
+
+041 skills/work-planner/artifacts/epic-issue-body.md ### Reserve Row
+Hold each named unit for one session by setting its record folder as the single link of every row in it, and provide [Output Body](#output-body "●") and [Row Result](#row-result "●") to the requester.
+
+042 skills/work-planner/artifacts/epic-issue-body.md ### Release Row
+Free each named task row by replacing the planning-folder link with its work-item file link, and provide [Output Body](#output-body "●") and [Row Result](#row-result "●") to the requester.
+
+043 skills/work-planner/artifacts/epic.md ### Match Pull Requests
+Report an epic's delivery state against the pull requests that name it and provide [Delivery Findings](#delivery-findings "●") to the requester.
+
+044 skills/work-planner/artifacts/hotfix.md ### Sync Hot-fix Issue
+Record the open or merged pull request delivering a hot-fix, tick verified criteria, report whether the hot-fix is closable, and provide [Output Body](#output-body "●") and [Delivery Findings](#delivery-findings "●") to the requester.
+
+045 skills/work-planner/artifacts/initiative-issue-body.md ### Sync Initiative
+Report an initiative's delivery state against its epics, tick Done on an epic row whose issue is closed as completed, and provide [Delivery Findings](initiative.md#delivery-findings "●") and, when a body was requested, [Output Files](#output-files "●") to the requester. A row whose epic it is not given keeps its Done cell and is reported unchanged.
+
+046 skills/work-planner/artifacts/initiative-issue-body.md ### Tick Initiative Criteria
+Tick confirmed initiative criteria and completed rows, refusing criteria not ready to verify, and provide [Output Files](#output-files "●") and [Criterion Selection](#criterion-selection "●") to the requester.
+
+047 skills/work-planner/artifacts/initiative-issue-body.md ### Fetch Source
+Save one GitHub source at the revision its permalink pins and provide [Source Evidence](#source-evidence "●") to the requester.
+
+048 skills/work-planner/artifacts/issue-body.md ### Check Body Format
+Check one issue against its template, write mechanical body fixes when `--fix` is supplied, and provide [Format Findings](#format-findings "●") and, when a corrected body was requested, [Output Files](#output-files "●") to the requester.
+
+049 skills/work-planner/artifacts/issue-body.md ### List Reference Repositories
+List repository names from the issue destination and References section and provide [Reference Repositories](#reference-repositories "●") to the requester.
+
+050 skills/work-planner/artifacts/issue-body.md ### Fetch Reference Repository
+Read one listed repository's visibility with the authenticated repository API and provide [Repository Snapshot](#repository-snapshot "●") to the requester.
+
+051 skills/work-planner/artifacts/issue-body.md ### Validate Reference Visibility
+Report private repository references on a public issue and unresolved repository visibility, and provide [Visibility Findings](#visibility-findings "●") to the requester.
+
+052 skills/work-planner/artifacts/issue.md ### Create Tracker Issue
+Create an issue from a body file with its title and labels, print its number, and provide [Identity](#identity "●") to the requester.
+
+053 skills/work-planner/artifacts/issue.md ### Patch Issue Body
+Replace an issue's body from a file and provide [Identity](#identity "●") and [Content](#content "●") to the requester.
+
+054 skills/work-planner/artifacts/issue.md ### Fetch Issue Body
+Save an issue's body alone and provide [Issue Body](#issue-body "●") to the requester.
+
+055 skills/work-planner/artifacts/issue.md ### Retitle Tracker Issue
+Replace an issue's title and provide [Content](#content "●") to the requester.
+
+056 skills/work-planner/artifacts/issue.md ### Add Issue Labels
+Add labels to an issue and provide [Label Names](#label-names "●") to the requester.
+
+057 skills/work-planner/artifacts/issue.md ### Remove Issue Label
+Remove one label from an issue and provide [Label Names](#label-names "●") to the requester.
+
+058 skills/work-planner/artifacts/issue.md ### Fetch Issue Comments
+Print an issue's comments and provide [Discussion](#discussion "●") to the requester.
+
+059 skills/work-planner/artifacts/issue.md ### Fetch Tracker Issue
+Save one complete issue as JSON for the issue-reading scripts and provide [Issue Record](#issue-record "●") to the requester.
+
+060 skills/work-planner/artifacts/issue.md ### Check Issue Closure
+Check the issue's criteria and the state of every pull request its Development field holds and provide [Closure Findings](#closure-findings "●") to the requester.
+
+061 skills/work-planner/artifacts/issue.md ### Sweep Closure Evidence
+List each closed issue with missing or unticked acceptance criteria or an unmerged Development pull request, include its state reason, and provide [Closure Findings](#closure-findings "●") to the requester.
+
+062 skills/work-planner/artifacts/issue.md ### Close as Not Planned
+Close an issue whose work another issue tracks and provide [State](#state "●") to the requester.
+
+063 skills/work-planner/artifacts/issue.md ### Post Inline Comment
+Post one line of exact comment text, capture its URL, and provide [Comment](#comment "●") to the requester.
+
+064 skills/work-planner/artifacts/issue.md ### Post Comment File
+Post a complete comment file, capture its URL, and provide [Comment](#comment "●") to the requester.
+
+065 skills/work-planner/artifacts/issue.md ### Set Completed State
+Close an issue with the completed reason, read its state, and provide [State](#state "●") to the requester.
+
+066 skills/work-planner/artifacts/issue.md ### Capture Issue Links
+Write each issue's Development pull requests from the issue end of the relation, keyed by issue number, and provide [Development Snapshot](#development-snapshot "●") to the requester.
+
+067 skills/work-planner/artifacts/issue.md ### Fetch All Issues
+Save every issue in the repository and provide [Issue Collection](#issue-collection "●") to the requester. The scripts skip any pull requests among them.
+
+068 skills/work-planner/artifacts/issue.md ### Fetch Closed Issues
+Save every closed issue in the repository and provide [Issue Collection](#issue-collection "●") to the requester. The scripts skip any pull requests among them.
+
+069 skills/work-planner/artifacts/issue.md ### Fetch Selected Closed Issues
+Save the named closed issues with one issue per line and provide [Issue Collection](#issue-collection "●") to the requester. Leave out any issue that is open or absent.
+
+070 skills/work-planner/artifacts/issue.md ### Find Initiative Issue
+Find an initiative by its title prefix, print its issue number, and provide [Identity](#identity "●") and [Tracker Number](#tracker-number "●") to the requester.
+
+071 skills/work-planner/artifacts/issue.md ### List Prefixed Titles
+List titles carrying one kind's prefix letter in all states and provide [Tracker Prefix](#tracker-prefix "●") to the requester.
+
+072 skills/work-planner/artifacts/lane.md ### Read Lane Assignments
+Read raw task-table Lane cells through the Lane module and provide [Lane Result](#lane-result "●") to the requester.
+
+073 skills/work-planner/artifacts/lane.md ### Write Lane Assignments
+Write confirmed assignments while preserving other body content and provide [Output Body](#output-body "●") to the requester.
+
+074 skills/work-planner/artifacts/lane.md ### Validate Lane Unit
+Report a unit's common lane or assignment findings and provide [Lane Result](#lane-result "●") to the requester.
+
+075 skills/work-planner/artifacts/lane.md ### Evaluate Lane Admission
+Report whether the request admits a valid unit and provide [Lane Result](#lane-result "●") to the requester.
+
+076 skills/work-planner/artifacts/placement.md ### List Orphans
+List the hoist candidates and the open initiatives and epics they could join, and provide [Candidate Issues](#candidate-issues "●") and [Candidate Destinations](#candidate-destinations "●") to the requester.
+
+077 skills/work-planner/artifacts/planning-record.md ### Find Engineering Worktree
+Print the checkout holding the engineering branch and provide [Engineering Worktree](#engineering-worktree "●") to the requester. Every planning record is written in that checkout.
+
+078 skills/work-planner/artifacts/planning-record.md ### Commit Planning Record
+Commit everything pending in the engineering worktree, publish the branch so every record's links resolve, and provide [Publication Result](#publication-result "●") to the requester.
+
+079 skills/work-planner/artifacts/planning-record.md ### Add Planning Record
+Add the folder for one planning record on the long-lived engineering worktree and provide [Planning Folder](#planning-folder "●") to the requester.
+
+080 skills/work-planner/artifacts/pull-request-body.md ### Convert Test Plan
+Convert an unambiguous checked list and Test/Criteria table to the current plan table and provide [Output Body](#output-body "●") and [Unresolved Evidence](#unresolved-evidence "●") to the requester.
+
+081 skills/work-planner/artifacts/pull-request.md ### Retarget Pull Request
+Point a pull request at another base branch, such as its epic's base branch, and provide [Base Branch](#base-branch "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+082 skills/work-planner/artifacts/pull-request.md ### Retitle Pull Request
+Replace a pull request's title and provide [Title](#title "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+083 skills/work-planner/artifacts/pull-request.md ### Open Task Pull Request
+Create a pull request from a unit's branch to its base and provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+084 skills/work-planner/artifacts/pull-request.md ### Open Epic Pull Request
+Create the draft pull request from an epic base to its long-lived target and provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+085 skills/work-planner/artifacts/pull-request.md ### Merge Pull Request
+Merge the task pull request into its base and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+086 skills/work-planner/artifacts/pull-request.md ### Patch Pull Request Body
+Replace a pull request's body and provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+087 skills/work-planner/artifacts/pull-request.md ### Find Review Pull Request
+Find the open pull request whose head is the supplied epic base and provide [Review Number](#review-number "●") to the requester, or [Failure](#failure "●") if the operation fails. If none exists, provide no result.
+
+088 skills/work-planner/artifacts/pull-request.md ### Submit Epic Merge
+Merge the epic base into its long-lived target at the supplied head and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+089 skills/work-planner/artifacts/pull-request.md ### Read Merge Result
+Read the merge state, merge commit, head and base of a pull request and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+090 skills/work-planner/artifacts/pull-request.md ### Set Development Link
+Add one pull request to an issue's Development relation, read the relation back from both ends, and provide [Development Relation](#development-relation "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+091 skills/work-planner/artifacts/pull-request.md ### Remove Development Link
+Remove one pull request from an issue's Development relation, read the relation back from both ends, and provide [Development Relation](#development-relation "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+092 skills/work-planner/artifacts/pull-request.md ### Capture Pull Request Links
+Write the complete issue-link snapshot for a pull request collection from the pull-request end of the Development relation and provide [Issue-Link Snapshot](#issue-link-snapshot "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+093 skills/work-planner/artifacts/pull-request.md ### Save Pull Request Snapshot
+Replace the destination file with one complete pull request response and provide [Pull Request Record](#pull-request-record "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+094 skills/work-planner/artifacts/pull-request.md ### Fetch Pull Request Reviews
+Save every review on one pull request and provide [Reviews](#reviews "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+095 skills/work-planner/artifacts/pull-request.md ### Fetch Initiative Pull Requests
+Save the task and epic pull requests that name one initiative's epics and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+096 skills/work-planner/artifacts/pull-request.md ### Fetch Linked Pull Requests
+Append each pull request linked by the plan but missing from the collection, regardless of its title, and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+097 skills/work-planner/artifacts/pull-request.md ### Fetch Repository Delivery Pull Requests
+Start a collection with all initiative- and hot-fix-prefixed pull requests from one repository and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+098 skills/work-planner/artifacts/pull-request.md ### Append Repository Delivery Pull Requests
+Append all initiative- and hot-fix-prefixed pull requests from one further repository and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+099 skills/work-planner/artifacts/pull-request.md ### Fetch Pull Request Files
+Save the paths a pull request changes and provide [Changed Paths](#changed-paths "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+100 skills/work-planner/artifacts/pull-request.md ### Fetch Head Check Runs
+Save every check run for one exact commit and provide [Head Checks](#head-checks "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+101 skills/work-planner/artifacts/pull-request.md ### Fetch Head Status
+Save commit status evidence for one exact commit and provide [Head Status](#head-status "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+102 skills/work-planner/artifacts/pull-request.md ### Mark Review Ready
+Mark a draft pull request ready for review and provide [Review State](#review-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+103 skills/work-planner/artifacts/pull-request.md ### Mark Review Draft
+Mark an open integration pull request with blocked handoff evidence as draft and provide [Review State](#review-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+104 skills/work-planner/artifacts/repository-graph.md ### Index Status
+Report whether the repository is indexed and how far behind the index sits, and provide [Index State](#index-state "●") to the requester.
+
+105 skills/work-planner/artifacts/repository-graph.md ### Index Repository
+Index the repository and provide [Index State](#index-state "●") to the requester. An unindexed or behind repository needs indexing before any measurement.
+
+106 skills/work-planner/artifacts/repository-graph.md ### Change Surface
+Report the symbols touched by the pull request's diff and their flows against the base branch, and provide [Changed Symbols](#changed-symbols "●") to the requester.
+
+107 skills/work-planner/artifacts/repository-graph.md ### Symbol Context
+Report one symbol's callers, callees and containing flows with their file locations, and provide [Symbol Relationships](#symbol-relationships "●") to the requester.
+
+108 skills/work-planner/artifacts/repository-graph.md ### Flow Trace
+Report one flow's symbols in step order and provide [Flow Traces](#flow-traces "●") to the requester. The sequence diagram is drawn from that ordered structure.
+
+109 skills/work-planner/artifacts/repository-labels.md ### List Labels
+List the labels that exist in the repository and provide [Label Identity](#label-identity "●") to the requester.
+
+110 skills/work-planner/artifacts/repository-labels.md ### Create Label
+Create the label with its specified name, colour and description, and provide [Label Identity](#label-identity "●") to the requester.
+
+111 skills/work-planner/artifacts/standup-report.md ### Summarise Progress
+Print the standup from supplied board items, pull request records and their issue-link snapshot and provide [Report Result](#report-result "●") to the requester.
+
+112 skills/work-planner/artifacts/task-body.md ### Sync Task Issue
+Record the open or merged pull request delivering a task issue, tick verified criteria, report whether the task issue is closable, and provide [Output Body](#output-body "●") and [Delivery Findings](#delivery-findings "●") to the requester.
+
+113 skills/work-planner/modes/revise-mode.md ### Run Tests
+Run the skill's script tests and provide [Test Result](#test-result "●") to the requester.
+
+114 skills/work-planner/modes/revise-mode.md ### Check Skill Files
+Check the affected skill's files against the rules the shared skill guidelines state and provide [Skill Check Result](#skill-check-result "●") to the requester.
+
+115 skills/work-planner/modes/revise-mode.md ### Compare Section Bodies
+Compare every third-level section's body between the change's base and its head to identify sections damaged in a move, and provide [Section Comparison](#section-comparison "●") to the requester.

@@ -1,0 +1,1385 @@
+{
+  "base": "e76308e672cc04d94b47891946bfbdc5331184b3",
+  "commands": 116,
+  "files": {
+    "skills/work-planner/artifacts/acceptance-criteria.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/agent-review.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/board-delivery.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/board-queue.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/board.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/delivery-branches.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/delivery-plan.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/dependency-graph.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/dispatch-batch.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/epic-issue-body.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/epic.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/hotfix.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/initiative-issue-body.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/issue-body.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/issue.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/lane.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/placement.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/planning-record.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/pull-request-body.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/pull-request.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/repository-graph.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/repository-labels.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/standup-report.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/artifacts/task-body.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    },
+    "skills/work-planner/modes/revise-mode.md": {
+      "fields_identical": true,
+      "preceding_operations_or_procedure_identical": true
+    }
+  },
+  "specifications": [
+    {
+      "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+      "command": "Run at Revision",
+      "preamble": "Run one instrument in a detached checkout at the commit resolved by a branch, tag or commit and provide [Instrument Result](#instrument-result \"\u25cf\") to the requester. The run creates and removes the checkout.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "5528928c06758323441baa0266ace45a907302c80d81fee9b1ae60dd2106d869"
+    },
+    {
+      "file": "skills/work-planner/artifacts/agent-review.md",
+      "command": "Validate Agent Review",
+      "preamble": "Check published review evidence against a freshly fetched integration pull request and provide [Review Eligibility](#review-eligibility \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "0a3e78848124be00003d89ba0bea932c287ce67b4d81250f0028dc5ee6df5866"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "command": "Compute Board Changes",
+      "preamble": "Compute membership, Status and assignee calls from supplied delivery evidence and provide [Board Changes](#board-changes \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "f3eec6bdf059f7306f105e8dcd0d52a3eaeb77cb06e32b0cedcc530d23d9c994"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "command": "Compute Dispatch Status",
+      "preamble": "Render board calls within the dispatch jurisdiction and provide [Board Changes](#board-changes \"\u25cf\") to the requester. A missing or failing agent review blocks the In Review write.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "d09bf258a27b854510a1d3bf89a36fb9d0f675c63fc0a554d4d8964d997607ca"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "command": "Compute Board Queue",
+      "preamble": "Print proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue and provide [Queue Result](#queue-result \"\u25cf\") to the requester. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "81466a86a32418c39de5c8a1234a71cd7deba22e9297a6201900a6f2035fb1e9"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command": "Find Board Template",
+      "preamble": "Print the number of the open board with the supplied exact template title and provide [Template Selection](#template-selection \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "7f88f25c78c8d90fb7426172501702c69c42681e001f0726a77458612394d0ea"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command": "Copy Board Template",
+      "preamble": "Copy the supplied template into a new open board with the supplied title, print its number, and provide [Copied Board](#copied-board \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "25dafead74c3cf6198345a6e96153022f65e15bd3e9e2bd8536eb921aa9a1a99"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command": "Link Board to Repository",
+      "preamble": "Link one board to the supplied repository and provide [Link Result](#link-result \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "54a8657540191c6b4949a4475d2349109bbd2b44943549ec904db68da1500127"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command": "Find Proposals Board",
+      "preamble": "Print the number of the open [proposals board](../configuration.md#proposals-board) and provide [Selected Board](#selected-board \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "e35e444adf0c31bec8af2849022ca550f492beccdd2e5b66c56019ca81e7c901"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command": "Add Issue to Board",
+      "preamble": "Add the caller-supplied issue to a board, print the new item's id, and provide [Membership Result](#membership-result \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "d8ac498f8b100a4bcbe97cb58eceb995b2075a027c27c2ea579229c919c32000"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command": "Set Item Status",
+      "preamble": "Set one board item's Status and provide [Membership Result](#membership-result \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "c7e220bb466f189eaeb2892cd180dc2919983c3277cef1f060a3863cc6c25a8c"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command": "Remove Board Item",
+      "preamble": "Remove one item from a board and provide [Membership Result](#membership-result \"\u25cf\") to the requester. Leave its issue as it stands.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "182ff295eadadb9df0bc93dc9344efb44c4c63709f6e517b4c0e90c383090adc"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command": "Fetch Board Fields",
+      "preamble": "Save a board's fields and provide [Board Configuration](#board-configuration \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "6c606c1bacfc25ce9095714f00381722ec643af740a85c460ac4e4920f42375a"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command": "Find Theme Board",
+      "preamble": "Print the number of the open board matching the theme name after any proposal designator and provide [Selected Board](#selected-board \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "9942568dbf19e6341cee3a25dfc993605ed9348a9d2e87054c52b4b9d76917e0"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command": "Find Status Field",
+      "preamble": "Print the id of a board's Status field and provide [Status Field](#status-field \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "cfe6c90c31ceaa8288cc461e2badf5c1f10f4b48629871a5538f77e8efc543c7"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command": "Fetch Board Items with Status",
+      "preamble": "Save a board's items with their Status and complete issues and provide [Board State](#board-state \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "8e8baf69bc4e5af3581b76037a68d723bf67e75ffc550c26a6bd0529721cef0e"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command": "Fetch Board Item",
+      "preamble": "Read one board item with its current Status and provide [Board Configuration](#board-configuration \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "9369e50e17baa7f627e2402b3d7c3bfd5104fee03759b02405d361bc8dcc2aec"
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command": "Find User",
+      "preamble": "Print the authenticated `gh` login and provide [Assignee Login](#assignee-login \"\u25cf\") to the requester. This user is assigned to work from Ready on.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "5c0827297e2ad8a6946d77b06be4f1b45439698bdd40ae489bf9ecf1cfba87d7"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "List Epic Bases",
+      "preamble": "Print one epic's base branch names with one name per line and provide [Epic-Base Names](#epic-base-names \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "add1d3ff59014a07d30902d93913991f41023b8e249a864c4fb3b1c582311a46"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "List Long-Lived Branches",
+      "preamble": "Print the long-lived branch names with one name per line and provide [Branch Names](#branch-names \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "b03ac88f60860c43e714c11673101d343aa67ceed1b9eee3d1bd28c1cab9d418"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "Fetch Remote Branch",
+      "preamble": "Fetch one source branch from origin and provide [Branch Result](#branch-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "2d8ff7fa4699e191a04b29c94ae16fa5a9fa4fd28e5cf9cb7cd835d776618a3b"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "Publish Epic Base",
+      "preamble": "Create a remote epic base from the fetched source branch and provide [Branch Result](#branch-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "ef84e49d3d4e739121036266fd024c1f16a9d9aa1c46f3fae4899c80fe2837b3"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "Merge Remote Branch",
+      "preamble": "Merge one fetched remote branch into the branch of the checkout it runs in and provide [Branch Result](#branch-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "6b853e7a514296462f00f23b45d75cf1c014d20ef1a8346ea2f5d7b002f7bf87"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "Push Epic Base",
+      "preamble": "Push the epic base checked out where it runs to its configured upstream and provide [Branch Result](#branch-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "377d21ba842db277b5ef2ac9e811bd6960d1c3b6c89fac24bd6255642b155441"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "Push Task Branch",
+      "preamble": "Push the head of the checkout it runs in to its named remote task branch and provide [Branch Result](#branch-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "6de83031ba9b320122c620182236eb39e31297ea7a55714c08fb66d235b3915e"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "Add Task Worktree",
+      "preamble": "Create a task branch and worktree at the fetched base and provide [Worktree Result](#worktree-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "c15433e35559a3023b89e5a1455681e6c012acb19cff68235573e3906a0bdb87"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "Fetch Review Head",
+      "preamble": "Fetch one pull request head into FETCH_HEAD and provide [Checkout Commit](#checkout-commit \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "68bb824c2733aedcb69f392f4838f03badcccc826a9a56c81aa45f75ea863fc6"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "Add Epic Base Worktree",
+      "preamble": "Create the worktree for an existing epic base and provide [Worktree Result](#worktree-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "0a201f7ceedc5d3f0881813685558107c2d0494c43f68a2ca829e662a7da056a"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "Add Review Worktree",
+      "preamble": "Create a detached worktree at the fetched review head and provide [Worktree Result](#worktree-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "804ba35b28f76eadf0828429f34d7340abe413d65938834d4f71e53cc512e776"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "Fetch Branch Protection",
+      "preamble": "Save the target branch protection response and provide [Target Requirements](#target-requirements \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "cc3c9f0fe826cbd50615306274d790e253e0b74544d5b4b9d510a4638e43f9f6"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "Fetch Active Branch Rules",
+      "preamble": "Save every active rule for the target branch and provide [Target Requirements](#target-requirements \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "873a698eb26dffaaa318768886baf45048d454fb40de7a009e203a528b1aa380"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "Read Checkout Revision",
+      "preamble": "Resolve one revision to its commit in the selected checkout and provide [Checkout Commit](#checkout-commit \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "50d456775a87cea10153379a676ee519829972ebb09f5d1cb1c43c7ec3aee326"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "command": "Read Checkout Status",
+      "preamble": "Report branch or detached-HEAD state and tracked and untracked changes in one checkout and provide [Checkout Status](#checkout-status \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "aa689a1cb65ca1534e77c3f7d1f38ac9f54d2cdadeab7f88d4b98495b43a4955"
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "command": "Compute Available Work",
+      "preamble": "Compute available work from supplied board and delivery snapshots and provide [Plan Report](#plan-report \"\u25cf\") and [Dispatch Export](#dispatch-export \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 3,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "be89d6f75f2b790d547334f4f4127ba62e64ac9ab33e911af91c6363d5ee56b7"
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "command": "Check Dependencies",
+      "preamble": "Check the task dependency graph across the supplied epics, include the initiative's Depends on cells when `I=` is supplied, and provide [Graph Result](#graph-result \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "8623fd8ee07e9872fa2cbee2e8f84b7a7142716c29b4648fb5f38a5c0869efe7"
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "command": "Renumber Tasks",
+      "preamble": "Renumber one epic's tasks in the supplied files according to the given map and provide [Rewritten Bodies](#rewritten-bodies \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "8ce0955c6dcdb639621c968dfafd7d31dbb93363a0cbded576493394b2061980"
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "command": "Renumber Epics",
+      "preamble": "Renumber an initiative's epics across supplied body files and provide [Rewritten Bodies](#rewritten-bodies \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "06c5125258972000f46ae86cc2b30d98d1f29f2df0ff0999f269e0c0528f895a"
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "command": "Compute Dispatch Batch",
+      "preamble": "Select the next batch without tracker writes or worker execution and provide [Batch](#batch \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "f8f8b16c5ea925eea47e49f5e8ca574bd7bb1e3300e975661d814fd29f0561a7"
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "command": "Check Dispatch Start",
+      "preamble": "Check one selected unit immediately before execution and provide [Validated Unit](#validated-unit \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "8e1e311a73333eb6ce7bb6b18e3305129764d3e42e81034fc1efd8ab22dda788"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "command": "Sync Epic",
+      "preamble": "Link each named task id to the open or merged pull requests naming the epic it is delivered through, tick Done on completed rows, and provide [Output Body](#output-body \"\u25cf\") and [Delivery Findings](epic.md#delivery-findings \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "2879ef19d9b8b09fe59738042b5123e95ea55ffdc62a7d1e0478fc28f1cabc88"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "command": "Tick Epic Criteria",
+      "preamble": "Tick confirmed epic criteria and completed rows, refusing criteria not ready to verify, and provide [Output Body](#output-body \"\u25cf\") and [Criterion Selection](#criterion-selection \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "eb91e2a0c5819ea1a8d152537dfd3a75a11e8a529922c02974f4226c0a51b9e6"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "command": "Reserve Row",
+      "preamble": "Hold each named unit for one session by setting its record folder as the single link of every row in it, and provide [Output Body](#output-body \"\u25cf\") and [Row Result](#row-result \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "56731975480c39a4623ea49bcfe443fb92fbebc3bb95110f7403069d58941685"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "command": "Release Row",
+      "preamble": "Free each named task row by replacing the planning-folder link with its work-item file link, and provide [Output Body](#output-body \"\u25cf\") and [Row Result](#row-result \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "793e99543149a170f8418616140bf8fe1339046ac77d7c8b4d0d8b23067a33fd"
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "command": "Match Pull Requests",
+      "preamble": "Report an epic's delivery state against the pull requests that name it and provide [Delivery Findings](#delivery-findings \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "fdd410ceb14f22011c659a1c6797e4eee5953785e229aba94b657662922777e4"
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "command": "Sync Hot-fix Issue",
+      "preamble": "Record the open or merged pull request delivering a hot-fix, tick verified criteria, report whether the hot-fix is closable, and provide [Output Body](#output-body \"\u25cf\") and [Delivery Findings](#delivery-findings \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "ca6f59b38455695cca44dbbaba77a02b9e96a074663ce9e207f999126c141074"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "command": "Sync Initiative",
+      "preamble": "Report an initiative's delivery state against its epics, tick Done on an epic row whose issue is closed as completed, and provide [Delivery Findings](initiative.md#delivery-findings \"\u25cf\") and, when a body was requested, [Output Files](#output-files \"\u25cf\") to the requester. A row whose epic it is not given keeps its Done cell and is reported unchanged.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "5961b003a7735fc0603205adee058e534d4088a89aed9eccead70d623014ef9e"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "command": "Tick Initiative Criteria",
+      "preamble": "Tick confirmed initiative criteria and completed rows, refusing criteria not ready to verify, and provide [Output Files](#output-files \"\u25cf\") and [Criterion Selection](#criterion-selection \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "220adec31222c207d5262d5f59bee211d11ffdabc881dd543a60189f9235b630"
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "command": "Fetch Source",
+      "preamble": "Save one GitHub source at the revision its permalink pins and provide [Source Evidence](#source-evidence \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "b2385c71a71cd6994e7d545e7def90361479a7a647cae74237f63461e3c527c0"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "command": "Check Body Format",
+      "preamble": "Check one issue against its template, write mechanical body fixes when `--fix` is supplied, and provide [Format Findings](#format-findings \"\u25cf\") and, when a corrected body was requested, [Output Files](#output-files \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "739a263018e5bc8f3f6a005961589d08f7b838f6da74fb9f21a708179764edd2"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "command": "List Reference Repositories",
+      "preamble": "List repository names from the issue destination and References section and provide [Reference Repositories](#reference-repositories \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "9cb08cb803398b58881039d19ea41dcf34289f18cb5ddfcb2c8aabfb7f9814a8"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "command": "Fetch Reference Repository",
+      "preamble": "Read one listed repository's visibility with the authenticated repository API and provide [Repository Snapshot](#repository-snapshot \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "72ea8f5b511bb46c5bcba924a559ad8a5a4ce5c7202b1e960824bdc930029f52"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "command": "Validate Reference Visibility",
+      "preamble": "Report private repository references on a public issue and unresolved repository visibility, and provide [Visibility Findings](#visibility-findings \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "c2ce95c78dff150e8416e917ac6b145095ec2ca026d52e34e3a2670ca6f1b40c"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Create Tracker Issue",
+      "preamble": "Create an issue from a body file with its title and labels, print its number, and provide [Identity](#identity \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "d4a942a846352876ef10ad5686dbdfcc72ddf4436ab828f4bdc7f83019f6e8f8"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Patch Issue Body",
+      "preamble": "Replace an issue's body from a file and provide [Identity](#identity \"\u25cf\") and [Content](#content \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "1d44d0d3d64e9bf6dba5a126f3083d3dcd7a0f0d37c2e53bfc3e65c99d64cf9c"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Fetch Issue Body",
+      "preamble": "Save an issue's body alone and provide [Issue Body](#issue-body \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "4b5bf0ce7f4cce405c1b2602ba4586b50c242759276ba310282b8ded80802b1a"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Retitle Tracker Issue",
+      "preamble": "Replace an issue's title and provide [Content](#content \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "811043172979124416b54e590b5e99d23f19f80b5af1752ea3c1e7e2808a083d"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Add Issue Labels",
+      "preamble": "Add labels to an issue and provide [Label Names](#label-names \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "55fe0871116d2eb1d9f6584b053e12a2d327fa390225decf3039db7b73f6ce75"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Remove Issue Label",
+      "preamble": "Remove one label from an issue and provide [Label Names](#label-names \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "f388d5e224375abeb459250bc502ee0c8239f261cc16b5c99699b4e14d6c00d6"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Fetch Issue Comments",
+      "preamble": "Print an issue's comments and provide [Discussion](#discussion \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "c7a00bd70ca0a04d6cc50610fcf26063b2179d8039702dcccfecc57e2d9e9037"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Fetch Tracker Issue",
+      "preamble": "Save one complete issue as JSON for the issue-reading scripts and provide [Issue Record](#issue-record \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "8afe43f12ce840a5cbf69454a89a6a77ce98438ff17e8471a25063f72f85a4e1"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Check Issue Closure",
+      "preamble": "Check the issue's criteria and the state of every pull request its Development field holds and provide [Closure Findings](#closure-findings \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "536fd106eabfdfc444ba0431ebfc29cc56b143213e3a51fb3c17a1c6d88c8ecd"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Sweep Closure Evidence",
+      "preamble": "List each closed issue with missing or unticked acceptance criteria or an unmerged Development pull request, include its state reason, and provide [Closure Findings](#closure-findings \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "9207c317ba3718a97840d64baf656dc74698898d56337a2975883c3cbade4da8"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Close as Not Planned",
+      "preamble": "Close an issue whose work another issue tracks and provide [State](#state \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "7f6dcd9eabd377eb09923e400b8dc493409f7db18bfd885d3d87501e95b2e600"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Post Inline Comment",
+      "preamble": "Post one line of exact comment text, capture its URL, and provide [Comment](#comment \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "ccaac698c0e8b711bc370127a0e0355ce8a41421ba2f22513532963fdbed879e"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Post Comment File",
+      "preamble": "Post a complete comment file, capture its URL, and provide [Comment](#comment \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "580d84b0a37dbfd278aff4fbc1cf7774a492e76193e96a829b00dc2bf6f947c3"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Set Completed State",
+      "preamble": "Close an issue with the completed reason, read its state, and provide [State](#state \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "f666fdc7e7ce4ff2f01eb06b768e642b18f6e38358b9d35e34d45ab6e2db6ad8"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Capture Issue Links",
+      "preamble": "Write each issue's Development pull requests from the issue end of the relation, keyed by issue number, and provide [Development Snapshot](#development-snapshot \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "0d1f173c2ae680c614f7cd17b00999e50f9629d47480384d6968f5521cb397fa"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Fetch All Issues",
+      "preamble": "Save every issue in the repository and provide [Issue Collection](#issue-collection \"\u25cf\") to the requester. The scripts skip any pull requests among them.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "9a1c0c77c8f0a102c3941f9974f42a69d4f5adff4c6143a903b0235442472b47"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Fetch Closed Issues",
+      "preamble": "Save every closed issue in the repository and provide [Issue Collection](#issue-collection \"\u25cf\") to the requester. The scripts skip any pull requests among them.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "85953cdab5ce573c2bffe136f567f373f72d1876d56487783921fdc52ba072cf"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Fetch Selected Closed Issues",
+      "preamble": "Save the named closed issues with one issue per line and provide [Issue Collection](#issue-collection \"\u25cf\") to the requester. Leave out any issue that is open or absent.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "eda6e6c457ea98361a84e353d22e7f1898e5ee802f8751ae9565c4764019f33f"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "Find Initiative Issue",
+      "preamble": "Find an initiative by its title prefix, print its issue number, and provide [Identity](#identity \"\u25cf\") and [Tracker Number](#tracker-number \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "fed6647395aff0b40b050dfb858e5e128649f5241824dd19e91e5b4d60703f02"
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "command": "List Prefixed Titles",
+      "preamble": "List titles carrying one kind's prefix letter in all states and provide [Tracker Prefix](#tracker-prefix \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "0ddf7973a46b0ac3961823deadb29c6e80a5191bbe068adae132bf152e0f9cb9"
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "command": "Read Lane Assignments",
+      "preamble": "Read raw task-table Lane cells through the Lane module and provide [Lane Result](#lane-result \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "893d1d136909ad0f09ab153a14b37e866aabf4797219e57f9aebe0ae934e71cd"
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "command": "Write Lane Assignments",
+      "preamble": "Write confirmed assignments while preserving other body content and provide [Output Body](#output-body \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "23bc51be102e6dfdabaaad4fab3c40a54a4df00f3046242e73e75b17832ed631"
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "command": "Validate Lane Unit",
+      "preamble": "Report a unit's common lane or assignment findings and provide [Lane Result](#lane-result \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "244407fa07cb82b900a62c9afcb90f1dc41d266008a285e2054337620fab1128"
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "command": "Evaluate Lane Admission",
+      "preamble": "Report whether the request admits a valid unit and provide [Lane Result](#lane-result \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "3fd1072fe57728a7df8de570e0a6b2d9906c11ecf113221e67b26de106d3a546"
+    },
+    {
+      "file": "skills/work-planner/artifacts/placement.md",
+      "command": "List Orphans",
+      "preamble": "List the hoist candidates and the open initiatives and epics they could join, and provide [Candidate Issues](#candidate-issues \"\u25cf\") and [Candidate Destinations](#candidate-destinations \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "da907f994f1fa5bb000424654cab83ed6365abee59108118db1f33cb608a6ab3"
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "command": "Find Engineering Worktree",
+      "preamble": "Print the checkout holding the engineering branch and provide [Engineering Worktree](#engineering-worktree \"\u25cf\") to the requester. Every planning record is written in that checkout.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "88f705f2cfb824ce551a5290eb8b0496804c3032130fd5ac750c20d093f6f456"
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "command": "Commit Planning Record",
+      "preamble": "Commit everything pending in the engineering worktree, publish the branch so every record's links resolve, and provide [Publication Result](#publication-result \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "88206fd51a00f833a5b4b6bcaaf6e25c6d0f24ee35793db6b31ad8ea2e8e99ca"
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "command": "Add Planning Record",
+      "preamble": "Add the folder for one planning record on the long-lived engineering worktree and provide [Planning Folder](#planning-folder \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "a5332ae3c39cbc6d9c03236986e53b88a73ffddeb3b0b62b816dfaae5554fd58"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request-body.md",
+      "command": "Convert Test Plan",
+      "preamble": "Convert an unambiguous checked list and Test/Criteria table to the current plan table and provide [Output Body](#output-body \"\u25cf\") and [Unresolved Evidence](#unresolved-evidence \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "c64a8d441533a78b21bb552cb8f4beb10030b8944f37e80b2d03ac8f3fdb653b"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Retarget Pull Request",
+      "preamble": "Point a pull request at another base branch, such as its epic's base branch, and provide [Base Branch](#base-branch \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "ea14e3376af6c96034106aecabc5e9070961acd566eeefc398b4f48fa78fe594"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Retitle Pull Request",
+      "preamble": "Replace a pull request's title and provide [Title](#title \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "9103d6ac4fb17eedb6e4d4f93f5ac15ed4924616964050d6460cfad21bcbd8ad"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Open Task Pull Request",
+      "preamble": "Create a pull request from a unit's branch to its base and provide [Identity](#identity \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "be63669fa0f3a76576bbd0010a2b246abcdf0c56c9a32dd3dffc9053c69ec1ce"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Open Epic Pull Request",
+      "preamble": "Create the draft pull request from an epic base to its long-lived target and provide [Identity](#identity \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "2c45e4914adeacffe78a2519d038721e3fb3d2b449775300dcad5bba278709cd"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Merge Pull Request",
+      "preamble": "Merge the task pull request into its base and provide [Merge Result](#merge-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "c4f6ca4bca6c2eaff150213689f692418a32acb7fe9df710e1be01668737748b"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Patch Pull Request Body",
+      "preamble": "Replace a pull request's body and provide [Identity](#identity \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "a01fd886e8353679d91337c94e6b1a525bd14e75c7a7c8fb5b7923bfaede3fa2"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Find Review Pull Request",
+      "preamble": "Find the open pull request whose head is the supplied epic base and provide [Review Number](#review-number \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails. If none exists, provide no result.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "0e43f0282ecd0ee3534c75fa7e8512c06847fdc1655dd58777b641cfd9b93058"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Submit Epic Merge",
+      "preamble": "Merge the epic base into its long-lived target at the supplied head and provide [Merge Result](#merge-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "d8220fdd35660c28a7d377b37837152ef499b4e072715731a049ef8a3eb345ad"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Read Merge Result",
+      "preamble": "Read the merge state, merge commit, head and base of a pull request and provide [Merge Result](#merge-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "f66550c929cad30116cf6bb3685025242604938b0de3b15f2e4a9262e5e9ed5e"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Set Development Link",
+      "preamble": "Add one pull request to an issue's Development relation, read the relation back from both ends, and provide [Development Relation](#development-relation \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "1e0662e47e032f48517354fccf38bb3d0a413d9186cf223471be591ede1e7bf1"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Remove Development Link",
+      "preamble": "Remove one pull request from an issue's Development relation, read the relation back from both ends, and provide [Development Relation](#development-relation \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "f39f4376959e226e327a19eb2e0bb6870930f6ddd6338fdb393c65dff7119600"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Capture Pull Request Links",
+      "preamble": "Write the complete issue-link snapshot for a pull request collection from the pull-request end of the Development relation and provide [Issue-Link Snapshot](#issue-link-snapshot \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "2cbdbc92793902854551920264cbf062b9b7c9fd9eda52a172cdd501eccfcd31"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Save Pull Request Snapshot",
+      "preamble": "Replace the destination file with one complete pull request response and provide [Pull Request Record](#pull-request-record \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "4b2d9b2af6a2ca8a754be5a12292a9bcdb792e61eccb36edd99d0e53ffd8fdd4"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Fetch Pull Request Reviews",
+      "preamble": "Save every review on one pull request and provide [Reviews](#reviews \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "a1c6848f90c6d6aa017d319705167ccc3a2601b04881b94c9177d27e279935bc"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Fetch Initiative Pull Requests",
+      "preamble": "Save the task and epic pull requests that name one initiative's epics and provide [Pull Request Records](#pull-request-records \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "14c498e0a04a9e9ec35baf2edfa6873edcaeda08a7f60f5b18eca2ef6b83a797"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Fetch Linked Pull Requests",
+      "preamble": "Append each pull request linked by the plan but missing from the collection, regardless of its title, and provide [Pull Request Records](#pull-request-records \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "8739d5ad17ff36d6e760dc80ed6a1a9db6f2b8308f43d4458b139a2ffe67c653"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Fetch Repository Delivery Pull Requests",
+      "preamble": "Start a collection with all initiative- and hot-fix-prefixed pull requests from one repository and provide [Pull Request Records](#pull-request-records \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "2cda5a2a74e82e2f4e8babbcb9e87cbd441fc505f0dbc70d9518df2bddd743d5"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Append Repository Delivery Pull Requests",
+      "preamble": "Append all initiative- and hot-fix-prefixed pull requests from one further repository and provide [Pull Request Records](#pull-request-records \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "94568d30e2c82e63248c10f1a93ce908386059911a19b2c6d580381f25f637ce"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Fetch Pull Request Files",
+      "preamble": "Save the paths a pull request changes and provide [Changed Paths](#changed-paths \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "d84a83801f878abaa4082e2d0cc71c9ecd64f19cddaedde469fbad0a929d5368"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Fetch Head Check Runs",
+      "preamble": "Save every check run for one exact commit and provide [Head Checks](#head-checks \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "df1bf4ce59e589516e7d61e8243a1caf34c65d7fc50fa5d9bcc49d4a9b7d6dbf"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Fetch Head Status",
+      "preamble": "Save commit status evidence for one exact commit and provide [Head Status](#head-status \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "4cc763985985c7c5fb80bf39cf4ad5c796cb2a7337802991a53b39e331a04a36"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Mark Review Ready",
+      "preamble": "Mark a draft pull request ready for review and provide [Review State](#review-state \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "5596a9285c741945d74c6fe7b57d369b5650a4d8e54eb36a949533bd97b54cd0"
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "command": "Mark Review Draft",
+      "preamble": "Mark an open integration pull request with blocked handoff evidence as draft and provide [Review State](#review-state \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "38892d954596e7a83dd4f49f6545ffc0853003d0253e3b3f838f8a8f732d409c"
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "command": "Index Status",
+      "preamble": "Report whether the repository is indexed and how far behind the index sits, and provide [Index State](#index-state \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "61d19ef5005dd5123d520150244d87cc6dbbb0999e40c3030526db2ac8aad541"
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "command": "Index Repository",
+      "preamble": "Index the repository and provide [Index State](#index-state \"\u25cf\") to the requester. An unindexed or behind repository needs indexing before any measurement.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "c5a50fa486a917b40e44f4cf6fb49be294f74310ca1216ab1590bf64c2765b36"
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "command": "Change Surface",
+      "preamble": "Report the symbols touched by the pull request's diff and their flows against the base branch, and provide [Changed Symbols](#changed-symbols \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "98d59481a5a98e0a4e136cdea6ab493c4cf73021bf05ca6087d8088e85a539aa"
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "command": "Symbol Context",
+      "preamble": "Report one symbol's callers, callees and containing flows with their file locations, and provide [Symbol Relationships](#symbol-relationships \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "71f42ba37161e9364b7eac62d2899fdf012fb11bee7dd6b11e9ab4e9e2c4de93"
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "command": "Flow Trace",
+      "preamble": "Report one flow's symbols in step order and provide [Flow Traces](#flow-traces \"\u25cf\") to the requester. The sequence diagram is drawn from that ordered structure.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "43cf2c7938e884dcdbbe5bb5f15bc9c26070678a95f9d6f3e9d4397030de290d"
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-labels.md",
+      "command": "List Labels",
+      "preamble": "List the labels that exist in the repository and provide [Label Identity](#label-identity \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "00e5be73891653f0c97c291c994605614477dc4711c68b8bb772a191f37c7d00"
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-labels.md",
+      "command": "Create Label",
+      "preamble": "Create the label with its specified name, colour and description, and provide [Label Identity](#label-identity \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "fb72e8be876d66974279cd9057644402e01275b638b6ca9de59c8bb884e1d36d"
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "command": "Summarise Progress",
+      "preamble": "Print the standup from supplied board items, pull request records and their issue-link snapshot and provide [Report Result](#report-result \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "31d99ce2d27d26634125830dc105241fa2962fe0a3252271b31c6d415774d5e6"
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "command": "Sync Task Issue",
+      "preamble": "Record the open or merged pull request delivering a task issue, tick verified criteria, report whether the task issue is closable, and provide [Output Body](#output-body \"\u25cf\") and [Delivery Findings](#delivery-findings \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 2,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "a105e26025bc212d4fcad2d281d395196d36d3efe0d7f1827d093d3d21b5baf4"
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "command": "Run Tests",
+      "preamble": "Run the skill's script tests and provide [Test Result](#test-result \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "459c8b591f8273be11c0d0e84d121cf7cb2b6e9ce503ad8390016c55dbf101fe"
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "command": "Check Skill Files",
+      "preamble": "Check the affected skill's files against the rules the shared skill guidelines state and provide [Skill Check Result](#skill-check-result \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "340af499fb5ad1d10e8e50ab422f872d31a421a5ea3f9fa7df1b2301fb591f7a"
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "command": "Compare Section Bodies",
+      "preamble": "Compare every third-level section's body between the change's base and its head to identify sections damaged in a move, and provide [Section Comparison](#section-comparison \"\u25cf\") to the requester.",
+      "invocation_identical": true,
+      "link_multiset_identical": true,
+      "outputs_in_preamble": 1,
+      "conditions_preserved": true,
+      "rendered_without_blockquote": true,
+      "invocation_sha256": "5c74002bb0f1e324a53ec8cf519d2a3959c1f0a9c27edce0b00ade5c1694ac3e"
+    }
+  ],
+  "grammar_review": "Every preamble reviewed; compound actions and conditional/no-result clauses polished individually. Base verbs are checked only against this migration inventory, not enforced as a generic language heuristic."
+}

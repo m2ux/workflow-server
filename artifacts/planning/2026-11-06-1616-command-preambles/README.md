@@ -14,6 +14,14 @@ This record preserves exact invocations, I/O links, Fields and operative conditi
 | --- | --- |
 | [Revision Plan](plan.md) | Scope, approved writing rule and verification |
 | [Original Command Inventory](before.json) | All 116 command openings, conditions, results and exact invocations |
+| [Validation](validation.md) | Exact source, preservation, review and test results with limits |
+| [Preservation Evidence](preservation.json) | Per-command unchanged invocation/link/condition assertions |
+| [Final Preambles](preambles.log) | All 116 reviewed imperative preambles |
+| [Verification Instrument](verify-preambles.py) | Repeatable comparison against the original inventory |
+| [Source Manifest](source.json) | Exact source identity and Markdown hashes |
+| [Planner Tests](planner-tests.log) | Complete planner suite and opt-in skip |
+| [Shared Checker Tests](shared-tests.log) | Shared checker regression results |
+| [Installed Checker](installed-checker.log) | Installed Work Planner model result |
 
 ## Links
 
