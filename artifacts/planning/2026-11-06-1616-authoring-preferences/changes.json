@@ -1,0 +1,29 @@
+{
+  "changes": [
+    "Specific child titles",
+    "One contextual contract owner",
+    "Shared purpose and provision rules",
+    "One title rule owner",
+    "Contextual, complete, derivable contracts",
+    "One literal-angle encoding rule",
+    "One forwarding rule owner",
+    "Copyable encoded placeholder example",
+    "Mode opening delegates to procedure rule",
+    "Subject ownership and small capabilities",
+    "Consistent interfaces and delegated caller rules",
+    "Remove duplicate nested I/O rule",
+    "Forwarding and single-caller grain share one owner",
+    "Remove duplicate forwarding statement",
+    "Declarative fields and owned transformations",
+    "Artifact opening delegates to procedure rule",
+    "Move result wording to shared procedure scope"
+  ],
+  "retired_rule_keys": [
+    "artifacts/operation-inputs",
+    "artifacts/provided-output"
+  ],
+  "new_rule_keys": [
+    "procedure/openings",
+    "procedure/provided-results"
+  ]
+}

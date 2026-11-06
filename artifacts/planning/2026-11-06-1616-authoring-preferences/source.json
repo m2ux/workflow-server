@@ -1,0 +1,9 @@
+{
+  "baseline": "7beaf46c621bae84872573adab8c4e1eecc2254d",
+  "head": "4a23a4f50064c37b8ac45b842b8aa0f40c0a3937",
+  "changed_files": [
+    "skills/work-planner/guidelines.md",
+    "skills/work-planner/rules.json"
+  ],
+  "operational_corpus_and_runtime_rules_unchanged": true
+}

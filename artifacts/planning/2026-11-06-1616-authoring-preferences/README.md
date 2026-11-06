@@ -41,3 +41,18 @@ Check the guideline/rule registry, section/link validity and no stale duplicate 
 | Resource | Link |
 | --- | --- |
 | Style PR | https://github.com/m2ux/workflow-server/pull/1641 |
+
+## Validation
+
+Source: `4a23a4f50064c37b8ac45b842b8aa0f40c0a3937`. Only guidelines.md and rules.json change. Procedure openings and concrete-result wording have shared owners; nested contracts and forwarding composition lose duplicate rules. Existing latest command/list/field-example/checkout rules remain. Field boundaries preserve named Commands ownership, and the encoded placeholder specimen is copyable into the enriched HTML style. Two retired rule keys are removed and two shared Procedure keys registered; the model reports no unregistered or ambiguous rule.
+
+The installed checker covers 58 Markdown files with zero findings. All fourteen existing document checks pass, and whitespace validation passes. Operational Markdown, invocation bytes, templates, runtime rules and execution paths are untouched, so this consolidation makes no live-workflow or full-corpus SOLID-compliance claim. E02/E04 implementation scope is not changed. The preference table and exclusions above are the durable-versus-transient disposition record.
+
+## Artifacts
+
+| Artifact | What it holds |
+| --- | --- |
+| [Source](source.json) | Exact baseline/head and two-file scope |
+| [changes.json](changes.json) | Guideline consolidation inventory or existing validation evidence |
+| [document-tests.log](document-tests.log) | Guideline consolidation inventory or existing validation evidence |
+| [model.log](model.log) | Guideline consolidation inventory or existing validation evidence |
