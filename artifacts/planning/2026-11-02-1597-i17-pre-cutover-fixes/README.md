@@ -85,6 +85,10 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | [E02 policy dependency result](e02/policy-dependencies.log) | Current row graph and retained advisory |
 | [E02 policy saved readback](e02/policy-epic-readback.json) | Exact saved issue body and preserved metadata |
 | [E02 policy saved format](e02/policy-saved-format.log) | Zero-finding validation after issue publication |
+| [Board Status scope review](e02/board-status-scope-review.md) | Artifact ownership, protocol assessment and unchanged task/criterion contracts |
+| [Board Status prior snapshot](e02/board-status-scope-before.json) | Fresh E02 body and metadata before the scope clarification |
+| [Board Status draft snapshot](e02/board-status-scope-draft.json) | Revised E02 body with current issue context |
+| [Board Status scope format](e02/board-status-scope-format.log) | Zero-finding draft validation |
 
 ## Links
 
