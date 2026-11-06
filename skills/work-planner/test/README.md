@@ -64,6 +64,7 @@ These modules read the skill's own documents rather than a script.
 | --- | --- |
 | [test_checkouts](test_checkouts.py) | Checkout-sensitive commands consume linked input contracts |
 | [test_documents](test_documents.py) | The installed prose API exposes complete inputs and directed reading paths |
+| [test_merge_outcomes](test_merge_outcomes.py) | Merge instructions bind verified heads and select terminal or bounded recovery routes |
 | [test_modes](test_modes.py) | Mode summaries in each skill's [SKILL](../SKILL.md) |
 | [test_plan_mode](test_plan_mode.py) | Plan Mode keeps a plan in one home: its planning record on the engineering branch |
 | [test_readme](test_readme.py) | The test folder's README names every module and every script, and its rows match what the folder holds |
@@ -113,6 +114,8 @@ One row per script in `../scripts`, then one per document the prose tests read. 
 | [README](README.md) | [test_readme](test_readme.py) (14) |
 | [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
 | `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
+| [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_worktrees](test_worktrees.py) (2) |
 | [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (8) |
 | [configuration](../configuration.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
