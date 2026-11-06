@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L32:Mutation Outcome",
+    "name": "Mutation Outcome",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 32,
+    "endLine": 39
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

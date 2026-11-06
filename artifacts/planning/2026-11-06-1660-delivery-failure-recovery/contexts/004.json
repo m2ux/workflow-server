@@ -1,0 +1,31 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_initial_invalid_draft_review_confirms_without_an_extra_write#0",
+    "name": "test_initial_invalid_draft_review_confirms_without_an_extra_write",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_hotfix_readiness.py",
+    "startLine": 148,
+    "endLine": 153
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness",
+        "name": "HotFixReadiness",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/test/test_hotfix_readiness.py:walk",
+        "name": "walk",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      }
+    ]
+  },
+  "processes": []
+}

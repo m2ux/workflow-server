@@ -1,0 +1,46 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Class:skills/work-planner/test/test_merge_outcomes.py:Instructions",
+    "name": "Instructions",
+    "kind": "Class",
+    "filePath": "skills/work-planner/test/test_merge_outcomes.py",
+    "startLine": 39,
+    "endLine": 157
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "imports": [
+      {
+        "uid": "File:skills/work-planner/test/README.md",
+        "name": "README.md",
+        "filePath": "skills/work-planner/test/README.md"
+      }
+    ]
+  },
+  "outgoing": {
+    "has_method": [
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.__init__#2",
+        "name": "__init__",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.delivery#7",
+        "name": "delivery",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.integration#4",
+        "name": "integration",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.mutation#3",
+        "name": "mutation",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "processes": []
+}

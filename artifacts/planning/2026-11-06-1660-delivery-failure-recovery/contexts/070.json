@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L783:Merge Permission",
+    "name": "Merge Permission",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 783,
+    "endLine": 789
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

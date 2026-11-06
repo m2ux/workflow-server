@@ -1,0 +1,31 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_default_branch_keeps_human_merge_boundary#0",
+    "name": "test_default_branch_keeps_human_merge_boundary",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_merge_outcomes.py",
+    "startLine": 194,
+    "endLine": 197
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes",
+        "name": "MergeOutcomes",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.delivery#7",
+        "name": "delivery",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "processes": []
+}

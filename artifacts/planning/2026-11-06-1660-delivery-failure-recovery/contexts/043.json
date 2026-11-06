@@ -1,0 +1,15 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Variable:skills/work-planner/test/test_merge_outcomes.py:EPIC",
+    "name": "EPIC",
+    "kind": "Variable",
+    "filePath": "skills/work-planner/test/test_merge_outcomes.py",
+    "startLine": 19,
+    "endLine": 19
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

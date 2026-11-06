@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/modes/deliver-mode.md:L143:Run Delivery Session",
+    "name": "Run Delivery Session",
+    "filePath": "skills/work-planner/modes/deliver-mode.md",
+    "startLine": 143,
+    "endLine": 281
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

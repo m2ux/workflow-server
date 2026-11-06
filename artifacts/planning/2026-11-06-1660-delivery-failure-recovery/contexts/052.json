@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L20:2. Merge Approved Delivery",
+    "name": "2. Merge Approved Delivery",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 20,
+    "endLine": 39
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

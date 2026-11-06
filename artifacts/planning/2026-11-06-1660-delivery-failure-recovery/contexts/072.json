@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/modes/deliver-mode.md:L7:Procedure",
+    "name": "Procedure",
+    "filePath": "skills/work-planner/modes/deliver-mode.md",
+    "startLine": 7,
+    "endLine": 281
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

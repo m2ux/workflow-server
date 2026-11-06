@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L11:1. Read Target Review Requirements",
+    "name": "1. Read Target Review Requirements",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 11,
+    "endLine": 19
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

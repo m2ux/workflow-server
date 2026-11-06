@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L781:Guidance",
+    "name": "Guidance",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 781,
+    "endLine": 789
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

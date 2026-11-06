@@ -1,0 +1,31 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_github_retry_withdraws_and_verifies_fresh_head_first#0",
+    "name": "test_github_retry_withdraws_and_verifies_fresh_head_first",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_merge_outcomes.py",
+    "startLine": 228,
+    "endLine": 237
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes",
+        "name": "MergeOutcomes",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.integration#4",
+        "name": "integration",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "processes": []
+}

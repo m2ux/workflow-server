@@ -1,0 +1,53 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.mutation#3",
+    "name": "mutation",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_merge_outcomes.py",
+    "startLine": 47,
+    "endLine": 74
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_merge_outcomes.py:Instructions",
+        "name": "Instructions",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ],
+    "calls": [
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.delivery#7",
+        "name": "delivery",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_epic_mutation_submits_verified_sha#0",
+        "name": "test_epic_mutation_submits_verified_sha",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_removed_sha_binding_is_observed_by_moving_head_fixture#0",
+        "name": "test_removed_sha_binding_is_observed_by_moving_head_fixture",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_task_mutation_submits_verified_sha#0",
+        "name": "test_task_mutation_submits_verified_sha",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/test/test_merge_outcomes.py:section",
+        "name": "section",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "processes": []
+}

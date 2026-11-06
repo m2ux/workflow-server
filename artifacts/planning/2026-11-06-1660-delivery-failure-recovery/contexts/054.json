@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L28:Epic Merge",
+    "name": "Epic Merge",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 28,
+    "endLine": 31
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L70:Confirmed Merge",
+    "name": "Confirmed Merge",
+    "filePath": "skills/work-planner/protocols/epic-integration.md",
+    "startLine": 70,
+    "endLine": 73
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

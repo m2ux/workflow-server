@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L571:Mark Review Draft",
+    "name": "Mark Review Draft",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 571,
+    "endLine": 578
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

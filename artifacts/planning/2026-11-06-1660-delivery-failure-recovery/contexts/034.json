@@ -1,0 +1,31 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_confirmed_epic_merge_is_only_success_readback_route#0",
+    "name": "test_confirmed_epic_merge_is_only_success_readback_route",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_merge_outcomes.py",
+    "startLine": 260,
+    "endLine": 263
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes",
+        "name": "MergeOutcomes",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.integration#4",
+        "name": "integration",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "processes": []
+}

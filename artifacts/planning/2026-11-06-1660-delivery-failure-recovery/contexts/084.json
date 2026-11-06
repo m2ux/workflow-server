@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L62:GitHub Refusal",
+    "name": "GitHub Refusal",
+    "filePath": "skills/work-planner/protocols/epic-integration.md",
+    "startLine": 62,
+    "endLine": 69
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

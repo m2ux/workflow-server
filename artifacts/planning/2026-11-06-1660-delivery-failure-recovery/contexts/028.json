@@ -1,0 +1,31 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_epic_human_handoff_has_no_retry_or_success_readback#0",
+    "name": "test_epic_human_handoff_has_no_retry_or_success_readback",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_merge_outcomes.py",
+    "startLine": 218,
+    "endLine": 221
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes",
+        "name": "MergeOutcomes",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.integration#4",
+        "name": "integration",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "processes": []
+}

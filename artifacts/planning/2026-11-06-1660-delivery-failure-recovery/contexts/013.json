@@ -1,0 +1,31 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_unreadable_or_closed_initial_state_stops_without_writes#0",
+    "name": "test_unreadable_or_closed_initial_state_stops_without_writes",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_hotfix_readiness.py",
+    "startLine": 214,
+    "endLine": 219
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness",
+        "name": "HotFixReadiness",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/test/test_hotfix_readiness.py:walk",
+        "name": "walk",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      }
+    ]
+  },
+  "processes": []
+}

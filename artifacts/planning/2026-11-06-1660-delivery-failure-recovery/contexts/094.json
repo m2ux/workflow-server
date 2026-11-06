@@ -1,0 +1,86 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Function:skills/work-planner/test/test_hotfix_readiness.py:walk",
+    "name": "walk",
+    "kind": "Function",
+    "filePath": "skills/work-planner/test/test_hotfix_readiness.py",
+    "startLine": 71,
+    "endLine": 136
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "calls": [
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_changed_head_after_ready_restores_before_repair#0",
+        "name": "test_changed_head_after_ready_restores_before_repair",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_failed_ready_write_restores_a_partial_write_before_repair#0",
+        "name": "test_failed_ready_write_restores_a_partial_write_before_repair",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_failed_restoration_reads_and_stops_with_the_discrepancy#0",
+        "name": "test_failed_restoration_reads_and_stops_with_the_discrepancy",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_initial_invalid_draft_review_confirms_without_an_extra_write#0",
+        "name": "test_initial_invalid_draft_review_confirms_without_an_extra_write",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_initial_invalid_ready_review_restores_and_reads_before_repair#0",
+        "name": "test_initial_invalid_ready_review_restores_and_reads_before_repair",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_missing_restoration_call_changes_the_observed_failure_route#0",
+        "name": "test_missing_restoration_call_changes_the_observed_failure_route",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_new_review_finding_after_ready_restores_before_repair#0",
+        "name": "test_new_review_finding_after_ready_restores_before_repair",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_passing_draft_reaches_merge_once_after_ready_readback#0",
+        "name": "test_passing_draft_reaches_merge_once_after_ready_readback",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_passing_ready_reaches_merge_once_without_a_ready_write#0",
+        "name": "test_passing_ready_reaches_merge_once_without_a_ready_write",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_successful_write_with_ready_readback_stops#0",
+        "name": "test_successful_write_with_ready_readback_stops",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_unreadable_or_closed_initial_state_stops_without_writes#0",
+        "name": "test_unreadable_or_closed_initial_state_stops_without_writes",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_unreadable_restoration_readback_stops#0",
+        "name": "test_unreadable_restoration_readback_stops",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/test/test_plan_mode.py:section",
+        "name": "section",
+        "filePath": "skills/work-planner/test/test_plan_mode.py"
+      }
+    ]
+  },
+  "processes": []
+}

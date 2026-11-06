@@ -1,0 +1,54 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:Tracker.__init__#11",
+    "name": "__init__",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_hotfix_readiness.py",
+    "startLine": 23,
+    "endLine": 42
+  },
+  "epistemic": "lower-bound",
+  "boundaries": [
+    "1 call site invoking `__init__` was dropped at index time because the receiver's type could not be established (e.g. an unresolved constructor, factory or chained expression). Those callers are absent from this result — actual impact may be higher."
+  ],
+  "causes": {
+    "scopeExtractionFiles": 0,
+    "receiverTyping": 1,
+    "dispatchBoundary": 0,
+    "externalBoundary": 0,
+    "undecidedSatisfaction": 0,
+    "callableValueReferences": 0
+  },
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_hotfix_readiness.py:Tracker",
+        "name": "Tracker",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/test/test_agent_review.py:hotfix_pr",
+        "name": "hotfix_pr",
+        "filePath": "skills/work-planner/test/test_agent_review.py"
+      }
+    ],
+    "accesses": [
+      {
+        "uid": "Property:skills/work-planner/scripts/sync.py:Branches.problem",
+        "name": "problem",
+        "filePath": "skills/work-planner/scripts/sync.py"
+      },
+      {
+        "uid": "Property:skills/workflow-canon/scripts/guard_report.py:parse.current@50:4",
+        "name": "current",
+        "filePath": "skills/workflow-canon/scripts/guard_report.py"
+      }
+    ]
+  },
+  "processes": []
+}

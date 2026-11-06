@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L54:Human Handoff",
+    "name": "Human Handoff",
+    "filePath": "skills/work-planner/protocols/epic-integration.md",
+    "startLine": 54,
+    "endLine": 57
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

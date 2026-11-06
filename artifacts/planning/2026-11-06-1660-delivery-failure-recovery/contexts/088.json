@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/test/README.md:L25:Catalogue",
+    "name": "Catalogue",
+    "filePath": "skills/work-planner/test/README.md",
+    "startLine": 25,
+    "endLine": 77
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

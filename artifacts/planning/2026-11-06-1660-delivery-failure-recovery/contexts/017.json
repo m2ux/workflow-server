@@ -1,0 +1,73 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.delivery#7",
+    "name": "delivery",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_merge_outcomes.py",
+    "startLine": 76,
+    "endLine": 108
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_merge_outcomes.py:Instructions",
+        "name": "Instructions",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ],
+    "calls": [
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_confirmed_merge_reads_state_after_mutation#0",
+        "name": "test_confirmed_merge_reads_state_after_mutation",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_default_branch_keeps_human_merge_boundary#0",
+        "name": "test_default_branch_keeps_human_merge_boundary",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_harness_denial_has_no_github_response#0",
+        "name": "test_harness_denial_has_no_github_response",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_moving_head_refuses_exact_documented_mutation#0",
+        "name": "test_moving_head_refuses_exact_documented_mutation",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_person_review_hands_off_without_mutation#0",
+        "name": "test_person_review_hands_off_without_mutation",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_readback_disagreements_cannot_confirm_merge#0",
+        "name": "test_readback_disagreements_cannot_confirm_merge",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/test/test_merge_outcomes.py:calls",
+        "name": "calls",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/test_merge_outcomes.py:section",
+        "name": "section",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.mutation#3",
+        "name": "mutation",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "processes": []
+}

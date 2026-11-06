@@ -1,0 +1,38 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Function:skills/work-planner/test/test_merge_outcomes.py:section",
+    "name": "section",
+    "kind": "Function",
+    "filePath": "skills/work-planner/test/test_merge_outcomes.py",
+    "startLine": 26,
+    "endLine": 32
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "calls": [
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.delivery#7",
+        "name": "delivery",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.integration#4",
+        "name": "integration",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.mutation#3",
+        "name": "mutation",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_task_caller_verifies_before_its_first_mutation#0",
+        "name": "test_task_caller_verifies_before_its_first_mutation",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "outgoing": {},
+  "processes": []
+}

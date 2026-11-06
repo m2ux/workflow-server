@@ -1,0 +1,61 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Class:skills/work-planner/test/test_readme.py:Coverage",
+    "name": "Coverage",
+    "kind": "Class",
+    "filePath": "skills/work-planner/test/test_readme.py",
+    "startLine": 185,
+    "endLine": 232
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "imports": [
+      {
+        "uid": "File:skills/work-planner/test/README.md",
+        "name": "README.md",
+        "filePath": "skills/work-planner/test/README.md"
+      }
+    ]
+  },
+  "outgoing": {
+    "has_method": [
+      {
+        "uid": "Method:skills/work-planner/test/test_readme.py:Coverage.test_a_document_row_names_the_modules_that_read_it#0",
+        "name": "test_a_document_row_names_the_modules_that_read_it",
+        "filePath": "skills/work-planner/test/test_readme.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_readme.py:Coverage.test_a_script_row_names_the_modules_that_reach_it#0",
+        "name": "test_a_script_row_names_the_modules_that_reach_it",
+        "filePath": "skills/work-planner/test/test_readme.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_readme.py:Coverage.test_each_count_is_the_modules_test_methods#0",
+        "name": "test_each_count_is_the_modules_test_methods",
+        "filePath": "skills/work-planner/test/test_readme.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_readme.py:Coverage.test_each_named_module_carries_its_count#0",
+        "name": "test_each_named_module_carries_its_count",
+        "filePath": "skills/work-planner/test/test_readme.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_readme.py:Coverage.test_every_document_the_prose_tests_read_has_a_row#0",
+        "name": "test_every_document_the_prose_tests_read_has_a_row",
+        "filePath": "skills/work-planner/test/test_readme.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_readme.py:Coverage.test_every_prose_module_is_named_somewhere#0",
+        "name": "test_every_prose_module_is_named_somewhere",
+        "filePath": "skills/work-planner/test/test_readme.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_readme.py:Coverage.test_every_script_has_one_row_and_links_to_it#0",
+        "name": "test_every_script_has_one_row_and_links_to_it",
+        "filePath": "skills/work-planner/test/test_readme.py"
+      }
+    ]
+  },
+  "processes": []
+}

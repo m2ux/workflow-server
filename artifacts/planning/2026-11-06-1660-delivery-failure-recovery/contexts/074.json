@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/modes/deliver-mode.md:L218:9. Review a Hot-Fix",
+    "name": "9. Review a Hot-Fix",
+    "filePath": "skills/work-planner/modes/deliver-mode.md",
+    "startLine": 218,
+    "endLine": 259
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

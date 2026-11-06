@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L633:Merge Response",
+    "name": "Merge Response",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 633,
+    "endLine": 636
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

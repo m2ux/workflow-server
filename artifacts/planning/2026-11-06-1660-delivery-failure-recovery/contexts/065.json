@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L579:Fields",
+    "name": "Fields",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 579,
+    "endLine": 780
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

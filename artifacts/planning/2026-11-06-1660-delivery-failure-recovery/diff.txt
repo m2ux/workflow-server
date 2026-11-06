@@ -1,0 +1,731 @@
+diff --git a/skills/work-planner/artifacts/pull-request.md b/skills/work-planner/artifacts/pull-request.md
+index 2285c57af..0c755a174 100644
+--- a/skills/work-planner/artifacts/pull-request.md
++++ b/skills/work-planner/artifacts/pull-request.md
+@@ -9 +9 @@ A pull request's identity, head and base, issue links, review state and merge re
+-One task or epic pull request's merge result, or its handoff for human approval.
++One delivery pull request's confirmed merge, human handoff or classified refusal.
+@@ -13,3 +13,3 @@ One task or epic pull request's merge result, or its handoff for human approval.
+-- Read the supplied target branch's current required reviews and checks alongside the [verified head](#verified-head). A branch whose protection or active rules require an approving review takes that review from a person. An agent cannot approve a [pull request](#identity) it opened; on such a branch, the merge belongs to the reviewer even when every other condition holds.
+-- Report the pull request as ready for approval, naming what was verified.
+-- Stop merge attempts. This handoff is a finished outcome.
++- Read the supplied [Target Requirements](#target-requirements) alongside the [Verified Head](#verified-head) and confirm the supplied [Merge Authorization](#merge-authorization) against [Merge Permission](#merge-permission).
++- When the target is the default branch or requires an approving review from a person, provide [Merge Result](#merge-result) with outcome `human-handoff`, the verified head and target requirements, and return without a merge attempt. The reviewer owns the merge even when every other condition holds.
++- An agent cannot approve a [pull request](#identity) it opened.
+@@ -17,0 +18 @@ One task or epic pull request's merge result, or its handoff for human approval.
++- Otherwise continue to merge approved delivery only when the authorization permits this delivery target and [Repository Prerequisite](#repository-prerequisite) is confirmed; provide a missing condition as [Failure](#failure) and return.
+@@ -21 +22 @@ One task or epic pull request's merge result, or its handoff for human approval.
+-- When approval permits the agent to merge and [Repository Prerequisite](#repository-prerequisite) is confirmed, select the merge operation from [Kind](#kind):
++- Select the mutation from [Kind](#kind), using the current [Readiness Evidence](#readiness-evidence), authorization, target requirements and exact verified head SHA.
+@@ -25 +26 @@ One task or epic pull request's merge result, or its handoff for human approval.
+-- For a task, Run [Merge Pull Request](#merge-pull-request "ƒ") with the verified [readiness evidence](#readiness-evidence) and authorization result.
++Run [Merge Pull Request](#merge-pull-request "ƒ") for a task with that evidence.
+@@ -29 +30 @@ One task or epic pull request's merge result, or its handoff for human approval.
+-- For an epic, use the verified readiness evidence, authorization, [target requirements](#target-requirements) and exact verified head SHA:
++Run [Submit Epic Merge](#submit-epic-merge "ƒ") for an epic with that evidence.
+@@ -31 +32 @@ One task or epic pull request's merge result, or its handoff for human approval.
+-- Require the supplied [Target Requirements](#target-requirements), [Readiness Evidence](#readiness-evidence) and [Merge Authorization](#merge-authorization).
++##### Mutation Outcome
+@@ -33 +34,5 @@ One task or epic pull request's merge result, or its handoff for human approval.
+-- Run [Submit Epic Merge](#submit-epic-merge "ƒ") with the exact head whose checks and target requirements were verified. On refusal, continue directly to Merge Refusals below.
++- For either selected mutation, retain its [Merge Response](#merge-response), or the observed permission-layer refusal or [Failure](#failure).
++- When the harness declines to execute the mutation, provide [Merge Result](#merge-result) with outcome `harness-denial`, the verified head and target, the observed refusal and missing permission, and return. GitHub supplies no response to that attempt. Report current ready-and-verified state only while its evidence remains current; this outcome requests no human approval and permits no further merge attempt in this run.
++- When GitHub returns a refusal, including a head-SHA mismatch or a response with `merged: false`, provide [Merge Result](#merge-result) with outcome `github-refusal`, the exact attempted head and target and GitHub's refusal evidence, and return for the caller's bounded fresh-verification route.
++- For an unreadable response or transport failure, provide [Failure](#failure) with the unknown mutation outcome and return; no merge is confirmed.
++- Only a response with `merged: true` continues to confirm the merge.
+@@ -35 +40 @@ One task or epic pull request's merge result, or its handoff for human approval.
+-- Run [Read Merge Result](#read-merge-result "ƒ") for that [pull request](#identity).
++#### 3. Confirm Delivery Merge
+@@ -37,12 +42,4 @@ One task or epic pull request's merge result, or its handoff for human approval.
+-- Confirm the merged state, merge commit, [verified head](#verified-head) and target.
+-
+-- Retain [Merge Result](#merge-result) or [Failure](#failure) with the discrepancy.
+-
+-##### Merge Refusals
+-
+-- If GitHub refuses the merge, provide [Failure](#failure) with the refusal for fresh verification.
+-- If the agent's own permission layer refuses it, the harness declines to run the merge command and GitHub returns nothing. On a target with no review requirement, that refusal is neither a handoff for approval nor a branch blocker. Provide the pull request as ready and verified, naming the refusal and the [merge permission](#merge-permission) it lacks, and stop merge attempts. A later Deliver run merges it in its merge step or reports the missing permission; neither asks the user to approve it.
+-
+-#### 3. Provide Delivery Merge Result
+-
+-Provide the [merge result](#merge-result), including its merge commit when supplied, for the caller's readback.
++- Run [Read Merge Result](#read-merge-result "ƒ") for the same [Identity](#identity).
++- Compare its [Merge State](#merge-state) with the verified head, target and mutation's merge commit.
++- On a missing merge, changed head or target, absent merge commit or disagreeing commit, provide [Failure](#failure) with the discrepancy and return.
++- Provide [Merge Result](#merge-result) with outcome `confirmed-merge`, the verified head and target, and the confirmed merge commit.
+@@ -207 +203,0 @@ Apply [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close "ƒ
+-- Merge the task pull request.
+@@ -211 +207 @@ Apply [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close "ƒ
+-- Stop on a handoff for human approval or a permission-layer refusal, returning it to the caller.
++- Stop on `human-handoff`, `harness-denial` or an unconfirmed mutation outcome, returning the provided result to the caller.
+@@ -213 +209 @@ Apply [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close "ƒ
+-- If GitHub refuses the merge:
++- Only for `github-refusal`, refresh once:
+@@ -216 +212 @@ Apply [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close "ƒ
+-- Apply [Merge Delivery Pull Request](#merge-delivery-pull-request "ƒ") once more with that verified evidence. A conflict or repeated refusal leaves the pull request open with the blocker reported.
++- Apply [Merge Delivery Pull Request](#merge-delivery-pull-request "ƒ") once more with that verified evidence. Continue to confirmation only for `confirmed-merge`; return any other result without another attempt. A conflict or repeated refusal leaves the pull request open with the blocker reported.
+@@ -220 +216 @@ Apply [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close "ƒ
+-- Apply [Read Pull Request State](#read-pull-request-state "ƒ") to confirm the merged state, head, base and merge commit.
++- Only for `confirmed-merge`, Apply [Read Pull Request State](#read-pull-request-state "ƒ") to confirm the merged state, head, base and merge commit.
+@@ -332 +328 @@ gh api &#92;
+-Merge the task pull request into its base and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
++Merge the task pull request at the supplied verified head and provide [Merge Response](#merge-response "●") to the requester, or [Failure](#failure "●") if the operation fails.
+@@ -335 +331,5 @@ Merge the task pull request into its base and provide [Merge Result](#merge-resu
+-gh api --method PUT repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/merge -f merge_method=merge --jq .merged
++gh api &#92;
++  --method PUT repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/merge &#92;
++  -f merge_method=merge &#92;
++  -f sha=[**&lt;head-sha&gt;**](#verified-head "○") &#92;
++  --jq '{merged, message, sha}'
+@@ -341 +341 @@ gh api --method PUT repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;
+-- The merge method is a merge commit.
++- The merge method is a merge commit. The endpoint refuses a different head; the refusal is evidence for fresh verification, never confirmation of a merge.
+@@ -363 +363 @@ gh api "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#reposit
+-Merge the epic base into its long-lived target at the supplied head and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
++Merge the epic base into its long-lived target at the supplied head and provide [Merge Response](#merge-response "●") to the requester, or [Failure](#failure "●") if the operation fails.
+@@ -379 +379 @@ gh api &#92;
+-Read the merge state, merge commit, head and base of a pull request and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
++Read the merge state, merge commit, head and base of a pull request and provide [Merge State](#merge-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
+@@ -573 +573 @@ gh api graphql -F query=@'[**&lt;query-file&gt;**](#query-file "○")' --jq .dat
+-Mark an open integration pull request with blocked handoff evidence as draft and provide [Review State](#review-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
++Mark an open pull request with blocked readiness evidence as draft and provide [Review State](#review-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
+@@ -631 +631,9 @@ The confirmed authorization for the agent to merge.
+-The merge command result and merge commit when supplied, with the verified head and target; a refusal or discrepancy remains explicit.
++The operation's result has `outcome`, pull request identity, exact verified `head`, `target` and evidence. Its outcomes are `confirmed-merge` (the readback-confirmed merge commit), `human-handoff` (the default-branch or required-person merge boundary), `harness-denial` (the observed permission refusal with no GitHub response), and `github-refusal` (GitHub's refusal response). Only `confirmed-merge` carries a confirmed merge commit; every other outcome leaves the pull request open. An unreadable response or disagreeing readback is [Failure](#failure), with no confirmed merge. eg `{"outcome":"confirmed-merge","pull_request":"m2ux/workflow-server#950","head":"0123456789abcdef0123456789abcdef01234567","target":"i07/e00/main","merge_commit":"89abcdef0123456789abcdef0123456789abcdef01","evidence":"merge response and matching readback"}`
++
++### Merge Response
++
++The merge endpoint's JSON object `{merged, message, sha}`: `merged` is a boolean, `message` is GitHub's response text and `sha` is the resulting merge commit on success. A refused request retains its HTTP status and response; a harness denial has no response. eg `{"merged":true,"message":"Pull Request successfully merged","sha":"89abcdef0123456789abcdef0123456789abcdef01"}`
++
++### Merge State
++
++The readback JSON object `{merged, merge_commit_sha, head, base}`: `merged` is a boolean, the merge commit is nullable, `head` is the literal commit SHA and `base` is the target branch. An absent or unreadable response supplies no confirmed state. eg `{"merged":true,"merge_commit_sha":"89abcdef0123456789abcdef0123456789abcdef01","head":"0123456789abcdef0123456789abcdef01234567","base":"i07/e00/main"}`
+@@ -777 +785 @@ The operation and error, discrepancy or missing evidence that prevents a verifie
+-The agent harness lets a delivery session merge a task pull request into an [epic base](delivery-branches.md#epic-bases), such as `i07/e00/main`, without a prompt. A merge into the default branch stays with a person.
++Delivery requires both the user's authorization for the selected target and the harness capability to execute its mutation. A task targets its [epic base](delivery-branches.md#epic-bases); an epic targets that base's long-lived branch; a hot-fix uses task delivery against its declared long-lived target. The allowance for an epic base supplies no permission for another target. A merge into the default branch stays with a person. Another target requiring a person's approving review stays with that reviewer. A target without that requirement can be merged only within the authorization and harness permission actually granted for it. Neither the skill nor a ready result expands those grants or authorizes a protection bypass.
+diff --git a/skills/work-planner/modes/deliver-mode.md b/skills/work-planner/modes/deliver-mode.md
+index 0703d5bee..f69db0edf 100644
+--- a/skills/work-planner/modes/deliver-mode.md
++++ b/skills/work-planner/modes/deliver-mode.md
+@@ -230,0 +231 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
++- If metadata is unreadable or the pull request is closed, retain [Failure](../artifacts/pull-request.md#failure), report the unresolved current state and stop before repair or merge.
+@@ -233 +234 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
+-- On a finding, keep the [pull request](../artifacts/pull-request.md#identity) in draft and continue directly to Repair Hot-Fix Findings below.
++- On a finding, continue directly to Restore Hot-Fix Draft below.
+@@ -235,0 +237 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
++- On a failed ready write, retain its failure and continue directly to Restore Hot-Fix Draft below.
+@@ -237 +239,15 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
+-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again with the same identity, then Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records. Retain [Review State](../artifacts/pull-request.md#review-state), or [Failure](../artifacts/pull-request.md#failure) with the changed revision or finding that leaves it unconfirmed.
++- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again with the same identity.
++- On an unreadable or closed result, retain the unresolved current-state failure and stop before repair or merge.
++- Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records.
++- On a finding or a draft readback, retain the changed revision or readiness failure and continue directly to Restore Hot-Fix Draft below.
++- Only a confirmed open, ready pull request with passing current review evidence provides [Review State](../artifacts/pull-request.md#review-state) and continues to the merge step.
++
++##### Restore Hot-Fix Draft
++
++- Retain every review or readiness finding.
++- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") with the same identity before selecting restoration.
++- If metadata is unreadable or the pull request is closed, provide the unresolved restoration discrepancy as [Failure](../artifacts/pull-request.md#failure) and stop before repair or merge.
++- For an open, ready pull request, Run [Mark Review Draft](../artifacts/pull-request.md#mark-review-draft "ƒ") with its identity.
++- After a selected restoration write, including a failed write, Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") with the same identity.
++- If the restoration write failed, metadata is unreadable, or the readback is closed or ready, provide the unresolved restoration discrepancy as [Failure](../artifacts/pull-request.md#failure) and stop before repair or merge. Report draft state only when the readback confirms it.
++- With a successful selected write and confirmed open draft, or a confirmed open draft requiring no write, continue to Repair Hot-Fix Findings below.
+@@ -242 +258 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
+-- A finding the session cannot fix within its allowance stops it before the merge step. The hot-fix stays held and its pull request a draft, and the session returns each open finding in its result.
++- A finding the session cannot fix within its allowance stops it before the merge step. Retain the hold, the confirmed draft readback and each open finding in the session result.
+diff --git a/skills/work-planner/protocols/epic-integration.md b/skills/work-planner/protocols/epic-integration.md
+index 7372b406c..6713835b0 100644
+--- a/skills/work-planner/protocols/epic-integration.md
++++ b/skills/work-planner/protocols/epic-integration.md
+@@ -12 +12 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
+-- For any failed gate or called operation through handoff, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") again with their preceding inputs before returning or retrying, including failures between ready and board writes. The confirmed absence of a board is the sole exception to board withdrawal.
++- For any failed preparation or readiness gate before a classified merge outcome, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") again with their preceding inputs before returning or retrying, including failures between ready and board writes. The confirmed absence of a board is the sole exception to board withdrawal.
+@@ -50,2 +50,23 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
+-- Refresh the review metadata and Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding. Apply [Merge Delivery Pull Request](../artifacts/pull-request.md#merge-delivery-pull-request "ƒ") with the confirmed epic readiness, verified head, target requirements, repository prerequisite and passing evidence, and delivery kind epic, without asking for further confirmation.
+-- Provide its handoff when a human reviewer must merge. A changed head requires fresh verification; a merge refusal returns to the readiness checks, and a repeated refusal is reported without retrying.
++- Refresh the review metadata and Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding.
++- Apply [Merge Delivery Pull Request](../artifacts/pull-request.md#merge-delivery-pull-request "ƒ") with confirmed epic readiness, verified head, target requirements, repository prerequisite, passing evidence and delivery kind epic, without further confirmation.
++- Select the continuation from its [Merge Result](../artifacts/pull-request.md#merge-result); an unclassified [Failure](../artifacts/pull-request.md#failure) withdraws readiness through the preparation failure route and returns its evidence without a merge-success readback.
++
++#### Human Handoff
++
++For `human-handoff`, provide the result to the reviewer and return. Make no further merge attempt or merged-success readback.
++
++#### Harness Denial
++
++For `harness-denial`, provide the observed refusal and current verified readiness and return. Follow the owning [Merge Permission](../artifacts/pull-request.md#merge-permission) boundary; make no same-run retry, approval request or merged-success readback.
++
++#### GitHub Refusal
++
++- For each `github-refusal`, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") requesting In Progress with fresh pull request records and an empty review-record list, except when board absence is confirmed.
++- After the first refusal, repeat Refresh and Validate with fresh branch, criterion, head, target, review and check evidence before one further merge attempt.
++- If refreshed evidence fails, return that blocker without another attempt.
++- If GitHub refuses that second attempt, provide the refusal and return without a further retry or merged-success readback; the pull request stays open.
++- A retry result of `human-handoff`, `harness-denial` or unclassified failure takes its corresponding terminal route. Only `confirmed-merge` continues to confirm the result.
++
++#### Confirmed Merge
++
++For `confirmed-merge`, continue to confirm the result with that result's head, target and merge commit.
+@@ -55,2 +76,3 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
+-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") to confirm the merged state, verified head, target and merge commit.
+-- Provide the result or blocker. Draft and blocked pull requests remain open.
++- Only after `confirmed-merge`, Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for the same pull request.
++- Confirm merged state and compare its head, target and merge commit with the provided result.
++- Provide the confirmed result, or the explicit discrepancy as a blocker without a merged-success assertion.
+diff --git a/skills/work-planner/test/README.md b/skills/work-planner/test/README.md
+index 61f4921c7..32d74bbf4 100644
+--- a/skills/work-planner/test/README.md
++++ b/skills/work-planner/test/README.md
+@@ -46,0 +47 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
++| [test_hotfix_readiness](test_hotfix_readiness.py) | Hot-fix readiness routes restore and confirm draft before repair |
+@@ -66,0 +68 @@ These modules read the skill's own documents rather than a script.
++| [test_merge_outcomes](test_merge_outcomes.py) | Merge instructions bind verified heads and select terminal or bounded recovery routes |
+@@ -78 +80 @@ These modules read the skill's own documents rather than a script.
+-One row per script in `../scripts`, then one per document the prose tests read. The table is the reverse of the catalogue: it answers what exercises a given file. Each module carries its test count, which is the only signal of how much of a subject a module reaches.
++One row per script in `../scripts`, then one per document the tests read. The table is the reverse of the catalogue: it answers what exercises a given file. Each module carries its test count, which is the only signal of how much of a subject a module reaches.
+@@ -84 +86 @@ One row per script in `../scripts`, then one per document the prose tests read.
+-| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (16) |
++| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (16), [test_hotfix_readiness](test_hotfix_readiness.py) (12) |
+@@ -115 +117,4 @@ One row per script in `../scripts`, then one per document the prose tests read.
+-| `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
++| `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (13) |
++| [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
++| [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
++| [deliver-mode](../modes/deliver-mode.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12) |
+diff --git a/skills/work-planner/test/test_hotfix_readiness.py b/skills/work-planner/test/test_hotfix_readiness.py
+new file mode 100644
+index 000000000..42c549a51
+--- /dev/null
++++ b/skills/work-planner/test/test_hotfix_readiness.py
+@@ -0,0 +1,227 @@
++"""Hot-fix readiness routes restore and confirm draft before repair."""
++import copy
++import re
++import sys
++import unittest
++from pathlib import Path
++
++from fixtures import SCRIPTS
++from test_agent_review import hotfix_pr
++from test_plan_mode import section
++
++sys.path.insert(0, str(SCRIPTS))
++from agent_review import check
++
++ROOT = Path(__file__).resolve().parents[1]
++SOURCE = ROOT / 'modes' / 'deliver-mode.md'
++CALL = re.compile(r'(?:Apply|Run) \[([^]]+)\]\([^)]* "ƒ"\)')
++
++
++class Tracker:
++    """Captured tracker operations with injected write and readback outcomes."""
++
++    def __init__(self, *, draft=True, records=True, change_head=False, invalid_after_ready=False,
++                 ready_ok=True, ready_partial=False, restore_ok=True, restore_disagrees=False, restore_unreadable=False,
++                 initial_unreadable=False, closed=False):
++        self.pull, review = hotfix_pr()
++        self.pull.update(draft=draft, state='closed' if closed else 'open')
++        self.records = [review] if records else []
++        self.change_head = change_head
++        self.invalid_after_ready = invalid_after_ready
++        self.ready_ok = ready_ok
++        self.ready_partial = ready_partial
++        self.restore_ok = restore_ok
++        self.restore_disagrees = restore_disagrees
++        self.restore_unreadable = restore_unreadable
++        self.initial_unreadable = initial_unreadable
++        self.events = []
++        self.current = None
++        self.problem = None
++        self.write_failure = None
++        self.restoration_selected = False
++        self.restoration_failure = None
++
++    def call(self, name):
++        self.events.append(name)
++        if name == 'Read Pull Request State':
++            if self.initial_unreadable or (self.restoration_selected and self.restore_unreadable):
++                self.current = None
++            else:
++                self.current = copy.deepcopy(self.pull)
++        elif name == 'Validate Agent Review':
++            self.problem = check(self.current, self.records)
++        elif name == 'Mark Review Ready':
++            self.write_failure = None if self.ready_ok else 'ready write refused'
++            if self.ready_ok or self.ready_partial:
++                self.pull['draft'] = False
++            if self.change_head:
++                self.pull['head']['sha'] = 'c' * 40
++            if self.invalid_after_ready:
++                self.records[-1]['findings'] = [dict(description='Open finding', severity='blocking',
++                                                    disposition='open')]
++        elif name == 'Mark Review Draft':
++            self.restoration_selected = True
++            self.restoration_failure = None if self.restore_ok else 'draft write refused'
++            if self.restore_ok and not self.restore_disagrees:
++                self.pull['draft'] = True
++        else:
++            raise AssertionError(f'unsupported captured operation {name}')
++
++
++def walk(tracker, text=None):
++    """Execute the installed route's calls and bounded branch clauses over captured inputs.
++
++    The adapter recognizes this route's instruction grammar. Unknown branches fail, and
++    a missing or reordered source call changes the observed events or state. The review
++    check is the installed validator; fresh-context readings cover agent interpretation.
++    """
++    text = SOURCE.read_text() if text is None else text
++    routes = {name: section(text, '##### ' + name).splitlines() for name in (
++        'Verify Hot-Fix Readiness', 'Restore Hot-Fix Draft')}
++    selected = 'Verify Hot-Fix Readiness'
++    for _ in range(2):
++        redirected = False
++        for raw in routes[selected]:
++            line = raw.removeprefix('- ').strip()
++            if not line:
++                continue
++            operation = CALL.search(line)
++            if operation:
++                name = operation[1]
++                if name == 'Mark Review Ready' and not tracker.current['draft']:
++                    continue
++                if name == 'Mark Review Draft' and tracker.current['draft']:
++                    continue
++                if line.startswith('After a selected restoration write') and not tracker.restoration_selected:
++                    continue
++                tracker.call(name)
++                continue
++            if line.startswith(('Use the pull request', 'Retain every review or readiness finding')):
++                continue
++            if line.startswith(('If metadata is unreadable', 'On an unreadable or closed result')):
++                if tracker.current is None or tracker.current['state'] != 'open':
++                    result = 'blocked-restoration' if selected == 'Restore Hot-Fix Draft' else 'blocked-current-state'
++                    return result, tracker.events
++                continue
++            if line.startswith('On a finding, continue directly'):
++                condition = bool(tracker.problem)
++            elif line.startswith('On a failed ready write'):
++                condition = bool(tracker.write_failure)
++            elif line.startswith('On a finding or a draft readback'):
++                condition = bool(tracker.problem) or tracker.current['draft']
++            elif line.startswith('Only a confirmed open, ready pull request'):
++                # This sentence selects the next step; the step owns the actual call.
++                operations = CALL.findall(section(text, '#### 10. Merge'))
++                assert 'Merge Task Pull Requests' in operations
++                tracker.events.append('Merge Task Pull Requests')
++                return 'merge', tracker.events
++            elif line.startswith('If the restoration write failed'):
++                if (tracker.restoration_failure or tracker.current is None
++                        or tracker.current['state'] != 'open' or not tracker.current['draft']):
++                    return 'blocked-restoration', tracker.events
++                continue
++            elif line.startswith('With a successful selected write and confirmed open draft'):
++                tracker.events.append('Repair Hot-Fix Findings')
++                return 'repair', tracker.events
++            else:
++                raise AssertionError(f'unsupported route clause: {line}')
++            if condition:
++                destination = re.search(r'continue directly to (.+?) below', line)
++                assert destination, line
++                selected = destination[1]
++                redirected = True
++                break
++        if not redirected:
++            raise AssertionError(f'route {selected} has no terminal result')
++    raise AssertionError('route exceeds its bounded restoration continuation')
++
++
++class HotFixReadiness(unittest.TestCase):
++    def test_initial_invalid_ready_review_restores_and_reads_before_repair(self):
++        tracker = Tracker(draft=False, records=False)
++        result, events = walk(tracker)
++        self.assertEqual(result, 'repair')
++        self.assertEqual(events, ['Read Pull Request State', 'Validate Agent Review',
++                                  'Read Pull Request State', 'Mark Review Draft', 'Read Pull Request State', 'Repair Hot-Fix Findings'])
++        self.assertTrue(tracker.current['draft'])
++
++    def test_initial_invalid_draft_review_confirms_without_an_extra_write(self):
++        tracker = Tracker(records=False)
++        result, events = walk(tracker)
++        self.assertEqual(result, 'repair')
++        self.assertEqual(events, ['Read Pull Request State', 'Validate Agent Review',
++                                  'Read Pull Request State', 'Repair Hot-Fix Findings'])
++
++    def test_changed_head_after_ready_restores_before_repair(self):
++        tracker = Tracker(change_head=True)
++        result, events = walk(tracker)
++        self.assertEqual(result, 'repair')
++        self.assertIn('stale', tracker.problem)
++        self.assertEqual(events, ['Read Pull Request State', 'Validate Agent Review', 'Mark Review Ready',
++                                  'Read Pull Request State', 'Validate Agent Review', 'Read Pull Request State', 'Mark Review Draft',
++                                  'Read Pull Request State', 'Repair Hot-Fix Findings'])
++
++    def test_new_review_finding_after_ready_restores_before_repair(self):
++        tracker = Tracker(invalid_after_ready=True)
++        result, events = walk(tracker)
++        self.assertEqual(result, 'repair')
++        self.assertIn('blocking', tracker.problem)
++        self.assertEqual(events[-3:], ['Mark Review Draft', 'Read Pull Request State', 'Repair Hot-Fix Findings'])
++
++    def test_failed_restoration_reads_and_stops_with_the_discrepancy(self):
++        tracker = Tracker(change_head=True, restore_ok=False)
++        result, events = walk(tracker)
++        self.assertEqual(result, 'blocked-restoration')
++        self.assertEqual(events[-2:], ['Mark Review Draft', 'Read Pull Request State'])
++        self.assertFalse(tracker.current['draft'])
++        self.assertEqual(tracker.restoration_failure, 'draft write refused')
++
++    def test_successful_write_with_ready_readback_stops(self):
++        tracker = Tracker(change_head=True, restore_disagrees=True)
++        result, events = walk(tracker)
++        self.assertEqual(result, 'blocked-restoration')
++        self.assertEqual(events[-2:], ['Mark Review Draft', 'Read Pull Request State'])
++        self.assertFalse(tracker.current['draft'])
++
++    def test_unreadable_restoration_readback_stops(self):
++        tracker = Tracker(change_head=True, restore_unreadable=True)
++        result, events = walk(tracker)
++        self.assertEqual(result, 'blocked-restoration')
++        self.assertIsNone(tracker.current)
++        self.assertNotIn('Repair Hot-Fix Findings', events)
++        self.assertNotIn('Merge Task Pull Requests', events)
++
++    def test_failed_ready_write_restores_a_partial_write_before_repair(self):
++        tracker = Tracker(ready_ok=False, ready_partial=True)
++        result, events = walk(tracker)
++        self.assertEqual(result, 'repair')
++        self.assertEqual(events, ['Read Pull Request State', 'Validate Agent Review', 'Mark Review Ready',
++                                  'Read Pull Request State', 'Mark Review Draft', 'Read Pull Request State', 'Repair Hot-Fix Findings'])
++        self.assertTrue(tracker.current['draft'])
++
++    def test_passing_draft_reaches_merge_once_after_ready_readback(self):
++        result, events = walk(Tracker())
++        self.assertEqual(result, 'merge')
++        self.assertEqual(events, ['Read Pull Request State', 'Validate Agent Review', 'Mark Review Ready',
++                                  'Read Pull Request State', 'Validate Agent Review', 'Merge Task Pull Requests'])
++
++    def test_passing_ready_reaches_merge_once_without_a_ready_write(self):
++        result, events = walk(Tracker(draft=False))
++        self.assertEqual(result, 'merge')
++        self.assertEqual(events, ['Read Pull Request State', 'Validate Agent Review',
++                                  'Read Pull Request State', 'Validate Agent Review', 'Merge Task Pull Requests'])
++
++    def test_unreadable_or_closed_initial_state_stops_without_writes(self):
++        for fixture in (dict(initial_unreadable=True), dict(closed=True)):
++            with self.subTest(fixture=fixture):
++                result, events = walk(Tracker(**fixture))
++                self.assertEqual(result, 'blocked-current-state')
++                self.assertEqual(events, ['Read Pull Request State'])
++
++    def test_missing_restoration_call_changes_the_observed_failure_route(self):
++        text = SOURCE.read_text()
++        text = '\n'.join(line for line in text.splitlines() if '[Mark Review Draft]' not in line)
++        result, events = walk(Tracker(change_head=True), text)
++        self.assertEqual(result, 'blocked-restoration')
++        self.assertNotIn('Mark Review Draft', events)
++        self.assertNotIn('Repair Hot-Fix Findings', events)
+diff --git a/skills/work-planner/test/test_merge_outcomes.py b/skills/work-planner/test/test_merge_outcomes.py
+new file mode 100644
+index 000000000..302f3e19f
+--- /dev/null
++++ b/skills/work-planner/test/test_merge_outcomes.py
+@@ -0,0 +1,284 @@
++"""Merge instructions bind verified heads and select terminal or bounded recovery routes.
++
++The fixture executor supports the changed instruction forms, records selected
++capabilities and runs each documented mutation against a local gh double. It
++does not claim to execute unrestricted prose or establish live agent behavior.
++"""
++import html
++import json
++import os
++import re
++import subprocess
++import sys
++import tempfile
++import unittest
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[1]
++PULL = ROOT / 'artifacts' / 'pull-request.md'
++EPIC = ROOT / 'protocols' / 'epic-integration.md'
++HEAD = '1' * 40
++NEW_HEAD = '2' * 40
++MERGE = '3' * 40
++TARGET = 'workspace'
++
++
++def section(source, title):
++    match = re.search(r'^(#{1,6}) ' + re.escape(title) + r'\n', source, re.M)
++    if not match:
++        raise ValueError(f'missing section: {title}')
++    rest = source[match.end():]
++    end = re.search(r'^#{1,' + str(len(match[1])) + r'} ', rest, re.M)
++    return rest[:end.start()] if end else rest
++
++
++def calls(source):
++    return re.findall(r'(?:Apply|Run) \[([^]]+)\]\([^)]+ "ƒ"\)', source)
++
++
++class Instructions:
++    """Bounded interpreter for the documented outcome/continuation clauses."""
++
++    def __init__(self, pull=None, epic=None):
++        self.pull = PULL.read_text() if pull is None else pull
++        self.epic = EPIC.read_text() if epic is None else epic
++        self.events = []
++
++    def mutation(self, kind, head, actual_head=None):
++        command = section(self.pull, 'Merge Pull Request' if kind == 'task' else 'Submit Epic Merge')
++        raw = re.search(r'<big><pre>\n(.*?)\n</pre></big>', command, re.S)[1]
++        rendered = re.sub(r'\[\*\*(.*?)\*\*\]\([^)]*\)', r'\1', raw)
++        rendered = html.unescape(rendered)
++        values = {'owner': 'fixture', 'repo': 'repo', 'pull-request-number': '9', 'head-sha': head}
++        rendered = re.sub(r'<([^>]+)>', lambda m: values[m[1]], rendered)
++        with tempfile.TemporaryDirectory() as folder:
++            root = Path(folder)
++            gh = root / 'gh'
++            gh.write_text(f'#!{sys.executable}\n' + '''import json, os, sys
++from pathlib import Path
++args = sys.argv[1:]
++Path(os.environ['CAPTURE']).write_text(json.dumps(args))
++head = next((a[4:] for a in args if a.startswith('sha=')), None)
++if head != os.environ['ACTUAL_HEAD']:
++    print(json.dumps({'merged': False, 'message': 'Head branch was modified', 'sha': None}))
++    sys.exit(1)
++print(json.dumps({'merged': True, 'message': 'merged', 'sha': os.environ['MERGE_SHA']}))
++''')
++            gh.chmod(0o700)
++            env = dict(os.environ, PATH=folder + os.pathsep + os.environ['PATH'],
++                       CAPTURE=str(root/'capture.json'), ACTUAL_HEAD=actual_head or head,
++                       MERGE_SHA=MERGE)
++            run = subprocess.run(rendered, shell=True, env=env, capture_output=True, text=True)
++            captured = json.loads((root/'capture.json').read_text())
++        self.events.append(('mutation', kind, captured))
++        return run.returncode, json.loads(run.stdout)
++
++    def delivery(self, outcome, *, head=HEAD, target=TARGET, default=False,
++                 person_review=False, actual_head=None, readback=None):
++        operation = section(self.pull, 'Merge Delivery Pull Request')
++        requirements = section(operation, '1. Read Target Review Requirements')
++        if default or person_review:
++            clause = next(line for line in requirements.splitlines()
++                          if 'When the target' in line and '`human-handoff`' in line)
++            if default and 'default branch' not in clause:
++                raise ValueError('default branch has no human handoff')
++            if 'return without a merge attempt' not in clause:
++                raise ValueError('human handoff is not terminal')
++            return 'human-handoff'
++        branches = section(operation, 'Mutation Outcome')
++        if outcome == 'harness-denial':
++            self.events.append(('harness-denial', head, target))
++            clause = next(line for line in branches.splitlines() if '`harness-denial`' in line)
++            if 'GitHub supplies no response' not in clause or 'and return' not in clause:
++                raise ValueError('harness denial lacks a terminal no-response clause')
++            return outcome
++        code, response = self.mutation('task', head, actual_head)
++        if code or not response['merged']:
++            clause = next(line for line in branches.splitlines() if '`github-refusal`' in line)
++            if 'and return' not in clause:
++                raise ValueError('GitHub refusal reaches confirmation')
++            return 'github-refusal'
++        confirmation = section(operation, '3. Confirm Delivery Merge')
++        self.events.extend(('capability', name) for name in calls(confirmation))
++        current = readback or dict(merged=True, head=head, base=target, merge_commit_sha=MERGE)
++        if current != dict(merged=True, head=head, base=target, merge_commit_sha=MERGE):
++            if 'provide [Failure]' not in confirmation or 'and return' not in confirmation:
++                raise ValueError('readback discrepancy has no terminal failure')
++            return 'failure'
++        return 'confirmed-merge'
++
++    def integration(self, outcomes, *, refresh_passes=True, heads=(HEAD, NEW_HEAD),
++                    initial_head=HEAD):
++        merge_step = section(self.epic, '3. Merge or Hand Off')
++        self.events.append(('verify', initial_head))
++        for attempt, outcome in enumerate(outcomes):
++            head = heads[min(attempt, len(heads)-1)]
++            self.events.append(('merge-operation', head))
++            if outcome in ('human-handoff', 'harness-denial'):
++                title = 'Human Handoff' if outcome == 'human-handoff' else 'Harness Denial'
++                branch = section(merge_step, title)
++                if 'return' not in branch or calls(branch):
++                    raise ValueError(f'{outcome} is not terminal')
++                return outcome
++            if outcome == 'github-refusal':
++                branch = section(merge_step, 'GitHub Refusal')
++                self.events.extend(('capability', name) for name in calls(branch))
++                if 'For each `github-refusal`' not in branch:
++                    raise ValueError('refusal leaves readiness published')
++                if attempt:
++                    if 'without a further retry or merged-success readback' not in branch:
++                        raise ValueError('repeated refusal has no terminal bound')
++                    return outcome
++                if 'before one further merge attempt' not in branch:
++                    raise ValueError('retry has no bound')
++                fresh = re.search(r'fresh (.*?) evidence before', branch)[1]
++                for evidence in ('branch', 'criterion', 'head', 'target', 'review', 'check'):
++                    if evidence not in fresh:
++                        raise ValueError(f'retry lacks fresh {evidence}')
++                self.events.append(('refresh', heads[1], fresh))
++                if not refresh_passes:
++                    if 'return that blocker without another attempt' not in branch:
++                        raise ValueError('failed verification reaches retry')
++                    return 'failure'
++                self.events.append(('verify', heads[1]))
++                continue
++            if outcome == 'confirmed-merge':
++                branch = section(merge_step, 'Confirmed Merge')
++                if 'continue to confirm the result' not in branch:
++                    raise ValueError('merge confirmation is unreachable')
++                final = section(self.epic, '4. Confirm the Result')
++                if not final.lstrip().startswith('- Only after `confirmed-merge`'):
++                    raise ValueError('final readback lacks a success gate')
++                self.events.extend(('capability', name) for name in calls(final))
++                return outcome
++            if 'an unclassified [Failure]' not in merge_step:
++                raise ValueError('unclassified mutation result has no terminal route')
++            return 'failure'
++        raise ValueError('fixture ended before a terminal result')
++
++
++class MergeOutcomes(unittest.TestCase):
++    def test_task_caller_verifies_before_its_first_mutation(self):
++        operation = section(PULL.read_text(), 'Merge Task Pull Requests')
++        first_attempt = section(operation, '2. Merge Verified Task Pull').split('- Stop on', 1)[0]
++        selected = []
++        for line in first_attempt.splitlines():
++            if line.startswith('- Merge '):
++                selected.append('unverified mutation')
++            selected.extend(calls(line))
++        self.assertEqual(selected, ['Update Epic Base', 'Fetch Merge Readiness',
++                                    'Merge Delivery Pull Request'])
++
++    def test_task_mutation_submits_verified_sha(self):
++        route = Instructions()
++        code, response = route.mutation('task', HEAD)
++        self.assertEqual((code, response['merged']), (0, True))
++        self.assertIn('sha=' + HEAD, route.events[0][2])
++        self.assertIn('merge_method=merge', route.events[0][2])
++
++    def test_epic_mutation_submits_verified_sha(self):
++        route = Instructions()
++        self.assertEqual(route.mutation('epic', HEAD)[0], 0)
++        self.assertIn('sha=' + HEAD, route.events[0][2])
++
++    def test_moving_head_refuses_exact_documented_mutation(self):
++        route = Instructions()
++        self.assertEqual(route.delivery('attempt', actual_head=NEW_HEAD), 'github-refusal')
++        self.assertEqual([event[0] for event in route.events], ['mutation'])
++
++    def test_person_review_hands_off_without_mutation(self):
++        route = Instructions()
++        self.assertEqual(route.delivery('attempt', person_review=True), 'human-handoff')
++        self.assertEqual(route.events, [])
++
++    def test_default_branch_keeps_human_merge_boundary(self):
++        route = Instructions()
++        self.assertEqual(route.delivery('attempt', default=True), 'human-handoff')
++        self.assertEqual(route.events, [])
++
++    def test_harness_denial_has_no_github_response(self):
++        route = Instructions()
++        self.assertEqual(route.delivery('harness-denial'), 'harness-denial')
++        self.assertEqual(route.events, [('harness-denial', HEAD, TARGET)])
++
++    def test_confirmed_merge_reads_state_after_mutation(self):
++        route = Instructions()
++        self.assertEqual(route.delivery('attempt'), 'confirmed-merge')
++        self.assertEqual([event[0] for event in route.events], ['mutation', 'capability'])
++        self.assertEqual(route.events[1], ('capability', 'Read Merge Result'))
++
++    def test_readback_disagreements_cannot_confirm_merge(self):
++        for update in (dict(merged=False), dict(head=NEW_HEAD), dict(base='main'),
++                       dict(merge_commit_sha=None), dict(merge_commit_sha=NEW_HEAD)):
++            with self.subTest(update=update):
++                state = dict(merged=True, head=HEAD, base=TARGET, merge_commit_sha=MERGE)
++                state.update(update)
++                self.assertEqual(Instructions().delivery('attempt', readback=state), 'failure')
++
++    def test_epic_human_handoff_has_no_retry_or_success_readback(self):
++        route = Instructions()
++        self.assertEqual(route.integration(['human-handoff']), 'human-handoff')
++        self.assertEqual(route.events, [('verify', HEAD), ('merge-operation', HEAD)])
++
++    def test_epic_harness_denial_has_no_retry_or_success_readback(self):
++        route = Instructions()
++        self.assertEqual(route.integration(['harness-denial']), 'harness-denial')
++        self.assertEqual(route.events, [('verify', HEAD), ('merge-operation', HEAD)])
++
++    def test_github_retry_withdraws_and_verifies_fresh_head_first(self):
++        route = Instructions()
++        self.assertEqual(route.integration(['github-refusal', 'confirmed-merge']), 'confirmed-merge')
++        self.assertEqual([event[0] for event in route.events],
++                         ['verify', 'merge-operation', 'capability', 'capability', 'refresh',
++                          'verify', 'merge-operation', 'capability'])
++        self.assertEqual(route.events[2:4], [('capability', 'Hold Epic Review'),
++                                           ('capability', 'Record Epic Review')])
++        self.assertEqual(route.events[5:7], [('verify', NEW_HEAD), ('merge-operation', NEW_HEAD)])
++        self.assertEqual(route.events[-1], ('capability', 'Read Pull Request State'))
++
++    def test_repeated_github_refusal_is_terminal_after_two_attempts(self):
++        route = Instructions()
++        self.assertEqual(route.integration(['github-refusal'] * 3), 'github-refusal')
++        self.assertEqual(sum(e[0] == 'merge-operation' for e in route.events), 2)
++        self.assertNotIn(('capability', 'Read Pull Request State'), route.events)
++        self.assertEqual(route.events[-2:], [('capability', 'Hold Epic Review'),
++                                            ('capability', 'Record Epic Review')])
++
++    def test_failed_refresh_stops_before_second_merge(self):
++        route = Instructions()
++        self.assertEqual(route.integration(['github-refusal', 'confirmed-merge'], refresh_passes=False), 'failure')
++        self.assertEqual(sum(e[0] == 'merge-operation' for e in route.events), 1)
++        self.assertNotIn(('capability', 'Read Pull Request State'), route.events)
++
++    def test_retry_terminal_outcomes_do_not_reach_success(self):
++        for terminal in ('human-handoff', 'harness-denial', 'failure'):
++            with self.subTest(outcome=terminal):
++                route = Instructions()
++                self.assertEqual(route.integration(['github-refusal', terminal]), terminal)
++                self.assertNotIn(('capability', 'Read Pull Request State'), route.events)
++
++    def test_confirmed_epic_merge_is_only_success_readback_route(self):
++        route = Instructions()
++        self.assertEqual(route.integration(['confirmed-merge']), 'confirmed-merge')
++        self.assertEqual(route.events[-1], ('capability', 'Read Pull Request State'))
++
++    def test_removed_sha_binding_is_observed_by_moving_head_fixture(self):
++        source = re.sub(r'  -f sha=\[\*\*&lt;head-sha&gt;\*\*\]\(#verified-head "○"\) &#92;\n', '', PULL.read_text(), count=1)
++        route = Instructions(pull=source)
++        code, _ = route.mutation('task', HEAD)
++        self.assertNotEqual(code, 0)
++        self.assertNotIn('sha=' + HEAD, route.events[0][2])
++
++    def test_removed_terminal_guard_is_rejected_by_route_fixture(self):
++        source = EPIC.read_text().replace('provide the result to the reviewer and return.', 'provide the result to the reviewer.')
++        with self.assertRaisesRegex(ValueError, 'not terminal'):
++            Instructions(epic=source).integration(['human-handoff'])
++
++    def test_removed_success_gate_is_rejected_by_route_fixture(self):
++        source = EPIC.read_text().replace('- Only after `confirmed-merge`, Apply', '- Apply')
++        with self.assertRaisesRegex(ValueError, 'lacks a success gate'):
++            Instructions(epic=source).integration(['confirmed-merge'])
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/skills/work-planner/test/test_readme.py b/skills/work-planner/test/test_readme.py
+index e8445e568..eda4bb908 100644
+--- a/skills/work-planner/test/test_readme.py
++++ b/skills/work-planner/test/test_readme.py
+@@ -208 +208 @@ class Coverage(unittest.TestCase):
+-    def test_a_document_row_names_the_prose_modules_that_read_it(self):
++    def test_a_document_row_names_the_modules_that_read_it(self):
+@@ -212 +212 @@ class Coverage(unittest.TestCase):
+-                       if not scripts_named(name) and document in documents(name)}
++                       if document in documents(name)}
+@@ -214 +214 @@ class Coverage(unittest.TestCase):
+-                self.assertTrue(readers, f'{document} is read by no prose module')
++                self.assertTrue(readers, f'{document} is read by no module')

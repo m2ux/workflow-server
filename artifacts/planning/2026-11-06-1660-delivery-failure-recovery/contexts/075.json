@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/modes/deliver-mode.md:L226:Verify Hot-Fix Readiness",
+    "name": "Verify Hot-Fix Readiness",
+    "filePath": "skills/work-planner/modes/deliver-mode.md",
+    "startLine": 226,
+    "endLine": 244
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L202:2. Merge Verified Task Pull",
+    "name": "2. Merge Verified Task Pull",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 202,
+    "endLine": 213
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

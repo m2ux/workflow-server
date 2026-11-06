@@ -1,0 +1,51 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_readme.py:Coverage.test_a_document_row_names_the_modules_that_read_it#0",
+    "name": "test_a_document_row_names_the_modules_that_read_it",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_readme.py",
+    "startLine": 208,
+    "endLine": 215
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_readme.py:Coverage",
+        "name": "Coverage",
+        "filePath": "skills/work-planner/test/test_readme.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/test/test_readme.py:documents",
+        "name": "documents",
+        "filePath": "skills/work-planner/test/test_readme.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/test_readme.py:linked",
+        "name": "linked",
+        "filePath": "skills/work-planner/test/test_readme.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/test_readme.py:modules",
+        "name": "modules",
+        "filePath": "skills/work-planner/test/test_readme.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/test_readme.py:rows",
+        "name": "rows",
+        "filePath": "skills/work-planner/test/test_readme.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/test_readme.py:subject",
+        "name": "subject",
+        "filePath": "skills/work-planner/test/test_readme.py"
+      }
+    ]
+  },
+  "processes": []
+}

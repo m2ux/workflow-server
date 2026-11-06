@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L48:3. Merge or Hand Off",
+    "name": "3. Merge or Hand Off",
+    "filePath": "skills/work-planner/protocols/epic-integration.md",
+    "startLine": 48,
+    "endLine": 73
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

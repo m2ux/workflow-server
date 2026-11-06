@@ -1,0 +1,31 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_changed_head_after_ready_restores_before_repair#0",
+    "name": "test_changed_head_after_ready_restores_before_repair",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_hotfix_readiness.py",
+    "startLine": 155,
+    "endLine": 162
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness",
+        "name": "HotFixReadiness",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/test/test_hotfix_readiness.py:walk",
+        "name": "walk",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      }
+    ]
+  },
+  "processes": []
+}

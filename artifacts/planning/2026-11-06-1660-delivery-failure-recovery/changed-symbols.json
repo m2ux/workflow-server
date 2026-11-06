@@ -1,0 +1,716 @@
+[
+  {
+    "uid": "Method:skills/work-planner/test/test_readme.py:Coverage.test_a_document_row_names_the_modules_that_read_it#0",
+    "name": "test_a_document_row_names_the_modules_that_read_it",
+    "path": "skills/work-planner/test/test_readme.py",
+    "start": 208,
+    "end": 215
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:Tracker.__init__#11",
+    "name": "__init__",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 23,
+    "end": 42
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:Tracker.call#1",
+    "name": "call",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 44,
+    "end": 68
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_initial_invalid_ready_review_restores_and_reads_before_repair#0",
+    "name": "test_initial_invalid_ready_review_restores_and_reads_before_repair",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 140,
+    "end": 146
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_initial_invalid_draft_review_confirms_without_an_extra_write#0",
+    "name": "test_initial_invalid_draft_review_confirms_without_an_extra_write",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 148,
+    "end": 153
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_changed_head_after_ready_restores_before_repair#0",
+    "name": "test_changed_head_after_ready_restores_before_repair",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 155,
+    "end": 162
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_new_review_finding_after_ready_restores_before_repair#0",
+    "name": "test_new_review_finding_after_ready_restores_before_repair",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 164,
+    "end": 169
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_failed_restoration_reads_and_stops_with_the_discrepancy#0",
+    "name": "test_failed_restoration_reads_and_stops_with_the_discrepancy",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 171,
+    "end": 177
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_successful_write_with_ready_readback_stops#0",
+    "name": "test_successful_write_with_ready_readback_stops",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 179,
+    "end": 184
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_unreadable_restoration_readback_stops#0",
+    "name": "test_unreadable_restoration_readback_stops",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 186,
+    "end": 192
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_failed_ready_write_restores_a_partial_write_before_repair#0",
+    "name": "test_failed_ready_write_restores_a_partial_write_before_repair",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 194,
+    "end": 200
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_passing_draft_reaches_merge_once_after_ready_readback#0",
+    "name": "test_passing_draft_reaches_merge_once_after_ready_readback",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 202,
+    "end": 206
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_passing_ready_reaches_merge_once_without_a_ready_write#0",
+    "name": "test_passing_ready_reaches_merge_once_without_a_ready_write",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 208,
+    "end": 212
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_unreadable_or_closed_initial_state_stops_without_writes#0",
+    "name": "test_unreadable_or_closed_initial_state_stops_without_writes",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 214,
+    "end": 219
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness.test_missing_restoration_call_changes_the_observed_failure_route#0",
+    "name": "test_missing_restoration_call_changes_the_observed_failure_route",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 221,
+    "end": 227
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.__init__#2",
+    "name": "__init__",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 42,
+    "end": 45
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.mutation#3",
+    "name": "mutation",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 47,
+    "end": 74
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.delivery#7",
+    "name": "delivery",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 76,
+    "end": 108
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.integration#4",
+    "name": "integration",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 110,
+    "end": 157
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_task_caller_verifies_before_its_first_mutation#0",
+    "name": "test_task_caller_verifies_before_its_first_mutation",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 161,
+    "end": 170
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_task_mutation_submits_verified_sha#0",
+    "name": "test_task_mutation_submits_verified_sha",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 172,
+    "end": 177
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_epic_mutation_submits_verified_sha#0",
+    "name": "test_epic_mutation_submits_verified_sha",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 179,
+    "end": 182
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_moving_head_refuses_exact_documented_mutation#0",
+    "name": "test_moving_head_refuses_exact_documented_mutation",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 184,
+    "end": 187
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_person_review_hands_off_without_mutation#0",
+    "name": "test_person_review_hands_off_without_mutation",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 189,
+    "end": 192
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_default_branch_keeps_human_merge_boundary#0",
+    "name": "test_default_branch_keeps_human_merge_boundary",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 194,
+    "end": 197
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_harness_denial_has_no_github_response#0",
+    "name": "test_harness_denial_has_no_github_response",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 199,
+    "end": 202
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_confirmed_merge_reads_state_after_mutation#0",
+    "name": "test_confirmed_merge_reads_state_after_mutation",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 204,
+    "end": 208
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_readback_disagreements_cannot_confirm_merge#0",
+    "name": "test_readback_disagreements_cannot_confirm_merge",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 210,
+    "end": 216
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_epic_human_handoff_has_no_retry_or_success_readback#0",
+    "name": "test_epic_human_handoff_has_no_retry_or_success_readback",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 218,
+    "end": 221
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_epic_harness_denial_has_no_retry_or_success_readback#0",
+    "name": "test_epic_harness_denial_has_no_retry_or_success_readback",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 223,
+    "end": 226
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_github_retry_withdraws_and_verifies_fresh_head_first#0",
+    "name": "test_github_retry_withdraws_and_verifies_fresh_head_first",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 228,
+    "end": 237
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_repeated_github_refusal_is_terminal_after_two_attempts#0",
+    "name": "test_repeated_github_refusal_is_terminal_after_two_attempts",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 239,
+    "end": 245
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_failed_refresh_stops_before_second_merge#0",
+    "name": "test_failed_refresh_stops_before_second_merge",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 247,
+    "end": 251
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_retry_terminal_outcomes_do_not_reach_success#0",
+    "name": "test_retry_terminal_outcomes_do_not_reach_success",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 253,
+    "end": 258
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_confirmed_epic_merge_is_only_success_readback_route#0",
+    "name": "test_confirmed_epic_merge_is_only_success_readback_route",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 260,
+    "end": 263
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_removed_sha_binding_is_observed_by_moving_head_fixture#0",
+    "name": "test_removed_sha_binding_is_observed_by_moving_head_fixture",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 265,
+    "end": 270
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_removed_terminal_guard_is_rejected_by_route_fixture#0",
+    "name": "test_removed_terminal_guard_is_rejected_by_route_fixture",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 272,
+    "end": 275
+  },
+  {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_removed_success_gate_is_rejected_by_route_fixture#0",
+    "name": "test_removed_success_gate_is_rejected_by_route_fixture",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 277,
+    "end": 280
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_hotfix_readiness.py:ROOT",
+    "name": "ROOT",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 15,
+    "end": 15
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_hotfix_readiness.py:SOURCE",
+    "name": "SOURCE",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 16,
+    "end": 16
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_hotfix_readiness.py:CALL",
+    "name": "CALL",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 17,
+    "end": 17
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_merge_outcomes.py:ROOT",
+    "name": "ROOT",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 17,
+    "end": 17
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_merge_outcomes.py:PULL",
+    "name": "PULL",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 18,
+    "end": 18
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_merge_outcomes.py:EPIC",
+    "name": "EPIC",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 19,
+    "end": 19
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_merge_outcomes.py:HEAD",
+    "name": "HEAD",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 20,
+    "end": 20
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_merge_outcomes.py:NEW_HEAD",
+    "name": "NEW_HEAD",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 21,
+    "end": 21
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_merge_outcomes.py:MERGE",
+    "name": "MERGE",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 22,
+    "end": 22
+  },
+  {
+    "uid": "Variable:skills/work-planner/test/test_merge_outcomes.py:TARGET",
+    "name": "TARGET",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 23,
+    "end": 23
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L1:Pull Request",
+    "name": "Pull Request",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 1,
+    "end": 789
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L5:Operations",
+    "name": "Operations",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 5,
+    "end": 269
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L7:Merge Delivery Pull Request",
+    "name": "Merge Delivery Pull Request",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 7,
+    "end": 46
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L11:1. Read Target Review Requirements",
+    "name": "1. Read Target Review Requirements",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 11,
+    "end": 19
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L20:2. Merge Approved Delivery",
+    "name": "2. Merge Approved Delivery",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 20,
+    "end": 39
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L24:Task Merge",
+    "name": "Task Merge",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 24,
+    "end": 27
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L28:Epic Merge",
+    "name": "Epic Merge",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 28,
+    "end": 31
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L32:Mutation Outcome",
+    "name": "Mutation Outcome",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 32,
+    "end": 39
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L40:3. Confirm Delivery Merge",
+    "name": "3. Confirm Delivery Merge",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 40,
+    "end": 46
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L194:Merge Task Pull Requests",
+    "name": "Merge Task Pull Requests",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 194,
+    "end": 218
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L202:2. Merge Verified Task Pull",
+    "name": "2. Merge Verified Task Pull",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 202,
+    "end": 213
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L214:3. Confirm Task Merge Result",
+    "name": "3. Confirm Task Merge Result",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 214,
+    "end": 218
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L270:Commands",
+    "name": "Commands",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 270,
+    "end": 578
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L326:Merge Pull Request",
+    "name": "Merge Pull Request",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 326,
+    "end": 342
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L361:Submit Epic Merge",
+    "name": "Submit Epic Merge",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 361,
+    "end": 376
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L377:Read Merge Result",
+    "name": "Read Merge Result",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 377,
+    "end": 385
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L571:Mark Review Draft",
+    "name": "Mark Review Draft",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 571,
+    "end": 578
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L579:Fields",
+    "name": "Fields",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 579,
+    "end": 780
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L629:Merge Result",
+    "name": "Merge Result",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 629,
+    "end": 632
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L633:Merge Response",
+    "name": "Merge Response",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 633,
+    "end": 636
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L637:Merge State",
+    "name": "Merge State",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 637,
+    "end": 640
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L781:Guidance",
+    "name": "Guidance",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 781,
+    "end": 789
+  },
+  {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L783:Merge Permission",
+    "name": "Merge Permission",
+    "path": "skills/work-planner/artifacts/pull-request.md",
+    "start": 783,
+    "end": 789
+  },
+  {
+    "uid": "Section:skills/work-planner/modes/deliver-mode.md:L1:Deliver Mode",
+    "name": "Deliver Mode",
+    "path": "skills/work-planner/modes/deliver-mode.md",
+    "start": 1,
+    "end": 305
+  },
+  {
+    "uid": "Section:skills/work-planner/modes/deliver-mode.md:L7:Procedure",
+    "name": "Procedure",
+    "path": "skills/work-planner/modes/deliver-mode.md",
+    "start": 7,
+    "end": 281
+  },
+  {
+    "uid": "Section:skills/work-planner/modes/deliver-mode.md:L143:Run Delivery Session",
+    "name": "Run Delivery Session",
+    "path": "skills/work-planner/modes/deliver-mode.md",
+    "start": 143,
+    "end": 281
+  },
+  {
+    "uid": "Section:skills/work-planner/modes/deliver-mode.md:L218:9. Review a Hot-Fix",
+    "name": "9. Review a Hot-Fix",
+    "path": "skills/work-planner/modes/deliver-mode.md",
+    "start": 218,
+    "end": 259
+  },
+  {
+    "uid": "Section:skills/work-planner/modes/deliver-mode.md:L226:Verify Hot-Fix Readiness",
+    "name": "Verify Hot-Fix Readiness",
+    "path": "skills/work-planner/modes/deliver-mode.md",
+    "start": 226,
+    "end": 244
+  },
+  {
+    "uid": "Section:skills/work-planner/modes/deliver-mode.md:L245:Restore Hot-Fix Draft",
+    "name": "Restore Hot-Fix Draft",
+    "path": "skills/work-planner/modes/deliver-mode.md",
+    "start": 245,
+    "end": 254
+  },
+  {
+    "uid": "Section:skills/work-planner/modes/deliver-mode.md:L255:Repair Hot-Fix Findings",
+    "name": "Repair Hot-Fix Findings",
+    "path": "skills/work-planner/modes/deliver-mode.md",
+    "start": 255,
+    "end": 259
+  },
+  {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L1:Epic Integration",
+    "name": "Epic Integration",
+    "path": "skills/work-planner/protocols/epic-integration.md",
+    "start": 1,
+    "end": 79
+  },
+  {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L7:Procedure",
+    "name": "Procedure",
+    "path": "skills/work-planner/protocols/epic-integration.md",
+    "start": 7,
+    "end": 79
+  },
+  {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L9:1. Prepare the Evidence",
+    "name": "1. Prepare the Evidence",
+    "path": "skills/work-planner/protocols/epic-integration.md",
+    "start": 9,
+    "end": 19
+  },
+  {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L48:3. Merge or Hand Off",
+    "name": "3. Merge or Hand Off",
+    "path": "skills/work-planner/protocols/epic-integration.md",
+    "start": 48,
+    "end": 73
+  },
+  {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L54:Human Handoff",
+    "name": "Human Handoff",
+    "path": "skills/work-planner/protocols/epic-integration.md",
+    "start": 54,
+    "end": 57
+  },
+  {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L58:Harness Denial",
+    "name": "Harness Denial",
+    "path": "skills/work-planner/protocols/epic-integration.md",
+    "start": 58,
+    "end": 61
+  },
+  {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L62:GitHub Refusal",
+    "name": "GitHub Refusal",
+    "path": "skills/work-planner/protocols/epic-integration.md",
+    "start": 62,
+    "end": 69
+  },
+  {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L70:Confirmed Merge",
+    "name": "Confirmed Merge",
+    "path": "skills/work-planner/protocols/epic-integration.md",
+    "start": 70,
+    "end": 73
+  },
+  {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L74:4. Confirm the Result",
+    "name": "4. Confirm the Result",
+    "path": "skills/work-planner/protocols/epic-integration.md",
+    "start": 74,
+    "end": 79
+  },
+  {
+    "uid": "Section:skills/work-planner/test/README.md:L1:Work Planner Test Suite",
+    "name": "Work Planner Test Suite",
+    "path": "skills/work-planner/test/README.md",
+    "start": 1,
+    "end": 160
+  },
+  {
+    "uid": "Section:skills/work-planner/test/README.md:L25:Catalogue",
+    "name": "Catalogue",
+    "path": "skills/work-planner/test/README.md",
+    "start": 25,
+    "end": 77
+  },
+  {
+    "uid": "Section:skills/work-planner/test/README.md:L29:Script Tests",
+    "name": "Script Tests",
+    "path": "skills/work-planner/test/README.md",
+    "start": 29,
+    "end": 59
+  },
+  {
+    "uid": "Section:skills/work-planner/test/README.md:L60:Prose Tests",
+    "name": "Prose Tests",
+    "path": "skills/work-planner/test/README.md",
+    "start": 60,
+    "end": 77
+  },
+  {
+    "uid": "Section:skills/work-planner/test/README.md:L78:Coverage",
+    "name": "Coverage",
+    "path": "skills/work-planner/test/README.md",
+    "start": 78,
+    "end": 135
+  },
+  {
+    "uid": "Section:skills/work-planner/test/README.md:L82:Scripts",
+    "name": "Scripts",
+    "path": "skills/work-planner/test/README.md",
+    "start": 82,
+    "end": 109
+  },
+  {
+    "uid": "Section:skills/work-planner/test/README.md:L110:Documents",
+    "name": "Documents",
+    "path": "skills/work-planner/test/README.md",
+    "start": 110,
+    "end": 135
+  },
+  {
+    "uid": "Function:skills/work-planner/test/test_hotfix_readiness.py:walk",
+    "name": "walk",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 71,
+    "end": 136
+  },
+  {
+    "uid": "Function:skills/work-planner/test/test_merge_outcomes.py:section",
+    "name": "section",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 26,
+    "end": 32
+  },
+  {
+    "uid": "Function:skills/work-planner/test/test_merge_outcomes.py:calls",
+    "name": "calls",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 35,
+    "end": 36
+  },
+  {
+    "uid": "Class:skills/work-planner/test/test_readme.py:Coverage",
+    "name": "Coverage",
+    "path": "skills/work-planner/test/test_readme.py",
+    "start": 185,
+    "end": 232
+  },
+  {
+    "uid": "Class:skills/work-planner/test/test_hotfix_readiness.py:Tracker",
+    "name": "Tracker",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 20,
+    "end": 68
+  },
+  {
+    "uid": "Class:skills/work-planner/test/test_hotfix_readiness.py:HotFixReadiness",
+    "name": "HotFixReadiness",
+    "path": "skills/work-planner/test/test_hotfix_readiness.py",
+    "start": 139,
+    "end": 227
+  },
+  {
+    "uid": "Class:skills/work-planner/test/test_merge_outcomes.py:Instructions",
+    "name": "Instructions",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 39,
+    "end": 157
+  },
+  {
+    "uid": "Class:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes",
+    "name": "MergeOutcomes",
+    "path": "skills/work-planner/test/test_merge_outcomes.py",
+    "start": 160,
+    "end": 280
+  }
+]

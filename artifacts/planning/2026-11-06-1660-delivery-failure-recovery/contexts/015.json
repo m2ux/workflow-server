@@ -1,0 +1,42 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.__init__#2",
+    "name": "__init__",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_merge_outcomes.py",
+    "startLine": 42,
+    "endLine": 45
+  },
+  "epistemic": "lower-bound",
+  "boundaries": [
+    "1 call site invoking `__init__` was dropped at index time because the receiver's type could not be established (e.g. an unresolved constructor, factory or chained expression). Those callers are absent from this result — actual impact may be higher."
+  ],
+  "causes": {
+    "scopeExtractionFiles": 0,
+    "receiverTyping": 1,
+    "dispatchBoundary": 0,
+    "externalBoundary": 0,
+    "undecidedSatisfaction": 0,
+    "callableValueReferences": 0
+  },
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_merge_outcomes.py:Instructions",
+        "name": "Instructions",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "accesses": [
+      {
+        "uid": "Property:skills/work-planner/scripts/board.py:Output.pull",
+        "name": "pull",
+        "filePath": "skills/work-planner/scripts/board.py"
+      }
+    ]
+  },
+  "processes": []
+}

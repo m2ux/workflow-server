@@ -1,0 +1,14 @@
+{
+  "changed_files": [
+    "skills/work-planner/artifacts/pull-request.md",
+    "skills/work-planner/modes/deliver-mode.md",
+    "skills/work-planner/protocols/epic-integration.md",
+    "skills/work-planner/test/README.md",
+    "skills/work-planner/test/test_hotfix_readiness.py",
+    "skills/work-planner/test/test_merge_outcomes.py",
+    "skills/work-planner/test/test_readme.py"
+  ],
+  "intersecting_nodes": 102,
+  "unavailable": [],
+  "processes": []
+}

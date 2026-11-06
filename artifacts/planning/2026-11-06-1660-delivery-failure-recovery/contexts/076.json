@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/modes/deliver-mode.md:L245:Restore Hot-Fix Draft",
+    "name": "Restore Hot-Fix Draft",
+    "filePath": "skills/work-planner/modes/deliver-mode.md",
+    "startLine": 245,
+    "endLine": 254
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

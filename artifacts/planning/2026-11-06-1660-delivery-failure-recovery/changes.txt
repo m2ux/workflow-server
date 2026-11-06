@@ -1,0 +1,21 @@
+Changes: 7 files, 102 symbols
+Affected processes: 0
+Risk level: low
+
+Changed symbols:
+  Section Pull Request → skills/work-planner/artifacts/pull-request.md
+  Section Operations → skills/work-planner/artifacts/pull-request.md
+  Section Merge Delivery Pull Request → skills/work-planner/artifacts/pull-request.md
+  Section 1. Read Target Review Requirements → skills/work-planner/artifacts/pull-request.md
+  Section 2. Merge Approved Delivery → skills/work-planner/artifacts/pull-request.md
+  Section Task Merge → skills/work-planner/artifacts/pull-request.md
+  Section Epic Merge → skills/work-planner/artifacts/pull-request.md
+  Section Mutation Outcome → skills/work-planner/artifacts/pull-request.md
+  Section 3. Confirm Delivery Merge → skills/work-planner/artifacts/pull-request.md
+  Section Merge Task Pull Requests → skills/work-planner/artifacts/pull-request.md
+  Section 2. Merge Verified Task Pull → skills/work-planner/artifacts/pull-request.md
+  Section 3. Confirm Task Merge Result → skills/work-planner/artifacts/pull-request.md
+  Section Commands → skills/work-planner/artifacts/pull-request.md
+  Section Merge Pull Request → skills/work-planner/artifacts/pull-request.md
+  Section Submit Epic Merge → skills/work-planner/artifacts/pull-request.md
+... and 87 more

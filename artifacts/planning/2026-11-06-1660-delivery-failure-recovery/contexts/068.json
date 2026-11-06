@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L637:Merge State",
+    "name": "Merge State",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 637,
+    "endLine": 640
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/modes/deliver-mode.md:L255:Repair Hot-Fix Findings",
+    "name": "Repair Hot-Fix Findings",
+    "filePath": "skills/work-planner/modes/deliver-mode.md",
+    "startLine": 255,
+    "endLine": 259
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

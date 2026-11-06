@@ -1,0 +1,15 @@
+{
+  "head": "ff94f4a28ee0134a10f46ba571a9795f5e6841f1",
+  "inspected_contexts": 102,
+  "unavailable_contexts": 0,
+  "reported_affected_processes": 0,
+  "measured_containment_edges": 6,
+  "measured_nested_call_edges": 4,
+  "checked_source_permalinks": 18,
+  "diagram_nodes": [
+    7,
+    5,
+    5
+  ],
+  "mermaid_renderer": "not installed; topology, fences and source links checked"
+}

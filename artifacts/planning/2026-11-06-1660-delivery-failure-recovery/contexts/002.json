@@ -1,0 +1,48 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:Tracker.call#1",
+    "name": "call",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_hotfix_readiness.py",
+    "startLine": 44,
+    "endLine": 68
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_hotfix_readiness.py:Tracker",
+        "name": "Tracker",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:check",
+        "name": "check",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      }
+    ],
+    "accesses": [
+      {
+        "uid": "Property:skills/work-planner/scripts/sync.py:Branches.problem",
+        "name": "problem",
+        "filePath": "skills/work-planner/scripts/sync.py"
+      },
+      {
+        "uid": "Property:skills/workflow-canon/scripts/guard_report.py:parse.current@50:4",
+        "name": "current",
+        "filePath": "skills/workflow-canon/scripts/guard_report.py"
+      },
+      {
+        "uid": "Property:skills/workflow-canon/scripts/guard_report.py:parse.current@50:4",
+        "name": "current",
+        "filePath": "skills/workflow-canon/scripts/guard_report.py"
+      }
+    ]
+  },
+  "processes": []
+}

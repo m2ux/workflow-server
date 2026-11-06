@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L7:Procedure",
+    "name": "Procedure",
+    "filePath": "skills/work-planner/protocols/epic-integration.md",
+    "startLine": 7,
+    "endLine": 79
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

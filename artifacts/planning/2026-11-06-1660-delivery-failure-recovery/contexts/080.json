@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L9:1. Prepare the Evidence",
+    "name": "1. Prepare the Evidence",
+    "filePath": "skills/work-planner/protocols/epic-integration.md",
+    "startLine": 9,
+    "endLine": 19
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

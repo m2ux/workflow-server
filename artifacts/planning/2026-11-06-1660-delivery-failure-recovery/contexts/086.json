@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L74:4. Confirm the Result",
+    "name": "4. Confirm the Result",
+    "filePath": "skills/work-planner/protocols/epic-integration.md",
+    "startLine": 74,
+    "endLine": 79
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

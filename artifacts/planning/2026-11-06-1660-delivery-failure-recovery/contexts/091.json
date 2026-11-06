@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/test/README.md:L78:Coverage",
+    "name": "Coverage",
+    "filePath": "skills/work-planner/test/README.md",
+    "startLine": 78,
+    "endLine": 135
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

@@ -1,0 +1,15 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Variable:skills/work-planner/test/test_merge_outcomes.py:TARGET",
+    "name": "TARGET",
+    "kind": "Variable",
+    "filePath": "skills/work-planner/test/test_merge_outcomes.py",
+    "startLine": 23,
+    "endLine": 23
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

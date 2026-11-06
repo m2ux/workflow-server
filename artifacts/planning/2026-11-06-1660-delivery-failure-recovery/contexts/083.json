@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/protocols/epic-integration.md:L58:Harness Denial",
+    "name": "Harness Denial",
+    "filePath": "skills/work-planner/protocols/epic-integration.md",
+    "startLine": 58,
+    "endLine": 61
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

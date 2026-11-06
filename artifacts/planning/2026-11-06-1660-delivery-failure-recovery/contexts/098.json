@@ -1,0 +1,36 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Class:skills/work-planner/test/test_hotfix_readiness.py:Tracker",
+    "name": "Tracker",
+    "kind": "Class",
+    "filePath": "skills/work-planner/test/test_hotfix_readiness.py",
+    "startLine": 20,
+    "endLine": 68
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "imports": [
+      {
+        "uid": "File:skills/work-planner/test/README.md",
+        "name": "README.md",
+        "filePath": "skills/work-planner/test/README.md"
+      }
+    ]
+  },
+  "outgoing": {
+    "has_method": [
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:Tracker.__init__#11",
+        "name": "__init__",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_hotfix_readiness.py:Tracker.call#1",
+        "name": "call",
+        "filePath": "skills/work-planner/test/test_hotfix_readiness.py"
+      }
+    ]
+  },
+  "processes": []
+}

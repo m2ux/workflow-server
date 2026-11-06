@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L270:Commands",
+    "name": "Commands",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 270,
+    "endLine": 578
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

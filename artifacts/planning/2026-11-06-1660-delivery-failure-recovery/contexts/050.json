@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L7:Merge Delivery Pull Request",
+    "name": "Merge Delivery Pull Request",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 7,
+    "endLine": 46
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

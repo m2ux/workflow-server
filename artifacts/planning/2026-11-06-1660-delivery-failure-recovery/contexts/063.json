@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L377:Read Merge Result",
+    "name": "Read Merge Result",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 377,
+    "endLine": 385
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

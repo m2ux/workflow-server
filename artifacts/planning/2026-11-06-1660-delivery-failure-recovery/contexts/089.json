@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/test/README.md:L29:Script Tests",
+    "name": "Script Tests",
+    "filePath": "skills/work-planner/test/README.md",
+    "startLine": 29,
+    "endLine": 59
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

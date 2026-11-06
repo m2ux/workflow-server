@@ -1,0 +1,15 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Variable:skills/work-planner/test/test_hotfix_readiness.py:ROOT",
+    "name": "ROOT",
+    "kind": "Variable",
+    "filePath": "skills/work-planner/test/test_hotfix_readiness.py",
+    "startLine": 15,
+    "endLine": 15
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}

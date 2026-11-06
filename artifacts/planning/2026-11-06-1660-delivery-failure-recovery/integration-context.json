@@ -1,0 +1,83 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:Instructions.integration#4",
+    "name": "integration",
+    "kind": "Method",
+    "filePath": "skills/work-planner/test/test_merge_outcomes.py",
+    "startLine": 110,
+    "endLine": 157
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "has_method": [
+      {
+        "uid": "Class:skills/work-planner/test/test_merge_outcomes.py:Instructions",
+        "name": "Instructions",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ],
+    "calls": [
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_confirmed_epic_merge_is_only_success_readback_route#0",
+        "name": "test_confirmed_epic_merge_is_only_success_readback_route",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_epic_harness_denial_has_no_retry_or_success_readback#0",
+        "name": "test_epic_harness_denial_has_no_retry_or_success_readback",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_epic_human_handoff_has_no_retry_or_success_readback#0",
+        "name": "test_epic_human_handoff_has_no_retry_or_success_readback",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_failed_refresh_stops_before_second_merge#0",
+        "name": "test_failed_refresh_stops_before_second_merge",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_github_retry_withdraws_and_verifies_fresh_head_first#0",
+        "name": "test_github_retry_withdraws_and_verifies_fresh_head_first",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_removed_success_gate_is_rejected_by_route_fixture#0",
+        "name": "test_removed_success_gate_is_rejected_by_route_fixture",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_removed_terminal_guard_is_rejected_by_route_fixture#0",
+        "name": "test_removed_terminal_guard_is_rejected_by_route_fixture",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_repeated_github_refusal_is_terminal_after_two_attempts#0",
+        "name": "test_repeated_github_refusal_is_terminal_after_two_attempts",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_merge_outcomes.py:MergeOutcomes.test_retry_terminal_outcomes_do_not_reach_success#0",
+        "name": "test_retry_terminal_outcomes_do_not_reach_success",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/test/test_merge_outcomes.py:calls",
+        "name": "calls",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/test/test_merge_outcomes.py:section",
+        "name": "section",
+        "filePath": "skills/work-planner/test/test_merge_outcomes.py"
+      }
+    ]
+  },
+  "processes": []
+}

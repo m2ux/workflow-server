@@ -1,0 +1,14 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Section:skills/work-planner/artifacts/pull-request.md:L214:3. Confirm Task Merge Result",
+    "name": "3. Confirm Task Merge Result",
+    "filePath": "skills/work-planner/artifacts/pull-request.md",
+    "startLine": 214,
+    "endLine": 218
+  },
+  "epistemic": "exact",
+  "incoming": {},
+  "outgoing": {},
+  "processes": []
+}
