@@ -20,3 +20,7 @@ The revision fixes the reported Delivery Plan command and every matching invocat
 | Resource | Link |
 | --- | --- |
 | Integration PR | https://github.com/m2ux/workflow-server/pull/1641 |
+
+## Validation
+
+[Validation](validation.md), [rendered/decoded inventory](after.json), [verification script](verify.py), [shared suite](shared.log) and [planner suite](planner.log).

@@ -1,0 +1,814 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "command": "Run at Revision",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/revision-check.py &#92;\n  --project '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**&lt;revision&gt;**](#revision \"\u25cb\")' &#92;\n  -- [**&lt;instrument-command&gt;**](#instrument \"\u25cb\")\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/agent-review.md",
+    "command": "Validate Agent Review",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/agent_review.py &#92;\n  --pr '[**&lt;pull-request-json-file&gt;**](#pull-request-record \"\u25cb\")' &#92;\n  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "command": "Compute Board Changes",
+    "decoded_identical": true,
+    "visible_links": 13,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"\u25cb\")' &#92;\n  --epics '[**&lt;epic-json-file&gt;**](#epic-records \"\u25cb\")' &#92;\n  --tasks '[**&lt;task-json-file&gt;**](#task-records \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"\u25cb\")' &#92;\n  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"\u25cb\")' &#92;\n  --board [**&lt;board-identity&gt;**](#board-identity \"\u25cb\") &#92;\n  --fields '[**&lt;board-fields-file&gt;**](#board-fields \"\u25cb\")' &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --out '[**&lt;output-directory&gt;**](#output-directory \"\u25cb\")' &#92;\n  --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "command": "Compute Dispatch Status",
+    "decoded_identical": true,
+    "visible_links": 11,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --board [**&lt;board-identity&gt;**](#board-identity \"\u25cb\") &#92;\n  --fields '[**&lt;board-fields-file&gt;**](#board-fields \"\u25cb\")' &#92;\n  --out '[**&lt;output-directory&gt;**](#output-directory \"\u25cb\")' &#92;\n  --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"\u25cb\")' &#92;\n  --progress '[**&lt;held-issue-numbers&gt;**](#dispatch-selection \"\u25cb\")' &#92;\n  --review '[**&lt;complete-epic-numbers&gt;**](#dispatch-selection \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "command": "Compute Board Queue",
+    "decoded_identical": true,
+    "visible_links": 9,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/board-queue.py &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"\u25cb\")' &#92;\n  --board [**&lt;board-identity&gt;**](#board-identity \"\u25cb\") &#92;\n  --fields '[**&lt;board-fields-file&gt;**](#board-fields \"\u25cb\")' &#92;\n  --out '[**&lt;output-directory&gt;**](#output-directory \"\u25cb\")' &#92;\n  --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find Board Template",
+    "decoded_identical": true,
+    "visible_links": 2,
+    "payload": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2?per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title == \"[**&lt;template-title&gt;**](#template-selection \"\u25cb\")\") | .number'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Copy Board Template",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh project copy [**&lt;template-number&gt;**](#template-selection \"\u25cb\") &#92;\n  --source-owner [**&lt;owner&gt;**](#board-owner \"\u25cb\") &#92;\n  --target-owner [**&lt;owner&gt;**](#board-owner \"\u25cb\") &#92;\n  --title '[**&lt;board-title&gt;**](#copy-title \"\u25cb\")' &#92;\n  --format json &#92;\n  --jq .number\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Link Board to Repository",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh project link [**&lt;board-number&gt;**](#board-coordinates \"\u25cb\") --owner [**&lt;owner&gt;**](#board-owner \"\u25cb\") --repo [**&lt;repo&gt;**](#repository \"\u25cb\")\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find Proposals Board",
+    "decoded_identical": true,
+    "visible_links": 1,
+    "payload": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2?per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title == \"Proposals\") | .number'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Add Issue to Board",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api --method POST users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items -f type=Issue -F id=[**&lt;issue-id&gt;**](#issue-id \"\u25cb\") --jq .id\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Set Item Status",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api &#92;\n  --method PATCH users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items/[**&lt;item-id&gt;**](#item-coordinates \"\u25cb\") &#92;\n  --input '[**&lt;status-input-file&gt;**](#status-input-file \"\u25cb\")' &#92;\n  --jq .id\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Remove Board Item",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api --method DELETE users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items/[**&lt;item-id&gt;**](#item-coordinates \"\u25cb\")\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Fetch Board Fields",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/fields?per_page=100\" &gt; '[**&lt;board-fields-file&gt;**](#board-fields-file \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find Theme Board",
+    "decoded_identical": true,
+    "visible_links": 2,
+    "payload": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2?per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub(\"^\\\\&#91;P&#91;0-9&#93;+\\\\&#93; \"; \"\") | startswith(\"[**&lt;theme-name&gt;**](#theme-name \"\u25cb\"): \")) | .number'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find Status Field",
+    "decoded_identical": true,
+    "visible_links": 2,
+    "payload": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/fields?per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.name == \"Status\") | .id'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Fetch Board Items with Status",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field \"\u25cb\")\" &#92;\n  &gt; '[**&lt;board-items-file&gt;**](#board-items-file \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Fetch Board Item",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items/[**&lt;item-id&gt;**](#item-coordinates \"\u25cb\")?fields=[**&lt;status-field-id&gt;**](#status-field \"\u25cb\")\"\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find User",
+    "decoded_identical": true,
+    "visible_links": 0,
+    "payload": "\ngh api user --jq .login\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "List Epic Bases",
+    "decoded_identical": true,
+    "visible_links": 1,
+    "payload": "\ngit ls-remote --heads origin 'refs/heads/[**&lt;epic-branch-prefix&gt;**](#epic-identity \"\u25cb\")/*' | cut -f2 | sed 's|refs/heads/||'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "List Long-Lived Branches",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py &#92;\n  --names &#92;\n  --project '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**&lt;revision&gt;**](#revision \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Fetch Remote Branch",
+    "decoded_identical": true,
+    "visible_links": 1,
+    "payload": "\ngit fetch origin '[**&lt;source-branch&gt;**](#source-branch \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Publish Epic Base",
+    "decoded_identical": true,
+    "visible_links": 2,
+    "payload": "\ngit push origin 'origin/[**&lt;source-branch&gt;**](#source-branch \"\u25cb\"):refs/heads/[**&lt;epic-base&gt;**](#epic-base-name \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Merge Remote Branch",
+    "decoded_identical": true,
+    "visible_links": 1,
+    "payload": "\ngit merge --no-edit 'origin/[**&lt;source-branch&gt;**](#source-branch \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Push Epic Base",
+    "decoded_identical": true,
+    "visible_links": 0,
+    "payload": "\ngit push\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Push Task Branch",
+    "decoded_identical": true,
+    "visible_links": 1,
+    "payload": "\ngit push origin 'HEAD:refs/heads/[**&lt;task-branch&gt;**](#task-branch \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Add Task Worktree",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngit worktree add '[**&lt;worktree-path&gt;**](#worktree-path \"\u25cb\")' -b '[**&lt;task-branch&gt;**](#task-branch \"\u25cb\")' 'origin/[**&lt;base&gt;**](#base-branch \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Fetch Review Head",
+    "decoded_identical": true,
+    "visible_links": 1,
+    "payload": "\ngit fetch origin pull/[**&lt;pull-request-number&gt;**](#pull-request-number \"\u25cb\")/head\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Add Epic Base Worktree",
+    "decoded_identical": true,
+    "visible_links": 2,
+    "payload": "\ngit worktree add '[**&lt;worktree-path&gt;**](#worktree-path \"\u25cb\")' '[**&lt;epic-base&gt;**](#epic-base-name \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Add Review Worktree",
+    "decoded_identical": true,
+    "visible_links": 2,
+    "payload": "\ngit worktree add --detach '[**&lt;worktree-path&gt;**](#worktree-path \"\u25cb\")' [**&lt;head-commit&gt;**](#verified-head \"\u25cb\")\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Fetch Branch Protection",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api 'repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/branches/[**&lt;target-branch&gt;**](#target-branch \"\u25cb\")/protection' &gt; '[**&lt;branch-protection-file&gt;**](#output-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Fetch Active Branch Rules",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api --paginate 'repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/rules/branches/[**&lt;target-branch&gt;**](#target-branch \"\u25cb\")' &gt; '[**&lt;branch-rules-file&gt;**](#output-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Read Checkout Revision",
+    "decoded_identical": true,
+    "visible_links": 2,
+    "payload": "\ngit -C '[**&lt;checkout&gt;**](#checkout \"\u25cb\")' rev-parse '[**&lt;revision&gt;**](#revision \"\u25cb\")^{commit}'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Read Checkout Status",
+    "decoded_identical": true,
+    "visible_links": 1,
+    "payload": "\ngit -C '[**&lt;checkout&gt;**](#checkout \"\u25cb\")' status --porcelain --branch\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "command": "Compute Available Work",
+    "decoded_identical": true,
+    "visible_links": 11,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"\u25cb\")' &#92;\n  --project '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**&lt;revision&gt;**](#revision \"\u25cb\")' &#92;\n  --bases '[**&lt;epic-base-names&gt;**](#epic-base-names \"\u25cb\")' &#92;\n  --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree \"\u25cb\")' &#92;\n  --lane [**&lt;lane-index&gt;**](#requested-lane \"\u25cb\") &#92;\n  --dispatch-plan '[**&lt;dispatch-export-file&gt;**](#dispatch-export-path \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "command": "Check Dependencies",
+    "decoded_identical": true,
+    "visible_links": 9,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deps.py 'I=[**&lt;initiative-body-file&gt;**](#dependency-files \"\u25cb\")' &#92;\n  '[**&lt;epic-id&gt;**](#dependency-files \"\u25cb\")=[**&lt;epic-body-file&gt;**](#dependency-files \"\u25cb\")' '[**&lt;epic-id&gt;**](#dependency-files \"\u25cb\"):[**&lt;task-id&gt;**](#dependency-files \"\u25cb\")=[**&lt;work-item-file&gt;**](#dependency-files \"\u25cb\")' 'R=[**&lt;record-file&gt;**](#dependency-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "command": "Renumber Tasks",
+    "decoded_identical": true,
+    "visible_links": 7,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py &#92;\n  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs \"\u25cb\") &#92;\n  --epic [**&lt;epic-number&gt;**](#renumber-inputs \"\u25cb\") &#92;\n  --own '[**&lt;epic-body-file&gt;**](#dependency-files \"\u25cb\")' &#92;\n  --tasks [**&lt;task-number-map&gt;**](#renumber-inputs \"\u25cb\") '[**&lt;affected-body-file&gt;**](#renumber-inputs \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "command": "Renumber Epics",
+    "decoded_identical": true,
+    "visible_links": 6,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py &#92;\n  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs \"\u25cb\") &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --map [**&lt;epic-number-map&gt;**](#renumber-inputs \"\u25cb\") '[**&lt;body-file&gt;**](#renumber-inputs \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "command": "Compute Dispatch Batch",
+    "decoded_identical": true,
+    "visible_links": 8,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/dispatch.py batch &#92;\n  --authorization '[**&lt;authorization-file&gt;**](#authorization \"\u25cb\")' &#92;\n  --plan '[**&lt;dispatch-export-file&gt;**](#survey-evidence \"\u25cb\")' &#92;\n  --sessions '[**&lt;session-inventory-file&gt;**](#session-inventory \"\u25cb\")' &#92;\n  --capacity [**&lt;free-slot-count&gt;**](#free-slots \"\u25cb\") &#92;\n  --board [**&lt;survey-board&gt;**](#survey-board \"\u25cb\") &#92;\n  &gt; '[**&lt;batch-file&gt;**](#batch \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "command": "Check Dispatch Start",
+    "decoded_identical": true,
+    "visible_links": 7,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/dispatch.py start &#92;\n  --batch '[**&lt;batch-file&gt;**](#batch \"\u25cb\")' &#92;\n  --unit [**&lt;unit-identity&gt;**](#unit-identity \"\u25cb\") &#92;\n  --evidence '[**&lt;start-evidence-file&gt;**](#start-evidence \"\u25cb\")' &#92;\n  --sessions '[**&lt;session-inventory-file&gt;**](#session-inventory \"\u25cb\")' &#92;\n  --capacity [**&lt;free-slot-count&gt;**](#free-slots \"\u25cb\")\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Sync Epic",
+    "decoded_identical": true,
+    "visible_links": 10,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --tasks '[**&lt;task-json-file&gt;**](#task-records \"\u25cb\")' &#92;\n  --link '[**&lt;task-pull-request-map&gt;**](#delivery-matches \"\u25cb\")' &#92;\n  --project '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**&lt;epic-base-revision&gt;**](#epic-bases \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Tick Epic Criteria",
+    "decoded_identical": true,
+    "visible_links": 7,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --tick '[**&lt;criterion-ids&gt;**](#criterion-selection \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Reserve Row",
+    "decoded_identical": true,
+    "visible_links": 7,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py &#92;\n  --epic '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --reserve [**&lt;task-ids&gt;**](#task-selection \"\u25cb\") &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --records '[**&lt;records-base-url&gt;**](#planning-folder \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Release Row",
+    "decoded_identical": true,
+    "visible_links": 6,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py &#92;\n  --epic '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --release [**&lt;task-ids&gt;**](#task-selection \"\u25cb\") &#92;\n  --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "command": "Match Pull Requests",
+    "decoded_identical": true,
+    "visible_links": 6,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --fix '[**&lt;epic-body-file&gt;**](#output-body \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "command": "Sync Hot-fix Issue",
+    "decoded_identical": true,
+    "visible_links": 8,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;hot-fix-json-file&gt;**](#hot-fix-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --pr [**&lt;pull-request-number&gt;**](#delivery-selection \"\u25cb\") &#92;\n  --tick '[**&lt;criterion-ids&gt;**](#delivery-selection \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "command": "Sync Initiative",
+    "decoded_identical": true,
+    "visible_links": 5,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"\u25cb\")' &#92;\n  --epics '[**&lt;epic-json-file&gt;**](#epic-records \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "command": "Tick Initiative Criteria",
+    "decoded_identical": true,
+    "visible_links": 6,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"\u25cb\")' &#92;\n  --epics '[**&lt;epic-json-file&gt;**](#epic-records \"\u25cb\")' &#92;\n  --tick '[**&lt;criterion-ids&gt;**](#criterion-selection \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "command": "Fetch Source",
+    "decoded_identical": true,
+    "visible_links": 5,
+    "payload": "\ngh api 'repos/[**&lt;owner&gt;**](#source-evidence \"\u25cb\")/[**&lt;repository&gt;**](#source-evidence \"\u25cb\")/contents/[**&lt;source-path&gt;**](#source-evidence \"\u25cb\")?ref=[**&lt;revision&gt;**](#source-evidence \"\u25cb\")' &#92;\n  --jq .content &#92;\n  | base64 &#92;\n  -d &#92;\n  &gt; '[**&lt;source-file&gt;**](#output-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "Check Body Format",
+    "decoded_identical": true,
+    "visible_links": 10,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/format.py '[**&lt;issue-json-file&gt;**](#body-record \"\u25cb\")' &#92;\n  --initiative '[**&lt;initiative-json-file&gt;**](#initiative-record \"\u25cb\")' &#92;\n  --epic '[**&lt;epic-json-file&gt;**](#epic-records \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --files '[**&lt;pull-request-changed-paths&gt;**](#changed-file-records \"\u25cb\")' &#92;\n  --project '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**&lt;revision&gt;**](#evaluated-revision \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "List Reference Repositories",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\n[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/align.py repositories '[**&lt;issue-json-file&gt;**](#body-record \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "Fetch Reference Repository",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api repos/[**&lt;owner&gt;**](#reference-repositories \"\u25cb\")/[**&lt;repo&gt;**](#reference-repositories \"\u25cb\") &gt; '[**&lt;repository-json-file&gt;**](#output-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "Validate Reference Visibility",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\n[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/align.py references '[**&lt;issue-json-file&gt;**](#body-record \"\u25cb\")' --repositories '[**&lt;repositories-json-file&gt;**](#repository-snapshot \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Create Tracker Issue",
+    "decoded_identical": true,
+    "visible_links": 5,
+    "payload": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues &#92;\n  -f title='[**&lt;title&gt;**](#issue-changes \"\u25cb\")' &#92;\n  -F 'body=@[**&lt;body-file&gt;**](#issue-changes \"\u25cb\")' &#92;\n  -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names \"\u25cb\")' &#92;\n  --jq .number\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Patch Issue Body",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") -F 'body=@[**&lt;body-file&gt;**](#issue-changes \"\u25cb\")' --jq .number\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Issue Body",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") --jq .body &gt; '[**&lt;output-body-file&gt;**](#output-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Retitle Tracker Issue",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") -f title='[**&lt;title&gt;**](#issue-changes \"\u25cb\")' --jq .title\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Add Issue Labels",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/labels -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names \"\u25cb\")' --jq '.&#91;&#93;.name'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Remove Issue Label",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api --method DELETE 'repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/labels/[**&lt;label&gt;**](#label-names \"\u25cb\")' --jq '.&#91;&#93;.name'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Issue Comments",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api --paginate repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/comments\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Tracker Issue",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") &gt; '[**&lt;issue-json-file&gt;**](#issue-record \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Check Issue Closure",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/closure.py &#92;\n  --issue '[**&lt;issue-json-file&gt;**](#issue-record \"\u25cb\")' &#92;\n  --development '[**&lt;issue-links-file&gt;**](#development-snapshot \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Sweep Closure Evidence",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/closure-sweep.py &#92;\n  --issues '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")' &#92;\n  --issue-links '[**&lt;issue-links-file&gt;**](#development-snapshot \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Close as Not Planned",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api &#92;\n  --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") &#92;\n  -f state=closed &#92;\n  -f state_reason=not_planned &#92;\n  --jq .state\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Post Inline Comment",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/comments &#92;\n  -f body='[**&lt;comment-text&gt;**](#comment \"\u25cb\")' &#92;\n  --jq .html_url\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Post Comment File",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/comments &#92;\n  -F 'body=@[**&lt;comment-file&gt;**](#comment \"\u25cb\")' &#92;\n  --jq .html_url\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Set Completed State",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api &#92;\n  --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") &#92;\n  -f state=closed &#92;\n  -f state_reason=completed &#92;\n  --jq .state\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Capture Issue Links",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/links-by-issue.py &#92;\n  --issues '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")' &#92;\n  --out '[**&lt;issue-links-file&gt;**](#development-snapshot \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch All Issues",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=all&per_page=100\" &gt; '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Closed Issues",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=closed&per_page=100\" &gt; '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Selected Closed Issues",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api &#92;\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=closed&per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(&#91;.number&#93; | inside(&#91;[**&lt;issue-numbers&gt;**](#audit-selection \"\u25cb\")&#93;))' &#92;\n  &gt; '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Find Initiative Issue",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api &#92;\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=all&per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith(\"[**&lt;initiative-prefix&gt;**](#tracker-prefix \"\u25cb\")\")) | .number'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "List Prefixed Titles",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api &#92;\n  --paginate 'repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repository&gt;**](#repository \"\u25cb\")/issues?state=all&per_page=100' &#92;\n  --jq '.&#91;&#93; | select(.title | test(\"^\\\\&#91;[**&lt;prefix-letter&gt;**](#tracker-prefix \"\u25cb\")&#91;0-9&#93;{2}\\\\&#93;\")) | .title'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Read Lane Assignments",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\n\"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/lane.py\" read '[**&lt;epic-body-file&gt;**](#epic-body-file \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Write Lane Assignments",
+    "decoded_identical": true,
+    "visible_links": 5,
+    "payload": "\n\"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/lane.py\" assign &#92;\n  '[**&lt;epic-body-file&gt;**](#epic-body-file \"\u25cb\")' &#92;\n  --map '[**&lt;confirmed-map-file&gt;**](#confirmed-map \"\u25cb\")' &#92;\n  --out '[**&lt;output-body-path&gt;**](#output-body \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Validate Lane Unit",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\n\"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/lane.py\" check &#92;\n  '[**&lt;epic-body-file&gt;**](#epic-body-file \"\u25cb\")' &#92;\n  --unit '[**&lt;task-ids&gt;**](#unit-task-ids \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Evaluate Lane Admission",
+    "decoded_identical": true,
+    "visible_links": 5,
+    "payload": "\n\"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/lane.py\" admit &#92;\n  '[**&lt;epic-body-file&gt;**](#epic-body-file \"\u25cb\")' &#92;\n  --unit '[**&lt;task-ids&gt;**](#unit-task-ids \"\u25cb\")' &#92;\n  --lane '[**&lt;lane-index&gt;**](#requested-index \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "command": "List Orphans",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/orphans.py '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "command": "Find Engineering Worktree",
+    "decoded_identical": true,
+    "visible_links": 1,
+    "payload": "\ngit -C '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' worktree list | grep '\\&#91;engineering\\&#93;'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "command": "Commit Planning Record",
+    "decoded_identical": true,
+    "visible_links": 2,
+    "payload": "\ncd '[**&lt;engineering-worktree&gt;**](#engineering-worktree \"\u25cb\")' && &#92;\n  git add &#92;\n  -A && &#92;\n  (git diff &#92;\n  --cached &#92;\n  --quiet || git commit &#92;\n  -F '[**&lt;message-file&gt;**](#commit-message-file \"\u25cb\")') && &#92;\n  git fetch origin engineering && &#92;\n  git rebase origin/engineering && &#92;\n  git push\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "command": "Add Planning Record",
+    "decoded_identical": true,
+    "visible_links": 1,
+    "payload": "\nmkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "command": "Convert Test Plan",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\n[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/align.py plan '[**&lt;pull-request-json-file&gt;**](#pull-request-record \"\u25cb\")' --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Retarget Pull Request",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api &#92;\n  --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls/[**&lt;pull-request-number&gt;**](#identity \"\u25cb\") &#92;\n  -f base='[**&lt;target-branch&gt;**](#base-branch \"\u25cb\")' &#92;\n  --jq .base.ref\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Retitle Pull Request",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls/[**&lt;pull-request-number&gt;**](#identity \"\u25cb\") -f title='[**&lt;title&gt;**](#title \"\u25cb\")' --jq .title\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Open Task Pull Request",
+    "decoded_identical": true,
+    "visible_links": 6,
+    "payload": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls &#92;\n  -f title='[**&lt;title&gt;**](#title \"\u25cb\")' &#92;\n  -f head='[**&lt;task-branch&gt;**](#head-branch \"\u25cb\")' &#92;\n  -f base='[**&lt;base&gt;**](#base-branch \"\u25cb\")' &#92;\n  -F 'body=@[**&lt;body-file&gt;**](#body-file \"\u25cb\")' &#92;\n  --jq .html_url\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Open Epic Pull Request",
+    "decoded_identical": true,
+    "visible_links": 6,
+    "payload": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls &#92;\n  -f title='[**&lt;title&gt;**](#title \"\u25cb\")' &#92;\n  -f head='[**&lt;epic-base&gt;**](#head-branch \"\u25cb\")' &#92;\n  -f base='[**&lt;long-lived-base&gt;**](#base-branch \"\u25cb\")' &#92;\n  -F draft=true &#92;\n  -F 'body=@[**&lt;body-file&gt;**](#body-file \"\u25cb\")' &#92;\n  --jq .html_url\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Merge Pull Request",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api --method PUT repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls/[**&lt;pull-request-number&gt;**](#identity \"\u25cb\")/merge -f merge_method=merge --jq .merged\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Patch Pull Request Body",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls/[**&lt;pull-request-number&gt;**](#identity \"\u25cb\") -F 'body=@[**&lt;body-file&gt;**](#body-file \"\u25cb\")' --jq .html_url\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Find Review Pull Request",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls?state=open&head=[**&lt;owner&gt;**](#repository \"\u25cb\"):[**&lt;epic-base&gt;**](#head-branch \"\u25cb\")\" --jq '.[0].number'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Submit Epic Merge",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api &#92;\n  --method PUT repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls/[**&lt;pull-request-number&gt;**](#identity \"\u25cb\")/merge &#92;\n  -f merge_method=merge &#92;\n  -f sha=[**&lt;head-sha&gt;**](#verified-head \"\u25cb\") &#92;\n  --jq '{merged, message, sha}'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Read Merge Result",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls/[**&lt;pull-request-number&gt;**](#identity \"\u25cb\") &#92;\n  --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Set Development Link",
+    "decoded_identical": true,
+    "visible_links": 7,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/development-link.py add &#92;\n  --issue [**&lt;issue-owner&gt;**](#issue-identity \"\u25cb\")/[**&lt;issue-repo&gt;**](#issue-identity \"\u25cb\")#[**&lt;issue-number&gt;**](#issue-identity \"\u25cb\") &#92;\n  --pull [**&lt;pr-owner&gt;**](#identity \"\u25cb\")/[**&lt;pr-repo&gt;**](#identity \"\u25cb\")#[**&lt;pull-request-number&gt;**](#identity \"\u25cb\")\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Remove Development Link",
+    "decoded_identical": true,
+    "visible_links": 7,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/development-link.py remove &#92;\n  --issue [**&lt;issue-owner&gt;**](#issue-identity \"\u25cb\")/[**&lt;issue-repo&gt;**](#issue-identity \"\u25cb\")#[**&lt;issue-number&gt;**](#issue-identity \"\u25cb\") &#92;\n  --pull [**&lt;pr-owner&gt;**](#identity \"\u25cb\")/[**&lt;pr-repo&gt;**](#identity \"\u25cb\")#[**&lt;pull-request-number&gt;**](#identity \"\u25cb\")\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Capture Pull Request Links",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/links-by-pull-request.py &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --out '[**&lt;issue-link-snapshot-file&gt;**](#link-snapshot-path \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Save Pull Request Snapshot",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls/[**&lt;pull-request-number&gt;**](#identity \"\u25cb\") &gt; '[**&lt;pull-request-json-file&gt;**](#output-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Pull Request Reviews",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api --paginate 'repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls/[**&lt;pull-request-number&gt;**](#identity \"\u25cb\")/reviews?per_page=100' &gt; '[**&lt;reviews-file&gt;**](#output-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Initiative Pull Requests",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api &#92;\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls?state=all&per_page=100\" &#92;\n  --jq '.[] | select(.title | startswith(\"[**&lt;initiative-prefix&gt;**](#initiative-prefix \"\u25cb\")\"))' &#92;\n  &gt; '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Linked Pull Requests",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/linked-pull-requests.py &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --issues '[**&lt;issue-file&gt;**](#issue-records \"\u25cb\")' ...\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Repository Delivery Pull Requests",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api &#92;\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls?state=all&per_page=100\" &#92;\n  --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' &#92;\n  &gt; '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Append Repository Delivery Pull Requests",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh api &#92;\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls?state=all&per_page=100\" &#92;\n  --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' &#92;\n  &gt;&gt; '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Pull Request Files",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api &#92;\n  --paginate repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/pulls/[**&lt;pull-request-number&gt;**](#identity \"\u25cb\")/files &#92;\n  --jq '.[].filename' &#92;\n  &gt; '[**&lt;changed-paths-file&gt;**](#output-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Head Check Runs",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api --paginate 'repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/commits/[**&lt;head-sha&gt;**](#verified-head \"\u25cb\")/check-runs?per_page=100' &gt; '[**&lt;check-runs-file&gt;**](#output-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Head Status",
+    "decoded_identical": true,
+    "visible_links": 4,
+    "payload": "\ngh api --paginate 'repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/commits/[**&lt;head-sha&gt;**](#verified-head \"\u25cb\")/status?per_page=100' &gt; '[**&lt;commit-status-file&gt;**](#output-files \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Mark Review Ready",
+    "decoded_identical": true,
+    "visible_links": 1,
+    "payload": "\ngh api graphql -F query=@'[**&lt;query-file&gt;**](#query-file \"\u25cb\")' --jq .data.markPullRequestReadyForReview.pullRequest.isDraft\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Mark Review Draft",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ngh pr ready [**&lt;pull-request-number&gt;**](#identity \"\u25cb\") --undo --repo [**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repository&gt;**](#repository \"\u25cb\")\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Index Status",
+    "decoded_identical": true,
+    "visible_links": 0,
+    "payload": "\ngitnexus status\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Index Repository",
+    "decoded_identical": true,
+    "visible_links": 0,
+    "payload": "\ngitnexus analyze\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Change Surface",
+    "decoded_identical": true,
+    "visible_links": 1,
+    "payload": "\ngitnexus detect-changes --scope compare --base-ref '[**&lt;base-branch&gt;**](#base-branch \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Symbol Context",
+    "decoded_identical": true,
+    "visible_links": 1,
+    "payload": "\ngitnexus context '[**&lt;symbol-identity&gt;**](#symbol-identity \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Flow Trace",
+    "decoded_identical": true,
+    "visible_links": 1,
+    "payload": "\ngitnexus query --query '[**&lt;flow-identity&gt;**](#flow-identity \"\u25cb\")' --limit 1\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-labels.md",
+    "command": "List Labels",
+    "decoded_identical": true,
+    "visible_links": 2,
+    "payload": "\ngh api \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/labels?per_page=100\" --jq '.&#91;&#93;.name'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-labels.md",
+    "command": "Create Label",
+    "decoded_identical": true,
+    "visible_links": 5,
+    "payload": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/labels &#92;\n  -f name='[**&lt;label&gt;**](#label-identity \"\u25cb\")' &#92;\n  -f color=[**&lt;hex-colour&gt;**](#label-identity \"\u25cb\") &#92;\n  -f description='[**&lt;description&gt;**](#label-identity \"\u25cb\")' &#92;\n  --jq .name\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "command": "Summarise Progress",
+    "decoded_identical": true,
+    "visible_links": 9,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/progress.py &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"\u25cb\")' &#92;\n  --since [**&lt;window-start-date&gt;**](#report-selection \"\u25cb\") &#92;\n  --initiative [**&lt;initiative-filter&gt;**](#report-selection \"\u25cb\") &#92;\n  --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records \"\u25cb\")' &#92;\n  --summary '[**&lt;management-paragraph-file&gt;**](#management-file \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "command": "Sync Task Issue",
+    "decoded_identical": true,
+    "visible_links": 8,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;task-json-file&gt;**](#task-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --pr [**&lt;pull-request-number&gt;**](#delivery-selection \"\u25cb\") &#92;\n  --tick '[**&lt;criterion-ids&gt;**](#delivery-selection \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n"
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "command": "Run Tests",
+    "decoded_identical": true,
+    "visible_links": 2,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner\" && \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 -m unittest discover -s test\n"
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "command": "Check Skill Files",
+    "decoded_identical": true,
+    "visible_links": 3,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/scripts/check_skill_files.py \"[**&lt;skill-directory&gt;**](#skill-directory \"\u25cb\")\"\n"
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "command": "Compare Section Bodies",
+    "decoded_identical": true,
+    "visible_links": 5,
+    "payload": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/scripts/check_skill_files.py &#92;\n  --compare \"[**&lt;base&gt;**](#base \"\u25cb\")\" \"[**&lt;head&gt;**](#head \"\u25cb\")\" \"[**&lt;skill-directory&gt;**](#skill-directory \"\u25cb\")\"\n"
+  }
+]
