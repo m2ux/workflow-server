@@ -17,3 +17,15 @@ Check that every example code span and all invocation payloads are identical, th
 | Resource | Link |
 | --- | --- |
 | Style PR | https://github.com/m2ux/workflow-server/pull/1641 |
+
+## Validation
+
+Source: `87b9bda45e453995352b5b420586832d5e1de45f`, compared with `5006038c6a076a9025458f06ccd1bdba99efdddd`.
+
+Joined 133 standalone example paragraphs across 22 documents, with the placement rule updated in the existing guideline. Every inline code span, heading and raw invocation block in those documents is identical to the baseline. No standalone `eg` paragraph remains. The nine existing command-contract tests pass, the installed model checks 58 files with zero findings, and whitespace validation passes. No reading routes or executable behavior change; no live workflow is exercised.
+
+## Artifacts
+
+| Artifact | What it holds |
+| --- | --- |
+| [Placement inventory](changes.json) | Every modified document, example count and preservation result |

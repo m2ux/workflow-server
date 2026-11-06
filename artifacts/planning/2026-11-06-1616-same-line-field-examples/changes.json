@@ -1,0 +1,112 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "examples": 3,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "examples": 10,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "examples": 7,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "examples": 9,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "examples": 9,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "examples": 7,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "examples": 3,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "examples": 3,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "examples": 12,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "examples": 4,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "examples": 5,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "examples": 5,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "examples": 8,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "examples": 12,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "examples": 1,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "examples": 3,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "examples": 2,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "examples": 15,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "examples": 3,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "examples": 6,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "examples": 5,
+    "code_spans_headings_commands_identical": true
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "examples": 1,
+    "code_spans_headings_commands_identical": true
+  }
+]
