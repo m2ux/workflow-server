@@ -10,11 +10,14 @@ A review record for the exact integration revision.
 
 #### 1. Review Complete Integration Diff
 
-Read the complete target-to-head diff, affected definitions and callers, and every criterion’s verification evidence using the [Review Inputs](#review-inputs). Inspect behavior and failure paths; test counts alone do not establish review completion.
+- Read the complete target-to-head diff, affected definitions and callers, and every criterion’s verification evidence using the [Review Inputs](#review-inputs). Inspect behavior and failure paths; test counts alone do not establish review completion.
+- Classify each observed problem using [Review Scope](#review-scope).
 
 #### 2. Resolve Review Findings
 
 - Record findings with severity and disposition. A nonblocking deferred finding names its ticket.
+- Record excluded observations with their scope evidence and linked arising issues in the published review or planning evidence, outside the findings collection.
+- On an unresolved classification or an exclusion with missing scope evidence or an unsaved arising issue, provide the pending review and stop before handoff.
 
 - When a blocking finding or any hot-fix finding requires a fix:
 - Fix every required finding on the reviewed branch.
@@ -25,7 +28,7 @@ Read the complete target-to-head diff, affected definitions and callers, and eve
 
 #### 3. Write Revision Review Record
 
-Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the `base_ref` a hot-fix's record carries, the scope actually inspected, findings and validation results. An empty findings list states that the review found no defect.
+Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the `base_ref` a hot-fix's record carries, the scope actually inspected, findings and validation results. An empty findings list states that the review found no in-scope defect.
 
 #### 4. Provide Review Evidence
 
@@ -74,3 +77,11 @@ The validation result, checked head and target SHAs, and any missing, stale or u
 ### Workspace
 
 The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+
+## Guidance
+
+### Review Scope
+
+Findings cover defects introduced by the change, change-related defects and risks that compromise affected callers. A pre-existing defect remains in scope when the change exposes it or depends on its faulty behavior.
+
+An unrelated pre-existing observation is outside findings only when evidence establishes its earlier existence and independence from changed behavior and affected callers. That evidence identifies the observed problem, source revisions and relevant call-path comparison; it accompanies a linked arising issue in the published review or planning evidence outside findings.
