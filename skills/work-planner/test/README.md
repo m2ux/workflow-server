@@ -7,7 +7,7 @@ Work Planner plans work as GitHub issues and keeps that plan true until the work
 - **The scripts.**
   Twenty-three programs read those issue bodies, board items and pull request records, and report what a run should change. Most modules here hold one script to the rules its own docstring states.
 - **The prose.**
-  Modes, protocols and artifacts are instructions an agent follows. Five modules hold their shape instead of a script's behaviour: that every link resolves, that each operation names its inputs, that each command names the checkout it acts on, and that a plan is written where the plan says.
+  Modes, protocols and artifacts are instructions an agent follows. Six modules check their shape: resolving links, contextual command contracts, selected checkout inputs, planning-record publication, worktree placement and this catalogue.
 - **Neither against a live tracker.**
   Issue, board and pull request state arrives in shapes pinned in [fixtures](fixtures.py). A test writes those shapes to a temporary directory and runs a script over them.
 
@@ -18,7 +18,7 @@ Both kinds sit in one folder. The script tests import the fixture module from be
 - **A wrong reading becomes a wrong write.**
   A script reports what a mode should change, and the mode changes the tracker accordingly. A misread board item costs a misassigned issue, a wrong board field, or a branch cut from the wrong base on work already under way.
 - **The instructions are the product.**
-  Editing a mode or an artifact changes what every later session does. A link that no longer resolves, a step that stops naming its command, or an operation missing an input is a defect no compiler reports.
+  Editing a mode or an artifact changes what every later session does. A link that no longer resolves, a step that stops naming its command, or a command missing an input is a defect no compiler reports.
 - **A session is expensive.**
   The suite runs with no network, so a change is checked before a session spends tokens acting on a real tracker.
 
@@ -38,6 +38,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_board_queue](test_board_queue.py) | The queue [board-queue](../scripts/board-queue.py) sets on a theme board |
 | [test_closure](test_closure.py) | The closure gate passes on the issue and its Development links, the evidence GitHub exposes |
 | [test_closure_sweep](test_closure_sweep.py) | The closure sweep lists each closed issue its criteria or Development links do not support |
+| [test_command_contracts](test_command_contracts.py) | Documented commands preserve optional values, context and requested writes |
 | [test_deliver](test_deliver.py) | The work [deliver](../scripts/deliver.py) finds available on a theme board, and the rows it reserves and releases |
 | [test_deps](test_deps.py) | [deps](../scripts/deps.py) checks the task graph and proposes the rows that can share a pull request |
 | [test_development_link](test_development_link.py) | Development links added and removed by [development-link](../scripts/development-link.py), and read back from both ends |
@@ -61,7 +62,7 @@ These modules read the skill's own documents rather than a script.
 
 | Module | What it guards |
 | --- | --- |
-| [test_checkouts](test_checkouts.py) | Each command acting on its checkout is run in a named one |
+| [test_checkouts](test_checkouts.py) | Checkout-sensitive commands consume linked input contracts |
 | [test_documents](test_documents.py) | The installed prose API exposes complete inputs and directed reading paths |
 | [test_modes](test_modes.py) | Mode summaries in each skill's [SKILL](../SKILL.md) |
 | [test_plan_mode](test_plan_mode.py) | Plan Mode keeps a plan in one home: its planning record on the engineering branch |
@@ -84,14 +85,14 @@ One row per script in `../scripts`, then one per document the prose tests read. 
 | [align](../scripts/align.py) | [test_align](test_align.py) (18) |
 | [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (11) |
 | [board-queue](../scripts/board-queue.py) | [test_board_queue](test_board_queue.py) (75) |
-| [closure](../scripts/closure.py) | [test_closure](test_closure.py) (13) |
+| [closure](../scripts/closure.py) | [test_closure](test_closure.py) (13), [test_command_contracts](test_command_contracts.py) (14) |
 | [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) (14) |
 | [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (96), [test_dispatch](test_dispatch.py) (19) |
 | [deps](../scripts/deps.py) | [test_deps](test_deps.py) (74) |
 | [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (19) |
-| [format](../scripts/format.py) | [test_format](test_format.py) (109), [test_shared](test_shared.py) (11), [test_sync](test_sync.py) (185), [test_templates](test_templates.py) (4) |
+| [format](../scripts/format.py) | [test_format](test_format.py) (109), [test_shared](test_shared.py) (11), [test_sync](test_sync.py) (185), [test_templates](test_templates.py) (6) |
 | [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (16) |
 | [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (19), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
@@ -108,16 +109,20 @@ One row per script in `../scripts`, then one per document the prose tests read. 
 
 | Document | Exercised by |
 | --- | --- |
-| [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (7), [test_documents](test_documents.py) (11) |
-| [guidelines](../guidelines.md) | [test_checkouts](test_checkouts.py) (7), [test_documents](test_documents.py) (11) |
-| `modes/` | [test_checkouts](test_checkouts.py) (7), [test_documents](test_documents.py) (11) |
-| `protocols/` | [test_checkouts](test_checkouts.py) (7), [test_documents](test_documents.py) (11) |
-| `artifacts/` | [test_checkouts](test_checkouts.py) (7), [test_documents](test_documents.py) (11), [test_worktrees](test_worktrees.py) (2) |
-| `references/` | [test_checkouts](test_checkouts.py) (7), [test_documents](test_documents.py) (11) |
-| [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (6) |
-| [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (6) |
 | `*/SKILL.md` | [test_modes](test_modes.py) (4) |
 | [README](README.md) | [test_readme](test_readme.py) (14) |
+| [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| [delivery-branches](../artifacts/delivery-branches.md) | [test_worktrees](test_worktrees.py) (2) |
+| [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (8) |
+| [configuration](../configuration.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| [conventions](../conventions.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| [guidelines](../guidelines.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| `modes/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (8) |
+| `protocols/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| `references/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| [rules](../rules.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
 
 A count beside a module measures that module, not the subject it appears against. The 19 tests of [test_dispatch](test_dispatch.py) do not all touch [deliver](../scripts/deliver.py), so a row's numbers are not a total.
 
