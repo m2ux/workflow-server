@@ -1,0 +1,12 @@
+{
+  "baseline": "00694d77a4d0858a91e09bf4893cd2ee2cce5989",
+  "counts": {
+    "commands": 116,
+    "affected_commands": 55,
+    "moved_bullets": 197,
+    "fields": 36,
+    "templates": 9
+  },
+  "invocation_content_headings_fields_prerequisites_preserved": true,
+  "all_bullet_content_and_order_preserved": true
+}

@@ -1,0 +1,332 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "command": "Run at Revision",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/agent-review.md",
+    "command": "Validate Agent Review",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "command": "Compute Board Changes",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "command": "Compute Board Queue",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Add Review Worktree",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Add Epic Base Worktree",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Add Task Worktree",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Push Task Branch",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Push Epic Base",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Publish Epic Base",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "List Long-Lived Branches",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "List Epic Bases",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "command": "Compute Available Work",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "command": "Renumber Epics",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "command": "Renumber Tasks",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "command": "Check Dependencies",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "command": "Compute Dispatch Batch",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Release Row",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Reserve Row",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Sync Epic",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "command": "Sync Hot-fix Issue",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "command": "Sync Initiative",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "Fetch Reference Repository",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "Check Body Format",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Find Initiative Issue",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Selected Closed Issues",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Closed Issues",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch All Issues",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Capture Issue Links",
+    "list_blocks": 2,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Set Completed State",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Close as Not Planned",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Sweep Closure Evidence",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Check Issue Closure",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Tracker Issue",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Add Issue Labels",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Create Tracker Issue",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Evaluate Lane Admission",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Validate Lane Unit",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Write Lane Assignments",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Read Lane Assignments",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "command": "Add Planning Record",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "command": "Commit Planning Record",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "command": "Convert Test Plan",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Mark Review Ready",
+    "list_blocks": 2,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Linked Pull Requests",
+    "list_blocks": 2,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Capture Pull Request Links",
+    "list_blocks": 2,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Remove Development Link",
+    "list_blocks": 2,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Set Development Link",
+    "list_blocks": 2,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Submit Epic Merge",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Merge Pull Request",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Open Epic Pull Request",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Open Task Pull Request",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "command": "Summarise Progress",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "command": "Sync Task Issue",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "command": "Compare Section Bodies",
+    "list_blocks": 1,
+    "nonblank_lines_identical": true
+  }
+]
