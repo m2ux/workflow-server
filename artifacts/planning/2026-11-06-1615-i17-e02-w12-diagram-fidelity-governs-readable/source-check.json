@@ -1,0 +1,78 @@
+{
+  "head": "ff94f4a28ee0134a10f46ba571a9795f5e6841f1",
+  "checked": 12,
+  "results": [
+    {
+      "node": "N0",
+      "name": "1. Prepare the Evidence",
+      "source_line": 9,
+      "verified": true
+    },
+    {
+      "node": "N1",
+      "name": "2. Refresh and Validate",
+      "source_line": 20,
+      "verified": true
+    },
+    {
+      "node": "N2",
+      "name": "3. Merge or Hand Off",
+      "source_line": 48,
+      "verified": true
+    },
+    {
+      "node": "N3",
+      "name": "4. Confirm the Result",
+      "source_line": 74,
+      "verified": true
+    },
+    {
+      "node": "N4",
+      "name": "Changed Branch Content",
+      "source_line": 27,
+      "verified": true
+    },
+    {
+      "node": "N5",
+      "name": "Confirmed Merge",
+      "source_line": 70,
+      "verified": true
+    },
+    {
+      "node": "N6",
+      "name": "Current Review Handoff",
+      "source_line": 33,
+      "verified": true
+    },
+    {
+      "node": "N7",
+      "name": "Epic Integration",
+      "source_line": 1,
+      "verified": true
+    },
+    {
+      "node": "N8",
+      "name": "GitHub Refusal",
+      "source_line": 62,
+      "verified": true
+    },
+    {
+      "node": "N9",
+      "name": "Harness Denial",
+      "source_line": 58,
+      "verified": true
+    },
+    {
+      "node": "N10",
+      "name": "Human Handoff",
+      "source_line": 54,
+      "verified": true
+    },
+    {
+      "node": "N11",
+      "name": "Procedure",
+      "source_line": 7,
+      "verified": true
+    }
+  ]
+}

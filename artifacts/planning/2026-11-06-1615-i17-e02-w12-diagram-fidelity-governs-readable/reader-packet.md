@@ -1,0 +1,9 @@
+# Diagram Contract Reading
+
+Use the installed Work Planner in `/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w12-diagram-fidelity-governs-readable` at the exact candidate.txt head. This read-only exercise is scoped to Change Overview's diagram population/checking route. The measurement step is represented by supplied historical operation receipts for the archived PR1660 revision. Do not inspect tests, validation.md or expected-observations.md.
+
+For each independent scenario A, B and C in reader-scenarios.json, follow the source and linked contracts to populate a bounded Structure excerpt in `reader-<scenario>.md`, or report the operation/continuation required before population. Use the supplied selected graph, node names, changed-symbol membership, source locations and index/requested revisions. Include the source references and styling the source calls for. The supplied edges are section containment, not operational calls. No production functional flow is supplied; this exercise requests only structural excerpts and must not invent a production execution order. No tracker, engineering or source writes are authorized. Output only under /tmp/e02-w12.
+
+Also inspect the owner's actual structural and functional template diagrams and report their measured element counts and how they relate to the governing contract. Do not add a diagram-size policy in the consumer.
+
+Record the contexts actually read, provided measurements used, any unsupported claim or missing evidence, actual diagram topology, decisions and next continuation in `reader-result.md`. These are archived measurements fresh at their captured head; do not claim a current live graph run. Captured freshness evidence is in captured-status.txt and the original topology response is e04-section-edges.json.

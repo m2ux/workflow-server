@@ -1,0 +1,16 @@
+Unit: I17:E02:W12, AC19
+Task checkout: /home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w12-diagram-fidelity-governs-readable
+Task branch/upstream: i17/e02/w12-diagram-fidelity-governs-readable, origin/i17/e02/w12-diagram-fidelity-governs-readable
+Base: d237c3c20f8d6cb94d9a5cdb3b426cbca307a904
+Committed and pushed head: 409637f7a81d601d7c1fe525acf4e9295ee87b85
+Commit subject: keep diagram size faithful to measured structure
+Plain git push succeeded and created same-named corrected remote branch.
+git ls-remote readback: remote-head.txt
+Tracked and untracked task checkout clean: empty clean-status.txt.
+Production component: artifacts/architecture-overview.md only, one size-guidance line.
+Observing files: test_architecture_diagrams.py, architecture-captures.json, test/README.md.
+Focused7pass, planner1025run/1024pass/1opt-in skip, shared280pass, cataloguepass, skillchecker59files/0findings, whitespace0findings.
+Reader packet inputs pinned in packet-manifest.sha256; exact committed source head in candidate.txt.
+Fresh-context reading remains pending coordinator; AC19/T2 not claimed complete.
+No source/consumer changes outside declared production component; no tracker, engineering, PR, merge mutations.
+The coordinated identity correction resumes the same preserved implementation in its moved checkout. Historical /tmp/e02-w26 preparation remains preserved; this receipt uses live W12/AC19.

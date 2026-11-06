@@ -1,0 +1,6 @@
+409637f7a keep diagram size faithful to measured structure
+ .../artifacts/architecture-overview.md             |   2 +-
+ skills/work-planner/test/README.md                 |   3 +
+ .../work-planner/test/architecture-captures.json   | 130 +++++++++++++++++++++
+ .../test/test_architecture_diagrams.py             | 104 +++++++++++++++++
+ 4 files changed, 238 insertions(+), 1 deletion(-)

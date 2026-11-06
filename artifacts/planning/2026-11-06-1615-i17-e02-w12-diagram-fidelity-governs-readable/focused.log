@@ -1,0 +1,12 @@
+test_actual_functional_template_has_three_participants (test_architecture_diagrams.ArchitectureDiagrams.test_actual_functional_template_has_three_participants) ... ok
+test_actual_structural_template_has_three_nodes_and_two_edges (test_architecture_diagrams.ArchitectureDiagrams.test_actual_structural_template_has_three_nodes_and_two_edges) ... ok
+test_diagrams_contract_distinguishes_target_from_measured_fidelity (test_architecture_diagrams.ArchitectureDiagrams.test_diagrams_contract_distinguishes_target_from_measured_fidelity) ... ok
+test_existing_consumer_reaches_the_single_owning_size_contract (test_architecture_diagrams.ArchitectureDiagrams.test_existing_consumer_reaches_the_single_owning_size_contract) ... ok
+test_padding_nodes_and_reversed_edges_fail_measured_topology_controls (test_architecture_diagrams.ArchitectureDiagrams.test_padding_nodes_and_reversed_edges_fail_measured_topology_controls) ... ok
+test_real_complex_graph_splits_by_its_measured_section_concepts (test_architecture_diagrams.ArchitectureDiagrams.test_real_complex_graph_splits_by_its_measured_section_concepts) ... ok
+test_real_small_containment_graph_has_two_nodes_without_padding (test_architecture_diagrams.ArchitectureDiagrams.test_real_small_containment_graph_has_two_nodes_without_padding) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.001s
+
+OK
