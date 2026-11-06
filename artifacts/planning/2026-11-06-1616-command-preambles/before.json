@@ -1,0 +1,1046 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "command": "Run at Revision",
+    "opening": "Runs one instrument at the commit a branch, tag or commit resolves to, in a detached checkout the run creates and removes.",
+    "details": "- The instrument follows `--` and runs at the checkout\u2019s top level.\n- The first output line is `{\"revision\": <commit>, \"checkout\": <path>}`, the commit the result is recorded against. The instrument's output follows.\n- The exit status is the instrument's, whatever it is. The checkout is removed after a pass or a failure; one it cannot remove is reported with its path and the instrument's status stands.\n- Exit 125 is the helper's own failure, as `git bisect run` reserves it, with one standard error line naming the cause: a usage error, `revision not found:` or `checkout not created:` before any output, or `command not started:` after the first line, once the checkout exists. An instrument that itself exits 125 is told apart by that line's absence.\n- Worktrees the run did not create are left as they are.\n- The checkout is registered in the repository's git directory, which `sbx` leaves read-only for a linked worktree or another repository, so the helper runs outside `sbx`. An instrument that needs the sandbox carries its own `sbx` prefix.",
+    "after": "Provide [Instrument Result](#instrument-result \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/revision-check.py &#92;\n  --project '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**&lt;revision&gt;**](#revision \"\u25cb\")' &#92;\n  -- [**&lt;instrument-command&gt;**](#instrument \"\u25cb\")\n",
+    "invocation_sha256": "5528928c06758323441baa0266ace45a907302c80d81fee9b1ae60dd2106d869"
+  },
+  {
+    "file": "skills/work-planner/artifacts/agent-review.md",
+    "command": "Validate Agent Review",
+    "opening": "Checks published review evidence against a freshly fetched integration pull request.",
+    "details": "- Missing or stale evidence, an incomplete record or an unresolved finding blocks handoff.\n- Refresh both pull request tips immediately before ready, board and user-handoff actions. A tip change that invalidates [Review Record](#review-record) requires another review.",
+    "after": "Provide [Review Eligibility](#review-eligibility \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/agent_review.py &#92;\n  --pr '[**&lt;pull-request-json-file&gt;**](#pull-request-record \"\u25cb\")' &#92;\n  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"\u25cb\")'\n",
+    "invocation_sha256": "0a3e78848124be00003d89ba0bea932c287ce67b4d81250f0028dc5ee6df5866"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "command": "Compute Board Changes",
+    "opening": "Computes membership, Status and assignee calls from supplied delivery evidence.",
+    "details": "- Include each supplied [Resolved Issues](#resolved-issues \"\u25cb\") file with `--others`.\n\n- Missing published agent-review evidence holds the epic In Progress.\n\n- Pass each epic or task JSON file as a separate argument after its corresponding flag.\n\n- Require the complete [Issue Link Snapshot](#issue-link-snapshot \"\u25cb\"); refuse the computation without it.\n- Supply published review records linked from each open epic integration pull request; retain missing records as handoff blockers.",
+    "after": "Provide [Board Changes](#board-changes \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"\u25cb\")' &#92;\n  --epics '[**&lt;epic-json-file&gt;**](#epic-records \"\u25cb\")' &#92;\n  --tasks '[**&lt;task-json-file&gt;**](#task-records \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"\u25cb\")' &#92;\n  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"\u25cb\")' &#92;\n  --board [**&lt;board-identity&gt;**](#board-identity \"\u25cb\") &#92;\n  --fields '[**&lt;board-fields-file&gt;**](#board-fields \"\u25cb\")' &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --out '[**&lt;output-directory&gt;**](#output-directory \"\u25cb\")' &#92;\n  --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"\u25cb\")'\n",
+    "invocation_sha256": "f3eec6bdf059f7306f105e8dcd0d52a3eaeb77cb06e32b0cedcc530d23d9c994"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "command": "Compute Dispatch Status",
+    "opening": "Renders board calls within the dispatch jurisdiction.",
+    "details": "A missing or failing agent review blocks the In Review write.",
+    "after": "Provide [Board Changes](#board-changes \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --board [**&lt;board-identity&gt;**](#board-identity \"\u25cb\") &#92;\n  --fields '[**&lt;board-fields-file&gt;**](#board-fields \"\u25cb\")' &#92;\n  --out '[**&lt;output-directory&gt;**](#output-directory \"\u25cb\")' &#92;\n  --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"\u25cb\")' &#92;\n  --progress '[**&lt;held-issue-numbers&gt;**](#dispatch-selection \"\u25cb\")' &#92;\n  --review '[**&lt;complete-epic-numbers&gt;**](#dispatch-selection \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"\u25cb\")'\n",
+    "invocation_sha256": "d09bf258a27b854510a1d3bf89a36fb9d0f675c63fc0a554d4d8964d997607ca"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "command": "Compute Board Queue",
+    "opening": "Prints proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.",
+    "details": "- Include each supplied [Resolved Issues](#resolved-issues \"\u25cb\") file with `--others`.\n- Limit proposed writes to [Status Scope](#status-scope \"\u25cb\").\n\n- Repeat `--unplanned` for each supplied [Unplanned Initiative](#unplanned-initiatives \"\u25cb\").\n\n- The computation reads [Read Lane Assignments](lane.md#read-lane-assignments \"\u0192\") and runs [Validate Lane Unit](lane.md#validate-lane-unit \"\u0192\") internally with each complete free unit derived after queue placement.\n- Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix\u2019s, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.\n- Distinguish pending decisions and missing evidence under [Completeness](#completeness). The requester supplies further evidence and confirmed decisions for another pass and applies the proposed changes.",
+    "after": "Provide [Queue Result](#queue-result \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/board-queue.py &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"\u25cb\")' &#92;\n  --board [**&lt;board-identity&gt;**](#board-identity \"\u25cb\") &#92;\n  --fields '[**&lt;board-fields-file&gt;**](#board-fields \"\u25cb\")' &#92;\n  --out '[**&lt;output-directory&gt;**](#output-directory \"\u25cb\")' &#92;\n  --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"\u25cb\")'\n",
+    "invocation_sha256": "81466a86a32418c39de5c8a1234a71cd7deba22e9297a6201900a6f2035fb1e9"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find Board Template",
+    "opening": "Prints the number of the open board with the supplied exact template title.",
+    "details": "",
+    "after": "Provide [Template Selection](#template-selection \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2?per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title == \"[**&lt;template-title&gt;**](#template-selection \"\u25cb\")\") | .number'\n",
+    "invocation_sha256": "7f88f25c78c8d90fb7426172501702c69c42681e001f0726a77458612394d0ea"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Copy Board Template",
+    "opening": "Copies the supplied template into a new open board with the supplied title and prints its number.",
+    "details": "The copy's JSON is one project; `.number` identifies the new board.",
+    "after": "Provide [Copied Board](#copied-board \"\u25cf\") to the requester.",
+    "invocation": "\ngh project copy [**&lt;template-number&gt;**](#template-selection \"\u25cb\") &#92;\n  --source-owner [**&lt;owner&gt;**](#board-owner \"\u25cb\") &#92;\n  --target-owner [**&lt;owner&gt;**](#board-owner \"\u25cb\") &#92;\n  --title '[**&lt;board-title&gt;**](#copy-title \"\u25cb\")' &#92;\n  --format json &#92;\n  --jq .number\n",
+    "invocation_sha256": "25dafead74c3cf6198345a6e96153022f65e15bd3e9e2bd8536eb921aa9a1a99"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Link Board to Repository",
+    "opening": "Links one board to the supplied repository.",
+    "details": "",
+    "after": "Provide [Link Result](#link-result \"\u25cf\") to the requester.",
+    "invocation": "\ngh project link [**&lt;board-number&gt;**](#board-coordinates \"\u25cb\") --owner [**&lt;owner&gt;**](#board-owner \"\u25cb\") --repo [**&lt;repo&gt;**](#repository \"\u25cb\")\n",
+    "invocation_sha256": "54a8657540191c6b4949a4475d2349109bbd2b44943549ec904db68da1500127"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find Proposals Board",
+    "opening": "Prints the number of the open [proposals board](../configuration.md#proposals-board).",
+    "details": "",
+    "after": "Provide [Selected Board](#selected-board \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2?per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title == \"Proposals\") | .number'\n",
+    "invocation_sha256": "e35e444adf0c31bec8af2849022ca550f492beccdd2e5b66c56019ca81e7c901"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Add Issue to Board",
+    "opening": "Adds the caller-supplied issue to a board and prints the new item's id.",
+    "details": "",
+    "after": "Provide [Membership Result](#membership-result \"\u25cf\") to the requester.",
+    "invocation": "\ngh api --method POST users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items -f type=Issue -F id=[**&lt;issue-id&gt;**](#issue-id \"\u25cb\") --jq .id\n",
+    "invocation_sha256": "d8ac498f8b100a4bcbe97cb58eceb995b2075a027c27c2ea579229c919c32000"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Set Item Status",
+    "opening": "Sets one board item's Status.",
+    "details": "",
+    "after": "Provide [Membership Result](#membership-result \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --method PATCH users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items/[**&lt;item-id&gt;**](#item-coordinates \"\u25cb\") &#92;\n  --input '[**&lt;status-input-file&gt;**](#status-input-file \"\u25cb\")' &#92;\n  --jq .id\n",
+    "invocation_sha256": "c7e220bb466f189eaeb2892cd180dc2919983c3277cef1f060a3863cc6c25a8c"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Remove Board Item",
+    "opening": "Removes one item from a board, leaving its issue as it stands.",
+    "details": "",
+    "after": "Provide [Membership Result](#membership-result \"\u25cf\") to the requester.",
+    "invocation": "\ngh api --method DELETE users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items/[**&lt;item-id&gt;**](#item-coordinates \"\u25cb\")\n",
+    "invocation_sha256": "182ff295eadadb9df0bc93dc9344efb44c4c63709f6e517b4c0e90c383090adc"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Fetch Board Fields",
+    "opening": "Saves a board's fields.",
+    "details": "",
+    "after": "Provide [Board Configuration](#board-configuration \"\u25cf\") to the requester.",
+    "invocation": "\ngh api --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/fields?per_page=100\" > '[**&lt;board-fields-file&gt;**](#board-fields-file \"\u25cb\")'\n",
+    "invocation_sha256": "6c606c1bacfc25ce9095714f00381722ec643af740a85c460ac4e4920f42375a"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find Theme Board",
+    "opening": "Prints the number of the open board for one theme, by its theme name after any proposal designator.",
+    "details": "",
+    "after": "Provide [Selected Board](#selected-board \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2?per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub(\"^\\\\&#91;P&#91;0-9&#93;+\\\\&#93; \"; \"\") | startswith(\"[**&lt;theme-name&gt;**](#theme-name \"\u25cb\"): \")) | .number'\n",
+    "invocation_sha256": "9942568dbf19e6341cee3a25dfc993605ed9348a9d2e87054c52b4b9d76917e0"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find Status Field",
+    "opening": "Prints the id of a board's Status field.",
+    "details": "",
+    "after": "Provide [Status Field](#status-field \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/fields?per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.name == \"Status\") | .id'\n",
+    "invocation_sha256": "cfe6c90c31ceaa8288cc461e2badf5c1f10f4b48629871a5538f77e8efc543c7"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Fetch Board Items with Status",
+    "opening": "Saves a board's items with their Status, each carrying its issue whole.",
+    "details": "",
+    "after": "Provide [Board State](#board-state \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field \"\u25cb\")\" &#92;\n  &gt; '[**&lt;board-items-file&gt;**](#board-items-file \"\u25cb\")'\n",
+    "invocation_sha256": "8e8baf69bc4e5af3581b76037a68d723bf67e75ffc550c26a6bd0529721cef0e"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Fetch Board Item",
+    "opening": "Reads one board item, including its current Status.",
+    "details": "",
+    "after": "Provide [Board Configuration](#board-configuration \"\u25cf\") to the requester.",
+    "invocation": "\ngh api \"users/[**&lt;owner&gt;**](#board-owner \"\u25cb\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"\u25cb\")/items/[**&lt;item-id&gt;**](#item-coordinates \"\u25cb\")?fields=[**&lt;status-field-id&gt;**](#status-field \"\u25cb\")\"\n",
+    "invocation_sha256": "9369e50e17baa7f627e2402b3d7c3bfd5104fee03759b02405d361bc8dcc2aec"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "command": "Find User",
+    "opening": "Prints the login `gh` runs as, the user assigned to work from Ready on.",
+    "details": "Require [Authenticated Access](#authenticated-access \"\u25cb\") before executing the command.",
+    "after": "Provide [Assignee Login](#assignee-login \"\u25cf\") to the requester.",
+    "invocation": "\ngh api user --jq .login\n",
+    "invocation_sha256": "5c0827297e2ad8a6946d77b06be4f1b45439698bdd40ae489bf9ecf1cfba87d7"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "List Epic Bases",
+    "opening": "Prints one epic's base branch names, one per line.",
+    "details": "- Run in the [Project Checkout](#project-checkout \"\u25cb\").\n\n**Acts on:** the checkout it runs in.\n\n- A base is `<epic-branch-prefix>/<name>` whose `<name>` is a [long-lived branch](#branches), named as [Epic Bases](#epic-bases) states.\n- The prefix has the form `i<initiative-number>/e<epic-number>`. **Example:** `i07/e00`; a corresponding base is `i07/e00/main`.",
+    "after": "Provide [Epic-Base Names](#epic-base-names \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngit ls-remote --heads origin 'refs/heads/[**<epic-branch-prefix>**](#epic-identity \"\u25cb\")/*' | cut -f2 | sed 's|refs/heads/||'\n",
+    "invocation_sha256": "add1d3ff59014a07d30902d93913991f41023b8e249a864c4fb3b1c582311a46"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "List Long-Lived Branches",
+    "opening": "Prints the long-lived branch names, one per line.",
+    "details": "- The names meet [Branches](#branches).\n- Select the evaluated revision according to [Branches](#branches).\n- The names are the ones `config/branches` states at the commit `--revision` resolves to. Standard error carries their source: the configuration path, that commit and the repository.\n- `--names` reads one `--revision`.\n- An absent, empty or unreadable statement, or a revision resolving to no commit, prints `unevaluable:` with the source and why, and exits 1.",
+    "after": "Provide [Branch Names](#branch-names \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py &#92;\n  --names &#92;\n  --project '[**<checkout>**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**<revision>**](#revision \"\u25cb\")'\n",
+    "invocation_sha256": "b03ac88f60860c43e714c11673101d343aa67ceed1b9eee3d1bd28c1cab9d418"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Fetch Remote Branch",
+    "opening": "Fetches one source branch from origin.",
+    "details": "Run in the [Checkout](#checkout \"\u25cb\").\n\n**Acts on:** the checkout it runs in.",
+    "after": "Provide [Branch Result](#branch-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngit fetch origin '[**<source-branch>**](#source-branch \"\u25cb\")'\n",
+    "invocation_sha256": "2d8ff7fa4699e191a04b29c94ae16fa5a9fa4fd28e5cf9cb7cd835d776618a3b"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Publish Epic Base",
+    "opening": "Creates a remote epic base from the fetched source branch.",
+    "details": "- Run in the [Project Checkout](#project-checkout \"\u25cb\").\n- Require [Missing Destination](#missing-destination \"\u25cb\"), [Prerequisite Evidence](#prerequisite-evidence \"\u25cb\") before executing the command.\n\n**Acts on:** the checkout it runs in.",
+    "after": "Provide [Branch Result](#branch-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngit push origin 'origin/[**<source-branch>**](#source-branch \"\u25cb\"):refs/heads/[**<epic-base>**](#epic-base-name \"\u25cb\")'\n",
+    "invocation_sha256": "ef84e49d3d4e739121036266fd024c1f16a9d9aa1c46f3fae4899c80fe2837b3"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Merge Remote Branch",
+    "opening": "Merges one fetched remote branch into the branch of the checkout it runs in.",
+    "details": "Run in the [Checkout](#checkout \"\u25cb\").\n\n**Acts on:** the checkout it runs in.",
+    "after": "Provide [Branch Result](#branch-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngit merge --no-edit 'origin/[**<source-branch>**](#source-branch \"\u25cb\")'\n",
+    "invocation_sha256": "6b853e7a514296462f00f23b45d75cf1c014d20ef1a8346ea2f5d7b002f7bf87"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Push Epic Base",
+    "opening": "Pushes the epic base checked out where it runs to its configured upstream.",
+    "details": "- Run in the [Checkout](#checkout \"\u25cb\").\n- Require [Successful Merge](#successful-merge \"\u25cb\") before executing the command.\n\n**Acts on:** the checkout it runs in.",
+    "after": "Provide [Branch Result](#branch-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngit push\n",
+    "invocation_sha256": "377d21ba842db277b5ef2ac9e811bd6960d1c3b6c89fac24bd6255642b155441"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Push Task Branch",
+    "opening": "Pushes the head of the checkout it runs in to its named remote task branch.",
+    "details": "- Run in the [Unit Checkout](#unit-checkout \"\u25cb\").\n- Require [Successful Merge](#successful-merge \"\u25cb\") before executing the command.\n\n**Acts on:** the checkout it runs in.",
+    "after": "Provide [Branch Result](#branch-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngit push origin 'HEAD:refs/heads/[**<task-branch>**](#task-branch \"\u25cb\")'\n",
+    "invocation_sha256": "6de83031ba9b320122c620182236eb39e31297ea7a55714c08fb66d235b3915e"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Add Task Worktree",
+    "opening": "Creates a task branch and worktree at the fetched base.",
+    "details": "- Run in the [Project Checkout](#project-checkout \"\u25cb\").\n- Require [Prerequisite Evidence](#prerequisite-evidence \"\u25cb\") before executing the command.\n\n**Acts on:** the checkout it runs in.\n\n- The path resolves against the directory the command runs in, so supply it as [Task Branches](#task-branches) anchors it rather than relative to a linked worktree.",
+    "after": "Provide [Worktree Result](#worktree-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngit worktree add '[**<worktree-path>**](#worktree-path \"\u25cb\")' -b '[**<task-branch>**](#task-branch \"\u25cb\")' 'origin/[**<base>**](#base-branch \"\u25cb\")'\n",
+    "invocation_sha256": "c15433e35559a3023b89e5a1455681e6c012acb19cff68235573e3906a0bdb87"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Fetch Review Head",
+    "opening": "Fetches one pull request head into FETCH_HEAD.",
+    "details": "Run in the [Project Checkout](#project-checkout \"\u25cb\").\n\n**Acts on:** the checkout it runs in.",
+    "after": "Provide [Checkout Commit](#checkout-commit \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngit fetch origin pull/[**<pull-request-number>**](#pull-request-number \"\u25cb\")/head\n",
+    "invocation_sha256": "68bb824c2733aedcb69f392f4838f03badcccc826a9a56c81aa45f75ea863fc6"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Add Epic Base Worktree",
+    "opening": "Creates the worktree for an existing epic base.",
+    "details": "- Run in the [Project Checkout](#project-checkout \"\u25cb\").\n\n**Acts on:** the checkout it runs in.\n\n- The path resolves against the directory the command runs in, so supply it as [Epic Bases](#epic-bases) anchors it rather than relative to a linked worktree.",
+    "after": "Provide [Worktree Result](#worktree-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngit worktree add '[**<worktree-path>**](#worktree-path \"\u25cb\")' '[**<epic-base>**](#epic-base-name \"\u25cb\")'\n",
+    "invocation_sha256": "0a201f7ceedc5d3f0881813685558107c2d0494c43f68a2ca829e662a7da056a"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Add Review Worktree",
+    "opening": "Creates a detached worktree at the fetched review head.",
+    "details": "- Run in the [Project Checkout](#project-checkout \"\u25cb\").\n\n**Acts on:** the checkout it runs in.\n\n- The path resolves against the directory the command runs in, so supply it as [Review Worktrees](#review-worktrees) anchors it rather than relative to a linked worktree.",
+    "after": "Provide [Worktree Result](#worktree-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngit worktree add --detach '[**<worktree-path>**](#worktree-path \"\u25cb\")' [**<head-commit>**](#verified-head \"\u25cb\")\n",
+    "invocation_sha256": "804ba35b28f76eadf0828429f34d7340abe413d65938834d4f71e53cc512e776"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Fetch Branch Protection",
+    "opening": "Saves the target branch protection response.",
+    "details": "",
+    "after": "Provide [Target Requirements](#target-requirements \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api 'repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/branches/[**<target-branch>**](#target-branch \"\u25cb\")/protection' > '[**<branch-protection-file>**](#output-files \"\u25cb\")'\n",
+    "invocation_sha256": "cc3c9f0fe826cbd50615306274d790e253e0b74544d5b4b9d510a4638e43f9f6"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Fetch Active Branch Rules",
+    "opening": "Saves every active rule for the target branch.",
+    "details": "",
+    "after": "Provide [Target Requirements](#target-requirements \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api --paginate 'repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/rules/branches/[**<target-branch>**](#target-branch \"\u25cb\")' > '[**<branch-rules-file>**](#output-files \"\u25cb\")'\n",
+    "invocation_sha256": "873a698eb26dffaaa318768886baf45048d454fb40de7a009e203a528b1aa380"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Read Checkout Revision",
+    "opening": "Resolves one revision to its commit in the selected checkout.",
+    "details": "",
+    "after": "Provide [Checkout Commit](#checkout-commit \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngit -C '[**<checkout>**](#checkout \"\u25cb\")' rev-parse '[**<revision>**](#revision \"\u25cb\")^{commit}'\n",
+    "invocation_sha256": "50d456775a87cea10153379a676ee519829972ebb09f5d1cb1c43c7ec3aee326"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "command": "Read Checkout Status",
+    "opening": "Reports branch or detached-HEAD state and tracked and untracked changes in one checkout.",
+    "details": "",
+    "after": "Provide [Checkout Status](#checkout-status \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngit -C '[**<checkout>**](#checkout \"\u25cb\")' status --porcelain --branch\n",
+    "invocation_sha256": "aa689a1cb65ca1534e77c3f7d1f38ac9f54d2cdadeab7f88d4b98495b43a4955"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "command": "Compute Available Work",
+    "opening": "Computes available work from supplied board and delivery snapshots.",
+    "details": "- Include each supplied [Off-Board Issues](#off-board-issues \"\u25cb\") file with `--others`.\n\n- Read each row\u2019s own links from the epic body to determine whether its work is under way.\n\n- Fetch the project checkout\u2019s remote epic bases and long-lived branches before reading producer outputs against them.\n- Read each free row\u2019s work-item file from the supplied engineering worktree.\n- Use `--date` to override the [record date](#record-date \"\u25cb\").\n- Omit `--lane` when the run names no lane. Offered units meet [Admission](lane.md#admission).\n- Omit `--dispatch-plan` when no dispatch export is requested.\n\n- The computation runs [Evaluate Lane Admission](lane.md#evaluate-lane-admission \"\u0192\") internally for each derived free unit under [Admission](lane.md#admission). The requester decides holds and dispatch, and supplies missing evidence for another pass.",
+    "after": "Provide [Plan Report](#plan-report \"\u25cf\"), [Dispatch Export](#dispatch-export \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py &#92;\n  --items '[**<board-items-file>**](#board-items \"\u25cb\")' &#92;\n  --prs '[**<pull-request-records-file>**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**<issue-link-snapshot-file>**](#issue-link-snapshot \"\u25cb\")' &#92;\n  --project '[**<checkout>**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**<revision>**](#revision \"\u25cb\")' &#92;\n  --bases '[**<epic-base-names>**](#epic-base-names \"\u25cb\")' &#92;\n  --engineering '[**<engineering-worktree>**](#engineering-worktree \"\u25cb\")' &#92;\n  --lane [**<lane-index>**](#requested-lane \"\u25cb\") &#92;\n  --dispatch-plan '[**<dispatch-export-file>**](#dispatch-export-path \"\u25cb\")'\n",
+    "invocation_sha256": "be89d6f75f2b790d547334f4f4127ba62e64ac9ab33e911af91c6363d5ee56b7"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "command": "Check Dependencies",
+    "opening": "Checks the task dependency graph across the epics given, and with `I=` the initiative's Depends on cells.",
+    "details": "- Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.\n- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files \"\u25cb\") defines them.\n\n- Initiative edges follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.\n- It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.\n- It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero.\n- It prints each candidate unit its rows do not join and no `R=` record line names exactly, with both resolutions and each direct edge a join drops, and each candidate split by rule with its reason, as [Joins](#joins) states. An `R=` file it cannot read is a problem.\n- An entry it cannot resolve is a problem naming the entry as written, as [Edges](#edges) states. Its second clause says what this run could not find, which is the epics it was given.\n- It prints each pair of rows in different epics whose work items declare one component, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.\n- A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic's rows, so a body carrying the retired form is reported once rather than taking its initiative's gates down with it.\n- It reads a declared component without its link, a wrapping code span, a trailing full stop or a leading `./`, and reports a work item it cannot read.\n- It reports a work item declaring a directory: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.\n- It prints the proposed [Epic Priority](#epic-priority) of each epic, largest first.\n- Its supplied inputs are published body text or local drafts.",
+    "after": "Provide [Graph Result](#graph-result \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deps.py 'I=[**&lt;initiative-body-file&gt;**](#dependency-files \"\u25cb\")' &#92;\n  '[**&lt;epic-id&gt;**](#dependency-files \"\u25cb\")=[**&lt;epic-body-file&gt;**](#dependency-files \"\u25cb\")' '[**&lt;epic-id&gt;**](#dependency-files \"\u25cb\"):[**&lt;task-id&gt;**](#dependency-files \"\u25cb\")=[**&lt;work-item-file&gt;**](#dependency-files \"\u25cb\")' 'R=[**&lt;record-file&gt;**](#dependency-files \"\u25cb\")'\n",
+    "invocation_sha256": "8623fd8ee07e9872fa2cbee2e8f84b7a7142716c29b4648fb5f38a5c0869efe7"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "command": "Renumber Tasks",
+    "opening": "Renumbers one epic's tasks by the map given, in the files given.",
+    "details": "- `<task-number-map>` is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each affected body file as a separate argument.\n\n- It renumbers `<epic-id> Wxx` and `<epic-id>:Wxx` everywhere, and bare `Wxx` inside that epic's own body. **Example:** for `E01`, the qualified forms are `E01 Wxx` and `E01:Wxx`.\n- The map assigns each old task number a distinct new number. A source absent from the files or a duplicate destination is refused.\n- Append `--outside` followed by each explicitly authorized outside-initiative body file when supplied; only this initiative's prefixed references change there.\n- Only rows no pull request names may be renumbered. Inspect the rewritten files before publishing them.",
+    "after": "Provide [Rewritten Bodies](#rewritten-bodies \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py &#92;\n  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs \"\u25cb\") &#92;\n  --epic [**&lt;epic-number&gt;**](#renumber-inputs \"\u25cb\") &#92;\n  --own '[**&lt;epic-body-file&gt;**](#dependency-files \"\u25cb\")' &#92;\n  --tasks [**&lt;task-number-map&gt;**](#renumber-inputs \"\u25cb\") '[**&lt;affected-body-file&gt;**](#renumber-inputs \"\u25cb\")'\n",
+    "invocation_sha256": "8ce0955c6dcdb639621c968dfafd7d31dbb93363a0cbded576493394b2061980"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "command": "Renumber Epics",
+    "opening": "Renumbers an initiative's epics across supplied body files.",
+    "details": "- The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.\n- Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.",
+    "after": "Provide [Rewritten Bodies](#rewritten-bodies \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py &#92;\n  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs \"\u25cb\") &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --map [**&lt;epic-number-map&gt;**](#renumber-inputs \"\u25cb\") '[**&lt;body-file&gt;**](#renumber-inputs \"\u25cb\")'\n",
+    "invocation_sha256": "06c5125258972000f46ae86cc2b30d98d1f29f2df0ff0999f269e0c0528f895a"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "command": "Compute Dispatch Batch",
+    "opening": "Selects the next batch without tracker writes or worker execution.",
+    "details": "- Honor [Requested Lane](#requested-lane \"\u25cb\") when selecting units.\n\n- Supply `--lane '<lane-index>'` only when that lane was used by the survey.\n- Supply `--preparations '<preparations-file>'` for this run's admitted [preparations](#preparations \"\u25cb\") awaiting capacity.\n- The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.",
+    "after": "Provide [Batch](#batch \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/dispatch.py batch &#92;\n  --authorization '[**<authorization-file>**](#authorization \"\u25cb\")' &#92;\n  --plan '[**<dispatch-export-file>**](#survey-evidence \"\u25cb\")' &#92;\n  --sessions '[**<session-inventory-file>**](#session-inventory \"\u25cb\")' &#92;\n  --capacity [**<free-slot-count>**](#free-slots \"\u25cb\") &#92;\n  --board [**<survey-board>**](#survey-board \"\u25cb\") &#92;\n  &gt; '[**<batch-file>**](#batch \"\u25cb\")'\n",
+    "invocation_sha256": "f8f8b16c5ea925eea47e49f5e8ca574bd7bb1e3300e975661d814fd29f0561a7"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "command": "Check Dispatch Start",
+    "opening": "Checks one selected unit immediately before execution.",
+    "details": "Exit 0 returns the selected unit; exit 1 names the blocking condition.",
+    "after": "Provide [Validated Unit](#validated-unit \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/dispatch.py start &#92;\n  --batch '[**<batch-file>**](#batch \"\u25cb\")' &#92;\n  --unit [**<unit-identity>**](#unit-identity \"\u25cb\") &#92;\n  --evidence '[**<start-evidence-file>**](#start-evidence \"\u25cb\")' &#92;\n  --sessions '[**<session-inventory-file>**](#session-inventory \"\u25cb\")' &#92;\n  --capacity [**<free-slot-count>**](#free-slots \"\u25cb\")\n",
+    "invocation_sha256": "8e1e311a73333eb6ce7bb6b18e3305129764d3e42e81034fc1efd8ab22dda788"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Sync Epic",
+    "opening": "Links each named task's id to the pull requests naming the epic it is delivered through, open or merged, and ticks Done on a row once it is complete.",
+    "details": "- A row whose id links its task [issue links](#issue-links \"\u25cb\") the pull request instead.\n- A pull request whose head is an epic base is the pull request that merges that base, and is not matched to a task.\n- An unmerged epic base keeps the epic open, even when every row is delivered and every criterion is ticked.\n- An epic base is reported `draft` only where it holds a commit its long-lived branch lacks. The base is read at the `--revision` naming it and the long-lived branch beside it on the same remote, so `origin/i07/e00/main` is compared with `origin/main`; a base no `--revision` names is reported `unevaluable`.\n- Read long-lived branch names from `config/branches` at each supplied epic-base revision, such as `origin/i07/e00/main`; each `source` line names its path, commit and repository.\n- An absent, empty or unreadable statement, and statements that disagree across the bases, are reported `unevaluable` with their source. Without the long-lived branch names, the run names each check it did not make as `not checked`, and an epic that would otherwise be closable is not.\n- An open review pull request's Changes paths are read at its head commit in the `--project` repository: a path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree. A head commit the repository does not hold is reported `unevaluable`.\n- Passed checks settle criteria under [Test Evidence](#test-evidence).\n- Repeat a task id in `--link` once per pull request, one per long-lived branch its unit changes. Retain its existing deliveries and add only those missing, so repeated execution is idempotent.\n\n- `<task-pull-request-map>` is a comma-separated list of `<task-id>=<pull-request-number>` pairs, with a pair for each pull request a task id links. Pass each task JSON file as a separate argument after `--tasks`.\n\n- Updated rows meet [Task Delivery](#task-delivery) and [Work Breakdown](#work-breakdown).",
+    "after": "Provide [Output Body](#output-body \"\u25cf\"), [Delivery Findings](epic.md#delivery-findings \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --tasks '[**&lt;task-json-file&gt;**](#task-records \"\u25cb\")' &#92;\n  --link '[**&lt;task-pull-request-map&gt;**](#delivery-matches \"\u25cb\")' &#92;\n  --project '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**&lt;epic-base-revision&gt;**](#epic-bases \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "invocation_sha256": "2879ef19d9b8b09fe59738042b5123e95ea55ffdc62a7d1e0478fc28f1cabc88"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Tick Epic Criteria",
+    "opening": "Ticks confirmed epic criteria, refusing any not ready to verify, and ticks completed rows.",
+    "details": "`<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection \"\u25cb\").",
+    "after": "Provide [Output Body](#output-body \"\u25cf\"), [Criterion Selection](#criterion-selection \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --tick '[**&lt;criterion-ids&gt;**](#criterion-selection \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "invocation_sha256": "eb91e2a0c5819ea1a8d152537dfd3a75a11e8a529922c02974f4226c0a51b9e6"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Reserve Row",
+    "opening": "Holds each named unit for one session, by setting its record folder as the single link of every row in it.",
+    "details": "- Supply the planning-records base URL when no epic row links a record.\n- The caller supplies the planned folder identity; `--date` is the day it is opened.\n- The folder is the one the unit's first task id and Description give it, as the available-work report's `unit` line names it. A call naming some rows of a joined unit and not the others is refused.\n\n- `<task-ids>` is a comma-separated list of task ids; `<records-base-url>` identifies the planning records folder.\n\n- Require a confirmed [Task Selection](#task-selection \"\u25cb\") and existing [Planning Folder](#planning-folder \"\u25cb\"). Refuse a row already held or linked to a pull request or commit, and a unit [Work Units](delivery-plan.md#work-units) does not admit.",
+    "after": "Provide [Output Body](#output-body \"\u25cf\"), [Row Result](#row-result \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py &#92;\n  --epic '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --reserve [**&lt;task-ids&gt;**](#task-selection \"\u25cb\") &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --records '[**&lt;records-base-url&gt;**](#planning-folder \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "invocation_sha256": "56731975480c39a4623ea49bcfe443fb92fbebc3bb95110f7403069d58941685"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "command": "Release Row",
+    "opening": "Frees each named task row, by replacing the planning-folder link with its work-item file link.",
+    "details": "- The file is the task id in lowercase within that folder, as [Task ids](#task-delivery) defines.\n- Refuse a row when its planning folder contains no matching work-item file or its README does not link that file.\n- A call naming some rows of a joined unit and not the others is refused.\n\n- `<task-ids>` is a comma-separated list of task ids.\n\n- Require a confirmed release decision and refuse any row that is not held.",
+    "after": "Provide [Output Body](#output-body \"\u25cf\"), [Row Result](#row-result \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py &#92;\n  --epic '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --release [**&lt;task-ids&gt;**](#task-selection \"\u25cb\") &#92;\n  --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "invocation_sha256": "793e99543149a170f8418616140bf8fe1339046ac77d7c8b4d0d8b23067a33fd"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "command": "Match Pull Requests",
+    "opening": "Reports an epic's delivery state against the pull requests that name it.",
+    "details": "Results follow [Delivery Findings](#delivery-findings \"\u25cf\").",
+    "after": "Provide [Delivery Findings](#delivery-findings \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --fix '[**&lt;epic-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "invocation_sha256": "fdd410ceb14f22011c659a1c6797e4eee5953785e229aba94b657662922777e4"
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "command": "Sync Hot-fix Issue",
+    "opening": "Records the pull request that delivers a hot-fix, open or merged, ticks verified criteria, and reports whether it is closable.",
+    "details": "- A `--pr` that does not deliver the hot-fix is refused, naming the condition it fails.\n- `<criterion-ids>` is a comma-separated list of verified criterion ids.\n\n- Tick only criteria the requester has verified. The requester publishes the body and closes the tracker issue under [Delivery Record](#delivery-record).",
+    "after": "Provide [Output Body](#output-body \"\u25cf\"), [Delivery Findings](#delivery-findings \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;hot-fix-json-file&gt;**](#hot-fix-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --pr [**&lt;pull-request-number&gt;**](#delivery-selection \"\u25cb\") &#92;\n  --tick '[**&lt;criterion-ids&gt;**](#delivery-selection \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "invocation_sha256": "ca6f59b38455695cca44dbbaba77a02b9e96a074663ce9e207f999126c141074"
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "command": "Sync Initiative",
+    "opening": "Reports an initiative's delivery state against its epics, and ticks Done on an epic row whose issue is closed as completed. A row whose epic it is not given keeps its Done cell and is reported unchanged.",
+    "details": "- Omit `--fix` when only a delivery report is requested.\n\n- It takes every linked epic's current JSON. Delivery findings follow [Delivery State](initiative.md#delivery-state).\n\n- Pass every epic JSON file as a separate argument after `--epics`.",
+    "after": "Provide [Delivery Findings](initiative.md#delivery-findings \"\u25cf\") and, when a body was requested, [Output Files](#output-files \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"\u25cb\")' &#92;\n  --epics '[**&lt;epic-json-file&gt;**](#epic-records \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-files \"\u25cb\")'\n",
+    "invocation_sha256": "5961b003a7735fc0603205adee058e534d4088a89aed9eccead70d623014ef9e"
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "command": "Tick Initiative Criteria",
+    "opening": "Ticks confirmed initiative criteria, refusing any not ready to verify, and ticks completed rows.",
+    "details": "Pass every epic JSON file as a separate argument after `--epics`. `<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection \"\u25cb\").",
+    "after": "Provide [Output Files](#output-files \"\u25cf\"), [Criterion Selection](#criterion-selection \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"\u25cb\")' &#92;\n  --epics '[**&lt;epic-json-file&gt;**](#epic-records \"\u25cb\")' &#92;\n  --tick '[**&lt;criterion-ids&gt;**](#criterion-selection \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-files \"\u25cb\")'\n",
+    "invocation_sha256": "220adec31222c207d5262d5f59bee211d11ffdabc881dd543a60189f9235b630"
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "command": "Fetch Source",
+    "opening": "Saves one GitHub source at the revision its permalink pins.",
+    "details": "Run in the repository checkout.",
+    "after": "Provide [Source Evidence](#source-evidence \"\u25cf\") to the requester.",
+    "invocation": "\ngh api 'repos/[**&lt;owner&gt;**](#source-evidence \"\u25cb\")/[**&lt;repository&gt;**](#source-evidence \"\u25cb\")/contents/[**&lt;source-path&gt;**](#source-evidence \"\u25cb\")?ref=[**&lt;revision&gt;**](#source-evidence \"\u25cb\")' &#92;\n  --jq .content &#92;\n  | base64 &#92;\n  -d &#92;\n  &gt; '[**&lt;source-file&gt;**](#output-files \"\u25cb\")'\n",
+    "invocation_sha256": "b2385c71a71cd6994e7d545e7def90361479a7a647cae74237f63461e3c527c0"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "Check Body Format",
+    "opening": "Checks one issue against its template, and with `--fix` writes the body with the mechanical fixes made.",
+    "details": "- Validate the body against [Kind Conditions](#kind-conditions \"\u25cb\").\n\n- The format reader takes the template fence from the body artifact and its table columns where present. A body with a Work Breakdown table requires coverage for every criterion.\n- For an epic, supply its parent with `--initiative`. For an initiative, supply every linked epic by repeating `--epic`; omit those options for other kinds.\n- For epic delivery checks, supply the pull request snapshot with `--prs` and repeat `--files` for each supplied changed-path record.\n- Supply `--project` and `--revision` together for project-required-criteria validation at the fetched revision. Omit both when that validation is outside the request.\n- Omit optional flags whose corresponding evidence is not applicable; retain all evidence required by the selected kind. Omit `--fix` when no corrected body is requested.",
+    "after": "Provide [Format Findings](#format-findings \"\u25cf\") and, when a corrected body was requested, [Output Files](#output-files \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/format.py '[**&lt;issue-json-file&gt;**](#body-record \"\u25cb\")' &#92;\n  --initiative '[**&lt;initiative-json-file&gt;**](#initiative-record \"\u25cb\")' &#92;\n  --epic '[**&lt;epic-json-file&gt;**](#epic-records \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --files '[**&lt;pull-request-changed-paths&gt;**](#changed-file-records \"\u25cb\")' &#92;\n  --project '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' &#92;\n  --revision '[**&lt;revision&gt;**](#evaluated-revision \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-files \"\u25cb\")'\n",
+    "invocation_sha256": "739a263018e5bc8f3f6a005961589d08f7b838f6da74fb9f21a708179764edd2"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "List Reference Repositories",
+    "opening": "List repository names from the issue destination and References section.",
+    "details": "",
+    "after": "Provide [Reference Repositories](#reference-repositories \"\u25cf\") to the requester.",
+    "invocation": "\n[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/align.py repositories '[**&lt;issue-json-file&gt;**](#body-record \"\u25cb\")'\n",
+    "invocation_sha256": "9cb08cb803398b58881039d19ea41dcf34289f18cb5ddfcb2c8aabfb7f9814a8"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "Fetch Reference Repository",
+    "opening": "Read one listed repository's visibility with the authenticated repository API.",
+    "details": "- Run in the repository checkout.\n\n- Save each object with its `full_name` and `private` fields; combine the objects into the caller's JSON array. A failed fetch supplies no visibility.",
+    "after": "Provide [Repository Snapshot](#repository-snapshot \"\u25cf\") to the requester.",
+    "invocation": "\ngh api repos/[**&lt;owner&gt;**](#reference-repositories \"\u25cb\")/[**&lt;repo&gt;**](#reference-repositories \"\u25cb\") > '[**&lt;repository-json-file&gt;**](#output-files \"\u25cb\")'\n",
+    "invocation_sha256": "72ea8f5b511bb46c5bcba924a559ad8a5a4ce5c7202b1e960824bdc930029f52"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "command": "Validate Reference Visibility",
+    "opening": "Report private repository references on a public issue and unresolved repository visibility.",
+    "details": "The snapshot is a JSON array of fetched repository objects. Exit 1 means findings remain.",
+    "after": "Provide [Visibility Findings](#visibility-findings \"\u25cf\") to the requester.",
+    "invocation": "\n[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/align.py references '[**&lt;issue-json-file&gt;**](#body-record \"\u25cb\")' --repositories '[**&lt;repositories-json-file&gt;**](#repository-snapshot \"\u25cb\")'\n",
+    "invocation_sha256": "c2ce95c78dff150e8416e917ac6b145095ec2ca026d52e34e3a2670ca6f1b40c"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Create Tracker Issue",
+    "opening": "Creates an issue from a body file, with its title and labels, and prints its number.",
+    "details": "- Run in the repository checkout.\n\n- Repeat `-f 'labels[]=<label>'` for each supplied label.",
+    "after": "Provide [Identity](#identity \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues &#92;\n  -f title='[**&lt;title&gt;**](#issue-changes \"\u25cb\")' &#92;\n  -F 'body=@[**&lt;body-file&gt;**](#issue-changes \"\u25cb\")' &#92;\n  -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names \"\u25cb\")' &#92;\n  --jq .number\n",
+    "invocation_sha256": "d4a942a846352876ef10ad5686dbdfcc72ddf4436ab828f4bdc7f83019f6e8f8"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Patch Issue Body",
+    "opening": "Replaces an issue's body from a file.",
+    "details": "Run in the repository checkout.",
+    "after": "Provide [Identity](#identity \"\u25cf\"), [Content](#content \"\u25cf\") to the requester.",
+    "invocation": "\ngh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") -F 'body=@[**&lt;body-file&gt;**](#issue-changes \"\u25cb\")' --jq .number\n",
+    "invocation_sha256": "1d44d0d3d64e9bf6dba5a126f3083d3dcd7a0f0d37c2e53bfc3e65c99d64cf9c"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Issue Body",
+    "opening": "Saves an issue's body alone.",
+    "details": "Run in the repository checkout.",
+    "after": "Provide [Issue Body](#issue-body \"\u25cf\") to the requester.",
+    "invocation": "\ngh api repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") --jq .body > '[**&lt;output-body-file&gt;**](#output-files \"\u25cb\")'\n",
+    "invocation_sha256": "4b5bf0ce7f4cce405c1b2602ba4586b50c242759276ba310282b8ded80802b1a"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Retitle Tracker Issue",
+    "opening": "Replaces an issue's title.",
+    "details": "Run in the repository checkout.",
+    "after": "Provide [Content](#content \"\u25cf\") to the requester.",
+    "invocation": "\ngh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") -f title='[**&lt;title&gt;**](#issue-changes \"\u25cb\")' --jq .title\n",
+    "invocation_sha256": "811043172979124416b54e590b5e99d23f19f80b5af1752ea3c1e7e2808a083d"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Add Issue Labels",
+    "opening": "Adds labels to an issue.",
+    "details": "- Run in the repository checkout.\n\n- Repeat `-f 'labels[]=<label>'` for each supplied label.",
+    "after": "Provide [Label Names](#label-names \"\u25cf\") to the requester.",
+    "invocation": "\ngh api --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/labels -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names \"\u25cb\")' --jq '.&#91;&#93;.name'\n",
+    "invocation_sha256": "55fe0871116d2eb1d9f6584b053e12a2d327fa390225decf3039db7b73f6ce75"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Remove Issue Label",
+    "opening": "Removes one label from an issue.",
+    "details": "Run in the repository checkout.",
+    "after": "Provide [Label Names](#label-names \"\u25cf\") to the requester.",
+    "invocation": "\ngh api --method DELETE 'repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/labels/[**&lt;label&gt;**](#label-names \"\u25cb\")' --jq '.&#91;&#93;.name'\n",
+    "invocation_sha256": "f388d5e224375abeb459250bc502ee0c8239f261cc16b5c99699b4e14d6c00d6"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Issue Comments",
+    "opening": "Prints an issue's comments.",
+    "details": "Run in the repository checkout.",
+    "after": "Provide [Discussion](#discussion \"\u25cf\") to the requester.",
+    "invocation": "\ngh api --paginate repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/comments\n",
+    "invocation_sha256": "c7a00bd70ca0a04d6cc50610fcf26063b2179d8039702dcccfecc57e2d9e9037"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Tracker Issue",
+    "opening": "Saves an issue whole, as JSON, for the scripts that read issues.",
+    "details": "- Run in the repository checkout.\n- Use [Output Files](#output-files \"\u25cb\") to select the destination.",
+    "after": "Provide [Issue Record](#issue-record \"\u25cf\") to the requester.",
+    "invocation": "\ngh api repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") > '[**&lt;issue-json-file&gt;**](#issue-record \"\u25cb\")'\n",
+    "invocation_sha256": "8afe43f12ce840a5cbf69454a89a6a77ce98438ff17e8471a25063f72f85a4e1"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Check Issue Closure",
+    "opening": "Checks the issue's criteria and the state of every pull request its Development field holds.",
+    "details": "- The gate reads only those two files, each a field GitHub exposes.\n- An issue the snapshot maps to an empty array adds no pull request requirement. An issue the snapshot holds no entry for, a missing or unreadable snapshot, or a snapshot of another repository's issues blocks as missing evidence.\n- Exit 0 means the closure gate passes; normal delivery checks must also pass. Exit 1 reports blockers. The command performs no network calls or writes.",
+    "after": "Provide [Closure Findings](#closure-findings \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/closure.py &#92;\n  --issue '[**&lt;issue-json-file&gt;**](#issue-record \"\u25cb\")' &#92;\n  --development '[**&lt;issue-links-file&gt;**](#development-snapshot \"\u25cb\")'\n",
+    "invocation_sha256": "536fd106eabfdfc444ba0431ebfc29cc56b143213e3a51fb3c17a1c6d88c8ecd"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Sweep Closure Evidence",
+    "opening": "Lists each closed issue whose acceptance criteria are missing or unticked, or whose Development field holds a pull request that has not merged, with the issue's state reason.",
+    "details": "- The sweep audits every closed issue in the collection, so the collection sets its scope. Run [Check Issue Closure](#check-issue-closure \"\u0192\") to each issue. Open issues and pull requests in the collection are skipped.\n- `--issue-links` takes the issue-links file of the collection's repository alone; any other shape, or another repository's file, is refused as unreadable evidence.\n- Each line names the issue, its state reason (`completed`, `not_planned`, or `unknown` when none is recorded) and its findings, under one of three labels:\n- `unsupported:` for an issue closed for any reason but `not_planned` whose evidence does not support it.\n- `unevaluable:` for a closed issue the file holds no link list for, which is missing evidence rather than an empty link set.\n- `not planned:` for an issue closed as `not_planned` whose evidence would not support completion; these follow the findings, listed for reference.\n- The last line counts each label. Exit 0 means no issue is unsupported or unevaluable. Exit 1 means at least one is, or the evidence is unreadable. The command performs no network calls or writes.",
+    "after": "Provide [Closure Findings](#closure-findings \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/closure-sweep.py &#92;\n  --issues '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")' &#92;\n  --issue-links '[**&lt;issue-links-file&gt;**](#development-snapshot \"\u25cb\")'\n",
+    "invocation_sha256": "9207c317ba3718a97840d64baf656dc74698898d56337a2975883c3cbade4da8"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Close as Not Planned",
+    "opening": "Closes an issue whose work another issue tracks.",
+    "details": "- Run in the repository checkout.\n- Base the transfer pointer on [Transfer Evidence](#transfer-evidence \"\u25cb\").",
+    "after": "Provide [State](#state \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") &#92;\n  -f state=closed &#92;\n  -f state_reason=not_planned &#92;\n  --jq .state\n",
+    "invocation_sha256": "7f6dcd9eabd377eb09923e400b8dc493409f7db18bfd885d3d87501e95b2e600"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Post Inline Comment",
+    "opening": "Posts one line of exact comment text and returns its URL.",
+    "details": "Run in the repository checkout.",
+    "after": "Provide [Comment](#comment \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/comments &#92;\n  -f body='[**&lt;comment-text&gt;**](#comment \"\u25cb\")' &#92;\n  --jq .html_url\n",
+    "invocation_sha256": "ccaac698c0e8b711bc370127a0e0355ce8a41421ba2f22513532963fdbed879e"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Post Comment File",
+    "opening": "Posts a complete comment file and returns its URL.",
+    "details": "Run in the repository checkout.",
+    "after": "Provide [Comment](#comment \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\")/comments &#92;\n  -F 'body=@[**&lt;comment-file&gt;**](#comment \"\u25cb\")' &#92;\n  --jq .html_url\n",
+    "invocation_sha256": "580d84b0a37dbfd278aff4fbc1cf7774a492e76193e96a829b00dc2bf6f947c3"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Set Completed State",
+    "opening": "Sets an issue to closed with the completed reason and returns its state.",
+    "details": "- Run in the repository checkout.\n- Require [Closure Findings](#closure-findings \"\u25cb\"), [Delivery Evidence](#delivery-evidence \"\u25cb\") before executing the command.",
+    "after": "Provide [State](#state \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --method PATCH repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues/[**&lt;issue-number&gt;**](#identity \"\u25cb\") &#92;\n  -f state=closed &#92;\n  -f state_reason=completed &#92;\n  --jq .state\n",
+    "invocation_sha256": "f666fdc7e7ce4ff2f01eb06b768e642b18f6e38358b9d35e34d45ab6e2db6ad8"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Capture Issue Links",
+    "opening": "Writes each issue's Development pull requests, read from the issue end of the relation, keyed by issue number.",
+    "details": "- Run in the repository checkout.\n- Require [Authenticated Access](#authenticated-access \"\u25cb\") before executing the command.\n- Use [Output Files](#output-files \"\u25cb\") to select the destination.\n\n**REST gap:** REST exposes no read of the pull requests an issue's Development field holds.\n\n- The snapshot names the repository its issues belong to. Each issue maps to every pull request its Development field holds, open, closed and merged, as repository, number and state, or to an empty array. Pull requests in the collection are skipped.\n- Each batch of issues costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.\n- A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.\n- Exit 0 means every relation was read. Exit 1 names each unreadable relation with the tracker's reason and writes nothing; the caller treats it as a blocker.\n- A call the tracker refuses outright, such as a rejected credential, exits 1 with `GraphQL read failed:` and what `gh` reported, and writes nothing.",
+    "after": "Provide [Development Snapshot](#development-snapshot \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/links-by-issue.py &#92;\n  --issues '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")' &#92;\n  --out '[**&lt;issue-links-file&gt;**](#development-snapshot \"\u25cb\")'\n",
+    "invocation_sha256": "0d1f173c2ae680c614f7cd17b00999e50f9629d47480384d6968f5521cb397fa"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch All Issues",
+    "opening": "Saves every issue in the repository; the scripts skip the pull requests among them.",
+    "details": "- Run in the repository checkout.\n- Use [Output Files](#output-files \"\u25cb\") to select the destination.",
+    "after": "Provide [Issue Collection](#issue-collection \"\u25cf\") to the requester.",
+    "invocation": "\ngh api --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=all&per_page=100\" > '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")'\n",
+    "invocation_sha256": "9a1c0c77c8f0a102c3941f9974f42a69d4f5adff4c6143a903b0235442472b47"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Closed Issues",
+    "opening": "Saves every closed issue in the repository; the scripts skip the pull requests among them.",
+    "details": "- Run in the repository checkout.\n- Use [Output Files](#output-files \"\u25cb\") to select the destination.",
+    "after": "Provide [Issue Collection](#issue-collection \"\u25cf\") to the requester.",
+    "invocation": "\ngh api --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=closed&per_page=100\" > '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")'\n",
+    "invocation_sha256": "85953cdab5ce573c2bffe136f567f373f72d1876d56487783921fdc52ba072cf"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Fetch Selected Closed Issues",
+    "opening": "Saves the named issues that are closed, one per line; an issue that is open or absent is left out.",
+    "details": "- Run in the repository checkout.\n- Use [Output Files](#output-files \"\u25cb\") to select the destination.",
+    "after": "Provide [Issue Collection](#issue-collection \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=closed&per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(&#91;.number&#93; | inside(&#91;[**&lt;issue-numbers&gt;**](#audit-selection \"\u25cb\")&#93;))' &#92;\n  &gt; '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")'\n",
+    "invocation_sha256": "eda6e6c457ea98361a84e353d22e7f1898e5ee802f8751ae9565c4764019f33f"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "Find Initiative Issue",
+    "opening": "Prints an initiative's issue number, found by its title's prefix.",
+    "details": "- Run in the repository checkout.\n\n- `<initiative-prefix>` includes the initiative id and its enclosing brackets.",
+    "after": "Provide [Identity](#identity \"\u25cf\"), [Tracker Number](#tracker-number \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/issues?state=all&per_page=100\" &#92;\n  --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith(\"[**&lt;initiative-prefix&gt;**](#tracker-prefix \"\u25cb\")\")) | .number'\n",
+    "invocation_sha256": "fed6647395aff0b40b050dfb858e5e128649f5241824dd19e91e5b4d60703f02"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "command": "List Prefixed Titles",
+    "opening": "Lists titles carrying one kind's prefix letter, across all states.",
+    "details": "Run in the repository checkout.",
+    "after": "Provide [Tracker Prefix](#tracker-prefix \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --paginate 'repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repository&gt;**](#repository \"\u25cb\")/issues?state=all&per_page=100' &#92;\n  --jq '.&#91;&#93; | select(.title | test(\"^\\\\&#91;[**&lt;prefix-letter&gt;**](#tracker-prefix \"\u25cb\")&#91;0-9&#93;{2}\\\\&#93;\")) | .title'\n",
+    "invocation_sha256": "0ddf7973a46b0ac3961823deadb29c6e80a5191bbe068adae132bf152e0f9cb9"
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Read Lane Assignments",
+    "opening": "Reads raw task-table Lane cells through the Lane module.",
+    "details": "- Results meet [Assignments](#assignments).",
+    "after": "Provide [Lane Result](#lane-result \"\u25cf\") to the requester.",
+    "invocation": "\n\"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/lane.py\" read '[**&lt;epic-body-file&gt;**](#epic-body-file \"\u25cb\")'\n",
+    "invocation_sha256": "893d1d136909ad0f09ab153a14b37e866aabf4797219e57f9aebe0ae934e71cd"
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Write Lane Assignments",
+    "opening": "Writes confirmed assignments while preserving other body content.",
+    "details": "- Refuse unknown task ids or malformed resulting cells. The requester validates the complete body and dependencies before publication.",
+    "after": "Provide [Output Body](#output-body \"\u25cf\") to the requester.",
+    "invocation": "\n\"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/lane.py\" assign &#92;\n  '[**&lt;epic-body-file&gt;**](#epic-body-file \"\u25cb\")' &#92;\n  --map '[**&lt;confirmed-map-file&gt;**](#confirmed-map \"\u25cb\")' &#92;\n  --out '[**&lt;output-body-path&gt;**](#output-body \"\u25cb\")'\n",
+    "invocation_sha256": "23bc51be102e6dfdabaaad4fab3c40a54a4df00f3046242e73e75b17832ed631"
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Validate Lane Unit",
+    "opening": "Reports a unit's common lane or assignment findings.",
+    "details": "- Results meet [Unit Consistency](#unit-consistency).",
+    "after": "Provide [Lane Result](#lane-result \"\u25cf\") to the requester.",
+    "invocation": "\n\"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/lane.py\" check &#92;\n  '[**&lt;epic-body-file&gt;**](#epic-body-file \"\u25cb\")' &#92;\n  --unit '[**&lt;task-ids&gt;**](#unit-task-ids \"\u25cb\")'\n",
+    "invocation_sha256": "244407fa07cb82b900a62c9afcb90f1dc41d266008a285e2054337620fab1128"
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "command": "Evaluate Lane Admission",
+    "opening": "Reports whether the request admits a valid unit.",
+    "details": "Omit the lane option when the request supplies none.\n\n- Results meet [Admission](#admission).",
+    "after": "Provide [Lane Result](#lane-result \"\u25cf\") to the requester.",
+    "invocation": "\n\"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/lane.py\" admit &#92;\n  '[**&lt;epic-body-file&gt;**](#epic-body-file \"\u25cb\")' &#92;\n  --unit '[**&lt;task-ids&gt;**](#unit-task-ids \"\u25cb\")' &#92;\n  --lane '[**&lt;lane-index&gt;**](#requested-index \"\u25cb\")'\n",
+    "invocation_sha256": "3fd1072fe57728a7df8de570e0a6b2d9906c11ecf113221e67b26de106d3a546"
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "command": "List Orphans",
+    "opening": "Lists the hoist candidates, and the open initiatives and epics they could join.",
+    "details": "",
+    "after": "Provide [Candidate Issues](#candidate-issues \"\u25cf\") and [Candidate Destinations](#candidate-destinations \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/orphans.py '[**&lt;issues-json-file&gt;**](#issue-collection \"\u25cb\")'\n",
+    "invocation_sha256": "da907f994f1fa5bb000424654cab83ed6365abee59108118db1f33cb608a6ab3"
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "command": "Find Engineering Worktree",
+    "opening": "Prints the checkout holding the engineering branch, which is where every planning record is written.",
+    "details": "The engineering branch has one long-lived worktree and takes no further one.",
+    "after": "Provide [Engineering Worktree](#engineering-worktree \"\u25cf\") to the requester.",
+    "invocation": "\ngit -C '[**&lt;checkout&gt;**](#project-checkout \"\u25cb\")' worktree list | grep '\\&#91;engineering\\&#93;'\n",
+    "invocation_sha256": "88f705f2cfb824ce551a5290eb8b0496804c3032130fd5ac750c20d093f6f456"
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "command": "Commit Planning Record",
+    "opening": "Commits everything pending in the engineering worktree and publishes the branch, so every record's links resolve.",
+    "details": "- It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).\n- Planning records go straight to the branch; they take no pull request.\n- Pass the message through a file outside the worktree; the worktree is a linked one, so git writes here run unsandboxed.",
+    "after": "Provide [Publication Result](#publication-result \"\u25cf\") to the requester.",
+    "invocation": "\ncd '[**&lt;engineering-worktree&gt;**](#engineering-worktree \"\u25cb\")' && &#92;\n  git add &#92;\n  -A && &#92;\n  (git diff &#92;\n  --cached &#92;\n  --quiet || git commit &#92;\n  -F '[**&lt;message-file&gt;**](#commit-message-file \"\u25cb\")') && &#92;\n  git fetch origin engineering && &#92;\n  git rebase origin/engineering && &#92;\n  git push\n",
+    "invocation_sha256": "88206fd51a00f833a5b4b6bcaaf6e25c6d0f24ee35793db6b31ad8ea2e8e99ca"
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "command": "Add Planning Record",
+    "opening": "Adds the folder for one planning record on the long-lived engineering worktree.",
+    "details": "- Run in the [Engineering Worktree](#engineering-worktree \"\u25cb\").\n\n- `<planning-folder-path>` is `<yyyy-mm-dd>[-<ref>]-<slug>/` under the [configured planning directory](../configuration.md#planning-records). The date is the day the record is opened.\n- `<ref>` is the bare number of the issue or the pull request the record is for. A record for ad hoc work, which has neither, has no ref segment.\n- The slug is lowercase words separated by hyphens, a short name of the work.\n- The folder's files are the [planning layout](planning-record.md#layout).\n- Edits are made on that worktree. The engineering branch takes no further worktree and no branch.",
+    "after": "Provide [Planning Folder](#planning-folder \"\u25cf\") to the requester.",
+    "invocation": "\nmkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder \"\u25cb\")'\n",
+    "invocation_sha256": "a5332ae3c39cbc6d9c03236986e53b88a73ffddeb3b0b62b816dfaae5554fd58"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "command": "Convert Test Plan",
+    "opening": "Convert an unambiguous checked list and Test/Criteria table to the current plan table.",
+    "details": "- Input is a current REST [pull request record](#pull-request-record \"\u25cb\"); output is the complete body. Existing current tables are unchanged.\n- A conversion prints the pull request identity. Exit 1 means an unreadable plan or missing linked result evidence; inspect the body and findings before publishing.",
+    "after": "Provide [Output Body](#output-body \"\u25cf\"), [Unresolved Evidence](#unresolved-evidence \"\u25cf\") to the requester.",
+    "invocation": "\n[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace \"\u25cb\")/skills/work-planner/scripts/align.py plan '[**&lt;pull-request-json-file&gt;**](#pull-request-record \"\u25cb\")' --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "invocation_sha256": "c64a8d441533a78b21bb552cb8f4beb10030b8944f37e80b2d03ac8f3fdb653b"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Retarget Pull Request",
+    "opening": "Points a pull request at another base branch, such as its epic's base branch.",
+    "details": "",
+    "after": "Provide [Base Branch](#base-branch \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api &#92;\n  --method PATCH repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\") &#92;\n  -f base='[**<target-branch>**](#base-branch \"\u25cb\")' &#92;\n  --jq .base.ref\n",
+    "invocation_sha256": "ea14e3376af6c96034106aecabc5e9070961acd566eeefc398b4f48fa78fe594"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Retitle Pull Request",
+    "opening": "Replaces a pull request's title.",
+    "details": "",
+    "after": "Provide [Title](#title \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api --method PATCH repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\") -f title='[**<title>**](#title \"\u25cb\")' --jq .title\n",
+    "invocation_sha256": "9103d6ac4fb17eedb6e4d4f93f5ac15ed4924616964050d6460cfad21bcbd8ad"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Open Task Pull Request",
+    "opening": "Creates a pull request from a unit's branch to its base.",
+    "details": "- Supply the [title](#title \"\u25cb\"), the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the [complete body file](#body-file \"\u25cb\").\n- A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens.",
+    "after": "Provide [Identity](#identity \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api &#92;\n  --method POST repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls &#92;\n  -f title='[**<title>**](#title \"\u25cb\")' &#92;\n  -f head='[**<task-branch>**](#head-branch \"\u25cb\")' &#92;\n  -f base='[**<base>**](#base-branch \"\u25cb\")' &#92;\n  -F 'body=@[**<body-file>**](#body-file \"\u25cb\")' &#92;\n  --jq .html_url\n",
+    "invocation_sha256": "be63669fa0f3a76576bbd0010a2b246abcdf0c56c9a32dd3dffc9053c69ec1ce"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Open Epic Pull Request",
+    "opening": "Creates the draft pull request from an epic base to its long-lived target.",
+    "details": "- Supply the epic prefix and name as [title](#title \"\u25cb\"), the epic base as head, its long-lived branch as base, and the populated review [body file](#body-file \"\u25cb\").\n- `draft` is true, including when the work is already complete.",
+    "after": "Provide [Identity](#identity \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api &#92;\n  --method POST repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls &#92;\n  -f title='[**<title>**](#title \"\u25cb\")' &#92;\n  -f head='[**<epic-base>**](#head-branch \"\u25cb\")' &#92;\n  -f base='[**<long-lived-base>**](#base-branch \"\u25cb\")' &#92;\n  -F draft=true &#92;\n  -F 'body=@[**<body-file>**](#body-file \"\u25cb\")' &#92;\n  --jq .html_url\n",
+    "invocation_sha256": "2c45e4914adeacffe78a2519d038721e3fb3d2b449775300dcad5bba278709cd"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Merge Pull Request",
+    "opening": "Merges the task pull request into its base.",
+    "details": "- Require [Merge Authorization](#merge-authorization \"\u25cb\") before executing the command.\n\n- Require the supplied [readiness evidence](#readiness-evidence \"\u25cb\") and authorization before issuing the merge.\n- The merge method is a merge commit.",
+    "after": "Provide [Merge Result](#merge-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api --method PUT repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\")/merge -f merge_method=merge --jq .merged\n",
+    "invocation_sha256": "c4f6ca4bca6c2eaff150213689f692418a32acb7fe9df710e1be01668737748b"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Patch Pull Request Body",
+    "opening": "Replaces a pull request's body.",
+    "details": "The file is the whole body. The issue a pull request delivers is linked on the pull request itself, so this call leaves that link standing.",
+    "after": "Provide [Identity](#identity \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api --method PATCH repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\") -F 'body=@[**<body-file>**](#body-file \"\u25cb\")' --jq .html_url\n",
+    "invocation_sha256": "a01fd886e8353679d91337c94e6b1a525bd14e75c7a7c8fb5b7923bfaede3fa2"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Find Review Pull Request",
+    "opening": "Returns the open pull request whose head is the supplied epic base, or no result when none exists.",
+    "details": "",
+    "after": "Provide [Review Number](#review-number \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api \"repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls?state=open&head=[**<owner>**](#repository \"\u25cb\"):[**<epic-base>**](#head-branch \"\u25cb\")\" --jq '.[0].number'\n",
+    "invocation_sha256": "0e43f0282ecd0ee3534c75fa7e8512c06847fdc1655dd58777b641cfd9b93058"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Submit Epic Merge",
+    "opening": "Merges the epic base into its long-lived target at the supplied head.",
+    "details": "- Require [Merge Authorization](#merge-authorization \"\u25cb\"), [Readiness Evidence](#readiness-evidence \"\u25cb\"), [Target Requirements](#target-requirements \"\u25cb\") before executing the command.\n\n- The merge method is a merge commit. The endpoint refuses a different head.",
+    "after": "Provide [Merge Result](#merge-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api &#92;\n  --method PUT repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\")/merge &#92;\n  -f merge_method=merge &#92;\n  -f sha=[**<head-sha>**](#verified-head \"\u25cb\") &#92;\n  --jq '{merged, message, sha}'\n",
+    "invocation_sha256": "d8220fdd35660c28a7d377b37837152ef499b4e072715731a049ef8a3eb345ad"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Read Merge Result",
+    "opening": "Returns a pull request's merge state, merge commit, head and base.",
+    "details": "",
+    "after": "Provide [Merge Result](#merge-result \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\") &#92;\n  --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'\n",
+    "invocation_sha256": "f66550c929cad30116cf6bb3685025242604938b0de3b15f2e4a9262e5e9ed5e"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Set Development Link",
+    "opening": "Adds one pull request to an issue's Development relation, and reads the relation back from both ends.",
+    "details": "- Require [Authenticated Access](#authenticated-access \"\u25cb\"), [Repository Prerequisite](#repository-prerequisite \"\u25cb\") before executing the command.\n\n**REST gap:** REST exposes no write to the Development relation; `addCloseIssueReferences` is a GraphQL mutation alone.\n\n- The issue and [pull request](#identity \"\u25cb\") may sit in different repositories, and the pull request may be a draft on any base branch.\n- The script reads both node ids through REST and sends `addCloseIssueReferences` from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.\n- Exit 0 means the issue holds the pull request exactly once, the pull request holds the issue, and every other link on the issue stands. Running it again for a linked pair holds the same relation.\n- Exit 1 prints `failed:` with the operation, the step and the tracker's error, or `discrepancy:` with the relation read back.",
+    "after": "Provide [Development Relation](#development-relation \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/development-link.py add &#92;\n  --issue [**<issue-owner>**](#issue-identity \"\u25cb\")/[**<issue-repo>**](#issue-identity \"\u25cb\")#[**<issue-number>**](#issue-identity \"\u25cb\") &#92;\n  --pull [**<pr-owner>**](#identity \"\u25cb\")/[**<pr-repo>**](#identity \"\u25cb\")#[**<pull-request-number>**](#identity \"\u25cb\")\n",
+    "invocation_sha256": "1e0662e47e032f48517354fccf38bb3d0a413d9186cf223471be591ede1e7bf1"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Remove Development Link",
+    "opening": "Removes one pull request from an issue's Development relation, and reads the relation back from both ends.",
+    "details": "- Require [Authenticated Access](#authenticated-access \"\u25cb\"), [Removal Decision](#removal-decision \"\u25cb\") before executing the command.\n\n**REST gap:** REST exposes no write to the Development relation; `removeCloseIssueReferences` is a GraphQL mutation alone.\n\n- The script sends `removeCloseIssueReferences` from a generated query file, so the command runs outside `sbx`.\n- Exit 0 means neither end holds the other and every other link on the issue stands.\n- Exit 1 prints `failed:` or `discrepancy:` with the operation, step and tracker error, or the relation read back.",
+    "after": "Provide [Development Relation](#development-relation \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/development-link.py remove &#92;\n  --issue [**<issue-owner>**](#issue-identity \"\u25cb\")/[**<issue-repo>**](#issue-identity \"\u25cb\")#[**<issue-number>**](#issue-identity \"\u25cb\") &#92;\n  --pull [**<pr-owner>**](#identity \"\u25cb\")/[**<pr-repo>**](#identity \"\u25cb\")#[**<pull-request-number>**](#identity \"\u25cb\")\n",
+    "invocation_sha256": "f39f4376959e226e327a19eb2e0bb6870930f6ddd6338fdb393c65dff7119600"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Capture Pull Request Links",
+    "opening": "Writes the complete issue-link snapshot for a pull request collection, read from the pull-request end of the Development relation.",
+    "details": "- Require [Authenticated Access](#authenticated-access \"\u25cb\") before executing the command.\n\n**REST gap:** REST exposes no read of a pull request's closing issue references.\n\n- The snapshot meets [Issue-Link Snapshot](#issue-link-snapshot \"\u25cf\").\n- Each batch of [pull requests](#pull-request-records \"\u25cb\") costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.\n- A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.\n- Exit 0 means the snapshot is complete. Exit 1 names each unreadable relation with the tracker's reason and writes no snapshot; the caller treats it as a blocker.\n- A call the tracker refuses outright, such as a rejected credential, exits 1 with `GraphQL read failed:` and what `gh` reported, and writes nothing.",
+    "after": "Provide [Issue-Link Snapshot](#issue-link-snapshot \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/links-by-pull-request.py &#92;\n  --prs '[**<pull-request-records-file>**](#pull-request-records \"\u25cb\")' &#92;\n  --out '[**<issue-link-snapshot-file>**](#link-snapshot-path \"\u25cb\")'\n",
+    "invocation_sha256": "2cbdbc92793902854551920264cbf062b9b7c9fd9eda52a172cdd501eccfcd31"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Save Pull Request Snapshot",
+    "opening": "Saves one complete pull request response, replacing the destination file.",
+    "details": "",
+    "after": "Provide [Pull Request Record](#pull-request-record \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\") > '[**<pull-request-json-file>**](#output-files \"\u25cb\")'\n",
+    "invocation_sha256": "4b2d9b2af6a2ca8a754be5a12292a9bcdb792e61eccb36edd99d0e53ffd8fdd4"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Pull Request Reviews",
+    "opening": "Saves every review on one pull request.",
+    "details": "",
+    "after": "Provide [Reviews](#reviews \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api --paginate 'repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\")/reviews?per_page=100' > '[**<reviews-file>**](#output-files \"\u25cb\")'\n",
+    "invocation_sha256": "a1c6848f90c6d6aa017d319705167ccc3a2601b04881b94c9177d27e279935bc"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Initiative Pull Requests",
+    "opening": "Saves the task and epic pull requests that name one initiative's epics.",
+    "details": "Use [Collection Path](#collection-path \"\u25cb\") for the saved collection.",
+    "after": "Provide [Pull Request Records](#pull-request-records \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api &#92;\n  --paginate \"repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls?state=all&per_page=100\" &#92;\n  --jq '.[] | select(.title | startswith(\"[**<initiative-prefix>**](#initiative-prefix \"\u25cb\")\"))' &#92;\n  &gt; '[**<pull-request-records-file>**](#pull-request-records \"\u25cb\")'\n",
+    "invocation_sha256": "14c498e0a04a9e9ec35baf2edfa6873edcaeda08a7f60f5b18eca2ef6b83a797"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Linked Pull Requests",
+    "opening": "Appends to a pull request collection each pull request the plan links that the collection lacks, whatever its title.",
+    "details": "- Use [Collection Path](#collection-path \"\u25cb\") for the saved collection.\n\n**REST gap:** REST exposes no read of the pull requests an issue's Development field holds.\n\n- A pull request is linked when a Work Breakdown row's id cell links it or an issue's Development field names it, open, closed or merged, in whichever repository it lives.\n- A pull request no row or Development link names is found by its title alone, through the title-matched fetch this command follows.\n- The command reads the Development field by `gh api graphql` and each missing pull request by REST, so it runs outside `sbx`, where `gh` reaches the tracker.\n- Exit 0 means every linked pull request is in the collection. Exit 1 names each unreadable relation or pull request and appends nothing; the caller treats it as a blocker.",
+    "after": "Provide [Pull Request Records](#pull-request-records \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  python3 skills/work-planner/scripts/linked-pull-requests.py &#92;\n  --prs '[**<pull-request-records-file>**](#pull-request-records \"\u25cb\")' &#92;\n  --issues '[**<issue-file>**](#issue-records \"\u25cb\")' ...\n",
+    "invocation_sha256": "8739d5ad17ff36d6e760dc80ed6a1a9db6f2b8308f43d4458b139a2ffe67c653"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Repository Delivery Pull Requests",
+    "opening": "Starts a collection with all initiative- and hot-fix-prefixed pull requests from one repository.",
+    "details": "Use [Collection Path](#collection-path \"\u25cb\") for the saved collection.",
+    "after": "Provide [Pull Request Records](#pull-request-records \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api &#92;\n  --paginate \"repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls?state=all&per_page=100\" &#92;\n  --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' &#92;\n  &gt; '[**<pull-request-records-file>**](#pull-request-records \"\u25cb\")'\n",
+    "invocation_sha256": "2cda5a2a74e82e2f4e8babbcb9e87cbd441fc505f0dbc70d9518df2bddd743d5"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Append Repository Delivery Pull Requests",
+    "opening": "Appends all initiative- and hot-fix-prefixed pull requests from one further repository.",
+    "details": "Use [Collection Path](#collection-path \"\u25cb\") for the saved collection.",
+    "after": "Provide [Pull Request Records](#pull-request-records \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api &#92;\n  --paginate \"repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls?state=all&per_page=100\" &#92;\n  --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' &#92;\n  &gt;&gt; '[**<pull-request-records-file>**](#pull-request-records \"\u25cb\")'\n",
+    "invocation_sha256": "94568d30e2c82e63248c10f1a93ce908386059911a19b2c6d580381f25f637ce"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Pull Request Files",
+    "opening": "Saves the paths a pull request changes.",
+    "details": "",
+    "after": "Provide [Changed Paths](#changed-paths \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api &#92;\n  --paginate repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/pulls/[**<pull-request-number>**](#identity \"\u25cb\")/files &#92;\n  --jq '.[].filename' &#92;\n  &gt; '[**<changed-paths-file>**](#output-files \"\u25cb\")'\n",
+    "invocation_sha256": "d84a83801f878abaa4082e2d0cc71c9ecd64f19cddaedde469fbad0a929d5368"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Head Check Runs",
+    "opening": "Saves every check run for one exact commit.",
+    "details": "",
+    "after": "Provide [Head Checks](#head-checks \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api --paginate 'repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/commits/[**<head-sha>**](#verified-head \"\u25cb\")/check-runs?per_page=100' > '[**<check-runs-file>**](#output-files \"\u25cb\")'\n",
+    "invocation_sha256": "df1bf4ce59e589516e7d61e8243a1caf34c65d7fc50fa5d9bcc49d4a9b7d6dbf"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Fetch Head Status",
+    "opening": "Saves commit status evidence for one exact commit.",
+    "details": "",
+    "after": "Provide [Head Status](#head-status \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api --paginate 'repos/[**<owner>**](#repository \"\u25cb\")/[**<repo>**](#repository \"\u25cb\")/commits/[**<head-sha>**](#verified-head \"\u25cb\")/status?per_page=100' > '[**<commit-status-file>**](#output-files \"\u25cb\")'\n",
+    "invocation_sha256": "4cc763985985c7c5fb80bf39cf4ad5c796cb2a7337802991a53b39e331a04a36"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Mark Review Ready",
+    "opening": "Marks a draft pull request ready for review.",
+    "details": "- Build the selected GraphQL mutation from [Node Metadata](#node-metadata \"\u25cb\") before running it.\n\n**REST gap:** REST has no endpoint that marks a draft ready for review.\n\n- The [query file](#query-file \"\u25cb\") holds the mutation with the node id inlined, since a GraphQL variable is a literal `$`:\n\n  ```graphql\n  mutation { markPullRequestReadyForReview(input: {pullRequestId: \"<pull-request-node-id>\"}) { pullRequest { isDraft } } }\n  ```",
+    "after": "Provide [Review State](#review-state \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh api graphql -F query=@'[**<query-file>**](#query-file \"\u25cb\")' --jq .data.markPullRequestReadyForReview.pullRequest.isDraft\n",
+    "invocation_sha256": "5596a9285c741945d74c6fe7b57d369b5650a4d8e54eb36a949533bd97b54cd0"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "command": "Mark Review Draft",
+    "opening": "Returns an open integration pull request with blocked handoff evidence to draft.",
+    "details": "",
+    "after": "Provide [Review State](#review-state \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails.",
+    "invocation": "\ngh pr ready [**<pull-request-number>**](#identity \"\u25cb\") --undo --repo [**<owner>**](#repository \"\u25cb\")/[**<repository>**](#repository \"\u25cb\")\n",
+    "invocation_sha256": "38892d954596e7a83dd4f49f6545ffc0853003d0253e3b3f838f8a8f732d409c"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Index Status",
+    "opening": "Reports whether the repository is indexed, and how far behind the index sits.",
+    "details": "**Acts on:** the checkout it runs in.\n\nCompare the indexed commit with [Requested Revision](#requested-revision \"\u25cb\").",
+    "after": "Provide [Index State](#index-state \"\u25cf\") to the requester.",
+    "invocation": "\ngitnexus status\n",
+    "invocation_sha256": "61d19ef5005dd5123d520150244d87cc6dbbb0999e40c3030526db2ac8aad541"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Index Repository",
+    "opening": "Indexes the repository, which an unindexed or behind repository needs before any measurement.",
+    "details": "**Acts on:** the checkout it runs in.\n\nCompare the indexed commit with [Requested Revision](#requested-revision \"\u25cb\").",
+    "after": "Provide [Index State](#index-state \"\u25cf\") to the requester.",
+    "invocation": "\ngitnexus analyze\n",
+    "invocation_sha256": "c5a50fa486a917b40e44f4cf6fb49be294f74310ca1216ab1590bf64c2765b36"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Change Surface",
+    "opening": "Reports the symbols a pull request's diff touches and the flows they sit in, against the base branch.",
+    "details": "**Acts on:** the checkout it runs in.\n\nCompare against the pull request\u2019s base to isolate its change from the branch\u2019s full history.",
+    "after": "Provide [Changed Symbols](#changed-symbols \"\u25cf\") to the requester.",
+    "invocation": "\ngitnexus detect-changes --scope compare --base-ref '[**&lt;base-branch&gt;**](#base-branch \"\u25cb\")'\n",
+    "invocation_sha256": "98d59481a5a98e0a4e136cdea6ab493c4cf73021bf05ca6087d8088e85a539aa"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Symbol Context",
+    "opening": "Reports one symbol's callers, its callees and the flows it sits in, each with the file it sits in.",
+    "details": "**Acts on:** the checkout it runs in.",
+    "after": "Provide [Symbol Relationships](#symbol-relationships \"\u25cf\") to the requester.",
+    "invocation": "\ngitnexus context '[**&lt;symbol-identity&gt;**](#symbol-identity \"\u25cb\")'\n",
+    "invocation_sha256": "71f42ba37161e9364b7eac62d2899fdf012fb11bee7dd6b11e9ab4e9e2c4de93"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "command": "Flow Trace",
+    "opening": "Reports one flow's symbols in step order, the structure a sequence diagram is drawn from.",
+    "details": "**Acts on:** the checkout it runs in.",
+    "after": "Provide [Flow Traces](#flow-traces \"\u25cf\") to the requester.",
+    "invocation": "\ngitnexus query --query '[**&lt;flow-identity&gt;**](#flow-identity \"\u25cb\")' --limit 1\n",
+    "invocation_sha256": "43cf2c7938e884dcdbbe5bb5f15bc9c26070678a95f9d6f3e9d4397030de290d"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-labels.md",
+    "command": "List Labels",
+    "opening": "Lists the labels that exist in the repository.",
+    "details": "Run in the repository checkout.",
+    "after": "Provide [Label Identity](#label-identity \"\u25cf\") to the requester.",
+    "invocation": "\ngh api \"repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/labels?per_page=100\" --jq '.&#91;&#93;.name'\n",
+    "invocation_sha256": "00e5be73891653f0c97c291c994605614477dc4711c68b8bb772a191f37c7d00"
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-labels.md",
+    "command": "Create Label",
+    "opening": "Creates the label specified by its name, colour and description.",
+    "details": "Run in the repository checkout.",
+    "after": "Provide [Label Identity](#label-identity \"\u25cf\") to the requester.",
+    "invocation": "\ngh api &#92;\n  --method POST repos/[**&lt;owner&gt;**](#repository \"\u25cb\")/[**&lt;repo&gt;**](#repository \"\u25cb\")/labels &#92;\n  -f name='[**&lt;label&gt;**](#label-identity \"\u25cb\")' &#92;\n  -f color=[**&lt;hex-colour&gt;**](#label-identity \"\u25cb\") &#92;\n  -f description='[**&lt;description&gt;**](#label-identity \"\u25cb\")' &#92;\n  --jq .name\n",
+    "invocation_sha256": "fb72e8be876d66974279cd9057644402e01275b638b6ca9de59c8bb884e1d36d"
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "command": "Summarise Progress",
+    "opening": "Prints the standup from supplied board items, pull request records and their issue-link snapshot.",
+    "details": "- Select the reporting [window](#scope) from the supplied [Report Selection](#report-selection \"\u25cb\").\n- An initiative filter can be `I08` or `owner/repo:I08`.\n- Pass each supplied off-board [initiative record](#initiative-records \"\u25cb\") as a separate argument after `--initiatives`.\n\n- The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.",
+    "after": "Provide [Report Result](#report-result \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/progress.py &#92;\n  --items '[**&lt;board-items-file&gt;**](#board-items \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"\u25cb\")' &#92;\n  --since [**&lt;window-start-date&gt;**](#report-selection \"\u25cb\") &#92;\n  --initiative [**&lt;initiative-filter&gt;**](#report-selection \"\u25cb\") &#92;\n  --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records \"\u25cb\")' &#92;\n  --summary '[**&lt;management-paragraph-file&gt;**](#management-file \"\u25cb\")'\n",
+    "invocation_sha256": "31d99ce2d27d26634125830dc105241fa2962fe0a3252271b31c6d415774d5e6"
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "command": "Sync Task Issue",
+    "opening": "Records the pull request that delivers a task issue, open or merged, ticks verified criteria, and reports whether it is closable.",
+    "details": "An open pull request supplies verification evidence; completion requires its merge.\n\n`<criterion-ids>` is a comma-separated list of verified criterion ids.\n\n- Tick only criteria the requester has verified. The requester publishes comments and closes the tracker issue.",
+    "after": "Provide [Output Body](#output-body \"\u25cf\"), [Delivery Findings](#delivery-findings \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")\" && &#92;\n  \"[**&lt;workspace&gt;**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;task-json-file&gt;**](#task-record \"\u25cb\")' &#92;\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"\u25cb\")' &#92;\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"\u25cb\")' &#92;\n  --pr [**&lt;pull-request-number&gt;**](#delivery-selection \"\u25cb\") &#92;\n  --tick '[**&lt;criterion-ids&gt;**](#delivery-selection \"\u25cb\")' &#92;\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"\u25cb\")'\n",
+    "invocation_sha256": "a105e26025bc212d4fcad2d281d395196d36d3efe0d7f1827d093d3d21b5baf4"
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "command": "Run Tests",
+    "opening": "Runs the skill's script tests.",
+    "details": "",
+    "after": "Provide [Test Result](#test-result \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")/skills/work-planner\" && \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 -m unittest discover -s test\n",
+    "invocation_sha256": "459c8b591f8273be11c0d0e84d121cf7cb2b6e9ce503ad8390016c55dbf101fe"
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "command": "Check Skill Files",
+    "opening": "Checks the affected skill's files against the rules the shared skill guidelines state.",
+    "details": "Repeat the skill argument for additional affected skills.",
+    "after": "Provide [Skill Check Result](#skill-check-result \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/scripts/check_skill_files.py \"[**<skill-directory>**](#skill-directory \"\u25cb\")\"\n",
+    "invocation_sha256": "340af499fb5ad1d10e8e50ab422f872d31a421a5ea3f9fa7df1b2301fb591f7a"
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "command": "Compare Section Bodies",
+    "opening": "Compares every third-level section's body between the change's base and its head, so a section damaged in a move is reported.",
+    "details": "- A relative link target is compared by its fragment alone, so a retargeted link is no difference.\n- Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.\n- Exit 1 means a section was added, removed or differs.",
+    "after": "Provide [Section Comparison](#section-comparison \"\u25cf\") to the requester.",
+    "invocation": "\ncd \"[**<workspace>**](#workspace \"\u25cb\")\" && &#92;\n  \"[**<workspace>**](#workspace \"\u25cb\")/scripts/sbx\" python3 skills/scripts/check_skill_files.py &#92;\n  --compare \"[**<base>**](#base \"\u25cb\")\" \"[**<head>**](#head \"\u25cb\")\" \"[**<skill-directory>**](#skill-directory \"\u25cb\")\"\n",
+    "invocation_sha256": "5c74002bb0f1e324a53ec8cf519d2a3959c1f0a9c27edce0b00ade5c1694ac3e"
+  }
+]
