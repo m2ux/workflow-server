@@ -169,3 +169,9 @@ Runtime meanings live in [Link Roles](https://github.com/m2ux/workflow-server/bl
 | [Executed instruments](command-contract-instruments.tar.gz) | Conversion, tests, preservation and publication instruments |
 | [Instrument manifest](command-contract-instruments-manifest.json) | Exact instrument archive identities |
 | [Published review gate](command-contract-review-gate.log) | Fetched current-head review matches the ready PR and target |
+
+## Field Format Examples
+
+| Artifact | What it holds |
+| --- | --- |
+| [Field format examples](field-examples.md) | Field-owned fenced examples, command specimen relocation and preservation checks |
