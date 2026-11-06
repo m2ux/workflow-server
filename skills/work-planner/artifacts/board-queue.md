@@ -60,6 +60,8 @@ The epics of one initiative carry their own sets. Every epic with the same numbe
 
 A priority label is `priority:` and a positive integer. A larger number is higher, with no maximum. Two such labels on one issue count as the larger number.
 
+Execution order ranks available epic units by initiative priority, then by epic priority within each initiative. Equally ranked initiatives keep repository and issue order, as do equally ranked epics within one initiative; task order breaks remaining ties. An unranked initiative or sibling epic follows ranked items at its own level. An epic's parent is the initiative whose Work Breakdown links its issue, including across repositories; an epic without supplied parent evidence groups with its initiative prefix at unranked initiative priority. Hot-fixes sit outside these sets.
+
 ### Ready Units
 
 A collection of units, each carrying initiative, epic and member task ids plus its [lane report label](lane.md#report-label). A unit contains one unjoined row or all rows of a unit defined by [Joins](dependency-graph.md#joins). Every member must be free and undelivered and meet [Task Eligibility](#task-eligibility) under its epic's proposed status; row availability follows [Task Delivery](epic-issue-body.md#task-delivery). Units include rows with no linked work item. Status and assignee calls depend on priority and delivery state.
