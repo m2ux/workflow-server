@@ -120,7 +120,7 @@ The agreed disposition of criteria a delivered row left unmet.
 
 ### Sync Epic
 
-Links each named task's id to the pull requests naming the epic it is delivered through, open or merged, and ticks Done on a row once it is complete.
+Link each named task id to the open or merged pull requests naming the epic it is delivered through, tick Done on completed rows, and provide [Output Body](#output-body "●") and [Delivery Findings](epic.md#delivery-findings "●") to the requester.
 
 - A row whose id links its task [issue links](#issue-links "○") the pull request instead.
 - A pull request whose head is an epic base is the pull request that merges that base, and is not matched to a task.
@@ -148,11 +148,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
-Provide [Output Body](#output-body "●"), [Delivery Findings](epic.md#delivery-findings "●") to the requester.
-
 ### Tick Epic Criteria
 
-Ticks confirmed epic criteria, refusing any not ready to verify, and ticks completed rows.
+Tick confirmed epic criteria and completed rows, refusing criteria not ready to verify, and provide [Output Body](#output-body "●") and [Criterion Selection](#criterion-selection "●") to the requester.
 
 `<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection "○").
 
@@ -165,11 +163,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
-Provide [Output Body](#output-body "●"), [Criterion Selection](#criterion-selection "●") to the requester.
-
 ### Reserve Row
 
-Holds each named unit for one session, by setting its record folder as the single link of every row in it.
+Hold each named unit for one session by setting its record folder as the single link of every row in it, and provide [Output Body](#output-body "●") and [Row Result](#row-result "●") to the requester.
 
 - Supply the planning-records base URL when no epic row links a record.
 - The caller supplies the planned folder identity; `--date` is the day it is opened.
@@ -189,11 +185,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
-Provide [Output Body](#output-body "●"), [Row Result](#row-result "●") to the requester.
-
 ### Release Row
 
-Frees each named task row, by replacing the planning-folder link with its work-item file link.
+Free each named task row by replacing the planning-folder link with its work-item file link, and provide [Output Body](#output-body "●") and [Row Result](#row-result "●") to the requester.
 
 - The file is the task id in lowercase within that folder, as [Task ids](#task-delivery) defines.
 - Refuse a row when its planning folder contains no matching work-item file or its README does not link that file.
@@ -211,8 +205,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
-
-Provide [Output Body](#output-body "●"), [Row Result](#row-result "●") to the requester.
 
 ## Fields
 

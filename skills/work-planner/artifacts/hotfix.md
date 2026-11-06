@@ -97,7 +97,7 @@ Provide [Board Result](#board-result) with the settled item, its removal, or the
 
 ### Sync Hot-fix Issue
 
-Records the pull request that delivers a hot-fix, open or merged, ticks verified criteria, and reports whether it is closable.
+Record the open or merged pull request delivering a hot-fix, tick verified criteria, report whether the hot-fix is closable, and provide [Output Body](#output-body "●") and [Delivery Findings](#delivery-findings "●") to the requester.
 
 - A `--pr` that does not deliver the hot-fix is refused, naming the condition it fails.
 - `<criterion-ids>` is a comma-separated list of verified criterion ids.
@@ -113,8 +113,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --tick '[**&lt;criterion-ids&gt;**](#delivery-selection "○")' &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
-
-Provide [Output Body](#output-body "●"), [Delivery Findings](#delivery-findings "●") to the requester.
 
 ## Fields
 

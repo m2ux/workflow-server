@@ -17,7 +17,7 @@ Read these files first.
 
 ### Compute Available Work
 
-Computes available work from supplied board and delivery snapshots.
+Compute available work from supplied board and delivery snapshots and provide [Plan Report](#plan-report "●") and [Dispatch Export](#dispatch-export "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Include each supplied [Off-Board Issues](#off-board-issues "○") file with `--others`.
 
@@ -44,8 +44,6 @@ cd "[**<workspace>**](#workspace "○")" && &#92;
   --lane [**<lane-index>**](#requested-lane "○") &#92;
   --dispatch-plan '[**<dispatch-export-file>**](#dispatch-export-path "○")'
 </pre></big>
-
-Provide [Plan Report](#plan-report "●"), [Dispatch Export](#dispatch-export "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 ## Fields
 

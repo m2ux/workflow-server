@@ -77,17 +77,15 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
 
 ### Run Tests
 
-Runs the skill's script tests.
+Run the skill's script tests and provide [Test Result](#test-result "●") to the requester.
 
 <big><pre>
 cd "[**<workspace>**](#workspace "○")/skills/work-planner" && "[**<workspace>**](#workspace "○")/scripts/sbx" python3 -m unittest discover -s test
 </pre></big>
 
-Provide [Test Result](#test-result "●") to the requester.
-
 ### Check Skill Files
 
-Checks the affected skill's files against the rules the shared skill guidelines state.
+Check the affected skill's files against the rules the shared skill guidelines state and provide [Skill Check Result](#skill-check-result "●") to the requester.
 
 Repeat the skill argument for additional affected skills.
 
@@ -95,11 +93,9 @@ Repeat the skill argument for additional affected skills.
 cd "[**<workspace>**](#workspace "○")" && "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py "[**<skill-directory>**](#skill-directory "○")"
 </pre></big>
 
-Provide [Skill Check Result](#skill-check-result "●") to the requester.
-
 ### Compare Section Bodies
 
-Compares every third-level section's body between the change's base and its head, so a section damaged in a move is reported.
+Compare every third-level section's body between the change's base and its head to identify sections damaged in a move, and provide [Section Comparison](#section-comparison "●") to the requester.
 
 - A relative link target is compared by its fragment alone, so a retargeted link is no difference.
 - Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
@@ -110,8 +106,6 @@ cd "[**<workspace>**](#workspace "○")" && &#92;
   "[**<workspace>**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py &#92;
   --compare "[**<base>**](#base "○")" "[**<head>**](#head "○")" "[**<skill-directory>**](#skill-directory "○")"
 </pre></big>
-
-Provide [Section Comparison](#section-comparison "●") to the requester.
 
 ## Fields
 

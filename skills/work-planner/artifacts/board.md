@@ -176,7 +176,7 @@ Provide the [Selected Board](#selected-board) or an absent-board finding for the
 
 ### Find Board Template
 
-Prints the number of the open board with the supplied exact template title.
+Print the number of the open board with the supplied exact template title and provide [Template Selection](#template-selection "●") to the requester.
 
 <big><pre>
 gh api &#92;
@@ -184,11 +184,9 @@ gh api &#92;
   --jq '.&#91;&#93; | select(.closed | not) | select(.title == "[**&lt;template-title&gt;**](#template-selection "○")") | .number'
 </pre></big>
 
-Provide [Template Selection](#template-selection "●") to the requester.
-
 ### Copy Board Template
 
-Copies the supplied template into a new open board with the supplied title and prints its number.
+Copy the supplied template into a new open board with the supplied title, print its number, and provide [Copied Board](#copied-board "●") to the requester.
 
 The copy's JSON is one project; `.number` identifies the new board.
 
@@ -201,21 +199,17 @@ gh project copy [**&lt;template-number&gt;**](#template-selection "○") &#92;
   --jq .number
 </pre></big>
 
-Provide [Copied Board](#copied-board "●") to the requester.
-
 ### Link Board to Repository
 
-Links one board to the supplied repository.
+Link one board to the supplied repository and provide [Link Result](#link-result "●") to the requester.
 
 <big><pre>
 gh project link [**&lt;board-number&gt;**](#board-coordinates "○") --owner [**&lt;owner&gt;**](#board-owner "○") --repo [**&lt;repo&gt;**](#repository "○")
 </pre></big>
 
-Provide [Link Result](#link-result "●") to the requester.
-
 ### Find Proposals Board
 
-Prints the number of the open [proposals board](../configuration.md#proposals-board).
+Print the number of the open [proposals board](../configuration.md#proposals-board) and provide [Selected Board](#selected-board "●") to the requester.
 
 <big><pre>
 gh api &#92;
@@ -223,21 +217,17 @@ gh api &#92;
   --jq '.&#91;&#93; | select(.closed | not) | select(.title == "Proposals") | .number'
 </pre></big>
 
-Provide [Selected Board](#selected-board "●") to the requester.
-
 ### Add Issue to Board
 
-Adds the caller-supplied issue to a board and prints the new item's id.
+Add the caller-supplied issue to a board, print the new item's id, and provide [Membership Result](#membership-result "●") to the requester.
 
 <big><pre>
 gh api --method POST users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items -f type=Issue -F id=[**&lt;issue-id&gt;**](#issue-id "○") --jq .id
 </pre></big>
 
-Provide [Membership Result](#membership-result "●") to the requester.
-
 ### Set Item Status
 
-Sets one board item's Status.
+Set one board item's Status and provide [Membership Result](#membership-result "●") to the requester.
 
 <big><pre>
 gh api &#92;
@@ -246,31 +236,25 @@ gh api &#92;
   --jq .id
 </pre></big>
 
-Provide [Membership Result](#membership-result "●") to the requester.
-
 ### Remove Board Item
 
-Removes one item from a board, leaving its issue as it stands.
+Remove one item from a board and provide [Membership Result](#membership-result "●") to the requester. Leave its issue as it stands.
 
 <big><pre>
 gh api --method DELETE users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items/[**&lt;item-id&gt;**](#item-coordinates "○")
 </pre></big>
 
-Provide [Membership Result](#membership-result "●") to the requester.
-
 ### Fetch Board Fields
 
-Saves a board's fields.
+Save a board's fields and provide [Board Configuration](#board-configuration "●") to the requester.
 
 <big><pre>
 gh api --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/fields?per_page=100" > '[**&lt;board-fields-file&gt;**](#board-fields-file "○")'
 </pre></big>
 
-Provide [Board Configuration](#board-configuration "●") to the requester.
-
 ### Find Theme Board
 
-Prints the number of the open board for one theme, by its theme name after any proposal designator.
+Print the number of the open board matching the theme name after any proposal designator and provide [Selected Board](#selected-board "●") to the requester.
 
 <big><pre>
 gh api &#92;
@@ -278,11 +262,9 @@ gh api &#92;
   --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub("^\\&#91;P&#91;0-9&#93;+\\&#93; "; "") | startswith("[**&lt;theme-name&gt;**](#theme-name "○"): ")) | .number'
 </pre></big>
 
-Provide [Selected Board](#selected-board "●") to the requester.
-
 ### Find Status Field
 
-Prints the id of a board's Status field.
+Print the id of a board's Status field and provide [Status Field](#status-field "●") to the requester.
 
 <big><pre>
 gh api &#92;
@@ -290,11 +272,9 @@ gh api &#92;
   --jq '.&#91;&#93; | select(.name == "Status") | .id'
 </pre></big>
 
-Provide [Status Field](#status-field "●") to the requester.
-
 ### Fetch Board Items with Status
 
-Saves a board's items with their Status, each carrying its issue whole.
+Save a board's items with their Status and complete issues and provide [Board State](#board-state "●") to the requester.
 
 <big><pre>
 gh api &#92;
@@ -302,29 +282,23 @@ gh api &#92;
   &gt; '[**&lt;board-items-file&gt;**](#board-items-file "○")'
 </pre></big>
 
-Provide [Board State](#board-state "●") to the requester.
-
 ### Fetch Board Item
 
-Reads one board item, including its current Status.
+Read one board item with its current Status and provide [Board Configuration](#board-configuration "●") to the requester.
 
 <big><pre>
 gh api "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items/[**&lt;item-id&gt;**](#item-coordinates "○")?fields=[**&lt;status-field-id&gt;**](#status-field "○")"
 </pre></big>
 
-Provide [Board Configuration](#board-configuration "●") to the requester.
-
 ### Find User
 
-Prints the login `gh` runs as, the user assigned to work from Ready on.
+Print the authenticated `gh` login and provide [Assignee Login](#assignee-login "●") to the requester. This user is assigned to work from Ready on.
 
 Require [Authenticated Access](#authenticated-access "○") before executing the command.
 
 <big><pre>
 gh api user --jq .login
 </pre></big>
-
-Provide [Assignee Login](#assignee-login "●") to the requester.
 
 ## Fields
 

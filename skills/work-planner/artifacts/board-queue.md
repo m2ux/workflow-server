@@ -17,7 +17,7 @@ Read these files first.
 
 ### Compute Board Queue
 
-Prints proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
+Print proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue and provide [Queue Result](#queue-result "●") to the requester. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
 
 - Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
 - Limit proposed writes to [Status Scope](#status-scope "○").
@@ -39,8 +39,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --out '[**&lt;output-directory&gt;**](#output-directory "○")' &#92;
   --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")'
 </pre></big>
-
-Provide [Queue Result](#queue-result "●") to the requester.
 
 ## Fields
 

@@ -228,7 +228,7 @@ Provide the confirmed [Tracker Number](#tracker-number).
 
 ### Create Tracker Issue
 
-Creates an issue from a body file, with its title and labels, and prints its number.
+Create an issue from a body file with its title and labels, print its number, and provide [Identity](#identity "●") to the requester.
 
 - Run in the repository checkout.
 
@@ -243,11 +243,9 @@ gh api &#92;
   --jq .number
 </pre></big>
 
-Provide [Identity](#identity "●") to the requester.
-
 ### Patch Issue Body
 
-Replaces an issue's body from a file.
+Replace an issue's body from a file and provide [Identity](#identity "●") and [Content](#content "●") to the requester.
 
 Run in the repository checkout.
 
@@ -255,11 +253,9 @@ Run in the repository checkout.
 gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") -F 'body=@[**&lt;body-file&gt;**](#issue-changes "○")' --jq .number
 </pre></big>
 
-Provide [Identity](#identity "●"), [Content](#content "●") to the requester.
-
 ### Fetch Issue Body
 
-Saves an issue's body alone.
+Save an issue's body alone and provide [Issue Body](#issue-body "●") to the requester.
 
 Run in the repository checkout.
 
@@ -267,11 +263,9 @@ Run in the repository checkout.
 gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") --jq .body > '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
 
-Provide [Issue Body](#issue-body "●") to the requester.
-
 ### Retitle Tracker Issue
 
-Replaces an issue's title.
+Replace an issue's title and provide [Content](#content "●") to the requester.
 
 Run in the repository checkout.
 
@@ -279,11 +273,9 @@ Run in the repository checkout.
 gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") -f title='[**&lt;title&gt;**](#issue-changes "○")' --jq .title
 </pre></big>
 
-Provide [Content](#content "●") to the requester.
-
 ### Add Issue Labels
 
-Adds labels to an issue.
+Add labels to an issue and provide [Label Names](#label-names "●") to the requester.
 
 - Run in the repository checkout.
 
@@ -293,11 +285,9 @@ Adds labels to an issue.
 gh api --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/labels -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names "○")' --jq '.&#91;&#93;.name'
 </pre></big>
 
-Provide [Label Names](#label-names "●") to the requester.
-
 ### Remove Issue Label
 
-Removes one label from an issue.
+Remove one label from an issue and provide [Label Names](#label-names "●") to the requester.
 
 Run in the repository checkout.
 
@@ -305,11 +295,9 @@ Run in the repository checkout.
 gh api --method DELETE 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/labels/[**&lt;label&gt;**](#label-names "○")' --jq '.&#91;&#93;.name'
 </pre></big>
 
-Provide [Label Names](#label-names "●") to the requester.
-
 ### Fetch Issue Comments
 
-Prints an issue's comments.
+Print an issue's comments and provide [Discussion](#discussion "●") to the requester.
 
 Run in the repository checkout.
 
@@ -317,11 +305,9 @@ Run in the repository checkout.
 gh api --paginate repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/comments
 </pre></big>
 
-Provide [Discussion](#discussion "●") to the requester.
-
 ### Fetch Tracker Issue
 
-Saves an issue whole, as JSON, for the scripts that read issues.
+Save one complete issue as JSON for the issue-reading scripts and provide [Issue Record](#issue-record "●") to the requester.
 
 - Run in the repository checkout.
 - Use [Output Files](#output-files "○") to select the destination.
@@ -330,11 +316,9 @@ Saves an issue whole, as JSON, for the scripts that read issues.
 gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") > '[**&lt;issue-json-file&gt;**](#issue-record "○")'
 </pre></big>
 
-Provide [Issue Record](#issue-record "●") to the requester.
-
 ### Check Issue Closure
 
-Checks the issue's criteria and the state of every pull request its Development field holds.
+Check the issue's criteria and the state of every pull request its Development field holds and provide [Closure Findings](#closure-findings "●") to the requester.
 
 - The gate reads only those two files, each a field GitHub exposes.
 - An issue the snapshot maps to an empty array adds no pull request requirement. An issue the snapshot holds no entry for, a missing or unreadable snapshot, or a snapshot of another repository's issues blocks as missing evidence.
@@ -347,11 +331,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --development '[**&lt;issue-links-file&gt;**](#development-snapshot "○")'
 </pre></big>
 
-Provide [Closure Findings](#closure-findings "●") to the requester.
-
 ### Sweep Closure Evidence
 
-Lists each closed issue whose acceptance criteria are missing or unticked, or whose Development field holds a pull request that has not merged, with the issue's state reason.
+List each closed issue with missing or unticked acceptance criteria or an unmerged Development pull request, include its state reason, and provide [Closure Findings](#closure-findings "●") to the requester.
 
 - The sweep audits every closed issue in the collection, so the collection sets its scope. Run [Check Issue Closure](#check-issue-closure "ƒ") to each issue. Open issues and pull requests in the collection are skipped.
 - `--issue-links` takes the issue-links file of the collection's repository alone; any other shape, or another repository's file, is refused as unreadable evidence.
@@ -368,11 +350,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --issue-links '[**&lt;issue-links-file&gt;**](#development-snapshot "○")'
 </pre></big>
 
-Provide [Closure Findings](#closure-findings "●") to the requester.
-
 ### Close as Not Planned
 
-Closes an issue whose work another issue tracks.
+Close an issue whose work another issue tracks and provide [State](#state "●") to the requester.
 
 - Run in the repository checkout.
 - Base the transfer pointer on [Transfer Evidence](#transfer-evidence "○").
@@ -385,11 +365,9 @@ gh api &#92;
   --jq .state
 </pre></big>
 
-Provide [State](#state "●") to the requester.
-
 ### Post Inline Comment
 
-Posts one line of exact comment text and returns its URL.
+Post one line of exact comment text, capture its URL, and provide [Comment](#comment "●") to the requester.
 
 Run in the repository checkout.
 
@@ -400,11 +378,9 @@ gh api &#92;
   --jq .html_url
 </pre></big>
 
-Provide [Comment](#comment "●") to the requester.
-
 ### Post Comment File
 
-Posts a complete comment file and returns its URL.
+Post a complete comment file, capture its URL, and provide [Comment](#comment "●") to the requester.
 
 Run in the repository checkout.
 
@@ -415,11 +391,9 @@ gh api &#92;
   --jq .html_url
 </pre></big>
 
-Provide [Comment](#comment "●") to the requester.
-
 ### Set Completed State
 
-Sets an issue to closed with the completed reason and returns its state.
+Close an issue with the completed reason, read its state, and provide [State](#state "●") to the requester.
 
 - Run in the repository checkout.
 - Require [Closure Findings](#closure-findings "○"), [Delivery Evidence](#delivery-evidence "○") before executing the command.
@@ -432,11 +406,9 @@ gh api &#92;
   --jq .state
 </pre></big>
 
-Provide [State](#state "●") to the requester.
-
 ### Capture Issue Links
 
-Writes each issue's Development pull requests, read from the issue end of the relation, keyed by issue number.
+Write each issue's Development pull requests from the issue end of the relation, keyed by issue number, and provide [Development Snapshot](#development-snapshot "●") to the requester.
 
 - Run in the repository checkout.
 - Require [Authenticated Access](#authenticated-access "○") before executing the command.
@@ -457,11 +429,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --out '[**&lt;issue-links-file&gt;**](#development-snapshot "○")'
 </pre></big>
 
-Provide [Development Snapshot](#development-snapshot "●") to the requester.
-
 ### Fetch All Issues
 
-Saves every issue in the repository; the scripts skip the pull requests among them.
+Save every issue in the repository and provide [Issue Collection](#issue-collection "●") to the requester. The scripts skip any pull requests among them.
 
 - Run in the repository checkout.
 - Use [Output Files](#output-files "○") to select the destination.
@@ -470,11 +440,9 @@ Saves every issue in the repository; the scripts skip the pull requests among th
 gh api --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=all&per_page=100" > '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
 
-Provide [Issue Collection](#issue-collection "●") to the requester.
-
 ### Fetch Closed Issues
 
-Saves every closed issue in the repository; the scripts skip the pull requests among them.
+Save every closed issue in the repository and provide [Issue Collection](#issue-collection "●") to the requester. The scripts skip any pull requests among them.
 
 - Run in the repository checkout.
 - Use [Output Files](#output-files "○") to select the destination.
@@ -483,11 +451,9 @@ Saves every closed issue in the repository; the scripts skip the pull requests a
 gh api --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=closed&per_page=100" > '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
 
-Provide [Issue Collection](#issue-collection "●") to the requester.
-
 ### Fetch Selected Closed Issues
 
-Saves the named issues that are closed, one per line; an issue that is open or absent is left out.
+Save the named closed issues with one issue per line and provide [Issue Collection](#issue-collection "●") to the requester. Leave out any issue that is open or absent.
 
 - Run in the repository checkout.
 - Use [Output Files](#output-files "○") to select the destination.
@@ -499,11 +465,9 @@ gh api &#92;
   &gt; '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
 
-Provide [Issue Collection](#issue-collection "●") to the requester.
-
 ### Find Initiative Issue
 
-Prints an initiative's issue number, found by its title's prefix.
+Find an initiative by its title prefix, print its issue number, and provide [Identity](#identity "●") and [Tracker Number](#tracker-number "●") to the requester.
 
 - Run in the repository checkout.
 
@@ -515,11 +479,9 @@ gh api &#92;
   --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith("[**&lt;initiative-prefix&gt;**](#tracker-prefix "○")")) | .number'
 </pre></big>
 
-Provide [Identity](#identity "●"), [Tracker Number](#tracker-number "●") to the requester.
-
 ### List Prefixed Titles
 
-Lists titles carrying one kind's prefix letter, across all states.
+List titles carrying one kind's prefix letter in all states and provide [Tracker Prefix](#tracker-prefix "●") to the requester.
 
 Run in the repository checkout.
 
@@ -528,8 +490,6 @@ gh api &#92;
   --paginate 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repository&gt;**](#repository "○")/issues?state=all&per_page=100' &#92;
   --jq '.&#91;&#93; | select(.title | test("^\\&#91;[**&lt;prefix-letter&gt;**](#tracker-prefix "○")&#91;0-9&#93;{2}\\&#93;")) | .title'
 </pre></big>
-
-Provide [Tracker Prefix](#tracker-prefix "●") to the requester.
 
 ## Fields
 

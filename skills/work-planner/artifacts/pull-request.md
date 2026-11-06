@@ -326,7 +326,7 @@ Apply [Read Pull Request State](#read-pull-request-state "ƒ") again with the sa
 
 ### Retarget Pull Request
 
-Points a pull request at another base branch, such as its epic's base branch.
+Point a pull request at another base branch, such as its epic's base branch, and provide [Base Branch](#base-branch "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh api &#92;
@@ -335,21 +335,17 @@ gh api &#92;
   --jq .base.ref
 </pre></big>
 
-Provide [Base Branch](#base-branch "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Retitle Pull Request
 
-Replaces a pull request's title.
+Replace a pull request's title and provide [Title](#title "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") -f title='[**<title>**](#title "○")' --jq .title
 </pre></big>
 
-Provide [Title](#title "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Open Task Pull Request
 
-Creates a pull request from a unit's branch to its base.
+Create a pull request from a unit's branch to its base and provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Supply the [title](#title "○"), the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the [complete body file](#body-file "○").
 - A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens.
@@ -364,11 +360,9 @@ gh api &#92;
   --jq .html_url
 </pre></big>
 
-Provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Open Epic Pull Request
 
-Creates the draft pull request from an epic base to its long-lived target.
+Create the draft pull request from an epic base to its long-lived target and provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Supply the epic prefix and name as [title](#title "○"), the epic base as head, its long-lived branch as base, and the populated review [body file](#body-file "○").
 - `draft` is true, including when the work is already complete.
@@ -384,11 +378,9 @@ gh api &#92;
   --jq .html_url
 </pre></big>
 
-Provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Merge Pull Request
 
-Merges the task pull request into its base.
+Merge the task pull request into its base and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Require [Merge Authorization](#merge-authorization "○") before executing the command.
 
@@ -399,11 +391,9 @@ Merges the task pull request into its base.
 gh api --method PUT repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○")/merge -f merge_method=merge --jq .merged
 </pre></big>
 
-Provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Patch Pull Request Body
 
-Replaces a pull request's body.
+Replace a pull request's body and provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 The file is the whole body. The issue a pull request delivers is linked on the pull request itself, so this call leaves that link standing.
 
@@ -411,21 +401,17 @@ The file is the whole body. The issue a pull request delivers is linked on the p
 gh api --method PATCH repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") -F 'body=@[**<body-file>**](#body-file "○")' --jq .html_url
 </pre></big>
 
-Provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Find Review Pull Request
 
-Returns the open pull request whose head is the supplied epic base, or no result when none exists.
+Find the open pull request whose head is the supplied epic base and provide [Review Number](#review-number "●") to the requester, or [Failure](#failure "●") if the operation fails. If none exists, provide no result.
 
 <big><pre>
 gh api "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=open&head=[**<owner>**](#repository "○"):[**<epic-base>**](#head-branch "○")" --jq '.[0].number'
 </pre></big>
 
-Provide [Review Number](#review-number "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Submit Epic Merge
 
-Merges the epic base into its long-lived target at the supplied head.
+Merge the epic base into its long-lived target at the supplied head and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Require [Merge Authorization](#merge-authorization "○"), [Readiness Evidence](#readiness-evidence "○"), [Target Requirements](#target-requirements "○") before executing the command.
 
@@ -439,22 +425,18 @@ gh api &#92;
   --jq '{merged, message, sha}'
 </pre></big>
 
-Provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Read Merge Result
 
-Returns a pull request's merge state, merge commit, head and base.
+Read the merge state, merge commit, head and base of a pull request and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") &#92;
   --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'
 </pre></big>
 
-Provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Set Development Link
 
-Adds one pull request to an issue's Development relation, and reads the relation back from both ends.
+Add one pull request to an issue's Development relation, read the relation back from both ends, and provide [Development Relation](#development-relation "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Require [Authenticated Access](#authenticated-access "○"), [Repository Prerequisite](#repository-prerequisite "○") before executing the command.
 
@@ -472,11 +454,9 @@ cd "[**<workspace>**](#workspace "○")" && &#92;
   --pull [**<pr-owner>**](#identity "○")/[**<pr-repo>**](#identity "○")#[**<pull-request-number>**](#identity "○")
 </pre></big>
 
-Provide [Development Relation](#development-relation "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Remove Development Link
 
-Removes one pull request from an issue's Development relation, and reads the relation back from both ends.
+Remove one pull request from an issue's Development relation, read the relation back from both ends, and provide [Development Relation](#development-relation "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Require [Authenticated Access](#authenticated-access "○"), [Removal Decision](#removal-decision "○") before executing the command.
 
@@ -493,11 +473,9 @@ cd "[**<workspace>**](#workspace "○")" && &#92;
   --pull [**<pr-owner>**](#identity "○")/[**<pr-repo>**](#identity "○")#[**<pull-request-number>**](#identity "○")
 </pre></big>
 
-Provide [Development Relation](#development-relation "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Capture Pull Request Links
 
-Writes the complete issue-link snapshot for a pull request collection, read from the pull-request end of the Development relation.
+Write the complete issue-link snapshot for a pull request collection from the pull-request end of the Development relation and provide [Issue-Link Snapshot](#issue-link-snapshot "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Require [Authenticated Access](#authenticated-access "○") before executing the command.
 
@@ -516,31 +494,25 @@ cd "[**<workspace>**](#workspace "○")" && &#92;
   --out '[**<issue-link-snapshot-file>**](#link-snapshot-path "○")'
 </pre></big>
 
-Provide [Issue-Link Snapshot](#issue-link-snapshot "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Save Pull Request Snapshot
 
-Saves one complete pull request response, replacing the destination file.
+Replace the destination file with one complete pull request response and provide [Pull Request Record](#pull-request-record "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh api repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○") > '[**<pull-request-json-file>**](#output-files "○")'
 </pre></big>
 
-Provide [Pull Request Record](#pull-request-record "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Fetch Pull Request Reviews
 
-Saves every review on one pull request.
+Save every review on one pull request and provide [Reviews](#reviews "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○")/reviews?per_page=100' > '[**<reviews-file>**](#output-files "○")'
 </pre></big>
 
-Provide [Reviews](#reviews "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Fetch Initiative Pull Requests
 
-Saves the task and epic pull requests that name one initiative's epics.
+Save the task and epic pull requests that name one initiative's epics and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 Use [Collection Path](#collection-path "○") for the saved collection.
 
@@ -551,11 +523,9 @@ gh api &#92;
   &gt; '[**<pull-request-records-file>**](#pull-request-records "○")'
 </pre></big>
 
-Provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Fetch Linked Pull Requests
 
-Appends to a pull request collection each pull request the plan links that the collection lacks, whatever its title.
+Append each pull request linked by the plan but missing from the collection, regardless of its title, and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Use [Collection Path](#collection-path "○") for the saved collection.
 
@@ -573,11 +543,9 @@ cd "[**<workspace>**](#workspace "○")" && &#92;
   --issues '[**<issue-file>**](#issue-records "○")' ...
 </pre></big>
 
-Provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Fetch Repository Delivery Pull Requests
 
-Starts a collection with all initiative- and hot-fix-prefixed pull requests from one repository.
+Start a collection with all initiative- and hot-fix-prefixed pull requests from one repository and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 Use [Collection Path](#collection-path "○") for the saved collection.
 
@@ -588,11 +556,9 @@ gh api &#92;
   &gt; '[**<pull-request-records-file>**](#pull-request-records "○")'
 </pre></big>
 
-Provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Append Repository Delivery Pull Requests
 
-Appends all initiative- and hot-fix-prefixed pull requests from one further repository.
+Append all initiative- and hot-fix-prefixed pull requests from one further repository and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 Use [Collection Path](#collection-path "○") for the saved collection.
 
@@ -603,11 +569,9 @@ gh api &#92;
   &gt;&gt; '[**<pull-request-records-file>**](#pull-request-records "○")'
 </pre></big>
 
-Provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Fetch Pull Request Files
 
-Saves the paths a pull request changes.
+Save the paths a pull request changes and provide [Changed Paths](#changed-paths "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh api &#92;
@@ -616,31 +580,25 @@ gh api &#92;
   &gt; '[**<changed-paths-file>**](#output-files "○")'
 </pre></big>
 
-Provide [Changed Paths](#changed-paths "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Fetch Head Check Runs
 
-Saves every check run for one exact commit.
+Save every check run for one exact commit and provide [Head Checks](#head-checks "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/commits/[**<head-sha>**](#verified-head "○")/check-runs?per_page=100' > '[**<check-runs-file>**](#output-files "○")'
 </pre></big>
 
-Provide [Head Checks](#head-checks "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Fetch Head Status
 
-Saves commit status evidence for one exact commit.
+Save commit status evidence for one exact commit and provide [Head Status](#head-status "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/commits/[**<head-sha>**](#verified-head "○")/status?per_page=100' > '[**<commit-status-file>**](#output-files "○")'
 </pre></big>
 
-Provide [Head Status](#head-status "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Mark Review Ready
 
-Marks a draft pull request ready for review.
+Mark a draft pull request ready for review and provide [Review State](#review-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Build the selected GraphQL mutation from [Node Metadata](#node-metadata "○") before running it.
 
@@ -656,17 +614,13 @@ Marks a draft pull request ready for review.
 gh api graphql -F query=@'[**<query-file>**](#query-file "○")' --jq .data.markPullRequestReadyForReview.pullRequest.isDraft
 </pre></big>
 
-Provide [Review State](#review-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Mark Review Draft
 
-Returns an open integration pull request with blocked handoff evidence to draft.
+Mark an open integration pull request with blocked handoff evidence as draft and provide [Review State](#review-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh pr ready [**<pull-request-number>**](#identity "○") --undo --repo [**<owner>**](#repository "○")/[**<repository>**](#repository "○")
 </pre></big>
-
-Provide [Review State](#review-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 ## Fields
 

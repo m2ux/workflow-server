@@ -50,7 +50,7 @@ Provide the [resulting body](#output-body) and any refused criteria to the calle
 
 ### Run at Revision
 
-Runs one instrument at the commit a branch, tag or commit resolves to, in a detached checkout the run creates and removes.
+Run one instrument in a detached checkout at the commit resolved by a branch, tag or commit and provide [Instrument Result](#instrument-result "●") to the requester. The run creates and removes the checkout.
 
 - The instrument follows `--` and runs at the checkout’s top level.
 - The first output line is `{"revision": <commit>, "checkout": <path>}`, the commit the result is recorded against. The instrument's output follows.
@@ -66,8 +66,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --revision '[**&lt;revision&gt;**](#revision "○")' &#92;
   -- [**&lt;instrument-command&gt;**](#instrument "○")
 </pre></big>
-
-Provide [Instrument Result](#instrument-result "●") to the requester.
 
 ## Fields
 

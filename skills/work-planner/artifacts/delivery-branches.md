@@ -209,7 +209,7 @@ Provide [Branch Names](#branch-names) and [Epic-Base Names](#epic-base-names), o
 
 ### List Epic Bases
 
-Prints one epic's base branch names, one per line.
+Print one epic's base branch names with one name per line and provide [Epic-Base Names](#epic-base-names "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Run in the [Project Checkout](#project-checkout "○").
 
@@ -222,11 +222,9 @@ Prints one epic's base branch names, one per line.
 git ls-remote --heads origin 'refs/heads/[**<epic-branch-prefix>**](#epic-identity "○")/*' | cut -f2 | sed 's|refs/heads/||'
 </pre></big>
 
-Provide [Epic-Base Names](#epic-base-names "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### List Long-Lived Branches
 
-Prints the long-lived branch names, one per line.
+Print the long-lived branch names with one name per line and provide [Branch Names](#branch-names "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - The names meet [Branches](#branches).
 - Select the evaluated revision according to [Branches](#branches).
@@ -242,11 +240,9 @@ cd "[**<workspace>**](#workspace "○")" && &#92;
   --revision '[**<revision>**](#revision "○")'
 </pre></big>
 
-Provide [Branch Names](#branch-names "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Fetch Remote Branch
 
-Fetches one source branch from origin.
+Fetch one source branch from origin and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 Run in the [Checkout](#checkout "○").
 
@@ -256,11 +252,9 @@ Run in the [Checkout](#checkout "○").
 git fetch origin '[**<source-branch>**](#source-branch "○")'
 </pre></big>
 
-Provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Publish Epic Base
 
-Creates a remote epic base from the fetched source branch.
+Create a remote epic base from the fetched source branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Run in the [Project Checkout](#project-checkout "○").
 - Require [Missing Destination](#missing-destination "○"), [Prerequisite Evidence](#prerequisite-evidence "○") before executing the command.
@@ -271,11 +265,9 @@ Creates a remote epic base from the fetched source branch.
 git push origin 'origin/[**<source-branch>**](#source-branch "○"):refs/heads/[**<epic-base>**](#epic-base-name "○")'
 </pre></big>
 
-Provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Merge Remote Branch
 
-Merges one fetched remote branch into the branch of the checkout it runs in.
+Merge one fetched remote branch into the branch of the checkout it runs in and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 Run in the [Checkout](#checkout "○").
 
@@ -285,11 +277,9 @@ Run in the [Checkout](#checkout "○").
 git merge --no-edit 'origin/[**<source-branch>**](#source-branch "○")'
 </pre></big>
 
-Provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Push Epic Base
 
-Pushes the epic base checked out where it runs to its configured upstream.
+Push the epic base checked out where it runs to its configured upstream and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Run in the [Checkout](#checkout "○").
 - Require [Successful Merge](#successful-merge "○") before executing the command.
@@ -300,11 +290,9 @@ Pushes the epic base checked out where it runs to its configured upstream.
 git push
 </pre></big>
 
-Provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Push Task Branch
 
-Pushes the head of the checkout it runs in to its named remote task branch.
+Push the head of the checkout it runs in to its named remote task branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Run in the [Unit Checkout](#unit-checkout "○").
 - Require [Successful Merge](#successful-merge "○") before executing the command.
@@ -315,11 +303,9 @@ Pushes the head of the checkout it runs in to its named remote task branch.
 git push origin 'HEAD:refs/heads/[**<task-branch>**](#task-branch "○")'
 </pre></big>
 
-Provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Add Task Worktree
 
-Creates a task branch and worktree at the fetched base.
+Create a task branch and worktree at the fetched base and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Run in the [Project Checkout](#project-checkout "○").
 - Require [Prerequisite Evidence](#prerequisite-evidence "○") before executing the command.
@@ -332,11 +318,9 @@ Creates a task branch and worktree at the fetched base.
 git worktree add '[**<worktree-path>**](#worktree-path "○")' -b '[**<task-branch>**](#task-branch "○")' 'origin/[**<base>**](#base-branch "○")'
 </pre></big>
 
-Provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Fetch Review Head
 
-Fetches one pull request head into FETCH_HEAD.
+Fetch one pull request head into FETCH_HEAD and provide [Checkout Commit](#checkout-commit "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 Run in the [Project Checkout](#project-checkout "○").
 
@@ -346,11 +330,9 @@ Run in the [Project Checkout](#project-checkout "○").
 git fetch origin pull/[**<pull-request-number>**](#pull-request-number "○")/head
 </pre></big>
 
-Provide [Checkout Commit](#checkout-commit "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Add Epic Base Worktree
 
-Creates the worktree for an existing epic base.
+Create the worktree for an existing epic base and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Run in the [Project Checkout](#project-checkout "○").
 
@@ -362,11 +344,9 @@ Creates the worktree for an existing epic base.
 git worktree add '[**<worktree-path>**](#worktree-path "○")' '[**<epic-base>**](#epic-base-name "○")'
 </pre></big>
 
-Provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Add Review Worktree
 
-Creates a detached worktree at the fetched review head.
+Create a detached worktree at the fetched review head and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Run in the [Project Checkout](#project-checkout "○").
 
@@ -378,47 +358,37 @@ Creates a detached worktree at the fetched review head.
 git worktree add --detach '[**<worktree-path>**](#worktree-path "○")' [**<head-commit>**](#verified-head "○")
 </pre></big>
 
-Provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Fetch Branch Protection
 
-Saves the target branch protection response.
+Save the target branch protection response and provide [Target Requirements](#target-requirements "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh api 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/branches/[**<target-branch>**](#target-branch "○")/protection' > '[**<branch-protection-file>**](#output-files "○")'
 </pre></big>
 
-Provide [Target Requirements](#target-requirements "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Fetch Active Branch Rules
 
-Saves every active rule for the target branch.
+Save every active rule for the target branch and provide [Target Requirements](#target-requirements "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 gh api --paginate 'repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/rules/branches/[**<target-branch>**](#target-branch "○")' > '[**<branch-rules-file>**](#output-files "○")'
 </pre></big>
 
-Provide [Target Requirements](#target-requirements "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Read Checkout Revision
 
-Resolves one revision to its commit in the selected checkout.
+Resolve one revision to its commit in the selected checkout and provide [Checkout Commit](#checkout-commit "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 git -C '[**<checkout>**](#checkout "○")' rev-parse '[**<revision>**](#revision "○")^{commit}'
 </pre></big>
 
-Provide [Checkout Commit](#checkout-commit "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Read Checkout Status
 
-Reports branch or detached-HEAD state and tracked and untracked changes in one checkout.
+Report branch or detached-HEAD state and tracked and untracked changes in one checkout and provide [Checkout Status](#checkout-status "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 git -C '[**<checkout>**](#checkout "○")' status --porcelain --branch
 </pre></big>
-
-Provide [Checkout Status](#checkout-status "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 ## Fields
 

@@ -104,7 +104,7 @@ Provide [Confirmed Statuses](#confirmed-statuses) with saved statuses or unresol
 
 ### Compute Board Changes
 
-Computes membership, Status and assignee calls from supplied delivery evidence.
+Compute membership, Status and assignee calls from supplied delivery evidence and provide [Board Changes](#board-changes "●") to the requester.
 
 - Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
 
@@ -130,13 +130,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")'
 </pre></big>
 
-Provide [Board Changes](#board-changes "●") to the requester.
-
 ### Compute Dispatch Status
 
-Renders board calls within the dispatch jurisdiction.
-
-A missing or failing agent review blocks the In Review write.
+Render board calls within the dispatch jurisdiction and provide [Board Changes](#board-changes "●") to the requester. A missing or failing agent review blocks the In Review write.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
@@ -151,8 +147,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
   --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")'
 </pre></big>
-
-Provide [Board Changes](#board-changes "●") to the requester.
 
 ## Fields
 

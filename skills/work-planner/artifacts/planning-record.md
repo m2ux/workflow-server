@@ -65,7 +65,7 @@ Provide [Publication Result](#publication-result) after confirming publication, 
 
 ### Find Engineering Worktree
 
-Prints the checkout holding the engineering branch, which is where every planning record is written.
+Print the checkout holding the engineering branch and provide [Engineering Worktree](#engineering-worktree "●") to the requester. Every planning record is written in that checkout.
 
 The engineering branch has one long-lived worktree and takes no further one.
 
@@ -73,11 +73,9 @@ The engineering branch has one long-lived worktree and takes no further one.
 git -C '[**&lt;checkout&gt;**](#project-checkout "○")' worktree list | grep '\&#91;engineering\&#93;'
 </pre></big>
 
-Provide [Engineering Worktree](#engineering-worktree "●") to the requester.
-
 ### Commit Planning Record
 
-Commits everything pending in the engineering worktree and publishes the branch, so every record's links resolve.
+Commit everything pending in the engineering worktree, publish the branch so every record's links resolve, and provide [Publication Result](#publication-result "●") to the requester.
 
 - It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).
 - Planning records go straight to the branch; they take no pull request.
@@ -96,11 +94,9 @@ cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' && &#92;
   git push
 </pre></big>
 
-Provide [Publication Result](#publication-result "●") to the requester.
-
 ### Add Planning Record
 
-Adds the folder for one planning record on the long-lived engineering worktree.
+Add the folder for one planning record on the long-lived engineering worktree and provide [Planning Folder](#planning-folder "●") to the requester.
 
 - Run in the [Engineering Worktree](#engineering-worktree "○").
 
@@ -113,8 +109,6 @@ Adds the folder for one planning record on the long-lived engineering worktree.
 <big><pre>
 mkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder "○")'
 </pre></big>
-
-Provide [Planning Folder](#planning-folder "●") to the requester.
 
 ## Fields
 

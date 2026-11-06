@@ -50,7 +50,7 @@ Provide [Graph Measurements](#graph-measurements) only when current with the sup
 
 ### Index Status
 
-Reports whether the repository is indexed, and how far behind the index sits.
+Report whether the repository is indexed and how far behind the index sits, and provide [Index State](#index-state "●") to the requester.
 
 **Acts on:** the checkout it runs in.
 
@@ -60,11 +60,9 @@ Compare the indexed commit with [Requested Revision](#requested-revision "○").
 gitnexus status
 </pre></big>
 
-Provide [Index State](#index-state "●") to the requester.
-
 ### Index Repository
 
-Indexes the repository, which an unindexed or behind repository needs before any measurement.
+Index the repository and provide [Index State](#index-state "●") to the requester. An unindexed or behind repository needs indexing before any measurement.
 
 **Acts on:** the checkout it runs in.
 
@@ -74,11 +72,9 @@ Compare the indexed commit with [Requested Revision](#requested-revision "○").
 gitnexus analyze
 </pre></big>
 
-Provide [Index State](#index-state "●") to the requester.
-
 ### Change Surface
 
-Reports the symbols a pull request's diff touches and the flows they sit in, against the base branch.
+Report the symbols touched by the pull request's diff and their flows against the base branch, and provide [Changed Symbols](#changed-symbols "●") to the requester.
 
 **Acts on:** the checkout it runs in.
 
@@ -88,11 +84,9 @@ Compare against the pull request’s base to isolate its change from the branch�
 gitnexus detect-changes --scope compare --base-ref '[**&lt;base-branch&gt;**](#base-branch "○")'
 </pre></big>
 
-Provide [Changed Symbols](#changed-symbols "●") to the requester.
-
 ### Symbol Context
 
-Reports one symbol's callers, its callees and the flows it sits in, each with the file it sits in.
+Report one symbol's callers, callees and containing flows with their file locations, and provide [Symbol Relationships](#symbol-relationships "●") to the requester.
 
 **Acts on:** the checkout it runs in.
 
@@ -100,19 +94,15 @@ Reports one symbol's callers, its callees and the flows it sits in, each with th
 gitnexus context '[**&lt;symbol-identity&gt;**](#symbol-identity "○")'
 </pre></big>
 
-Provide [Symbol Relationships](#symbol-relationships "●") to the requester.
-
 ### Flow Trace
 
-Reports one flow's symbols in step order, the structure a sequence diagram is drawn from.
+Report one flow's symbols in step order and provide [Flow Traces](#flow-traces "●") to the requester. The sequence diagram is drawn from that ordered structure.
 
 **Acts on:** the checkout it runs in.
 
 <big><pre>
 gitnexus query --query '[**&lt;flow-identity&gt;**](#flow-identity "○")' --limit 1
 </pre></big>
-
-Provide [Flow Traces](#flow-traces "●") to the requester.
 
 ## Fields
 

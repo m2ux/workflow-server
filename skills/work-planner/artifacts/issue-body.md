@@ -158,7 +158,7 @@ Provide [Visibility Findings](#visibility-findings) identifying each private ref
 
 ### Check Body Format
 
-Checks one issue against its template, and with `--fix` writes the body with the mechanical fixes made.
+Check one issue against its template, write mechanical body fixes when `--fix` is supplied, and provide [Format Findings](#format-findings "●") and, when a corrected body was requested, [Output Files](#output-files "●") to the requester.
 
 - Validate the body against [Kind Conditions](#kind-conditions "○").
 
@@ -180,21 +180,17 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
 
-Provide [Format Findings](#format-findings "●") and, when a corrected body was requested, [Output Files](#output-files "●") to the requester.
-
 ### List Reference Repositories
 
-List repository names from the issue destination and References section.
+List repository names from the issue destination and References section and provide [Reference Repositories](#reference-repositories "●") to the requester.
 
 <big><pre>
 [**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py repositories '[**&lt;issue-json-file&gt;**](#body-record "○")'
 </pre></big>
 
-Provide [Reference Repositories](#reference-repositories "●") to the requester.
-
 ### Fetch Reference Repository
 
-Read one listed repository's visibility with the authenticated repository API.
+Read one listed repository's visibility with the authenticated repository API and provide [Repository Snapshot](#repository-snapshot "●") to the requester.
 
 - Run in the repository checkout.
 
@@ -204,19 +200,15 @@ Read one listed repository's visibility with the authenticated repository API.
 gh api repos/[**&lt;owner&gt;**](#reference-repositories "○")/[**&lt;repo&gt;**](#reference-repositories "○") > '[**&lt;repository-json-file&gt;**](#output-files "○")'
 </pre></big>
 
-Provide [Repository Snapshot](#repository-snapshot "●") to the requester.
-
 ### Validate Reference Visibility
 
-Report private repository references on a public issue and unresolved repository visibility.
+Report private repository references on a public issue and unresolved repository visibility, and provide [Visibility Findings](#visibility-findings "●") to the requester.
 
 The snapshot is a JSON array of fetched repository objects. Exit 1 means findings remain.
 
 <big><pre>
 [**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py references '[**&lt;issue-json-file&gt;**](#body-record "○")' --repositories '[**&lt;repositories-json-file&gt;**](#repository-snapshot "○")'
 </pre></big>
-
-Provide [Visibility Findings](#visibility-findings "●") to the requester.
 
 ## Fields
 

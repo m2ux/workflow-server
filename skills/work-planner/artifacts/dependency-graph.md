@@ -52,7 +52,7 @@ The task graph and the row numbers it permits, checked and renumbered across the
 
 ### Check Dependencies
 
-Checks the task dependency graph across the epics given, and with `I=` the initiative's Depends on cells.
+Check the task dependency graph across the supplied epics, include the initiative's Depends on cells when `I=` is supplied, and provide [Graph Result](#graph-result "●") to the requester.
 
 - Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.
 - The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files "○") defines them.
@@ -75,11 +75,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   '[**&lt;epic-id&gt;**](#dependency-files "○")=[**&lt;epic-body-file&gt;**](#dependency-files "○")' '[**&lt;epic-id&gt;**](#dependency-files "○"):[**&lt;task-id&gt;**](#dependency-files "○")=[**&lt;work-item-file&gt;**](#dependency-files "○")' 'R=[**&lt;record-file&gt;**](#dependency-files "○")'
 </pre></big>
 
-Provide [Graph Result](#graph-result "●") to the requester.
-
 ### Renumber Tasks
 
-Renumbers one epic's tasks by the map given, in the files given.
+Renumber one epic's tasks in the supplied files according to the given map and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
 
 - `<task-number-map>` is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each affected body file as a separate argument.
 
@@ -97,11 +95,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --tasks [**&lt;task-number-map&gt;**](#renumber-inputs "○") '[**&lt;affected-body-file&gt;**](#renumber-inputs "○")'
 </pre></big>
 
-Provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
-
 ### Renumber Epics
 
-Renumbers an initiative's epics across supplied body files.
+Renumber an initiative's epics across supplied body files and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
 
 - The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.
 - Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.
@@ -113,8 +109,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
   --map [**&lt;epic-number-map&gt;**](#renumber-inputs "○") '[**&lt;body-file&gt;**](#renumber-inputs "○")'
 </pre></big>
-
-Provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
 
 ## Fields
 

@@ -85,7 +85,7 @@ Provide the completion result in [Delivery State](#delivery-state), identifying 
 
 ### Match Pull Requests
 
-Reports an epic's delivery state against the pull requests that name it.
+Report an epic's delivery state against the pull requests that name it and provide [Delivery Findings](#delivery-findings "●") to the requester.
 
 Results follow [Delivery Findings](#delivery-findings "●").
 
@@ -96,8 +96,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' &#92;
   --fix '[**&lt;epic-body-file&gt;**](#output-body "○")'
 </pre></big>
-
-Provide [Delivery Findings](#delivery-findings "●") to the requester.
 
 ## Fields
 

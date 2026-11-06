@@ -28,7 +28,7 @@ Provide the available [Label Identity](#label-identity); an unknown definition i
 
 ### List Labels
 
-Lists the labels that exist in the repository.
+List the labels that exist in the repository and provide [Label Identity](#label-identity "●") to the requester.
 
 Run in the repository checkout.
 
@@ -36,11 +36,9 @@ Run in the repository checkout.
 gh api "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/labels?per_page=100" --jq '.&#91;&#93;.name'
 </pre></big>
 
-Provide [Label Identity](#label-identity "●") to the requester.
-
 ### Create Label
 
-Creates the label specified by its name, colour and description.
+Create the label with its specified name, colour and description, and provide [Label Identity](#label-identity "●") to the requester.
 
 Run in the repository checkout.
 
@@ -52,8 +50,6 @@ gh api &#92;
   -f description='[**&lt;description&gt;**](#label-identity "○")' &#92;
   --jq .name
 </pre></big>
-
-Provide [Label Identity](#label-identity "●") to the requester.
 
 ## Fields
 

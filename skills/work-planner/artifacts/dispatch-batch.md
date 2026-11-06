@@ -13,7 +13,7 @@ Read these files first.
 
 ### Compute Dispatch Batch
 
-Selects the next batch without tracker writes or worker execution.
+Select the next batch without tracker writes or worker execution and provide [Batch](#batch "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 - Honor [Requested Lane](#requested-lane "○") when selecting units.
 
@@ -32,11 +32,9 @@ cd "[**<workspace>**](#workspace "○")" && &#92;
   &gt; '[**<batch-file>**](#batch "○")'
 </pre></big>
 
-Provide [Batch](#batch "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
 ### Check Dispatch Start
 
-Checks one selected unit immediately before execution.
+Check one selected unit immediately before execution and provide [Validated Unit](#validated-unit "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 Exit 0 returns the selected unit; exit 1 names the blocking condition.
 
@@ -49,8 +47,6 @@ cd "[**<workspace>**](#workspace "○")" && &#92;
   --sessions '[**<session-inventory-file>**](#session-inventory "○")' &#92;
   --capacity [**<free-slot-count>**](#free-slots "○")
 </pre></big>
-
-Provide [Validated Unit](#validated-unit "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 ## Fields
 

@@ -112,7 +112,7 @@ Provide [Source Evidence](#source-evidence) with each source’s contents and id
 
 ### Sync Initiative
 
-Reports an initiative's delivery state against its epics, and ticks Done on an epic row whose issue is closed as completed. A row whose epic it is not given keeps its Done cell and is reported unchanged.
+Report an initiative's delivery state against its epics, tick Done on an epic row whose issue is closed as completed, and provide [Delivery Findings](initiative.md#delivery-findings "●") and, when a body was requested, [Output Files](#output-files "●") to the requester. A row whose epic it is not given keeps its Done cell and is reported unchanged.
 
 - Omit `--fix` when only a delivery report is requested.
 
@@ -127,11 +127,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
 
-Provide [Delivery Findings](initiative.md#delivery-findings "●") and, when a body was requested, [Output Files](#output-files "●") to the requester.
-
 ### Tick Initiative Criteria
 
-Ticks confirmed initiative criteria, refusing any not ready to verify, and ticks completed rows.
+Tick confirmed initiative criteria and completed rows, refusing criteria not ready to verify, and provide [Output Files](#output-files "●") and [Criterion Selection](#criterion-selection "●") to the requester.
 
 Pass every epic JSON file as a separate argument after `--epics`. `<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection "○").
 
@@ -143,11 +141,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
 
-Provide [Output Files](#output-files "●"), [Criterion Selection](#criterion-selection "●") to the requester.
-
 ### Fetch Source
 
-Saves one GitHub source at the revision its permalink pins.
+Save one GitHub source at the revision its permalink pins and provide [Source Evidence](#source-evidence "●") to the requester.
 
 Run in the repository checkout.
 
@@ -158,8 +154,6 @@ gh api 'repos/[**&lt;owner&gt;**](#source-evidence "○")/[**&lt;repository&gt;*
   -d &#92;
   &gt; '[**&lt;source-file&gt;**](#output-files "○")'
 </pre></big>
-
-Provide [Source Evidence](#source-evidence "●") to the requester.
 
 ## Fields
 

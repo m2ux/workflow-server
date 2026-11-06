@@ -131,14 +131,12 @@ Prepare the comment file naming the taking epic and row, or the taking task issu
 
 ### List Orphans
 
-Lists the hoist candidates, and the open initiatives and epics they could join.
+List the hoist candidates and the open initiatives and epics they could join, and provide [Candidate Issues](#candidate-issues "●") and [Candidate Destinations](#candidate-destinations "●") to the requester.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/orphans.py '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
-
-Provide [Candidate Issues](#candidate-issues "●") and [Candidate Destinations](#candidate-destinations "●") to the requester.
 
 ## Fields
 

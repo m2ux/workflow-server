@@ -6,7 +6,7 @@ A board-wide delivery lane, its task assignments and the units a request admits.
 
 ### Read Lane Assignments
 
-Reads raw task-table Lane cells through the Lane module.
+Read raw task-table Lane cells through the Lane module and provide [Lane Result](#lane-result "●") to the requester.
 
 - Results meet [Assignments](#assignments).
 
@@ -14,11 +14,9 @@ Reads raw task-table Lane cells through the Lane module.
 "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" read '[**&lt;epic-body-file&gt;**](#epic-body-file "○")'
 </pre></big>
 
-Provide [Lane Result](#lane-result "●") to the requester.
-
 ### Write Lane Assignments
 
-Writes confirmed assignments while preserving other body content.
+Write confirmed assignments while preserving other body content and provide [Output Body](#output-body "●") to the requester.
 
 - Refuse unknown task ids or malformed resulting cells. The requester validates the complete body and dependencies before publication.
 
@@ -29,11 +27,9 @@ Writes confirmed assignments while preserving other body content.
   --out '[**&lt;output-body-path&gt;**](#output-body "○")'
 </pre></big>
 
-Provide [Output Body](#output-body "●") to the requester.
-
 ### Validate Lane Unit
 
-Reports a unit's common lane or assignment findings.
+Report a unit's common lane or assignment findings and provide [Lane Result](#lane-result "●") to the requester.
 
 - Results meet [Unit Consistency](#unit-consistency).
 
@@ -43,11 +39,9 @@ Reports a unit's common lane or assignment findings.
   --unit '[**&lt;task-ids&gt;**](#unit-task-ids "○")'
 </pre></big>
 
-Provide [Lane Result](#lane-result "●") to the requester.
-
 ### Evaluate Lane Admission
 
-Reports whether the request admits a valid unit.
+Report whether the request admits a valid unit and provide [Lane Result](#lane-result "●") to the requester.
 
 Omit the lane option when the request supplies none.
 
@@ -59,8 +53,6 @@ Omit the lane option when the request supplies none.
   --unit '[**&lt;task-ids&gt;**](#unit-task-ids "○")' &#92;
   --lane '[**&lt;lane-index&gt;**](#requested-index "○")'
 </pre></big>
-
-Provide [Lane Result](#lane-result "●") to the requester.
 
 ## Fields
 

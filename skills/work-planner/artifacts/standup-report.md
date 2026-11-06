@@ -46,7 +46,7 @@ Run [Summarise Progress](#summarise-progress "ƒ") with the same inputs and the 
 
 ### Summarise Progress
 
-Prints the standup from supplied board items, pull request records and their issue-link snapshot.
+Print the standup from supplied board items, pull request records and their issue-link snapshot and provide [Report Result](#report-result "●") to the requester.
 
 - Select the reporting [window](#scope) from the supplied [Report Selection](#report-selection "○").
 - An initiative filter can be `I08` or `owner/repo:I08`.
@@ -65,8 +65,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records "○")' &#92;
   --summary '[**&lt;management-paragraph-file&gt;**](#management-file "○")'
 </pre></big>
-
-Provide [Report Result](#report-result "●") to the requester.
 
 ## Fields
 
