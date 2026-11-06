@@ -496,7 +496,7 @@ Saves the named issues that are closed, one per line; an issue that is open or a
 gh api &#92;
   --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=closed&per_page=100" &#92;
   --jq '.&#91;&#93; | select(&#91;.number&#93; | inside(&#91;[**&lt;issue-numbers&gt;**](#audit-selection "○")&#93;))' &#92;
-  > '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
+  &gt; '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
 
 Provide [Issue Collection](#issue-collection "●") to the requester.

@@ -156,7 +156,7 @@ gh api 'repos/[**&lt;owner&gt;**](#source-evidence "○")/[**&lt;repository&gt;*
   --jq .content &#92;
   | base64 &#92;
   -d &#92;
-  > '[**&lt;source-file&gt;**](#output-files "○")'
+  &gt; '[**&lt;source-file&gt;**](#output-files "○")'
 </pre></big>
 
 Provide [Source Evidence](#source-evidence "●") to the requester.

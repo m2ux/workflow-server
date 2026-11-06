@@ -29,7 +29,7 @@ cd "[**<workspace>**](#workspace "○")" && &#92;
   --sessions '[**<session-inventory-file>**](#session-inventory "○")' &#92;
   --capacity [**<free-slot-count>**](#free-slots "○") &#92;
   --board [**<survey-board>**](#survey-board "○") &#92;
-  > '[**<batch-file>**](#batch "○")'
+  &gt; '[**<batch-file>**](#batch "○")'
 </pre></big>
 
 Provide [Batch](#batch "●") to the requester, or [Failure](#failure "●") if the operation fails.

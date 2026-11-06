@@ -299,7 +299,7 @@ Saves a board's items with their Status, each carrying its issue whole.
 <big><pre>
 gh api &#92;
   --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field "○")" &#92;
-  > '[**&lt;board-items-file&gt;**](#board-items-file "○")'
+  &gt; '[**&lt;board-items-file&gt;**](#board-items-file "○")'
 </pre></big>
 
 Provide [Board State](#board-state "●") to the requester.

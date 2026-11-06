@@ -548,7 +548,7 @@ Use [Collection Path](#collection-path "○") for the saved collection.
 gh api &#92;
   --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" &#92;
   --jq '.[] | select(.title | startswith("[**<initiative-prefix>**](#initiative-prefix "○")"))' &#92;
-  > '[**<pull-request-records-file>**](#pull-request-records "○")'
+  &gt; '[**<pull-request-records-file>**](#pull-request-records "○")'
 </pre></big>
 
 Provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -585,7 +585,7 @@ Use [Collection Path](#collection-path "○") for the saved collection.
 gh api &#92;
   --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" &#92;
   --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' &#92;
-  > '[**<pull-request-records-file>**](#pull-request-records "○")'
+  &gt; '[**<pull-request-records-file>**](#pull-request-records "○")'
 </pre></big>
 
 Provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -600,7 +600,7 @@ Use [Collection Path](#collection-path "○") for the saved collection.
 gh api &#92;
   --paginate "repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls?state=all&per_page=100" &#92;
   --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' &#92;
-  >> '[**<pull-request-records-file>**](#pull-request-records "○")'
+  &gt;&gt; '[**<pull-request-records-file>**](#pull-request-records "○")'
 </pre></big>
 
 Provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -613,7 +613,7 @@ Saves the paths a pull request changes.
 gh api &#92;
   --paginate repos/[**<owner>**](#repository "○")/[**<repo>**](#repository "○")/pulls/[**<pull-request-number>**](#identity "○")/files &#92;
   --jq '.[].filename' &#92;
-  > '[**<changed-paths-file>**](#output-files "○")'
+  &gt; '[**<changed-paths-file>**](#output-files "○")'
 </pre></big>
 
 Provide [Changed Paths](#changed-paths "●") to the requester, or [Failure](#failure "●") if the operation fails.
