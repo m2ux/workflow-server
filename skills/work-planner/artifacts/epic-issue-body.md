@@ -161,7 +161,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record "○")' &#92;
   --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
   --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' &#92;
-  --tick [**&lt;criterion-ids&gt;**](#criterion-selection "○") &#92;
+  --tick '[**&lt;criterion-ids&gt;**](#criterion-selection "○")' &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 

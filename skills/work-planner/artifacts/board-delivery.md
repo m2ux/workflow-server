@@ -146,8 +146,8 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --fields '[**&lt;board-fields-file&gt;**](#board-fields "○")' &#92;
   --out '[**&lt;output-directory&gt;**](#output-directory "○")' &#92;
   --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")' &#92;
-  --progress [**&lt;held-issue-numbers&gt;**](#dispatch-selection "○") &#92;
-  --review [**&lt;complete-epic-numbers&gt;**](#dispatch-selection "○") &#92;
+  --progress '[**&lt;held-issue-numbers&gt;**](#dispatch-selection "○")' &#92;
+  --review '[**&lt;complete-epic-numbers&gt;**](#dispatch-selection "○")' &#92;
   --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
   --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")'
 </pre></big>
@@ -196,7 +196,7 @@ The saved initiative, epic and task identities, board identity, output directory
 
 ### Dispatch Selection
 
-The supplied comma-separated held task and epic issue numbers for In Progress, and complete epic numbers for In Review.
+The supplied comma-separated held task and epic issue numbers for In Progress, and complete epic numbers for In Review. Either list can be empty when no write of that kind is selected.
 
 ### Board Changes
 

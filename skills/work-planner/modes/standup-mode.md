@@ -74,7 +74,7 @@ Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-re
 
 - For an epic the preceding Compose Standup Report call returns with an unreadable Work Breakdown:
 
-- Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format "ƒ") for the selected epic against its [template and field conditions](../artifacts/epic-issue-body.md#fields).
+- Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format "ƒ") for that epic against its [template and field conditions](../artifacts/epic-issue-body.md#fields).
 - If it confirms a saved correction, repeat steps 3–6 with refreshed records, retaining the selected board, window and initiative filter.
 - If it reports a blocker or no correction, provide the unresolved finding without repeating the same repair.
 

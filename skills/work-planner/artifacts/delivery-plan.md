@@ -19,7 +19,6 @@ Read these files first.
 
 Computes available work from supplied board and delivery snapshots.
 
-- Save the survey export at [Dispatch-Export Path](#dispatch-export-path "○").
 - Include each supplied [Off-Board Issues](#off-board-issues "○") file with `--others`.
 
 - Read each row’s own links from the epic body to determine whether its work is under way.
@@ -28,7 +27,7 @@ Computes available work from supplied board and delivery snapshots.
 - Read each free row’s work-item file from the supplied engineering worktree.
 - Use `--date` to override the [record date](#record-date "○").
 - Omit `--lane` when the run names no lane. Offered units meet [Admission](lane.md#admission).
-- Use `--dispatch-plan` when saving a [dispatch export](#dispatch-export "●").
+- Omit `--dispatch-plan` when no dispatch export is requested.
 
 - The computation runs [Evaluate Lane Admission](lane.md#evaluate-lane-admission "ƒ") internally for each derived free unit under [Admission](lane.md#admission). The requester decides holds and dispatch, and supplies missing evidence for another pass.
 
@@ -42,7 +41,8 @@ cd "[**<workspace>**](#workspace "○")" && &#92;
   --revision '[**<revision>**](#revision "○")' &#92;
   --bases '[**<epic-base-names>**](#epic-base-names "○")' &#92;
   --engineering '[**<engineering-worktree>**](#engineering-worktree "○")' &#92;
-  --lane [**<lane-index>**](#requested-lane "○")
+  --lane [**<lane-index>**](#requested-lane "○") &#92;
+  --dispatch-plan '[**<dispatch-export-file>**](#dispatch-export-path "○")'
 </pre></big>
 
 Provide [Plan Report](#plan-report "●"), [Dispatch Export](#dispatch-export "●") to the requester, or [Failure](#failure "●") if the operation fails.

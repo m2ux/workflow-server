@@ -103,7 +103,7 @@ The continuing coordinator for one authorized delivery scope.
 
 - Retain an unavailable row dependency as that unit's blocker and continue with independently verified units.
 
-- For delivery discrepancies, Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence "ƒ") for the selected repositories and initiative against current issue records.
+- For delivery discrepancies, Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence "ƒ") for the selected repositories and initiative against current issue records, then repeat this survey with its refreshed evidence before selecting a dispatch batch.
 
 - Reconcile each held record with actual harness sessions and the retained inventory, resuming the existing session when available and reporting an absent session without creating a duplicate.
 

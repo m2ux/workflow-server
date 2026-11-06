@@ -163,15 +163,24 @@ Checks one issue against its template, and with `--fix` writes the body with the
 - Validate the body against [Kind Conditions](#kind-conditions "○").
 
 - The format reader takes the template fence from the body artifact and its table columns where present. A body with a Work Breakdown table requires coverage for every criterion.
-- The input is one issue JSON. `--fix` names the output body file for mechanical fixes. Further inputs are specified by the calling body procedure.
+- For an epic, supply its parent with `--initiative`. For an initiative, supply every linked epic by repeating `--epic`; omit those options for other kinds.
+- For epic delivery checks, supply the pull request snapshot with `--prs` and repeat `--files` for each supplied changed-path record.
+- Supply `--project` and `--revision` together for project-required-criteria validation at the fetched revision. Omit both when that validation is outside the request.
+- Omit optional flags whose corresponding evidence is not applicable; retain all evidence required by the selected kind. Omit `--fix` when no corrected body is requested.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/format.py '[**&lt;issue-json-file&gt;**](#body-record "○")' &#92;
+  --initiative '[**&lt;initiative-json-file&gt;**](#initiative-record "○")' &#92;
+  --epic '[**&lt;epic-json-file&gt;**](#epic-records "○")' &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --files '[**&lt;pull-request-changed-paths&gt;**](#changed-file-records "○")' &#92;
+  --project '[**&lt;checkout&gt;**](#project-checkout "○")' &#92;
+  --revision '[**&lt;revision&gt;**](#evaluated-revision "○")' &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
 
-Provide [Format Findings](#format-findings "●") to the requester.
+Provide [Format Findings](#format-findings "●") and, when a corrected body was requested, [Output Files](#output-files "●") to the requester.
 
 ### List Reference Repositories
 
@@ -392,6 +401,60 @@ The complete current issue-shaped JSON record: a saved tracker issue record, or 
 
 ```text
 issue.json
+```
+
+### Initiative Record
+
+The complete parent initiative JSON used to resolve an epic's cross-epic references.
+
+**Example:**
+
+```text
+initiative.json
+```
+
+### Epic Records
+
+Every linked epic's complete current JSON, supplied separately when validating an initiative's row titles and structure.
+
+**Example:**
+
+```text
+epic.json
+```
+
+### Pull Request Records
+
+The current complete REST pull request snapshot as one JSON object per nonempty line, used to determine which declared branches and paths the epic changes.
+
+**Example:**
+
+```text
+prs.json
+```
+
+### Changed File Records
+
+Each pull request number paired with its local changed-paths file as `NUMBER=FILE`; the file contains one tracker-supplied changed path per line.
+
+**Example:**
+
+```text
+950=changed-950.txt
+```
+
+### Project Checkout
+
+The checkout holding the project-required-criteria declaration and the fetched revision at which it is evaluated.
+
+### Evaluated Revision
+
+The fetched epic base on the declaration's long-lived branch, or that long-lived branch while the epic has no base on it.
+
+**Example:**
+
+```text
+origin/i07/e00/workspace
 ```
 
 ### Snapshot Metadata

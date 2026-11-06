@@ -275,9 +275,9 @@ The current pull request's readiness against its target requirements and head ch
 
 ### Hold Epic Review
 
-An open epic review provided to draft while its handoff evidence is unresolved.
+An open epic review held in draft while its handoff evidence is unresolved.
 
-#### 1. Provide Open Review to Draft
+#### 1. Mark Open Review Draft
 
 Apply [Read Pull Request State](#read-pull-request-state "ƒ") for full metadata. For an open ready [pull request](#identity), Run [Mark Review Draft](#mark-review-draft "ƒ").
 

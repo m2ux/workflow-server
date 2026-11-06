@@ -32,7 +32,11 @@ For each reported flow, Run [Flow Trace](#flow-trace "ƒ") in the review checkou
 
 #### 6. Check Response Freshness
 
-- Inspect the staleness block on every response. When an index is behind, discard its measurements.
+Inspect the staleness block on every response.
+
+##### When the Index Is Behind
+
+- Discard that response’s measurements.
 - Run [Index Repository](#index-repository "ƒ") in the review checkout for the verified head, and confirm freshness.
 - Run [Change Surface](#change-surface "ƒ") again for any discarded surface using the same [base branch](#base-branch) in the review checkout.
 - Run [Symbol Context](#symbol-context "ƒ") again for each affected changed symbol in the review checkout.

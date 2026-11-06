@@ -142,7 +142,7 @@ The answer a caller applies where it resolves an `order` or `ask` line on its ow
 A `Depends on` entry that names no row and links no issue, names an issue the run was not given, or names a row the epic it points to does not carry, cannot resolve. No delivery makes it readable, so it is told apart from a prerequisite that has not landed.
 
 - The report names the row and the entry as written, and a run that met one while deciding a placement exits nonzero.
-- The epic that row gates keeps the Status it holds. The run proposes no move for it, so a Ready epic is not provided to Backlog on an entry nobody can read.
+- The epic that row gates keeps the Status it holds. The run proposes no move for it, so a Ready epic stays Ready on an entry nobody can read.
 - Every entry of a cell is read, so a cell carrying two names both.
 
 ### Completeness

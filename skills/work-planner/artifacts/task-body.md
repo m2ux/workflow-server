@@ -27,7 +27,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
   --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' &#92;
   --pr [**&lt;pull-request-number&gt;**](#delivery-selection "○") &#92;
-  --tick [**&lt;criterion-ids&gt;**](#delivery-selection "○") &#92;
+  --tick '[**&lt;criterion-ids&gt;**](#delivery-selection "○")' &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
@@ -113,6 +113,8 @@ links.json
 ```
 
 ### Delivery Selection
+
+Verified criterion ids may be empty when recording delivery without requesting criterion ticks.
 
 The supplied delivering pull request number and verified criterion ids.
 

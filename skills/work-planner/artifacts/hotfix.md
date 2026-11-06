@@ -46,7 +46,7 @@ Provide [Board Result](#board-result) with the confirmed status or discrepancy. 
 
 ### Release Hot-fix Hold
 
-A held hot-fix provided to the work the delivery plan offers.
+A hot-fix whose released hold makes it available to the delivery plan.
 
 #### 1. Read Current Development
 
@@ -110,7 +110,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
   --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' &#92;
   --pr [**&lt;pull-request-number&gt;**](#delivery-selection "○") &#92;
-  --tick [**&lt;criterion-ids&gt;**](#delivery-selection "○") &#92;
+  --tick '[**&lt;criterion-ids&gt;**](#delivery-selection "○")' &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
@@ -193,6 +193,8 @@ links.json
 ```
 
 ### Delivery Selection
+
+Verified criterion ids may be empty when recording delivery without requesting criterion ticks.
 
 The confirmed delivering pull request number and the verified criterion ids.
 
