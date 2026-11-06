@@ -1,0 +1,23 @@
+*Progress since Sun 1 Nov* — I07
+
+The window delivered queue input validation to support reliable queues and verified delivery.
+
+Board: https://github.com/orgs/o/projects/7
+
+*Initiatives*
+🔄 *I07 Reliable Queues:* Verified Delivery — https://github.com/o/r/issues/1
+
+*Completed*
+✅ *I07:E00 Queue Inputs* — https://github.com/o/r/issues/2
+    ✅ W01 Validate queue inputs — https://github.com/o/r/pull/900
+
+*In progress*
+🔄 *I07:E01 Queue Rules* — https://github.com/o/r/issues/3
+    📝 Apply Queue Rules — https://github.com/o/r/pull/901
+
+*Next*
+▶️ *I07:E02 Queue Report*, next W01 Render queue report — https://github.com/o/r/issues/4
+
+*Key*
+I=Initiative, E=Epic, W=Work Item, F=Hot-fix
+✅ done · 🔄 in progress · 👀 in review · 📝 draft · ▶️ ready

@@ -1,0 +1,9 @@
+Working directory: /home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace
+
+Draft (exit 0):
+/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/scripts/sbx python3 skills/work-planner/scripts/progress.py --items /tmp/project17-context-fixtures/items.json --prs /tmp/project17-context-fixtures/prs.json --links /tmp/project17-context-fixtures/links.json --since 2026-11-01 --initiative I07 > /tmp/linked-context-standup/draft-report.txt 2> /tmp/linked-context-standup/draft-stderr.txt
+
+Final (exit 0):
+/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/scripts/sbx python3 skills/work-planner/scripts/progress.py --items /tmp/project17-context-fixtures/items.json --prs /tmp/project17-context-fixtures/prs.json --links /tmp/project17-context-fixtures/links.json --since 2026-11-01 --initiative I07 --summary /tmp/linked-context-standup/summary.txt > /tmp/linked-context-standup/final-report.txt 2> /tmp/linked-context-standup/final-stderr.txt
+
+Source reads used local Python heading extraction under /home/mike1/projects/dev/md-composer/scripts/sbx, stopping at headings of equal or higher level; see read-log.txt for exact files, sections and line ranges. Initial direct Python heredoc was denied before execution; retry under sbx succeeded. Shell startup emitted three stream-fd warnings on the initial discovery and cat read; renderer stderr files are empty. No external calls.

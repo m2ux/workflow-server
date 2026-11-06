@@ -15,7 +15,7 @@ The skill's procedure files are an object model written in prose.
 | Object state and its type | `## Fields`: the shape the file owns and the conditions on it |
 | Interface | A general artifact's operations and fields that each kind supplies |
 | Implementation | A kind's file, which fills that interface for one kind of work |
-| Required context | Justified common prerequisites and context selected at use |
+| Required context | Context selected through in-text links at its point of use |
 | Application layer | A mode, which only orchestrates calls |
 
 A call goes down the layers (mode, then protocol, then artifact), never up. That is the existing Layers rule, and these guidelines refine it.
@@ -72,9 +72,9 @@ A call goes down the layers (mode, then protocol, then artifact), never up. That
 - **Small operations.**
   An operation does one thing a caller needs. A caller never loads a file to use one rule of it that belongs elsewhere.
 - **Required context has a boundary.**
-  Common prerequisites are necessary for every entry they govern. Context needed only by a selected capability or branch is reached at its point of use through the smallest complete section. A union of all cross-file links does not establish necessity.
+  Common context is linked where each governed entry needs it. Context needed only by a selected capability or branch is reached at its point of use through the smallest complete section. A union of all cross-file links does not establish necessity.
 - **Prerequisite ordering is acyclic.**
-  Required-before-use edges name their condition and required content. Distinguish those edges from ordinary field references and intentional execution retries. Each supported route meets its reviewed context contract before use.
+  Only explicit before-use requirements impose ordering; their links name the condition and required content. Distinguish those edges from ordinary field references and intentional execution retries. Each supported route meets its reviewed context contract before use.
 - **Kinds carry only their own surface.**
   A kind's file holds what is specific to it. Shared behaviour stays in the general file, and the kind's file calls it.
 
@@ -101,7 +101,7 @@ E02's audit asks these questions of each file.
 3. Does this file name a kind of work as a case it handles?
 4. Does a caller use a published capability without copying its invocation, I/O inventory, steps or conditions?
 5. Does a general file link down to a kind, or a lower layer link up to a higher one?
-6. Is every prerequisite justified by the governed entry, does it have a bounded target, and is its required-before-use graph acyclic?
+6. Is each required-context link justified by the governed entry, does it select a bounded target, and is its explicit before-use graph acyclic?
 7. For scripts: does a general script branch on a kind, or reimplement a rule another module owns?
 
 8. Does a Fields section define a shape/invariant, or derive a decision, invoke work or route its outcome under [Field Boundaries](#field-boundaries)?

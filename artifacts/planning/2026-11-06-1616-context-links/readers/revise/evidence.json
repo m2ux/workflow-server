@@ -1,0 +1,62 @@
+{
+  "verification": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "fa4210",
+        "wall_time_seconds": 0.000012798,
+        "exit_code": 0,
+        "original_token_count": 609,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n M skills/work-planner/artifacts/acceptance-criteria.md\n M skills/work-planner/artifacts/board-delivery.md\n M skills/work-planner/artifacts/board-queue.md\n M skills/work-planner/artifacts/board.md\n M skills/work-planner/artifacts/delivery-branches.md\n M skills/work-planner/artifacts/delivery-brief.md\n M skills/work-planner/artifacts/delivery-evidence.md\n M skills/work-planner/artifacts/delivery-plan.md\n M skills/work-planner/artifacts/dependency-graph.md\n M skills/work-planner/artifacts/dispatch-batch.md\n M skills/work-planner/artifacts/epic-issue-body.md\n M skills/work-planner/artifacts/epic.md\n M skills/work-planner/artifacts/goal-trace.md\n M skills/work-planner/artifacts/hotfix-body.md\n M skills/work-planner/artifacts/hotfix.md\n M skills/work-planner/artifacts/initiative-issue-body.md\n M skills/work-planner/artifacts/issue-body.md\n M skills/work-planner/artifacts/placement.md\n M skills/work-planner/artifacts/planning-record.md\n M skills/work-planner/artifacts/proposal-body.md\n M skills/work-planner/artifacts/pull-request-body.md\n M skills/work-planner/artifacts/pull-request.md\n M skills/work-planner/artifacts/standalone-body.md\n M skills/work-planner/artifacts/standup-report.md\n M skills/work-planner/artifacts/task-body.md\n M skills/work-planner/artifacts/work-item.md\n M skills/work-planner/guidelines.md\n M skills/work-planner/modes/advance-mode.md\n M skills/work-planner/modes/align-mode.md\n M skills/work-planner/modes/deliver-mode.md\n M skills/work-planner/modes/hoist-mode.md\n M skills/work-planner/modes/plan-mode.md\n M skills/work-planner/modes/propose-mode.md\n M skills/work-planner/modes/revise-mode.md\n M skills/work-planner/modes/standup-mode.md\n M skills/work-planner/modes/sync-mode.md\n M skills/work-planner/modes/understand-mode.md\n M skills/work-planner/protocols/change-overview.md\n M skills/work-planner/protocols/epic-integration.md\n M skills/work-planner/protocols/issue-closure.md\n M skills/work-planner/protocols/issue-delivery.md\n M skills/work-planner/protocols/review-pull-request.md\n M skills/work-planner/protocols/task-merge.md\n M skills/work-planner/protocols/unit-dispatch.md\n M skills/work-planner/rules.json\n M skills/work-planner/rules.md\n M skills/work-planner/structure.json\n M skills/work-planner/test/test_documents.py\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "4c0338",
+        "wall_time_seconds": 0.00001109,
+        "exit_code": 0,
+        "original_token_count": 50,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nd6be48053b4d74333d742a140df5e187e6c344d9\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "022b4b",
+        "wall_time_seconds": 0.000009817,
+        "exit_code": 0,
+        "original_token_count": 1459,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nskills/work-planner/artifacts/lane.md:46:Omit the lane option when the request supplies none.\nskills/work-planner/artifacts/delivery-plan.md:32:- Omit `--lane` when the run names no lane. Offered units must meet [Admission](lane.md#admission).\nskills/work-planner/artifacts/delivery-plan.md:35:- The computation runs [Evaluate Lane Admission](lane.md#evaluate-lane-admission \"ƒ\") internally for each derived free unit under [Admission](lane.md#admission). The requester decides holds and dispatch, and supplies missing evidence for another pass.\nskills/work-planner/artifacts/delivery-plan.md:95:The optional requested bare decimal lane index; absent when the run names no lane, meeting [Index](lane.md#index). eg `2`\nskills/work-planner/test/test_command_contracts.py:149:        lines, _, headings = checker.scan(ROOT / 'artifacts/lane.md')\nskills/work-planner/test/test_command_contracts.py:163:                done = self.execute('lane.md', command, {'epic-body-file': body, **extra}, omit)\nskills/work-planner/test/test_command_contracts.py:172:                done = self.execute('lane.md', 'Evaluate Lane Admission', {\nskills/work-planner/artifacts/dependency-graph.md:15:- Run [Check Dependencies](#check-dependencies \"ƒ\") with the initiative body, every epic body and every supplied work-item file. The computation invokes Run [Validate Lane Unit](lane.md#validate-lane-unit \"ƒ\") internally with each derived unit’s epic body and complete ids.\nskills/work-planner/artifacts/dependency-graph.md:150:  Joined rows must meet [Unit Consistency](lane.md#unit-consistency).\nskills/work-planner/artifacts/epic-issue-body.md:25:- Run [Write Lane Assignments](lane.md#write-lane-assignments \"ƒ\") with the populated body, confirmed task-to-index map and output path.\nskills/work-planner/artifacts/epic-issue-body.md:280:  The row's delivery lane must meet [Assignments](lane.md#assignments).\nskills/work-planner/artifacts/dispatch-batch.md:48:One run records its board identity, scope selectors and requested lane in a JSON object. The scope is the selected board (`[\"*\"]`), or a list of repository-qualified initiative, epic, task or hot-fix identities, such as `o/r#I07`, `o/r#I07:E00`, `o/r#I07:E00:W01` or `o/r#F02`. Every row of a joined unit must fall within that scope. An explicit joined selector, `o/r#I07:E00:W01+W02`, authorizes both rows. The requested lane must meet [Index](lane.md#index), represented as `null` when none is requested. eg `{\"board\": \"users/o/projectsV2/7\", \"scope\": [\"o/r#I07\"], \"lane\": null}`\nskills/work-planner/artifacts/dispatch-batch.md:72:The optional lane used by the current survey, meeting [Index](lane.md#index); represented as `null` when none is requested.\nskills/work-planner/artifacts/board-queue.md:27:- The computation reads [Read Lane Assignments](lane.md#read-lane-assignments \"ƒ\") and runs [Validate Lane Unit](lane.md#validate-lane-unit \"ƒ\") internally with each complete free unit derived after queue placement.\nskills/work-planner/artifacts/board-queue.md:65:A collection of units, each carrying initiative, epic and member task ids plus its [lane report label](lane.md#report-label). A unit contains one unjoined row or all rows of a unit defined by [Joins](dependency-graph.md#joins). Every member must be free and undelivered and meet [Task Eligibility](#task-eligibility) under its epic's proposed status; row availability follows [Task Delivery](epic-issue-body.md#task-delivery). Units include rows with no linked work item. Status and assignee calls depend on priority and delivery state.\nskills/work-planner/artifacts/board-queue.md:80:| `unit` | A unit must meet [Ready Units](#ready-units) and [Unit Consistency](lane.md#unit-consistency) | Its initiative, epic and task ids followed by its [Report Label](lane.md#report-label), for example `unit I01:E00:W01+W02: lane 2` |\nskills/work-planner/artifacts/board-queue.md:81:| `invalid` | A task has an [assignment finding](lane.md#assignments), or a free unit fails [Unit Consistency](lane.md#unit-consistency) | Its affected rows and values; the invalid unit is not reported as Ready, and the run exits nonzero |\nskills/work-planner/modes/revise-mode.md:49:- Run [Check Skill Files](#check-skill-files \"ƒ\") for every affected skill.\nskills/work-planner/modes/revise-mode.md:77:### Check Skill Files\nskills/work-planner/modes/plan-mode.md:33:- For an initiative using lanes, propose each task row's [Lane](../artifacts/lane.md#index) index as a map for the user to confirm, assigning joined rows together as [Unit Consistency](../artifacts/lane.md#unit-consistency) requires. Record the confirmed map in the planning record. For an initiative without lanes, leave the row lanes empty.\nskills/work-planner/modes/deliver-mode.md:19:- Take the optional lane index afresh from this request, following [Admission](../artifacts/lane.md#admission); a request naming none supplies none.\nskills/work-planner/guidelines.md:68:  A named `###` specification under Commands owns one raw HTML `<big><pre>…</pre></big>` invocation. Open with an imperative instruction combining the action, each linked provided output and its recipient. A single prose condition or detail item accompanies the preamble as unbulleted text before the invocation; related sentences may qualify one action. Multi-item detail lists follow the invocation box. Other unbulleted context and the REST gap for GraphQL precede the invocation. Long shell invocations use token-boundary continuations and readable option/value groups, preserving required quoting, operators and argument order. Encode terminal backslashes as `&#92;` so rendering preserves the literal continuation and one line break.\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "b029ed",
+        "wall_time_seconds": 0,
+        "exit_code": 1,
+        "original_token_count": 127,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nbwrap: No permissions to create a new namespace, likely because the kernel does not allow non-privileged user namespaces. See <https://deb.li/bubblewrap> or <file:///usr/share/doc/bubblewrap/README.Debian.gz>.\nsbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace (name more with SBX_EXTRA_ROOTS=dir1:dir2)\n"
+      }
+    }
+  ],
+  "checker_escalated": {
+    "chunk_id": "7749ef",
+    "wall_time_seconds": 3.101843802,
+    "exit_code": 1,
+    "original_token_count": 63,
+    "output": "work-planner/guidelines.md:231: unresolved anchor — rules.md#linked-sections\n58 files checked, 1 findings\nsbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace (name more with SBX_EXTRA_ROOTS=dir1:dir2)\n"
+  },
+  "finalHashes": {
+    "status": "fulfilled",
+    "value": {
+      "chunk_id": "2b8460",
+      "wall_time_seconds": 0.000011142,
+      "exit_code": 0,
+      "original_token_count": 212,
+      "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n9b430e5ee43c5d0cf9d66d51ae7a87fc755f03a288841a7b6644dcbe11dc394a  skills/work-planner/SKILL.md\n43ddb0d354132778a6870f95f6a50f122312881e09b6f1944916cc9f303c4d61  skills/work-planner/rules.md\nda8a94ea01f2b8869d03314a2e436b422e3cf47d057d0cc3d6f3b856ee503270  skills/work-planner/conventions.md\n9c28e2c9400087f9a6ad92ff6915f82e92c60dea520057fdf2dcd7d8fec2537b  skills/work-planner/modes/revise-mode.md\n54b7053f08af9fa47ec865b8df13ab5fd5ae801f58bb6dcf73aa5336e62d888e  skills/guidelines.md\ncbb075ac7f38e3775993599bb511ebd7971ffc361b2d4a538564628e34148a2f  skills/work-planner/guidelines.md\n63c3f85b1875c4a75e9e69e96d45a85d702882887fdb6de22d98ba90a4d314dc  skills/work-planner/artifacts/lane.md\n"
+    }
+  },
+  "statusUnchanged": true
+}

@@ -1,0 +1,21 @@
+Actual bootstrap/model reads before the bounded section logger existed:
+1. skills/work-planner/SKILL.md whole.
+2. /home/mike1/projects/dev/md-composer/scripts/sbx whole.
+3. skills/work-planner/rules.md whole.
+4. skills/work-planner/conventions.md whole.
+5. skills/work-planner/modes/standup-mode.md whole.
+6. skills/work-planner/modes/understand-mode.md whole.
+7. skills/work-planner/modes/revise-mode.md whole.
+
+Subsequent selected section/file reads: see read-log.jsonl in chronological order.
+Transport recovery reads: skills/guidelines.md lines 145–end; skills/work-planner/guidelines.md lines 1–70.
+Unexpected broad read: rg with context over headings in repository-graph.md returned nearly the complete file, including unnecessary service command bodies. The same lookup failed on nonexistent lane-assignments.md.
+Scoped lookup: rg Write Lane Assignments in skills/work-planner returned lane.md:18 and epic-issue-body.md:25 only.
+Heading discovery: rg heading-only on epic-issue-body.md, planning-record.md and lane.md located the exact consumer and selected fields.
+Failed anchor: epic-issue-body.md#populate-epic-body (no returned content). Corrected to #populate-epic-issue-body.
+Bounded reader defect: architecture-overview.md#fields first returned 5–9 only; complete section 5–135 recovered after fenced-heading handling was corrected.
+
+Initial sandbox output:
+bwrap: No permissions to create a new namespace, likely because the kernel does not allow non-privileged user namespaces.
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace
+The same requested launcher succeeded with require_escalated; no bypass was used.

@@ -1,0 +1,6 @@
+{
+  "board": "orgs/o/projectsV2/7",
+  "since": "2026-11-01",
+  "initiative": "I07",
+  "checkpoint": "The caller supplies current delivery state and complete captured snapshots; no refresh is required for this offline exercise."
+}

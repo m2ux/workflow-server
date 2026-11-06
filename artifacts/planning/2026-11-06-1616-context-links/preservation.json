@@ -1,0 +1,10 @@
+{
+  "baseline": "d6be48053b4d74333d742a140df5e187e6c344d9",
+  "markdown_files": 58,
+  "removed_sections": 43,
+  "removed_inventory_links": 237,
+  "identical_invocations": 116,
+  "identical_templates": 9,
+  "identical_fields_sections": 36,
+  "runtime_script_changes": []
+}

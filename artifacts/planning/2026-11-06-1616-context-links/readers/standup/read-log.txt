@@ -1,0 +1,28 @@
+Initial rg discovery: skills/work-planner/SKILL.md and fixture request.json paths only; head bounded to 60 lines, 3 stream-fd warnings. Initial inline Python blocked by hook, no reads.
+/home/mike1/projects/dev/workflow-server/AGENTS.md: full file, 5432 chars
+AGENTS.md: full file, 5432 chars
+skills/work-planner/SKILL.md: full file, 4506 chars
+/tmp/project17-context-fixtures/request.json: full file, 230 chars
+.project/main/AGENTS.md: absent
+skills/work-planner/rules.md: full file, 1729 chars
+skills/work-planner/conventions.md: full file, 2321 chars
+skills/work-planner/modes/standup-mode.md: full file, 3915 chars
+skills/work-planner/artifacts/board.md#select-project-board: lines 7-22, 726 chars
+skills/work-planner/artifacts/board.md#read-board-state: lines 75-90, 499 chars
+skills/work-planner/artifacts/board.md#repositories: lines 247-250, 285 chars
+skills/work-planner/artifacts/pull-request.md#fetch-all-delivery-pull-requests: lines 114-141, 1182 chars
+skills/work-planner/artifacts/pull-request.md#fetch-pull-request-issue-links: lines 74-93, 975 chars
+skills/work-planner/artifacts/standup-report.md#compose-standup-report: lines 7-36, 926 chars
+skills/work-planner/artifacts/standup-report.md#summarise-progress: lines 39-60, 1586 chars
+skills/work-planner/artifacts/standup-report.md#issue-link-snapshot: lines 127-130, 120 chars
+skills/work-planner/artifacts/standup-report.md#management-paragraph: lines 91-94, 324 chars
+skills/work-planner/artifacts/standup-report.md#report-result: lines 115-118, 91 chars
+skills/work-planner/artifacts/standup-report.md#fields: lines 61-133, 4656 chars
+skills/work-planner/artifacts/board.md#selected-board: lines 283-286, 101 chars
+skills/work-planner/artifacts/board.md#board-state: lines 315-318, 150 chars
+/tmp/project17-context-fixtures/items.json: full supplied fixture, 3082 chars
+/tmp/project17-context-fixtures/prs.json: full supplied fixture, 543 chars
+/tmp/project17-context-fixtures/links.json: full supplied fixture, 183 chars
+/tmp/linked-context-standup/draft-report.txt: full generated output, 646 chars
+/tmp/linked-context-standup/draft-stderr.txt: full generated output, 0 chars
+final-report.txt and final-stderr.txt: complete generated outputs inspected; no truncation.
