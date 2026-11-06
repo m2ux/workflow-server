@@ -32,6 +32,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 
 | Module | What it guards |
 | --- | --- |
+| [test_advance_decisions](test_advance_decisions.py) | Advance answers select saved readback and refreshed queue evidence before writing |
 | [test_agent_review](test_agent_review.py) | Current integration review evidence gates board and user handoff |
 | [test_align](test_align.py) | Alignment repairs, unreadable evidence and reference visibility fixtures |
 | [test_board](test_board.py) | The assignees [board](../scripts/board.py) gives an issue for its Status, and an initiative's Status once its criteria are ticked |
@@ -87,7 +88,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (16), [test_hotfix_readiness](test_hotfix_readiness.py) (12) |
 | [align](../scripts/align.py) | [test_align](test_align.py) (18) |
 | [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (11) |
-| [board-queue](../scripts/board-queue.py) | [test_board_queue](test_board_queue.py) (75) |
+| [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (14), [test_board_queue](test_board_queue.py) (75) |
 | [closure](../scripts/closure.py) | [test_closure](test_closure.py) (13), [test_command_contracts](test_command_contracts.py) (14) |
 | [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) (14) |
 | [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (96), [test_dispatch](test_dispatch.py) (19) |
@@ -116,6 +117,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [README](README.md) | [test_readme](test_readme.py) (14) |
 | [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
 | `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (13) |
+| [advance-mode](../modes/advance-mode.md) | [test_advance_decisions](test_advance_decisions.py) (14) |
 | [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [deliver-mode](../modes/deliver-mode.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12) |
