@@ -109,3 +109,5 @@ E02's audit asks these questions of each file.
 10. Do candidate checks include the observed breach and valid counterexamples, with semantic review for ambiguous prose?
 
 11. Does every supported request obtain complete required common and selected context before use, with same-revision reuse and no mandatory unrelated operation bodies?
+
+12. Do policy statements agree for the same context and evidence, and does their canonical interpretation match observed outcomes? Record proposed interpretations and obtain confirmation before a policy-changing fix; distinguish conflicting meanings from legitimate context differences.

@@ -1,0 +1,24 @@
+{
+  "source": "d6be48053b4d74333d742a140df5e187e6c344d9",
+  "issue": 1615,
+  "cases": [
+    "automatic decisions",
+    "backlog cascades",
+    "diagram size",
+    "hot-fix finding scope"
+  ],
+  "task_count": 10,
+  "changed_coverage": {
+    "W02": [
+      "AC2",
+      "AC10",
+      "AC17"
+    ]
+  },
+  "row_identity_order_dependencies_joins_lanes_done": "preserved",
+  "existing_criteria": "AC5 adds observing scenario fixtures and consumer conformance; other existing criteria preserved",
+  "implementation": "not started",
+  "policy_interpretations": "recommendations awaiting confirmation",
+  "original_body_sha256": "7ee77d3b4fc4dd2518349e9681b4ca61a9342420a152611f29d2975ec5e2f28b",
+  "reference_repair": "R8 links the external design without an in-board issue reference, satisfying the current formatter"
+}

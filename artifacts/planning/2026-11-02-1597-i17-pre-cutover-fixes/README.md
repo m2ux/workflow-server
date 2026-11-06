@@ -75,6 +75,14 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | [E02 retained dependency inputs](e02/retained-dependency-inputs.json) | Current initiative and sibling issue snapshots used for validation |
 | [E02 retained saved readback](e02/retained-epic-readback.json) | Exact published body and preserved metadata |
 | [E02 retained saved format check](e02/retained-saved-format.log) | Zero-finding saved-body validation |
+| [E02 policy clarifications](e02/policy-clarifications.md) | Four inherited ambiguities, decision records, owners and scenario matrix |
+| [E02 policy plan audit](e02/policy-plan-audit.json) | Preserved row/criterion contracts and changed coverage |
+| [E02 prior policy snapshot](e02/policy-epic-before.json) | Live issue body and metadata before the approved planning update |
+| [E02 policy draft snapshot](e02/policy-epic-draft.json) | Draft body with complete existing issue context |
+| [E02 policy dependency inputs](e02/policy-dependency-inputs.json) | Current parent and all sibling epic snapshots |
+| [E02 policy plan review](e02/policy-plan-review.md) | Goal, grain, ownership, checks and publication limits |
+| [E02 policy format result](e02/policy-format.log) | Zero-finding final draft validation |
+| [E02 policy dependency result](e02/policy-dependencies.log) | Current row graph and retained advisory |
 
 ## Links
 
