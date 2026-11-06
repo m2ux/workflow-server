@@ -38,7 +38,7 @@ One task or epic pull request's merge result, or its handoff for human approval.
 
 - Require the supplied [Target Requirements](#target-requirements), [Readiness Evidence](#readiness-evidence) and [Merge Authorization](#merge-authorization).
 
-- Run [Submit Epic Merge](#submit-epic-merge "ƒ") with the exact head whose checks and target requirements were verified; provide a refusal without continuing.
+- Run [Submit Epic Merge](#submit-epic-merge "ƒ") with the exact head whose checks and target requirements were verified. On refusal, continue directly to Merge Refusals below.
 
 - Run [Read Merge Result](#read-merge-result "ƒ") for that [pull request](#identity).
 
@@ -237,7 +237,7 @@ The current pull request's readiness against its target requirements and head ch
 
 #### 2. Read Current Target Requirements
 
-- Use the repository and [Base Branch](#base-branch) as the [target branch](delivery-branches.md#target-branch), saving protection/rules evidence at [Output Files](#output-files).
+- For the repository, use [Base Branch](#base-branch) as the [target branch](delivery-branches.md#target-branch), saving protection/rules evidence at [Output Files](#output-files).
 
 - Run [Fetch Branch Protection](delivery-branches.md#fetch-branch-protection "ƒ") for [Target Branch](delivery-branches.md#target-branch) in [Repository](delivery-branches.md#repository), using [Output Files](delivery-branches.md#output-files) for the evidence destinations.
 
@@ -255,8 +255,9 @@ The current pull request's readiness against its target requirements and head ch
 
 - Run [Fetch Head Status](#fetch-head-status "ƒ") for the same SHA.
 
-- Retain [Head Checks](#head-checks) and [Head Status](#head-status), retaining missing or pending evidence as unresolved [Failure](#failure). The requester compares them with supplied target requirements and current reviews.
-- Apply [Read Pull Request State](#read-pull-request-state "ƒ") for reviews with the pull request identity and reviews output path. A missing or pending check, blocked merge state or unmet required review leaves readiness unresolved.
+- Retain [Head Checks](#head-checks) and [Head Status](#head-status), retaining missing or pending evidence as unresolved [Failure](#failure).
+- Apply [Read Pull Request State](#read-pull-request-state "ƒ") for reviews with the pull request identity and reviews output path.
+- Compare the check-run and status evidence with the target requirements and current reviews. A missing or pending check, blocked merge state or unmet required review leaves readiness unresolved.
 
 #### 4. Confirm Stable Pull Head
 

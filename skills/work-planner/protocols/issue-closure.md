@@ -45,7 +45,7 @@ Read these files first.
 
 - Confirm from [Base Merges](../artifacts/epic.md#base-merges) that every base has merged into its corresponding long-lived branch. An unknown or incomplete base list, or missing merge evidence, leaves completion unconfirmed even when every task is delivered and every criterion is ticked.
 
-- Retain the completion result in [Delivery State](../artifacts/epic.md#delivery-state), identifying remaining blockers. Passing normal delivery checks supplies the caller's closure evidence; the tracker issue's current Development-link gate still governs the write.
+- Retain the completion result in [Delivery State](../artifacts/epic.md#delivery-state), identifying remaining blockers. Passing normal delivery checks supplies the evidence for the closure step; the tracker issue's current Development-link gate still governs the write.
 
 #### Initiative Completion
 

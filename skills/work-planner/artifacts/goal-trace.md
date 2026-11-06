@@ -67,7 +67,7 @@ Check each criterion against the [shared acceptance criteria](issue-body.md#shar
 - Check for skew between an artifact the plan produces and an implementation that reads it.
 
 - Check for a change elsewhere that alters the ground the plan stands on.
-- Retain [Review Result](#review-result) with the evidenced threats and gaps to the requesting goal review.
+- Retain [Review Result](#review-result) with the evidenced threats and gaps for the ranked goal review.
 
 #### 7. Provide Ranked Gaps
 

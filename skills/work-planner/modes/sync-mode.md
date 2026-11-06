@@ -298,7 +298,7 @@ When [Selected Kind](../artifacts/board.md#selected-kind) is proposals and no op
 - Retain the [Copied Board](../artifacts/board.md#copied-board) after linking succeeds.
 - Require the new theme's label and board before an initiative takes that theme.
 
-##### 3. Provide Copied Project Board
+##### 3. Retain Copied Board
 
 Retain the [Copied Board](../artifacts/board.md#copied-board) after the selected creation path succeeds.
 
@@ -340,7 +340,7 @@ Retain the [Copied Board](../artifacts/board.md#copied-board) after the selected
 - Run [Compute Board Changes](../artifacts/board-delivery.md#compute-board-changes "ƒ") to the refreshed evidence, retaining every resolved off-board issue record.
 - Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
 
-##### 5. Provide Recorded Board Delivery
+##### 5. Retain Confirmed Board Statuses
 
 Retain [Confirmed Statuses](../artifacts/board-delivery.md#confirmed-statuses) after every changed item has been confirmed, retaining any unresolved discrepancy.
 

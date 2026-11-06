@@ -253,16 +253,22 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 - Apply [Produce Agent Review](../artifacts/agent-review.md#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence.
 - Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") with its provided record, then Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") with that record.
 - Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") to link that published record from the pull request body.
+
+##### Verify Hot-Fix Readiness
+
 - Use the pull request and published review records.
 
 - Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for its full metadata.
 
 - Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with that metadata and [Published Reviews](../artifacts/pull-request.md#published-reviews).
-- On a finding, retain it for this step’s repair loop; the [pull request](../artifacts/pull-request.md#identity) stays a draft.
+- On a finding, keep the [pull request](../artifacts/pull-request.md#identity) in draft and continue directly to Repair Hot-Fix Findings below.
 
 - For a draft with passing evidence, Run [Mark Review Ready](../artifacts/pull-request.md#mark-review-ready "ƒ") with the node id its metadata names.
 
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again with the same identity, then Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records. Provide [Review State](../artifacts/pull-request.md#review-state), or [Failure](../artifacts/pull-request.md#failure) with the changed revision or finding that leaves it unconfirmed.
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again with the same identity, then Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records. Retain [Review State](../artifacts/pull-request.md#review-state), or [Failure](../artifacts/pull-request.md#failure) with the changed revision or finding that leaves it unconfirmed.
+
+##### Repair Hot-Fix Findings
+
 - For each provided finding, fix it on the task branch and repeat this step from Produce Agent Review, until review validation and ready-state readback provide no finding.
 - A finding the session cannot fix within its allowance stops it before the merge step. The hot-fix stays held and its pull request a draft, and the session returns each open finding in its result.
 

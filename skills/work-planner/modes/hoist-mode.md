@@ -119,7 +119,7 @@ Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every is
 
 - Use the source issue as the destination with disposition Leave. The rewrite branch below supplies its standalone body and keeps the issue open.
 
-##### 2. Provide Saved Placement
+##### 2. Retain Saved Placement
 
 Retain [Placement Result](../artifacts/placement.md#placement-result) with the saved destination, identities of all affected bodies and confirmed disposition, including the destination initiative, epic and new row id for a new task or new epic, and the number for a hot-fix. Use the saved destination in exactly one disposition below.
 
@@ -167,7 +167,7 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 
 For a hot-fix, Apply [Settle Hot-fix Board Status](../artifacts/hotfix.md#settle-hot-fix-board-status "ƒ") with the confirmed theme board and the saved issue.
 
-##### 4. Provide Saved Identity
+##### 4. Retain Saved Identity
 
 Retain [Saved Orphan](../artifacts/placement.md#saved-orphan) with the saved identity and a hot-fix’s settled board item.
 
