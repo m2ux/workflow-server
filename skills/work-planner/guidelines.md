@@ -2,6 +2,68 @@
 
 The rules this skill's files follow alongside the [shared skill guidelines](../guidelines.md). Modes, protocols and artifacts use the directory-specific structures below. A rule that binds only modes, only protocols, only artifacts, or only references is in that section.
 
+## SOLID
+
+The skill is an object model in prose: an artifact owns state and callable capabilities, a protocol coordinates one change, and a mode orchestrates one user goal. Operations and named command specifications are its public capabilities; Fields defines its state and public shape. Calls follow the [layer boundary](rules.md).
+
+### Single Responsibility
+
+- **Subject ownership.**
+  An artifact owns one shape and the operations that produce or read it; a protocol owns one change that lands in several artifacts; a mode owns one goal's lifecycle. Each file has that one reason to change, including a derived result with no persisted document.
+- **Rule ownership.**
+  A rule belongs to the subject whose state it constrains, whoever calls it. Consumers link to that home under the shared [one-home rule](../guidelines.md#prose).
+
+### Open-Closed
+
+- **Kind extension.**
+  A new kind of work has its own artifact and script module. General artifacts, modes, protocols and scripts describe their family without naming or branching on individual kinds; adding a kind changes no general file.
+- **Interface operations.**
+  Where kinds differ, each kind supplies the same named operation and contract. General callers select that interface through the published kind registration.
+
+### Liskov Substitution
+
+- **Interchangeable contracts.**
+  Every kind's interface operation accepts the inputs and provides the output shape its general contract promises. A kind may constrain its own fields, but must not narrow accepted interface inputs or return less than that contract requires.
+
+### Interface Segregation
+
+- **Focused capabilities.**
+  An operation does one thing its caller needs. A caller reaches the owning capability without loading unrelated operation bodies.
+- **Required context.**
+  Common context serves every entry it governs; context for a selected capability or branch is linked at its point of use through the smallest complete section. A union of cross-file links establishes no requirement by itself.
+- **Before-use ordering.**
+  The required-before-use graph contains only explicit prerequisite edges, each naming its entry condition, required content and reason. It must be acyclic for every supported entry path. Ordinary field references and intentional execution retries impose no prerequisite ordering. A selected link bounds the read; only an explicit execution call runs a linked procedure. Reuse complete context already received at the same revision.
+
+### Dependency Inversion
+
+- **General dependencies.**
+  Modes and protocols depend on general operations. A kind implements and links to its general interface; a general file never links down to an individual kind.
+- **Kind registration.**
+  The entry point lists kinds, and one script registry maps each kind to its module. Callers reach kinds through that registration rather than maintaining their own lists.
+
+### Encapsulation
+
+- **Published capabilities.**
+  A caller uses operations, command specifications and published fields rather than copying another subject's steps. Commands own their invocation and I/O contract under [Contextual Contracts](#prose).
+- **Public fields.**
+  A linked field is part of the public contract. A change to its shape or home updates its callers in the same change.
+
+### Field Boundaries
+
+- **State constraints.**
+  Fields define values, types, permitted states and invariants. Conditional constraints and schema examples are valid field content.
+- **Callable transformations.**
+  Derivation, state or membership selection, evidence gathering, execution, refusals, retries and continuation belong in callable operations, with invocations in named Commands specifications. Declarative prose that derives a caller's action from evidence is behavior under this boundary.
+- **Boundary review.**
+  Classify every Fields section by its supplied evidence, produced result, owning subject and disposition. Candidate diagnostics identify the source and possible owner; semantic review distinguishes a transformation from an invariant. A conditional word alone establishes no violation.
+
+### Policy Review
+
+- **Matched contexts.**
+  Compare policy statements against identical inputs and entry conditions, recording pinned source, current prose, observed outcomes and the owning contract. Different contexts may legitimately produce different outcomes. Record competing interpretations and obtain confirmation before a policy-changing fix.
+- **Evidence controls.**
+  Use actual captured data and observable decisions to distinguish policy outcomes. Retain valid enums, conditional invariants, result shapes, literal examples, ordinary definition cycles and bounded retries as controls. Keywords or copied instruction strings alone establish neither a breach nor a passing behavior.
+
 ## Titles
 
 - **Title case.**
@@ -48,7 +110,7 @@ These rules apply to mode and protocol procedures and artifact operations.
   Use [Link Roles](rules.md#link-roles) on command inputs, command outputs and every called command, operation, protocol or procedure. Define the command’s complete, derivable I/O contract through Field links at actual use in prose or the enriched invocation, without separate Inputs or Outputs inventories. An annotated argument establishes its binding once; prose adds only meaningful usage or conditions. Nested calls retain the transformation link and any selection, condition, retry or result handling; the callee owns its contract. Preserve preconditions, execution location, authorization, optional and repeated arguments. After drafting, independently check parameters, prose, conditions and provided results for consumed inputs or outputs with no explicit Field link; implied values are contract gaps.
 
 - **Rule homes.**
-  A rule's [one home](../guidelines.md#prose) is the field or outcome it constrains, the procedure step it binds, or the Modes, Artifacts, or References section below. Operation inputs name the evidence that the caller must supply for those preconditions.
+  [Rule ownership](#single-responsibility) places a rule in the field or outcome it constrains, the procedure step it binds, or the applicable file-type section below. Operation inputs name the evidence that the caller must supply for those preconditions.
 - **Scheme.**  The scheme is agent-engineering: an agent-engineering prefix, title, issue or table.
 - **Examples.**
   A name, label, branch, path or board that belongs to one project is an example. The rule states what holds for every project.
@@ -92,13 +154,13 @@ These rules govern named command and access specifications. Procedural operation
 
 ## Modes
 
-Read this before adding or changing a mode.
+Read this before adding or changing a mode, applying [SOLID](#solid).
 
 - **Orchestration.**
   Modes coordinate; artifact operations perform and validate work on their own subject. Mode procedures select scope, call artifact operations or command specifications, route findings and user decisions, and coordinate changes across artifacts. A procedure managing several artifacts belongs in a mode. Skill maintenance and commands spanning artifacts have specifications in the mode’s Commands section.
 
 - **One goal.**
-  A mode is the lifecycle of one user goal. It changes when that lifecycle changes.
+  A mode follows [Single Responsibility](#single-responsibility).
 - **Outcomes.**
   A mode outcome is a user goal to be met. It does not state an artifact shape, a table column, or a criterion.
 - **No procedure in an outcome.**
@@ -130,10 +192,10 @@ Read this before adding or changing a mode.
 
 ## Protocols
 
-Read this before adding or changing a protocol.
+Read this before adding or changing a protocol, applying [SOLID](#solid).
 
 - **One change.**
-  A protocol is one change to the work that lands in several artifacts together. It changes when that change does. Where the sequence produces one nameable output shape it is an artifact operation, not a protocol, and a derived shape with no persisted document still counts.
+  A protocol follows [Single Responsibility](#single-responsibility). Where the sequence produces one nameable output shape it is an artifact operation, and a derived shape with no persisted document still counts.
 - **Named for the situation.**
   A protocol is named for the situation it governs, as a noun phrase: Task Merge, Issue Closure, Epic Integration. Its file is `<situation>.md`.
 - **Entered whole.**
@@ -153,10 +215,10 @@ Read this before adding or changing a protocol.
 
 ## Artifacts
 
-Read this before adding or changing an artifact.
+Read this before adding or changing an artifact, applying [SOLID](#solid).
 
 - **One shape.**
-  An artifact owns one subject’s state, invariants and operations, with shared executable operations in its subject module. Choose its home by the object and state produced; each file has one reason to change. Give an operated-on concept this field-and-operation home and expose small public capabilities to callers.
+  An artifact follows [Single Responsibility](#single-responsibility), with shared executable operations in its subject module. Choose its home by the object and state produced and expose its public capabilities under [Encapsulation](#encapsulation).
 - **Virtual artifacts.**
   A derived artifact owns its output shape even when it has no persisted document. Fields defines that shape; its operations consume supplied evidence.
 - **Descriptions.**
@@ -174,14 +236,14 @@ Read this before adding or changing an artifact.
 - **Fields.**
   Each field names one scalar or reference, a document, a collection, or a composite data object. State its shape, members, types and absent or empty cases where relevant, with examples using the actual representation. Fields defines the artifact's shape and the conditions on its elements. Common field conditions hold for the family; a kind supplements them. Fields is a `##` section, with each named field or group under `###`. The kind's template is a subsection of Fields and holds that kind's table. Field conditions do not state user goals. A condition that gates an action sits in the procedure step that performs it.
 - **No procedure in Fields.**
-  Fields define values, shape and invariants, including conditional constraints on valid state. Derivation, evidence gathering, execution and outcome handling belong to callable capabilities; invocations use named Commands specifications. A rule used by one capability sits inline in that command's details or operation step. A shared policy has one linked home under its subject's Guidance. Reference counts guide placement; whole-section schema consumers also count. Do not manufacture a data object or an input contract for a policy. Give a nameable derived result its owning artifact and operations. Distinct command result shapes have distinct fields, with their actual serialization, findings, nullability and failure behavior; a generic result name must not conceal incompatible shapes.
+  Apply [Field Boundaries](#field-boundaries). A rule used by one capability sits inline in that command's details or operation step. A shared policy has one linked home under its subject's Guidance. Reference counts guide placement; whole-section schema consumers also count. Do not manufacture a data object or an input contract for a policy. Give a nameable derived result its owning artifact and operations. Distinct command result shapes have distinct fields, with their actual serialization, findings, nullability and failure behavior; a generic result name must not conceal incompatible shapes.
 
 - **Name.**
   A file that populates a body is named `<subject>-body.md`. Its scope is that population. `issue-body.md` is the shared issue body. A kind file is `proposal-body.md`, `initiative-issue-body.md`, `epic-issue-body.md`, `task-body.md`, `standalone-body.md`, or `hotfix-body.md`.
 - **Subject names.**
   Name an artifact for its subject and an operation for its action: `board-queue.md` owns Board Queue, and Plan Board Queue is its operation. A computation script can take the subject name, such as `board-queue.py`.
 - **Common file.**
-  The common file names no kind. A kind's table, its title, and a check that applies only to that kind live on that kind's file. The common file holds the rules every body shares.
+  Apply [Open-Closed](#open-closed) to each body family. A kind's table, title and specific checks live in its file; the common file holds the rules every body shares.
 - **Operations.**
   Every procedural sequence occupies a named `###` subsection under Operations, including a kind's population path. Operations itself contains no steps; incorporate any overarching sequence into the named operations that perform its constituent work. Omit Operations when the artifact has no operation. Each subsection uses an [opening](#procedure) and numbered heading steps. A kind step links to the common procedure unit it uses and adds only the further population. It does not copy the shared rules.
 - **Operation steps.**
@@ -192,8 +254,6 @@ Read this before adding or changing an artifact.
   Follow [Operations](#operations) for command and access invocation rules.
 - **No spare parts.**
   An artifact does not carry an operation, a field or a command nothing reaches. An operation no procedure cites is surface that drifts from whatever it wraps, and its capability is already reachable through the operation it would call.
-- **A new kind.**
-  A new kind is a new file. The common file is not edited to name it.
 - **Detail.**
   A change keeps every existing condition. A shorter file is not a reason to drop one.
 - **Step rules.**
@@ -204,7 +264,7 @@ Read this before adding or changing an artifact.
 
 ## References
 
-Read this before adding or changing a reference.
+Read this before adding or changing a reference, applying [SOLID](#solid).
 
 - **Support.**
   A reference is an ad hoc document that supports the process. It is neither a mode nor an artifact.
@@ -219,12 +279,23 @@ Read this before adding or changing a reference.
 
 ## Entry Point
 
+Apply [SOLID](#solid) to the entry point and its published kind registration.
+
 - **Opening.**  The bulleted list has one item for each issue type.
 - **Section order.**  The opening, Modes and Dependencies occupy the entry point.
 - **Issue bodies.**
   The skill's prose layout applies to its instructions. Issue bodies must follow [Issue Body](artifacts/issue-body.md#fields); pull request bodies must follow [Pull Request Body](artifacts/pull-request-body.md#fields).
 - **Common conventions.**
   The entry point requires [Rules](rules.md) and [Conventions](conventions.md) before mode selection. [Configuration](configuration.md) holds deployed values, reached by their consuming sections. Graph-specific setup belongs to [Repository Graph](artifacts/repository-graph.md).
+
+## Scripts
+
+Apply [SOLID](#solid) to script modules and their interfaces.
+
+- **Kind modules.**
+  A kind's module supplies its general interface under [Open-Closed](#open-closed), [Liskov Substitution](#liskov-substitution) and [Dependency Inversion](#dependency-inversion).
+- **Shared implementation.**
+  Each executable rule has one implementation, imported by its consumers. Its prose home names the implementing module.
 
 ## Progressive Disclosure
 
