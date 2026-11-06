@@ -135,3 +135,9 @@ Runtime meanings live in [Link Roles](https://github.com/m2ux/workflow-server/bl
 | [Callable audit instrument](project17-symbol-callable-audit.py) | Executed protocol/procedure/operation enumeration |
 | [Rule clarification instrument](project17-symbol-rule-clarification.py) | Exact final runtime definition and recorded exception |
 | [Symbol review gate](symbol-review-gate.log) | Fetched published review matches current head and target |
+
+## Command Quoting
+
+| Artifact | What it holds |
+| --- | --- |
+| [Command quoting](command-quoting.md) | Typed argument scope, required quotes and verification |
