@@ -1,0 +1,297 @@
+{
+  "baseline": "03d353300ca4804194fd50d316d73e3bf1270d1d",
+  "initial_head": "87b9bda45e453995352b5b420586832d5e1de45f",
+  "corrected_head": "04dc3cee068b37bd5ebe37b09266e8559c7c15dc",
+  "files": [
+    {
+      "file": "SKILL.md",
+      "sha256": "9b430e5ee43c5d0cf9d66d51ae7a87fc755f03a288841a7b6644dcbe11dc394a",
+      "disposition": "Mode selection and dependencies retained; common rules, conventions and deployed values have the three new owning files and required entry links."
+    },
+    {
+      "file": "artifacts/acceptance-criteria.md",
+      "sha256": "8621980639066b828835389bd40a796921d721373a8279775667978b954399bb",
+      "disposition": "Readiness, exact delivering revision, named instrument execution/result, tick guards and body publication boundary retained."
+    },
+    {
+      "file": "artifacts/agent-review.md",
+      "sha256": "b8c95ee11bdf3fc1e66274776832e4fba6cd1e7a8ef4ab0568c220e0209b71dc",
+      "disposition": "Full-diff/criteria review, exact tip identity, fixed/deferred findings and stale-evidence refusal retained."
+    },
+    {
+      "file": "artifacts/architecture-overview.md",
+      "sha256": "160a1ec4054ef0874b4bc29c338c7f7d11b87a28f63525466692516710bf3ccc",
+      "disposition": "Original template and diagram/code-reference constraints retained; single-caller population resides in Change Overview."
+    },
+    {
+      "file": "artifacts/board-delivery.md",
+      "sha256": "7751b03735f0e2fc94e1a7d97fe5eac3974b2ea3ea59b32decae1114004d32fb",
+      "disposition": "Membership/status/assignee jurisdictions, complete link/review evidence and item readback/retry retained; status behavior remains an E02 extraction concern."
+    },
+    {
+      "file": "artifacts/board-queue.md",
+      "sha256": "a3c792d68cadb9db66744a4718dea8757f5e2f4bc025665e35c739a6751b072b",
+      "disposition": "Priority/dependency eligibility, invalid-input exit, unresolved evidence and Ready-unit lane view retained."
+    },
+    {
+      "file": "artifacts/board.md",
+      "sha256": "4d32f25eef0a6b3c3eb63439e79211f95193b9d96e1034e7b40a9baf3143002a",
+      "disposition": "Board selection, copy/link/provenance, membership, status/assignee rules and current item reads retained; theme creation is inlined into Sync."
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "sha256": "6bd01f69ac475eb91f1c0f9a1c938a2fbd697513f3c39aa804c0273170c831d4",
+      "disposition": "Fetched revision/config identity, prerequisites, producer ancestry, base/checkout placement, changed-head refusal and stash identity retained."
+    },
+    {
+      "file": "artifacts/delivery-brief.md",
+      "sha256": "8f61a3f52846ef56ca9d81b8356fbb5c348e6456da8ca2f9736e4eeaa9022297",
+      "disposition": "Identity/components, worktrees/bases, allowance and full session obligations retained; population in Unit Dispatch."
+    },
+    {
+      "file": "artifacts/delivery-evidence.md",
+      "sha256": "b87ac076592bed2614f6c30aee1c2ad3f56b17a88bf5de7f53a9ca460b73c156",
+      "disposition": "Complete all-title/all-repository pulls and links, mismatch routing and prefix repair/refetch retained."
+    },
+    {
+      "file": "artifacts/delivery-plan.md",
+      "sha256": "68a00b5826892c956756eacc955cfb909a79b21868f412640a30622415b081ad",
+      "disposition": "Complete survey evidence, branches, lane admission and dispatch export retained; previous output correction remains observed by tests."
+    },
+    {
+      "file": "artifacts/dependency-graph.md",
+      "sha256": "5d07b5896d40a7f20212bc68ebed5cf3df3b9d00d66b49a40e8ea7e8aaac8ebd",
+      "disposition": "Producer-row edges, protected numbering, Joins/lane rules, component contention and dependency recheck retained."
+    },
+    {
+      "file": "artifacts/dispatch-batch.md",
+      "sha256": "e81d9c5a3e45908ea62ab6399b276a48e24c8ed3b8da6f9f0ccc370ff1c7b345",
+      "disposition": "Authorization scope, joined row containment, observed sessions, real capacity, published/held record ordering and continuation retained."
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "sha256": "763c1a5d1a169e7379e2ef516af8ba1c2cca0ddcc3be8eb5492ecb4058a5431d",
+      "disposition": "Template, task grain, lanes, required criteria and delivery conditions retained; F1 restores date binding and F2 explicit multi-base repetition."
+    },
+    {
+      "file": "artifacts/epic.md",
+      "sha256": "b10282315c19259bfa61742e5ca43fb783b23744543824bf5f8866572e643e52",
+      "disposition": "Prerequisite/readiness and coverage matching retained; completion in Issue Closure retains current Development gate."
+    },
+    {
+      "file": "artifacts/goal-trace.md",
+      "sha256": "c00d26998faa6ff541abd098f6620d87e916085c019f28079d96c26e2fea3d13",
+      "disposition": "Confirmed clauses, source gaps, local validation and outside threats retained; required-source and threat subroutines composed into review."
+    },
+    {
+      "file": "artifacts/hotfix-body.md",
+      "sha256": "8acba62a046050ac0fc66f57ba1e6595b52c5be05f4152d9d18665e1eaeba6bf",
+      "disposition": "Definition, target, titles and standalone shape retained; population at sole Hoist caller."
+    },
+    {
+      "file": "artifacts/hotfix.md",
+      "sha256": "4a7de6907442b3a8f089a71935b7d8db9f27d763464c89898df059b656206351",
+      "disposition": "Identity/target/lifecycle, hold/release eligibility, closure/status rules and verified criterion bindings retained."
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "sha256": "7ec63e6ad852375524016fdfd7c75ae6e8ac5c3397ccf81a24a6afeca6922718",
+      "disposition": "Original template, goal/source/criterion and epic-row contracts retained; optional requested body output remains explicit."
+    },
+    {
+      "file": "artifacts/initiative.md",
+      "sha256": "43321e5a7b165dc710f93976e169cd8f1f4654312ecf30bd3c5c43fb65b8ae75",
+      "disposition": "Completion and evidence definitions retained; sole procedural completion caller is Issue Closure."
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "sha256": "0e143056dabec6e899040f94638fba610bc84eadd4f6e9487c1518956a622e12",
+      "disposition": "Shared shape, criteria, kind validation, conditional corrections, exact saved-body revalidation and reference visibility retained."
+    },
+    {
+      "file": "artifacts/issue.md",
+      "sha256": "ed33dd6d55c35e04a4229052dea0226b662b4770fa3cb7894d039adbe2d38047",
+      "disposition": "Issue read/write/readback, exact metadata preservation, all-repository Development capture and immediate closure gate retained; F3 corrects new snapshot example."
+    },
+    {
+      "file": "artifacts/lane.md",
+      "sha256": "faa8b05010ad36652550e562be470bf2926ab29e9db81df5a2a8e30c4e028a13",
+      "disposition": "Bare decimal indices, blank state, joined-unit consistency and admission retained; generic commands own complete role links."
+    },
+    {
+      "file": "artifacts/placement.md",
+      "sha256": "063c099c642049fa733cee8400dbf5a2f729a0fe575923bb410466deabb6c57c",
+      "disposition": "Destination/disposition contracts retained; conditional apply/rewrite/subsume branches composed into Hoist."
+    },
+    {
+      "file": "artifacts/plan-change.md",
+      "sha256": "9f72d980d0946b66265035d36002bf8737b84ce9b12dcad98c68a9677628440c",
+      "disposition": "Allowance boundaries, held choice, recommendation and recorded change list retained."
+    },
+    {
+      "file": "artifacts/planning-record.md",
+      "sha256": "7fe7a1a16d2b51cc15365090d39711851be0b9386e7afcf04f62b8eecfbf1dd0",
+      "disposition": "Original template, artifact inventory, direct engineering publication and remote confirmation/conflict stop retained."
+    },
+    {
+      "file": "artifacts/proposal-body.md",
+      "sha256": "6733f3e31a49b963d31c3125d6428530b5555f17fc38c152796ce52bd6f30ea8",
+      "disposition": "Original template, goal/non-goal/metadata constraints and validation retained; population composed into Propose."
+    },
+    {
+      "file": "artifacts/pull-request-body.md",
+      "sha256": "d599d031e0163644bc549ae3acb2bc7b28eaf4b2a31fc84e6de4fbd31ab65500",
+      "disposition": "Original template, actual merge references, tests/overview and preservation of unrelated body text retained."
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "sha256": "f4d752f29008363bc623eb7dc0f54653a8c4c4c7798fd05db525b2cf0b49c47f",
+      "disposition": "Complete metadata/link reads, linked-only collections, exact-head readiness and merge/refusal evidence retained; inherited continuation/permission gaps are E04."
+    },
+    {
+      "file": "artifacts/repository-graph.md",
+      "sha256": "b556c9b2da1de720352bb7da5de56c7fa35e5ab4366ff36fb5e92673534288be",
+      "disposition": "Index-before-measurement and conditional stale-response reindex/remeasure retained; no captured/live graph response execution."
+    },
+    {
+      "file": "artifacts/repository-labels.md",
+      "sha256": "4e9edfa6a885c8739e5addef413d1b374d78defea8bfae5c17eb8a42b681ffe0",
+      "disposition": "Existing-label inspection, known definitions and refusal for unknown label definitions retained."
+    },
+    {
+      "file": "artifacts/review-finding.md",
+      "sha256": "84e7e96dbbefc72febcd7660a3833c82c95209b21ddc44af9e9cf37eee556646",
+      "disposition": "Source verification, evidence gaps, severity/grouping, sequential unanswered decisions and recorded resolutions retained."
+    },
+    {
+      "file": "artifacts/standalone-body.md",
+      "sha256": "3889812f957afebcb8d9adc0e5489c0bfd4b9f915b740b3c5b815a42764fefc4",
+      "disposition": "Original template/field constraints retained; boundary revision composed into Align."
+    },
+    {
+      "file": "artifacts/standup-report.md",
+      "sha256": "5b1511b3e315cca134be761f35d3dc39e840030f0b434eeafde8bf51c5f35e25",
+      "disposition": "Scope/window, management paragraph, fixed report sections, complete hierarchy and separate unresolved findings retained."
+    },
+    {
+      "file": "artifacts/task-body.md",
+      "sha256": "44a5a5621fe129893a540c1d89a233763cfb70cfd27425b804eaf3557952d1b8",
+      "disposition": "Task template/title and verified criterion/PR-link bindings retained; empty criterion selection remains tested."
+    },
+    {
+      "file": "artifacts/work-item.md",
+      "sha256": "c8828782ab4d4998986e1c250332601a1ca898cf46466138a422057b1bc8eca8",
+      "disposition": "Original template, one component/task, identity and criterion-linked test obligations retained."
+    },
+    {
+      "file": "configuration.md",
+      "sha256": "d7951b91e17363489349bce8616373fe4e4bbb2f194d567e634c5ecc4aa13565",
+      "disposition": "Extracted exact project themes, proposal board/template names, planning location and Standup default."
+    },
+    {
+      "file": "conventions.md",
+      "sha256": "86cb6ddac9d07b1e11a0bccb3358e898a55a6db81e736dbb7780cc198af1b609",
+      "disposition": "Extracted authentication, repository/checkout identity, body-file, sandbox and board conventions."
+    },
+    {
+      "file": "guidelines.md",
+      "sha256": "cca890a0182ae77e53df1dd2fe770611f1dd70ee62428720a3ddd53102740898",
+      "disposition": "Intentional user-directed style/ownership rules; commands before Fields, role titles, numbered heading steps, terse callers and same-line examples."
+    },
+    {
+      "file": "modes/advance-mode.md",
+      "sha256": "deca85bf93615f3bc1302d92a5ab1369e262a972f87246acdd7356ebaf7b8883",
+      "disposition": "Sync-before-queue, unresolved/off-board inputs, allowance/priority decisions, exact item readback and complete reporting retained."
+    },
+    {
+      "file": "modes/align-mode.md",
+      "sha256": "e75d8e34591aafa432beb56a90fa529e2ce4b83f55f9c26f156a166b7870ac04",
+      "disposition": "Current read, confirmed mechanical/content distinction, cross-body dependencies, criterion verification and base/prerequisite gates retained."
+    },
+    {
+      "file": "modes/deliver-mode.md",
+      "sha256": "8a77e249cfe38a8dc682dc595fdc4b3465bb9565bc09b4247741de23764f93f9",
+      "disposition": "Authorized scope, evidence refresh/survey repeat, observed worker/capacity, review and result continuation retained; inherited post-ready restoration is E04."
+    },
+    {
+      "file": "modes/hoist-mode.md",
+      "sha256": "0294c1358ea3c9b14f79e5fb5c70e2d64067ee8e01ad22a59bd4db985d5b5233",
+      "disposition": "Candidate investigation, selected destination branches, rewrite/closure disposition and saved validation/graph checks retained."
+    },
+    {
+      "file": "modes/plan-mode.md",
+      "sha256": "a11526d0dd9c21e2901c962bdb7e6807af91676d105bf1a68402ae41e0708966",
+      "disposition": "Confirmed scope/lanes/priorities, goal/dependency review, publication and prerequisite/delivery reconciliation retained."
+    },
+    {
+      "file": "modes/propose-mode.md",
+      "sha256": "5ce3dd45e2aa7ee8f7fb2e7fce0ff0c36b18102358b3057f00a94e0d7ca24ebe",
+      "disposition": "Evidence research/spot-check, confirmed goal and boundary, draft validation and optional board placement retained."
+    },
+    {
+      "file": "modes/revise-mode.md",
+      "sha256": "1999b245a127cf50f1c124ef58af558179b0e53f9e7017d0bcfcab4c6062a46c",
+      "disposition": "Whole guidelines, isolated worktree, owned rules, disclosure/check/compare requirements and commit/push retained."
+    },
+    {
+      "file": "modes/standup-mode.md",
+      "sha256": "867e786f51ea3ad1ecd888c2c75701ffb50a13ab764bace081fea1fbe38cb206",
+      "disposition": "Checkpoint or refresh selection, complete evidence, unresolved hierarchy retry and verbatim copyable report retained."
+    },
+    {
+      "file": "modes/sync-mode.md",
+      "sha256": "7e4cf54b1555dfde262c9ee0c45be2f8d9629890492657be6e5f058ef91b9c5b",
+      "disposition": "Format/evidence, current criterion revisions, normal completion then immediate link gate, board reconciliation and closure audit retained."
+    },
+    {
+      "file": "modes/understand-mode.md",
+      "sha256": "d127967d5a9b8f5c7568df8f51bac1eb061df6f6940961b4bfe336246cf4d904",
+      "disposition": "Explicit PR selection, graph-backed overview and published result route retained."
+    },
+    {
+      "file": "protocols/change-overview.md",
+      "sha256": "697d96ace6b926923b1eb92888821d4f9e4209ba54e240b44c6be7cb115ba61e",
+      "disposition": "Changed-head retry, current measurements, original overview template, pinned references and publishing retained."
+    },
+    {
+      "file": "protocols/epic-integration.md",
+      "sha256": "f6814dac9b2b2126c7276b4d9a0f8ad67131a81f530d986edd737f72f0349662",
+      "disposition": "Early withdrawal, refreshed content/review/check evidence, human gates and result handling retained; inherited refusal ambiguity remains E04."
+    },
+    {
+      "file": "protocols/issue-closure.md",
+      "sha256": "ad3bf420f3db8a5de7771c90956dc1b2d1fea8fd1a3e5244797e0703165518bb",
+      "disposition": "Normal completion, every Development PR, immediate repeated gate, user removal decision and post-close convergence retained."
+    },
+    {
+      "file": "protocols/issue-delivery.md",
+      "sha256": "1526c6f4e655e1c2d6c761e2cccae7d8290dcc4c3abe510829f2c12d8735d789",
+      "disposition": "Kind-specific recording, verified criteria, repeated refreshed epic evidence and publication retained."
+    },
+    {
+      "file": "protocols/review-pull-request.md",
+      "sha256": "9f7102f24e3a1267ae56b7ce2734fbba498b7789025a138fc1935468426f92b9",
+      "disposition": "Actual task merge references, complete saved body, refreshed coverage and exact-head agent review retained."
+    },
+    {
+      "file": "protocols/task-merge.md",
+      "sha256": "453cbae0e734436447fddac9187bdfa8261888b679563427b96d55e00a00fda2",
+      "disposition": "Fresh task/epic evidence, coverage, saved delivery/review and board reconciliation retained."
+    },
+    {
+      "file": "protocols/unit-dispatch.md",
+      "sha256": "8d281b16b2d37efae5308bf250b7fe5d505c56426d58899c8370da3bb73d0c60",
+      "disposition": "Current admission, preparation publication, hold/readback, complete brief and start/capacity evidence retained; unconditional retained creation is inherited E02 W10."
+    },
+    {
+      "file": "references/requirement-characteristics.md",
+      "sha256": "ac9fe4cc179fba843ec711218e0b0704320cb078f3c790b1e08b231d9a7d74ee",
+      "disposition": "Byte-identical original reference."
+    },
+    {
+      "file": "rules.md",
+      "sha256": "781b296eb9d795a16f16cc7a6f7e242e7fc3797a773aaec4b5dc3a24054dc631",
+      "disposition": "Extracted common read boundaries, decisions, layers and execution; role-title meaning has one home."
+    }
+  ]
+}

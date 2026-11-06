@@ -1,0 +1,321 @@
+{
+  "revision": "04dc3cee068b37bd5ebe37b09266e8559c7c15dc",
+  "source": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace",
+  "authority": "Read-only source, documented invocations, repository fixture tests; only temporary fixture files and repositories are written. No live tracker, GitNexus, or production writes.",
+  "actual_reads": [
+    {
+      "path": "skills/work-planner/SKILL.md",
+      "coverage": "whole"
+    },
+    {
+      "path": "skills/guidelines.md",
+      "coverage": "whole; initial rg selected disclosure/commands then complete cat"
+    },
+    {
+      "path": "AGENTS.md",
+      "coverage": "whole"
+    },
+    {
+      "path": ".project/main/AGENTS.md",
+      "coverage": "attempted; file absent"
+    },
+    {
+      "path": "skills/work-planner/rules.md",
+      "coverage": "whole"
+    },
+    {
+      "path": "skills/work-planner/conventions.md",
+      "coverage": "whole"
+    },
+    {
+      "path": "skills/work-planner/modes/deliver-mode.md",
+      "coverage": "initial combined read truncated; 285-319 and 315-430 recovered tail; line 1-285 visible in initial response"
+    },
+    {
+      "path": "skills/work-planner/modes/sync-mode.md",
+      "coverage": "initial combined response truncated; whole file recovered in subsequent cat"
+    },
+    {
+      "path": "skills/work-planner/protocols/unit-dispatch.md",
+      "coverage": "whole"
+    },
+    {
+      "path": "skills/work-planner/protocols/issue-closure.md",
+      "coverage": "whole"
+    },
+    {
+      "path": "skills/work-planner/artifacts/epic-issue-body.md",
+      "coverage": "whole"
+    },
+    {
+      "path": "skills/work-planner/artifacts/planning-record.md",
+      "coverage": "whole"
+    },
+    {
+      "path": "skills/work-planner/artifacts/issue.md",
+      "coverage": "whole"
+    },
+    {
+      "path": "skills/work-planner/configuration.md",
+      "coverage": "whole"
+    },
+    {
+      "path": "skills/work-planner/artifacts/epic.md",
+      "coverage": "whole"
+    },
+    {
+      "path": "skills/work-planner/artifacts/lane.md",
+      "coverage": "whole"
+    },
+    {
+      "path": "skills/work-planner/artifacts/delivery-branches.md",
+      "coverage": "headings, prerequisites, Read Delivery Branches, List Epic Bases, List Long-Lived Branches, Branches, Epic Bases"
+    },
+    {
+      "path": "skills/work-planner/artifacts/pull-request.md",
+      "coverage": "headings and lines 1-35 (prerequisites and initial Merge Delivery Pull Request guidance)"
+    },
+    {
+      "path": "skills/work-planner/artifacts/delivery-plan.md",
+      "coverage": "headings, prerequisites, Work Units"
+    },
+    {
+      "path": "skills/work-planner/artifacts/issue-body.md",
+      "coverage": "prerequisites, lines 1-24"
+    },
+    {
+      "path": "skills/work-planner/artifacts/dependency-graph.md",
+      "coverage": "headings, prerequisites, lines 1-22"
+    },
+    {
+      "path": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "coverage": "prerequisites, lines 1-25"
+    },
+    {
+      "path": "skills/work-planner/test/test_command_contracts.py",
+      "coverage": "whole; two reads covered 1-240 and 235-end"
+    },
+    {
+      "path": "skills/work-planner/test/fixtures.py",
+      "coverage": "whole (1-215 covers EOF)"
+    },
+    {
+      "path": "skills/work-planner/scripts/deliver.py",
+      "coverage": "rg for reserve/date/records/folder and CLI behavior"
+    },
+    {
+      "path": "skills/work-planner/scripts/closure.py",
+      "coverage": "whole"
+    }
+  ],
+  "command_contracts": [
+    {
+      "spec": "artifacts/epic-issue-body.md#reserve-row",
+      "inputs": [
+        "Epic Record",
+        "Task Selection",
+        "Board Items",
+        "Planning Folder",
+        "Output Body",
+        "Workspace"
+      ],
+      "outputs": [
+        "Output Body",
+        "Row Result"
+      ],
+      "finding": "Explicit --date 2001-02-03 expansion keeps folder 2001-02-03-943-i07-e00-w01-work; permitted Ready unlaned row reserves successfully."
+    },
+    {
+      "spec": "artifacts/epic-issue-body.md#sync-epic",
+      "inputs": [
+        "Epic Record",
+        "Pull Request Records",
+        "Issue Links",
+        "Task Records",
+        "Delivery Matches",
+        "Project Checkout",
+        "Epic Bases",
+        "Output Body",
+        "Workspace"
+      ],
+      "outputs": [
+        "Output Body",
+        "Delivery Findings"
+      ],
+      "finding": "Repeat --revision instruction expands both main and workflows bases; both draft findings and configuration sources are returned. Epic has unticked criterion and bases not integrated, so no completion claim."
+    },
+    {
+      "spec": "artifacts/issue.md#check-issue-closure",
+      "inputs": [
+        "Issue Record",
+        "Development Snapshot",
+        "Workspace"
+      ],
+      "outputs": [
+        "Closure Findings"
+      ],
+      "finding": "Repository-qualified documented snapshot passes local gate. Wrong repository, uncaptured issue, and cross-repository open PR block. Explicit captured empty field passes gate; normal delivery checks remain separate."
+    }
+  ],
+  "validation": {
+    "suite_command": "/home/mike1/projects/dev/md-composer/scripts/sbx python3 -B -m unittest discover -s skills/work-planner/test -p test_command_contracts.py -v",
+    "default_sandbox": "exit 1: bwrap no permissions to create a new namespace",
+    "authorized_escalation": "same absolute sbx command, exit 0, 12 tests passed",
+    "scenario_results": [
+      {
+        "test": "test_reservation_uses_the_published_record_date",
+        "result": "passed"
+      },
+      {
+        "test": "test_epic_sync_evaluates_every_supplied_base",
+        "result": "passed"
+      },
+      {
+        "test": "test_development_snapshot_example_is_valid_closure_evidence",
+        "result": "passed"
+      },
+      {
+        "test": "other-repository",
+        "result": "passed",
+        "expected_exit": 1
+      },
+      {
+        "test": "uncaptured",
+        "result": "passed",
+        "expected_exit": 1
+      },
+      {
+        "test": "open-cross-repository-pr",
+        "result": "passed",
+        "expected_exit": 1
+      },
+      {
+        "test": "empty-captured",
+        "result": "passed",
+        "expected_exit": 0
+      }
+    ]
+  },
+  "runs": [
+    {
+      "script": "deliver.py",
+      "argv": [
+        "--epic",
+        "/tmp/command values fxlzieuk/epic.json",
+        "--reserve",
+        "W01",
+        "--items",
+        "/tmp/command values fxlzieuk/items.json",
+        "--records",
+        "https://github.com/o/r/tree/engineering/artifacts/planning",
+        "--date",
+        "2001-02-03",
+        "--fix",
+        "/tmp/command values fxlzieuk/reserved epic.md"
+      ],
+      "returncode": 0,
+      "stdout": "#943 [I07:E00]\n  reserved: W01 \u2192 https://github.com/o/r/tree/engineering/artifacts/planning/2001-02-03-943-i07-e00-w01-work/\n",
+      "stderr": "",
+      "output_body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| [W01](https://github.com/o/r/tree/engineering/artifacts/planning/2001-02-03-943-i07-e00-w01-work/) | Work | AC1 | | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n"
+    },
+    {
+      "script": "sync.py",
+      "argv": [
+        "/tmp/command values ggx24nij/epic.json",
+        "--prs",
+        "/tmp/command values ggx24nij/prs.json",
+        "--links",
+        "/tmp/command values ggx24nij/links.json",
+        "--link",
+        "W01=950,W01=951",
+        "--project",
+        "/tmp/command values ggx24nij/checkout",
+        "--revision",
+        "i07/e00/main",
+        "--revision",
+        "i07/e00/workflows",
+        "--fix",
+        "/tmp/command values ggx24nij/synced epic.md"
+      ],
+      "returncode": 0,
+      "stdout": "#943 epic (open)\n  ready to verify: AC1 (W01)\n  unmet: W01 (#950, #951): AC1 unticked\n  disagreement: #950: unreadable test plan\n  disagreement: #951: unreadable test plan\n  draft: i07/e00/main\n  draft: i07/e00/workflows\n  source: config/branches at 887daeae6a07916e06f30f642d4498750910a744 in /tmp/command values ggx24nij/checkout/.git\n  source: config/branches at 5bbac91e9c11abf783715769e39cbc3885c4442d in /tmp/command values ggx24nij/checkout/.git\n  closable: no (unticked AC1)\n",
+      "stderr": "",
+      "output_body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| [W01](https://github.com/o/r/pull/950), [W01](https://github.com/o/r/pull/951) | Work | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n"
+    },
+    {
+      "script": "closure.py",
+      "argv": [
+        "--issue",
+        "/tmp/command values ifi4jx1j/closed issue.json",
+        "--development",
+        "/tmp/command values ifi4jx1j/development.json"
+      ],
+      "returncode": 0,
+      "stdout": "closure gate: passed; normal delivery checks must also pass\n",
+      "stderr": ""
+    },
+    {
+      "script": "closure.py",
+      "argv": [
+        "--issue",
+        "/tmp/closure-final-reader-haicb_h8/issue.json",
+        "--development",
+        "/tmp/closure-final-reader-haicb_h8/other-repository.json"
+      ],
+      "returncode": 1,
+      "stdout": "closure blocked: unreadable evidence (the Development snapshot holds other/repo issues, not owner/repo)\n",
+      "stderr": ""
+    },
+    {
+      "script": "closure.py",
+      "argv": [
+        "--issue",
+        "/tmp/closure-final-reader-haicb_h8/issue.json",
+        "--development",
+        "/tmp/closure-final-reader-haicb_h8/uncaptured.json"
+      ],
+      "returncode": 1,
+      "stdout": "closure blocked: Development links not captured\n",
+      "stderr": ""
+    },
+    {
+      "script": "closure.py",
+      "argv": [
+        "--issue",
+        "/tmp/closure-final-reader-haicb_h8/issue.json",
+        "--development",
+        "/tmp/closure-final-reader-haicb_h8/open-cross-repository-pr.json"
+      ],
+      "returncode": 1,
+      "stdout": "closure blocked: other/project#980 not merged (open)\n",
+      "stderr": ""
+    },
+    {
+      "script": "closure.py",
+      "argv": [
+        "--issue",
+        "/tmp/closure-final-reader-haicb_h8/issue.json",
+        "--development",
+        "/tmp/closure-final-reader-haicb_h8/empty-captured.json"
+      ],
+      "returncode": 0,
+      "stdout": "closure gate: passed; normal delivery checks must also pass\n",
+      "stderr": ""
+    }
+  ],
+  "disclosure_observations": {
+    "unnecessary_content": "Whole artifact reads include authoring/publishing/release/sweep guidance outside these commands; mode reads include dispatch, implementation, integration, boards and reporting not executed in this bounded trace.",
+    "repeated_reads": "guidelines selected rg then full file; Sync Mode recovered after truncation; Deliver tail ranges overlap 315-319; test command file 235-240 overlap.",
+    "truncation": "Two combined reads exceeded requested output budgets. Target command specs and tests were separately read completely; heading inventories were partly truncated. Original mixed output retains unrelated content.",
+    "required_context_limit": "This is a command-contract review, not a complete Deliver or Sync mode execution. All transitive explicit whole-file prerequisites of the two full modes were not loaded. Full-mode disclosure success is not established."
+  },
+  "concrete_issues": [],
+  "evidence_limits": [
+    "No live tracker fetch, reservation, engineering publication, Development capture, or closure mutation ran.",
+    "Tests construct /tmp fixture repositories and model JSON and invoke scripts after decoding documentation; shell quoting and sbx per individual command are not independently exercised by the fixture runner.",
+    "Reservation fixture verifies generated folder identity but does not prove pre-existing engineering directory or remote publication.",
+    "Both sync bases are local fixture branches, not freshly fetched remote production revisions.",
+    "No baseline or context-token savings measured.",
+    "Whole-mode progressive-disclosure verification remains incomplete because unrelated whole-file content and unloaded transitive prerequisites are present in this bounded command walk."
+  ]
+}

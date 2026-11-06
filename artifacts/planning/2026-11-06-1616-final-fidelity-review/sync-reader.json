@@ -1,0 +1,50 @@
+{
+  "reader": "fidelity_sync_reader",
+  "head": "87b9bda45e453995352b5b420586832d5e1de45f",
+  "baseline": "03d353300ca4804194fd50d316d73e3bf1270d1d",
+  "authority": "Read only; no tracker or git mutation; this ledger is the only file written.",
+  "scenario": "Sync initiative with merged task and integration PRs, an unreadable Development relation, and a completed task with an unticked criterion; then Standup for that initiative from captured fixtures.",
+  "actual_reads": {
+    "entry": ["AGENTS.md", "skills/work-planner/SKILL.md", "skills/work-planner/rules.md", "skills/work-planner/conventions.md"],
+    "modes": ["sync-mode.md", "standup-mode.md", "understand-mode.md"],
+    "artifacts": ["issue", "issue-body", "acceptance-criteria", "task-body", "pull-request", "delivery-evidence", "epic", "epic-issue-body", "initiative-issue-body", "board", "work-item", "board-delivery", "plan-change", "standup-report", "initiative", "lane", "dependency-graph", "delivery-plan", "board-queue", "hotfix", "hotfix-body", "agent-review", "pull-request-body", "planning-record", "placement", "standalone-body", "delivery-branches", "repository-graph", "architecture-overview"],
+    "protocols": ["epic-integration", "issue-closure", "review-pull-request", "change-overview"],
+    "other": ["configuration.md", "references/requirement-characteristics.md", "skills/guidelines.md", "skills/work-planner/guidelines.md through line 150"],
+    "limitations": ["Target .project/main/AGENTS.md does not exist.", "Three oversized batched reads were truncated; missing middle sections were retrieved separately.", "Prerequisites were recovered incrementally rather than all being received before the first dependent artifact read.", "Whole-document prerequisites loaded unrelated delivery planning, reservation, queue, orphan placement, hot-fix and overview operations. The same broad prerequisite families exist at baseline."]
+  },
+  "route_trace": [
+    {"operation": "Read Delivery Evidence -> Read Initiative Pull Requests -> Fetch Linked Pull Requests / Fetch Pull Request Issue Links", "result": "Unreadable Development relation blocks; no complete snapshot is returned. Do not treat as empty or close issues.", "evidence": "artifacts/pull-request.md:80-100; artifacts/delivery-evidence.md:17-49"},
+    {"operation": "Issue Closure", "result": "Refresh issue and all cross-repository Development-linked PRs; require normal checks, exact-revision criterion verification and all base merges; repeat capture and closure gate immediately before Set Completed State. Incorrect-link removal requires a user decision; missing inputs require refresh and repeated completion check.", "evidence": "protocols/issue-closure.md:21-109"},
+    {"operation": "Closure Evidence Audit", "result": "Scope to touched initiative/epics/tasks. An unreadable captured relation stops the sweep; report that blocker. With independently complete capture, a completed issue with unticked criteria is unsupported; preserve not-planned findings separately. Audit changes no issue.", "evidence": "modes/sync-mode.md:360-377; scripts/closure-sweep.py:40-75; test/test_closure_sweep.py:40-79"},
+    {"operation": "Standup", "result": "Reuse prior saved Sync checkpoint only if supplied; otherwise refresh selected initiatives. Preserve freshness blocker as partial-report gap. Require complete PR-side links for composition; preserve board/window/repository-qualified filter and snapshots on retry, resolve off-board initiatives, supply management paragraph, and report verbatim with unresolved findings beneath. Only repeat repair after a saved correction.", "evidence": "modes/standup-mode.md:23-79; artifacts/standup-report.md:15-66"},
+    {"operation": "Board delivery readback", "result": "Read item state after emitted status and assignee calls; repeat lagged write and re-read, refresh issues/items/PR metadata/reviews, retain off-board records, stop only with no further call and confirmed changes. Do not decide next queue work.", "evidence": "modes/sync-mode.md:304-358"}
+  ],
+  "findings": [
+    {
+      "severity": "P3",
+      "classification": "documentation regression",
+      "location": "skills/work-planner/artifacts/issue.md:469",
+      "problem": "The new Development Snapshot JSON example omits required repository and issues wrapper fields.",
+      "reproduction": "Pass the documented example as the Development file to Check Issue Closure or Sweep Closure Evidence. closure.snapshot rejects it as not an issue-links file, even if its merged link is otherwise valid.",
+      "current_evidence": "scripts/closure.py:35-42 requires a string repository and a dictionary issues.",
+      "original_evidence": "Baseline artifacts/issue.md:423-430 defines a generated repository-qualified snapshot and has no malformed Development Snapshot field example.",
+      "impact": "Misleading payload contract/example; normal generated capture remains correct and the gate fails closed. No observed unsafe closure."
+    },
+    {
+      "classification": "inherited disclosure burden",
+      "location": "skills/work-planner/modes/sync-mode.md:11-32",
+      "problem": "Whole-document prerequisites recursively expose planning, reservation, merge, queue, hot-fix, orphan-placement and architecture-overview procedures even though this request's merged PRs need none of those operations.",
+      "original_evidence": "Baseline sync-mode.md:7-27 lists the same 17 principal prerequisite documents; current adds configuration. No measured token-savings claim is supported.",
+      "impact": "Unnecessary received context; not a newly lost behavior."
+    }
+  ],
+  "execution": {
+    "live_tracker": "Not attempted by authority.",
+    "local_runtime": "Not executed. Attempted no-write in-memory fixture invocation of closure.py, closure-sweep.py, sync.py and progress.py was blocked before launch by the inline-interpreter hook. The required scripts/sbx retry then failed: bwrap No permissions to create a new namespace. No bypass was attempted.",
+    "source_trace_only": true,
+    "tests_read": ["test_closure.py", "test_closure_sweep.py", "test_progress.py through line 140", "fixtures.py through line 170", "test_link_capture.py through line 220"],
+    "predicted_fixture_results": ["Missing issue Development entry -> closure blocked, exit 1.", "Completed task with AC1 unticked and merged linked PR -> closure blocked; sweep unsupported, exit 1.", "Complete synthetic PR-side snapshot can render a partial board-derived Standup, but the live completeness/freshness gaps remain outside the copyable block; no current-success claim."],
+    "git_status_end": "clean"
+  },
+  "conclusion": "No substantive Sync/Closure/Standup safety or retry regression established on the source-traced route. Live behavior and repeatability remain unverified because sandbox execution failed."
+}

@@ -1,0 +1,624 @@
+{
+  "templates": [
+    {
+      "file": "artifacts/architecture-overview.md",
+      "identical": true
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "identical": true
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "identical": true
+    },
+    {
+      "file": "artifacts/planning-record.md",
+      "identical": true
+    },
+    {
+      "file": "artifacts/proposal-body.md",
+      "identical": true
+    },
+    {
+      "file": "artifacts/pull-request-body.md",
+      "identical": true
+    },
+    {
+      "file": "artifacts/standalone-body.md",
+      "identical": true
+    },
+    {
+      "file": "artifacts/task-body.md",
+      "identical": true
+    },
+    {
+      "file": "artifacts/work-item.md",
+      "identical": true
+    }
+  ],
+  "commands": [
+    {
+      "file": "artifacts/acceptance-criteria.md",
+      "command": "Run at Revision",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/agent-review.md",
+      "command": "Validate Agent Review",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/board-delivery.md",
+      "command": "Compute Board Changes",
+      "visible_links": 13
+    },
+    {
+      "file": "artifacts/board-delivery.md",
+      "command": "Compute Dispatch Status",
+      "visible_links": 11
+    },
+    {
+      "file": "artifacts/board-queue.md",
+      "command": "Compute Board Queue",
+      "visible_links": 9
+    },
+    {
+      "file": "artifacts/board.md",
+      "command": "Find Board Template",
+      "visible_links": 2
+    },
+    {
+      "file": "artifacts/board.md",
+      "command": "Copy Board Template",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/board.md",
+      "command": "Link Board to Repository",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/board.md",
+      "command": "Find Proposals Board",
+      "visible_links": 1
+    },
+    {
+      "file": "artifacts/board.md",
+      "command": "Add Issue to Board",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/board.md",
+      "command": "Set Item Status",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/board.md",
+      "command": "Remove Board Item",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/board.md",
+      "command": "Fetch Board Fields",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/board.md",
+      "command": "Find Theme Board",
+      "visible_links": 2
+    },
+    {
+      "file": "artifacts/board.md",
+      "command": "Find Status Field",
+      "visible_links": 2
+    },
+    {
+      "file": "artifacts/board.md",
+      "command": "Fetch Board Items with Status",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/board.md",
+      "command": "Fetch Board Item",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/board.md",
+      "command": "Find User",
+      "visible_links": 0
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "List Epic Bases",
+      "visible_links": 1
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "List Long-Lived Branches",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "Fetch Remote Branch",
+      "visible_links": 1
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "Publish Epic Base",
+      "visible_links": 2
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "Merge Remote Branch",
+      "visible_links": 1
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "Push Epic Base",
+      "visible_links": 0
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "Push Task Branch",
+      "visible_links": 1
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "Add Task Worktree",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "Fetch Review Head",
+      "visible_links": 1
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "Add Epic Base Worktree",
+      "visible_links": 2
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "Add Review Worktree",
+      "visible_links": 2
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "Fetch Branch Protection",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "Fetch Active Branch Rules",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "Read Checkout Revision",
+      "visible_links": 2
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "command": "Read Checkout Status",
+      "visible_links": 1
+    },
+    {
+      "file": "artifacts/delivery-plan.md",
+      "command": "Compute Available Work",
+      "visible_links": 11
+    },
+    {
+      "file": "artifacts/dependency-graph.md",
+      "command": "Check Dependencies",
+      "visible_links": 9
+    },
+    {
+      "file": "artifacts/dependency-graph.md",
+      "command": "Renumber Tasks",
+      "visible_links": 7
+    },
+    {
+      "file": "artifacts/dependency-graph.md",
+      "command": "Renumber Epics",
+      "visible_links": 6
+    },
+    {
+      "file": "artifacts/dispatch-batch.md",
+      "command": "Compute Dispatch Batch",
+      "visible_links": 8
+    },
+    {
+      "file": "artifacts/dispatch-batch.md",
+      "command": "Check Dispatch Start",
+      "visible_links": 7
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "command": "Sync Epic",
+      "visible_links": 10
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "command": "Tick Epic Criteria",
+      "visible_links": 7
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "command": "Reserve Row",
+      "visible_links": 8
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "command": "Release Row",
+      "visible_links": 6
+    },
+    {
+      "file": "artifacts/epic.md",
+      "command": "Match Pull Requests",
+      "visible_links": 6
+    },
+    {
+      "file": "artifacts/hotfix.md",
+      "command": "Sync Hot-fix Issue",
+      "visible_links": 8
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "command": "Sync Initiative",
+      "visible_links": 5
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "command": "Tick Initiative Criteria",
+      "visible_links": 6
+    },
+    {
+      "file": "artifacts/initiative-issue-body.md",
+      "command": "Fetch Source",
+      "visible_links": 5
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "command": "Check Body Format",
+      "visible_links": 10
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "command": "List Reference Repositories",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "command": "Fetch Reference Repository",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "command": "Validate Reference Visibility",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Create Tracker Issue",
+      "visible_links": 5
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Patch Issue Body",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Fetch Issue Body",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Retitle Tracker Issue",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Add Issue Labels",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Remove Issue Label",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Fetch Issue Comments",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Fetch Tracker Issue",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Check Issue Closure",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Sweep Closure Evidence",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Close as Not Planned",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Post Inline Comment",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Post Comment File",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Set Completed State",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Capture Issue Links",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Fetch All Issues",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Fetch Closed Issues",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Fetch Selected Closed Issues",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "Find Initiative Issue",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/issue.md",
+      "command": "List Prefixed Titles",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/lane.md",
+      "command": "Read Lane Assignments",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/lane.md",
+      "command": "Write Lane Assignments",
+      "visible_links": 5
+    },
+    {
+      "file": "artifacts/lane.md",
+      "command": "Validate Lane Unit",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/lane.md",
+      "command": "Evaluate Lane Admission",
+      "visible_links": 5
+    },
+    {
+      "file": "artifacts/placement.md",
+      "command": "List Orphans",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/planning-record.md",
+      "command": "Find Engineering Worktree",
+      "visible_links": 1
+    },
+    {
+      "file": "artifacts/planning-record.md",
+      "command": "Commit Planning Record",
+      "visible_links": 2
+    },
+    {
+      "file": "artifacts/planning-record.md",
+      "command": "Add Planning Record",
+      "visible_links": 1
+    },
+    {
+      "file": "artifacts/pull-request-body.md",
+      "command": "Convert Test Plan",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Retarget Pull Request",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Retitle Pull Request",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Open Task Pull Request",
+      "visible_links": 6
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Open Epic Pull Request",
+      "visible_links": 6
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Merge Pull Request",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Patch Pull Request Body",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Find Review Pull Request",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Submit Epic Merge",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Read Merge Result",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Set Development Link",
+      "visible_links": 7
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Remove Development Link",
+      "visible_links": 7
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Capture Pull Request Links",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Save Pull Request Snapshot",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Fetch Pull Request Reviews",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Fetch Initiative Pull Requests",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Fetch Linked Pull Requests",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Fetch Repository Delivery Pull Requests",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Append Repository Delivery Pull Requests",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Fetch Pull Request Files",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Fetch Head Check Runs",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Fetch Head Status",
+      "visible_links": 4
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Mark Review Ready",
+      "visible_links": 1
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "command": "Mark Review Draft",
+      "visible_links": 3
+    },
+    {
+      "file": "artifacts/repository-graph.md",
+      "command": "Index Status",
+      "visible_links": 0
+    },
+    {
+      "file": "artifacts/repository-graph.md",
+      "command": "Index Repository",
+      "visible_links": 0
+    },
+    {
+      "file": "artifacts/repository-graph.md",
+      "command": "Change Surface",
+      "visible_links": 1
+    },
+    {
+      "file": "artifacts/repository-graph.md",
+      "command": "Symbol Context",
+      "visible_links": 1
+    },
+    {
+      "file": "artifacts/repository-graph.md",
+      "command": "Flow Trace",
+      "visible_links": 1
+    },
+    {
+      "file": "artifacts/repository-labels.md",
+      "command": "List Labels",
+      "visible_links": 2
+    },
+    {
+      "file": "artifacts/repository-labels.md",
+      "command": "Create Label",
+      "visible_links": 5
+    },
+    {
+      "file": "artifacts/standup-report.md",
+      "command": "Summarise Progress",
+      "visible_links": 9
+    },
+    {
+      "file": "artifacts/task-body.md",
+      "command": "Sync Task Issue",
+      "visible_links": 8
+    },
+    {
+      "file": "modes/revise-mode.md",
+      "command": "Run Tests",
+      "visible_links": 2
+    },
+    {
+      "file": "modes/revise-mode.md",
+      "command": "Check Skill Files",
+      "visible_links": 3
+    },
+    {
+      "file": "modes/revise-mode.md",
+      "command": "Compare Section Bodies",
+      "visible_links": 5
+    }
+  ],
+  "original_markdown": 55,
+  "current_markdown": 58
+}

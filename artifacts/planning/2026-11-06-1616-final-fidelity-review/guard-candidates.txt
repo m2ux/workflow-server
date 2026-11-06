@@ -1,0 +1,332 @@
+SKILL.md:79   A call passes its named inputs. A protocol is one change that lands in several artifacts together, and is run whole. Run another mode, a protocol, or a named subsection only where the procedure calls it; finish that call and return its result before continuing, unless the procedure explicitly dispatches concurrent work.
+artifacts/acceptance-criteria.md:22    - Return evidence that fails Readiness as a blocker for that criterion.
+artifacts/acceptance-criteria.md:26 3. Return verified criterion ids with their evidence and each unresolved criterion with what is missing.
+artifacts/acceptance-criteria.md:38 2. Return the resulting body and any refused criteria to the caller for publication.
+artifacts/acceptance-criteria.md:61 A ticked criterion carries verification evidence. Epic criteria can derive that evidence from passed checks under [Test Evidence](epic-issue-body.md#test-evidence). Done on the row or table that cites it follows [Tables](issue-body.md#tables) and [Work Breakdown](epic-issue-body.md#work-breakdown). A criterion refused as not ready to verify is returned unticked with what it is missing.
+artifacts/agent-review.md:13 1. Read the complete diff from the target to the integration head, the affected definitions and callers, and every criterion's verification evidence. Inspect behavior and failure paths; test counts alone do not establish review completion.
+artifacts/agent-review.md:14 2. Record findings with severity and disposition. Fix each finding [Review Record](#review-record) requires fixed on the reviewed branch, run appropriate regression checks, and repeat the review against the resulting head. A nonblocking deferred finding names its ticket.
+artifacts/agent-review.md:16 4. Return the record for publication on the engineering branch. Evidence lives outside the reviewed branch, so publishing it does not change the head it identifies.
+artifacts/agent-review.md:25 2. Return the result and the head and target SHAs checked. Refresh both tips immediately before ready, board and user-handoff actions; a tip change that leaves the record no longer current, as [Review Record](#review-record) states, requires another review.
+artifacts/architecture-overview.md:19 4. Return the file for the caller to register in its planning record.
+artifacts/board-delivery.md:23 1. Require the complete pull-request issue-link snapshot; refuse the computation without it.
+artifacts/board-delivery.md:25 3. Return the generated calls and unresolved references, meeting [Fields](#fields). The caller gathers missing evidence, applies changes and confirms their live state.
+artifacts/board-delivery.md:37    - Return an absent item as a finding and stop. The status write below needs it.
+artifacts/board-delivery.md:39    - Repeat the write and read the item again when it still shows the preceding status. The item list can lag a write.
+artifacts/board-delivery.md:40 5. Return the confirmed status or the discrepancy left for the caller.
+artifacts/board-delivery.md:56    - Pass these returned snapshots to Plan Board Changes.
+artifacts/board-delivery.md:64      - Repeat the same item read. The item list can lag a write.
+artifacts/board-delivery.md:76 1. Run [Compute Dispatch Status](#compute-dispatch-status) with the supplied identities, board evidence, fresh pull request records and published agent review records. A missing or failing agent review blocks the In Review write.
+artifacts/board-delivery.md:77 2. Apply each returned call and confirm each affected item through [Read Board Configuration](board.md#read-board-configuration).
+artifacts/board-delivery.md:78 3. Return the saved statuses or unresolved discrepancies.
+artifacts/board-queue.md:126 - The epic that row gates keeps the Status it holds. The run proposes no move for it, so a Ready epic is not returned to Backlog on an entry nobody can read.
+artifacts/board-queue.md:141 Prints proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
+artifacts/board-queue.md:152 - `--others` is an issue file for an issue the rows depend on that is not on the board. Repeatable.
+artifacts/board-queue.md:153 - `--unplanned` is an initiative left with no priority, an issue number or `<owner>/<repo>#<issue-number>`. Repeatable.
+artifacts/board.md:14 2. Return a missing-selection result when neither a theme nor proposals is specified; the caller obtains that choice.
+artifacts/board.md:15 3. Return the selected board number, or an absent-board result for [Copy Project Board](#copy-project-board). Work one board at a time.
+artifacts/board.md:35 2. Use the returned number as the copy source.
+artifacts/board.md:39 6. Return the new board number after linking succeeds.
+artifacts/board.md:47 1. Require the originating proposal record for a proposal-derived board; return a missing-input finding when its designator is unavailable.
+artifacts/board.md:49 3. Use the returned number as the copy source.
+artifacts/board.md:53 7. Return the new board number after linking succeeds.
+artifacts/board.md:74 3. Return the items, Status field, item ids and the board's [Repositories](#repositories) to the caller.
+artifacts/board.md:83 2. Return its login for the caller's assignment decisions.
+artifacts/board.md:93 3. Return the field definitions and requested current item.
+artifacts/board.md:102 2. Return the identity or an absent-board finding for the caller's selection or creation path.
+artifacts/delivery-branches.md:34 1. Require the confirmed prerequisites and a missing destination. Refuse a destination that already exists.
+artifacts/delivery-branches.md:38    - Return the created branch or the failure.
+artifacts/delivery-branches.md:53    - Return the updated branch or the failure.
+artifacts/delivery-branches.md:66    - Return the updated branch or the failure.
+artifacts/delivery-branches.md:77 4. Return the worktree path, branch and base, or the failure.
+artifacts/delivery-branches.md:89 3. If it differs from the verified head, return a changed-head finding before creating a worktree.
+artifacts/delivery-branches.md:98 8. Return the selected detached worktree path and head, or the discrepancy before measuring.
+artifacts/delivery-branches.md:108 3. Return both records. An unreadable requirement remains unresolved; a protection 404 does not establish the absence of active rules.
+artifacts/delivery-branches.md:118 3. Return both collections and any missing configuration.
+artifacts/delivery-brief.md:22 2. Return the brief path and any missing context. The caller resolves gaps before dispatch.
+artifacts/delivery-brief.md:48 The caller supplies the session procedure and its invocation context. The brief includes that procedure with its planning, publication, merge, debt and arising-issue obligations, plus the confirmed decisions and evidence needed to execute it. A missing instruction or prerequisite is a finding returned to the caller.
+artifacts/delivery-evidence.md:25    - Route the returned [Delivery Findings](epic.md#delivery-findings) to matching, verification or user decisions.
+artifacts/delivery-evidence.md:27    - The row identifies its owning epic; preserve the title purpose and set that epic prefix without another confirmation. A title already naming another epic remains a conflict requiring reconciliation.
+artifacts/delivery-evidence.md:29    - Repeat the fetch and match steps with the saved title before returning.
+artifacts/delivery-evidence.md:30 4. Return the current pull request records, complete issue-link snapshot and per-epic findings to the caller, reporting incomplete evidence as a blocker.
+artifacts/delivery-evidence.md:46 A pull request that delivers an epic carries that epic's reference in its title, as `[I07:E00] Purpose`. A merged delivery linked by an epic task row whose title has no prefix or only a matching initiative or task prefix receives that row's epic prefix before the evidence returns. Correct titles remain unchanged; a title naming another epic is a conflict. Publish the repaired title and fetch it again before treating the prefix as verified.
+artifacts/delivery-plan.md:25 2. Return the plan meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
+artifacts/delivery-plan.md:74 - `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run.
+artifacts/dependency-graph.md:27 2. Resolve each finding, as [Check Plan Change Autonomy](plan-change.md#check-plan-change-autonomy) returns it for the supplied allowance: an automatic correction is taken, and a held one is settled as [Held Change](plan-change.md#held-change) states.
+artifacts/dependency-graph.md:39    - Repeat Check Dependencies after each edge or numbering change until it reports no problem.
+artifacts/dependency-graph.md:41    - Return the checked bodies, the proposed [Epic Priority](#epic-priority) map and unresolved findings to the caller; do not publish a failed renumbering.
+artifacts/dispatch-batch.md:21 2. Return its batch and continuation, meeting [Selection](#selection), or the named evidence error.
+artifacts/dispatch-batch.md:30 2. Return the validated unit or the named blocker, meeting [Start Readiness](#start-readiness).
+artifacts/dispatch-batch.md:56 The batch retains authorized, unoccupied units in survey order, bounded by free capacity. Overlapping joined rows are selected once. Its `units` carry each selected export entry, and `pending` counts the other eligible units. Its `action` is `dispatch` when units fit, `wait` while scoped workers execute or admitted work awaits capacity, and `stop` when neither remains. Holds, blockers and required human review remain in the delivery evidence returned alongside the batch.
+artifacts/dispatch-batch.md:74 Selects the next batch without tracker writes or worker execution.
+artifacts/dispatch-batch.md:88 Checks one selected unit immediately before execution.
+artifacts/epic-issue-body.md:35 7. Return the draft rows, their dependency references and the validation findings for the caller's cross-body ordering check.
+artifacts/epic-issue-body.md:44    - Row changes must meet [Task Delivery](#task-delivery) and [Work Breakdown](#work-breakdown).
+artifacts/epic-issue-body.md:45 2. Return the updated body and [Delivery Findings](epic.md#delivery-findings) for the caller to resolve and publish. An unmerged epic base prevents a closable result.
+artifacts/epic-issue-body.md:53 1. Run [Tick Epic Criteria](#tick-epic-criteria) with the epic JSON, records as `--prs`, snapshot as `--links`, verified ids as `--tick` and output as `--fix`. Refuse criteria not ready to verify.
+artifacts/epic-issue-body.md:62 1. Require the caller's confirmed unit and existing planning folder. Refuse a row already held or linked to a pull request or commit, and a unit [Work Units](delivery-plan.md#work-units) does not admit.
+artifacts/epic-issue-body.md:64 3. Return the reserved body meeting [Task Delivery](#task-delivery).
+artifacts/epic-issue-body.md:68 Held task rows returned to their work-item links.
+artifacts/epic-issue-body.md:72 1. Require the supplied release decision and refuse any row that is not held.
+artifacts/epic-issue-body.md:74 3. Return the released body meeting [Task Delivery](#task-delivery).
+artifacts/epic-issue-body.md:87 5. Return the corrected body, mechanical diff and unresolved findings for the caller.
+artifacts/epic-issue-body.md:98 2. Return the revised body and any cross-body numbering or dependency changes for the caller.
+artifacts/epic-issue-body.md:107    - Return the criteria the user confirms already hold to the caller for verification and ticking. The delivered task retains them.
+artifacts/epic-issue-body.md:109    - If no criteria need further work, return the pending findings to the caller.
+artifacts/epic-issue-body.md:114    - Return an unanswered draft as pending without continuing to the reconcile step.
+artifacts/epic-issue-body.md:116    - Publish the returned body through [Save Tracker Issue](issue.md#save-tracker-issue).
+artifacts/epic-issue-body.md:117    - Return the saved row and criterion disposition to the caller.
+artifacts/epic-issue-body.md:296 - `--link` names each task id and the pull request number it links. An id repeats once for each pull request, one per long-lived branch its unit changes. The row keeps the deliveries it links in place and gains each named one it lacks, so a repeated run leaves it unchanged. `--tasks` is the task issues. `--links` is the pull requests' Development-linked issues. `--fix` is the body written with the Done ticks.
+artifacts/epic-issue-body.md:312 Ticks confirmed epic criteria, refusing any not ready to verify, and ticks completed rows.
+artifacts/epic-issue-body.md:356 - `--engineering` is the checkout holding the planning records. A row whose folder there holds no such file, or whose README does not link it, is refused.
+artifacts/epic.md:23 4. Return the [Prerequisite Evidence](#prerequisite-evidence), identifying each confirmed prerequisite and missing condition. Only a confirmed result permits an unstarted epic's bases to be created or its task to be dispatched.
+artifacts/epic.md:33    - Publish reported table normalization through [Save Tracker Issue](issue.md#save-tracker-issue), fetch the saved epic and repeat the match before returning its evidence.
+artifacts/epic.md:34 2. Return the [Delivery Findings](#delivery-findings); missing linked pull requests are missing evidence for the caller to supply.
+artifacts/epic.md:44 3. Return the integration readiness in [Delivery State](#delivery-state), with the evidence revisions and each blocker. Readiness establishes the epic's content conditions; the caller supplies pull-request review, target and head-check evidence for the merge.
+artifacts/epic.md:48 The epic's normal delivery result before tracker closure.
+artifacts/epic.md:55 4. Return the completion result in [Delivery State](#delivery-state), identifying remaining blockers. Passing normal delivery checks supplies the caller's closure evidence; the tracker issue's current Development-link gate still governs the write.
+artifacts/goal-trace.md:32    - Use the returned initiative and epic JSON for [Validate Initiative Body](initiative-issue-body.md#validate-initiative-body) with the initiative JSON, every linked epic's current JSON, source evidence and output file.
+artifacts/goal-trace.md:38    - Return the trace and ranked findings to the caller.
+artifacts/goal-trace.md:51    - Return the evidenced threats and gaps to [Review Initiative Goal](#review-initiative-goal).
+artifacts/hotfix-body.md:27   - The Overview must name the confirmed target as [Target](#target) states.
+artifacts/hotfix.md:27 3. Return the hot-fix number to the caller, which rewrites and saves the issue's body, title and labels, then places it through [Settle Hot-fix Board Status](#settle-hot-fix-board-status), as its [placement](placement.md#disposition-conditions) orders.
+artifacts/hotfix.md:36 2. Return the confirmed status, or the discrepancy, to the caller. The session starts only once it is confirmed.
+artifacts/hotfix.md:40 A held hot-fix returned to the work the delivery plan offers.
+artifacts/hotfix.md:45    - Refuse the release while its [Delivery Unit](#delivery-unit) is running or unrecorded, and return the pull request that makes it so to the caller.
+artifacts/hotfix.md:47 3. Return the saved item and its Status to the caller.
+artifacts/hotfix.md:55 1. Run [Sync Hot-fix Issue](#sync-hot-fix-issue) with the hot-fix JSON, records as `--prs`, snapshot as `--links`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
+artifacts/hotfix.md:56 2. Return the body and eligibility findings; the caller publishes the body and closes the tracker issue, as [Delivery Record](#delivery-record) states.
+artifacts/hotfix.md:70      - Run [Remove Board Item](board.md#remove-board-item) with the supplied board owner and number and the item id Read Board State returned.
+artifacts/hotfix.md:73 4. Return the settled item, its removal, or the unchanged board to the caller.
+artifacts/initiative-issue-body.md:23 3. Return the populated body and its local format findings to the caller.
+artifacts/initiative-issue-body.md:52 2. Return the body and [Delivery Findings](initiative.md#delivery-findings) from the supplied initiative and epic records. Delivery eligibility follows [Delivery State](initiative.md#delivery-state).
+artifacts/initiative-issue-body.md:60 1. Run [Tick Initiative Criteria](#tick-initiative-criteria) with the initiative, linked epics as `--epics`, verified ids as `--tick` and output as `--fix`. Refuse criteria not ready to verify.
+artifacts/initiative-issue-body.md:72 4. Return the corrected body, mechanical diff and unresolved findings for the caller.
+artifacts/initiative-issue-body.md:84 5. Return each source's contents and identity with those findings.
+artifacts/initiative-issue-body.md:200 Reports an initiative's delivery state against its epics, and ticks Done on an epic row whose issue is closed as completed. A row whose epic it is not given keeps its Done cell and is reported unchanged.
+artifacts/initiative-issue-body.md:220 Ticks confirmed initiative criteria, refusing any not ready to verify, and ticks completed rows.
+artifacts/initiative.md:9 The initiative's normal delivery result before tracker closure.
+artifacts/initiative.md:15 3. Return the completion result and its supporting issue identities, evidence revisions and blockers. Passing normal delivery checks supplies the caller's closure evidence; the tracker issue's current Development-link gate still governs the write.
+artifacts/issue-body.md:21    - The columns must match the kind's table.
+artifacts/issue-body.md:51 2. Apply each confirmed decision to keep, fold or remove an extra section, and rewrite a wrong-kind body in the selected template.
+artifacts/issue-body.md:57 7. Return the corrected file, validation findings and any required cross-body or metadata changes for the caller.
+artifacts/issue-body.md:68 4. Return the JSON path for validation. No tracker issue is created by this operation.
+artifacts/issue-body.md:77    - Return an unreadable source as a blocker before editing.
+artifacts/issue-body.md:79    - Publish wording-preserving format, title and label corrections through [Save Tracker Issue](issue.md#save-tracker-issue), without asking.
+artifacts/issue-body.md:86    - Repeat Validate Issue Body with the saved JSON and the same kind conditions, context and output path.
+artifacts/issue-body.md:87    - Return the saved body, whether a correction was made, and the validation result to the caller. A remaining failure is a blocker.
+artifacts/issue-body.md:96 2. Run [Fetch Reference Repository](#fetch-reference-repository) for each returned name; collect the returned objects into a JSON array at the snapshot path. Retain failed fetches as unresolved visibility, never as public visibility.
+artifacts/issue-body.md:98 4. Return each private reference on a public issue and each unavailable visibility as a finding. A private destination has no public-reference restriction; deciding how to replace or remove a private reference belongs to the caller.
+artifacts/issue-body.md:214   Structural changes preserve the wording and are present in the returned body file, with a body diff.
+artifacts/issue.md:23 2. Return a missing-label result when an assignment names a label the repository does not contain.
+artifacts/issue.md:41    - Return an abandoned or incorrect Development link to the caller for the user's decision on its removal. A replacement pull request does not remove the requirement on a link still present.
+artifacts/issue.md:42 4. Run [Close as Completed](#close-as-completed), which repeats the gate immediately before the write.
+artifacts/issue.md:73 1. Run [Capture Issue Development](#capture-issue-development) immediately before closure with the issue identity, authenticated access and evidence paths.
+artifacts/issue.md:87 3. Return both files, or the unreadable relation.
+artifacts/issue.md:96 2. Return each issue's observed pull requests, or stop and return each unreadable relation the capture names as a blocker.
+artifacts/issue.md:107    - An empty collection means none of the named issues is closed; return nothing listed.
+artifacts/issue.md:108 2. Run [Read Issue Development](#read-issue-development) with that collection; an unreadable relation is returned as a blocker and the sweep does not run.
+artifacts/issue.md:110 4. Return each unsupported issue with its state reason and findings, and each unevaluable issue as missing evidence, as findings. Return the not-planned closures apart, as listed for reference. The audit changes no issue.
+artifacts/issue.md:120 3. Return the confirmed value. An unconfirmed setting is a blocker, and an enabled one leaves the caller to obtain authorization before the repository is reconfigured.
+artifacts/issue.md:129 2. Return it with pull requests distinguishable from issues.
+artifacts/issue.md:138 2. Return its issue number or an unresolved identity.
+artifacts/issue.md:373 Posts one line of exact comment text and returns its URL.
+artifacts/issue.md:389 Posts a complete comment file and returns its URL.
+artifacts/issue.md:405 Sets an issue to closed with the completed reason and returns its state.
+artifacts/lane.md:13 - Run [Read Lane Assignments](#read-lane-assignments) with the body file and return its row-to-index map and findings, meeting [Assignments](#assignments).
+artifacts/lane.md:23 2. Return the output body for the caller's full body and dependency validation.
+artifacts/lane.md:31 - Run [Validate Lane Unit](#validate-lane-unit) with the body and unit ids and return the common index or findings, meeting [Unit Consistency](#unit-consistency).
+artifacts/lane.md:39 - Run [Evaluate Lane Admission](#evaluate-lane-admission) with the body, unit ids and requested index and return its admitted flag and findings, meeting [Admission](#admission).
+artifacts/placement.md:29 3. Return the placement for the caller to offer and apply.
+artifacts/placement.md:38 2. Return the [Candidate Issues](#candidate-issues) and open initiative and epic destinations for the caller to investigate.
+artifacts/placement.md:46 1. Execute only the branch matching the confirmed destination:
+artifacts/placement.md:56      - Number the row where it can start, and keep its row id for the return.
+artifacts/placement.md:60      - Run [Populate Epic Issue Body](epic-issue-body.md#populate-epic-issue-body), carrying the orphan's work in a task row, and keep its row id for the return.
+artifacts/placement.md:69      - Use the source issue as the destination with disposition Kept. The caller rewrites its hot-fix body and keeps the issue open.
+artifacts/placement.md:71      - Use the source issue as the destination with disposition Leave. The caller rewrites its standalone body and keeps the issue open.
+artifacts/placement.md:72 2. Return the saved destination, the identities of all affected bodies and the confirmed disposition to the caller, including the destination initiative, epic and new row id for a new task or new epic, and the number for a hot-fix. The caller performs the rewrite or closure.
+artifacts/placement.md:83 2. Run [Check Round of Edits](issue-body.md#check-round-of-edits) with the populated body and selected kind conditions before publishing.
+artifacts/placement.md:87 4. Return the saved identity, and a hot-fix's settled board item, to the caller.
+artifacts/placement.md:101    - Return the confirmed closure or blocker to the caller.
+artifacts/plan-change.md:14 2. Return it as automatic where the supplied allowance names that kind, with the supplied recommendation as the option the caller applies.
+artifacts/plan-change.md:15 3. Return it as held otherwise, for the caller to settle as [Held Change](#held-change) states.
+artifacts/plan-change.md:26 2. Return the updated list for the caller to publish and report.
+artifacts/proposal-body.md:31 2. Return the corrected body, mechanical diff and unresolved findings for the caller.
+artifacts/pull-request-body.md:23 3. Return the complete body file and any unresolved evidence links to the caller for publication.
+artifacts/pull-request-body.md:37 3. Return the complete updated body file to the caller.
+artifacts/pull-request-body.md:52 3. Return the complete updated body file for publication.
+artifacts/pull-request-body.md:63 4. Return the body, the converted pull request identity and unresolved findings. The caller publishes and names each conversion. An unreadable plan remains a finding until repaired from its actual checks and coverage.
+artifacts/pull-request.md:29    - If GitHub refuses the merge, return the refusal to the caller for fresh verification.
+artifacts/pull-request.md:30    - If the agent's own permission layer refuses it, the harness declines to run the merge command and GitHub returns nothing. On a target with no review requirement, that refusal is neither a handoff for approval nor a branch blocker. Return the pull request as ready and verified, naming the refusal and the [merge permission](#merge-permission) it lacks, and stop merge attempts. A later Deliver run merges it in its merge step or reports the missing permission; neither asks the user to approve it.
+artifacts/pull-request.md:31 3. Return the merge result, including its merge commit when supplied, for the caller's readback.
+artifacts/pull-request.md:41    - Run [Capture Pull Request Links](#capture-pull-request-links) with that record and return its entry, every page read. An unreadable relation is a blocker, not an empty link set.
+artifacts/pull-request.md:48 3. Return the relation the command verified from both ends, or the discrepancy or failure it names. A failed write is a blocker carrying its operation and error, never an unavailable field.
+artifacts/pull-request.md:57 2. If it names an unreadable relation, stop and return each one named as a blocker. Incomplete evidence is never a partial snapshot.
+artifacts/pull-request.md:58 3. Repeat the capture after a link changes.
+artifacts/pull-request.md:59 4. Return the snapshot for the scripts' `--links` input.
+artifacts/pull-request.md:70 4. Return the verified relation and refreshed snapshot.
+artifacts/pull-request.md:79 2. Run [Submit Epic Merge](#submit-epic-merge) with the exact head whose checks and target requirements were verified; return a refusal without continuing.
+artifacts/pull-request.md:94 5. If any fetch failed, return incomplete evidence.
+artifacts/pull-request.md:95 6. Return the complete collection only after every fetch succeeds.
+artifacts/pull-request.md:105 3. Return the collection, or an incomplete-fetch finding naming each unreadable relation or pull request.
+artifacts/pull-request.md:136 2. Return its number or an absent-review finding.
+artifacts/pull-request.md:146 3. Return both snapshots, retaining missing or pending evidence as unresolved. The caller compares them with supplied target requirements and current reviews.
+artifacts/pull-request.md:158    - Run [Merge Delivery Pull Request](#merge-delivery-pull-request) with delivery kind task, the verified head, target requirements, repository prerequisite and passing evidence, without further confirmation.
+artifacts/pull-request.md:162      - Repeat Fetch Merge Readiness for the updated task head.
+artifacts/pull-request.md:163      - Retry Merge Delivery Pull Request once with that verified evidence. A conflict or repeated refusal leaves the pull request open with the blocker reported.
+artifacts/pull-request.md:182    - Return the verified head, target requirements and readiness result, including unresolved conditions.
+artifacts/pull-request.md:186 An open epic review returned to draft while its handoff evidence is unresolved.
+artifacts/pull-request.md:191 2. Read the state again and return the confirmed draft state or discrepancy.
+artifacts/pull-request.md:200 2. Run [Check Agent Review](agent-review.md#check-agent-review) with the fresh metadata and published records. On a finding, run [Hold Epic Review](#hold-epic-review) and stop. For a draft with passing evidence, run [Mark Review Ready](#mark-review-ready) with the node id its metadata names.
+artifacts/pull-request.md:201 3. Read the pull request again and repeat Check Agent Review. A changed revision returns to draft and reports the discrepancy. Return the confirmed ready state only with current evidence. Target review requirements still govern the merge.
+artifacts/pull-request.md:211    - On a finding, return it to the caller; the pull request stays a draft.
+artifacts/pull-request.md:213 4. Run Read Pull Request State again and repeat Check Agent Review. Return the confirmed ready state, or the changed revision or finding that leaves it unconfirmed.
+artifacts/pull-request.md:378 Returns the open pull request whose head is the supplied epic base, or no result when none exists.
+artifacts/pull-request.md:412 Returns a pull request's merge state, merge commit, head and base.
+artifacts/pull-request.md:467 - Exit 1 prints `failed:` or `discrepancy:` as [Set Development Link](#set-development-link) does.
+artifacts/pull-request.md:694 Returns an open integration pull request with blocked handoff evidence to draft.
+artifacts/repository-graph.md:24 7. Return only evidence current with the supplied head, meeting [Fields](#fields), or a freshness blocker.
+artifacts/repository-graph.md:64 Indexes the repository, which an unindexed or behind repository needs before any measurement.
+artifacts/repository-labels.md:14 2. Compare the returned labels with the supplied required names.
+artifacts/repository-labels.md:16 4. Return the available labels; an unknown definition is a finding for the caller to resolve before publication.
+artifacts/review-finding.md:14 2. If evidence is missing or contradictory, return that finding for the caller to resolve.
+artifacts/review-finding.md:17 4. Return the finding and any pending decision.
+artifacts/review-finding.md:26    - Resolve any evidence gap before reporting it.
+artifacts/review-finding.md:31    - Return each confirmed resolution to the caller for application to its selected issue kind. A pending decision returns without applying a change.
+artifacts/standup-report.md:22 3. If initiative references remain unresolved, return them for the caller to supply.
+artifacts/standup-report.md:26 6. Return the report and separate unresolved findings.
+artifacts/standup-report.md:33 The default window opens a week before today. A supplied start date selects another window, such as the previous working day for a daily standup. An initiative filter names one initiative, qualified by repository when its number is ambiguous.
+artifacts/standup-report.md:63 An unresolved initiative identifies its number and repository for the caller to fetch. An off-board dependency is blocked. An epic with unreadable Work Breakdown is summarised without tasks and returned as a finding. Unresolved lines are separate from the copyable report.
+artifacts/standup-report.md:74 - `--since` opens the window on another date than a week before today.
+artifacts/task-body.md:20 1. Run [Sync Task Issue](#sync-task-issue) with the task JSON, records as `--prs`, snapshot as `--links`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
+artifacts/task-body.md:21 2. Return the body and eligibility findings; the caller publishes comments and closes the tracker issue.
+artifacts/work-item.md:21 - Write the supplied task's file from [Template](#template), returning its path for registration in the planning record.
+modes/advance-mode.md:26    - Use the returned owner and board number for the sync and fetch steps.
+modes/advance-mode.md:31    - Return any blocker that prevents current delivery from being established.
+modes/advance-mode.md:34    - Run [Fetch All Delivery Pull Requests](../artifacts/pull-request.md#fetch-all-delivery-pull-requests) for the [repositories](../artifacts/board.md#repositories) and items Read Board State returned.
+modes/advance-mode.md:44      - Add the returned file to the resolved off-board issue files.
+modes/advance-mode.md:64    - Return the [change list](../artifacts/plan-change.md#change-list) with the queue, so the caller reports each decision this mode made and each it held.
+modes/advance-mode.md:66    Once the queue is [complete](../artifacts/board-queue.md#completeness), run each proposed Status and assignee call it returned.
+modes/align-mode.md:52    - Route the returned [Format Findings](../artifacts/issue-body.md#format-findings) through the following steps.
+modes/align-mode.md:54    Confirm the returned diff changes structure only.
+modes/align-mode.md:55    - Publish that body and the returned title or label corrections through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue), without asking.
+modes/align-mode.md:59    - Present each finding through [Report Review Finding](../artifacts/review-finding.md#report-review-finding). Numbering changes affect only rows no pull request names.
+modes/align-mode.md:75    - Publish returned bodies and metadata through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
+modes/align-mode.md:97    - For each task pull request in those records, run [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan), then publish each converted body through [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request). Report each converted pull request by URL and refresh its record before recording coverage.
+modes/align-mode.md:99    - For each epic being aligned, run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with its current JSON, returned pull request records and complete issue-link snapshot, task records, confirmed matches, project checkout, fetched epic bases and output body file:
+modes/align-mode.md:103        - For each criterion it returns as already holding, run [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria), pass the verified ids to [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria), and publish through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
+modes/align-mode.md:106        - When the preceding Record Epic Delivery call reports a row done, or a tick cleared, run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) from the output body file, without asking.
+modes/align-mode.md:110        - Repeat Record Epic Delivery with the corrected evidence, the same epic bases and the same output body file.
+modes/align-mode.md:113      - Present the returned [Delivery Findings](../artifacts/initiative.md#delivery-findings) to the user.
+modes/align-mode.md:116      - Pass only returned verified ids to [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria), with the current initiative JSON, all linked epic records and output body file.
+modes/align-mode.md:117      - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
+modes/align-mode.md:119    - Apply a Done change in the output body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue), without asking.
+modes/align-mode.md:124     - Pass only a confirmed result, the project checkout, epic identity and changed long-lived branches to [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases).
+modes/align-mode.md:125     - Return missing prerequisite evidence before creating a base.
+modes/align-mode.md:129     - Read each open epic's branches through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) in the project checkout, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic. Unevaluable branch names stop this step with a finding.
+modes/align-mode.md:130     - Use the returned long-lived target; for example, `main` and `i07/e00/main` identify the same target.
+modes/align-mode.md:137     For each task issue returned as unplaced by [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery):
+modes/align-mode.md:141     - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
+modes/align-mode.md:142     - Repeat Record Epic Delivery with the saved epic JSON, current task records, pull request records, complete issue-link snapshot, the project checkout, the fetched epic bases and the same output body file. An unanswered placement stays pending.
+modes/deliver-mode.md:41    - Use its returned owner and board number throughout this run.
+modes/deliver-mode.md:66    - Carry its returned change list into the run's report.
+modes/deliver-mode.md:73    - Return a scope-wide fetch failure with its missing evidence before selecting a batch.
+modes/deliver-mode.md:80      - Resolve each missing issue through [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) and repeat the survey with that record and the other current inputs.
+modes/deliver-mode.md:82      - Resolve delivery discrepancies through [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) with the affected initiative, epic and task records, then repeat the survey with its results.
+modes/deliver-mode.md:96    - Retain its returned continuation or observed session, removing a started preparation from the pending set.
+modes/deliver-mode.md:98    - Report an evidence error and return without dispatching from that batch.
+modes/deliver-mode.md:101    - For `stop`, return the delivery results and remaining holds, blockers and review boundaries.
+modes/deliver-mode.md:104    - Retain every returned session identity in the observed inventory before another selection.
+modes/deliver-mode.md:131    Register each returned work-item file through [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record). A reserved row retains its folder link.
+modes/deliver-mode.md:134    Check the returned work item's test row against each criterion the unit's Coverage carries and [Test Coverage](../artifacts/pull-request-body.md#test-coverage).
+modes/deliver-mode.md:143    - Stage and commit each returning group's own files, then run the unit's tests once every group has returned.
+modes/deliver-mode.md:152      - Run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the returned body.
+modes/deliver-mode.md:160    - Register and publish its returned record through [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record) and [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record).
+modes/deliver-mode.md:163    - For each returned finding, fix it on the task branch and repeat this step from Produce Agent Review, until Ready Hot-fix Pull Request returns none.
+modes/deliver-mode.md:177     - Return the list with the delivery session result, so the user reads each plan change this session applied and each it held.
+modes/hoist-mode.md:31    - Order the returned options best first, with Leave last.
+modes/hoist-mode.md:42    - After it returns the saved destination, run exactly one disposition procedure with the returned destination and source records, including a new task's row id: [Rewrite Orphan Issue](../artifacts/placement.md#rewrite-orphan-issue) for kept or left issues, or [Subsume Orphan Work](../artifacts/placement.md#subsume-orphan-work) for work taken by another issue.
+modes/hoist-mode.md:47    - Resolve each finding as [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy) returns it: an automatic correction is applied, and a held one is settled as [Held Change](../artifacts/plan-change.md#held-change) states.
+modes/hoist-mode.md:50    - Repeat Validate Issue Body with the saved affected bodies.
+modes/hoist-mode.md:51    - Repeat Check Dependencies and Numbering with the saved affected bodies.
+modes/hoist-mode.md:55    - Return the [change list](../artifacts/plan-change.md#change-list) with it, so the caller reports each placement this mode made and each it held.
+modes/plan-mode.md:51    - Register each draft body and returned work-item file in the planning record.
+modes/plan-mode.md:53    - Run [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering) across the drafts and the returned work-item files.
+modes/plan-mode.md:54    - Return each epic draft and its format results to the review step.
+modes/plan-mode.md:57    - Run [Report Review Finding](../artifacts/review-finding.md#report-review-finding) for each returned finding, with its scope, evidence and proposed resolution.
+modes/plan-mode.md:64    - Repeat Review Initiative Goal with the revised initiative and epic bodies and retained goal clauses and sources. No issue is created while a content or structural finding remains. Unresolved links to unpublished issues are recorded with their intended row identities and resolved during publication; no other finding is deferred.
+modes/plan-mode.md:69    - Call [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels) with the required definitions, the priority label each confirmed number names among them, before saving the issues.
+modes/plan-mode.md:84    - Repeat Review Initiative Goal with the revised bodies and current sources.
+modes/plan-mode.md:89    - Whenever tasks, edges or a work item's component change, repeat Check Dependencies and Numbering.
+modes/plan-mode.md:104    - Run [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites) with current initiative and prerequisite evidence; stop on a failed or incomplete result.
+modes/plan-mode.md:114      - Repeat Sync Mode with the refreshed epic.
+modes/plan-mode.md:115    - Return the saved delivery state or blockers.
+modes/propose-mode.md:27    - Spot-check what they return before recording it.
+modes/propose-mode.md:37    - Repeat Validate Proposal Body with the revised JSON and the same output path. Proceed to publication only when validation passes.
+modes/standup-mode.md:38    - Run [Fetch All Delivery Pull Requests](../artifacts/pull-request.md#fetch-all-delivery-pull-requests) for the [repositories](../artifacts/board.md#repositories) and items Read Board State returned.
+modes/standup-mode.md:40    - Pass the returned snapshots to Compose Standup Report.
+modes/standup-mode.md:47    - Repeat [Compose Standup Report](../artifacts/standup-report.md#compose-standup-report) with all resolved initiative records, retaining the board items, pull requests, links, selected window and filter. An unavailable record remains a reported gap.
+modes/standup-mode.md:49    Present the returned report verbatim in a fenced block for copying.
+modes/standup-mode.md:51    - For an epic [Compose Standup Report](../artifacts/standup-report.md#compose-standup-report) returns with an unreadable Work Breakdown:
+modes/standup-mode.md:54      - If it reports a blocker or no correction, return the unresolved finding without repeating the same repair.
+modes/sync-mode.md:35    - Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for each selected issue before inspecting its Open Questions or format.
+modes/sync-mode.md:36    - Use the returned current JSON and body in the following checks.
+modes/sync-mode.md:42      - Continue only when its Open Questions section is resolved; otherwise return the unresolved questions as blockers.
+modes/sync-mode.md:47      - Return a remaining format failure as a blocker.
+modes/sync-mode.md:51    - Use its returned pull request records, complete issue-link snapshot and findings in the following steps.
+modes/sync-mode.md:69    - Run [Record Task Delivery](../artifacts/task-body.md#record-task-delivery) with the task JSON, pull request records, complete issue-link snapshot, delivering pull request number, returned verified criterion ids and output body path.
+modes/sync-mode.md:70    - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) before closure.
+modes/sync-mode.md:114        - Repeat Record Epic Delivery with the saved epic, refreshed task records and the same epic bases. An unanswered placement stays pending.
+modes/sync-mode.md:118        - Fetch the saved body before repeating Record Epic Delivery with the same epic bases.
+modes/sync-mode.md:130        - Fetch each draft base, long-lived branch or review head named unread, and repeat Record Epic Delivery with the same epic bases.
+modes/sync-mode.md:136    - After applying the returned findings, repeat Record Epic Delivery with the revised epic body and refreshed delivery records, retaining the complete issue-link snapshot, the same epic bases and output body path. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, unchanged, and unplaced are clear, apart from a pull request the user leaves unmatched.
+modes/sync-mode.md:139    - Retain the returned verified criterion ids and evidence for the tick step.
+modes/sync-mode.md:142      - For each criterion it returns as already holding, repeat [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria) with that criterion id, the current epic body, delivery findings, delivery revisions, named instruments and the project checkout.
+modes/sync-mode.md:143      - Pass the returned verified ids to [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria) with the current epic JSON, pull request records, complete issue-link snapshot and output body path, and publish through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
+modes/sync-mode.md:162       - Pass returned verified ids to [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria) with the initiative JSON, every linked epic record and output body file.
+modes/sync-mode.md:169       - Read the originating proposal identified in the initiative's [References](../artifacts/initiative-issue-body.md#references) through [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue); return unresolved provenance before board creation for a proposal-derived initiative.
+modes/sync-mode.md:177     Return saved delivery results and unresolved findings to the caller, or present them to the user for a direct request.
+modes/sync-mode.md:179     - Run [Audit Closure Evidence](../artifacts/issue.md#audit-closure-evidence) for the repository holding the issues, naming the initiative, epics and tasks this run touched. Report each unsupported and unevaluable issue it returns, with its state reason and findings, and the not-planned closures apart. This run changes none of them.
+protocols/change-overview.md:24      - Repeat Read Pull Request State for the same pull request.
+protocols/change-overview.md:25      - Repeat Create Pull Request Worktree using its new verified head.
+protocols/change-overview.md:28    - Call [Measure Repository Change](../artifacts/repository-graph.md#measure-repository-change) with the review checkout it returns, head and base.
+protocols/change-overview.md:29    - On stale index evidence, repeat Measure Repository Change after its index update.
+protocols/change-overview.md:33    - Return any unresolved freshness blocker before writing the overview.
+protocols/change-overview.md:38    - Run [Populate Architecture Overview](../artifacts/architecture-overview.md#populate-architecture-overview) with the measured structure and flows, verified head, pinned code links and overview path. A repeat replaces its overview while preserving the record's other content.
+protocols/change-overview.md:44    - Publish the returned file through [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
+protocols/change-overview.md:45    - Return the pull request, record folder, published overview, diagrams and References row to the caller.
+protocols/epic-integration.md:23    - Before any preparation, run [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review) for the supplied review identity and [Record Epic Review](../artifacts/board-delivery.md#record-epic-review) requesting In Progress with the epic, board identity, fresh pull request records, an empty review-record list and output paths. An absent board item is reported; it does not prevent validation.
+protocols/epic-integration.md:24    - For any failed gate or called operation through handoff, repeat those withdrawal operations before returning or retrying, including failures between ready and board writes. The confirmed absence of a board is the sole exception to board withdrawal.
+protocols/epic-integration.md:37      - Repeat Review Pull Request with the current task merges.
+protocols/epic-integration.md:38      - Repeat Change Overview with the same pull request identity and updated head.
+protocols/epic-integration.md:39    - Follow [Review Pull Request](review-pull-request.md) requesting handoff, with confirmed epic readiness, fresh metadata, checkout, criteria, validation evidence and planning destination. Resume only with current agent review evidence. If review fixes changed the head, refresh criterion verification, repeat Check Epic Readiness for that head and repeat Change Overview for the updated integration diff.
+protocols/epic-integration.md:42    - Follow [Fetch Merge Readiness](../artifacts/pull-request.md#fetch-merge-readiness) for the exact current head and target. A conflict, failed or pending check, unmet epic condition or incomplete evidence blocks handoff; run Hold Epic Review and Record Epic Review requesting In Progress before returning that blocker. Pending required human approval is returned to the next step as a human handoff, with merge blocked.
+protocols/epic-integration.md:44    Refresh the review metadata and run [Check Agent Review](../artifacts/agent-review.md#check-agent-review) with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding. Pass the confirmed epic readiness, verified head, target requirements, repository prerequisite and passing evidence to [Merge Delivery Pull Request](../artifacts/pull-request.md#merge-delivery-pull-request) with delivery kind epic, without asking for further confirmation.
+protocols/epic-integration.md:45    - Return its handoff when a human reviewer must merge. A changed head requires fresh verification; a merge refusal returns to the readiness checks, and a repeated refusal is reported without retrying.
+protocols/epic-integration.md:48    - Return the result or blocker. Draft and blocked pull requests remain open.
+protocols/issue-closure.md:35    - Return any incomplete or failed result before closure.
+protocols/issue-closure.md:41    - If it returns an abandoned or incorrect link:
+protocols/issue-delivery.md:23    - Pass the returned verified criterion ids to [Record Hot-fix Delivery](../artifacts/hotfix.md#record-hot-fix-delivery), with the hot-fix JSON, pull request records, complete issue-link snapshot, delivering pull request number and output body file.
+protocols/issue-delivery.md:24    - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
+protocols/issue-delivery.md:25    - Return the saved identity and findings to the caller.
+protocols/issue-delivery.md:28    - Pass the returned verified criterion ids to [Record Task Delivery](../artifacts/task-body.md#record-task-delivery).
+protocols/issue-delivery.md:32    - Retain the returned epic body for criterion recording and publication.
+protocols/issue-delivery.md:35    - Repeat Record Epic Delivery with the refreshed epic JSON and the same pull request records, complete issue-link snapshot, task issue records, confirmed task-to-pull-request matches, project checkout, fetched epic bases, and output body file.
+protocols/issue-delivery.md:37    Report the coverage disagreements returned in [Delivery Findings](../artifacts/epic.md#delivery-findings).
+protocols/issue-delivery.md:40    Use the epic body returned by Record Epic Delivery.
+protocols/issue-delivery.md:43    - Publish the retained epic body and each task body returned by Record Task Delivery through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
+protocols/issue-delivery.md:44    - Return the saved identities and findings to the caller.
+protocols/review-pull-request.md:23      - Use its returned number or absence result.
+protocols/review-pull-request.md:29    - Pass the returned file to [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), supplying its number for an existing review, and for a new one the epic's issue with the repository setting the caller confirmed. The epic stays open until integration and closure checks pass.
+protocols/review-pull-request.md:38    - Register and publish its returned record through [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record) and [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record).
+protocols/review-pull-request.md:40    - Fetch the published record and fresh pull request metadata; run [Check Agent Review](../artifacts/agent-review.md#check-agent-review). A blocker returns without handoff; current board delivery evidence holds the epic In Progress.
+protocols/review-pull-request.md:41    - Return the confirmed review evidence with the review identity and delivery findings. Ordinary task-merge publication returns the draft identity without completing handoff.
+protocols/unit-dispatch.md:26    - Confirm the harness provides sub-agent dispatch and the [epic-base merge permission](../artifacts/pull-request.md#merge-permission); return the absent capability before holding work.
+protocols/unit-dispatch.md:37    Run [Read Board State](../artifacts/board.md#read-board-state) for the selected board immediately before acquiring the unit's hold.
+protocols/unit-dispatch.md:41        - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
+protocols/unit-dispatch.md:42      - For a retained preparation, require every current row to hold its selected record; return a changed hold as a blocker.
+protocols/unit-dispatch.md:50    - Return a competing hold or failed readback without starting a worker.
+protocols/unit-dispatch.md:53    - Call [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief) with the selected unit, its components, reserved folder, worktrees and returned bases, project and engineering checkouts, test obligations, board identity, run allowance and supplied session procedure.
+protocols/unit-dispatch.md:54    - Return a missing-context finding before execution, retaining the hold.
+protocols/unit-dispatch.md:57    - Return a capacity-only wait with the unit's preparation for the coordinator to retain and resume.
+protocols/unit-dispatch.md:60    - Return its observed session identity to the coordinator, which records it before selecting another batch.
+protocols/unit-dispatch.md:61    - Return a failed start as a held unit with its record and error; a hold is released only through the caller's explicit release decision.

@@ -1,0 +1,42 @@
+F....F...F..
+======================================================================
+FAIL: test_development_snapshot_example_is_valid_closure_evidence (test_command_contracts.DocumentedCommandBehavior.test_development_snapshot_example_is_valid_closure_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 160, in test_development_snapshot_example_is_valid_closure_evidence
+    self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : closure blocked: unreadable evidence (/tmp/command values 38pj396w/development.json is not an issue-links file: a repository and its issue numbers mapped to {repo, number, state} lists)
+
+
+======================================================================
+FAIL: test_epic_sync_evaluates_every_supplied_base (test_command_contracts.DocumentedCommandBehavior.test_epic_sync_evaluates_every_supplied_base)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 192, in test_epic_sync_evaluates_every_supplied_base
+    done = self.execute('epic-issue-body.md', 'Sync Epic', {
+        'epic-json-file': self.snapshot('epic.json', record),
+    ...<5 lines>...
+        'output-body-file': str(self.root / 'synced epic.md'),
+    }, omit=('--tasks',))
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 63, in execute
+    script, argv = arguments(document, heading, values, omit)
+                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 39, in arguments
+    raise AssertionError(heading + ': no repeated-argument contract for ' + flag)
+AssertionError: Sync Epic: no repeated-argument contract for --revision
+
+======================================================================
+FAIL: test_reservation_uses_the_published_record_date (test_command_contracts.DocumentedCommandBehavior.test_reservation_uses_the_published_record_date)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace/skills/work-planner/test/test_command_contracts.py", line 176, in test_reservation_uses_the_published_record_date
+    self.assertIn(records + '/2001-02-03-943-i07-e00-w01-work', output.read_text())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'https://github.com/o/r/tree/engineering/artifacts/planning/2001-02-03-943-i07-e00-w01-work' not found in '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| [W01](https://github.com/o/r/tree/engineering/artifacts/planning/2026-11-06-943-i07-e00-w01-work/) | Work | AC1 | | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n'
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.587s
+
+FAILED (failures=3)
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace (name more with SBX_EXTRA_ROOTS=dir1:dir2)

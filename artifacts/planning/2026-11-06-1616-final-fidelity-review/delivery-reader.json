@@ -1,0 +1,32 @@
+{
+  "revision": "87b9bda45e453995352b5b420586832d5e1de45f",
+  "baseline": "03d353300ca4804194fd50d316d73e3bf1270d1d",
+  "new_fidelity_regressions": [],
+  "inherited_findings": [{
+    "subject": "Retained task worktree resumes through unconditional creation",
+    "current": ["skills/work-planner/protocols/unit-dispatch.md:88-98", "skills/work-planner/artifacts/delivery-branches.md:258-270"],
+    "baseline": ["skills/work-planner/protocols/unit-dispatch.md:51-54", "skills/work-planner/artifacts/delivery-branches.md:72-79"],
+    "scenario": "Capacity disappears after worktree preparation. A later same-run preparation resumes with its existing branch and path, but the documented route runs git worktree add -b again. The same transformation exists at baseline.",
+    "evidence": "Source trace only; no worktree command executed"
+  }],
+  "preserved_routes": [
+    "Joined units require complete scope and consume one slot. Lane 02 admits lane 02 and unlaned units, preserving 02 versus 2.",
+    "Actual session states prevent duplicates; capacity is checked before start; publication precedes verified reservation.",
+    "Published linked agent review records match exact head/base; hot-fix base_ref has its separate contract.",
+    "Epic integration withdraws ready/In Review at failed gates, refreshes evidence after content changes, and distinguishes human review, GitHub refusal and permission-layer refusal.",
+    "Understand verifies a detached head, measures graph status/surface/context/flows there, discards stale results and repeats affected measurements after reindex."
+  ],
+  "local_validation": [
+    {"command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest test_dispatch test_agent_review test_checkouts -q", "result": "47 passed"},
+    {"command": "Six named DocumentedCommandBehavior tests: empty dispatch selections, survey export, task/hot-fix recording without criterion ticks, initiative output", "result": "6 passed"}
+  ],
+  "evidence_gaps": [
+    "No live tracker, graph, merges, worktree creation or publication executed.",
+    "No repository-owned test_overview.py/test_graph*.py or captured GitNexus response fixtures were present. Graph freshness evidence is source and checkout-declaration tests only.",
+    "Direct Deliver and Understand context plus selected owners/callers were read. Recursive Advance-to-Sync-to-closure and Hoist dependencies were not exhaustively retrieved or executed; this is not a complete end-to-end disclosure pass.",
+    "Large batched output and multi-file diff truncation occurred. Operative delivery-branches Task Branches and guideline tail were recovered; truncated multi-file diff is not complete baseline receipt."
+  ],
+  "source_mutation": false,
+  "git_mutation": false,
+  "tracker_or_graph_calls": false
+}

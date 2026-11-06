@@ -1,0 +1,123 @@
+{
+  "original_files": 55,
+  "current_files": 58,
+  "original_fields_requiring_semantic_review": [
+    {
+      "file": "artifacts/acceptance-criteria.md",
+      "field": "Tick State",
+      "original": "A ticked criterion carries verification evidence. Epic criteria can derive that evidence from passed checks under Test Evidence. Done on the row or table that cites it follows Tables and Work Breakdown. A criterion refused as not ready to verify is returned unticked with what it is missing."
+    },
+    {
+      "file": "artifacts/board-queue.md",
+      "field": "Unresolvable Dependencies",
+      "original": "A `Depends on` entry that names no row and links no issue, names an issue the run was not given, or names a row the epic it points to does not carry, cannot resolve. No delivery makes it readable, so it is told apart from a prerequisite that has not landed. - The report names the row and the entry as written, and a run that met one while deciding a placement exits nonzero. - The epic that row gates keeps the Status it holds. The run proposes no move for it, so a Ready epic is not returned to Backlog on an entry nobody can read. - Every entry of a cell is read, so a cell carrying two names both."
+    },
+    {
+      "file": "artifacts/board.md",
+      "field": "Themes",
+      "original": "Every initiative belongs to one theme, and each theme has one project board. Each project names its own themes. - Example. workflow-server's themes. | Theme | Label | Description | | --- | --- | --- | | Canon | `theme:canon` | Definitions Checked Against the Design Canon | | Language | `theme:language` | The Definition Language and Its Rules | | Mechanical | `theme:mechanical` | The Engine That Runs Definitions | | Delivery | `theme:delivery` | What Reaches Agents and Hosts | | Planning | `theme:planning` | Project 17 \u2014 Process: How Work Is Planned and Delivered |"
+    },
+    {
+      "file": "artifacts/board.md",
+      "field": "Proposals",
+      "original": "- The board is titled `Proposals`. It holds proposal issues, the incoming funnel for work that may become an initiative. - Its copy source is the open board titled `Proposals Template`. That template carries Priority: High, Medium and Low, and its view is a board grouped by Status. - Suggested. Raised, and nobody has taken it up. A new proposal lands here, with no assignee. - Considering. Someone is weighing the goal, the evidence and the criteria. That person is the assignee. - Approved. Qualified to become an initiative. The assignee is the user. - Held. Not now. It stays on the board, with no assignee. - Declined. It will not become an initiative. It has no assignee."
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "field": "Branches",
+      "original": "A project states its long-lived branches in `config/branches` at its root, one name per line. A run reads the statement at the commit it evaluates, in the repository its checkout locates; which worktree the checkout is, and what its working files hold, choose nothing. The evaluated revision is fetched before it is read. - An epic sync evaluates each of its epic bases, such as `origin/i07/e00/main` and `origin/i07/e00/workflows`. Declarations that disagree across those bases leave the names unevaluable, and each is reported with its source. - A read of one epic's branches evaluates its epic base, such as `origin/i07/e00/main`. - Base preparation, before a base exists, evaluates the long-lived branch the base is cut from, such as `origin/main`. - A delivery survey evaluates the long-lived branch that states the project's branches, such as `origin/workspace`. - Verification of merged delivery evaluates the merged commit. - Example. workflow-server's `config/branches` names `docker`, `main`, `workflows` and `workspace`."
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "field": "Epic Bases",
+      "original": "- Each long-lived branch an epic changes has a base branch, named for the initiative, the epic and that branch, and rooted in that long-lived branch. Its prerequisite epics are closed as completed with every delivery base merged. - Example. An epic base cut from `main` is `i07/e00/main`. - The base's last segment is its long-lived branch, which gives the target it merges and is merged into. - Each base is worked in one worktree, named by the base under the worktree directory of the repository's main working tree. - Example. `i07/e00/main` merges `main`, and is checked out at `.worktrees/i07/e00/main`. - Every pull request delivering the epic's tasks targets that epic base. - A completed epic is delivered by merging each base into its long-lived branch. The epic stays open until every base has merged. Another epic still incomplete holds no base back unless it is a prerequisite. - An epic sync reports each open or merged pull request off these routes as `target`: a task pull request into anything but one of its epic's bases, and an integration pull request into anything but the long-lived branch its head names."
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "field": "Producer Outputs",
+      "original": "A task row naming another epic's row starts once that row is delivered and each output it delivered is available at the consumer's base commit. - The output. Each merged pull request the producer row links carries its merge commit, on the long-lived branch its base names. Each commit the row links is an output of its own. - Available. The output is an ancestor of the consumer epic's base on that branch, as the remote holds it at the evaluated commit, or of the long-lived branch itself while the consumer has no base there. An output another repository holds is available once it has reached its long-lived branch: delivered there, or carried by an integration pull request merged after it. - Not available. A merge into the producer's own base alone, a merge into a ref that is neither an epic base nor a long-lived branch, such as a task branch, an output recording no merge commit, a commit the checkout does not hold, and a consumer base moved to a commit without the output each leave the row waiting. - Not gates. The producer epic's other rows and its closure. - Record. Each reading names the producer row, the delivery, the output commit, the consumer revision and commit, and the answer. The integration, review and human-approval gates on each epic stand apart from it. - Example. `#944 W02: E00:W01 #9 3f2a1c0d9b1e available at origin/i07/e01/main 8c4d2e7a1f30`."
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "field": "Review Worktrees",
+      "original": "A reviewed pull request is read in a detached worktree, named by its number under the `pr` folder of the worktree directory of the repository's main working tree. - Example. Pull request 950 is read at `.worktrees/pr/950`."
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "field": "Task Branches",
+      "original": "A unit's task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`. The unit's pull request is opened from this branch into that base. - Changed branches. A unit changes the long-lived branches its rows' work items name in their Component declarations. A unit of an epic with one base changes that base. - Unplanned rows. A free row linking no work item is unplanned: its session writes the work item after dispatch. Its unit changes every epic base, and the session opens a pull request only from each branch its work changes. - Several long-lived branches. A unit whose rows name more than one long-lived branch takes one task branch per epic base it changes, cut from that base, since the bases share no history. Each is the unit's branch with the base's long-lived branch as its last slug word, and opens its own pull request into its own base. - Example. A unit changing `main` and `workflows` works on `i01/e02/w04-write-defaults-main` from `i01/e02/main` and `i01/e02/w04-write-defaults-workflows` from `i01/e02/workflows`. - Hot-fix. A hot-fix works on the branch its Branch names. Each worktree is named by its branch under the worktree directory of the repository's main working tree."
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "field": "Stash Entries",
+      "original": "Every worktree of a repository shares one stash list, so a delivery session that stashes names its entry with a message no other session's entry carries, and acts on that entry alone. - Found. An entry is found by its message, never by its position in the list. - Restored. An entry is restored with `git stash apply` on that entry's commit, never with a bare `git stash pop`, which takes whichever entry tops the list. - Dropped. The session that made an entry drops it once restored, by the `stash@{<n>}` reference its message holds at that moment, since `git stash drop` takes no bare commit. - Example. `git stash push -m \"i11/e10/w29 before base merge\"`, then `git stash list --format='%H %gd %s'` to find the entry, `git stash apply <entry-commit>`, and `git stash drop \"stash@{<n>}\"`."
+    },
+    {
+      "file": "artifacts/delivery-brief.md",
+      "field": "Execution Instructions",
+      "original": "The caller supplies the session procedure and its invocation context. The brief includes that procedure with its planning, publication, merge, debt and arising-issue obligations, plus the confirmed decisions and evidence needed to execute it. A missing instruction or prerequisite is a finding returned to the caller."
+    },
+    {
+      "file": "artifacts/delivery-evidence.md",
+      "field": "Completeness",
+      "original": "Evidence is complete when every pull request the plan links has a record, which Read Initiative Pull Requests fetches whatever its title. Incomplete evidence is a blocker, not a partial result."
+    },
+    {
+      "file": "artifacts/delivery-evidence.md",
+      "field": "Named Delivery",
+      "original": "A pull request that delivers an epic carries that epic's reference in its title, as `[I07:E00] Purpose`. A merged delivery linked by an epic task row whose title has no prefix or only a matching initiative or task prefix receives that row's epic prefix before the evidence returns. Correct titles remain unchanged; a title naming another epic is a conflict. Publish the repaired title and fetch it again before treating the prefix as verified."
+    },
+    {
+      "file": "artifacts/dispatch-batch.md",
+      "field": "Authorization",
+      "original": "One run records its board identity, scope selectors and requested lane in a JSON object. The scope is the selected board (`[\"\"]`), or a list of repository-qualified initiative, epic, task or hot-fix identities, such as `o/r#I07`, `o/r#I07:E00`, `o/r#I07:E00:W01` or `o/r#F02`. Every row of a joined unit must fall within that scope. An explicit joined selector, `o/r#I07:E00:W01+W02`, authorizes both rows. The requested lane meets Index, represented as `null` when none is requested. ```json {\"board\": \"users/o/projectsV2/7\", \"scope\": [\"o/r#I07\"], \"lane\": null} ```"
+    },
+    {
+      "file": "artifacts/dispatch-batch.md",
+      "field": "Session Inventory",
+      "original": "The harness supplies each observed session's `unit`, `session` identity and `state`: `preparing`, `running`, `review`, `blocked` or `completed`. Every state except `completed` holds its rows against another start. Only observed execution changes justify a state update. Free capacity is the harness's actual available worker slots, accounting for the coordinator, other sessions and component contributors; a review or blocked label alone frees no slot. ```json [{\"unit\": \"o/r#I07:E00:W01\", \"session\": \"worker-1\", \"state\": \"running\"}] ```"
+    },
+    {
+      "file": "artifacts/dispatch-batch.md",
+      "field": "Selection",
+      "original": "The batch retains authorized, unoccupied units in survey order, bounded by free capacity. Overlapping joined rows are selected once. Its `units` carry each selected export entry, and `pending` counts the other eligible units. Its `action` is `dispatch` when units fit, `wait` while scoped workers execute or admitted work awaits capacity, and `stop` when neither remains. Holds, blockers and required human review remain in the delivery evidence returned alongside the batch."
+    },
+    {
+      "file": "artifacts/dispatch-batch.md",
+      "field": "Start Readiness",
+      "original": "The start names one selected unit, has a currently free harness slot and overlaps no held or running session. Its supplied evidence names that unit, the planning record confirmed on the remote engineering branch, and the record associated with its confirmed hold. For rows, that association is read from every live row reservation; for a hot-fix it is the run's record for the unit whose board hold was confirmed. The evidence is gathered in that order before execution; any missing, mismatched or unverified evidence blocks the start. ```json {\"unit\": \"o/r#I07:E00:W01\", \"published_record\": \"2026-11-05-943-i07-e00-w01-work\", \"reserved_record\": \"2026-11-05-943-i07-e00-w01-work\", \"reservation_verified\": true} ```"
+    },
+    {
+      "file": "artifacts/epic-issue-body.md",
+      "field": "Required Criteria",
+      "original": "A project states the criteria its epics must carry in `config/required-criteria.json` at its root. The file is a JSON array, and each entry is one required criterion with these fields, each a non-empty string except `paths`: | Field | What it states | | --- | --- | | `branch` | The long-lived branch the criterion's work reaches. | | `paths` | A non-empty list of files and directories on `branch`. An epic carries the criterion when a pull request of its work reaching `branch` changes a file that is one of them or lies under one. | | `criterion` | The criterion's text, which the epic carries after its `ACn.` label. | | `phrase` | A phrase identifying the criterion in an epic that carries it, matched without regard to case. | | `row` | The Description of the task row that delivers the criterion. | - The declared row delivers the criterion. It carries the declared `row` as its Description, depends on the rows whose work changes the declared paths, and covers that criterion alone. - The tracker states what the work changes. The check reads each pull request's changed files as the tracker lists them. A pull request reaching the declared branch whose changed files are not supplied leaves the criterion unevaluable, unless another pull request of the epic is known to change a declared path. - The evaluated commit holds the statement. The check reads the file at the commit its evaluated revision resolves to, in the repository its checkout locates, and names that path, commit and repository as its source. Which worktree the checkout is, and what its working files hold, choose nothing. - A project declaring nothing requires nothing. A missing or empty file at the evaluated commit, or an empty array, declares no required criterion, and the check reports none. A project declaring nothing acquires no other project's criteria. - An unreadable statement is unevaluable. A revision resolving to no commit, unreadable JSON, a value other than an array, or an entry lacking a field or stating `paths` as anything but a non-empty list of non-empty strings leaves the project's required criteria unevaluable. The check reports that and names the fault, and reports no epic as lacking a criterion. - Example. workflow-server requires its corpus audit of work that changes the workflow definitions under `corpus` on `workflows`: ```json [ { \"branch\": \"workflows\", \"paths\": [\"corpus\"], \"criterion\": \"The definitions this epic changes carry no outstanding confirmed finding, one neither fixed on the epic's branch nor taken by an issue, as the canon audit's coverage report shows.\", \"phrase\": \"canon audit\", \"row\": \"Canon audit of the changed definitions\" } ] ```"
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "field": "Titles",
+      "original": "- Titles. - A title is a short name, a colon, and a subtitle stating the outcome. - The name is two or three words and the subtitle a succinct summary of at most ten, in title case. - A prefixed title separates its levels with colons, then the name. - Bodies. - Every body keeps the section order of its kind template and the columns of that kind's table. - Fill each `{{\u2026}}` and delete a section the template marks as optional when it has nothing to say. - Code references. A body references code as a link on the words it supports, a permalink pinned to a commit with its line anchors, never a bare `path:line`: `the extrinsic type`. - Succinct items. Each Problem and Proposal item, and each of its sub-bullets, is at most two lines. A bold opener does not count toward the two. Several distinct points go in a bulleted list, never packed into those two lines. - Bold leads. - A Problem or Proposal item that opens with a bold statement puts its body on the next line, indented under the bullet: ```markdown - Length is the only check on entry. The data source decodes the key and never checks its value. ``` - A bulleted item with sub-bullets keeps the line introducing them on its bold statement's line: ```markdown - Framing is undocumented. Nothing describes: - the runtime's extrinsic type; ``` - Labels. - Add `enhancement`, `bug` and `tech-debt` as they apply. - Example. workflow-server adds `workflows`. - Only labels that exist are applied."
+    },
+    {
+      "file": "artifacts/issue-body.md",
+      "field": "Format Findings",
+      "original": "- Fixed. Structural changes preserve the wording and are present in the returned body file, with a body diff. - Apply. Title or label changes for the caller to publish on the issue. - Decide. Missing content or a judgement for the caller to resolve."
+    },
+    {
+      "file": "artifacts/pull-request.md",
+      "field": "Merge Permission",
+      "original": "The agent harness lets a delivery session merge a task pull request into an epic base, such as `i07/e00/main`, without a prompt. A merge into the default branch stays with a person. - Claude Code. User settings (`~/.claude/settings.json`) grant it with an `autoMode.allow` rule and an `autoMode.environment` entry, each array keeping `\"$defaults\"`; auto mode reads neither from project settings. `claude auto-mode config` prints the rules in effect. ```json { \"autoMode\": { \"environment\": [ \"$defaults\", \"Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review\" ], \"allow\": [ \"$defaults\", \"Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review. Merges into the default branch are not covered\" ] } } ```"
+    },
+    {
+      "file": "artifacts/standup-report.md",
+      "field": "Scope",
+      "original": "The default window opens a week before today. A supplied start date selects another window, such as the previous working day for a daily standup. An initiative filter names one initiative, qualified by repository when its number is ambiguous. Each repository numbers its own initiatives, and an initiative's epics and task issues may live in other repositories. Each item's place follows the Work Breakdown links, or for a task issue the pull request whose Development field links it. A pull request counts towards the epic of its reference in the epic's repository or its initiative's."
+    },
+    {
+      "file": "artifacts/standup-report.md",
+      "field": "Unresolved Evidence",
+      "original": "An unresolved initiative identifies its number and repository for the caller to fetch. An off-board dependency is blocked. An epic with unreadable Work Breakdown is summarised without tasks and returned as a finding. Unresolved lines are separate from the copyable report."
+    }
+  ],
+  "missing_global_command_flags": [],
+  "planner_script_diff": "diff --git a/skills/work-planner/scripts/format.py b/skills/work-planner/scripts/format.py\nindex 012e89b9f..ee85a584d 100644\n--- a/skills/work-planner/scripts/format.py\n+++ b/skills/work-planner/scripts/format.py\n@@ -210,7 +210,7 @@ def template_body(kind: str) -> str:\n     for line in path.read_text().splitlines(keepends=True):\n         if fence:\n             marker, capture = fence\n-            if re.fullmatch(re.escape(marker[0]) + '{' + str(len(marker)) + r',}\\s*', line):\n+            if re.fullmatch(r' {0,3}' + re.escape(marker[0]) + '{' + str(len(marker)) + r',}\\s*', line):\n                 if capture:\n                     found.append(''.join(body))\n                 fence = None\n"
+}
