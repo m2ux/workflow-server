@@ -16,7 +16,7 @@ The rules this skill's files follow alongside the [shared skill guidelines](../g
 These rules apply to mode and protocol procedures and artifact operations.
 
 - **Explicit execution.**
-  State the action, the condition selecting it and the result used by the next step. Nested calls follow [Contextual Contracts](#prose). Branches state where to continue or stop; retries name the repeated transformation and refreshed evidence. Distinguish reading a definition from executing a procedure.
+  State the action, the condition selecting it and the result used by the next step. Nested calls must follow [Contextual Contracts](#prose). Branches state where to continue or stop; retries name the repeated transformation and refreshed evidence. Distinguish reading a definition from executing a procedure.
 
 - **Openings.**
   State a procedure’s purpose once in its opening. Its steps own the actions, and linked Fields own the shapes and constraints; cite those definitions at use without repeating them.
@@ -40,6 +40,9 @@ These rules apply to mode and protocol procedures and artifact operations.
   Named findings and conditional branches follow the action or scope that governs them. Each branch uses a named child heading or a conditional introductory item, with flush content in the step's item format. Mutually exclusive choices share one decision step. Place actions common to all branches after the branch group, with an explicit continuation and any shared return to the caller.
 
 ## Prose
+
+- **Normative wording.**
+  Use explicit lowercase modals for conformance expectations: must for obligations, should for recommendations and may for permission. Use must not for prohibitions and should not for discouraged behavior. Preserve mandatory gates and keep factual descriptions and conditional eligibility tests declarative. Name actual validation with an explicit action such as Check or Validate, or invoke a linked validator; a conformance expectation alone performs no validation.
 
 - **Contextual contracts.**
   Use [Link Roles](rules.md#link-roles) on command inputs, command outputs and every called command, operation, protocol or procedure. Define the command’s complete, derivable I/O contract through Field links at actual use in prose or the enriched invocation, without separate Inputs or Outputs inventories. An annotated argument establishes its binding once; prose adds only meaningful usage or conditions. Nested calls retain the transformation link and any selection, condition, retry or result handling; the callee owns its contract. Preserve preconditions, execution location, authorization, optional and repeated arguments. After drafting, independently check parameters, prose, conditions and provided results for consumed inputs or outputs with no explicit Field link; implied values are contract gaps.
@@ -101,11 +104,11 @@ Read this before adding or changing a mode.
 - **No procedure in an outcome.**
   An outcome does not name a procedure, a step, or a command, and it does not link to one.
 - **Procedure.**
-  The top-level procedure is the main path. A short sequence that no other file references stays there. A subsection is an alternative path, a loop whose steps would otherwise be repeated, a unit another file references, or a sequence long enough that the top-level step only names it. Plan mode keeps review, and keeping the goal current, in that sequence. Keeping the goal current repeats the review. A subsection follows [Openings](#procedure). A step calls the body artifact's procedure rather than copying it.
+  The top-level procedure is the main path. A short sequence that no other file references stays there. A subsection is an alternative path, a loop whose steps would otherwise be repeated, a unit another file references, or a sequence long enough that the top-level step only names it. Plan mode keeps review, and keeping the goal current, in that sequence. Keeping the goal current repeats the review. A subsection must follow [Openings](#procedure). A step calls the body artifact's procedure rather than copying it.
 - **Prerequisites.**
   Prerequisites open with `Read these files first.` They list every file the mode's Procedure, Outcomes or Fields link to, including another mode that step runs. They do not list a family common the mode does not link to. Reading the body artifact includes the common file, because that artifact lists it. Recalculate the list after changing calls or references: retain direct dependencies, including files owning called subsections; remove entries whose last direct use is gone. Caller attribution and descriptions of another mode's internals do not create dependencies for the callee.
 - **Procedure steps.**
-  Mode procedures follow the [procedure rules](#procedure), identifying required context in their instructions and call sites.
+  Mode procedures must follow the [procedure rules](#procedure), identifying required context in their instructions and call sites.
 - **Body files.**
   A file that populates a body is named `<subject>-body.md`. The mode owns how many of that subject a request becomes.
 - **Other modes.**
@@ -138,7 +141,7 @@ Read this before adding or changing a protocol.
 - **Entered whole.**
   One file holds one protocol. A caller runs the file; it does not link a step. A sequence worth calling on its own is its own protocol.
 - **Procedure.**
-  The steps follow the [procedure rules](#procedure). Protocols identify required context in their instructions and call sites; calls follow the [routing rules](#modes).
+  The steps must follow the [procedure rules](#procedure). Protocols identify required context in their instructions and call sites; calls must follow the [routing rules](#modes).
 - **No closing summary.**
   What a protocol changes, and what a blocker leaves unchanged, is stated by the step that changes it. A protocol carries no section restating the result; a reader following the procedure and its links has it already, and a summary goes stale against the steps it describes.
 - **Prerequisites.**
@@ -163,7 +166,7 @@ Read this before adding or changing an artifact.
 - **Descriptions.**
   Describe the artifact's subject and contents directly. Omit inconsequential implementation qualifiers such as virtual. Distinguish proposed changes from applied state where the caller needs that distinction; a queue is not itself proposed merely because its changes await application.
 - **Prose API.**
-  Shared artifact operations form a prose API addressed by subsection titles. They perform substantive selection, sequencing, decisions or validation for their subject. Capabilities implementing the same interface accept its inputs and provide its promised results. Calls follow [Contextual Contracts](#prose) and the [routing rules](#modes). Related artifacts supply evidence; coordinating their changes belongs to a protocol.
+  Shared artifact operations form a prose API addressed by subsection titles. They perform substantive selection, sequencing, decisions or validation for their subject. Capabilities implementing the same interface accept its inputs and provide its promised results. Calls must follow [Contextual Contracts](#prose) and the [routing rules](#modes). Related artifacts supply evidence; coordinating their changes belongs to a protocol.
 
 - **Operation scope.**
   An operation exists because a procedure calls it. Classify the work by its subject and behaviour, not its verb or script name: a read that sequences access steps is an operation, and a plan that derives an artifact's state is an operation. Inline an artifact operation with exactly one linked reference into that procedural caller, preserving its selections, guards, ordered actions and result continuation. Field definitions and command specifications keep their owning homes. Absorb a pure forwarding operation into its callers, keeping any shared conditions at their owning command or field; operations with substantive work and multiple references remain shared.
@@ -226,7 +229,7 @@ Read this before adding or changing a reference.
 - **Opening.**  The bulleted list has one item for each issue type.
 - **Section order.**  The opening, Modes and Dependencies occupy the entry point.
 - **Issue bodies.**
-  The skill's prose layout applies to its instructions. Issue bodies follow [Issue Body](artifacts/issue-body.md#fields); pull request bodies follow [Pull Request Body](artifacts/pull-request-body.md#fields).
+  The skill's prose layout applies to its instructions. Issue bodies must follow [Issue Body](artifacts/issue-body.md#fields); pull request bodies must follow [Pull Request Body](artifacts/pull-request-body.md#fields).
 - **Common conventions.**
   The entry point requires [Rules](rules.md) and [Conventions](conventions.md) before mode selection. [Configuration](configuration.md) holds deployed values, reached by their consuming sections. Graph-specific setup belongs to [Repository Graph](artifacts/repository-graph.md).
 

@@ -12,7 +12,7 @@ Read raw task-table Lane cells through the Lane module and provide [Lane Result]
 "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" read '[**&lt;epic-body-file&gt;**](#epic-body-file "○")'
 </pre></big>
 
-- Results meet [Assignments](#assignments).
+- Results should meet [Assignments](#assignments).
 
 ### Write Lane Assignments
 
@@ -37,7 +37,7 @@ Report a unit's common lane or assignment findings and provide [Lane Result](#la
   --unit '[**&lt;task-ids&gt;**](#unit-task-ids "○")'
 </pre></big>
 
-- Results meet [Unit Consistency](#unit-consistency).
+- Results should meet [Unit Consistency](#unit-consistency).
 
 ### Evaluate Lane Admission
 
@@ -52,7 +52,7 @@ Omit the lane option when the request supplies none.
   --lane '[**&lt;lane-index&gt;**](#requested-index "○")'
 </pre></big>
 
-- Results meet [Admission](#admission).
+- Results should meet [Admission](#admission).
 
 ## Fields
 

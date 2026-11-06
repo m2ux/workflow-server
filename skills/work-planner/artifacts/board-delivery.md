@@ -120,13 +120,13 @@ Only an initiative, an epic or a hot-fix stands In Review. An open task issue is
 
 A task whose row links a reserved planning folder is In Progress. A work-item file link alone leaves the row available. Dispatch writes are limited to In Progress for held tasks and epics, and In Review for completed epics; the shared DISPATCH jurisdiction refuses other statuses and removals.
 
-Task readiness meets [Task Eligibility](board-queue.md#task-eligibility). The caller supplies saved issue bodies and closure state.
+Task readiness must meet [Task Eligibility](board-queue.md#task-eligibility). The caller supplies saved issue bodies and closure state.
 
 A task gated on an [unresolvable dependency](board-queue.md#unresolvable-dependencies) keeps the Status it holds: the row waits on no delivery, so no status follows from its gate. The run names the row and the entry and exits nonzero, as every reader of that cell does.
 
 ### Change Calls
 
-The result contains calls for issues to add, items to remove, Status to set and assignees to add or remove. Each call names its affected issue and board item. Assignees follow [Assignees](board.md#assignees).
+The result contains calls for issues to add, items to remove, Status to set and assignees to add or remove. Each call names its affected issue and board item. Assignees must follow [Assignees](board.md#assignees).
 
 ### Missing Evidence
 

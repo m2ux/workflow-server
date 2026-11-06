@@ -73,12 +73,12 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Acceptance Criteria
 
-- A task criterion meets the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria).
+- A task criterion must meet the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria).
 
 ### Sections
 
 - A task has the [epic issue body](epic-issue-body.md)'s sections without the Work Breakdown table.
-- New task planning follows [Work Breakdown](epic-issue-body.md#work-breakdown). This body describes an existing task issue.
+- New task planning must follow [Work Breakdown](epic-issue-body.md#work-breakdown). This body describes an existing task issue.
 
 ### Task Record
 

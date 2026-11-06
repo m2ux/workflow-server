@@ -103,7 +103,7 @@ A task is Ready only when its epic is Ready or In Progress and every row its Dep
 
 ### Ready Units
 
-A Ready unit contains one unjoined row or all rows of a unit defined by [Joins](dependency-graph.md#joins). Every member is free, undelivered and meets [Task Eligibility](#task-eligibility) under its epic's proposed status; row availability follows [Task Delivery](epic-issue-body.md#task-delivery). Units include rows with no linked work item. Status and assignee calls depend on priority and delivery state.
+A Ready unit contains one unjoined row or all rows of a unit defined by [Joins](dependency-graph.md#joins). Every member must be free and undelivered and meet [Task Eligibility](#task-eligibility) under its epic's proposed status; row availability follows [Task Delivery](epic-issue-body.md#task-delivery). Units include rows with no linked work item. Status and assignee calls depend on priority and delivery state.
 
 ### Proposed Changes
 
@@ -118,7 +118,7 @@ The queue contains calls for Status and assignee changes to initiatives, epics a
 | `wait` | An initiative is held In Progress by an epic it lists that is active, handed off or In Review | That initiative, the open delivery pull requests, and each epic In Review, awaiting review or held by a session |
 | `reconcile` | An initiative would return to Backlog while an epic of it is active, handed off or In Review | That initiative and each such epic, for the user to finish or release |
 | `next` | An initiative is Ready or In Progress and has epics that are Ready | Those epics |
-| `unit` | A unit meets [Ready Units](#ready-units) and [Unit Consistency](lane.md#unit-consistency) | Its initiative, epic and task ids followed by its [Report Label](lane.md#report-label), for example `unit I01:E00:W01+W02: lane 2` |
+| `unit` | A unit must meet [Ready Units](#ready-units) and [Unit Consistency](lane.md#unit-consistency) | Its initiative, epic and task ids followed by its [Report Label](lane.md#report-label), for example `unit I01:E00:W01+W02: lane 2` |
 | `invalid` | A task has an [assignment finding](lane.md#assignments), or a free unit fails [Unit Consistency](lane.md#unit-consistency) | Its affected rows and values; the invalid unit is not reported as Ready, and the run exits nonzero |
 | `rank` | An open initiative has an open epic with no priority label that is not [handed off](#epic-handoff) | That initiative and each such epic, for the user to rank |
 

@@ -40,7 +40,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - Fetch the project checkout’s remote epic bases and long-lived branches before reading producer outputs against them.
 - Read each free row’s work-item file from the supplied engineering worktree.
 - Use `--date` to override the [record date](#record-date "○").
-- Omit `--lane` when the run names no lane. Offered units meet [Admission](lane.md#admission).
+- Omit `--lane` when the run names no lane. Offered units must meet [Admission](lane.md#admission).
 - Omit `--dispatch-plan` when no dispatch export is requested.
 
 - The computation runs [Evaluate Lane Admission](lane.md#evaluate-lane-admission "ƒ") internally for each derived free unit under [Admission](lane.md#admission). The requester decides holds and dispatch, and supplies missing evidence for another pass.
@@ -120,7 +120,7 @@ The optional destination file for the dispatch export; absent when no export is 
 
 ### Plan Report
 
-The report whose units and diagnostic lines meet [Report Lines](#report-lines).
+The computed report. Its units and diagnostic lines must meet [Report Lines](#report-lines).
 
 ### Workspace
 

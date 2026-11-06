@@ -35,7 +35,7 @@ Kept, subsumed or left, with a reason. A referenced planning record is carried w
 
 ### Draft Bodies
 
-Each proposed body meets its own kind's shape and states the result. It carries no account of how the work arrived. A source reference says what detail it holds.
+Each proposed body must meet its own kind's shape and states the result. It carries no account of how the work arrived. A source reference says what detail it holds.
 
 ### Links
 

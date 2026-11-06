@@ -11,6 +11,7 @@
   "procedure/list-introductions": ["review"],
   "procedure/dependent-instructions": ["review"],
   "procedure/branch-headers": ["review"],
+  "prose/normative-wording": ["review"],
   "prose/rule-homes": ["review"],
   "prose/scheme": ["review"],
   "prose/examples": ["review"],

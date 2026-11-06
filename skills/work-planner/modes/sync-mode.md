@@ -274,7 +274,7 @@ Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with e
 
 ##### 1. Create Absent Proposals Board
 
-When [Selected Kind](../artifacts/board.md#selected-kind) is proposals and no open board under [Board Owner](../artifacts/board.md#board-owner) has the [proposals title](../configuration.md#proposals-board), Apply [Create Proposals Board](../artifacts/board.md#create-proposals-board "ƒ"). The copy source and the title meet [Proposals](../artifacts/board.md#proposals).
+When [Selected Kind](../artifacts/board.md#selected-kind) is proposals and no open board under [Board Owner](../artifacts/board.md#board-owner) has the [proposals title](../configuration.md#proposals-board), Apply [Create Proposals Board](../artifacts/board.md#create-proposals-board "ƒ"). The copy source and the title must meet [Proposals](../artifacts/board.md#proposals).
 
 ##### 2. Create Absent Theme Board
 

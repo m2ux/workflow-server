@@ -104,7 +104,7 @@ A hot-fix's branch is cut from its [target](hotfix-body.md#target), which its `u
 ### Delivery Record
 
 - A hot-fix's merge is recorded on its own issue alone: its criteria and delivering pull request, then its closure. It records nothing on an epic or initiative.
-- Its board item follows [Board Status](#board-status) once the issue closes.
+- Its board item must follow [Board Status](#board-status) once the issue closes.
 
 ### Repository
 

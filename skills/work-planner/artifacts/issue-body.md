@@ -235,7 +235,7 @@ The snapshot is a JSON array of fetched repository objects. Exit 1 means finding
 
 ### Shared Acceptance Criteria
 
-An acceptance criterion meets these. A kind adds its own under its Acceptance Criteria.
+An acceptance criterion must meet these. A kind adds its own under its Acceptance Criteria.
 
 - States an end state, not an activity.
 - Names or implies the instrument that observes it: a test, a guard, a command or a measure.

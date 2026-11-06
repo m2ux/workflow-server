@@ -74,7 +74,7 @@ One declaration line ahead of the first heading, naming the single component the
 
 - Component names the component the Implementation part extends, meeting [Component](#component).
 - Overview states what the task delivers and why.
-- Problem and Proposal meet [Problem and Proposal](issue-body.md#problem-and-proposal); the Proposal starts with the scene.
+- Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal); the Proposal starts with the scene.
 - Work Breakdown decomposes the work into parts, such as analysis, plan, implementation, review and test. Its columns are Part and Description. The test row names the checks required by the work.
 
 ### Task Context

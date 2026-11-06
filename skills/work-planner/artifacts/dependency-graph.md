@@ -63,7 +63,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.
 - The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files "○") defines them.
 
-- Initiative edges follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.
+- Initiative edges must follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.
 - It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.
 - It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero.
 - It prints each candidate unit its rows do not join and no `R=` record line names exactly, with both resolutions and each direct edge a join drops, and each candidate split by rule with its reason, as [Joins](#joins) states. An `R=` file it cannot read is a problem.
@@ -163,7 +163,7 @@ Two task rows in different epics whose work items declare one [component](work-i
 The undelivered rows of one epic whose work items declare one [component](work-item.md#component) are a candidate unit: one pull request writes that file once, where separate ones each rebase on the last. Rows declaring different components need no accounting.
 
 - **A joined unit has one lane.**
-  Joined rows meet [Unit Consistency](lane.md#unit-consistency).
+  Joined rows must meet [Unit Consistency](lane.md#unit-consistency).
 - **A candidate is answered once.**
   Its rows name each other in Joins, or one line of a record names exactly its rows and why they stay split. A line naming only some of its rows, or rows besides, accounts for none.
 - **Both resolutions are stated where the candidate is reported.**

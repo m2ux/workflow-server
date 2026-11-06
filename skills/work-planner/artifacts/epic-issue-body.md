@@ -146,7 +146,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 - `<task-pull-request-map>` is a comma-separated list of `<task-id>=<pull-request-number>` pairs, with a pair for each pull request a task id links. Pass each task JSON file as a separate argument after `--tasks`.
 
-- Updated rows meet [Task Delivery](#task-delivery) and [Work Breakdown](#work-breakdown).
+- Updated rows must meet [Task Delivery](#task-delivery) and [Work Breakdown](#work-breakdown).
 
 ### Tick Epic Criteria
 
@@ -289,9 +289,9 @@ The columns are `Task | Description | Coverage | Depends on | Joins | Lane | Don
   - Joins are complete before any issue of the epic is created. Each candidate unit, the rows declaring one component, is answered as [Joins](dependency-graph.md#joins) states.
   - An empty cell is a task that shares no pull request.
 - **Lane.**
-  The row's delivery lane meets [Assignments](lane.md#assignments).
+  The row's delivery lane must meet [Assignments](lane.md#assignments).
 - **Numbering.**
-  Task numbering meets [Numbering](issue-body.md#numbering); a row whose id links a pull request is fixed.
+  Task numbering must meet [Numbering](issue-body.md#numbering); a row whose id links a pull request is fixed.
 - **Reference form.**
   A table reference uses colons (`E01:W03`, `I05:E00:W02`), and every epic reference links to that epic's issue: `[E01:W03](…/issues/937)`. Prose uses a space (`E01 W03`).
 
@@ -301,7 +301,7 @@ A criterion receives an automatic tick when every task covering it is delivered 
 
 ### Acceptance Criteria
 
-An epic criterion meets the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria). Contradictions between criteria in one epic are findings.
+An epic criterion must meet the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria). Contradictions between criteria in one epic are findings.
 
 ### Open Questions
 

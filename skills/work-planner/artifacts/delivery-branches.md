@@ -184,7 +184,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --revision '[**&lt;revision&gt;**](#revision "○")'
 </pre></big>
 
-- The names meet [Branches](#branches).
+- The names should meet [Branches](#branches).
 - Select the evaluated revision according to [Branches](#branches).
 - The names are the ones `config/branches` states at the commit `--revision` resolves to. Standard error carries their source: the configuration path, that commit and the repository.
 - `--names` reads one `--revision`.

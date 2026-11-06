@@ -59,7 +59,7 @@ Provide the corrected [Output Body](#output-body) and [Validation Findings](#val
 
 ### Problem
 
-- A Problem meets [Problem and Proposal](issue-body.md#problem-and-proposal).
+- A Problem must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
 
 ### Goal
 

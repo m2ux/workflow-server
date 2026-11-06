@@ -446,7 +446,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - Require [Authenticated Access](#authenticated-access "○") before executing the command.
 
 
-- The snapshot meets [Issue-Link Snapshot](#issue-link-snapshot "●").
+- The snapshot should meet [Issue-Link Snapshot](#issue-link-snapshot "●").
 - Each batch of [pull requests](#pull-request-records "○") costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
 - A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.
 - Exit 0 means the snapshot is complete. Exit 1 names each unreadable relation with the tracker's reason and writes no snapshot; the caller treats it as a blocker.

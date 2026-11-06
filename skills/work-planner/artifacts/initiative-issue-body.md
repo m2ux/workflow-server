@@ -99,7 +99,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 - Omit `--fix` when only a delivery report is requested.
 
-- It takes every linked epic's current JSON. Delivery findings follow [Delivery State](initiative.md#delivery-state).
+- It takes every linked epic's current JSON. Delivery findings should follow [Delivery State](initiative.md#delivery-state).
 
 - Pass every epic JSON file as a separate argument after `--epics`.
 
@@ -180,7 +180,7 @@ gh api 'repos/[**&lt;owner&gt;**](#source-evidence "○")/[**&lt;repository&gt;*
 
 ### Problem
 
-- A Problem meets [Problem and Proposal](issue-body.md#problem-and-proposal).
+- A Problem must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
 
 ### Proposal
 
@@ -198,11 +198,11 @@ The columns are `Epic | Description | Coverage | Depends on | Done`. The table h
 - Depends on names epics only. A cell that names a task fails. Name a prerequisite epic only when every task or joined unit in the dependent epic requires every task in that prerequisite epic, directly or through its dependencies. The consumed output and the work producing it establish that requirement. Dependencies on selected tasks remain in the task tables. An edge another named whole-epic prerequisite already implies is omitted.
 - An initiative dependency that only some tasks need, or that requires only part of its prerequisite epic, is overbroad. The output and its producing tasks establish the edge.
 - An epic depending on a later epic is a backward reference.
-- Epic numbering meets [Numbering](issue-body.md#numbering).
+- Epic numbering must meet [Numbering](issue-body.md#numbering).
 
 ### Initiative Acceptance Criteria
 
-An initiative criterion meets the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria) and [Requirement Characteristics](../references/requirement-characteristics.md), and:
+An initiative criterion must meet the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria) and [Requirement Characteristics](../references/requirement-characteristics.md), and:
 
 - **No counts.**
   An initiative criterion carries no counts or figures, which go stale: it measures against a named baseline or check ("against the baseline", "as the budget test measures it"). A figure stays only where it is the criterion's own target, such as a bound it holds to.

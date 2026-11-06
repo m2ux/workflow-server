@@ -16,7 +16,7 @@ The theme or proposals board the request names.
 
 #### 1. Find Requested Board
 
-Run [Find Theme Board](#find-theme-board "ƒ") for the theme in [Board Selection](#board-selection) under [Board Owner](#board-owner), or Run [Find Proposals Board](#find-proposals-board "ƒ") when that selection names proposals. The selection meets [Themes](#themes) or [Proposals](#proposals).
+Run [Find Theme Board](#find-theme-board "ƒ") for the theme in [Board Selection](#board-selection) under [Board Owner](#board-owner), or Run [Find Proposals Board](#find-proposals-board "ƒ") when that selection names proposals. The selection must meet [Themes](#themes) or [Proposals](#proposals).
 
 #### 2. Provide Missing Selection
 
@@ -44,7 +44,7 @@ Run [Copy Board Template](#copy-board-template "ƒ") with that template number, 
 
 #### 4. Retain New Board Number
 
-Retain the new board number. The copy meets [Proposals](#proposals).
+Retain the new board number. The copy must meet [Proposals](#proposals).
 
 #### 5. Link Copied Board
 

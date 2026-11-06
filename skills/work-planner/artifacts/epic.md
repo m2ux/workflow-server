@@ -67,7 +67,7 @@ Provide the integration readiness in [Delivery State](#delivery-state), with the
 
 Report an epic's delivery state against the pull requests that name it and provide [Delivery Findings](#delivery-findings "●") to the requester.
 
-Results follow [Delivery Findings](#delivery-findings "●").
+Results should follow [Delivery Findings](#delivery-findings "●").
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;

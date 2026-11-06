@@ -23,7 +23,7 @@ Initiative completion requires every linked epic to be closed as completed, ever
 | Ready to verify | The initiative criterion is unticked and every epic whose Coverage cites it is delivered. |
 | Ticked early | The initiative criterion is ticked and an epic whose Coverage cites it is undelivered. |
 
-Epic delivery follows [Delivery State](#delivery-state). Each finding names the criterion and the supporting or missing epic evidence.
+Epic delivery must follow [Delivery State](#delivery-state). Each finding names the criterion and the supporting or missing epic evidence.
 
 ### Initiative Record
 
