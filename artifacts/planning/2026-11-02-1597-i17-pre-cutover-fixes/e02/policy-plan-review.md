@@ -21,3 +21,5 @@ The complete field ledger and the new policy catalog are linked planning evidenc
 ## Publication
 
 Commit/push the reviewed record before the issue references it. A fresh pre-write read must match the captured body, title, open state and label set. Publish body only, then read back exact body/metadata and rerun formatting. The issue's priority and board state are not changed or claimed.
+
+The published body matches bodies/e02.md exactly. Its title, open state and complete label set, including priority 6, match the captured source. The saved-body format check reports zero fixed, applied or decision findings. The plan is published; implementation and policy-interpretation approval remain future audit/fix work.

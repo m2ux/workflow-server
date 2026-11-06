@@ -83,6 +83,8 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | [E02 policy plan review](e02/policy-plan-review.md) | Goal, grain, ownership, checks and publication limits |
 | [E02 policy format result](e02/policy-format.log) | Zero-finding final draft validation |
 | [E02 policy dependency result](e02/policy-dependencies.log) | Current row graph and retained advisory |
+| [E02 policy saved readback](e02/policy-epic-readback.json) | Exact saved issue body and preserved metadata |
+| [E02 policy saved format](e02/policy-saved-format.log) | Zero-finding validation after issue publication |
 
 ## Links
 
