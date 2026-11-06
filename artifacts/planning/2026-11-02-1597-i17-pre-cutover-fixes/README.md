@@ -55,6 +55,15 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | [Lane-column dependencies](e03-lane-column-dependencies.txt) | Dependency and join checks of the revised E03 rows |
 | [Lane-column row map](e03-lane-column-renumbering.json) | Preserved delivery, undelivered-row numbering and criterion disposition |
 | [Arising-task dependencies](e03-arising-dependencies.txt) | Current E03 graph including the bounded cross-epic-join diagnostic task |
+| [E02 prerequisite cleanup](e02/prerequisite-cleanup.md) | Required context boundaries, task allocation and structural/live verification |
+| [E02 prerequisite survey](e02/prerequisite-survey.json) | Pinned prerequisite graph, cyclic component, route closures and source hashes |
+| [E02 survey instrument](e02/prerequisite-survey.py) | Reproducible static prerequisite survey |
+| [E02 prior epic snapshot](e02/prerequisite-epic-before.json) | Live issue identity, body and labels before the planned revision |
+| [E02 prerequisite plan audit](e02/prerequisite-plan-audit.json) | Preserved rows/ordering, criterion ownership and implementation boundary |
+| [E02 prerequisite review](e02/prerequisite-plan-review.md) | Scope, goal trace, coverage, validation and publication limits |
+| [E02 prerequisite format check](e02/prerequisite-format.log) | Zero-finding draft validation |
+| [E02 prerequisite dependencies](e02/prerequisite-dependencies.log) | Current initiative dependency/join validation and retained advisory |
+| [E02 dependency input snapshots](e02/prerequisite-dependency-inputs.json) | Current initiative and sibling epic records used by the check |
 
 ## Links
 

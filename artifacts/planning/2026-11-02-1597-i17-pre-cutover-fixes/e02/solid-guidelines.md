@@ -9,23 +9,23 @@ The skill's procedure files are an object model written in prose.
 | Code | Skill |
 | --- | --- |
 | Class | An artifact or protocol file |
-| Public method | An operation (`### *Verb* Subject`) or a protocol entered whole |
-| Method call | A ƒ-tagged link to a called operation, protocol or procedure |
-| Private method | An invocation inside its owning operation’s executing step |
+| Callable capability | An operation, a named Commands specification or a protocol entered whole |
+| Capability call | A ƒ-tagged link using Run for a command, Apply for an artifact operation or Follow for a protocol/procedure |
+| Command implementation | One enriched HTML invocation in its named Commands specification, before Fields |
 | Object state and its type | `## Fields`: the shape the file owns and the conditions on it |
 | Interface | A general artifact's operations and fields that each kind supplies |
 | Implementation | A kind's file, which fills that interface for one kind of work |
-| Import | `## Prerequisites` |
+| Required context | Justified common prerequisites and context selected at use |
 | Application layer | A mode, which only orchestrates calls |
 
 A call goes down the layers (mode, then protocol, then artifact), never up. That is the existing Layers rule, and these guidelines refine it.
 
 ## Encapsulation
 
-- **Call operations, not internals.**
-  Another file reaches an artifact through its operations and its published fields. It never runs that artifact's commands, and never restates its steps or conditions.
-- **Commands are private.**
-  An invocation lives inside its owning operation’s executing step. A caller needing that capability calls the operation.
+- **Call published capabilities.**
+  Another file reaches an artifact through its operations, command specifications and published fields. The owning file defines the implementation and conditions once.
+- **Commands own I/O contracts.**
+  A named Commands specification owns its enriched invocation and linked input/output fields. Nested calls retain meaningful selections and continuation; a pure forwarding operation is absorbed into its callers.
 - **Fields are the contract.**
   A field another file links to is part of the artifact's public shape. Keep it stable, and change its callers in the same change when it moves.
 - **One file, one subject.**
@@ -71,8 +71,10 @@ A call goes down the layers (mode, then protocol, then artifact), never up. That
 
 - **Small operations.**
   An operation does one thing a caller needs. A caller never loads a file to use one rule of it that belongs elsewhere.
-- **Prerequisites list only what is called.**
-  A file's Prerequisites name exactly the files its operations, fields and commands link to. A prerequisite that loads a file for one stray rule marks that rule as misplaced.
+- **Required context has a boundary.**
+  Common prerequisites are necessary for every entry they govern. Context needed only by a selected capability or branch is reached at its point of use through the smallest complete section. A union of all cross-file links does not establish necessity.
+- **Prerequisite ordering is acyclic.**
+  Required-before-use edges name their condition and required content. Distinguish those edges from ordinary field references and intentional execution retries. Each supported route meets its reviewed context contract before use.
 - **Kinds carry only their own surface.**
   A kind's file holds what is specific to it. Shared behaviour stays in the general file, and the kind's file calls it.
 
@@ -97,11 +99,13 @@ E02's audit asks these questions of each file.
 1. What one shape or change does this file own, and does every section serve it?
 2. Does any rule here also appear elsewhere? Which copy is the owner?
 3. Does this file name a kind of work as a case it handles?
-4. Does it run another file's command, or restate another file's steps or conditions?
+4. Does a caller use a published capability without copying its invocation, I/O inventory, steps or conditions?
 5. Does a general file link down to a kind, or a lower layer link up to a higher one?
-6. Does every prerequisite exist because of a link the file makes?
+6. Is every prerequisite justified by the governed entry, does it have a bounded target, and is its required-before-use graph acyclic?
 7. For scripts: does a general script branch on a kind, or reimplement a rule another module owns?
 
 8. Does a Fields section define a shape/invariant, or derive a decision, invoke work or route its outcome under [Field Boundaries](#field-boundaries)?
 9. Does a derived result need its own artifact home, and do callers consume its explicit contract rather than reconstruct its policy?
 10. Do candidate checks include the observed breach and valid counterexamples, with semantic review for ambiguous prose?
+
+11. Does every supported request obtain complete required common and selected context before use, with same-revision reuse and no mandatory unrelated operation bodies?

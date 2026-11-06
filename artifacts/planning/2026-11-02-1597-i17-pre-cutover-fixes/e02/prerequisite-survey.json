@@ -1,0 +1,1475 @@
+{
+  "revision": "756aaf9f53f884b1da120e990ec9524a936aa4b2",
+  "files": 58,
+  "prerequisite_edges": 242,
+  "graph": {
+    "SKILL.md": [],
+    "artifacts/acceptance-criteria.md": [
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "artifacts/initiative-issue-body.md",
+        "fragment": "",
+        "line": 11
+      }
+    ],
+    "artifacts/agent-review.md": [],
+    "artifacts/architecture-overview.md": [],
+    "artifacts/board-delivery.md": [
+      {
+        "target": "artifacts/board-queue.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/board.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 11
+      },
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 12
+      },
+      {
+        "target": "artifacts/agent-review.md",
+        "fragment": "",
+        "line": 13
+      }
+    ],
+    "artifacts/board-queue.md": [
+      {
+        "target": "artifacts/lane.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/board.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 11
+      },
+      {
+        "target": "artifacts/dependency-graph.md",
+        "fragment": "",
+        "line": 12
+      },
+      {
+        "target": "artifacts/delivery-branches.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/hotfix.md",
+        "fragment": "",
+        "line": 14
+      }
+    ],
+    "artifacts/board.md": [
+      {
+        "target": "configuration.md",
+        "fragment": "",
+        "line": 9
+      }
+    ],
+    "artifacts/delivery-branches.md": [
+      {
+        "target": "artifacts/work-item.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/hotfix.md",
+        "fragment": "",
+        "line": 10
+      }
+    ],
+    "artifacts/delivery-brief.md": [
+      {
+        "target": "artifacts/pull-request-body.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/plan-change.md",
+        "fragment": "",
+        "line": 10
+      }
+    ],
+    "artifacts/delivery-evidence.md": [
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/epic.md",
+        "fragment": "",
+        "line": 10
+      }
+    ],
+    "artifacts/delivery-plan.md": [
+      {
+        "target": "artifacts/lane.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "artifacts/delivery-branches.md",
+        "fragment": "",
+        "line": 11
+      },
+      {
+        "target": "artifacts/work-item.md",
+        "fragment": "",
+        "line": 12
+      },
+      {
+        "target": "artifacts/hotfix.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/hotfix-body.md",
+        "fragment": "",
+        "line": 14
+      }
+    ],
+    "artifacts/dependency-graph.md": [
+      {
+        "target": "artifacts/lane.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "artifacts/initiative-issue-body.md",
+        "fragment": "",
+        "line": 11
+      },
+      {
+        "target": "artifacts/work-item.md",
+        "fragment": "",
+        "line": 12
+      },
+      {
+        "target": "artifacts/plan-change.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/delivery-branches.md",
+        "fragment": "",
+        "line": 14
+      }
+    ],
+    "artifacts/dispatch-batch.md": [
+      {
+        "target": "artifacts/lane.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/delivery-plan.md",
+        "fragment": "",
+        "line": 10
+      }
+    ],
+    "artifacts/epic-issue-body.md": [
+      {
+        "target": "artifacts/lane.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 11
+      },
+      {
+        "target": "artifacts/epic.md",
+        "fragment": "",
+        "line": 12
+      },
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/dependency-graph.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/delivery-plan.md",
+        "fragment": "",
+        "line": 15
+      }
+    ],
+    "artifacts/epic.md": [
+      {
+        "target": "artifacts/initiative-issue-body.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 10
+      }
+    ],
+    "artifacts/goal-trace.md": [
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/initiative-issue-body.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "artifacts/planning-record.md",
+        "fragment": "",
+        "line": 11
+      }
+    ],
+    "artifacts/hotfix-body.md": [
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/standalone-body.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "artifacts/board-queue.md",
+        "fragment": "",
+        "line": 11
+      },
+      {
+        "target": "artifacts/hotfix.md",
+        "fragment": "",
+        "line": 12
+      },
+      {
+        "target": "artifacts/delivery-plan.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/delivery-branches.md",
+        "fragment": "",
+        "line": 14
+      }
+    ],
+    "artifacts/hotfix.md": [
+      {
+        "target": "artifacts/hotfix-body.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "artifacts/board.md",
+        "fragment": "",
+        "line": 11
+      },
+      {
+        "target": "artifacts/board-delivery.md",
+        "fragment": "",
+        "line": 12
+      },
+      {
+        "target": "artifacts/placement.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/repository-labels.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/agent-review.md",
+        "fragment": "",
+        "line": 15
+      }
+    ],
+    "artifacts/initiative-issue-body.md": [
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "references/requirement-characteristics.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "artifacts/initiative.md",
+        "fragment": "",
+        "line": 11
+      }
+    ],
+    "artifacts/initiative.md": [],
+    "artifacts/issue-body.md": [
+      {
+        "target": "references/requirement-characteristics.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 10
+      }
+    ],
+    "artifacts/issue.md": [],
+    "artifacts/lane.md": [],
+    "artifacts/placement.md": [
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 11
+      },
+      {
+        "target": "artifacts/initiative-issue-body.md",
+        "fragment": "",
+        "line": 12
+      },
+      {
+        "target": "artifacts/standalone-body.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/hotfix-body.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/hotfix.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/dependency-graph.md",
+        "fragment": "",
+        "line": 16
+      }
+    ],
+    "artifacts/plan-change.md": [],
+    "artifacts/planning-record.md": [
+      {
+        "target": "configuration.md",
+        "fragment": "",
+        "line": 9
+      }
+    ],
+    "artifacts/proposal-body.md": [
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 9
+      }
+    ],
+    "artifacts/pull-request-body.md": [
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/hotfix.md",
+        "fragment": "",
+        "line": 10
+      }
+    ],
+    "artifacts/pull-request.md": [
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/delivery-branches.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "artifacts/agent-review.md",
+        "fragment": "",
+        "line": 11
+      },
+      {
+        "target": "artifacts/hotfix.md",
+        "fragment": "",
+        "line": 12
+      }
+    ],
+    "artifacts/repository-graph.md": [],
+    "artifacts/repository-labels.md": [],
+    "artifacts/review-finding.md": [],
+    "artifacts/standalone-body.md": [
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 10
+      }
+    ],
+    "artifacts/standup-report.md": [
+      {
+        "target": "artifacts/hotfix-body.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/hotfix.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "configuration.md",
+        "fragment": "",
+        "line": 11
+      }
+    ],
+    "artifacts/task-body.md": [
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 10
+      }
+    ],
+    "artifacts/work-item.md": [
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 9
+      },
+      {
+        "target": "artifacts/pull-request-body.md",
+        "fragment": "",
+        "line": 10
+      },
+      {
+        "target": "artifacts/delivery-branches.md",
+        "fragment": "",
+        "line": 11
+      }
+    ],
+    "configuration.md": [],
+    "conventions.md": [],
+    "guidelines.md": [],
+    "modes/advance-mode.md": [
+      {
+        "target": "artifacts/board.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/board-queue.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "artifacts/repository-labels.md",
+        "fragment": "",
+        "line": 17
+      },
+      {
+        "target": "artifacts/plan-change.md",
+        "fragment": "",
+        "line": 18
+      },
+      {
+        "target": "guidelines.md",
+        "fragment": "",
+        "line": 19
+      },
+      {
+        "target": "modes/sync-mode.md",
+        "fragment": "",
+        "line": 20
+      }
+    ],
+    "modes/align-mode.md": [
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/initiative-issue-body.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "artifacts/proposal-body.md",
+        "fragment": "",
+        "line": 17
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 18
+      },
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 19
+      },
+      {
+        "target": "artifacts/acceptance-criteria.md",
+        "fragment": "",
+        "line": 20
+      },
+      {
+        "target": "artifacts/task-body.md",
+        "fragment": "",
+        "line": 21
+      },
+      {
+        "target": "artifacts/standalone-body.md",
+        "fragment": "",
+        "line": 22
+      },
+      {
+        "target": "artifacts/goal-trace.md",
+        "fragment": "",
+        "line": 23
+      },
+      {
+        "target": "artifacts/review-finding.md",
+        "fragment": "",
+        "line": 24
+      },
+      {
+        "target": "artifacts/dependency-graph.md",
+        "fragment": "",
+        "line": 25
+      },
+      {
+        "target": "references/requirement-characteristics.md",
+        "fragment": "",
+        "line": 26
+      },
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 27
+      },
+      {
+        "target": "artifacts/pull-request-body.md",
+        "fragment": "",
+        "line": 28
+      },
+      {
+        "target": "artifacts/delivery-evidence.md",
+        "fragment": "",
+        "line": 29
+      },
+      {
+        "target": "artifacts/initiative.md",
+        "fragment": "",
+        "line": 30
+      },
+      {
+        "target": "artifacts/epic.md",
+        "fragment": "",
+        "line": 31
+      },
+      {
+        "target": "artifacts/delivery-branches.md",
+        "fragment": "",
+        "line": 32
+      }
+    ],
+    "modes/deliver-mode.md": [
+      {
+        "target": "artifacts/lane.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/board.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/delivery-evidence.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "artifacts/epic.md",
+        "fragment": "",
+        "line": 17
+      },
+      {
+        "target": "artifacts/delivery-branches.md",
+        "fragment": "",
+        "line": 18
+      },
+      {
+        "target": "artifacts/delivery-plan.md",
+        "fragment": "",
+        "line": 19
+      },
+      {
+        "target": "artifacts/dispatch-batch.md",
+        "fragment": "",
+        "line": 20
+      },
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 21
+      },
+      {
+        "target": "artifacts/hotfix.md",
+        "fragment": "",
+        "line": 22
+      },
+      {
+        "target": "guidelines.md",
+        "fragment": "",
+        "line": 23
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 24
+      },
+      {
+        "target": "artifacts/planning-record.md",
+        "fragment": "",
+        "line": 25
+      },
+      {
+        "target": "artifacts/delivery-brief.md",
+        "fragment": "",
+        "line": 26
+      },
+      {
+        "target": "artifacts/plan-change.md",
+        "fragment": "",
+        "line": 27
+      },
+      {
+        "target": "artifacts/agent-review.md",
+        "fragment": "",
+        "line": 28
+      },
+      {
+        "target": "artifacts/work-item.md",
+        "fragment": "",
+        "line": 29
+      },
+      {
+        "target": "artifacts/pull-request-body.md",
+        "fragment": "",
+        "line": 30
+      },
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 31
+      },
+      {
+        "target": "protocols/task-merge.md",
+        "fragment": "",
+        "line": 32
+      },
+      {
+        "target": "protocols/unit-dispatch.md",
+        "fragment": "",
+        "line": 33
+      },
+      {
+        "target": "modes/advance-mode.md",
+        "fragment": "",
+        "line": 34
+      },
+      {
+        "target": "modes/hoist-mode.md",
+        "fragment": "",
+        "line": 35
+      }
+    ],
+    "modes/hoist-mode.md": [
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/placement.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/hotfix-body.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/plan-change.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "guidelines.md",
+        "fragment": "",
+        "line": 17
+      },
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 18
+      },
+      {
+        "target": "artifacts/dependency-graph.md",
+        "fragment": "",
+        "line": 19
+      }
+    ],
+    "modes/plan-mode.md": [
+      {
+        "target": "artifacts/lane.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "guidelines.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/planning-record.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 17
+      },
+      {
+        "target": "artifacts/initiative-issue-body.md",
+        "fragment": "",
+        "line": 18
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 19
+      },
+      {
+        "target": "artifacts/work-item.md",
+        "fragment": "",
+        "line": 20
+      },
+      {
+        "target": "artifacts/repository-labels.md",
+        "fragment": "",
+        "line": 21
+      },
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 22
+      },
+      {
+        "target": "artifacts/epic.md",
+        "fragment": "",
+        "line": 23
+      },
+      {
+        "target": "artifacts/delivery-branches.md",
+        "fragment": "",
+        "line": 24
+      },
+      {
+        "target": "artifacts/review-finding.md",
+        "fragment": "",
+        "line": 25
+      },
+      {
+        "target": "artifacts/goal-trace.md",
+        "fragment": "",
+        "line": 26
+      },
+      {
+        "target": "artifacts/dependency-graph.md",
+        "fragment": "",
+        "line": 27
+      },
+      {
+        "target": "modes/propose-mode.md",
+        "fragment": "",
+        "line": 28
+      },
+      {
+        "target": "modes/sync-mode.md",
+        "fragment": "",
+        "line": 29
+      }
+    ],
+    "modes/propose-mode.md": [
+      {
+        "target": "artifacts/proposal-body.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/repository-labels.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/board.md",
+        "fragment": "",
+        "line": 16
+      }
+    ],
+    "modes/revise-mode.md": [
+      {
+        "target": "guidelines.md",
+        "fragment": "",
+        "line": 14
+      }
+    ],
+    "modes/standup-mode.md": [
+      {
+        "target": "artifacts/board.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/standup-report.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 17
+      },
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 18
+      },
+      {
+        "target": "modes/sync-mode.md",
+        "fragment": "",
+        "line": 19
+      }
+    ],
+    "modes/sync-mode.md": [
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/issue-body.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/acceptance-criteria.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/task-body.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 17
+      },
+      {
+        "target": "artifacts/delivery-evidence.md",
+        "fragment": "",
+        "line": 18
+      },
+      {
+        "target": "artifacts/epic.md",
+        "fragment": "",
+        "line": 19
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 20
+      },
+      {
+        "target": "artifacts/initiative-issue-body.md",
+        "fragment": "",
+        "line": 21
+      },
+      {
+        "target": "artifacts/board.md",
+        "fragment": "",
+        "line": 22
+      },
+      {
+        "target": "artifacts/work-item.md",
+        "fragment": "",
+        "line": 23
+      },
+      {
+        "target": "artifacts/board-delivery.md",
+        "fragment": "",
+        "line": 24
+      },
+      {
+        "target": "artifacts/plan-change.md",
+        "fragment": "",
+        "line": 25
+      },
+      {
+        "target": "protocols/epic-integration.md",
+        "fragment": "",
+        "line": 26
+      },
+      {
+        "target": "protocols/issue-closure.md",
+        "fragment": "",
+        "line": 27
+      },
+      {
+        "target": "protocols/review-pull-request.md",
+        "fragment": "",
+        "line": 28
+      },
+      {
+        "target": "modes/understand-mode.md",
+        "fragment": "",
+        "line": 29
+      }
+    ],
+    "modes/understand-mode.md": [
+      {
+        "target": "protocols/change-overview.md",
+        "fragment": "",
+        "line": 13
+      }
+    ],
+    "protocols/change-overview.md": [
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/delivery-branches.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/repository-graph.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/planning-record.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "artifacts/architecture-overview.md",
+        "fragment": "",
+        "line": 17
+      },
+      {
+        "target": "artifacts/pull-request-body.md",
+        "fragment": "",
+        "line": 18
+      }
+    ],
+    "protocols/epic-integration.md": [
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/delivery-branches.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/epic.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "artifacts/board-delivery.md",
+        "fragment": "",
+        "line": 17
+      },
+      {
+        "target": "artifacts/agent-review.md",
+        "fragment": "",
+        "line": 18
+      },
+      {
+        "target": "protocols/change-overview.md",
+        "fragment": "",
+        "line": 19
+      },
+      {
+        "target": "protocols/review-pull-request.md",
+        "fragment": "",
+        "line": 20
+      }
+    ],
+    "protocols/issue-closure.md": [
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/delivery-branches.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/epic.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "artifacts/initiative.md",
+        "fragment": "",
+        "line": 17
+      }
+    ],
+    "protocols/issue-delivery.md": [
+      {
+        "target": "artifacts/task-body.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/epic.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/acceptance-criteria.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 17
+      },
+      {
+        "target": "artifacts/hotfix.md",
+        "fragment": "",
+        "line": 18
+      }
+    ],
+    "protocols/review-pull-request.md": [
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/pull-request-body.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/agent-review.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "artifacts/planning-record.md",
+        "fragment": "",
+        "line": 17
+      }
+    ],
+    "protocols/task-merge.md": [
+      {
+        "target": "artifacts/delivery-evidence.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/initiative-issue-body.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/hotfix.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "protocols/epic-integration.md",
+        "fragment": "",
+        "line": 17
+      },
+      {
+        "target": "protocols/issue-closure.md",
+        "fragment": "",
+        "line": 18
+      },
+      {
+        "target": "protocols/issue-delivery.md",
+        "fragment": "",
+        "line": 19
+      },
+      {
+        "target": "protocols/review-pull-request.md",
+        "fragment": "",
+        "line": 20
+      }
+    ],
+    "protocols/unit-dispatch.md": [
+      {
+        "target": "artifacts/dispatch-batch.md",
+        "fragment": "",
+        "line": 13
+      },
+      {
+        "target": "artifacts/epic-issue-body.md",
+        "fragment": "",
+        "line": 14
+      },
+      {
+        "target": "artifacts/pull-request.md",
+        "fragment": "",
+        "line": 15
+      },
+      {
+        "target": "artifacts/planning-record.md",
+        "fragment": "",
+        "line": 16
+      },
+      {
+        "target": "artifacts/issue.md",
+        "fragment": "",
+        "line": 17
+      },
+      {
+        "target": "artifacts/board.md",
+        "fragment": "",
+        "line": 18
+      },
+      {
+        "target": "artifacts/board-delivery.md",
+        "fragment": "",
+        "line": 19
+      },
+      {
+        "target": "artifacts/hotfix.md",
+        "fragment": "",
+        "line": 20
+      },
+      {
+        "target": "artifacts/delivery-branches.md",
+        "fragment": "",
+        "line": 21
+      },
+      {
+        "target": "artifacts/delivery-brief.md",
+        "fragment": "",
+        "line": 22
+      }
+    ],
+    "references/requirement-characteristics.md": [],
+    "rules.md": []
+  },
+  "cyclic_components": [
+    [
+      "artifacts/board-delivery.md",
+      "artifacts/board-queue.md",
+      "artifacts/delivery-branches.md",
+      "artifacts/delivery-plan.md",
+      "artifacts/dependency-graph.md",
+      "artifacts/epic-issue-body.md",
+      "artifacts/hotfix-body.md",
+      "artifacts/hotfix.md",
+      "artifacts/placement.md",
+      "artifacts/pull-request-body.md",
+      "artifacts/pull-request.md",
+      "artifacts/standalone-body.md",
+      "artifacts/work-item.md"
+    ]
+  ],
+  "route_closures": {
+    "modes/standup-mode.md": {
+      "files": [
+        "artifacts/agent-review.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/board.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix-body.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative.md",
+        "artifacts/issue-body.md",
+        "artifacts/issue.md",
+        "artifacts/lane.md",
+        "artifacts/placement.md",
+        "artifacts/plan-change.md",
+        "artifacts/pull-request-body.md",
+        "artifacts/pull-request.md",
+        "artifacts/repository-labels.md",
+        "artifacts/standalone-body.md",
+        "artifacts/standup-report.md",
+        "artifacts/work-item.md",
+        "configuration.md",
+        "modes/standup-mode.md",
+        "modes/sync-mode.md",
+        "references/requirement-characteristics.md"
+      ],
+      "file_count": 28,
+      "line_count": 7368
+    },
+    "modes/revise-mode.md": {
+      "files": [
+        "guidelines.md",
+        "modes/revise-mode.md"
+      ],
+      "file_count": 2,
+      "line_count": 406
+    },
+    "modes/understand-mode.md": {
+      "files": [
+        "artifacts/agent-review.md",
+        "artifacts/architecture-overview.md",
+        "artifacts/board-delivery.md",
+        "artifacts/board-queue.md",
+        "artifacts/board.md",
+        "artifacts/delivery-branches.md",
+        "artifacts/delivery-plan.md",
+        "artifacts/dependency-graph.md",
+        "artifacts/epic-issue-body.md",
+        "artifacts/epic.md",
+        "artifacts/hotfix-body.md",
+        "artifacts/hotfix.md",
+        "artifacts/initiative-issue-body.md",
+        "artifacts/initiative.md",
+        "artifacts/issue-body.md",
+        "artifacts/issue.md",
+        "artifacts/lane.md",
+        "artifacts/placement.md",
+        "artifacts/plan-change.md",
+        "artifacts/planning-record.md",
+        "artifacts/pull-request-body.md",
+        "artifacts/pull-request.md",
+        "artifacts/repository-graph.md",
+        "artifacts/repository-labels.md",
+        "artifacts/standalone-body.md",
+        "artifacts/work-item.md",
+        "configuration.md",
+        "modes/understand-mode.md",
+        "protocols/change-overview.md",
+        "references/requirement-characteristics.md"
+      ],
+      "file_count": 30,
+      "line_count": 7489
+    }
+  },
+  "sha256": {
+    "SKILL.md": "9b430e5ee43c5d0cf9d66d51ae7a87fc755f03a288841a7b6644dcbe11dc394a",
+    "artifacts/acceptance-criteria.md": "a4354f21a769e6af442b68f676a71161a7925ff96683b295692b7812419271dd",
+    "artifacts/agent-review.md": "f8068efde1c8397bc737a79afba18488754355ff1a78a763e4713a4fa7c2052c",
+    "artifacts/architecture-overview.md": "6b1ad23604f651a334f53390436e65b6acebfc35ebd7a6fb6c76fa6c748e3230",
+    "artifacts/board-delivery.md": "11c421b42631a26aed3ab655f3ae236ded6612d45860bb01d645cf99101bcb54",
+    "artifacts/board-queue.md": "16efdb262ab630d15d0a22426cfa69a39456cac3cf32871b17920a15cee6a0a6",
+    "artifacts/board.md": "87c8c507363b1dd1f51b6a8aec41d4b02810da09befd2e4363ebfae6f224b4bf",
+    "artifacts/delivery-branches.md": "9ed2284aac8192507b9e574124c52d1ca9ddd69ca795a67488c62f0775f2eaaa",
+    "artifacts/delivery-brief.md": "61df9f4d5da303720981505c66976777217c19573fb394c4e4d051a95ca7da6a",
+    "artifacts/delivery-evidence.md": "b87ac076592bed2614f6c30aee1c2ad3f56b17a88bf5de7f53a9ca460b73c156",
+    "artifacts/delivery-plan.md": "1aac142deb3d7a22de65f764f342d3463f9665681175074d3f6c8ebbefbf7ae0",
+    "artifacts/dependency-graph.md": "da162eb98b5870b661d0d6253554a58bb9d08c2cddd376e4689cc197d0e9b380",
+    "artifacts/dispatch-batch.md": "499866903a21cd7d0c59304125a15632c78cedae1712cd664516948120a39cc4",
+    "artifacts/epic-issue-body.md": "9e8e2243e077e46cedf7db5e13064c9139ea4c341b0c718a227b080ab216d72a",
+    "artifacts/epic.md": "dbbf25d0ae47d60efab220691f8810ca109ba9ae031c2f43452afb419206026b",
+    "artifacts/goal-trace.md": "82afc401b8d9b18e3de62e718f15be4cfd13927d817008b24273b336eba55b38",
+    "artifacts/hotfix-body.md": "7a9c7c315ca30913701c98d0776e2aa07200af123c688719e3d78ba1bf589b1e",
+    "artifacts/hotfix.md": "b38de97df26240a7309850d779b85fed31a7d5ba171bb5e4a7ce08c87ef2c101",
+    "artifacts/initiative-issue-body.md": "7042ac5af0cbf5c75d049cbbeda9e10cbd813d7d3d1f9264a3118fa68d7a463c",
+    "artifacts/initiative.md": "363a4d2f4e27b42e3b2c32894228c6af3ae2177fce120320b4045ef0e56d8feb",
+    "artifacts/issue-body.md": "65434f994695d889f1e10dce1bda18b4c8c489af908af9aa8142a3ff8c6bf687",
+    "artifacts/issue.md": "a5b720e4eee39d639b50ef7b82f38cdc6efce61d743682f6e850df07abe76008",
+    "artifacts/lane.md": "6c34ed08400ac18738db9617f68f3200923dd1dfcf970fd5515654cc6ffc646c",
+    "artifacts/placement.md": "3c837b80638a1a8c2ed74de198d2bb7ae1c40c79bf0da56aa81a79f80f2e22a6",
+    "artifacts/plan-change.md": "9f72d980d0946b66265035d36002bf8737b84ce9b12dcad98c68a9677628440c",
+    "artifacts/planning-record.md": "0f7f20aa860cf31e8b3b2b069cedbb86f8b971427b5207eda320df187ca30fb3",
+    "artifacts/proposal-body.md": "88e1bc311bb5625f62c8ed5fed5658ba9eaae9cbcb756e1e0d52beea885245e2",
+    "artifacts/pull-request-body.md": "8c4fdeabefac24f5c4fe64556fc75f596ff8ed1b6aff6444dce5d6fd6416e43f",
+    "artifacts/pull-request.md": "c879786fab13d3dd61b542f8371219c9ec5e9dd3daac3224f1755c1ba4804226",
+    "artifacts/repository-graph.md": "bca292e3d69bb50cbb6b373a57ad539cceceebad9b70b7bcca1beef155f58094",
+    "artifacts/repository-labels.md": "49f17d154ee4bafbbf536586df763c206cd3795f8cb926e1dbc578354094163f",
+    "artifacts/review-finding.md": "c48d23168f67ec6e9db44adb1083779844011bd03e2a7bddb151b4f3f291fd48",
+    "artifacts/standalone-body.md": "35c13da153bf2234d7aff7beb718ff3077f05346f60e8221a9defdf8142abb3d",
+    "artifacts/standup-report.md": "4e2ae0c5ca224b155a198d354172a6ebebba8e9d622da1dc0428f73c6cfc9838",
+    "artifacts/task-body.md": "be8207bee8484e69f287c7abe961f4aa7f9c5a020d4ab1287053e16c7ad3f974",
+    "artifacts/work-item.md": "c8828782ab4d4998986e1c250332601a1ca898cf46466138a422057b1bc8eca8",
+    "configuration.md": "d7951b91e17363489349bce8616373fe4e4bbb2f194d567e634c5ecc4aa13565",
+    "conventions.md": "86cb6ddac9d07b1e11a0bccb3358e898a55a6db81e736dbb7780cc198af1b609",
+    "guidelines.md": "e1240af3d85430eebee51affca6765e6f81692f28f3203ea0a256db8d3300808",
+    "modes/advance-mode.md": "deca85bf93615f3bc1302d92a5ab1369e262a972f87246acdd7356ebaf7b8883",
+    "modes/align-mode.md": "24b4462534ffe1208cf63da7fe9ae2ab19460b007797abcf6b7e3bdf1bbe98b4",
+    "modes/deliver-mode.md": "e01adaab0b30e5c6d3331a567e85ce9be12d24c1e2b93b9bb713c28f78adfdf3",
+    "modes/hoist-mode.md": "f3d4d216530ec45f374a15cab53bb269f339560c31c5eaf36970c29719c7ed86",
+    "modes/plan-mode.md": "a11526d0dd9c21e2901c962bdb7e6807af91676d105bf1a68402ae41e0708966",
+    "modes/propose-mode.md": "8b398815ddbc2fb5641f5b2a70129255854ea87d34f359072e7abeaeb999588b",
+    "modes/revise-mode.md": "12737ad8d114a28bab33428e8299b4136431bbffc6bc5d295b027725aad6eb96",
+    "modes/standup-mode.md": "61d17d45b387e9a5b1366350811e1b6f4dc22d9e16bb596f8393e1592ce95396",
+    "modes/sync-mode.md": "2a47c59a18cd909d712042365f09a99c898e9c9d7761f69d04418aa407f97549",
+    "modes/understand-mode.md": "d127967d5a9b8f5c7568df8f51bac1eb061df6f6940961b4bfe336246cf4d904",
+    "protocols/change-overview.md": "f0002287f0119bfee55dda893f59327417565f009782df8823eae5a4c3a1c73c",
+    "protocols/epic-integration.md": "a6b6040a548e12c75011ee3ad7b183d54f585606787c47116789ace5729d320d",
+    "protocols/issue-closure.md": "39a176da9c3b22a9a1881cc147d27cc90f73437d8322de05bac337365ddc4696",
+    "protocols/issue-delivery.md": "1526c6f4e655e1c2d6c761e2cccae7d8290dcc4c3abe510829f2c12d8735d789",
+    "protocols/review-pull-request.md": "9f7102f24e3a1267ae56b7ce2734fbba498b7789025a138fc1935468426f92b9",
+    "protocols/task-merge.md": "453cbae0e734436447fddac9187bdfa8261888b679563427b96d55e00a00fda2",
+    "protocols/unit-dispatch.md": "f936b5c9f6c477649d5275afdc0b668d10d8b4414e8b4653df3a60efbb87c3a6",
+    "references/requirement-characteristics.md": "ac9fe4cc179fba843ec711218e0b0704320cb078f3c790b1e08b231d9a7d74ee",
+    "rules.md": "781b296eb9d795a16f16cc7a6f7e242e7fc3797a773aaec4b5dc3a24054dc631"
+  }
+}
