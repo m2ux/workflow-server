@@ -50,3 +50,4 @@ Inventory every original/current file, compare all original generic command spec
 | [plan-reader.json](plan-reader.json) | Reproducible review instrument or captured verification/read evidence |
 | [delivery-reader.json](delivery-reader.json) | Reproducible review instrument or captured verification/read evidence |
 | [Final independent command trace](final-reader.json) | Corrected pinned-source read, actual argv/results and negative closure controls |
+| [PR readback](publication.json) | Exact corrected head, target, retained draft and review-body confirmation |
