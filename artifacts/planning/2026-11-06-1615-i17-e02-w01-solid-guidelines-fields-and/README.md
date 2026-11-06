@@ -19,6 +19,7 @@ The unit targets its verified epic base and retains the epic's acceptance criter
 | [e02-w01-skill-check.log](e02-w01-skill-check.log) | Exact local validation output. |
 | [solid-reader-a.md](solid-reader-a.md) | Independent reader receipt and source interpretation. |
 | [solid-reader-b.md](solid-reader-b.md) | Independent reader receipt and source interpretation. |
+| [solid-reader-c.md](solid-reader-c.md) | Independent reader receipt and source interpretation. |
 
 ## Links
 

@@ -25,7 +25,7 @@ Each Python command ran in the task checkout under `/home/mike1/projects/dev/md-
 
 ## Reading Evidence
 
-Static consumer trace: the entry point requires Rules and Conventions; bounded Revise requires both guidelines whole before editing; file-type sections reach the SOLID section already present in that received guideline context. Complete required source was recovered after an initially truncated batch read. This is source and document-contract evidence, not an independent fresh-context reading trial. A fresh-context reader remains pending at the pinned candidate; no performance or consistent-reading claim is made.
+Static consumer trace: the entry point requires Rules and Conventions; bounded Revise requires both guidelines whole before editing; file-type sections reach the SOLID section already present in that received guideline context. Complete required source was recovered after an initially truncated batch read. This is source and document-contract evidence, not an independent fresh-context reading trial. Readers B and C independently confirm the corrected boundaries at the pinned candidate. Both report recovered truncation and required whole-guideline overhead; no performance or citation-efficacy claim is made.
 
 ## Change List
 
@@ -33,4 +33,4 @@ No plan changes applied or held. Policy interpretations remain for the audit's a
 
 ## Independent Review
 
-Reader A found that the audit scope was implicit. Commit `358287d8cc7ede34ed0ce70f330cd2bc758af2d6` scopes the classification rule to the ownership audit. Reader B confirms the corrected field, transformation and policy boundaries at that head. Reader C supplies a repeated independent trial when its receipt is present. Required whole-guideline overhead and recovered truncation are retained in the receipts; no context-saving or citation-efficacy claim is made.
+Reader A found that the audit scope was implicit. Commit `358287d8cc7ede34ed0ce70f330cd2bc758af2d6` scopes the classification rule to the ownership audit. Reader B confirms the corrected field, transformation and policy boundaries at that head. Reader C independently confirms the same boundaries at that head; both final receipts are published beside this report. Required whole-guideline overhead and recovered truncation are retained in the receipts; no context-saving or citation-efficacy claim is made.
