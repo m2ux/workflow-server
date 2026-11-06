@@ -17,11 +17,11 @@ One task body with its confirmed delivery and verified criteria recorded.
 
 #### 1. Record Verified Delivery
 
-Apply [Sync Task Issue](#sync-task-issue "operation") to [Task Record](#task-record "input") with [Pull Request Records](#pull-request-records "input"), [Issue Links](#issue-links "input") and [Delivery Selection](#delivery-selection "input"), writing to [Output Body](#output-body "input"). Tick only criteria the requester has verified.
+Apply [Sync Task Issue](#sync-task-issue "ƒ") to [Task Record](#task-record "○") with [Pull Request Records](#pull-request-records "○"), [Issue Links](#issue-links "○") and [Delivery Selection](#delivery-selection "○"), writing to [Output Body](#output-body "○"). Tick only criteria the requester has verified.
 
 #### 2. Provide Delivery Findings
 
-Provide [Output Body](#output-body "output") and [Delivery Findings](#delivery-findings "output"); the requester publishes comments and closes the tracker issue.
+Provide [Output Body](#output-body "●") and [Delivery Findings](#delivery-findings "●"); the requester publishes comments and closes the tracker issue.
 
 ### Sync Task Issue
 
@@ -31,7 +31,7 @@ An open pull request supplies verification evidence; completion requires its mer
 
 #### 1. Sync Task Issue
 
-- Run this command from the [workspace](#workspace "input") checkout using [Task Record](#task-record "input"), [Pull Request Records](#pull-request-records "input"), [Issue Links](#issue-links "input"), [Delivery Selection](#delivery-selection "input"), [Output Body](#output-body "input").
+- Run this command from the [workspace](#workspace "○") checkout using [Task Record](#task-record "○"), [Pull Request Records](#pull-request-records "○"), [Issue Links](#issue-links "○"), [Delivery Selection](#delivery-selection "○"), [Output Body](#output-body "○").
 
 - `<criterion-ids>` is a comma-separated list of verified criterion ids.
 
@@ -47,7 +47,7 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 
 #### 2. Provide Recorded Task Issue
 
-Provide [Output Body](#output-body "output"), [Delivery Findings](#delivery-findings "output") to the requester.
+Provide [Output Body](#output-body "●"), [Delivery Findings](#delivery-findings "●") to the requester.
 
 ## Fields
 

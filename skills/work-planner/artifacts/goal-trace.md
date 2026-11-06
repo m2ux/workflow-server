@@ -18,11 +18,11 @@ The draft checked against the initiative outcomes.
 
 #### 1. Identify Confirmed Goal Clauses
 
-Take the user’s stated and confirmed goal from [Goal Evidence](#goal-evidence "input") as clauses, each an outcome someone could observe.
+Take the user’s stated and confirmed goal from [Goal Evidence](#goal-evidence "○") as clauses, each an outcome someone could observe.
 
 #### 2. Build Goal Trace
 
-- Build the [Trace Table](#trace-table "output") from those clauses, the initiative criteria, the epics whose Coverage cells cite them and the epic criteria that deliver them.
+- Build the [Trace Table](#trace-table "●") from those clauses, the initiative criteria, the epics whose Coverage cells cite them and the epic criteria that deliver them.
 - Every goal clause has an initiative criterion that makes it true.
 - Every initiative criterion is delivered by an epic, and that epic's criteria make the criterion wholly true.
 - Every initiative criterion traces to a goal clause.
@@ -31,7 +31,7 @@ Take the user’s stated and confirmed goal from [Goal Evidence](#goal-evidence 
 
 #### 3. Read Marked Requirement Sources
 
-- Apply [Read Requirement Sources](initiative-issue-body.md#read-requirement-sources "operation") with the initiative References, checkout, authenticated access and output files.
+- Apply [Read Requirement Sources](initiative-issue-body.md#read-requirement-sources "ƒ") with the initiative References, checkout, authenticated access and output files.
 - Extend the trace table with the source requirement each criterion answers to. Each unmatched requirement, each criterion that departs from the one it cites, and each source that could not be read is a gap [Sources](initiative-issue-body.md#sources) names.
 
 #### 4. Check Acceptance Criteria
@@ -40,20 +40,20 @@ Check each criterion against the [shared acceptance criteria](issue-body.md#shar
 
 #### 5. Validate Local Drafts
 
-- Apply [Build Body Snapshot](issue-body.md#build-body-snapshot "operation") for each supplied local draft with its title, labels and existing identity when present.
-- Apply [Validate Initiative Body](initiative-issue-body.md#validate-initiative-body "operation") with the initiative JSON, every linked epic's current JSON, source evidence and output file.
+- Apply [Build Body Snapshot](issue-body.md#build-body-snapshot "ƒ") for each supplied local draft with its title, labels and existing identity when present.
+- Apply [Validate Initiative Body](initiative-issue-body.md#validate-initiative-body "ƒ") with the initiative JSON, every linked epic's current JSON, source evidence and output file.
 - Incorporate its local findings into this review.
 
 #### 6. Check Outside Threats
 
-Apply [Check Outside Threats](#check-outside-threats "operation") with the current initiative and epic bodies or drafts, and the artifacts and consumers the plan changes.
+Apply [Check Outside Threats](#check-outside-threats "ƒ") with the current initiative and epic bodies or drafts, and the artifacts and consumers the plan changes.
 
 #### 7. Provide Ranked Gaps
 
 - Rank the gaps, meeting [Gaps](#gaps).
 - Flag the few that most threaten the goal.
 - Record the trace table in the [planning record](planning-record.md), or give it to the user when the change has none.
-- Provide [Review Result](#review-result "output") with the trace and ranked findings.
+- Provide [Review Result](#review-result "●") with the trace and ranked findings.
 
 ### Check Outside Threats
 
@@ -61,7 +61,7 @@ An item the draft leaves open is a gap.
 
 #### 1. Check External Consumers
 
-Check for anything outside [Plan Bodies](#plan-bodies "input") that reads, builds or ships the [Changed Surface](#changed-surface "input").
+Check for anything outside [Plan Bodies](#plan-bodies "○") that reads, builds or ships the [Changed Surface](#changed-surface "○").
 
 #### 2. Check Hidden Violations
 
@@ -78,7 +78,7 @@ Check for skew between an artifact the plan produces and an implementation that 
 #### 5. Provide External Threats
 
 - Check for a change elsewhere that alters the ground the plan stands on.
-- Provide [Review Result](#review-result "output") with the evidenced threats and gaps to the requesting goal review.
+- Provide [Review Result](#review-result "●") with the evidenced threats and gaps to the requesting goal review.
 
 ## Fields
 

@@ -4,15 +4,15 @@ One epic base merged into its long-lived branch, on current branch, epic and pul
 
 **Runs in:** the project checkout.
 
-Follow the [Procedure](#procedure "operation"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
+Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ## Prerequisites
 
 Read these files first.
 
 - [Issue](../artifacts/issue.md)
-- [Review Pull Request](review-pull-request.md "operation")
-- [Change Overview](change-overview.md "operation")
+- [Review Pull Request](review-pull-request.md "ƒ")
+- [Change Overview](change-overview.md "ƒ")
 - [Pull Request](../artifacts/pull-request.md)
 - [Delivery Branches](../artifacts/delivery-branches.md)
 - [Epic](../artifacts/epic.md)
@@ -23,41 +23,41 @@ Read these files first.
 
 ### 1. Prepare the Evidence
 
-- Before any preparation, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "operation") for the supplied review identity and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "operation") requesting In Progress with the epic, board identity, fresh pull request records, an empty review-record list and output paths. An absent board item is reported; it does not prevent validation.
-- For any failed gate or called operation through handoff, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "operation") and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "operation") again with their preceding inputs before returning or retrying, including failures between ready and board writes. The confirmed absence of a board is the sole exception to board withdrawal.
-- Apply [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close "operation") for the repository, which gates the merge this protocol makes.
-- Follow [Review Pull Request](review-pull-request.md "operation") with the actual task merges, the epic's issue, the project checkout, the fetched epic bases and that confirmed setting.
-- Follow [Change Overview](change-overview.md "operation") with the review pull request identity.
+- Before any preparation, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") for the supplied review identity and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") requesting In Progress with the epic, board identity, fresh pull request records, an empty review-record list and output paths. An absent board item is reported; it does not prevent validation.
+- For any failed gate or called operation through handoff, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") again with their preceding inputs before returning or retrying, including failures between ready and board writes. The confirmed absence of a board is the sole exception to board withdrawal.
+- Apply [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close "ƒ") for the repository, which gates the merge this protocol makes.
+- Follow [Review Pull Request](review-pull-request.md "ƒ") with the actual task merges, the epic's issue, the project checkout, the fetched epic bases and that confirmed setting.
+- Follow [Change Overview](change-overview.md "ƒ") with the review pull request identity.
 - Resume with its published overview so the complete review body cites the task merges and carries that overview.
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "operation") for the pull request.
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for the pull request.
 - Confirm its head is the epic base and its target is the corresponding long-lived branch.
 
 ### 2. Refresh and Validate
 
-- Apply [Update Epic Base](../artifacts/delivery-branches.md#update-epic-base "operation") with the project checkout and the epic base.
+- Apply [Update Epic Base](../artifacts/delivery-branches.md#update-epic-base "ƒ") with the project checkout and the epic base.
 - Obtain current criterion verification for the updated result.
 - Refresh the delivery records.
-- Apply [Check Epic Readiness](../artifacts/epic.md#check-epic-readiness "operation") with the current epic, delivery records, complete issue-link snapshot and that verification evidence.
+- Apply [Check Epic Readiness](../artifacts/epic.md#check-epic-readiness "ƒ") with the current epic, delivery records, complete issue-link snapshot and that verification evidence.
 
 #### Changed Branch Content
 
 - When the branch content changes, before checking merge readiness:
-- Follow [Review Pull Request](review-pull-request.md "operation") again with the current task merges.
-- Follow [Change Overview](change-overview.md "operation") again with the same pull request identity and updated head.
+- Follow [Review Pull Request](review-pull-request.md "ƒ") again with the current task merges.
+- Follow [Change Overview](change-overview.md "ƒ") again with the same pull request identity and updated head.
 
 #### Current Review Handoff
 
-- Follow [Review Pull Request](review-pull-request.md "operation") requesting handoff, with confirmed epic readiness, fresh metadata, checkout, criteria, validation evidence and planning destination. Resume only with current agent review evidence. If review fixes changed the head, refresh criterion verification, Apply [Check Epic Readiness](../artifacts/epic.md#check-epic-readiness "operation") again for that head and Follow [Change Overview](change-overview.md "operation") again for the updated integration diff.
-- Apply [Ready Epic Review](../artifacts/pull-request.md#ready-epic-review "operation") with the confirmed epic readiness, review identity and published agent review records.
-- Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "operation") requesting In Review, with the epic, board identity, fresh pull request records and published agent review records. Report an absent board item; integration is not gated on board membership.
-- Apply [Fetch Merge Readiness](../artifacts/pull-request.md#fetch-merge-readiness "operation") for the exact current head and target. A conflict, failed or pending check, unmet epic condition or incomplete evidence blocks handoff; Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "operation") again and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "operation") requesting In Progress before returning that blocker. Pending required human approval is provided to the next step as a human handoff, with merge blocked.
+- Follow [Review Pull Request](review-pull-request.md "ƒ") requesting handoff, with confirmed epic readiness, fresh metadata, checkout, criteria, validation evidence and planning destination. Resume only with current agent review evidence. If review fixes changed the head, refresh criterion verification, Apply [Check Epic Readiness](../artifacts/epic.md#check-epic-readiness "ƒ") again for that head and Follow [Change Overview](change-overview.md "ƒ") again for the updated integration diff.
+- Apply [Ready Epic Review](../artifacts/pull-request.md#ready-epic-review "ƒ") with the confirmed epic readiness, review identity and published agent review records.
+- Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") requesting In Review, with the epic, board identity, fresh pull request records and published agent review records. Report an absent board item; integration is not gated on board membership.
+- Apply [Fetch Merge Readiness](../artifacts/pull-request.md#fetch-merge-readiness "ƒ") for the exact current head and target. A conflict, failed or pending check, unmet epic condition or incomplete evidence blocks handoff; Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") again and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") requesting In Progress before returning that blocker. Pending required human approval is provided to the next step as a human handoff, with merge blocked.
 
 ### 3. Merge or Hand Off
 
-- Refresh the review metadata and Apply [Check Agent Review](../artifacts/agent-review.md#check-agent-review "operation") with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding. Apply [Merge Delivery Pull Request](../artifacts/pull-request.md#merge-delivery-pull-request "operation") with the confirmed epic readiness, verified head, target requirements, repository prerequisite and passing evidence, and delivery kind epic, without asking for further confirmation.
+- Refresh the review metadata and Apply [Check Agent Review](../artifacts/agent-review.md#check-agent-review "ƒ") with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding. Apply [Merge Delivery Pull Request](../artifacts/pull-request.md#merge-delivery-pull-request "ƒ") with the confirmed epic readiness, verified head, target requirements, repository prerequisite and passing evidence, and delivery kind epic, without asking for further confirmation.
 - Provide its handoff when a human reviewer must merge. A changed head requires fresh verification; a merge refusal returns to the readiness checks, and a repeated refusal is reported without retrying.
 
 ### 4. Confirm the Result
 
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "operation") to confirm the merged state, verified head, target and merge commit.
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") to confirm the merged state, verified head, target and merge commit.
 - Provide the result or blocker. Draft and blocked pull requests remain open.

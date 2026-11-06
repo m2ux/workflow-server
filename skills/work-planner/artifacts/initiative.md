@@ -10,7 +10,7 @@ The initiative's normal delivery result before tracker closure.
 
 #### 1. Evaluate Supplied Evidence
 
-Evaluate [Initiative Record](#initiative-record "input"), [Epic Records](#epic-records "input"), [Verification Evidence](#verification-evidence "input") and [Development Evidence](#development-evidence "input") against [Delivery State](#delivery-state "output").
+Evaluate [Initiative Record](#initiative-record "○"), [Epic Records](#epic-records "○"), [Verification Evidence](#verification-evidence "○") and [Development Evidence](#development-evidence "○") against [Delivery State](#delivery-state "●").
 
 #### 2. Identify Missing Conditions
 

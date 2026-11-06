@@ -22,15 +22,15 @@ A source issue's hot-fix number and labels, ready for its body rewrite.
 
 #### 1. Select Hot-fix Number
 
-Apply [Select Tracker Number](issue.md#select-tracker-number "operation") in [Repository](#repository "input") using the hot-fix prefix letter to select a number for the source issue identified by [Hot-fix Identity](#hot-fix-identity "input").
+Apply [Select Tracker Number](issue.md#select-tracker-number "ƒ") in [Repository](#repository "○") using the hot-fix prefix letter to select a number for the source issue identified by [Hot-fix Identity](#hot-fix-identity "○").
 
 #### 2. Ensure Required Labels
 
-Apply [Ensure Repository Labels](repository-labels.md#ensure-repository-labels "operation") with the labels hot-fix [Titles](hotfix-body.md#titles) name.
+Apply [Ensure Repository Labels](repository-labels.md#ensure-repository-labels "ƒ") with the labels hot-fix [Titles](hotfix-body.md#titles) name.
 
 #### 3. Provide Selected Number
 
-Provide the [hot-fix number](#hot-fix-number "output") to the caller for rewriting and saving the issue's body, title and labels. The caller then invokes Apply [Settle Hot-fix Board Status](#settle-hot-fix-board-status "operation") as its [placement](placement.md#disposition-conditions) orders.
+Provide the [hot-fix number](#hot-fix-number "●") to the caller for rewriting and saving the issue's body, title and labels. The caller then invokes Apply [Settle Hot-fix Board Status](#settle-hot-fix-board-status "ƒ") as its [placement](placement.md#disposition-conditions) orders.
 
 ### Hold Hot-fix Unit
 
@@ -38,11 +38,11 @@ One confirmed hot-fix unit held for its session.
 
 #### 1. Record Dispatch Hold
 
-Apply [Record Dispatch Status](board-delivery.md#record-dispatch-status "operation") with [Hot-fix Identity](#hot-fix-identity "input") for In Progress and the supplied [Board Evidence](#board-evidence "input"). That status is the hold [Delivery Unit](#delivery-unit) defines.
+Apply [Record Dispatch Status](board-delivery.md#record-dispatch-status "ƒ") with [Hot-fix Identity](#hot-fix-identity "○") for In Progress and the supplied [Board Evidence](#board-evidence "○"). That status is the hold [Delivery Unit](#delivery-unit) defines.
 
 #### 2. Provide Confirmed Hold
 
-Provide [Board Result](#board-result "output") with the confirmed status or discrepancy. The session starts only once it is confirmed.
+Provide [Board Result](#board-result "●") with the confirmed status or discrepancy. The session starts only once it is confirmed.
 
 ### Release Hot-fix Hold
 
@@ -50,16 +50,16 @@ A held hot-fix provided to the work the delivery plan offers.
 
 #### 1. Read Current Development
 
-- Apply [Capture Issue Development](issue.md#capture-issue-development "operation") for [Hot-fix Identity](#hot-fix-identity "input").
+- Apply [Capture Issue Development](issue.md#capture-issue-development "ƒ") for [Hot-fix Identity](#hot-fix-identity "○").
 - Refuse the release while its [Delivery Unit](#delivery-unit) is running or unrecorded, and provide the pull request that makes it so to the caller.
 
 #### 2. Provide Unit to Ready
 
-Apply [Place Issue on Board](board.md#place-issue-on-board "operation") with the board in [Board Evidence](#board-evidence "input"), the hot-fix issue and Ready.
+Apply [Place Issue on Board](board.md#place-issue-on-board "ƒ") with the board in [Board Evidence](#board-evidence "○"), the hot-fix issue and Ready.
 
 #### 3. Provide Saved Status
 
-Provide [Board Result](#board-result "output") with the saved item and Status.
+Provide [Board Result](#board-result "●") with the saved item and Status.
 
 ### Record Hot-fix Delivery
 
@@ -67,11 +67,11 @@ One hot-fix body with its confirmed delivery and verified criteria recorded.
 
 #### 1. Record Verified Delivery
 
-Apply [Sync Hot-fix Issue](#sync-hot-fix-issue "operation") to [Hot-fix Record](#hot-fix-record "input") with [Pull Request Records](#pull-request-records "input"), [Issue Links](#issue-links "input") and [Delivery Selection](#delivery-selection "input"), writing [Output Body](#output-body "input"). Tick only criteria the requester has verified.
+Apply [Sync Hot-fix Issue](#sync-hot-fix-issue "ƒ") to [Hot-fix Record](#hot-fix-record "○") with [Pull Request Records](#pull-request-records "○"), [Issue Links](#issue-links "○") and [Delivery Selection](#delivery-selection "○"), writing [Output Body](#output-body "○"). Tick only criteria the requester has verified.
 
 #### 2. Provide Delivery Findings
 
-Provide [Output Body](#output-body "output") and [Delivery Findings](#delivery-findings "output"); the requester publishes the body and closes the tracker issue, as [Delivery Record](#delivery-record) states.
+Provide [Output Body](#output-body "●") and [Delivery Findings](#delivery-findings "●"); the requester publishes the body and closes the tracker issue, as [Delivery Record](#delivery-record) states.
 
 ### Settle Hot-fix Board Status
 
@@ -79,11 +79,11 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
 
 #### 1. Read Current Issue
 
-Apply [Read Tracker Issue](issue.md#read-tracker-issue "operation") for the current state of [Hot-fix Identity](#hot-fix-identity "input").
+Apply [Read Tracker Issue](issue.md#read-tracker-issue "ƒ") for the current state of [Hot-fix Identity](#hot-fix-identity "○").
 
 #### 2. Read Current Board
 
-Apply [Read Board State](board.md#read-board-state "operation") for the board in [Board Evidence](#board-evidence "input") to obtain the issue’s item and Status. A hot-fix with no item has no Status.
+Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Board Evidence](#board-evidence "○") to obtain the issue’s item and Status. A hot-fix with no item has no Status.
 
 #### 3. Apply Required Status
 
@@ -91,11 +91,11 @@ Apply [Read Board State](board.md#read-board-state "operation") for the board in
 
 ##### A Status
 
-- Apply [Place Issue on Board](board.md#place-issue-on-board "operation") with the supplied board, the hot-fix issue and that status, which adds the item where the board has none.
+- Apply [Place Issue on Board](board.md#place-issue-on-board "ƒ") with the supplied board, the hot-fix issue and that status, which adds the item where the board has none.
 
 ##### Off the Board, With an Item
 
-- Apply [Remove Board Item](board.md#remove-board-item "operation") with the supplied board owner and number and the item id Read Board State provided.
+- Apply [Remove Board Item](board.md#remove-board-item "ƒ") with the supplied board owner and number and the item id Read Board State provided.
 
 ##### Off the Board, With No Item
 
@@ -103,7 +103,7 @@ Apply [Read Board State](board.md#read-board-state "operation") for the board in
 
 #### 4. Provide Settled Board
 
-Provide [Board Result](#board-result "output") with the settled item, its removal, or the unchanged board.
+Provide [Board Result](#board-result "●") with the settled item, its removal, or the unchanged board.
 
 ### Sync Hot-fix Issue
 
@@ -111,7 +111,7 @@ Records the pull request that delivers a hot-fix, open or merged, ticks verified
 
 #### 1. Sync Hot-fix Issue
 
-- Run this command from the [workspace](#workspace "input") checkout using [Hot-fix Record](#hot-fix-record "input"), [Pull Request Records](#pull-request-records "input"), [Issue Links](#issue-links "input"), [Delivery Selection](#delivery-selection "input"), [Output Body](#output-body "input").
+- Run this command from the [workspace](#workspace "○") checkout using [Hot-fix Record](#hot-fix-record "○"), [Pull Request Records](#pull-request-records "○"), [Issue Links](#issue-links "○"), [Delivery Selection](#delivery-selection "○"), [Output Body](#output-body "○").
 
 - A `--pr` that does not deliver the hot-fix is refused, naming the condition it fails.
 - `<criterion-ids>` is a comma-separated list of verified criterion ids.
@@ -128,7 +128,7 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 
 #### 2. Provide Recorded Hot-fix Issue
 
-Provide [Output Body](#output-body "output"), [Delivery Findings](#delivery-findings "output") to the requester.
+Provide [Output Body](#output-body "●"), [Delivery Findings](#delivery-findings "●") to the requester.
 
 ## Fields
 

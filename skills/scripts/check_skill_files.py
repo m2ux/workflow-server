@@ -55,7 +55,7 @@ file no entry covers takes the shared set. Heading-based entries declare
 `steps: "headings"` and their `procedures` section. `commands: "inline-html"`
 selects HTML invocations inside those steps. `contracts: "Fields"` selects
 contextual input/output links whose targets are third-level Fields contracts.
-`link_roles: true` checks input, output and operation link titles.
+`link_roles: true` checks the ○, ● and ƒ link titles.
 `preamble` lists required intro link targets; `calls` maps target directory
 names to Apply or Follow. Malformed and unknown options fail declaration
 validation before a partial model can run.
@@ -108,6 +108,7 @@ FENCE = re.compile(r'^\s*(`{3,}|~{3,})')
 RULE = re.compile(r'^\s*(-{3,}|\*{3,}|_{3,})\s*$')
 HEADING = re.compile(r'^(#{1,6})\s+(.*)$')
 LINK = re.compile(r'\[[^\]]*\]\(([^)]+?)(?:\s+"(?:\\.|[^"\\])*")?\)')
+ROLE_TITLES = {'○': 'input', '●': 'output', 'ƒ': 'operation'}
 CODE_SPAN = re.compile(r'`[^`]*`')
 PLACEHOLDER = re.compile(r'\{\{.*\}\}|\{[a-z_]+\}|^[.…\s]*$')
 PREREQUISITE = re.compile(r'Read ((?:\[[^\]]+\]\([^)]+\)(?:,\s*)?)+) first\.')
@@ -486,9 +487,9 @@ def field_contract(path, target, section):
 
 
 def link_role(match):
-    """The optional role title attached to one Markdown link."""
+    """The semantic role identified by one Markdown link's symbol title."""
     title = re.search(r'\s+"((?:\\.|[^"\\])*)"\)$', match[0])
-    return title[1] if title else ''
+    return ROLE_TITLES.get(title[1], '') if title else ''
 
 
 def operation_target(path, target):

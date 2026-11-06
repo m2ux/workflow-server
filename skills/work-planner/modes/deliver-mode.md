@@ -4,7 +4,7 @@ Keeps an authorized theme-board scope moving through delivery while eligible wor
 
 **Runs in:** the project checkout.
 
-Follow the [Procedure](#procedure "operation"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
+Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Prerequisites
 
@@ -12,23 +12,23 @@ Read these files first.
 
 - [Lane](../artifacts/lane.md)
 - [Board](../artifacts/board.md)
-- [Advance Mode](advance-mode.md "operation")
+- [Advance Mode](advance-mode.md "ƒ")
 - [Pull Request](../artifacts/pull-request.md)
 - [Delivery Evidence](../artifacts/delivery-evidence.md)
 - [Epic](../artifacts/epic.md)
 - [Delivery Branches](../artifacts/delivery-branches.md)
 - [Delivery Plan](../artifacts/delivery-plan.md)
 - [Dispatch Batch](../artifacts/dispatch-batch.md)
-- [Unit Dispatch](../protocols/unit-dispatch.md "operation")
+- [Unit Dispatch](../protocols/unit-dispatch.md "ƒ")
 - [Issue](../artifacts/issue.md)
-- [Task Merge](../protocols/task-merge.md "operation")
+- [Task Merge](../protocols/task-merge.md "ƒ")
 - [Hot-fix](../artifacts/hotfix.md)
 - [Guidelines](../guidelines.md)
 - [Epic Issue Body](../artifacts/epic-issue-body.md)
 - [Planning Record](../artifacts/planning-record.md)
 - [Delivery Brief](../artifacts/delivery-brief.md)
 - [Plan Change](../artifacts/plan-change.md)
-- [Hoist Mode](hoist-mode.md "operation")
+- [Hoist Mode](hoist-mode.md "ƒ")
 - [Agent Review](../artifacts/agent-review.md)
 - [Work Item](../artifacts/work-item.md)
 - [Pull Request Body](../artifacts/pull-request-body.md)
@@ -38,7 +38,7 @@ Read these files first.
 
 ### 1. Select
 
-- Apply [Select Project Board](../artifacts/board.md#select-project-board "operation") with the requested theme or board identity.
+- Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") with the requested theme or board identity.
 
 - Use its provided owner and board number throughout this run.
 
@@ -50,12 +50,12 @@ Read these files first.
 - An explicit delivery request supplies that authorization; retain any narrower scope already established in this session.
 - Resolve a missing scope decision through the [Interview](../guidelines.md#modes) before starting work.
 - Authorization covers successive eligible units within that boundary. Expanding it requires a new user decision.
-- Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy "operation") for each plan change with this run's allowance, retaining its applied or held result for the change list.
+- Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy "ƒ") for each plan change with this run's allowance, retaining its applied or held result for the change list.
 - Retain the run's authorization, session inventory and [preparations](../artifacts/dispatch-batch.md#preparations) in working files outside the repository for every refill round.
 
 ### 3. Coordinate Delivery
 
-- Follow [Refill Delivery Capacity](#refill-delivery-capacity "operation") with the authorization, project checkout, engineering worktree, run allowance and the supplied worker procedure: each worker must Follow [Run Delivery Session](#run-delivery-session "operation").
+- Follow [Refill Delivery Capacity](#refill-delivery-capacity "ƒ") with the authorization, project checkout, engineering worktree, run allowance and the supplied worker procedure: each worker must Follow [Run Delivery Session](#run-delivery-session "ƒ").
 
 - Keep the calling session as coordinator until that procedure returns its completion or stable blockers.
 
@@ -72,7 +72,7 @@ The continuing coordinator for one authorized delivery scope.
 
 #### 1. Advance
 
-- Follow [Advance Mode](advance-mode.md "operation") for the selected board, with this run's [allowance](../artifacts/plan-change.md#allowance).
+- Follow [Advance Mode](advance-mode.md "ƒ") for the selected board, with this run's [allowance](../artifacts/plan-change.md#allowance).
 
 - Continue only with its complete applied live queue; a Backlog epic starts no work regardless of the requested scope.
 - Report an unavailable dependency or a queue decision recorded rather than asked before dispatch.
@@ -81,54 +81,54 @@ The continuing coordinator for one authorized delivery scope.
 
 #### 2. Fetch
 
-- Apply [Read Board State](../artifacts/board.md#read-board-state "operation") for current board items and Status.
+- Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for current board items and Status.
 
-- Apply [Fetch All Delivery Pull Requests](../artifacts/pull-request.md#fetch-all-delivery-pull-requests "operation") for its [repositories](../artifacts/board.md#repositories) and items.
-- Apply [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links "operation") with those records.
-- Apply [Read Board Configuration](../artifacts/board.md#read-board-configuration "operation") and Apply [Read Board Assignee](../artifacts/board.md#read-board-assignee "operation").
+- Apply [Fetch All Delivery Pull Requests](../artifacts/pull-request.md#fetch-all-delivery-pull-requests "ƒ") for its [repositories](../artifacts/board.md#repositories) and items.
+- Apply [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links "ƒ") with those records.
+- Apply [Read Board Configuration](../artifacts/board.md#read-board-configuration "ƒ") and Apply [Read Board Assignee](../artifacts/board.md#read-board-assignee "ƒ").
 - Provide a scope-wide fetch failure with its missing evidence before selecting a batch.
 
 #### 3. Survey
 
-- Apply [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites "operation") for each authorized epic the queue places Ready or In Progress, with current initiative, epic, prerequisite and base-merge records.
+- Apply [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites "ƒ") for each authorized epic the queue places Ready or In Progress, with current initiative, epic, prerequisite and base-merge records.
 
-- Apply [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases "operation") with each confirmed result and the project checkout.
-- Apply [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches "operation") in the project checkout for the project and each epic, at the revision [Branches](../artifacts/delivery-branches.md#branches) names.
+- Apply [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases "ƒ") with each confirmed result and the project checkout.
+- Apply [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches "ƒ") in the project checkout for the project and each epic, at the revision [Branches](../artifacts/delivery-branches.md#branches) names.
 
-- Apply [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work "operation") with current items, pull requests, complete issue links, project checkout, evaluated revision, epic bases, engineering worktree, resolved off-board issues, the authorization's optional requested lane index and selected record date, requesting its dispatch export.
+- Apply [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work "ƒ") with current items, pull requests, complete issue links, project checkout, evaluated revision, epic bases, engineering worktree, resolved off-board issues, the authorization's optional requested lane index and selected record date, requesting its dispatch export.
 
 - Retain the authorized requested lane on every survey; a survey unable to apply that lane returns an evidence blocker.
 
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "operation") for each missing issue and repeat the survey with that record and the other current inputs.
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for each missing issue and repeat the survey with that record and the other current inputs.
 
 - Retain an unavailable row dependency as that unit's blocker and continue with independently verified units.
 
-- For delivery discrepancies, Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence "operation") with the affected initiative, epic and task records, then repeat the survey with its results.
+- For delivery discrepancies, Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence "ƒ") with the affected initiative, epic and task records, then repeat the survey with its results.
 
 - Reconcile each held record with actual harness sessions and the retained inventory, resuming the existing session when available and reporting an absent session without creating a duplicate.
 
 - Release a hold only when the user explicitly requested it:
 
-- Apply [Release Task Rows](../artifacts/epic-issue-body.md#release-task-rows "operation") with the engineering worktree and Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "operation") with the provided body, or Apply [Release Hot-fix Hold](../artifacts/hotfix.md#release-hot-fix-hold "operation") for a hot-fix.
+- Apply [Release Task Rows](../artifacts/epic-issue-body.md#release-task-rows "ƒ") with the engineering worktree and Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body, or Apply [Release Hot-fix Hold](../artifacts/hotfix.md#release-hot-fix-hold "ƒ") for a hot-fix.
 - Repeat the survey with refreshed items and delivery evidence after a release.
 
 - Retain held, blocked, undeclared and unresolved findings for the report.
 
 #### 4. Record Merge Results
 
-- For each authorized `merge` line, Apply [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests "operation") with the project checkout and its unit checkout.
+- For each authorized `merge` line, Apply [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests "ƒ") with the project checkout and its unit checkout.
 
-- Follow [Task Merge](../protocols/task-merge.md "operation") with each confirmed merge and selected board identity.
-- For an authorized `unrecorded` line, Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "operation") for the merged pull request and Follow [Task Merge](../protocols/task-merge.md "operation") with that result.
+- Follow [Task Merge](../protocols/task-merge.md "ƒ") with each confirmed merge and selected board identity.
+- For an authorized `unrecorded` line, Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for the merged pull request and Follow [Task Merge](../protocols/task-merge.md "ƒ") with that result.
 - Return to advance after a recorded merge; its queue, dependencies and available units require fresh evidence.
 - Retain a merge or required-review blocker with its unit and continue with independent work.
 
 #### 5. Select the Batch
 
-- For each retained preparation still admitted by current delivery evidence, Follow [Unit Dispatch](../protocols/unit-dispatch.md "operation") with its selected batch, current evidence, retained context, project and engineering checkouts, run allowance and supplied worker procedure, while free slots permit it.
+- For each retained preparation still admitted by current delivery evidence, Follow [Unit Dispatch](../protocols/unit-dispatch.md "ƒ") with its selected batch, current evidence, retained context, project and engineering checkouts, run allowance and supplied worker procedure, while free slots permit it.
 
 - Retain its provided continuation or observed session, removing a started preparation from the pending set.
-- Observe current harness sessions and free capacity, then Apply [Plan Dispatch Batch](../artifacts/dispatch-batch.md#plan-dispatch-batch "operation") with the fixed authorization, current dispatch export, survey board and requested lane, observed inventory, free slots and admitted preparations awaiting capacity.
+- Observe current harness sessions and free capacity, then Apply [Plan Dispatch Batch](../artifacts/dispatch-batch.md#plan-dispatch-batch "ƒ") with the fixed authorization, current dispatch export, survey board and requested lane, observed inventory, free slots and admitted preparations awaiting capacity.
 - Report an evidence error and stop without dispatching from that batch.
 - For `dispatch`, continue to start units.
 - For `wait`, continue to await progress.
@@ -136,7 +136,7 @@ The continuing coordinator for one authorized delivery scope.
 
 #### 6. Start Units
 
-- Follow [Unit Dispatch](../protocols/unit-dispatch.md "operation") for each selected unit with the batch, current evidence, project and engineering checkouts, run allowance and supplied worker procedure.
+- Follow [Unit Dispatch](../protocols/unit-dispatch.md "ƒ") for each selected unit with the batch, current evidence, project and engineering checkouts, run allowance and supplied worker procedure.
 
 - Retain every provided session identity in the observed inventory before another selection.
 - Retain a capacity-only continuation as this run's preparation for the next refill round.
@@ -171,15 +171,15 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 3. Plan
 
-- Apply [Populate Work Item](../artifacts/work-item.md#populate-work-item "operation") for each task with its reserved file path, scope, design, component, criteria and test requirements from the confirmed delivery brief, so the component the plan was checked against is the one this file declares.
+- Apply [Populate Work Item](../artifacts/work-item.md#populate-work-item "ƒ") for each task with its reserved file path, scope, design, component, criteria and test requirements from the confirmed delivery brief, so the component the plan was checked against is the one this file declares.
 
 - Add any further file the work needs, as [Layout](../artifacts/planning-record.md#layout) describes.
 
 #### 4. Link the Work Items
 
-- Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "operation") with each provided work-item file. A reserved row retains its folder link.
+- Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") with each provided work-item file. A reserved row retains its folder link.
 
-- Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "operation") for the record's folder.
+- Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") for the record's folder.
 
 #### 5. Match the Tests to the Criteria
 
@@ -201,16 +201,16 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 7. Open the Pull Request
 
-- Apply [Populate Pull Request Body](../artifacts/pull-request-body.md#populate-pull-request-body "operation") with the unit's change, tasks, criteria and validation evidence. Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "operation") with the provided body to open the unit's pull request from each task branch its work changes into its base, so the title, the base, the Test Plan, and the issue links meet [Titles](../artifacts/pull-request-body.md#titles), [Branches](../artifacts/delivery-branches.md#branches), [Test Coverage](../artifacts/pull-request-body.md#test-coverage), and [Issue Links](../artifacts/pull-request.md#issue-links).
+- Apply [Populate Pull Request Body](../artifacts/pull-request-body.md#populate-pull-request-body "ƒ") with the unit's change, tasks, criteria and validation evidence. Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with the provided body to open the unit's pull request from each task branch its work changes into its base, so the title, the base, the Test Plan, and the issue links meet [Titles](../artifacts/pull-request-body.md#titles), [Branches](../artifacts/delivery-branches.md#branches), [Test Coverage](../artifacts/pull-request-body.md#test-coverage), and [Issue Links](../artifacts/pull-request.md#issue-links).
 
-- Apply [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close "operation") for the repository, where the session holds no confirmed setting.
+- Apply [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close "ƒ") for the repository, where the session holds no confirmed setting.
 - Supply that setting and the unit's task issue, where one exists, so the pull request opens linked to it.
 - A hot-fix unit's title carries its prefix, so its [delivering pull request](../artifacts/hotfix.md#delivering-pull-request) opens as a draft.
 
 - For a unit of rows:
 
-- Apply [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery "operation") for the unit's task rows, with the project checkout and the fetched epic bases.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "operation") with the provided body.
+- Apply [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery "ƒ") for the unit's task rows, with the project checkout and the fetched epic bases.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
 
 #### 8. Fix the Debt
 
@@ -223,33 +223,33 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 - For a hot-fix unit, complete the review cycle its draft [delivering pull request](../artifacts/hotfix.md#delivering-pull-request) waits on.
 
-- Apply [Produce Agent Review](../artifacts/agent-review.md#produce-agent-review "operation") with the pull request's fresh metadata, the unit checkout, its criteria, validation evidence and planning destination.
-- Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "operation") with its provided record, then Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "operation") with that record.
-- Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "operation") to link that published record from the pull request body.
-- Apply [Ready Hot-fix Pull Request](../artifacts/pull-request.md#ready-hot-fix-pull-request "operation") with the pull request and the published records.
+- Apply [Produce Agent Review](../artifacts/agent-review.md#produce-agent-review "ƒ") with the pull request's fresh metadata, the unit checkout, its criteria, validation evidence and planning destination.
+- Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") with its provided record, then Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") with that record.
+- Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") to link that published record from the pull request body.
+- Apply [Ready Hot-fix Pull Request](../artifacts/pull-request.md#ready-hot-fix-pull-request "ƒ") with the pull request and the published records.
 - For each provided finding, fix it on the task branch and repeat this step from Produce Agent Review, until Ready Hot-fix Pull Request returns none.
 - A finding the session cannot fix within its allowance stops it before the merge step. The hot-fix stays held and its pull request a draft, and the session returns each open finding in its result.
 
 #### 10. Merge
 
-- Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "operation") with check results, following [Test Plan](../artifacts/pull-request-body.md#test-plan).
+- Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with check results, following [Test Plan](../artifacts/pull-request-body.md#test-plan).
 
-- Apply [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests "operation") for the task pull request, with the project checkout and the unit checkout.
-- On a confirmed merge, Follow [Task Merge](../protocols/task-merge.md "operation") in the project checkout with that merge result, the unit's current task and epic evidence, and the board identity the brief names.
+- Apply [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests "ƒ") for the task pull request, with the project checkout and the unit checkout.
+- On a confirmed merge, Follow [Task Merge](../protocols/task-merge.md "ƒ") in the project checkout with that merge result, the unit's current task and epic evidence, and the board identity the brief names.
 - Resume the arising-issues step when recording returns; a merge or recording blocker remains explicit.
 
 #### 11. Arising Issues
 
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "operation") for each issue that arose during delivery as a standalone issue with no agent-engineering prefix.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") for each issue that arose during delivery as a standalone issue with no agent-engineering prefix.
 
-- Follow [Hoist Mode](hoist-mode.md "operation") in the project checkout with those new issue identities and the allowance the brief names, after the pull request is open and epic delivery is recorded.
-- Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "operation") with each placement it applied and each it held.
+- Follow [Hoist Mode](hoist-mode.md "ƒ") in the project checkout with those new issue identities and the allowance the brief names, after the pull request is open and epic delivery is recorded.
+- Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with each placement it applied and each it held.
 
 #### 12. Report the Changes
 
-- Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "operation") with the session's [change list](../artifacts/plan-change.md#change-list) and its planning folder.
+- Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") with the session's [change list](../artifacts/plan-change.md#change-list) and its planning folder.
 
-- Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "operation") for the record's folder.
+- Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") for the record's folder.
 - Provide the list with the delivery session result, so the user reads each plan change this session applied and each it held.
 
 ## Outcomes

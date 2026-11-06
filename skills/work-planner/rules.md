@@ -11,4 +11,4 @@
 
 ## Link Roles
 
-A Markdown link title identifies its role: `input` is a value the operation consumes; `output` is a result it provides; `operation` is a callable procedure.
+A Markdown link title identifies its role: `○` is a value the operation consumes; `●` is a result it provides; `ƒ` is a called operation, protocol or procedure.

@@ -10,19 +10,19 @@ The required label definitions available for issue publication.
 
 #### 1. Read Repository Labels
 
-Apply [List Labels](#list-labels "operation") for [Repository](#repository "input").
+Apply [List Labels](#list-labels "ƒ") for [Repository](#repository "○").
 
 #### 2. Compare Required Names
 
-Compare the provided labels with the required definitions in [Label Identity](#label-identity "input").
+Compare the provided labels with the required definitions in [Label Identity](#label-identity "○").
 
 #### 3. Create Missing Labels
 
-Apply [Create Label](#create-label "operation") for each absent required definition.
+Apply [Create Label](#create-label "ƒ") for each absent required definition.
 
 #### 4. Provide Available Labels
 
-Provide the available [Label Identity](#label-identity "output"); an unknown definition is a finding to resolve before publication.
+Provide the available [Label Identity](#label-identity "●"); an unknown definition is a finding to resolve before publication.
 
 ### List Labels
 
@@ -30,7 +30,7 @@ Lists the labels that exist in the repository.
 
 #### 1. List Labels
 
-Run this command from the [repository](#repository "input") checkout with the supplied inputs.
+Run this command from the [repository](#repository "○") checkout with the supplied inputs.
 
 <big><pre>
 gh api "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/labels?per_page=100" --jq '.&#91;&#93;.name'
@@ -38,7 +38,7 @@ gh api "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/l
 
 #### 2. Provide Listed Labels
 
-Provide [Label Identity](#label-identity "output") to the requester.
+Provide [Label Identity](#label-identity "●") to the requester.
 
 ### Create Label
 
@@ -46,7 +46,7 @@ Creates the label specified by its name, colour and description.
 
 #### 1. Create Label
 
-Run this command from the [repository](#repository "input") checkout using [Label Identity](#label-identity "input").
+Run this command from the [repository](#repository "○") checkout using [Label Identity](#label-identity "○").
 
 <big><pre>
 gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/labels' -f name='[**&lt;label&gt;**](#label-identity)' -f color='[**&lt;hex-colour&gt;**](#label-identity)' -f description='[**&lt;description&gt;**](#label-identity)' --jq .name
@@ -54,7 +54,7 @@ gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](
 
 #### 2. Provide Created Label
 
-Provide [Label Identity](#label-identity "output") to the requester.
+Provide [Label Identity](#label-identity "●") to the requester.
 
 ## Fields
 

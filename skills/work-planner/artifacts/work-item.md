@@ -18,14 +18,14 @@ One task's local implementation plan.
 
 #### 1. Populate Work Item File
 
-- Write the [Template](#template) from [Task Context](#task-context "input") at the destination in [Work Item File](#work-item-file "input").
+- Write the [Template](#template) from [Task Context](#task-context "○") at the destination in [Work Item File](#work-item-file "○").
 - Its name and content must meet [Identity](#identity) and [Sections](#sections).
 - The supplied component must meet [Component](#component).
 - The test row must meet [Test Coverage](pull-request-body.md#test-coverage), using the supplied criteria without copying them into the file.
 
 #### 2. Provide Populated Work Item
 
-Provide [Work Item File](#work-item-file "output") with its path for registration in the planning record.
+Provide [Work Item File](#work-item-file "●") with its path for registration in the planning record.
 
 ## Fields
 

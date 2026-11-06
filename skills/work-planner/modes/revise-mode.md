@@ -4,7 +4,7 @@ Changes the skill itself: SKILL.md, its modes, artifacts, references and scripts
 
 **Runs in:** the project checkout.
 
-Follow the [Procedure](#procedure "operation"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
+Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Prerequisites
 
@@ -53,10 +53,10 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
 
 ### 6. Verify
 
-- Follow [Run Tests](#run-tests "operation") when an executable script, its consumed template or a test changed.
+- Follow [Run Tests](#run-tests "ƒ") when an executable script, its consumed template or a test changed.
 - When SKILL.md changes, confirm its frontmatter opens and closes with `---` and holds `name` and `description`.
-- Follow [Check Skill Files](#check-skill-files "operation") for every affected skill.
-- Follow [Compare Section Bodies](#compare-section-bodies "operation") when the change moves a section between files, and read each section it reports as added, removed or differing.
+- Follow [Check Skill Files](#check-skill-files "ƒ") for every affected skill.
+- Follow [Compare Section Bodies](#compare-section-bodies "ƒ") when the change moves a section between files, and read each section it reports as added, removed or differing.
 - Apply [disclosure verification](../../guidelines.md#disclosure-verification) with the skill's [representative scenarios](../guidelines.md#progressive-disclosure).
 - Resolve every required file, command and heading without an implicit external dependency.
 
@@ -72,7 +72,7 @@ Runs the skill's script tests.
 
 #### 1. Run Skill Tests
 
-Run the following command in the [workspace checkout](#workspace "input").
+Run the following command in the [workspace checkout](#workspace "○").
 
 <big><pre>
 cd "[**<workspace>**](#workspace)/skills/work-planner" && "[**<workspace>**](#workspace)/scripts/sbx" python3 -m unittest discover -s test
@@ -80,7 +80,7 @@ cd "[**<workspace>**](#workspace)/skills/work-planner" && "[**<workspace>**](#wo
 
 #### 2. Provide Test Result
 
-Provide [Test Result](#test-result "output") to the requester.
+Provide [Test Result](#test-result "●") to the requester.
 
 ### Check Skill Files
 
@@ -88,7 +88,7 @@ Checks the affected skill's files against the rules the shared skill guidelines 
 
 #### 1. Check Affected Skills
 
-Run the following command in the [workspace checkout](#workspace "input") for the selected [Skill Directory](#skill-directory "input"); repeat the skill argument for additional affected skills.
+Run the following command in the [workspace checkout](#workspace "○") for the selected [Skill Directory](#skill-directory "○"); repeat the skill argument for additional affected skills.
 
 <big><pre>
 cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/scripts/check_skill_files.py "[**<skill-directory>**](#skill-directory)"
@@ -102,7 +102,7 @@ cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx
 
 #### 2. Provide Skill Check Result
 
-Provide [Skill Check Result](#skill-check-result "output") to the requester.
+Provide [Skill Check Result](#skill-check-result "●") to the requester.
 
 ### Compare Section Bodies
 
@@ -110,7 +110,7 @@ Compares every third-level section's body between the change's base and its head
 
 #### 1. Compare Changed Sections
 
-- Run the following command in the [workspace checkout](#workspace "input") for [Skill Directory](#skill-directory "input"), comparing [Base](#base "input") with [Head](#head "input").
+- Run the following command in the [workspace checkout](#workspace "○") for [Skill Directory](#skill-directory "○"), comparing [Base](#base "○") with [Head](#head "○").
 
 - A relative link target is compared by its fragment alone, so a retargeted link is no difference.
 - Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
@@ -122,7 +122,7 @@ cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx
 
 #### 2. Provide Section Comparison
 
-Provide [Section Comparison](#section-comparison "output") to the requester.
+Provide [Section Comparison](#section-comparison "●") to the requester.
 
 ## Outcomes
 

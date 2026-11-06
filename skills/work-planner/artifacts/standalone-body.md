@@ -17,14 +17,14 @@ One standalone issue body from its supplied scope.
 
 #### 1. Populate Standalone Template
 
-- Populate the [Template](#template) from [Issue Context](#issue-context "input") at the destination in [Output Body](#output-body "input").
+- Populate the [Template](#template) from [Issue Context](#issue-context "○") at the destination in [Output Body](#output-body "○").
 - The title must meet the shared [Titles](issue-body.md#titles) conditions and the standalone [Titles](#titles).
 - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
 - All populated fields must meet [Fields](#fields).
 
 #### 2. Provide Populated Standalone Body
 
-Provide the populated [Output Body](#output-body "output") for publication.
+Provide the populated [Output Body](#output-body "●") for publication.
 
 ### Revise Standalone Body
 
@@ -32,11 +32,11 @@ One standalone body with its confirmed boundary integrated.
 
 #### 1. Apply Confirmed Boundary
 
-Apply [Populate Standalone Body](#populate-standalone-body "operation") to [Current Body](#current-body "input") with [Confirmed Boundary](#confirmed-boundary "input"), folding any Non-Goals into Proposal as a closing boundary and writing to [Output Body](#output-body "input").
+Apply [Populate Standalone Body](#populate-standalone-body "ƒ") to [Current Body](#current-body "○") with [Confirmed Boundary](#confirmed-boundary "○"), folding any Non-Goals into Proposal as a closing boundary and writing to [Output Body](#output-body "○").
 
 #### 2. Provide Revised Body
 
-Provide the revised [Output Body](#output-body "output") for publication.
+Provide the revised [Output Body](#output-body "●") for publication.
 
 ## Fields
 

@@ -20,16 +20,16 @@ The board changes implied by supplied delivery state.
 
 #### 1. Require Complete Link Snapshot
 
-Require the complete [Issue Link Snapshot](#issue-link-snapshot "input"); refuse the computation without it.
+Require the complete [Issue Link Snapshot](#issue-link-snapshot "○"); refuse the computation without it.
 
 #### 2. Compute Delivery Calls
 
-- Supply the [Published Reviews](#published-reviews "input") linked from each open epic integration pull request; retain missing records as handoff blockers.
-- Apply [Compute Board Changes](#compute-board-changes "operation") with the [Initiative Record](#initiative-record "input"), [Epic Records](#epic-records "input"), [Task Records](#task-records "input") and [Pull Request Records](#pull-request-records "input") for the [Board Identity](#board-identity "input"), using [Board Fields](#board-fields "input") and [Board Items](#board-items "input"), writing calls to [Output Directory](#output-directory "input") for [Assignee Login](#assignee-login "input") and including [Resolved Issues](#resolved-issues "input").
+- Supply the [Published Reviews](#published-reviews "○") linked from each open epic integration pull request; retain missing records as handoff blockers.
+- Apply [Compute Board Changes](#compute-board-changes "ƒ") with the [Initiative Record](#initiative-record "○"), [Epic Records](#epic-records "○"), [Task Records](#task-records "○") and [Pull Request Records](#pull-request-records "○") for the [Board Identity](#board-identity "○"), using [Board Fields](#board-fields "○") and [Board Items](#board-items "○"), writing calls to [Output Directory](#output-directory "○") for [Assignee Login](#assignee-login "○") and including [Resolved Issues](#resolved-issues "○").
 
 #### 3. Provide Proposed Changes
 
-Provide [Board Changes](#board-changes "output") with the generated calls and unresolved references. The requester gathers missing evidence, applies changes and confirms their live state.
+Provide [Board Changes](#board-changes "●") with the generated calls and unresolved references. The requester gathers missing evidence, applies changes and confirms their live state.
 
 ### Record Epic Review
 
@@ -37,12 +37,12 @@ One epic's review status on its board.
 
 #### 1. Read Board State
 
-Apply [Read Board State](board.md#read-board-state "operation") for the board in [Review Selection](#review-selection "input") to obtain its items and Status field.
+Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Review Selection](#review-selection "○") to obtain its items and Status field.
 
 #### 2. Read Configuration and Assignee
 
-- Apply [Read Board Configuration](board.md#read-board-configuration "operation") with the board identity and [output paths](#output-paths "input") for the Status option ids.
-- Apply [Read Board Assignee](board.md#read-board-assignee "operation") for the dispatch assignee login.
+- Apply [Read Board Configuration](board.md#read-board-configuration "ƒ") with the board identity and [output paths](#output-paths "○") for the Status option ids.
+- Apply [Read Board Assignee](board.md#read-board-assignee "ƒ") for the dispatch assignee login.
 
 #### 3. Locate Epic Item
 
@@ -51,12 +51,12 @@ Apply [Read Board State](board.md#read-board-state "operation") for the board in
 
 #### 4. Write and Confirm Review Status
 
-- Apply [Record Dispatch Status](#record-dispatch-status "operation") with the epic as the review identity for In Review or the progress identity for In Progress, the [Pull Request Records](#pull-request-records "input") and [Published Reviews](#published-reviews "input"), and the fetched board evidence, meeting [Status Changes](#status-changes).
-- When the item still shows the preceding status, Apply [Record Dispatch Status](#record-dispatch-status "operation") with the same review or progress identity and supplied pull request, review and board evidence. Confirm the item through Apply [Read Board Configuration](board.md#read-board-configuration "operation") with the same item identity. The item list can lag a write.
+- Apply [Record Dispatch Status](#record-dispatch-status "ƒ") with the epic as the review identity for In Review or the progress identity for In Progress, the [Pull Request Records](#pull-request-records "○") and [Published Reviews](#published-reviews "○"), and the fetched board evidence, meeting [Status Changes](#status-changes).
+- When the item still shows the preceding status, Apply [Record Dispatch Status](#record-dispatch-status "ƒ") with the same review or progress identity and supplied pull request, review and board evidence. Confirm the item through Apply [Read Board Configuration](board.md#read-board-configuration "ƒ") with the same item identity. The item list can lag a write.
 
 #### 5. Provide Confirmed Status
 
-Provide [Confirmed Statuses](#confirmed-statuses "output") with the confirmed status or the discrepancy left for the requester.
+Provide [Confirmed Statuses](#confirmed-statuses "●") with the confirmed status or the discrepancy left for the requester.
 
 ### Record Board Delivery
 
@@ -65,40 +65,40 @@ The board's status and assignees after its issues record delivery.
 #### 1. Read Current Delivery Evidence
 
 - Read the issues, the board and its delivery records.
-- Apply [Read Tracker Issue](issue.md#read-tracker-issue "operation") for the [Saved Identities](#saved-identities "input").
-- Apply [Read Board State](board.md#read-board-state "operation") for the selected board.
-- Apply [Fetch All Delivery Pull Requests](pull-request.md#fetch-all-delivery-pull-requests "operation") for its repositories and items.
-- Apply [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links "operation") for those records.
+- Apply [Read Tracker Issue](issue.md#read-tracker-issue "ƒ") for the [Saved Identities](#saved-identities "○").
+- Apply [Read Board State](board.md#read-board-state "ƒ") for the selected board.
+- Apply [Fetch All Delivery Pull Requests](pull-request.md#fetch-all-delivery-pull-requests "ƒ") for its repositories and items.
+- Apply [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links "ƒ") for those records.
 - Fetch the published agent review records linked from each open epic integration pull request, retaining absent or unreadable evidence as a handoff blocker.
-- Apply [Read Board Configuration](board.md#read-board-configuration "operation") with the board and output paths.
-- Apply [Read Board Assignee](board.md#read-board-assignee "operation") for the assignment login.
+- Apply [Read Board Configuration](board.md#read-board-configuration "ƒ") with the board and output paths.
+- Apply [Read Board Assignee](board.md#read-board-assignee "ƒ") for the assignment login.
 - Retain these provided snapshots for the following computation.
 
 #### 2. Plan Delivery Changes
 
-- Apply [Plan Board Changes](#plan-board-changes "operation") with the initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, and assignee login.
+- Apply [Plan Board Changes](#plan-board-changes "ƒ") with the initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, and assignee login.
 - Fetch each unresolved issue.
-- Apply [Plan Board Changes](#plan-board-changes "operation") again with the same initiative, epic, task, pull request, review, link and board snapshots, output directory and assignee, adding the fetched files as resolved off-board issue files.
+- Apply [Plan Board Changes](#plan-board-changes "ƒ") again with the same initiative, epic, task, pull request, review, link and board snapshots, output directory and assignee, adding the fetched files as resolved off-board issue files.
 
 #### 3. Apply and Confirm Calls
 
 - Run each emitted call, including the assignee calls, which act on the issue rather than the board item.
-- Apply [Read Board Configuration](board.md#read-board-configuration "operation") with the board identity, output paths and changed item identity to confirm its current status.
+- Apply [Read Board Configuration](board.md#read-board-configuration "ƒ") with the board identity, output paths and changed item identity to confirm its current status.
 
 - If that item still shows the preceding status:
 - Repeat its emitted write call.
-- Apply [Read Board Configuration](board.md#read-board-configuration "operation") with the same board identity, output paths and changed item identity. The item list can lag a write.
+- Apply [Read Board Configuration](board.md#read-board-configuration "ƒ") with the same board identity, output paths and changed item identity. The item list can lag a write.
 
 #### 4. Recompute Refreshed Board
 
 - Fetch the issues and items again.
 - Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes.
-- Apply [Plan Board Changes](#plan-board-changes "operation") with the refreshed initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, assignee login, and every resolved off-board issue file.
+- Apply [Plan Board Changes](#plan-board-changes "ƒ") with the refreshed initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, assignee login, and every resolved off-board issue file.
 - Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
 
 #### 5. Provide Recorded Board Delivery
 
-Provide [Confirmed Statuses](#confirmed-statuses "output") after every changed item has been confirmed, retaining any unresolved discrepancy.
+Provide [Confirmed Statuses](#confirmed-statuses "●") after every changed item has been confirmed, retaining any unresolved discrepancy.
 
 ### Record Dispatch Status
 
@@ -106,16 +106,16 @@ The task and epic statuses owned by a delivery dispatch.
 
 #### 1. Compute Dispatch Calls
 
-Apply [Compute Dispatch Status](#compute-dispatch-status "operation") with the [Dispatch Selection](#dispatch-selection "input") for the [Board Identity](#board-identity "input"), the [Board Items](#board-items "input") and [Board Fields](#board-fields "input"), [Pull Request Records](#pull-request-records "input") and [Published Reviews](#published-reviews "input"), writing calls to [Output Directory](#output-directory "input") for [Assignee Login](#assignee-login "input"). A missing or failing agent review blocks the In Review write.
+Apply [Compute Dispatch Status](#compute-dispatch-status "ƒ") with the [Dispatch Selection](#dispatch-selection "○") for the [Board Identity](#board-identity "○"), the [Board Items](#board-items "○") and [Board Fields](#board-fields "○"), [Pull Request Records](#pull-request-records "○") and [Published Reviews](#published-reviews "○"), writing calls to [Output Directory](#output-directory "○") for [Assignee Login](#assignee-login "○"). A missing or failing agent review blocks the In Review write.
 
 #### 2. Apply and Confirm Calls
 
 - Run each provided call.
-- Apply [Read Board Configuration](board.md#read-board-configuration "operation") with the [board identity](#board-identity "input"), output paths and each affected item identity to confirm the write.
+- Apply [Read Board Configuration](board.md#read-board-configuration "ƒ") with the [board identity](#board-identity "○"), output paths and each affected item identity to confirm the write.
 
 #### 3. Provide Saved Statuses
 
-Provide [Confirmed Statuses](#confirmed-statuses "output") with saved statuses or unresolved discrepancies.
+Provide [Confirmed Statuses](#confirmed-statuses "●") with saved statuses or unresolved discrepancies.
 
 ### Compute Board Changes
 
@@ -123,11 +123,11 @@ Computes membership, Status and assignee calls from supplied delivery evidence.
 
 #### 1. Compute Board Changes
 
-- Run the following command using [Initiative Record](#initiative-record "input"), [Epic Records](#epic-records "input"), [Task Records](#task-records "input"), [Published Reviews](#published-reviews "input"), [Board Identity](#board-identity "input"), [Board Fields](#board-fields "input"), [Board Items](#board-items "input"), [Output Directory](#output-directory "input"), [Resolved Issues](#resolved-issues "input"), [Workspace](#workspace "input").
+- Run the following command using [Initiative Record](#initiative-record "○"), [Epic Records](#epic-records "○"), [Task Records](#task-records "○"), [Published Reviews](#published-reviews "○"), [Board Identity](#board-identity "○"), [Board Fields](#board-fields "○"), [Board Items](#board-items "○"), [Output Directory](#output-directory "○"), [Resolved Issues](#resolved-issues "○"), [Workspace](#workspace "○").
 
-- `--epics`, `--tasks`, `--prs` and `--links` receive the related records and complete [link snapshot](#issue-link-snapshot "input"). `--agent-reviews` supplies the published review records fetched from the open epic [pull requests](#pull-request-records "input"); absent evidence holds those epics In Progress.
+- `--epics`, `--tasks`, `--prs` and `--links` receive the related records and complete [link snapshot](#issue-link-snapshot "○"). `--agent-reviews` supplies the published review records fetched from the open epic [pull requests](#pull-request-records "○"); absent evidence holds those epics In Progress.
 - `--board`, `--fields` and `--items` identify the current board state.
-- `--out` receives the call files; `--assignee` is the supplied [login](#assignee-login "input").
+- `--out` receives the call files; `--assignee` is the supplied [login](#assignee-login "○").
 - `--others` supplies each resolved dependency issue.
 
 - Pass each epic or task JSON file as a separate argument after its corresponding flag.
@@ -144,7 +144,7 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 
 #### 2. Provide Computed Board Changes
 
-Provide [Board Changes](#board-changes "output") to the requester.
+Provide [Board Changes](#board-changes "●") to the requester.
 
 ### Compute Dispatch Status
 
@@ -152,7 +152,7 @@ Renders board calls within the dispatch jurisdiction.
 
 #### 1. Compute Dispatch Status
 
-Run the following command using [Board Items](#board-items "input"), [Board Identity](#board-identity "input"), [Board Fields](#board-fields "input"), [Output Directory](#output-directory "input"), [Assignee Login](#assignee-login "input"), [Dispatch Selection](#dispatch-selection "input"), [Pull Request Records](#pull-request-records "input"), [Published Reviews](#published-reviews "input"), [Workspace](#workspace "input").
+Run the following command using [Board Items](#board-items "○"), [Board Identity](#board-identity "○"), [Board Fields](#board-fields "○"), [Output Directory](#output-directory "○"), [Assignee Login](#assignee-login "○"), [Dispatch Selection](#dispatch-selection "○"), [Pull Request Records](#pull-request-records "○"), [Published Reviews](#published-reviews "○"), [Workspace](#workspace "○").
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '[**&lt;board-items-file&gt;**](#board-items)' --board '[**&lt;board-identity&gt;**](#board-identity)' --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)' --progress '[**&lt;held-issue-numbers&gt;**](#dispatch-selection)' --review '[**&lt;complete-epic-numbers&gt;**](#dispatch-selection)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews)'
@@ -160,7 +160,7 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 
 #### 2. Provide Computed Dispatch Status
 
-Provide [Board Changes](#board-changes "output") to the requester.
+Provide [Board Changes](#board-changes "●") to the requester.
 
 ## Fields
 

@@ -4,7 +4,7 @@ Scopes one problem: the friction, the evidence, and the boundary, and states the
 
 **Runs in:** the project checkout.
 
-Follow the [Procedure](#procedure "operation"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
+Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Prerequisites
 
@@ -32,25 +32,25 @@ Read these files first.
 
 ### 3. Draft the Body
 
-- Apply [Populate Proposal Body](../artifacts/proposal-body.md#populate-proposal-body "operation") with the confirmed problem, evidence, goal clauses, boundary and output body path. The local file is the source for the issue.
+- Apply [Populate Proposal Body](../artifacts/proposal-body.md#populate-proposal-body "ƒ") with the confirmed problem, evidence, goal clauses, boundary and output body path. The local file is the source for the issue.
 
-- Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "operation") with the proposal prefix letter, and carry the provided proposal number in the title.
+- Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") with the proposal prefix letter, and carry the provided proposal number in the title.
 - The goal clauses are the clauses the user confirmed. The Non-Goals are the boundary.
 - The design, the acceptance criteria, and the breakdown belong to a later goal.
 
 ### 4. Validate
 
-- Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body "operation") with the draft issue JSON and output file.
+- Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body "ƒ") with the draft issue JSON and output file.
 
 - Resolve each finding.
 - Update the draft.
-- Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body "operation") again with the revised JSON and the same output path. Proceed to publication only when validation passes.
+- Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body "ƒ") again with the revised JSON and the same output path. Proceed to publication only when validation passes.
 
 ### 5. Publish
 
-- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "operation") with the proposal's required label definitions.
+- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the proposal's required label definitions.
 
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "operation") with the validated body, title and labels, leaving it unassigned.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the validated body, title and labels, leaving it unassigned.
 
 ### 6. Confirm Placement
 
@@ -62,11 +62,11 @@ Read these files first.
 
 ### 7. Place
 
-- Apply [Locate Project Board](../artifacts/board.md#locate-project-board "operation") for proposals.
+- Apply [Locate Project Board](../artifacts/board.md#locate-project-board "ƒ") for proposals.
 
-- For an absent board, Apply [Create Proposals Board](../artifacts/board.md#create-proposals-board "operation").
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "operation") for the saved issue id.
-- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "operation") with that id and initial status Suggested.
+- For an absent board, Apply [Create Proposals Board](../artifacts/board.md#create-proposals-board "ƒ").
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the saved issue id.
+- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with that id and initial status Suggested.
 - Leave the issue unassigned.
 
 ### 8. Report

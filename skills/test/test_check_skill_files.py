@@ -1748,7 +1748,7 @@ An inventory page from supplied evidence.
 
 #### 1. Fetch Inventory Page
 
-Fetch the requested page using [Limit](#limit "input").
+Fetch the requested page using [Limit](#limit "○").
 
 <big><pre>
 inventory_fetch { [**limit**](#limit), offset }
@@ -1756,7 +1756,7 @@ inventory_fetch { [**limit**](#limit), offset }
 
 #### 2. Provide Inventory Page
 
-Provide [Page](#page "output").
+Provide [Page](#page "●").
 
 ## Fields
 
@@ -1778,7 +1778,7 @@ Follow [Rules](../rules.md), [Conventions](../conventions.md) and [Outcomes](#ou
 
 ### 1. Read Inventory
 
-Apply [Read Inventory](../artifacts/inventory.md#read-inventory "operation").
+Apply [Read Inventory](../artifacts/inventory.md#read-inventory "ƒ").
 
 ## Outcomes
 
@@ -1794,7 +1794,7 @@ Follow [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ### 1. Read Inventory
 
-Apply [Read Inventory](../artifacts/inventory.md#read-inventory "operation").
+Apply [Read Inventory](../artifacts/inventory.md#read-inventory "ƒ").
 '''
 
     def setUp(self):
@@ -1887,7 +1887,7 @@ Apply [Read Inventory](../artifacts/inventory.md#read-inventory "operation").
     def test_child_procedures_have_independent_sequences(self):
         self.replace(self.mode, '## Outcomes', '''### 2. Repeat Audit
 
-Follow [Refresh Inventory](#refresh-inventory "operation").
+Follow [Refresh Inventory](#refresh-inventory "ƒ").
 
 ### Refresh Inventory
 
@@ -1895,7 +1895,7 @@ The inventory refreshed for the next pass.
 
 #### 1. Read Refreshed Inventory
 
-Apply [Read Inventory](../artifacts/inventory.md#read-inventory "operation").
+Apply [Read Inventory](../artifacts/inventory.md#read-inventory "ƒ").
 
 #### 2. Retain Evidence
 
@@ -1922,41 +1922,48 @@ Keep the refreshed inventory.
         self.assertEqual(self.findings(), [])
 
     def test_contextual_inputs_must_carry_role_titles(self):
-        self.replace(self.inventory, '[Limit](#limit "input")', '[Limit](#limit)')
+        self.replace(self.inventory, '[Limit](#limit "○")', '[Limit](#limit)')
         self.assertIn('operation contract links', self.kinds())
 
+    def test_word_titles_do_not_supply_role_contracts(self):
+        self.replace(self.inventory, '#limit "○"', '#limit "input"')
+        self.replace(self.inventory, '#page "●"', '#page "output"')
+        self.replace(self.mode, '#read-inventory "ƒ"', '#read-inventory "operation"')
+        self.assertIn('operation contract links', self.kinds())
+        self.assertIn('operation link role', self.kinds())
+
     def test_each_operation_provides_a_contextual_output(self):
-        self.replace(self.inventory, 'Provide [Page](#page "output").', 'Provide the page.')
+        self.replace(self.inventory, 'Provide [Page](#page "●").', 'Provide the page.')
         self.assertIn('operation contract links', self.kinds())
 
     def test_input_links_cannot_select_an_operation_as_a_field(self):
-        self.replace(self.inventory, '[Limit](#limit "input")', '[Limit](#read-inventory "input")')
+        self.replace(self.inventory, '[Limit](#limit "○")', '[Limit](#read-inventory "○")')
         self.assertIn('operation contract links', self.kinds())
 
     def test_a_callable_link_requires_its_operation_title(self):
-        self.replace(self.mode, '#read-inventory "operation"', '#read-inventory')
+        self.replace(self.mode, '#read-inventory "ƒ"', '#read-inventory')
         self.assertIn('operation link role', self.kinds())
 
     def test_an_operation_title_cannot_select_a_field(self):
-        self.replace(self.mode, '#read-inventory "operation"', '#limit "operation"')
+        self.replace(self.mode, '#read-inventory "ƒ"', '#limit "ƒ"')
         self.assertIn('operation link role', self.kinds())
 
     def test_role_links_in_headings_do_not_supply_prose_inputs(self):
-        self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "input").',
+        self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "○").',
                      'Fetch the requested page.')
         self.replace(self.inventory, '#### 1. Fetch Inventory Page',
-                     '#### 1. Fetch [Limit](#limit "input")')
+                     '#### 1. Fetch [Limit](#limit "○")')
         self.assertIn('operation contract links', self.kinds())
 
     def test_role_titles_preserve_destinations_and_do_not_create_field_callers(self):
-        self.assertEqual(checker.LINK.findall('[Limit](#limit "input")'), ['#limit'])
+        self.assertEqual(checker.LINK.findall('[Limit](#limit "○")'), ['#limit'])
         kinds = checker.citation_kinds(self.inventory, self.MODEL['artifacts'])
         self.assertTrue(any(target == '#limit' and kind == checker.SPECIFICATION for _, target, kind in kinds))
         self.assertFalse(any(target == '#page' and kind == checker.STEP for _, target, kind in kinds))
 
     def test_contract_links_can_reach_another_artifacts_fields(self):
         self.write('artifacts/source.md', '# Source\n\n## Fields\n\n### Limit\n\nThe page size.\n')
-        self.replace(self.inventory, '[Limit](#limit "input")', '[Limit](source.md#limit "input")')
+        self.replace(self.inventory, '[Limit](#limit "○")', '[Limit](source.md#limit "○")')
         self.replace(self.inventory, '[**limit**](#limit)', '[**limit**](source.md#limit)')
         self.assertEqual(self.findings(), [])
 
@@ -1967,8 +1974,8 @@ Keep the refreshed inventory.
                 self.assertIn('fenced invocation in HTML model', self.kinds())
 
     def test_a_fenced_markdown_template_is_specimen_text(self):
-        self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "input").',
-                     'Fetch the requested page using [Limit](#limit "input").\n\n' + FENCE + 'markdown\n<big><pre>\n[**missing**](#absent)\n' + FENCE)
+        self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "○").',
+                     'Fetch the requested page using [Limit](#limit "○").\n\n' + FENCE + 'markdown\n<big><pre>\n[**missing**](#absent)\n' + FENCE)
         self.assertEqual(self.findings(), [])
 
     def test_malformed_html_wrappers_are_reported(self):
@@ -2061,21 +2068,21 @@ Keep the refreshed inventory.
         self.assertIn('operation call verb', self.kinds())
 
     def test_mode_and_protocol_calls_use_follow(self):
-        self.replace(self.mode, 'Apply [Read Inventory](../artifacts/inventory.md#read-inventory "operation").',
-                     'Follow [Prepare](../protocols/prepare.md "operation").')
+        self.replace(self.mode, 'Apply [Read Inventory](../artifacts/inventory.md#read-inventory "ƒ").',
+                     'Follow [Prepare](../protocols/prepare.md "ƒ").')
         self.assertEqual(self.findings(), [])
         self.replace(self.mode, 'Follow [Prepare]', 'Apply [Prepare]')
         self.assertIn('operation call verb', self.kinds())
 
     def test_field_citations_are_not_operation_calls(self):
-        self.replace(self.mode, 'Apply [Read Inventory](../artifacts/inventory.md#read-inventory "operation").',
+        self.replace(self.mode, 'Apply [Read Inventory](../artifacts/inventory.md#read-inventory "ƒ").',
                      'Inspect [Limit](../artifacts/inventory.md#limit).')
         self.assertEqual(self.findings(), [])
 
     def test_html_graphql_needs_its_own_step_rest_gap(self):
         self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }', 'gh api graphql -F query=@query.graphql')
         self.assertIn('GraphQL without a REST gap', self.kinds())
-        self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "input").', 'Fetch the requested page using [Limit](#limit "input").\n\n**REST gap:** REST exposes no relation write.')
+        self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "○").', 'Fetch the requested page using [Limit](#limit "○").\n\n**REST gap:** REST exposes no relation write.')
         self.assertNotIn('GraphQL without a REST gap', self.kinds())
 
     def test_another_steps_rest_gap_cannot_cover_an_invocation(self):
@@ -2114,8 +2121,8 @@ Keep the refreshed inventory.
         self.assertEqual(status, 0, printed.getvalue())
 
     def test_specimen_role_links_do_not_supply_operation_inputs(self):
-        self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "input").',
-                     FENCE + 'markdown\nUse [Limit](#limit "input").\n' + FENCE)
+        self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "○").',
+                     FENCE + 'markdown\nUse [Limit](#limit "○").\n' + FENCE)
         self.assertIn('operation contract links', self.kinds())
 
     def test_literal_rest_gap_text_in_payload_is_not_evidence(self):

@@ -10,17 +10,17 @@ One pending change assessed against the run's allowance.
 
 #### 1. Classify Pending Change
 
-Match [Pending Change](#pending-change "input") to one kind in [Change Kinds](#change-kinds).
+Match [Pending Change](#pending-change "○") to one kind in [Change Kinds](#change-kinds).
 
 #### 2. Provide Allowed Change
 
-Provide [Autonomy Result](#autonomy-result "output") as automatic where the supplied allowance names that kind, with the supplied recommendation as the option the requester applies.
+Provide [Autonomy Result](#autonomy-result "●") as automatic where the supplied allowance names that kind, with the supplied recommendation as the option the requester applies.
 
 #### 3. Provide Held Change
 
 - Provide it as held otherwise, for the caller to settle as [Held Change](#held-change) states.
 - A change matching no kind is held, as is one matching [Initiative Creation](#initiative-creation) or [Hot-fix Creation](#hot-fix-creation).
-- An absent [allowance](#allowance "input") holds every change, so a run the user drives decides nothing on their behalf.
+- An absent [allowance](#allowance "○") holds every change, so a run the user drives decides nothing on their behalf.
 
 ### Record Plan Change
 
@@ -28,11 +28,11 @@ One entry in the run's list, for a change it applied or held.
 
 #### 1. Record Applied or Held Entry
 
-Add [Change Details](#change-details "input") as one entry meeting [Entry](#entry) to the supplied [Change List](#change-list "input"), marked applied or held.
+Add [Change Details](#change-details "○") as one entry meeting [Entry](#entry) to the supplied [Change List](#change-list "○"), marked applied or held.
 
 #### 2. Provide Updated List
 
-Provide the updated [Change List](#change-list "output") for publication and reporting.
+Provide the updated [Change List](#change-list "●") for publication and reporting.
 
 ## Fields
 

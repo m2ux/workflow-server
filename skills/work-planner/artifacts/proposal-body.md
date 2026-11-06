@@ -16,14 +16,14 @@ One proposal body from a confirmed problem and goal.
 
 #### 1. Populate Proposal Template
 
-- Populate the [Template](#template) from [Proposal Context](#proposal-context "input") at the destination in [Output Body](#output-body "input").
+- Populate the [Template](#template) from [Proposal Context](#proposal-context "○") at the destination in [Output Body](#output-body "○").
 - The title must meet the shared [Titles](issue-body.md#titles) conditions and the proposal [Titles](#titles).
 - The Problem must meet the shared [Problem and Proposal](issue-body.md#problem-and-proposal) conditions.
 - All populated fields must meet [Fields](#fields).
 
 #### 2. Provide Populated Proposal Body
 
-Provide the populated [Output Body](#output-body "output") for publication.
+Provide the populated [Output Body](#output-body "●") for publication.
 
 ### Validate Proposal Body
 
@@ -31,11 +31,11 @@ The body's local format and field findings.
 
 #### 1. Validate Kind Conditions
 
-Apply [Validate Issue Body](issue-body.md#validate-issue-body "operation") to [Proposal Record](#proposal-record "input") against local [Fields](#fields), using the supplied related evidence and [Output Body](#output-body "input"), proposal field conditions and required title and label metadata.
+Apply [Validate Issue Body](issue-body.md#validate-issue-body "ƒ") to [Proposal Record](#proposal-record "○") against local [Fields](#fields), using the supplied related evidence and [Output Body](#output-body "○"), proposal field conditions and required title and label metadata.
 
 #### 2. Provide Local Findings
 
-Provide the corrected [Output Body](#output-body "output") and [Validation Findings](#validation-findings "output"), including the mechanical diff and unresolved findings.
+Provide the corrected [Output Body](#output-body "●") and [Validation Findings](#validation-findings "●"), including the mechanical diff and unresolved findings.
 
 ## Fields
 

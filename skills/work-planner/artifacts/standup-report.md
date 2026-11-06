@@ -18,11 +18,11 @@ The copyable report and any missing-evidence findings.
 
 #### 1. Require Complete Link Snapshot
 
-Require the complete [Issue Link Snapshot](#issue-link-snapshot "input").
+Require the complete [Issue Link Snapshot](#issue-link-snapshot "○").
 
 #### 2. Render Window Progress
 
-Apply [Summarise Progress](#summarise-progress "operation") to [Board Items](#board-items "input") and [Pull Request Records](#pull-request-records "input") with the link snapshot, using [Report Selection](#report-selection "input") and [Initiative Records](#initiative-records "input") and saving results at [Output Paths](#output-paths "input").
+Apply [Summarise Progress](#summarise-progress "ƒ") to [Board Items](#board-items "○") and [Pull Request Records](#pull-request-records "○") with the link snapshot, using [Report Selection](#report-selection "○") and [Initiative Records](#initiative-records "○") and saving results at [Output Paths](#output-paths "○").
 
 #### 3. Provide Unresolved Initiatives
 
@@ -35,11 +35,11 @@ If initiative references remain unresolved, provide them for the caller to suppl
 
 #### 5. Render Final Report
 
-Apply [Summarise Progress](#summarise-progress "operation") with the same inputs and the paragraph file as `--summary`.
+Apply [Summarise Progress](#summarise-progress "ƒ") with the same inputs and the paragraph file as `--summary`.
 
 #### 6. Provide Report Findings
 
-- Provide [Report Result](#report-result "output") with the report and separate unresolved findings.
+- Provide [Report Result](#report-result "●") with the report and separate unresolved findings.
 - The report must meet [Fields](#fields).
 
 ### Summarise Progress
@@ -48,12 +48,12 @@ Prints the standup from supplied board items, pull request records and their iss
 
 #### 1. Summarise Progress
 
-- Run the following command using [Board Items](#board-items "input"), [Pull Request Records](#pull-request-records "input"), [Management File](#management-file "input"), [Workspace](#workspace "input").
+- Run the following command using [Board Items](#board-items "○"), [Pull Request Records](#pull-request-records "○"), [Management File](#management-file "○"), [Workspace](#workspace "○").
 
-- `--links` is the supplied complete pull-request [issue-link snapshot](#issue-link-snapshot "input"); it identifies the issue each pull request delivers.
-- `--since` supplies the window start in [Report Selection](#report-selection "input"), selecting the [window](#scope).
-- `--initiative` selects the initiative filter in [Report Selection](#report-selection "input"). **Examples:** `I08`, `owner/repo:I08`.
-- `--initiatives` gives supplied off-board [initiative records](#initiative-records "input"), each as a separate file argument.
+- `--links` is the supplied complete pull-request [issue-link snapshot](#issue-link-snapshot "○"); it identifies the issue each pull request delivers.
+- `--since` supplies the window start in [Report Selection](#report-selection "○"), selecting the [window](#scope).
+- `--initiative` selects the initiative filter in [Report Selection](#report-selection "○"). **Examples:** `I08`, `owner/repo:I08`.
+- `--initiatives` gives supplied off-board [initiative records](#initiative-records "○"), each as a separate file argument.
 - `--summary` gives the paragraph for management.
 
 - The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.
@@ -70,7 +70,7 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 
 #### 2. Provide Summarise Progress
 
-Provide [Report Result](#report-result "output") to the requester.
+Provide [Report Result](#report-result "●") to the requester.
 
 ## Fields
 

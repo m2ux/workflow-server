@@ -17,7 +17,7 @@ The theme or proposals board the request names.
 
 #### 1. Find Requested Board
 
-Apply [Find Theme Board](#find-theme-board "operation") for the theme in [Board Selection](#board-selection "input") under [Board Owner](#board-owner "input"), or Apply [Find Proposals Board](#find-proposals-board "operation") when that selection names proposals. The selection meets [Themes](#themes) or [Proposals](#proposals).
+Apply [Find Theme Board](#find-theme-board "ƒ") for the theme in [Board Selection](#board-selection "○") under [Board Owner](#board-owner "○"), or Apply [Find Proposals Board](#find-proposals-board "ƒ") when that selection names proposals. The selection meets [Themes](#themes) or [Proposals](#proposals).
 
 #### 2. Provide Missing Selection
 
@@ -25,7 +25,7 @@ Provide a missing-selection result when neither a theme nor proposals is specifi
 
 #### 3. Provide Selected Board
 
-Provide the [selected board](#selected-board "output") number, or an absent-board result for the caller’s creation path. Work one board at a time.
+Provide the [selected board](#selected-board "●") number, or an absent-board result for the caller’s creation path. Work one board at a time.
 
 ### Copy Project Board
 
@@ -33,17 +33,17 @@ A missing theme board, or a missing proposals board.
 
 #### 1. Create Absent Proposals Board
 
-When [Selected Kind](#selected-kind "input") is proposals and no open board under [Board Owner](#board-owner "input") has the [proposals title](../configuration.md#proposals-board), Apply [Create Proposals Board](#create-proposals-board "operation"). The copy source and the title meet [Proposals](#proposals).
+When [Selected Kind](#selected-kind "○") is proposals and no open board under [Board Owner](#board-owner "○") has the [proposals title](../configuration.md#proposals-board), Apply [Create Proposals Board](#create-proposals-board "ƒ"). The copy source and the title meet [Proposals](#proposals).
 
 #### 2. Create Absent Theme Board
 
 - When the selected theme board is absent:
-- Apply [Create Theme Board](#create-theme-board "operation") with the owner, [repository](#repository "input"), theme title and originating proposal record when applicable.
+- Apply [Create Theme Board](#create-theme-board "ƒ") with the owner, [repository](#repository "○"), theme title and originating proposal record when applicable.
 - Require the new theme's label and board before an initiative takes that theme.
 
 #### 3. Provide Copied Project Board
 
-Provide the [Copied Board](#copied-board "output") after the selected creation path succeeds.
+Provide the [Copied Board](#copied-board "●") after the selected creation path succeeds.
 
 ### Create Proposals Board
 
@@ -51,7 +51,7 @@ A new proposals board linked to the supplied repository.
 
 #### 1. Find Proposals Template
 
-Apply [Find Board Template](#find-board-template "operation") under [Board Owner](#board-owner "input") with the exact [proposals-template title](../configuration.md#proposals-board).
+Apply [Find Board Template](#find-board-template "ƒ") under [Board Owner](#board-owner "○") with the exact [proposals-template title](../configuration.md#proposals-board).
 
 #### 2. Select Template Source
 
@@ -59,7 +59,7 @@ Use the provided number as the copy source.
 
 #### 3. Copy Proposals Template
 
-Apply [Copy Board Template](#copy-board-template "operation") with that template number, the owner and the [proposals title](../configuration.md#proposals-board).
+Apply [Copy Board Template](#copy-board-template "ƒ") with that template number, the owner and the [proposals title](../configuration.md#proposals-board).
 
 #### 4. Retain New Board Number
 
@@ -67,11 +67,11 @@ Retain the new board number. The copy meets [Proposals](#proposals).
 
 #### 5. Link Copied Board
 
-Apply [Link Board to Repository](#link-board-to-repository "operation") with the owner, new board number and [repository](#repository "input").
+Apply [Link Board to Repository](#link-board-to-repository "ƒ") with the owner, new board number and [repository](#repository "○").
 
 #### 6. Provide Linked Board
 
-Provide the [Copied Board](#copied-board "output") after linking succeeds.
+Provide the [Copied Board](#copied-board "●") after linking succeeds.
 
 ### Create Theme Board
 
@@ -79,11 +79,11 @@ A new theme board linked to the supplied repository.
 
 #### 1. Check Theme Provenance
 
-Require the originating proposal record in [Theme Provenance](#theme-provenance "input") for a proposal-derived board; provide a missing-input finding when its designator is unavailable.
+Require the originating proposal record in [Theme Provenance](#theme-provenance "○") for a proposal-derived board; provide a missing-input finding when its designator is unavailable.
 
 #### 2. Find Theme Template
 
-Apply [Find Board Template](#find-board-template "operation") under [Board Owner](#board-owner "input") with the exact [theme-template title](../configuration.md#theme-boards).
+Apply [Find Board Template](#find-board-template "ƒ") under [Board Owner](#board-owner "○") with the exact [theme-template title](../configuration.md#theme-boards).
 
 #### 3. Select Template Source
 
@@ -91,7 +91,7 @@ Use the provided number as the copy source.
 
 #### 4. Copy Theme Template
 
-Apply [Copy Board Template](#copy-board-template "operation") with that template number, the owner and the title required by [One Board Per Theme](#one-board-per-theme).
+Apply [Copy Board Template](#copy-board-template "ƒ") with that template number, the owner and the title required by [One Board Per Theme](#one-board-per-theme).
 
 #### 5. Retain New Board Number
 
@@ -99,11 +99,11 @@ Retain the new board number. The copy carries the [theme-board fields](../config
 
 #### 6. Link Copied Board
 
-Apply [Link Board to Repository](#link-board-to-repository "operation") with the owner, new board number and [repository](#repository "input").
+Apply [Link Board to Repository](#link-board-to-repository "ƒ") with the owner, new board number and [repository](#repository "○").
 
 #### 7. Provide Linked Board
 
-Provide the [Copied Board](#copied-board "output") after linking succeeds.
+Provide the [Copied Board](#copied-board "●") after linking succeeds.
 
 ### Place Issue on Board
 
@@ -111,23 +111,23 @@ One issue's membership and initial status.
 
 #### 1. Read Status Options
 
-Apply [Fetch Board Fields](#fetch-board-fields "operation") for the Status options at [Board Coordinates](#board-coordinates "input"), using the supplied issue identity.
+Apply [Fetch Board Fields](#fetch-board-fields "ƒ") for the Status options at [Board Coordinates](#board-coordinates "○"), using the supplied issue identity.
 
 #### 2. Add Supplied Issue
 
-Apply [Add Issue to Board](#add-issue-to-board "operation") with the [issue id](#issue-id "input").
+Apply [Add Issue to Board](#add-issue-to-board "ƒ") with the [issue id](#issue-id "○").
 
 #### 3. Set Initial Status
 
-Apply [Set Item Status](#set-item-status "operation") with [Initial Status](#initial-status "input") and the matching field and option ids.
+Apply [Set Item Status](#set-item-status "ƒ") with [Initial Status](#initial-status "○") and the matching field and option ids.
 
 #### 4. Read Saved Item
 
-Apply [Fetch Board Item](#fetch-board-item "operation") for the saved item.
+Apply [Fetch Board Item](#fetch-board-item "ƒ") for the saved item.
 
 #### 5. Provide Place Issue on Board
 
-Provide [Board Configuration](#board-configuration "output") with the confirmed saved item and Status options.
+Provide [Board Configuration](#board-configuration "●") with the confirmed saved item and Status options.
 
 ### Read Board State
 
@@ -135,15 +135,15 @@ The selected board's items and status fields.
 
 #### 1. Locate Board Status Field
 
-Apply [Find Status Field](#find-status-field "operation") for [Board Coordinates](#board-coordinates "input").
+Apply [Find Status Field](#find-status-field "ƒ") for [Board Coordinates](#board-coordinates "○").
 
 #### 2. Fetch Complete Board Items
 
-Apply [Fetch Board Items with Status](#fetch-board-items-with-status "operation"), passing that field id and board number.
+Apply [Fetch Board Items with Status](#fetch-board-items-with-status "ƒ"), passing that field id and board number.
 
 #### 3. Provide Board State
 
-Provide [Board State](#board-state "output") with the items, Status field, item ids and the board’s [Repositories](#repositories).
+Provide [Board State](#board-state "●") with the items, Status field, item ids and the board’s [Repositories](#repositories).
 
 ### Read Board Assignee
 
@@ -151,11 +151,11 @@ The authenticated login available for board assignments.
 
 #### 1. Find Authenticated User
 
-Apply [Find User](#find-user "operation") using [Authenticated Access](#authenticated-access "input").
+Apply [Find User](#find-user "ƒ") using [Authenticated Access](#authenticated-access "○").
 
 #### 2. Provide Assignment Login
 
-Provide its [login](#assignee-login "output") for the caller's assignment decisions.
+Provide its [login](#assignee-login "●") for the caller's assignment decisions.
 
 ### Read Board Configuration
 
@@ -163,15 +163,15 @@ One board's field definitions and requested item state.
 
 #### 1. Read Board Fields
 
-Apply [Fetch Board Fields](#fetch-board-fields "operation") for [Board Coordinates](#board-coordinates "input"), saving the records at [Output Files](#output-files "input").
+Apply [Fetch Board Fields](#fetch-board-fields "ƒ") for [Board Coordinates](#board-coordinates "○"), saving the records at [Output Files](#output-files "○").
 
 #### 2. Read Requested Item
 
-When [Optional Item](#optional-item "input") requests a single item for write confirmation, Apply [Fetch Board Item](#fetch-board-item "operation"). A list snapshot may lag a write.
+When [Optional Item](#optional-item "○") requests a single item for write confirmation, Apply [Fetch Board Item](#fetch-board-item "ƒ"). A list snapshot may lag a write.
 
 #### 3. Provide Current Configuration
 
-Provide [Board Configuration](#board-configuration "output") with the field definitions and requested current item.
+Provide [Board Configuration](#board-configuration "●") with the field definitions and requested current item.
 
 ### Locate Project Board
 
@@ -179,11 +179,11 @@ The board identity matching a supplied purpose or theme.
 
 #### 1. Find Requested Purpose
 
-Apply [Find Proposals Board](#find-proposals-board "operation") under [Board Owner](#board-owner "input") when [Board Selection](#board-selection "input") names proposals, or Apply [Find Theme Board](#find-theme-board "operation") for its theme.
+Apply [Find Proposals Board](#find-proposals-board "ƒ") under [Board Owner](#board-owner "○") when [Board Selection](#board-selection "○") names proposals, or Apply [Find Theme Board](#find-theme-board "ƒ") for its theme.
 
 #### 2. Provide Matching Board
 
-Provide the [Selected Board](#selected-board "output") or an absent-board finding for the requester’s selection or creation path.
+Provide the [Selected Board](#selected-board "●") or an absent-board finding for the requester’s selection or creation path.
 
 ### Find Board Template
 
@@ -191,7 +191,7 @@ Prints the number of the open board with the supplied exact template title.
 
 #### 1. Find Board Template
 
-Run the following command using [Board Owner](#board-owner "input"), [Template Selection](#template-selection "input").
+Run the following command using [Board Owner](#board-owner "○"), [Template Selection](#template-selection "○").
 
 <big><pre>
 gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100" --jq '.&#91;&#93; | select(.closed | not) | select(.title == "[**&lt;template-title&gt;**](#template-selection)") | .number'
@@ -199,7 +199,7 @@ gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=1
 
 #### 2. Provide Located Board Template
 
-Provide [Template Selection](#template-selection "output") to the requester.
+Provide [Template Selection](#template-selection "●") to the requester.
 
 ### Copy Board Template
 
@@ -207,7 +207,7 @@ Copies the supplied template into a new open board with the supplied title and p
 
 #### 1. Copy Board Template
 
-- Run the following command using [Board Owner](#board-owner "input"), [Template Selection](#template-selection "input"), [Copy Title](#copy-title "input").
+- Run the following command using [Board Owner](#board-owner "○"), [Template Selection](#template-selection "○"), [Copy Title](#copy-title "○").
 
 - The copy's JSON is one project; `.number` identifies the new board.
 
@@ -217,7 +217,7 @@ gh project copy '[**&lt;template-number&gt;**](#template-selection)' --source-ow
 
 #### 2. Provide Copied Board Template
 
-Provide [Copied Board](#copied-board "output") to the requester.
+Provide [Copied Board](#copied-board "●") to the requester.
 
 ### Link Board to Repository
 
@@ -225,7 +225,7 @@ Links one board to the supplied repository.
 
 #### 1. Link Board to Repository
 
-Run the following command using [Board Coordinates](#board-coordinates "input"), [Repository](#repository "input"), [Board Owner](#board-owner "input").
+Run the following command using [Board Coordinates](#board-coordinates "○"), [Repository](#repository "○"), [Board Owner](#board-owner "○").
 
 <big><pre>
 gh project link '[**&lt;board-number&gt;**](#board-coordinates)' --owner '[**&lt;owner&gt;**](#board-owner)' --repo '[**&lt;repo&gt;**](#repository)'
@@ -233,7 +233,7 @@ gh project link '[**&lt;board-number&gt;**](#board-coordinates)' --owner '[**&lt
 
 #### 2. Provide Linked Board to Repository
 
-Provide [Link Result](#link-result "output") to the requester.
+Provide [Link Result](#link-result "●") to the requester.
 
 ### Find Proposals Board
 
@@ -241,7 +241,7 @@ Prints the number of the open [proposals board](../configuration.md#proposals-bo
 
 #### 1. Find Proposals Board
 
-Run the following command using [Board Owner](#board-owner "input").
+Run the following command using [Board Owner](#board-owner "○").
 
 <big><pre>
 gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100" --jq '.&#91;&#93; | select(.closed | not) | select(.title == "Proposals") | .number'
@@ -249,7 +249,7 @@ gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=1
 
 #### 2. Provide Located Proposals Board
 
-Provide [Selected Board](#selected-board "output") to the requester.
+Provide [Selected Board](#selected-board "●") to the requester.
 
 ### Add Issue to Board
 
@@ -257,7 +257,7 @@ Adds the caller-supplied issue to a board and prints the new item's id.
 
 #### 1. Add Issue to Board
 
-Run the following command using [Board Coordinates](#board-coordinates "input"), [Issue Id](#issue-id "input"), [Board Owner](#board-owner "input").
+Run the following command using [Board Coordinates](#board-coordinates "○"), [Issue Id](#issue-id "○"), [Board Owner](#board-owner "○").
 
 <big><pre>
 gh api --method POST 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items' -f type=Issue -F 'id=[**&lt;issue-id&gt;**](#issue-id)' --jq .id
@@ -271,7 +271,7 @@ gh api --method POST 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/item
 
 #### 2. Provide Added Issue to Board
 
-Provide [Membership Result](#membership-result "output") to the requester.
+Provide [Membership Result](#membership-result "●") to the requester.
 
 ### Set Item Status
 
@@ -279,7 +279,7 @@ Sets one board item's Status.
 
 #### 1. Set Item Status
 
-- Run the following command using [Board Coordinates](#board-coordinates "input"), [Item Coordinates](#item-coordinates "input"), [Status Input File](#status-input-file "input"), [Board Owner](#board-owner "input").
+- Run the following command using [Board Coordinates](#board-coordinates "○"), [Item Coordinates](#item-coordinates "○"), [Status Input File](#status-input-file "○"), [Board Owner](#board-owner "○").
 
 - The input body names the Status field id and option id from the fetched board fields: `{"fields":[{"id":<status-field-id>,"value":"<status-option-id>"}]}`. Substitute the field id as a JSON integer and the option id as a JSON string.
 
@@ -297,7 +297,7 @@ gh api --method PATCH 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/ite
 
 #### 2. Provide Saved Item Status
 
-Provide [Membership Result](#membership-result "output") to the requester.
+Provide [Membership Result](#membership-result "●") to the requester.
 
 ### Remove Board Item
 
@@ -305,7 +305,7 @@ Removes one item from a board, leaving its issue as it stands.
 
 #### 1. Remove Board Item
 
-Run the following command using [Board Coordinates](#board-coordinates "input"), [Item Coordinates](#item-coordinates "input"), [Board Owner](#board-owner "input").
+Run the following command using [Board Coordinates](#board-coordinates "○"), [Item Coordinates](#item-coordinates "○"), [Board Owner](#board-owner "○").
 
 <big><pre>
 gh api --method DELETE 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)'
@@ -319,7 +319,7 @@ gh api --method DELETE 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/ite
 
 #### 2. Provide Removed Board Item
 
-Provide [Membership Result](#membership-result "output") to the requester.
+Provide [Membership Result](#membership-result "●") to the requester.
 
 ### Fetch Board Fields
 
@@ -327,7 +327,7 @@ Saves a board's fields.
 
 #### 1. Fetch Board Fields
 
-Run the following command using [Board Coordinates](#board-coordinates "input"), [Board Fields File](#board-fields-file "input"), [Board Owner](#board-owner "input").
+Run the following command using [Board Coordinates](#board-coordinates "○"), [Board Fields File](#board-fields-file "○"), [Board Owner](#board-owner "○").
 
 <big><pre>
 gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/fields?per_page=100" > '[**&lt;board-fields-file&gt;**](#board-fields-file)'
@@ -341,7 +341,7 @@ gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/fields?p
 
 #### 2. Provide Fetched Board Fields
 
-Provide [Board Configuration](#board-configuration "output") to the requester.
+Provide [Board Configuration](#board-configuration "●") to the requester.
 
 ### Find Theme Board
 
@@ -349,7 +349,7 @@ Prints the number of the open board for one theme, by its theme name after any p
 
 #### 1. Find Theme Board
 
-Run the following command using [Board Owner](#board-owner "input"), [Theme Name](#theme-name "input").
+Run the following command using [Board Owner](#board-owner "○"), [Theme Name](#theme-name "○").
 
 <big><pre>
 gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100" --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub("^\\&#91;P&#91;0-9&#93;+\\&#93; "; "") | startswith("[**&lt;theme-name&gt;**](#theme-name): ")) | .number'
@@ -363,7 +363,7 @@ gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=1
 
 #### 2. Provide Located Theme Board
 
-Provide [Selected Board](#selected-board "output") to the requester.
+Provide [Selected Board](#selected-board "●") to the requester.
 
 ### Find Status Field
 
@@ -371,7 +371,7 @@ Prints the id of a board's Status field.
 
 #### 1. Find Status Field
 
-Run the following command using [Board Coordinates](#board-coordinates "input"), [Board Owner](#board-owner "input").
+Run the following command using [Board Coordinates](#board-coordinates "○"), [Board Owner](#board-owner "○").
 
 <big><pre>
 gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/fields?per_page=100" --jq '.&#91;&#93; | select(.name == "Status") | .id'
@@ -385,7 +385,7 @@ gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/fields?p
 
 #### 2. Provide Located Status Field
 
-Provide [Status Field](#status-field "output") to the requester.
+Provide [Status Field](#status-field "●") to the requester.
 
 ### Fetch Board Items with Status
 
@@ -393,7 +393,7 @@ Saves a board's items with their Status, each carrying its issue whole.
 
 #### 1. Fetch Board Items with Status
 
-Run the following command using [Board Coordinates](#board-coordinates "input"), [Status Field](#status-field "input"), [Board Items File](#board-items-file "input"), [Board Owner](#board-owner "input").
+Run the following command using [Board Coordinates](#board-coordinates "○"), [Status Field](#status-field "○"), [Board Items File](#board-items-file "○"), [Board Owner](#board-owner "○").
 
 <big><pre>
 gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field)" > '[**&lt;board-items-file&gt;**](#board-items-file)'
@@ -407,7 +407,7 @@ gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items?pe
 
 #### 2. Provide Fetched Board Items with Status
 
-Provide [Board State](#board-state "output") to the requester.
+Provide [Board State](#board-state "●") to the requester.
 
 ### Fetch Board Item
 
@@ -415,7 +415,7 @@ Reads one board item, including its current Status.
 
 #### 1. Fetch Board Item
 
-Run the following command using [Board Coordinates](#board-coordinates "input"), [Item Coordinates](#item-coordinates "input"), [Status Field](#status-field "input"), [Board Owner](#board-owner "input").
+Run the following command using [Board Coordinates](#board-coordinates "○"), [Item Coordinates](#item-coordinates "○"), [Status Field](#status-field "○"), [Board Owner](#board-owner "○").
 
 <big><pre>
 gh api "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)?fields=[**&lt;status-field-id&gt;**](#status-field)"
@@ -429,7 +429,7 @@ gh api "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items/1001?fields=4
 
 #### 2. Provide Fetched Board Item
 
-Provide [Board Configuration](#board-configuration "output") to the requester.
+Provide [Board Configuration](#board-configuration "●") to the requester.
 
 ### Find User
 
@@ -437,7 +437,7 @@ Prints the login `gh` runs as, the user assigned to work from Ready on.
 
 #### 1. Find User
 
-Run the following command using [Authenticated Access](#authenticated-access "input").
+Run the following command using [Authenticated Access](#authenticated-access "○").
 
 <big><pre>
 gh api user --jq .login
@@ -445,7 +445,7 @@ gh api user --jq .login
 
 #### 2. Provide Located User
 
-Provide [Assignee Login](#assignee-login "output") to the requester.
+Provide [Assignee Login](#assignee-login "●") to the requester.
 
 ## Fields
 

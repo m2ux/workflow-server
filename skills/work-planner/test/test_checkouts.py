@@ -332,11 +332,11 @@ git status
             path.parent.mkdir()
             content = '\n'.join([
                 '# Contextual Input', '', '## Operations', '', '### Inspect Supplied State', '',
-                '[Review Checkout](#review-checkout "input")', '', '#### 1. Inspect Checkout', '',
+                '[Review Checkout](#review-checkout "○")', '', '#### 1. Inspect Checkout', '',
                 'Inspect the supplied state.', '',
-                '```markdown', 'Use [Review Checkout](#review-checkout "input").', '```', '',
-                '<big><pre>[Review Checkout](#review-checkout "input")</pre></big>', '',
-                'Provide [Review Checkout](#review-checkout "output").', '',
+                '```markdown', 'Use [Review Checkout](#review-checkout "○").', '```', '',
+                '<big><pre>[Review Checkout](#review-checkout "○")</pre></big>', '',
+                'Provide [Review Checkout](#review-checkout "●").', '',
                 '## Fields', '', '### Review Checkout', '', 'The review checkout holding the change.', '',
             ])
             entry = {'sections': ['Operations', 'Fields'], 'procedures': 'Operations',
@@ -346,7 +346,7 @@ git status
             start = document.anchors['inspect-supplied-state']
             self.assertEqual(document.inputs(start), '')
             path.write_text(content.replace('Inspect the supplied state.',
-                                            'Inspect [Review Checkout](#review-checkout "input").'))
+                                            'Inspect [Review Checkout](#review-checkout "○").'))
             document = Document(path, entry)
             self.assertIn('review checkout', document.inputs(start).lower())
 

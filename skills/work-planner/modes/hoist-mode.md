@@ -4,7 +4,7 @@ Brings the chosen standalone issues into the agent-engineering structure, or lea
 
 **Runs in:** the project checkout.
 
-Follow the [Procedure](#procedure "operation"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
+Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Prerequisites
 
@@ -22,26 +22,26 @@ Read these files first.
 
 ### 1. Fetch
 
-Apply [Read Repository Issues](../artifacts/issue.md#read-repository-issues "operation") for every issue.
+Apply [Read Repository Issues](../artifacts/issue.md#read-repository-issues "ƒ") for every issue.
 
 ### 2. List Candidates
 
-- Apply [Find Placement Candidates](../artifacts/placement.md#find-placement-candidates "operation") with the complete issue collection.
+- Apply [Find Placement Candidates](../artifacts/placement.md#find-placement-candidates "ƒ") with the complete issue collection.
 
 - Use its candidates and available destinations for triage.
 
 ### 3. Triage
 
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "operation") for each candidate's body and discussion, with the initiative and epic bodies whose themes or criteria it touches.
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for each candidate's body and discussion, with the initiative and epic bodies whose themes or criteria it touches.
 
-- Apply [Draft Issue Placement](../artifacts/placement.md#draft-issue-placement "operation") for each option with that evidence and planning-record references.
+- Apply [Draft Issue Placement](../artifacts/placement.md#draft-issue-placement "ƒ") for each option with that evidence and planning-record references.
 - Order the provided options best first, with Leave last.
 
 ### 4. Decide Each Placement
 
-- Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy "operation") for each orphan's best option that changes the plan, with the allowance the caller supplied.
+- Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy "ƒ") for each orphan's best option that changes the plan, with the allowance the caller supplied.
 
-- Confirm an automatic option as it stands, and Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "operation") with that option.
+- Confirm an automatic option as it stands, and Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with that option.
 - A held option is settled as [Held Change](../artifacts/plan-change.md#held-change) states, leaving the orphan where it is.
 
 - An option put to the user is offered as an [Interview](../guidelines.md#modes). The grounding paragraph says what the orphan asks and where it fits.
@@ -53,20 +53,20 @@ Apply [Read Repository Issues](../artifacts/issue.md#read-repository-issues "ope
 
 ### 5. Apply
 
-- Apply [Apply Issue Placement](../artifacts/placement.md#apply-issue-placement "operation") with each confirmed placement and its current source and destination records.
+- Apply [Apply Issue Placement](../artifacts/placement.md#apply-issue-placement "ƒ") with each confirmed placement and its current source and destination records.
 
-- After it returns the saved destination, run exactly one disposition procedure with the provided destination and source records, including a new task's row id: Apply [Rewrite Orphan Issue](../artifacts/placement.md#rewrite-orphan-issue "operation") for kept or left issues, or Apply [Subsume Orphan Work](../artifacts/placement.md#subsume-orphan-work "operation") for work taken by another issue.
+- After it returns the saved destination, run exactly one disposition procedure with the provided destination and source records, including a new task's row id: Apply [Rewrite Orphan Issue](../artifacts/placement.md#rewrite-orphan-issue "ƒ") for kept or left issues, or Apply [Subsume Orphan Work](../artifacts/placement.md#subsume-orphan-work "ƒ") for work taken by another issue.
 - Resume review.
 
 ### 6. Review
 
-- Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body "operation") on every issue the hoist changed or created.
-- Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "operation") on each initiative that gained a task or epic.
-- Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy "operation") with each finding and resolve it as provided: an automatic correction is applied, and a held one is settled as [Held Change](../artifacts/plan-change.md#held-change) states.
-- Apply [Apply Body Corrections](../artifacts/issue-body.md#apply-body-corrections "operation") with confirmed body corrections.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "operation") with the corrected bodies.
-- Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body "operation") again with the saved affected bodies.
-- Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "operation") again with the saved affected bodies.
+- Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body "ƒ") on every issue the hoist changed or created.
+- Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "ƒ") on each initiative that gained a task or epic.
+- Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy "ƒ") with each finding and resolve it as provided: an automatic correction is applied, and a held one is settled as [Held Change](../artifacts/plan-change.md#held-change) states.
+- Apply [Apply Body Corrections](../artifacts/issue-body.md#apply-body-corrections "ƒ") with confirmed body corrections.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the corrected bodies.
+- Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body "ƒ") again with the saved affected bodies.
+- Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "ƒ") again with the saved affected bodies.
 - Report any unresolved finding.
 
 ### 7. Report

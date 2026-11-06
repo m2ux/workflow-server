@@ -4,13 +4,13 @@ Explains the named pull request's changes through a measured architecture overvi
 
 **Runs in:** the project checkout.
 
-Follow the [Procedure](#procedure "operation"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
+Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Prerequisites
 
 Read these files first.
 
-- [Change Overview](../protocols/change-overview.md "operation")
+- [Change Overview](../protocols/change-overview.md "ƒ")
 
 ## Procedure
 
@@ -23,7 +23,7 @@ Read these files first.
 
 ### 2. Explain Each Change
 
-Follow [Change Overview](../protocols/change-overview.md "operation") for each selected pull request, resuming with what it returns.
+Follow [Change Overview](../protocols/change-overview.md "ƒ") for each selected pull request, resuming with what it returns.
 
 ### 3. Report
 

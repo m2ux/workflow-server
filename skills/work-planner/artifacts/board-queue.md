@@ -21,14 +21,14 @@ Derives the queue from supplied board and delivery snapshots and confirmed decis
 
 #### 1. Compute Queue Calls
 
-- Apply [Compute Board Queue](#compute-board-queue "operation") for the [Board Identity](#board-identity "input") with [Board Items](#board-items "input"), [Pull Request Records](#pull-request-records "input"), the [Issue Link Snapshot](#issue-link-snapshot "input") and [Board Fields](#board-fields "input"), using [Assignee Login](#assignee-login "input") and [Output Directory](#output-directory "input"), and including [Resolved Issues](#resolved-issues "input") and [Unplanned Initiatives](#unplanned-initiatives "input").
-- The computation invokes the lane operations internally: Apply [Read Task Lanes](lane.md#read-task-lanes "operation") with each epic body and Apply [Check Unit Lanes](lane.md#check-unit-lanes "operation") with each complete free unit derived after queue placement.
+- Apply [Compute Board Queue](#compute-board-queue "ƒ") for the [Board Identity](#board-identity "○") with [Board Items](#board-items "○"), [Pull Request Records](#pull-request-records "○"), the [Issue Link Snapshot](#issue-link-snapshot "○") and [Board Fields](#board-fields "○"), using [Assignee Login](#assignee-login "○") and [Output Directory](#output-directory "○"), and including [Resolved Issues](#resolved-issues "○") and [Unplanned Initiatives](#unplanned-initiatives "○").
+- The computation invokes the lane operations internally: Apply [Read Task Lanes](lane.md#read-task-lanes "ƒ") with each epic body and Apply [Check Unit Lanes](lane.md#check-unit-lanes "ƒ") with each complete free unit derived after queue placement.
 - The queue must meet [Fields](#fields).
 - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix's, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
 
 #### 2. Provide Queue Evidence
 
-- Provide the [Queue Result](#queue-result "output") to the requester.
+- Provide the [Queue Result](#queue-result "●") to the requester.
 - Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines.
 - The caller supplies further evidence and confirmed decisions for another pass and applies the proposed changes to tracked objects.
 
@@ -38,17 +38,17 @@ Prints proposed Status and assignee calls, [report lines](#report-lines) and unr
 
 #### 1. Compute Board Queue
 
-- Run the following command using [Board Items](#board-items "input"), [Board Fields](#board-fields "input"), [Output Directory](#output-directory "input"), [Resolved Issues](#resolved-issues "input"), [Status Scope](#status-scope "input"), [Workspace](#workspace "input").
+- Run the following command using [Board Items](#board-items "○"), [Board Fields](#board-fields "○"), [Output Directory](#output-directory "○"), [Resolved Issues](#resolved-issues "○"), [Status Scope](#status-scope "○"), [Workspace](#workspace "○").
 
 - `--items` is the board's items with Status.
-- `--prs` is the [pull requests](#pull-request-records "input") that name an initiative or a hot-fix.
-- `--links` is the [issue-link snapshot](#issue-link-snapshot "input") of those pull requests, where the hot-fix each one delivers is read.
-- `--board` is the [board identity](#board-identity "input").
+- `--prs` is the [pull requests](#pull-request-records "○") that name an initiative or a hot-fix.
+- `--links` is the [issue-link snapshot](#issue-link-snapshot "○") of those pull requests, where the hot-fix each one delivers is read.
+- `--board` is the [board identity](#board-identity "○").
 - `--fields` is the board's fields.
 - `--out` is the directory the calls are written to.
-- `--assignee` is the [login](#assignee-login "input") assigned to work from Ready.
+- `--assignee` is the [login](#assignee-login "○") assigned to work from Ready.
 - `--others` is an issue file for an issue the rows depend on that is not on the board. Repeatable.
-- `--unplanned` supplies each [Unplanned Initiative](#unplanned-initiatives "input"). Repeatable.
+- `--unplanned` supplies each [Unplanned Initiative](#unplanned-initiatives "○"). Repeatable.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --board '[**&lt;board-identity&gt;**](#board-identity)' --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)'
@@ -62,7 +62,7 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 
 #### 2. Provide Computed Board Queue
 
-Provide [Queue Result](#queue-result "output") to the requester.
+Provide [Queue Result](#queue-result "●") to the requester.
 
 ## Fields
 

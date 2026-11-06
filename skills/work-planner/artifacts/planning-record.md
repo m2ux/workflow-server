@@ -16,11 +16,11 @@ One planning directory and its artifact inventory.
 
 #### 1. Prepare Selected Record
 
-- Prepare the directory in [Record Selection](#record-selection "input") using the matching branch.
+- Prepare the directory in [Record Selection](#record-selection "○") using the matching branch.
 
 ##### New Record
 
-- Apply [Add Planning Record](#add-planning-record "operation") with the engineering checkout and supplied planning-folder path.
+- Apply [Add Planning Record](#add-planning-record "ƒ") with the engineering checkout and supplied planning-folder path.
 - Populate README.md from the [Template](#template).
 
 ##### Existing Record
@@ -41,7 +41,7 @@ One planning directory and its artifact inventory.
 
 #### 3. Provide Populated Planning Record
 
-Provide [Planning Folder](#planning-folder "output") with the populated record and registered artifacts.
+Provide [Planning Folder](#planning-folder "●") with the populated record and registered artifacts.
 
 ### Publish Planning Record
 
@@ -49,17 +49,17 @@ The record's folder committed and pushed, so every link into it resolves for a r
 
 #### 1. Find Engineering Checkout
 
-Apply [Find Engineering Worktree](#find-engineering-worktree "operation") for [Planning Folder](#planning-folder "input").
+Apply [Find Engineering Worktree](#find-engineering-worktree "ƒ") for [Planning Folder](#planning-folder "○").
 
 #### 2. Publish Planning Files
 
-- Apply [Commit Planning Record](#commit-planning-record "operation") using [Commit Message File](#commit-message-file "input").
+- Apply [Commit Planning Record](#commit-planning-record "ƒ") using [Commit Message File](#commit-message-file "○").
 - Confirm the files this record wrote reached `origin/engineering`, meeting [Shared Worktree](#shared-worktree).
 - Report a rebase that stops on a conflict rather than rewriting the branch.
 
 #### 3. Provide Published Planning Record
 
-Provide [Publication Result](#publication-result "output") after confirming publication, or with the conflict that prevents it.
+Provide [Publication Result](#publication-result "●") after confirming publication, or with the conflict that prevents it.
 
 ### Find Engineering Worktree
 
@@ -67,7 +67,7 @@ Prints the checkout holding the engineering branch, which is where every plannin
 
 #### 1. Find Engineering Worktree
 
-- Run the following command using [Project Checkout](#project-checkout "input").
+- Run the following command using [Project Checkout](#project-checkout "○").
 
 - The engineering branch has one long-lived worktree and takes no further one.
 
@@ -77,7 +77,7 @@ git -C '[**&lt;checkout&gt;**](#project-checkout)' worktree list | grep '\&#91;e
 
 #### 2. Provide Located Engineering Worktree
 
-Provide [Engineering Worktree](#engineering-worktree "output") to the requester.
+Provide [Engineering Worktree](#engineering-worktree "●") to the requester.
 
 ### Commit Planning Record
 
@@ -85,7 +85,7 @@ Commits everything pending in the engineering worktree and publishes the branch,
 
 #### 1. Commit Planning Record
 
-- Run the following command using [Engineering Worktree](#engineering-worktree "input"), [Commit Message File](#commit-message-file "input").
+- Run the following command using [Engineering Worktree](#engineering-worktree "○"), [Commit Message File](#commit-message-file "○").
 
 - It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).
 - Planning records go straight to the branch; they take no pull request.
@@ -103,7 +103,7 @@ cd .engineering && git add -A && (git diff --cached --quiet || git commit -F /tm
 
 #### 2. Provide Commit Planning Record
 
-Provide [Publication Result](#publication-result "output") to the requester.
+Provide [Publication Result](#publication-result "●") to the requester.
 
 ### Add Planning Record
 
@@ -111,7 +111,7 @@ Adds the folder for one planning record on the long-lived engineering worktree.
 
 #### 1. Add Planning Record
 
-- Run the following command using [Engineering Worktree](#engineering-worktree "input"), [Planning Folder](#planning-folder "input").
+- Run the following command using [Engineering Worktree](#engineering-worktree "○"), [Planning Folder](#planning-folder "○").
 
 - `<planning-folder-path>` is `<yyyy-mm-dd>[-<ref>]-<slug>/` under the [configured planning directory](../configuration.md#planning-records). The date is the day the record is opened.
 - `<ref>` is the bare number of the issue or the pull request the record is for. A record for ad hoc work, which has neither, has no ref segment.
@@ -131,7 +131,7 @@ mkdir -p artifacts/planning/2026-10-15-950-queue-plan
 
 #### 2. Provide Added Planning Record
 
-Provide [Planning Folder](#planning-folder "output") to the requester.
+Provide [Planning Folder](#planning-folder "●") to the requester.
 
 ## Fields
 
@@ -175,7 +175,7 @@ README.md is the one file the folder must hold. Any file beyond README.md is add
 
 Each file beyond README.md is a row in the README's Artifacts.
 
-A plan's draft issue bodies and its work items are files of its record. Each draft is the source every later edit and save of its issue reads, and it reaches readers through [Publish Planning Record](#publish-planning-record "operation").
+A plan's draft issue bodies and its work items are files of its record. Each draft is the source every later edit and save of its issue reads, and it reaches readers through [Publish Planning Record](#publish-planning-record "ƒ").
 
 ### Header
 

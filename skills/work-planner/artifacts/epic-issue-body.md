@@ -22,27 +22,27 @@ One epic body and its local validation findings.
 
 #### 1. Populate Epic Template
 
-- Populate the body from the [Template](#template) using [Draft Metadata](#draft-metadata "input") at the supplied output path.
+- Populate the body from the [Template](#template) using [Draft Metadata](#draft-metadata "○") at the supplied output path.
 - Every section must meet [Fields](#fields).
 - Shared content must meet the common [body conditions](issue-body.md#fields).
 
 #### 2. Populate Shared Table
 
-Apply [Write Issue Table](issue-body.md#write-issue-table "operation") with [Task Rows](#task-rows "input").
+Apply [Write Issue Table](issue-body.md#write-issue-table "ƒ") with [Task Rows](#task-rows "○").
 
 #### 3. Fill Epic Cells
 
 - Fill the epic-specific cells.
 - Each row must meet [Work Breakdown](#work-breakdown).
-- Apply [Assign Task Lanes](lane.md#assign-task-lanes "operation") with the populated body, confirmed task-to-index map and output path.
+- Apply [Assign Task Lanes](lane.md#assign-task-lanes "ƒ") with the populated body, confirmed task-to-index map and output path.
 
 #### 4. Build Draft Snapshot
 
-Apply [Build Body Snapshot](issue-body.md#build-body-snapshot "operation") with the draft body, title, labels and existing issue JSON when present.
+Apply [Build Body Snapshot](issue-body.md#build-body-snapshot "ƒ") with the draft body, title, labels and existing issue JSON when present.
 
 #### 5. Validate Draft Body
 
-Apply [Validate Epic Body](#validate-epic-body "operation") with that snapshot, [initiative context](#initiative-context "input"), available [pull request records](#pull-request-records "input"), [project checkout](#project-checkout "input"), [evaluated revision](#evaluated-revision "input") and [output file](#output-body "input").
+Apply [Validate Epic Body](#validate-epic-body "ƒ") with that snapshot, [initiative context](#initiative-context "○"), available [pull request records](#pull-request-records "○"), [project checkout](#project-checkout "○"), [evaluated revision](#evaluated-revision "○") and [output file](#output-body "○").
 
 #### 6. Identify Pending Links
 
@@ -50,7 +50,7 @@ Identify unresolved publication links separately; they remain pending until trac
 
 #### 7. Provide Draft Findings
 
-Provide the populated [Output Body](#output-body "output"), [Row Result](#row-result "output") with draft rows and dependency references, and [Validation Findings](#validation-findings "output") for the cross-body ordering check.
+Provide the populated [Output Body](#output-body "●"), [Row Result](#row-result "●") with draft rows and dependency references, and [Validation Findings](#validation-findings "●") for the cross-body ordering check.
 
 ### Record Epic Delivery
 
@@ -58,12 +58,12 @@ One epic body with supplied delivery matches and completed rows recorded.
 
 #### 1. Record Supplied Matches
 
-- Apply [Sync Epic](#sync-epic "operation") with [Epic Record](#epic-record "input"), [Pull Request Records](#pull-request-records "input"), [Issue Links](#issue-links "input"), [Task Records](#task-records "input") and [Delivery Matches](#delivery-matches "input"), passing each of the [fetched epic bases](#epic-bases "input") as `--revision` in the [Project Checkout](#project-checkout "input") and writing [Output Body](#output-body "input").
+- Apply [Sync Epic](#sync-epic "ƒ") with [Epic Record](#epic-record "○"), [Pull Request Records](#pull-request-records "○"), [Issue Links](#issue-links "○"), [Task Records](#task-records "○") and [Delivery Matches](#delivery-matches "○"), passing each of the [fetched epic bases](#epic-bases "○") as `--revision` in the [Project Checkout](#project-checkout "○") and writing [Output Body](#output-body "○").
 - Row changes must meet [Task Delivery](#task-delivery) and [Work Breakdown](#work-breakdown).
 
 #### 2. Provide Updated Body
 
-Provide the [updated body](#output-body "output") and [Delivery Findings](epic.md#delivery-findings "output") for the caller to resolve and publish. An unmerged epic base prevents a closable result.
+Provide the [updated body](#output-body "●") and [Delivery Findings](epic.md#delivery-findings "●") for the caller to resolve and publish. An unmerged epic base prevents a closable result.
 
 ### Record Epic Criteria
 
@@ -71,11 +71,11 @@ Verified criteria and completed rows in one epic body.
 
 #### 1. Record Verified Criteria
 
-Apply [Tick Epic Criteria](#tick-epic-criteria "operation") with [Epic Record](#epic-record "input"), [Pull Request Records](#pull-request-records "input"), [Issue Links](#issue-links "input") and the verified [Criterion Selection](#criterion-selection "input"), writing [Output Body](#output-body "input"). Refuse criteria not ready to verify.
+Apply [Tick Epic Criteria](#tick-epic-criteria "ƒ") with [Epic Record](#epic-record "○"), [Pull Request Records](#pull-request-records "○"), [Issue Links](#issue-links "○") and the verified [Criterion Selection](#criterion-selection "○"), writing [Output Body](#output-body "○"). Refuse criteria not ready to verify.
 
 #### 2. Provide Criterion Disposition
 
-Provide [Output Body](#output-body "output") and the refused [Criterion Selection](#criterion-selection "output").
+Provide [Output Body](#output-body "●") and the refused [Criterion Selection](#criterion-selection "●").
 
 ### Reserve Task Rows
 
@@ -83,15 +83,15 @@ Task rows held for one confirmed delivery session.
 
 #### 1. Require Reservable Unit
 
-Require the confirmed [Task Selection](#task-selection "input") and existing [Planning Folder](#planning-folder "input"). Refuse a row already held or linked to a pull request or commit, and a unit [Work Units](delivery-plan.md#work-units) does not admit.
+Require the confirmed [Task Selection](#task-selection "○") and existing [Planning Folder](#planning-folder "○"). Refuse a row already held or linked to a pull request or commit, and a unit [Work Units](delivery-plan.md#work-units) does not admit.
 
 #### 2. Reserve Complete Unit
 
-Apply [Reserve Row](#reserve-row "operation") to [Epic Record](#epic-record "input") with every id of the unit, the [Board Items](#board-items "input"), supplied base URL and record date, writing [Output Body](#output-body "input").
+Apply [Reserve Row](#reserve-row "ƒ") to [Epic Record](#epic-record "○") with every id of the unit, the [Board Items](#board-items "○"), supplied base URL and record date, writing [Output Body](#output-body "○").
 
 #### 3. Provide Reserved Body
 
-Provide the reserved [Output Body](#output-body "output") and [Row Result](#row-result "output"), meeting [Task Delivery](#task-delivery).
+Provide the reserved [Output Body](#output-body "●") and [Row Result](#row-result "●"), meeting [Task Delivery](#task-delivery).
 
 ### Release Task Rows
 
@@ -99,15 +99,15 @@ Held task rows provided to their work-item links.
 
 #### 1. Require Release Decision
 
-Require the release decision in [Task Selection](#task-selection "input") and refuse any row that is not held.
+Require the release decision in [Task Selection](#task-selection "○") and refuse any row that is not held.
 
 #### 2. Release Complete Unit
 
-Apply [Release Row](#release-row "operation") to [Epic Record](#epic-record "input") with every id of each released unit and the [Engineering Worktree](#engineering-worktree "input"), writing [Output Body](#output-body "input").
+Apply [Release Row](#release-row "ƒ") to [Epic Record](#epic-record "○") with every id of each released unit and the [Engineering Worktree](#engineering-worktree "○"), writing [Output Body](#output-body "○").
 
 #### 3. Provide Released Body
 
-Provide the released [Output Body](#output-body "output") and [Row Result](#row-result "output"), meeting [Task Delivery](#task-delivery).
+Provide the released [Output Body](#output-body "●") and [Row Result](#row-result "●"), meeting [Task Delivery](#task-delivery).
 
 ### Validate Epic Body
 
@@ -115,12 +115,12 @@ The body's local format and field findings.
 
 #### 1. Read Changed Paths
 
-For each epic pull request reaching a branch the project's [Required Criteria](#required-criteria) declare, Apply [Read Pull Request State](pull-request.md#read-pull-request-state "operation") to read its changed paths.
+For each epic pull request reaching a branch the project's [Required Criteria](#required-criteria) declare, Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") to read its changed paths.
 
 #### 2. Validate Kind Conditions
 
-- Apply [Validate Issue Body](issue-body.md#validate-issue-body "operation") to [Epic Record](#epic-record "input") against local [Fields](#fields) and [Initiative Context](#initiative-context "input"), with [Pull Request Records](#pull-request-records "input") and each changed-path record, reading the [Project Checkout](#project-checkout "input") at the supplied revision and writing [Output Body](#output-body "input").
-- The [evaluated revision](#evaluated-revision "input") is the epic's base on the long-lived branch that holds the project's configuration, such as `origin/i07/e00/workspace`, or that branch itself, such as `origin/workspace`, while the epic has no base on it. Fetch it before the check reads it.
+- Apply [Validate Issue Body](issue-body.md#validate-issue-body "ƒ") to [Epic Record](#epic-record "○") against local [Fields](#fields) and [Initiative Context](#initiative-context "○"), with [Pull Request Records](#pull-request-records "○") and each changed-path record, reading the [Project Checkout](#project-checkout "○") at the supplied revision and writing [Output Body](#output-body "○").
+- The [evaluated revision](#evaluated-revision "○") is the epic's base on the long-lived branch that holds the project's configuration, such as `origin/i07/e00/workspace`, or that branch itself, such as `origin/workspace`, while the epic has no base on it. Fetch it before the check reads it.
 
 #### 3. Read Delivery Reach
 
@@ -132,7 +132,7 @@ Include in the findings each [Required Criteria](#required-criteria) criterion a
 
 #### 5. Provide Local Findings
 
-Provide the corrected [Output Body](#output-body "output") and [Validation Findings](#validation-findings "output"), including the mechanical diff and unresolved findings.
+Provide the corrected [Output Body](#output-body "●") and [Validation Findings](#validation-findings "●"), including the mechanical diff and unresolved findings.
 
 ### Revise Epic Rows
 
@@ -140,13 +140,13 @@ One epic body with confirmed task-grain and coverage corrections.
 
 #### 1. Apply Confirmed Changes
 
-- Apply [Populate Epic Issue Body](#populate-epic-issue-body "operation") to [Epic Body](#epic-body "input") with the confirmed [Task Rows](#task-rows "input"), writing [Output Body](#output-body "input") and preserving unrelated content.
+- Apply [Populate Epic Issue Body](#populate-epic-issue-body "ƒ") to [Epic Body](#epic-body "○") with the confirmed [Task Rows](#task-rows "○"), writing [Output Body](#output-body "○") and preserving unrelated content.
 - Description, Coverage, Depends on, Joins, Lane and task grain must meet [Work Breakdown](#work-breakdown).
 - Split a task exceeding the allowed criterion grain into the confirmed tasks.
 
 #### 2. Provide Revised Body
 
-Provide [Output Body](#output-body "output") and [Validation Findings](#validation-findings "output"), including any cross-body numbering or dependency changes.
+Provide [Output Body](#output-body "●") and [Validation Findings](#validation-findings "●"), including any cross-body numbering or dependency changes.
 
 ### Plan Gap Task
 
@@ -154,7 +154,7 @@ The agreed disposition of criteria a delivered row left unmet.
 
 #### 1. Resolve Unmet Criteria
 
-- Present each unmet criterion in [Epic Body](#epic-body "input") and its missing evidence from [Epic Record](#epic-record "input") to the user.
+- Present each unmet criterion in [Epic Body](#epic-body "○") and its missing evidence from [Epic Record](#epic-record "○") to the user.
 - Provide the criteria the user confirms already hold to the caller for verification and ticking. The delivered task retains them.
 - Record an unanswered decision as pending.
 - If no criteria need further work, provide the pending findings to the caller.
@@ -162,16 +162,16 @@ The agreed disposition of criteria a delivered row left unmet.
 
 #### 2. Confirm Further Task
 
-- Draft a further task for the [Criterion Selection](#criterion-selection "input") requiring further work, starting from the delivered [Task Rows](#task-rows "input") and meeting [Work Breakdown](#work-breakdown).
+- Draft a further task for the [Criterion Selection](#criterion-selection "○") requiring further work, starting from the delivered [Task Rows](#task-rows "○") and meeting [Work Breakdown](#work-breakdown).
 - Confirm the draft with the user.
-- On acceptance, Apply [Revise Epic Rows](#revise-epic-rows "operation") with the further row and the criteria it adopts from the delivered task's Coverage.
+- On acceptance, Apply [Revise Epic Rows](#revise-epic-rows "ƒ") with the further row and the criteria it adopts from the delivered task's Coverage.
 - Provide an unanswered draft as pending without continuing to the reconcile step.
 
 #### 3. Reconcile Revised Delivery
 
-- Apply [Record Epic Delivery](#record-epic-delivery "operation") with the revised epic, [Pull Request Records](#pull-request-records "input") and [Issue Links](#issue-links "input"), the [Project Checkout](#project-checkout "input") and fetched [Epic Bases](#epic-bases "input"), writing [Output Body](#output-body "input").
-- Apply [Save Tracker Issue](issue.md#save-tracker-issue "operation") with the provided body.
-- Provide [Row Result](#row-result "output") with the saved row and criterion disposition.
+- Apply [Record Epic Delivery](#record-epic-delivery "ƒ") with the revised epic, [Pull Request Records](#pull-request-records "○") and [Issue Links](#issue-links "○"), the [Project Checkout](#project-checkout "○") and fetched [Epic Bases](#epic-bases "○"), writing [Output Body](#output-body "○").
+- Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") with the provided body.
+- Provide [Row Result](#row-result "●") with the saved row and criterion disposition.
 
 ### Sync Epic
 
@@ -179,9 +179,9 @@ Links each named task's id to the pull requests naming the epic it is delivered 
 
 #### 1. Sync Epic
 
-- Run this command from the [workspace](#workspace "input") [checkout](#project-checkout "input") using [Epic Record](#epic-record "input"), [Task Records](#task-records "input"), [Delivery Matches](#delivery-matches "input"), [Epic Bases](#epic-bases "input"), [Output Body](#output-body "input").
+- Run this command from the [workspace](#workspace "○") [checkout](#project-checkout "○") using [Epic Record](#epic-record "○"), [Task Records](#task-records "○"), [Delivery Matches](#delivery-matches "○"), [Epic Bases](#epic-bases "○"), [Output Body](#output-body "○").
 
-- A row whose id links its task [issue links](#issue-links "input") the pull request instead.
+- A row whose id links its task [issue links](#issue-links "○") the pull request instead.
 - A pull request whose head is an epic base is the pull request that merges that base, and is not matched to a task.
 - An unmerged epic base keeps the epic open, even when every row is delivered and every criterion is ticked.
 - An epic base is reported `draft` only where it holds a commit its long-lived branch lacks. The base is read at the `--revision` naming it and the long-lived branch beside it on the same remote, so `origin/i07/e00/main` is compared with `origin/main`; a base no `--revision` names is reported `unevaluable`.
@@ -189,7 +189,7 @@ Links each named task's id to the pull requests naming the epic it is delivered 
 - An absent, empty or unreadable statement, and statements that disagree across the bases, are reported `unevaluable` with their source. Without the long-lived branch names, the run names each check it did not make as `not checked`, and an epic that would otherwise be closable is not.
 - An open review pull request's Changes paths are read at its head commit in the `--project` repository: a path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree. A head commit the repository does not hold is reported `unevaluable`.
 - Passed checks settle criteria under [Test Evidence](#test-evidence).
-- `--link` names each task id and the pull request number it links. An id repeats once for each pull request, one per long-lived branch its unit changes. The row keeps the deliveries it links in place and gains each named one it lacks, so a repeated run leaves it unchanged. `--tasks` is the task issues. `--links` is the [pull requests](#pull-request-records "input")' Development-linked issues. `--fix` is the body written with the Done ticks.
+- `--link` names each task id and the pull request number it links. An id repeats once for each pull request, one per long-lived branch its unit changes. The row keeps the deliveries it links in place and gains each named one it lacks, so a repeated run leaves it unchanged. `--tasks` is the task issues. `--links` is the [pull requests](#pull-request-records "○")' Development-linked issues. `--fix` is the body written with the Done ticks.
 
 - `<task-pull-request-map>` is a comma-separated list of `<task-id>=<pull-request-number>` pairs, with a pair for each pull request a task id links. Pass each task JSON file as a separate argument after `--tasks`.
 
@@ -205,7 +205,7 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 
 #### 2. Provide Recorded Epic
 
-Provide [Output Body](#output-body "output"), [Delivery Findings](epic.md#delivery-findings "output") to the requester.
+Provide [Output Body](#output-body "●"), [Delivery Findings](epic.md#delivery-findings "●") to the requester.
 
 ### Tick Epic Criteria
 
@@ -213,9 +213,9 @@ Ticks confirmed epic criteria, refusing any not ready to verify, and ticks compl
 
 #### 1. Tick Epic Criteria
 
-- Run this command from the [workspace](#workspace "input") checkout using [Epic Record](#epic-record "input"), [Pull Request Records](#pull-request-records "input"), [Issue Links](#issue-links "input"), [Output Body](#output-body "input").
+- Run this command from the [workspace](#workspace "○") checkout using [Epic Record](#epic-record "○"), [Pull Request Records](#pull-request-records "○"), [Issue Links](#issue-links "○"), [Output Body](#output-body "○").
 
-- `<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection "input").
+- `<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection "○").
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links)' --tick '[**&lt;criterion-ids&gt;**](#criterion-selection)' --fix '[**&lt;output-body-file&gt;**](#output-body)'
@@ -229,7 +229,7 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 
 #### 2. Provide Ticked Epic Criteria
 
-Provide [Output Body](#output-body "output"), [Criterion Selection](#criterion-selection "output") to the requester.
+Provide [Output Body](#output-body "●"), [Criterion Selection](#criterion-selection "●") to the requester.
 
 ### Reserve Row
 
@@ -237,7 +237,7 @@ Holds each named unit for one session, by setting its record folder as the singl
 
 #### 1. Reserve Row
 
-- Run this command from the [workspace](#workspace "input") checkout using [Epic Record](#epic-record "input"), [Task Selection](#task-selection "input"), [Board Items](#board-items "input"), [Planning Folder](#planning-folder "input"), [Output Body](#output-body "input").
+- Run this command from the [workspace](#workspace "○") checkout using [Epic Record](#epic-record "○"), [Task Selection](#task-selection "○"), [Board Items](#board-items "○"), [Planning Folder](#planning-folder "○"), [Output Body](#output-body "○").
 
 - `--items` is the board's items with Status.
 - `--records` is the URL of the planning records folder, needed when no row id in the epic links a record.
@@ -258,7 +258,7 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 
 #### 2. Provide Reserved Row
 
-Provide [Output Body](#output-body "output"), [Row Result](#row-result "output") to the requester.
+Provide [Output Body](#output-body "●"), [Row Result](#row-result "●") to the requester.
 
 ### Release Row
 
@@ -266,7 +266,7 @@ Frees each named task row, by replacing the planning-folder link with its work-i
 
 #### 1. Release Row
 
-- Run this command from the [workspace](#workspace "input") checkout using [Epic Record](#epic-record "input"), [Task Selection](#task-selection "input"), [Engineering Worktree](#engineering-worktree "input"), [Output Body](#output-body "input").
+- Run this command from the [workspace](#workspace "○") checkout using [Epic Record](#epic-record "○"), [Task Selection](#task-selection "○"), [Engineering Worktree](#engineering-worktree "○"), [Output Body](#output-body "○").
 
 - The file is the task id in lowercase within that folder, as [Task ids](#task-delivery) defines.
 - `--engineering` is the checkout holding the planning records. A row whose folder there holds no such file, or whose README does not link it, is refused.
@@ -286,7 +286,7 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 
 #### 2. Provide Released Row
 
-Provide [Output Body](#output-body "output"), [Row Result](#row-result "output") to the requester.
+Provide [Output Body](#output-body "●"), [Row Result](#row-result "●") to the requester.
 
 ## Fields
 

@@ -17,11 +17,11 @@ One batch from current delivery and execution evidence.
 
 #### 1. Compute Admitted Dispatch Batch
 
-Apply [Compute Dispatch Batch](#compute-dispatch-batch "operation") to [Survey Evidence](#survey-evidence "input") and [Survey Board](#survey-board "input") within [Authorization](#authorization "input"), selecting [Requested Lane](#requested-lane "input") against [Session Inventory](#session-inventory "input"), [Free Slots](#free-slots "input") and retained [Preparations](#preparations "input").
+Apply [Compute Dispatch Batch](#compute-dispatch-batch "ƒ") to [Survey Evidence](#survey-evidence "○") and [Survey Board](#survey-board "○") within [Authorization](#authorization "○"), selecting [Requested Lane](#requested-lane "○") against [Session Inventory](#session-inventory "○"), [Free Slots](#free-slots "○") and retained [Preparations](#preparations "○").
 
 #### 2. Provide Batch Continuation
 
-Provide its [Batch](#batch "output") and continuation, meeting [Selection](#selection), or [Failure](#failure "output") with the named evidence error.
+Provide its [Batch](#batch "●") and continuation, meeting [Selection](#selection), or [Failure](#failure "●") with the named evidence error.
 
 ### Validate Dispatch Start
 
@@ -29,11 +29,11 @@ One selected unit's readiness to execute.
 
 #### 1. Check Immediate Start Evidence
 
-Apply [Check Dispatch Start](#check-dispatch-start "operation") for [Unit Identity](#unit-identity "input") in [Batch](#batch "input") with [Start Evidence](#start-evidence "input"), the actual [Session Inventory](#session-inventory "input") and [Free Slots](#free-slots "input").
+Apply [Check Dispatch Start](#check-dispatch-start "ƒ") for [Unit Identity](#unit-identity "○") in [Batch](#batch "○") with [Start Evidence](#start-evidence "○"), the actual [Session Inventory](#session-inventory "○") and [Free Slots](#free-slots "○").
 
 #### 2. Provide Validated Unit
 
-Provide the [validated unit](#validated-unit "output") or the named [blocker](#failure "output"), meeting [Start Readiness](#start-readiness).
+Provide the [validated unit](#validated-unit "●") or the named [blocker](#failure "●"), meeting [Start Readiness](#start-readiness).
 
 ### Compute Dispatch Batch
 
@@ -41,10 +41,10 @@ Selects the next batch without tracker writes or worker execution.
 
 #### 1. Compute Dispatch Batch
 
-- Run the command using [Workspace](#workspace "input"), [Authorization](#authorization "input"), [Survey Evidence](#survey-evidence "input"), [Session Inventory](#session-inventory "input"), [Survey Board](#survey-board "input"), [Requested Lane](#requested-lane "input"), [Free Slots](#free-slots "input"), [Batch](#batch "input").
+- Run the command using [Workspace](#workspace "○"), [Authorization](#authorization "○"), [Survey Evidence](#survey-evidence "○"), [Session Inventory](#session-inventory "○"), [Survey Board](#survey-board "○"), [Requested Lane](#requested-lane "○"), [Free Slots](#free-slots "○"), [Batch](#batch "○").
 
 - Supply `--lane '<lane-index>'` only when that lane was used by the survey.
-- Supply `--preparations '<preparations-file>'` for this run's admitted [preparations](#preparations "input") awaiting capacity.
+- Supply `--preparations '<preparations-file>'` for this run's admitted [preparations](#preparations "○") awaiting capacity.
 - The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.
 
 <big><pre>
@@ -53,7 +53,7 @@ cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx
 
 #### 2. Provide Computed Dispatch Batch
 
-Provide [Batch](#batch "output") to the requester, or [Failure](#failure "output") if the operation fails.
+Provide [Batch](#batch "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 ### Check Dispatch Start
 
@@ -61,7 +61,7 @@ Checks one selected unit immediately before execution.
 
 #### 1. Check Dispatch Start
 
-- Run the command using [Workspace](#workspace "input"), [Batch](#batch "input"), [Unit Identity](#unit-identity "input"), [Start Evidence](#start-evidence "input"), [Session Inventory](#session-inventory "input"), [Free Slots](#free-slots "input").
+- Run the command using [Workspace](#workspace "○"), [Batch](#batch "○"), [Unit Identity](#unit-identity "○"), [Start Evidence](#start-evidence "○"), [Session Inventory](#session-inventory "○"), [Free Slots](#free-slots "○").
 
 - Exit 0 returns the selected unit; exit 1 names the blocking condition.
 
@@ -71,7 +71,7 @@ cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx
 
 #### 2. Provide Checked Dispatch Start
 
-Provide [Validated Unit](#validated-unit "output") to the requester, or [Failure](#failure "output") if the operation fails.
+Provide [Validated Unit](#validated-unit "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 ## Fields
 

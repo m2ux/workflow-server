@@ -17,7 +17,7 @@ One pull request body from supplied change and validation evidence.
 
 #### 1. Populate Change Body
 
-- Populate the [Template](#template) from [Change Evidence](#change-evidence "input"), retaining applicable content in [Current Body](#current-body "input") and writing to [Output Body](#output-body "input"). For an epic review, Apply [Populate Review Body](#populate-review-body "operation").
+- Populate the [Template](#template) from [Change Evidence](#change-evidence "○"), retaining applicable content in [Current Body](#current-body "○") and writing to [Output Body](#output-body "○"). For an epic review, Apply [Populate Review Body](#populate-review-body "ƒ").
 - All populated fields must meet [Fields](#fields).
 
 #### 2. Verify Evidence Links
@@ -26,7 +26,7 @@ Verify each result link against [Test Plan](#test-plan) before publishing the bo
 
 #### 3. Provide Complete Body
 
-Provide the [complete body file](#output-body "output") and any [unresolved evidence](#unresolved-evidence "output") links to the caller for publication.
+Provide the [complete body file](#output-body "●") and any [unresolved evidence](#unresolved-evidence "●") links to the caller for publication.
 
 ### Populate Review Body
 
@@ -34,7 +34,7 @@ The current change carried by one epic base.
 
 #### 1. Populate Base Review
 
-- Populate the [Template](#template) from the actual task merges in [Change Evidence](#change-evidence "input"), incorporating [Current Body](#current-body "input") when present and writing to [Output Body](#output-body "input").
+- Populate the [Template](#template) from the actual task merges in [Change Evidence](#change-evidence "○"), incorporating [Current Body](#current-body "○") when present and writing to [Output Body](#output-body "○").
 - All populated fields must meet [Fields](#fields).
 
 #### 2. Account for Task Merge
@@ -46,7 +46,7 @@ The current change carried by one epic base.
 
 #### 3. Provide Updated Body
 
-Provide the complete [updated body](#output-body "output") file to the caller.
+Provide the complete [updated body](#output-body "●") file to the caller.
 
 ### Link Architecture Overview
 
@@ -54,7 +54,7 @@ One pull request body referencing its published overview.
 
 #### 1. Add Published Reference
 
-Add [Overview URL](#overview-url "input") as the Architecture Overview reference in the References of [Current Body](#current-body "input"), creating that section in its [Template](#template) position when absent and writing to [Output Body](#output-body "input").
+Add [Overview URL](#overview-url "○") as the Architecture Overview reference in the References of [Current Body](#current-body "○"), creating that section in its [Template](#template) position when absent and writing to [Output Body](#output-body "○").
 
 #### 2. Preserve Existing Reference
 
@@ -66,7 +66,7 @@ Preserve an existing row already naming the overview. The link uses the engineer
 
 #### 3. Provide Linked Overview Body
 
-Provide the complete [updated body](#output-body "output") file for publication.
+Provide the complete [updated body](#output-body "●") file for publication.
 
 ### Repair Test Plan
 
@@ -74,7 +74,7 @@ One task pull request's test plan aligned to its current table.
 
 #### 1. Convert Current Plan
 
-Apply [Convert Test Plan](#convert-test-plan "operation") to [Pull Request Record](#pull-request-record "input"), writing to [Output Body](#output-body "input").
+Apply [Convert Test Plan](#convert-test-plan "ƒ") to [Pull Request Record](#pull-request-record "○"), writing to [Output Body](#output-body "○").
 
 #### 2. Inspect Preserved Coverage
 
@@ -86,7 +86,7 @@ Verify retained result links against [Test Plan](#test-plan). A checked entry wi
 
 #### 4. Provide Plan Findings
 
-Provide [Output Body](#output-body "output"), the converted pull request identity and [Unresolved Evidence](#unresolved-evidence "output"). The requester publishes and names each conversion. An unreadable plan remains a finding until repaired from its actual checks and coverage.
+Provide [Output Body](#output-body "●"), the converted pull request identity and [Unresolved Evidence](#unresolved-evidence "●"). The requester publishes and names each conversion. An unreadable plan remains a finding until repaired from its actual checks and coverage.
 
 ### Convert Test Plan
 
@@ -94,9 +94,9 @@ Convert an unambiguous checked list and Test/Criteria table to the current plan 
 
 #### 1. Convert Test Plan
 
-- Run this command from the [workspace](#workspace "input") checkout using [Output Body](#output-body "input").
+- Run this command from the [workspace](#workspace "○") checkout using [Output Body](#output-body "○").
 
-- Input is a current REST [pull request record](#pull-request-record "input"); output is the complete body. Existing current tables are unchanged.
+- Input is a current REST [pull request record](#pull-request-record "○"); output is the complete body. Existing current tables are unchanged.
 - A conversion prints the pull request identity. Exit 1 means an unreadable plan or missing linked result evidence; inspect the body and findings before publishing.
 
 <big><pre>
@@ -111,7 +111,7 @@ Convert an unambiguous checked list and Test/Criteria table to the current plan 
 
 #### 2. Provide Converted Test Plan
 
-Provide [Output Body](#output-body "output"), [Unresolved Evidence](#unresolved-evidence "output") to the requester.
+Provide [Output Body](#output-body "●"), [Unresolved Evidence](#unresolved-evidence "●") to the requester.
 
 ## Fields
 
