@@ -8,4 +8,4 @@ Inventory every command example and map its useful values to linked Fields. Move
 
 - [x] Relocate examples and update the authoring rule.
 - [x] Audit command/contract preservation and validate affected readers.
-- [ ] In progress: publish the current review handoff; product commit is pushed.
+- [x] Commit and push; publish exact-head review evidence and confirm ready PR / In Review board readback.
