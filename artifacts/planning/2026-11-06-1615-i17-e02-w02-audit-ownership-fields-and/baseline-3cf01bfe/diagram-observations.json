@@ -1,0 +1,11 @@
+{
+  "revision": "3cf01bfe28cf16d24b823cd97bda907e85992dc8",
+  "template_component_nodes": [
+    "Caller",
+    "Entry",
+    "Store"
+  ],
+  "count": 3,
+  "minimum_source": "Five to ten elements.",
+  "limitation": "This measures the actual source template; it does not execute graph tooling or establish a new diagram policy."
+}

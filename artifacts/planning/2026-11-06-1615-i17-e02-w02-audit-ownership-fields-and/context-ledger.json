@@ -1,0 +1,712 @@
+{
+  "revision": "86df5e4c2ccc2516b46cb0be7cf89e1cc258480f",
+  "explicit_edges": [
+    {
+      "source": "modes/advance-mode.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/advance-mode.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/align-mode.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/align-mode.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/deliver-mode.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/deliver-mode.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/hoist-mode.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/hoist-mode.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/plan-mode.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/plan-mode.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/propose-mode.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/propose-mode.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/revise-mode.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/revise-mode.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/standup-mode.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/standup-mode.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/sync-mode.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/sync-mode.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/understand-mode.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "modes/understand-mode.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/change-overview.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/change-overview.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/epic-integration.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/epic-integration.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/issue-closure.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/issue-closure.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/issue-delivery.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/issue-delivery.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/review-pull-request.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/review-pull-request.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/task-merge.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/task-merge.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/unit-dispatch.md#procedure-entry",
+      "target": "rules.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "protocols/unit-dispatch.md#procedure-entry",
+      "target": "conventions.md",
+      "source_line": 5,
+      "entry": "Direct or nested invocation of this mode/protocol",
+      "required": "Common runtime rules or repository/tool conventions",
+      "reason": "The procedure preamble explicitly binds this entry to the common contract.",
+      "classification": "before-use-context",
+      "disposition": "Keep common context; reuse at the same revision."
+    },
+    {
+      "source": "SKILL.md#mode-selection",
+      "target": "rules.md",
+      "source_line": 20,
+      "entry": "Selecting a mode from the skill entry point",
+      "required": "Complete common rules or conventions",
+      "reason": "Explicit read before selecting a mode.",
+      "classification": "before-use-context",
+      "disposition": "Keep."
+    },
+    {
+      "source": "SKILL.md#mode-selection",
+      "target": "conventions.md",
+      "source_line": 20,
+      "entry": "Selecting a mode from the skill entry point",
+      "required": "Complete common rules or conventions",
+      "reason": "Explicit read before selecting a mode.",
+      "classification": "before-use-context",
+      "disposition": "Keep."
+    },
+    {
+      "source": "modes/revise-mode.md#first-edit",
+      "target": "../guidelines.md",
+      "source_line": 11,
+      "entry": "First edit of a bounded skill revision",
+      "required": "Complete shared and skill guidelines",
+      "reason": "The current user-preferred whole-document requirement is explicit.",
+      "classification": "before-use-context",
+      "disposition": "Keep whole-read obligation; record overhead rather than weakening it."
+    },
+    {
+      "source": "modes/revise-mode.md#first-edit",
+      "target": "guidelines.md",
+      "source_line": 11,
+      "entry": "First edit of a bounded skill revision",
+      "required": "Complete shared and skill guidelines",
+      "reason": "The current user-preferred whole-document requirement is explicit.",
+      "classification": "before-use-context",
+      "disposition": "Keep whole-read obligation; record overhead rather than weakening it."
+    },
+    {
+      "source": "entry:edit-mode",
+      "target": "guidelines.md#modes",
+      "source_line": 157,
+      "entry": "Adding or changing this file type",
+      "required": "Its file-type rules, consuming the linked canonical SOLID definitions",
+      "reason": "The file-type section says to read it before that edit.",
+      "classification": "before-use-context",
+      "disposition": "Keep the bounded file-type contract; explicit Revise whole reads still apply."
+    },
+    {
+      "source": "entry:edit-protocol",
+      "target": "guidelines.md#protocols",
+      "source_line": 195,
+      "entry": "Adding or changing this file type",
+      "required": "Its file-type rules, consuming the linked canonical SOLID definitions",
+      "reason": "The file-type section says to read it before that edit.",
+      "classification": "before-use-context",
+      "disposition": "Keep the bounded file-type contract; explicit Revise whole reads still apply."
+    },
+    {
+      "source": "entry:edit-artifact",
+      "target": "guidelines.md#artifacts",
+      "source_line": 218,
+      "entry": "Adding or changing this file type",
+      "required": "Its file-type rules, consuming the linked canonical SOLID definitions",
+      "reason": "The file-type section says to read it before that edit.",
+      "classification": "before-use-context",
+      "disposition": "Keep the bounded file-type contract; explicit Revise whole reads still apply."
+    },
+    {
+      "source": "entry:edit-reference",
+      "target": "guidelines.md#references",
+      "source_line": 267,
+      "entry": "Adding or changing this file type",
+      "required": "Its file-type rules, consuming the linked canonical SOLID definitions",
+      "reason": "The file-type section says to read it before that edit.",
+      "classification": "before-use-context",
+      "disposition": "Keep the bounded file-type contract; explicit Revise whole reads still apply."
+    }
+  ],
+  "read_sentence_candidates": [
+    {
+      "file": "SKILL.md",
+      "line": 20,
+      "headings": [
+        "Work Planner"
+      ],
+      "source": "Read [Rules](rules.md) and [Conventions](conventions.md) before selecting a mode.",
+      "classification": "before-use-context",
+      "reason": "Two explicit common reads before mode selection.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "artifacts/board.md",
+      "line": 249,
+      "headings": [
+        "Board",
+        "Fields",
+        "Repositories"
+      ],
+      "source": "A board's repositories are those its items' issues live in, read from each item's issue, deduplicated and ordered with the board's own repository first. An item whose issue is unreadable leaves the list incomplete, which is reported rather than filled by assumption.",
+      "classification": "value-or-evidence-contract",
+      "reason": "Describes record/source completeness, placement or evidence order rather than mandatory document loading.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "artifacts/delivery-branches.md",
+      "line": 332,
+      "headings": [
+        "Delivery Branches",
+        "Fields",
+        "Branches"
+      ],
+      "source": "The project's ordered long-lived branch names, declared in `config/branches` at its root, one name per line. A run reads the statement at the commit it evaluates, in the repository its checkout locates; which worktree the checkout is, and what its working files hold, choose nothing. The evaluated revision is fetched before it is read.",
+      "classification": "value-or-evidence-contract",
+      "reason": "Describes record/source completeness, placement or evidence order rather than mandatory document loading.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "artifacts/delivery-evidence.md",
+      "line": 45,
+      "headings": [
+        "Delivery Evidence",
+        "Fields",
+        "Issue-Link Snapshot"
+      ],
+      "source": "The complete set of Development links between those pull requests and the issues they deliver, read through the access that exposes them whole.",
+      "classification": "value-or-evidence-contract",
+      "reason": "Describes record/source completeness, placement or evidence order rather than mandatory document loading.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "artifacts/delivery-plan.md",
+      "line": 41,
+      "headings": [
+        "Delivery Plan",
+        "Fields",
+        "Work Units"
+      ],
+      "source": "A unit is one task row or tasks that name each other in Joins, as [Work Breakdown](epic-issue-body.md#work-breakdown) defines. A unit of rows comes only from an epic that is Ready or In Progress in the supplied board items: the plan offers no other row, and none other is held. A [hot-fix unit](#hot-fix-units) has no row. One unit is one session's work, delivered by one pull request into each epic base it changes. Its first task id and Description determine the planning-folder identity, which every row of the unit is reserved with, and with each epic base it changes its branch and worktree, as [Task Branches](delivery-branches.md#task-branches) names them. In an epic of several bases, the bases a unit changes are read from the [Component](work-item.md#component) declaration of the work-item file each free row links, in the engineering worktree. A unit with a row linking no work item changes every epic base, as [Task Branches](delivery-branches.md#task-branches) states for unplanned rows.",
+      "classification": "value-or-evidence-contract",
+      "reason": "Describes record/source completeness, placement or evidence order rather than mandatory document loading.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "artifacts/dispatch-batch.md",
+      "line": 30,
+      "headings": [
+        "Dispatch Batch",
+        "Commands",
+        "Check Dispatch Start"
+      ],
+      "source": "Check one selected unit immediately before execution and provide [Validated Unit](#validated-unit \"\u25cf\") to the requester, or [Failure](#failure \"\u25cf\") if the operation fails. The start names one selected unit, has a currently free harness slot and overlaps no held or running session. Its supplied evidence names that unit, the planning record confirmed on the remote engineering branch, and the record associated with its confirmed hold. For rows, that association is read from every live row reservation; for a hot-fix it is the run's record for the unit whose board hold was confirmed. The evidence is gathered in that order before execution; any missing, mismatched or unverified evidence blocks the start.",
+      "classification": "value-or-evidence-contract",
+      "reason": "Describes record/source completeness, placement or evidence order rather than mandatory document loading.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "artifacts/epic.md",
+      "line": 34,
+      "headings": [
+        "Epic",
+        "Operations",
+        "Inspect Epic Delivery",
+        "1. Match Supplied Delivery"
+      ],
+      "source": "- A closed epic is normalized to the current Work Breakdown columns before its tasks are read, using the shared format rules. Ambiguous or unsupported table content is a blocker.",
+      "classification": "data-interpretation-order",
+      "reason": "Table normalization precedes row interpretation; this is an operation sequence, not a source-context dependency.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "guidelines.md",
+      "line": 35,
+      "headings": [
+        "Guidelines",
+        "SOLID",
+        "Interface Segregation"
+      ],
+      "source": "  The required-before-use graph contains only explicit prerequisite edges, each naming its entry condition, required content and reason. It must be acyclic for every supported entry path. Ordinary field references and intentional execution retries impose no prerequisite ordering. A selected link bounds the read; only an explicit execution call runs a linked procedure. Reuse complete context already received at the same revision.",
+      "classification": "reading-policy",
+      "reason": "Defines read-boundary/reuse semantics, not a further preload edge.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "guidelines.md",
+      "line": 157,
+      "headings": [
+        "Guidelines",
+        "Modes"
+      ],
+      "source": "Read this before adding or changing a mode, applying [SOLID](#solid).",
+      "classification": "before-use-context",
+      "reason": "A file-type edit entry needs its bounded rule section.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "guidelines.md",
+      "line": 195,
+      "headings": [
+        "Guidelines",
+        "Protocols"
+      ],
+      "source": "Read this before adding or changing a protocol, applying [SOLID](#solid).",
+      "classification": "before-use-context",
+      "reason": "A file-type edit entry needs its bounded rule section.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "guidelines.md",
+      "line": 218,
+      "headings": [
+        "Guidelines",
+        "Artifacts"
+      ],
+      "source": "Read this before adding or changing an artifact, applying [SOLID](#solid).",
+      "classification": "before-use-context",
+      "reason": "A file-type edit entry needs its bounded rule section.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "guidelines.md",
+      "line": 267,
+      "headings": [
+        "Guidelines",
+        "References"
+      ],
+      "source": "Read this before adding or changing a reference, applying [SOLID](#solid).",
+      "classification": "before-use-context",
+      "reason": "A file-type edit entry needs its bounded rule section.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "modes/deliver-mode.md",
+      "line": 76,
+      "headings": [
+        "Deliver Mode",
+        "Procedure",
+        "Refill Delivery Capacity",
+        "3. Survey"
+      ],
+      "source": "- For delivery discrepancies, Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence \"\u0192\") for the selected repositories and initiative against current issue records, then repeat this survey with its refreshed evidence before selecting a dispatch batch.",
+      "classification": "evidence-or-execution-order",
+      "reason": "A tracker/evidence operation precedes a mutation or dependent data check; no whole-document preload is required.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "modes/deliver-mode.md",
+      "line": 248,
+      "headings": [
+        "Deliver Mode",
+        "Procedure",
+        "Run Delivery Session",
+        "9. Review a Hot-Fix",
+        "Restore Hot-Fix Draft"
+      ],
+      "source": "- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state \"\u0192\") with the same identity before selecting restoration.",
+      "classification": "evidence-or-execution-order",
+      "reason": "A tracker/evidence operation precedes a mutation or dependent data check; no whole-document preload is required.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "modes/revise-mode.md",
+      "line": 11,
+      "headings": [
+        "Revise Mode",
+        "Procedure",
+        "1. Read the Guidelines"
+      ],
+      "source": "Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](../guidelines.md) whole before the first edit.",
+      "classification": "before-use-context",
+      "reason": "Explicit whole guideline reads before first edit.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "modes/sync-mode.md",
+      "line": 13,
+      "headings": [
+        "Sync Mode",
+        "Procedure",
+        "1. Select"
+      ],
+      "source": "- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue \"\u0192\") for each selected issue before inspecting its Open Questions or format.",
+      "classification": "evidence-or-execution-order",
+      "reason": "A tracker/evidence operation precedes a mutation or dependent data check; no whole-document preload is required.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "modes/sync-mode.md",
+      "line": 246,
+      "headings": [
+        "Sync Mode",
+        "Procedure",
+        "12. Sync the Board"
+      ],
+      "source": "- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue \"\u0192\") for the originating proposal identified in the initiative's [References](../artifacts/initiative-issue-body.md#references); provide unresolved provenance before board creation for a proposal-derived initiative.",
+      "classification": "evidence-or-execution-order",
+      "reason": "A tracker/evidence operation precedes a mutation or dependent data check; no whole-document preload is required.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "protocols/epic-integration.md",
+      "line": 12,
+      "headings": [
+        "Epic Integration",
+        "Procedure",
+        "1. Prepare the Evidence"
+      ],
+      "source": "- For any failed preparation or readiness gate before a classified merge outcome, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review \"\u0192\") and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review \"\u0192\") again with their preceding inputs before returning or retrying, including failures between ready and board writes. The confirmed absence of a board is the sole exception to board withdrawal.",
+      "classification": "evidence-or-execution-order",
+      "reason": "A tracker/evidence operation precedes a mutation or dependent data check; no whole-document preload is required.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "protocols/epic-integration.md",
+      "line": 46,
+      "headings": [
+        "Epic Integration",
+        "Procedure",
+        "2. Refresh and Validate",
+        "Current Review Handoff"
+      ],
+      "source": "- Apply [Fetch Merge Readiness](../artifacts/pull-request.md#fetch-merge-readiness \"\u0192\") for the exact current head and target. A conflict, failed or pending check, unmet epic condition or incomplete evidence blocks handoff; Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review \"\u0192\") again and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review \"\u0192\") requesting In Progress before returning that blocker. Pending required human approval is provided to the next step as a human handoff, with merge blocked.",
+      "classification": "evidence-or-execution-order",
+      "reason": "A tracker/evidence operation precedes a mutation or dependent data check; no whole-document preload is required.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "protocols/unit-dispatch.md",
+      "line": 22,
+      "headings": [
+        "Unit Dispatch",
+        "Procedure",
+        "2. Publish the Record"
+      ],
+      "source": "- For a new unit of rows, read each component from the work-item file its free row links, before reservation replaces that link.",
+      "classification": "evidence-or-execution-order",
+      "reason": "A tracker/evidence operation precedes a mutation or dependent data check; no whole-document preload is required.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "protocols/unit-dispatch.md",
+      "line": 31,
+      "headings": [
+        "Unit Dispatch",
+        "Procedure",
+        "3. Hold the Unit"
+      ],
+      "source": "- Apply [Read Board State](../artifacts/board.md#read-board-state \"\u0192\") for the selected board immediately before acquiring the unit's hold.",
+      "classification": "evidence-or-execution-order",
+      "reason": "A tracker/evidence operation precedes a mutation or dependent data check; no whole-document preload is required.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    },
+    {
+      "file": "rules.md",
+      "line": 4,
+      "headings": [
+        "Rules"
+      ],
+      "source": "  Read a heading-linked section and its subsections, stopping before the next heading of equal or higher level. Follow in-text links as their context is needed for the selected work. Preserve boundaries in batched reads and recover truncated output. Reuse complete context already read at the same revision. Explicit whole-document requirements still apply.",
+      "classification": "reading-policy",
+      "reason": "Defines read-boundary/reuse semantics, not a further preload edge.",
+      "disposition": "Retain at the owning contract; do not infer transitive context closure from the sentence alone."
+    }
+  ],
+  "cycle_witnesses": [],
+  "result": "No current cycle in the explicit before-use graph; ordinary/capability/field links are not promoted to prerequisite edges."
+}

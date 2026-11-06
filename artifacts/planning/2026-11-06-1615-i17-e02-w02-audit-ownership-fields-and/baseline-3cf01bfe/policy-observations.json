@@ -1,0 +1,2699 @@
+{
+  "revision": "3cf01bfe28cf16d24b823cd97bda907e85992dc8",
+  "captures": [
+    {
+      "name": "automatic-order-before-answer",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Current: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/2) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I01:E00] Epic 2: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        }
+      ],
+      "prs": [],
+      "unplanned": [],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  order: #1 [I01] Current: Work\n  current: 2, to do: 0\n",
+      "stderr": ""
+    },
+    {
+      "name": "automatic-order-saved-priority",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Current: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/2) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I01:E00] Epic 2: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        }
+      ],
+      "prs": [],
+      "unplanned": [],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  set #2 [I01:E00] Epic 2: Work: Backlog \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/101 --input /tmp/tmp4b2pa51c/out/status-ready.json\n  assign #2 [I01:E00] Epic 2: Work (Ready): gh api --method POST repos/o/r/issues/2/assignees -f 'assignees[]=me'\n  next #1 [I01] Current: Work: E00\n  unit I01:E00:W01: unlaned\n  current: 1, to do: 1\n",
+      "stderr": ""
+    },
+    {
+      "name": "automatic-order-converged-state",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Current: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/2) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I01:E00] Epic 2: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        }
+      ],
+      "prs": [],
+      "unplanned": [],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  next #1 [I01] Current: Work: E00\n  unit I01:E00:W01: unlaned\n  current: 2, to do: 0 (the queue is current)\n",
+      "stderr": ""
+    },
+    {
+      "name": "priority-displacement-reservation",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Current",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n| [E01](https://github.com/o/r/issues/4) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 2"
+              }
+            ],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Next",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| [W01](https://github.com/o/r/tree/engineering/artifacts/planning/2026-11-01-2-i01-e00-w01-go/) | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 4,
+            "title": "[I01:E01] Epic 4: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/4",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Later | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1004
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 104
+        }
+      ],
+      "prs": [],
+      "unplanned": [],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  set #2 [I02] High: Next: Backlog \u2192 In Progress: gh api --method PATCH users/o/projectsV2/9/items/101 --input /tmp/tmpf26blzr7/out/status-in-progress.json\n  assign #2 [I02] High: Next (In Progress): gh api --method POST repos/o/r/issues/2/assignees -f 'assignees[]=me'\n  set #4 [I01:E01] Epic 4: Work: Ready \u2192 Backlog: gh api --method PATCH users/o/projectsV2/9/items/103 --input /tmp/tmpf26blzr7/out/status-backlog.json\n  set #5 [I02:E00] Epic 5: Work: Backlog \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/104 --input /tmp/tmpf26blzr7/out/status-ready.json\n  assign #5 [I02:E00] Epic 5: Work (Ready): gh api --method POST repos/o/r/issues/5/assignees -f 'assignees[]=me'\n  next #2 [I02] High: Next: E00\n  wait #1 [I01] Low: Current: E00 held by a session\n  unit I02:E00:W01: unlaned\n  current: 2, to do: 3\n",
+      "stderr": ""
+    },
+    {
+      "name": "explicit-unplanned-reservation",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Current",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n| [E01](https://github.com/o/r/issues/4) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Next",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| [W01](https://github.com/o/r/tree/engineering/artifacts/planning/2026-11-01-2-i01-e00-w01-go/) | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 4,
+            "title": "[I01:E01] Epic 4: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/4",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Later | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1004
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 104
+        }
+      ],
+      "prs": [],
+      "unplanned": [
+        "1"
+      ],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  set #2 [I02] High: Next: Backlog \u2192 In Progress: gh api --method PATCH users/o/projectsV2/9/items/101 --input /tmp/tmp6nhtgtyi/out/status-in-progress.json\n  assign #2 [I02] High: Next (In Progress): gh api --method POST repos/o/r/issues/2/assignees -f 'assignees[]=me'\n  set #4 [I01:E01] Epic 4: Work: Ready \u2192 Backlog: gh api --method PATCH users/o/projectsV2/9/items/103 --input /tmp/tmp6nhtgtyi/out/status-backlog.json\n  set #5 [I02:E00] Epic 5: Work: Backlog \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/104 --input /tmp/tmp6nhtgtyi/out/status-ready.json\n  assign #5 [I02:E00] Epic 5: Work (Ready): gh api --method POST repos/o/r/issues/5/assignees -f 'assignees[]=me'\n  wait #1 [I01] Low: Current: E00 held by a session\n  next #2 [I02] High: Next: E00\n  unit I02:E00:W01: unlaned\n  current: 2, to do: 3\n",
+      "stderr": ""
+    },
+    {
+      "name": "priority-displacement-none",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Current",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n| [E01](https://github.com/o/r/issues/4) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 2"
+              }
+            ],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Next",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 4,
+            "title": "[I01:E01] Epic 4: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/4",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Later | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1004
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 104
+        }
+      ],
+      "prs": [],
+      "unplanned": [],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  set #1 [I01] Low: Current: In Progress \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/100 --input /tmp/tmp8o1b_du0/out/status-ready.json\n  assign #1 [I01] Low: Current (Ready): gh api --method POST repos/o/r/issues/1/assignees -f 'assignees[]=me'\n  set #2 [I02] High: Next: Backlog \u2192 In Progress: gh api --method PATCH users/o/projectsV2/9/items/101 --input /tmp/tmp8o1b_du0/out/status-in-progress.json\n  assign #2 [I02] High: Next (In Progress): gh api --method POST repos/o/r/issues/2/assignees -f 'assignees[]=me'\n  set #3 [I01:E00] Epic 3: Work: In Progress \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/102 --input /tmp/tmp8o1b_du0/out/status-ready.json\n  assign #3 [I01:E00] Epic 3: Work (Ready): gh api --method POST repos/o/r/issues/3/assignees -f 'assignees[]=me'\n  set #5 [I02:E00] Epic 5: Work: Backlog \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/104 --input /tmp/tmp8o1b_du0/out/status-ready.json\n  assign #5 [I02:E00] Epic 5: Work (Ready): gh api --method POST repos/o/r/issues/5/assignees -f 'assignees[]=me'\n  next #2 [I02] High: Next: E00\n  next #1 [I01] Low: Current: E00, E01\n  unit I01:E00:W01: unlaned\n  unit I01:E01:W01: unlaned\n  unit I02:E00:W01: unlaned\n  current: 1, to do: 4\n",
+      "stderr": ""
+    },
+    {
+      "name": "explicit-unplanned-none",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Current",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n| [E01](https://github.com/o/r/issues/4) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Next",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 4,
+            "title": "[I01:E01] Epic 4: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/4",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Later | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1004
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 104
+        }
+      ],
+      "prs": [],
+      "unplanned": [
+        "1"
+      ],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  set #1 [I01] Low: Current: In Progress \u2192 Backlog: gh api --method PATCH users/o/projectsV2/9/items/100 --input /tmp/tmpilw1hhwm/out/status-backlog.json\n  set #2 [I02] High: Next: Backlog \u2192 In Progress: gh api --method PATCH users/o/projectsV2/9/items/101 --input /tmp/tmpilw1hhwm/out/status-in-progress.json\n  assign #2 [I02] High: Next (In Progress): gh api --method POST repos/o/r/issues/2/assignees -f 'assignees[]=me'\n  set #3 [I01:E00] Epic 3: Work: In Progress \u2192 Backlog: gh api --method PATCH users/o/projectsV2/9/items/102 --input /tmp/tmpilw1hhwm/out/status-backlog.json\n  set #4 [I01:E01] Epic 4: Work: Ready \u2192 Backlog: gh api --method PATCH users/o/projectsV2/9/items/103 --input /tmp/tmpilw1hhwm/out/status-backlog.json\n  set #5 [I02:E00] Epic 5: Work: Backlog \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/104 --input /tmp/tmpilw1hhwm/out/status-ready.json\n  assign #5 [I02:E00] Epic 5: Work (Ready): gh api --method POST repos/o/r/issues/5/assignees -f 'assignees[]=me'\n  next #2 [I02] High: Next: E00\n  unit I02:E00:W01: unlaned\n  current: 0, to do: 5\n",
+      "stderr": ""
+    },
+    {
+      "name": "priority-displacement-integration-only",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Current",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n| [E01](https://github.com/o/r/issues/4) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 2"
+              }
+            ],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Next",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 4,
+            "title": "[I01:E01] Epic 4: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/4",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Later | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1004
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 104
+        }
+      ],
+      "prs": [
+        {
+          "number": 9,
+          "title": "[I01:E00] Integration",
+          "body": "",
+          "html_url": "https://github.com/o/r/pull/9",
+          "node_id": "PR_node9",
+          "state": "open",
+          "draft": true,
+          "merged_at": null,
+          "base": {
+            "ref": "main",
+            "repo": {
+              "full_name": "o/r"
+            }
+          },
+          "head": {
+            "ref": "i01/e00/main"
+          }
+        }
+      ],
+      "unplanned": [],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  set #1 [I01] Low: Current: In Progress \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/100 --input /tmp/tmpn0rsmftd/out/status-ready.json\n  assign #1 [I01] Low: Current (Ready): gh api --method POST repos/o/r/issues/1/assignees -f 'assignees[]=me'\n  set #2 [I02] High: Next: Backlog \u2192 In Progress: gh api --method PATCH users/o/projectsV2/9/items/101 --input /tmp/tmpn0rsmftd/out/status-in-progress.json\n  assign #2 [I02] High: Next (In Progress): gh api --method POST repos/o/r/issues/2/assignees -f 'assignees[]=me'\n  set #3 [I01:E00] Epic 3: Work: In Progress \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/102 --input /tmp/tmpn0rsmftd/out/status-ready.json\n  assign #3 [I01:E00] Epic 3: Work (Ready): gh api --method POST repos/o/r/issues/3/assignees -f 'assignees[]=me'\n  set #5 [I02:E00] Epic 5: Work: Backlog \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/104 --input /tmp/tmpn0rsmftd/out/status-ready.json\n  assign #5 [I02:E00] Epic 5: Work (Ready): gh api --method POST repos/o/r/issues/5/assignees -f 'assignees[]=me'\n  next #2 [I02] High: Next: E00\n  next #1 [I01] Low: Current: E00, E01\n  unit I01:E00:W01: unlaned\n  unit I01:E01:W01: unlaned\n  unit I02:E00:W01: unlaned\n  current: 1, to do: 4\n",
+      "stderr": ""
+    },
+    {
+      "name": "explicit-unplanned-integration-only",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Current",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n| [E01](https://github.com/o/r/issues/4) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Next",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 4,
+            "title": "[I01:E01] Epic 4: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/4",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Later | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1004
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 104
+        }
+      ],
+      "prs": [
+        {
+          "number": 9,
+          "title": "[I01:E00] Integration",
+          "body": "",
+          "html_url": "https://github.com/o/r/pull/9",
+          "node_id": "PR_node9",
+          "state": "open",
+          "draft": true,
+          "merged_at": null,
+          "base": {
+            "ref": "main",
+            "repo": {
+              "full_name": "o/r"
+            }
+          },
+          "head": {
+            "ref": "i01/e00/main"
+          }
+        }
+      ],
+      "unplanned": [
+        "1"
+      ],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  set #1 [I01] Low: Current: In Progress \u2192 Backlog: gh api --method PATCH users/o/projectsV2/9/items/100 --input /tmp/tmpdsdpaa4y/out/status-backlog.json\n  set #2 [I02] High: Next: Backlog \u2192 In Progress: gh api --method PATCH users/o/projectsV2/9/items/101 --input /tmp/tmpdsdpaa4y/out/status-in-progress.json\n  assign #2 [I02] High: Next (In Progress): gh api --method POST repos/o/r/issues/2/assignees -f 'assignees[]=me'\n  set #3 [I01:E00] Epic 3: Work: In Progress \u2192 Backlog: gh api --method PATCH users/o/projectsV2/9/items/102 --input /tmp/tmpdsdpaa4y/out/status-backlog.json\n  set #4 [I01:E01] Epic 4: Work: Ready \u2192 Backlog: gh api --method PATCH users/o/projectsV2/9/items/103 --input /tmp/tmpdsdpaa4y/out/status-backlog.json\n  set #5 [I02:E00] Epic 5: Work: Backlog \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/104 --input /tmp/tmpdsdpaa4y/out/status-ready.json\n  assign #5 [I02:E00] Epic 5: Work (Ready): gh api --method POST repos/o/r/issues/5/assignees -f 'assignees[]=me'\n  next #2 [I02] High: Next: E00\n  unit I02:E00:W01: unlaned\n  current: 0, to do: 5\n",
+      "stderr": ""
+    },
+    {
+      "name": "priority-displacement-handoff",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Current",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n| [E01](https://github.com/o/r/issues/4) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 2"
+              }
+            ],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Next",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [x] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 4,
+            "title": "[I01:E01] Epic 4: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/4",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Later | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1004
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 104
+        }
+      ],
+      "prs": [],
+      "unplanned": [],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  set #2 [I02] High: Next: Backlog \u2192 In Progress: gh api --method PATCH users/o/projectsV2/9/items/101 --input /tmp/tmpjhokoovr/out/status-in-progress.json\n  assign #2 [I02] High: Next (In Progress): gh api --method POST repos/o/r/issues/2/assignees -f 'assignees[]=me'\n  set #4 [I01:E01] Epic 4: Work: Ready \u2192 Backlog: gh api --method PATCH users/o/projectsV2/9/items/103 --input /tmp/tmpjhokoovr/out/status-backlog.json\n  set #5 [I02:E00] Epic 5: Work: Backlog \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/104 --input /tmp/tmpjhokoovr/out/status-ready.json\n  assign #5 [I02:E00] Epic 5: Work (Ready): gh api --method POST repos/o/r/issues/5/assignees -f 'assignees[]=me'\n  next #2 [I02] High: Next: E00\n  wait #1 [I01] Low: Current: E00 awaiting review\n  unit I01:E00:W01: unlaned\n  unit I02:E00:W01: unlaned\n  current: 2, to do: 3\n",
+      "stderr": ""
+    },
+    {
+      "name": "explicit-unplanned-handoff",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Current",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n| [E01](https://github.com/o/r/issues/4) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Next",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [x] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 4,
+            "title": "[I01:E01] Epic 4: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/4",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Later | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1004
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 104
+        }
+      ],
+      "prs": [],
+      "unplanned": [
+        "1"
+      ],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  set #2 [I02] High: Next: Backlog \u2192 In Progress: gh api --method PATCH users/o/projectsV2/9/items/101 --input /tmp/tmpbaaw4w2m/out/status-in-progress.json\n  assign #2 [I02] High: Next (In Progress): gh api --method POST repos/o/r/issues/2/assignees -f 'assignees[]=me'\n  set #4 [I01:E01] Epic 4: Work: Ready \u2192 Backlog: gh api --method PATCH users/o/projectsV2/9/items/103 --input /tmp/tmpbaaw4w2m/out/status-backlog.json\n  set #5 [I02:E00] Epic 5: Work: Backlog \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/104 --input /tmp/tmpbaaw4w2m/out/status-ready.json\n  assign #5 [I02:E00] Epic 5: Work (Ready): gh api --method POST repos/o/r/issues/5/assignees -f 'assignees[]=me'\n  wait #1 [I01] Low: Current: E00 awaiting review\n  next #2 [I02] High: Next: E00\n  unit I01:E00:W01: unlaned\n  unit I02:E00:W01: unlaned\n  current: 2, to do: 3\n",
+      "stderr": ""
+    },
+    {
+      "name": "priority-displacement-in-review",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Current",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n| [E01](https://github.com/o/r/issues/4) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 2"
+              }
+            ],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Next",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Review",
+                  "html": "In Review"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 4,
+            "title": "[I01:E01] Epic 4: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/4",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Later | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1004
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 104
+        }
+      ],
+      "prs": [],
+      "unplanned": [],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  set #2 [I02] High: Next: Backlog \u2192 In Progress: gh api --method PATCH users/o/projectsV2/9/items/101 --input /tmp/tmpujci63h3/out/status-in-progress.json\n  assign #2 [I02] High: Next (In Progress): gh api --method POST repos/o/r/issues/2/assignees -f 'assignees[]=me'\n  set #4 [I01:E01] Epic 4: Work: Ready \u2192 Backlog: gh api --method PATCH users/o/projectsV2/9/items/103 --input /tmp/tmpujci63h3/out/status-backlog.json\n  set #5 [I02:E00] Epic 5: Work: Backlog \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/104 --input /tmp/tmpujci63h3/out/status-ready.json\n  assign #5 [I02:E00] Epic 5: Work (Ready): gh api --method POST repos/o/r/issues/5/assignees -f 'assignees[]=me'\n  next #2 [I02] High: Next: E00\n  wait #1 [I01] Low: Current: E00 In Review\n  unit I02:E00:W01: unlaned\n  current: 2, to do: 3\n",
+      "stderr": ""
+    },
+    {
+      "name": "explicit-unplanned-in-review",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Current",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n| [E01](https://github.com/o/r/issues/4) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Next",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Review",
+                  "html": "In Review"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 4,
+            "title": "[I01:E01] Epic 4: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/4",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Later | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1004
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 104
+        }
+      ],
+      "prs": [],
+      "unplanned": [
+        "1"
+      ],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  set #2 [I02] High: Next: Backlog \u2192 In Progress: gh api --method PATCH users/o/projectsV2/9/items/101 --input /tmp/tmpdvas1jqh/out/status-in-progress.json\n  assign #2 [I02] High: Next (In Progress): gh api --method POST repos/o/r/issues/2/assignees -f 'assignees[]=me'\n  set #4 [I01:E01] Epic 4: Work: Ready \u2192 Backlog: gh api --method PATCH users/o/projectsV2/9/items/103 --input /tmp/tmpdvas1jqh/out/status-backlog.json\n  set #5 [I02:E00] Epic 5: Work: Backlog \u2192 Ready: gh api --method PATCH users/o/projectsV2/9/items/104 --input /tmp/tmpdvas1jqh/out/status-ready.json\n  assign #5 [I02:E00] Epic 5: Work (Ready): gh api --method POST repos/o/r/issues/5/assignees -f 'assignees[]=me'\n  wait #1 [I01] Low: Current: E00 In Review\n  next #2 [I02] High: Next: E00\n  unit I02:E00:W01: unlaned\n  current: 2, to do: 3\n",
+      "stderr": ""
+    },
+    {
+      "name": "actual-backlog-parent-child-backlog",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Backlogged",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Running",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        }
+      ],
+      "prs": [],
+      "unplanned": [],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  next #2 [I02] High: Running: E00\n  unit I02:E00:W01: unlaned\n  current: 4, to do: 0 (the queue is current)\n",
+      "stderr": ""
+    },
+    {
+      "name": "actual-backlog-parent-child-ready",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Backlogged",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Running",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        }
+      ],
+      "prs": [],
+      "unplanned": [],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  set #3 [I01:E00] Epic 3: Work: Ready \u2192 Backlog: gh api --method PATCH users/o/projectsV2/9/items/102 --input /tmp/tmpt5vne_gp/out/status-backlog.json\n  next #2 [I02] High: Running: E00\n  unit I02:E00:W01: unlaned\n  current: 3, to do: 1\n",
+      "stderr": ""
+    },
+    {
+      "name": "actual-backlog-parent-child-in-progress",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Backlogged",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Running",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| [W01](https://github.com/o/r/tree/engineering/artifacts/planning/2026-11-01-2-i01-e00-w01-go/) | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        }
+      ],
+      "prs": [],
+      "unplanned": [],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  next #2 [I02] High: Running: E00\n  unit I02:E00:W01: unlaned\n  current: 4, to do: 0 (the queue is current)\n",
+      "stderr": ""
+    },
+    {
+      "name": "actual-backlog-parent-child-in-review",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Backlogged",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Running",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Review",
+                  "html": "In Review"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        }
+      ],
+      "prs": [],
+      "unplanned": [],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  next #2 [I02] High: Running: E00\n  unit I02:E00:W01: unlaned\n  current: 4, to do: 0 (the queue is current)\n",
+      "stderr": ""
+    },
+    {
+      "name": "actual-backlog-parent-child-done",
+      "items": [
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Backlog",
+                  "html": "Backlog"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 1,
+            "title": "[I01] Low: Backlogged",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/1",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/3) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [],
+            "id": 1001
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 100
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "In Progress",
+                  "html": "In Progress"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 2,
+            "title": "[I02] High: Running",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/2",
+            "body": "## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n| --- | --- | --- | --- | --- |\n| [E00](https://github.com/o/r/issues/5) | Work | AC1 |  | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 5"
+              }
+            ],
+            "id": 1002
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 101
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Done",
+                  "html": "Done"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 3,
+            "title": "[I01:E00] Epic 3: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/3",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Go | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1003
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 102
+        },
+        {
+          "content_type": "Issue",
+          "fields": [
+            {
+              "id": 1,
+              "name": "Status",
+              "value": {
+                "name": {
+                  "raw": "Ready",
+                  "html": "Ready"
+                }
+              }
+            }
+          ],
+          "content": {
+            "number": 5,
+            "title": "[I02:E00] Epic 5: Work",
+            "state": "open",
+            "closed_at": null,
+            "state_reason": null,
+            "repository_url": "https://api.github.com/repos/o/r",
+            "html_url": "https://github.com/o/r/issues/5",
+            "body": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | High | AC1 |  | | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n",
+            "labels": [
+              {
+                "name": "priority: 1"
+              }
+            ],
+            "id": 1005
+          },
+          "project_url": "https://api.github.com/orgs/o/projectsV2/7",
+          "id": 103
+        }
+      ],
+      "prs": [],
+      "unplanned": [],
+      "returncode": 0,
+      "stdout": "users/o/projectsV2/9: Status field 7\n  next #2 [I02] High: Running: E00\n  unit I02:E00:W01: unlaned\n  current: 4, to do: 0 (the queue is current)\n",
+      "stderr": ""
+    }
+  ]
+}

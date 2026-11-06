@@ -1,0 +1,33 @@
+{
+  "revision": "86df5e4c2ccc2516b46cb0be7cf89e1cc258480f",
+  "documents": 58,
+  "scripts": [
+    "scripts/agent_review.py",
+    "scripts/align.py",
+    "scripts/board-queue.py",
+    "scripts/board.py",
+    "scripts/closure-sweep.py",
+    "scripts/closure.py",
+    "scripts/deliver.py",
+    "scripts/deps.py",
+    "scripts/development-link.py",
+    "scripts/development.py",
+    "scripts/dispatch.py",
+    "scripts/format.py",
+    "scripts/hotfix.py",
+    "scripts/lane.py",
+    "scripts/linked-pull-requests.py",
+    "scripts/links-by-issue.py",
+    "scripts/links-by-pull-request.py",
+    "scripts/orphans.py",
+    "scripts/progress.py",
+    "scripts/renumber.py",
+    "scripts/revision-check.py",
+    "scripts/statuses.py",
+    "scripts/sync.py"
+  ],
+  "files": 84,
+  "fields": 518,
+  "field_documents": 36,
+  "historical_entries": 564
+}

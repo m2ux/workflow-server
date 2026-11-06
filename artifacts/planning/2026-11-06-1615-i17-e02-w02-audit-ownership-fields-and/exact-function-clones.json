@@ -1,0 +1,66 @@
+[
+  [
+    {
+      "file": "board-queue.py",
+      "function": "tags",
+      "line": 56,
+      "end": 58,
+      "body": "matched = PREFIX.match(title)\nreturn (matched[1], matched[2] or '', matched[3] or '') if matched else None"
+    },
+    {
+      "file": "deliver.py",
+      "function": "tags",
+      "line": 118,
+      "end": 120,
+      "body": "matched = PREFIX.match(title)\nreturn (matched[1], matched[2] or '', matched[3] or '') if matched else None"
+    }
+  ],
+  [
+    {
+      "file": "board.py",
+      "function": "completed",
+      "line": 104,
+      "end": 105,
+      "body": "return issue['state'] == 'closed' and issue.get('state_reason') == 'completed'"
+    },
+    {
+      "file": "sync.py",
+      "function": "issue_done",
+      "line": 139,
+      "end": 140,
+      "body": "return issue['state'] == 'closed' and issue.get('state_reason') == 'completed'"
+    }
+  ],
+  [
+    {
+      "file": "format.py",
+      "function": "git",
+      "line": 364,
+      "end": 365,
+      "body": "return subprocess.run(['git', '-C', project, *args], capture_output=True, text=True)"
+    },
+    {
+      "file": "sync.py",
+      "function": "git",
+      "line": 832,
+      "end": 833,
+      "body": "return subprocess.run(['git', '-C', project, *args], capture_output=True, text=True)"
+    }
+  ],
+  [
+    {
+      "file": "statuses.py",
+      "function": "key_of",
+      "line": 53,
+      "end": 55,
+      "body": "return (issue['repository_url'].split('/repos/', 1)[1], issue['number'])"
+    },
+    {
+      "file": "sync.py",
+      "function": "issue_key",
+      "line": 134,
+      "end": 136,
+      "body": "return (issue['repository_url'].split('/repos/', 1)[1], issue['number'])"
+    }
+  ]
+]

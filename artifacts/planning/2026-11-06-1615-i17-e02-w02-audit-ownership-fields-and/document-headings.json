@@ -1,0 +1,7377 @@
+[
+  {
+    "file": "SKILL.md",
+    "headings": [
+      {
+        "line": 7,
+        "level": 1,
+        "title": "Work Planner"
+      },
+      {
+        "line": 22,
+        "level": 2,
+        "title": "Modes"
+      },
+      {
+        "line": 72,
+        "level": 2,
+        "title": "Dependencies"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/acceptance-criteria.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Acceptance Criteria"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Verify Selected Criteria"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Confirm Criterion Readiness"
+      },
+      {
+        "line": 18,
+        "level": 4,
+        "title": "2. Run Named Instruments"
+      },
+      {
+        "line": 28,
+        "level": 4,
+        "title": "3. Provide Criterion Evidence"
+      },
+      {
+        "line": 33,
+        "level": 3,
+        "title": "Tick Verified Criteria"
+      },
+      {
+        "line": 37,
+        "level": 4,
+        "title": "1. Record Verified Criteria"
+      },
+      {
+        "line": 45,
+        "level": 4,
+        "title": "2. Provide Body Disposition"
+      },
+      {
+        "line": 49,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 51,
+        "level": 3,
+        "title": "Run at Revision"
+      },
+      {
+        "line": 70,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 72,
+        "level": 3,
+        "title": "Criterion"
+      },
+      {
+        "line": 76,
+        "level": 3,
+        "title": "Instrument Result"
+      },
+      {
+        "line": 80,
+        "level": 3,
+        "title": "Criterion Selection"
+      },
+      {
+        "line": 84,
+        "level": 3,
+        "title": "Issue Evidence"
+      },
+      {
+        "line": 88,
+        "level": 3,
+        "title": "Delivery Evidence"
+      },
+      {
+        "line": 92,
+        "level": 3,
+        "title": "Instrument"
+      },
+      {
+        "line": 96,
+        "level": 3,
+        "title": "Project Checkout"
+      },
+      {
+        "line": 100,
+        "level": 3,
+        "title": "Revision"
+      },
+      {
+        "line": 104,
+        "level": 3,
+        "title": "Verification Evidence"
+      },
+      {
+        "line": 108,
+        "level": 3,
+        "title": "Output Body"
+      },
+      {
+        "line": 112,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 116,
+        "level": 3,
+        "title": "Issue Body"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/agent-review.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Agent Review"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Produce Agent Review"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Review Complete Integration Diff"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. Resolve Review Findings"
+      },
+      {
+        "line": 26,
+        "level": 4,
+        "title": "3. Write Revision Review Record"
+      },
+      {
+        "line": 30,
+        "level": 4,
+        "title": "4. Provide Review Evidence"
+      },
+      {
+        "line": 34,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 36,
+        "level": 3,
+        "title": "Validate Agent Review"
+      },
+      {
+        "line": 50,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 52,
+        "level": 3,
+        "title": "Review Record"
+      },
+      {
+        "line": 58,
+        "level": 3,
+        "title": "Review Inputs"
+      },
+      {
+        "line": 62,
+        "level": 3,
+        "title": "Pull Request Record"
+      },
+      {
+        "line": 66,
+        "level": 3,
+        "title": "Published Reviews"
+      },
+      {
+        "line": 70,
+        "level": 3,
+        "title": "Review Eligibility"
+      },
+      {
+        "line": 74,
+        "level": 3,
+        "title": "Workspace"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/architecture-overview.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Architecture Overview"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Template"
+      },
+      {
+        "line": 93,
+        "level": 3,
+        "title": "Diagrams"
+      },
+      {
+        "line": 113,
+        "level": 3,
+        "title": "Code References"
+      },
+      {
+        "line": 117,
+        "level": 3,
+        "title": "What Changed"
+      },
+      {
+        "line": 121,
+        "level": 3,
+        "title": "Reading Order"
+      },
+      {
+        "line": 125,
+        "level": 3,
+        "title": "Measurements"
+      },
+      {
+        "line": 129,
+        "level": 3,
+        "title": "Pull Request Head"
+      },
+      {
+        "line": 133,
+        "level": 3,
+        "title": "Overview File"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/board-delivery.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Board Delivery"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Record Epic Review"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Read Board State"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. Read Configuration and Assignee"
+      },
+      {
+        "line": 20,
+        "level": 4,
+        "title": "3. Locate Epic Item"
+      },
+      {
+        "line": 25,
+        "level": 4,
+        "title": "4. Write and Confirm Review Status"
+      },
+      {
+        "line": 30,
+        "level": 4,
+        "title": "5. Provide Confirmed Status"
+      },
+      {
+        "line": 34,
+        "level": 3,
+        "title": "Record Dispatch Status"
+      },
+      {
+        "line": 38,
+        "level": 4,
+        "title": "1. Compute Dispatch Calls"
+      },
+      {
+        "line": 42,
+        "level": 4,
+        "title": "2. Apply and Confirm Calls"
+      },
+      {
+        "line": 47,
+        "level": 4,
+        "title": "3. Provide Saved Statuses"
+      },
+      {
+        "line": 51,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 53,
+        "level": 3,
+        "title": "Compute Board Changes"
+      },
+      {
+        "line": 83,
+        "level": 3,
+        "title": "Compute Dispatch Status"
+      },
+      {
+        "line": 101,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 103,
+        "level": 3,
+        "title": "Change Calls"
+      },
+      {
+        "line": 107,
+        "level": 3,
+        "title": "Missing Evidence"
+      },
+      {
+        "line": 111,
+        "level": 3,
+        "title": "Resolved Issues"
+      },
+      {
+        "line": 115,
+        "level": 3,
+        "title": "Review Selection"
+      },
+      {
+        "line": 119,
+        "level": 3,
+        "title": "Saved Identities"
+      },
+      {
+        "line": 123,
+        "level": 3,
+        "title": "Dispatch Selection"
+      },
+      {
+        "line": 127,
+        "level": 3,
+        "title": "Board Changes"
+      },
+      {
+        "line": 131,
+        "level": 3,
+        "title": "Confirmed Statuses"
+      },
+      {
+        "line": 135,
+        "level": 3,
+        "title": "Initiative Record"
+      },
+      {
+        "line": 139,
+        "level": 3,
+        "title": "Epic Records"
+      },
+      {
+        "line": 143,
+        "level": 3,
+        "title": "Task Records"
+      },
+      {
+        "line": 147,
+        "level": 3,
+        "title": "Pull Request Records"
+      },
+      {
+        "line": 151,
+        "level": 3,
+        "title": "Published Reviews"
+      },
+      {
+        "line": 155,
+        "level": 3,
+        "title": "Issue Link Snapshot"
+      },
+      {
+        "line": 159,
+        "level": 3,
+        "title": "Board Identity"
+      },
+      {
+        "line": 163,
+        "level": 3,
+        "title": "Board Fields"
+      },
+      {
+        "line": 167,
+        "level": 3,
+        "title": "Board Items"
+      },
+      {
+        "line": 171,
+        "level": 3,
+        "title": "Output Directory"
+      },
+      {
+        "line": 175,
+        "level": 3,
+        "title": "Output Paths"
+      },
+      {
+        "line": 179,
+        "level": 3,
+        "title": "Assignee Login"
+      },
+      {
+        "line": 183,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 187,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 189,
+        "level": 3,
+        "title": "Status Changes"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/board-queue.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Board Queue"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Compute Board Queue"
+      },
+      {
+        "line": 49,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 51,
+        "level": 3,
+        "title": "Board Identity"
+      },
+      {
+        "line": 55,
+        "level": 3,
+        "title": "Priority Sets"
+      },
+      {
+        "line": 63,
+        "level": 3,
+        "title": "Ready Units"
+      },
+      {
+        "line": 67,
+        "level": 3,
+        "title": "Proposed Changes"
+      },
+      {
+        "line": 71,
+        "level": 3,
+        "title": "Report Lines"
+      },
+      {
+        "line": 84,
+        "level": 3,
+        "title": "Resolved Issues"
+      },
+      {
+        "line": 88,
+        "level": 3,
+        "title": "Unplanned Initiatives"
+      },
+      {
+        "line": 92,
+        "level": 3,
+        "title": "Queue Result"
+      },
+      {
+        "line": 96,
+        "level": 3,
+        "title": "Board Items"
+      },
+      {
+        "line": 100,
+        "level": 3,
+        "title": "Pull Request Records"
+      },
+      {
+        "line": 104,
+        "level": 3,
+        "title": "Issue Link Snapshot"
+      },
+      {
+        "line": 108,
+        "level": 3,
+        "title": "Board Fields"
+      },
+      {
+        "line": 112,
+        "level": 3,
+        "title": "Output Directory"
+      },
+      {
+        "line": 116,
+        "level": 3,
+        "title": "Assignee Login"
+      },
+      {
+        "line": 120,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 124,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 126,
+        "level": 3,
+        "title": "Backlog Cascade"
+      },
+      {
+        "line": 132,
+        "level": 3,
+        "title": "Epic Activity"
+      },
+      {
+        "line": 141,
+        "level": 3,
+        "title": "Epic Handoff"
+      },
+      {
+        "line": 145,
+        "level": 3,
+        "title": "Task Eligibility"
+      },
+      {
+        "line": 149,
+        "level": 3,
+        "title": "Unresolvable Dependencies"
+      },
+      {
+        "line": 157,
+        "level": 3,
+        "title": "Completeness"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/board.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Board"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Select Project Board"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Find Requested Board"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. Provide Missing Selection"
+      },
+      {
+        "line": 19,
+        "level": 4,
+        "title": "3. Provide Selected Board"
+      },
+      {
+        "line": 23,
+        "level": 3,
+        "title": "Create Proposals Board"
+      },
+      {
+        "line": 27,
+        "level": 4,
+        "title": "1. Find Proposals Template"
+      },
+      {
+        "line": 31,
+        "level": 4,
+        "title": "2. Select Template Source"
+      },
+      {
+        "line": 35,
+        "level": 4,
+        "title": "3. Copy Proposals Template"
+      },
+      {
+        "line": 39,
+        "level": 4,
+        "title": "4. Retain New Board Number"
+      },
+      {
+        "line": 43,
+        "level": 4,
+        "title": "5. Link Copied Board"
+      },
+      {
+        "line": 47,
+        "level": 4,
+        "title": "6. Provide Linked Board"
+      },
+      {
+        "line": 51,
+        "level": 3,
+        "title": "Place Issue on Board"
+      },
+      {
+        "line": 55,
+        "level": 4,
+        "title": "1. Read Status Options"
+      },
+      {
+        "line": 59,
+        "level": 4,
+        "title": "2. Add Supplied Issue"
+      },
+      {
+        "line": 63,
+        "level": 4,
+        "title": "3. Set Initial Status"
+      },
+      {
+        "line": 67,
+        "level": 4,
+        "title": "4. Read Saved Item"
+      },
+      {
+        "line": 71,
+        "level": 4,
+        "title": "5. Provide Place Issue on Board"
+      },
+      {
+        "line": 75,
+        "level": 3,
+        "title": "Read Board State"
+      },
+      {
+        "line": 79,
+        "level": 4,
+        "title": "1. Locate Board Status Field"
+      },
+      {
+        "line": 83,
+        "level": 4,
+        "title": "2. Fetch Complete Board Items"
+      },
+      {
+        "line": 87,
+        "level": 4,
+        "title": "3. Provide Board State"
+      },
+      {
+        "line": 91,
+        "level": 3,
+        "title": "Read Board Configuration"
+      },
+      {
+        "line": 95,
+        "level": 4,
+        "title": "1. Read Board Fields"
+      },
+      {
+        "line": 99,
+        "level": 4,
+        "title": "2. Read Requested Item"
+      },
+      {
+        "line": 103,
+        "level": 4,
+        "title": "3. Provide Current Configuration"
+      },
+      {
+        "line": 107,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 109,
+        "level": 3,
+        "title": "Find Board Template"
+      },
+      {
+        "line": 119,
+        "level": 3,
+        "title": "Copy Board Template"
+      },
+      {
+        "line": 134,
+        "level": 3,
+        "title": "Link Board to Repository"
+      },
+      {
+        "line": 142,
+        "level": 3,
+        "title": "Find Proposals Board"
+      },
+      {
+        "line": 152,
+        "level": 3,
+        "title": "Add Issue to Board"
+      },
+      {
+        "line": 160,
+        "level": 3,
+        "title": "Set Item Status"
+      },
+      {
+        "line": 171,
+        "level": 3,
+        "title": "Remove Board Item"
+      },
+      {
+        "line": 179,
+        "level": 3,
+        "title": "Fetch Board Fields"
+      },
+      {
+        "line": 187,
+        "level": 3,
+        "title": "Find Theme Board"
+      },
+      {
+        "line": 197,
+        "level": 3,
+        "title": "Find Status Field"
+      },
+      {
+        "line": 207,
+        "level": 3,
+        "title": "Fetch Board Items with Status"
+      },
+      {
+        "line": 217,
+        "level": 3,
+        "title": "Fetch Board Item"
+      },
+      {
+        "line": 225,
+        "level": 3,
+        "title": "Find User"
+      },
+      {
+        "line": 235,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 237,
+        "level": 3,
+        "title": "Themes"
+      },
+      {
+        "line": 243,
+        "level": 3,
+        "title": "Theme Board Title"
+      },
+      {
+        "line": 247,
+        "level": 3,
+        "title": "Repositories"
+      },
+      {
+        "line": 251,
+        "level": 3,
+        "title": "Board Owner"
+      },
+      {
+        "line": 255,
+        "level": 3,
+        "title": "Board Selection"
+      },
+      {
+        "line": 259,
+        "level": 3,
+        "title": "Board Coordinates"
+      },
+      {
+        "line": 263,
+        "level": 3,
+        "title": "Repository"
+      },
+      {
+        "line": 267,
+        "level": 3,
+        "title": "Theme Provenance"
+      },
+      {
+        "line": 271,
+        "level": 3,
+        "title": "Selected Kind"
+      },
+      {
+        "line": 275,
+        "level": 3,
+        "title": "Template Selection"
+      },
+      {
+        "line": 279,
+        "level": 3,
+        "title": "Copy Title"
+      },
+      {
+        "line": 283,
+        "level": 3,
+        "title": "Selected Board"
+      },
+      {
+        "line": 287,
+        "level": 3,
+        "title": "Copied Board"
+      },
+      {
+        "line": 291,
+        "level": 3,
+        "title": "Issue Id"
+      },
+      {
+        "line": 295,
+        "level": 3,
+        "title": "Initial Status"
+      },
+      {
+        "line": 299,
+        "level": 3,
+        "title": "Item Coordinates"
+      },
+      {
+        "line": 303,
+        "level": 3,
+        "title": "Status Field"
+      },
+      {
+        "line": 307,
+        "level": 3,
+        "title": "Status Input File"
+      },
+      {
+        "line": 311,
+        "level": 3,
+        "title": "Output Files"
+      },
+      {
+        "line": 315,
+        "level": 3,
+        "title": "Board State"
+      },
+      {
+        "line": 319,
+        "level": 3,
+        "title": "Board Configuration"
+      },
+      {
+        "line": 323,
+        "level": 3,
+        "title": "Authenticated Access"
+      },
+      {
+        "line": 327,
+        "level": 3,
+        "title": "Assignee Login"
+      },
+      {
+        "line": 331,
+        "level": 3,
+        "title": "Membership Result"
+      },
+      {
+        "line": 335,
+        "level": 3,
+        "title": "Optional Item"
+      },
+      {
+        "line": 339,
+        "level": 3,
+        "title": "Link Result"
+      },
+      {
+        "line": 343,
+        "level": 3,
+        "title": "Board Fields File"
+      },
+      {
+        "line": 347,
+        "level": 3,
+        "title": "Board Items File"
+      },
+      {
+        "line": 351,
+        "level": 3,
+        "title": "Theme Name"
+      },
+      {
+        "line": 355,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 357,
+        "level": 3,
+        "title": "Assignees"
+      },
+      {
+        "line": 361,
+        "level": 3,
+        "title": "Proposals"
+      },
+      {
+        "line": 375,
+        "level": 3,
+        "title": "Standalone Issues"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/delivery-branches.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Delivery Branches"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Prepare Delivery Bases"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Read Changed Branches"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. List Existing Epic Bases"
+      },
+      {
+        "line": 19,
+        "level": 4,
+        "title": "3. Resolve Missing Branch Configuration"
+      },
+      {
+        "line": 25,
+        "level": 4,
+        "title": "4. Require Confirmed Prerequisites"
+      },
+      {
+        "line": 29,
+        "level": 4,
+        "title": "5. Create Missing Epic Bases"
+      },
+      {
+        "line": 41,
+        "level": 4,
+        "title": "6. Provide Prepare Delivery Bases"
+      },
+      {
+        "line": 45,
+        "level": 3,
+        "title": "Update Epic Base"
+      },
+      {
+        "line": 49,
+        "level": 4,
+        "title": "1. Resolve Epic Target"
+      },
+      {
+        "line": 53,
+        "level": 4,
+        "title": "2. Fetch Current Epic Base"
+      },
+      {
+        "line": 57,
+        "level": 4,
+        "title": "3. Prepare Epic Base Checkout"
+      },
+      {
+        "line": 61,
+        "level": 4,
+        "title": "4. Fetch Long-Lived Target"
+      },
+      {
+        "line": 65,
+        "level": 4,
+        "title": "5. Merge Current Target"
+      },
+      {
+        "line": 69,
+        "level": 4,
+        "title": "6. Publish Updated Epic Base"
+      },
+      {
+        "line": 75,
+        "level": 3,
+        "title": "Update Task Branch"
+      },
+      {
+        "line": 79,
+        "level": 4,
+        "title": "1. Fetch Current Task Base"
+      },
+      {
+        "line": 83,
+        "level": 4,
+        "title": "2. Stop on Fetch Failure"
+      },
+      {
+        "line": 87,
+        "level": 4,
+        "title": "3. Merge Current Task Base"
+      },
+      {
+        "line": 91,
+        "level": 4,
+        "title": "4. Publish Updated Task Branch"
+      },
+      {
+        "line": 97,
+        "level": 3,
+        "title": "Create Pull Request Worktree"
+      },
+      {
+        "line": 101,
+        "level": 4,
+        "title": "1. Fetch Verified Review Head"
+      },
+      {
+        "line": 105,
+        "level": 4,
+        "title": "2. Resolve Fetched Review Commit"
+      },
+      {
+        "line": 109,
+        "level": 4,
+        "title": "3. Check Verified Head"
+      },
+      {
+        "line": 113,
+        "level": 4,
+        "title": "4. Place Review Worktree"
+      },
+      {
+        "line": 117,
+        "level": 4,
+        "title": "5. Check Existing Review Worktree"
+      },
+      {
+        "line": 125,
+        "level": 4,
+        "title": "6. Add Detached Review Worktree"
+      },
+      {
+        "line": 129,
+        "level": 4,
+        "title": "7. Confirm Review Checkout Head"
+      },
+      {
+        "line": 133,
+        "level": 4,
+        "title": "8. Provide Review Checkout"
+      },
+      {
+        "line": 137,
+        "level": 3,
+        "title": "Read Delivery Branches"
+      },
+      {
+        "line": 141,
+        "level": 4,
+        "title": "1. Read Declared Branch Names"
+      },
+      {
+        "line": 145,
+        "level": 4,
+        "title": "2. List Current Epic Bases"
+      },
+      {
+        "line": 149,
+        "level": 4,
+        "title": "3. Provide Delivery Branches"
+      },
+      {
+        "line": 153,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 155,
+        "level": 3,
+        "title": "List Epic Bases"
+      },
+      {
+        "line": 168,
+        "level": 3,
+        "title": "List Long-Lived Branches"
+      },
+      {
+        "line": 186,
+        "level": 3,
+        "title": "Fetch Remote Branch"
+      },
+      {
+        "line": 196,
+        "level": 3,
+        "title": "Publish Epic Base"
+      },
+      {
+        "line": 207,
+        "level": 3,
+        "title": "Merge Remote Branch"
+      },
+      {
+        "line": 227,
+        "level": 3,
+        "title": "Push Epic Base"
+      },
+      {
+        "line": 238,
+        "level": 3,
+        "title": "Push Task Branch"
+      },
+      {
+        "line": 249,
+        "level": 3,
+        "title": "Add Task Worktree"
+      },
+      {
+        "line": 262,
+        "level": 3,
+        "title": "Fetch Review Head"
+      },
+      {
+        "line": 272,
+        "level": 3,
+        "title": "Add Epic Base Worktree"
+      },
+      {
+        "line": 284,
+        "level": 3,
+        "title": "Add Review Worktree"
+      },
+      {
+        "line": 296,
+        "level": 3,
+        "title": "Fetch Branch Protection"
+      },
+      {
+        "line": 304,
+        "level": 3,
+        "title": "Fetch Active Branch Rules"
+      },
+      {
+        "line": 312,
+        "level": 3,
+        "title": "Read Checkout Revision"
+      },
+      {
+        "line": 320,
+        "level": 3,
+        "title": "Read Checkout Status"
+      },
+      {
+        "line": 328,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 330,
+        "level": 3,
+        "title": "Branches"
+      },
+      {
+        "line": 342,
+        "level": 3,
+        "title": "Epic Bases"
+      },
+      {
+        "line": 355,
+        "level": 3,
+        "title": "Review Worktrees"
+      },
+      {
+        "line": 361,
+        "level": 3,
+        "title": "Task Branches"
+      },
+      {
+        "line": 377,
+        "level": 3,
+        "title": "Epic Identity"
+      },
+      {
+        "line": 381,
+        "level": 3,
+        "title": "Changed Branches"
+      },
+      {
+        "line": 385,
+        "level": 3,
+        "title": "Prerequisite Evidence"
+      },
+      {
+        "line": 389,
+        "level": 3,
+        "title": "Source Branch"
+      },
+      {
+        "line": 393,
+        "level": 3,
+        "title": "Epic-Base Name"
+      },
+      {
+        "line": 397,
+        "level": 3,
+        "title": "Task Branch"
+      },
+      {
+        "line": 401,
+        "level": 3,
+        "title": "Base Branch"
+      },
+      {
+        "line": 405,
+        "level": 3,
+        "title": "Worktree Path"
+      },
+      {
+        "line": 409,
+        "level": 3,
+        "title": "Pull Request Number"
+      },
+      {
+        "line": 413,
+        "level": 3,
+        "title": "Verified Head"
+      },
+      {
+        "line": 417,
+        "level": 3,
+        "title": "Target Branch"
+      },
+      {
+        "line": 421,
+        "level": 3,
+        "title": "Output Files"
+      },
+      {
+        "line": 425,
+        "level": 3,
+        "title": "Branch Names"
+      },
+      {
+        "line": 429,
+        "level": 3,
+        "title": "Epic-Base Names"
+      },
+      {
+        "line": 433,
+        "level": 3,
+        "title": "Branch Result"
+      },
+      {
+        "line": 437,
+        "level": 3,
+        "title": "Worktree Result"
+      },
+      {
+        "line": 441,
+        "level": 3,
+        "title": "Target Requirements"
+      },
+      {
+        "line": 445,
+        "level": 3,
+        "title": "Checkout Commit"
+      },
+      {
+        "line": 449,
+        "level": 3,
+        "title": "Checkout Status"
+      },
+      {
+        "line": 453,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 457,
+        "level": 3,
+        "title": "Repository"
+      },
+      {
+        "line": 461,
+        "level": 3,
+        "title": "Project Checkout"
+      },
+      {
+        "line": 465,
+        "level": 3,
+        "title": "Unit Checkout"
+      },
+      {
+        "line": 469,
+        "level": 3,
+        "title": "Checkout"
+      },
+      {
+        "line": 473,
+        "level": 3,
+        "title": "Revision"
+      },
+      {
+        "line": 477,
+        "level": 3,
+        "title": "Failure"
+      },
+      {
+        "line": 481,
+        "level": 3,
+        "title": "Missing Destination"
+      },
+      {
+        "line": 485,
+        "level": 3,
+        "title": "Successful Merge"
+      },
+      {
+        "line": 489,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 491,
+        "level": 3,
+        "title": "Producer Outputs"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/delivery-brief.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Delivery Brief"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Location"
+      },
+      {
+        "line": 11,
+        "level": 3,
+        "title": "Work Identity"
+      },
+      {
+        "line": 15,
+        "level": 3,
+        "title": "Planning Record"
+      },
+      {
+        "line": 19,
+        "level": 3,
+        "title": "Validation Scope"
+      },
+      {
+        "line": 23,
+        "level": 3,
+        "title": "Change Autonomy"
+      },
+      {
+        "line": 27,
+        "level": 3,
+        "title": "Execution Instructions"
+      },
+      {
+        "line": 31,
+        "level": 3,
+        "title": "Output Path"
+      },
+      {
+        "line": 35,
+        "level": 3,
+        "title": "Brief Path"
+      },
+      {
+        "line": 39,
+        "level": 3,
+        "title": "Missing Context"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/delivery-evidence.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Delivery Evidence"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Read Delivery Evidence"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Fetch Delivery Evidence"
+      },
+      {
+        "line": 18,
+        "level": 4,
+        "title": "2. Inspect Epic Delivery"
+      },
+      {
+        "line": 23,
+        "level": 4,
+        "title": "3. Repair Missing Delivery Prefix"
+      },
+      {
+        "line": 31,
+        "level": 4,
+        "title": "4. Provide Complete Evidence"
+      },
+      {
+        "line": 37,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 39,
+        "level": 3,
+        "title": "Pull Request Records"
+      },
+      {
+        "line": 43,
+        "level": 3,
+        "title": "Issue-Link Snapshot"
+      },
+      {
+        "line": 47,
+        "level": 3,
+        "title": "Delivery Findings"
+      },
+      {
+        "line": 51,
+        "level": 3,
+        "title": "Named Delivery"
+      },
+      {
+        "line": 55,
+        "level": 3,
+        "title": "Selected Repositories"
+      },
+      {
+        "line": 59,
+        "level": 3,
+        "title": "Initiative Prefix"
+      },
+      {
+        "line": 63,
+        "level": 3,
+        "title": "Issue Records"
+      },
+      {
+        "line": 67,
+        "level": 3,
+        "title": "Snapshot Paths"
+      },
+      {
+        "line": 71,
+        "level": 3,
+        "title": "Authenticated Access"
+      },
+      {
+        "line": 75,
+        "level": 3,
+        "title": "Failure"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/delivery-plan.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Delivery Plan"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Compute Available Work"
+      },
+      {
+        "line": 37,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 39,
+        "level": 3,
+        "title": "Work Units"
+      },
+      {
+        "line": 43,
+        "level": 3,
+        "title": "Hot-fix Units"
+      },
+      {
+        "line": 47,
+        "level": 3,
+        "title": "Report Lines"
+      },
+      {
+        "line": 61,
+        "level": 3,
+        "title": "Branch Context"
+      },
+      {
+        "line": 65,
+        "level": 3,
+        "title": "Dispatch Export"
+      },
+      {
+        "line": 69,
+        "level": 3,
+        "title": "Board Items"
+      },
+      {
+        "line": 73,
+        "level": 3,
+        "title": "Pull Request Records"
+      },
+      {
+        "line": 77,
+        "level": 3,
+        "title": "Issue-Link Snapshot"
+      },
+      {
+        "line": 81,
+        "level": 3,
+        "title": "Epic-Base Names"
+      },
+      {
+        "line": 85,
+        "level": 3,
+        "title": "Engineering Worktree"
+      },
+      {
+        "line": 89,
+        "level": 3,
+        "title": "Off-Board Issues"
+      },
+      {
+        "line": 93,
+        "level": 3,
+        "title": "Requested Lane"
+      },
+      {
+        "line": 97,
+        "level": 3,
+        "title": "Record Date"
+      },
+      {
+        "line": 101,
+        "level": 3,
+        "title": "Dispatch-Export Path"
+      },
+      {
+        "line": 105,
+        "level": 3,
+        "title": "Plan Report"
+      },
+      {
+        "line": 109,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 113,
+        "level": 3,
+        "title": "Project Checkout"
+      },
+      {
+        "line": 117,
+        "level": 3,
+        "title": "Revision"
+      },
+      {
+        "line": 121,
+        "level": 3,
+        "title": "Failure"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/dependency-graph.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Dependency Graph"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Check Dependencies and Numbering"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Check Supplied Task Graph"
+      },
+      {
+        "line": 17,
+        "level": 4,
+        "title": "2. Resolve Graph Findings"
+      },
+      {
+        "line": 28,
+        "level": 4,
+        "title": "3. Apply Confirmed Numbering"
+      },
+      {
+        "line": 40,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 42,
+        "level": 3,
+        "title": "Check Dependencies"
+      },
+      {
+        "line": 74,
+        "level": 3,
+        "title": "Renumber Tasks"
+      },
+      {
+        "line": 94,
+        "level": 3,
+        "title": "Renumber Epics"
+      },
+      {
+        "line": 109,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 111,
+        "level": 3,
+        "title": "Scope"
+      },
+      {
+        "line": 115,
+        "level": 3,
+        "title": "Source"
+      },
+      {
+        "line": 119,
+        "level": 3,
+        "title": "Edges"
+      },
+      {
+        "line": 132,
+        "level": 3,
+        "title": "Whole-Epic Edges"
+      },
+      {
+        "line": 141,
+        "level": 3,
+        "title": "Epic Priority"
+      },
+      {
+        "line": 145,
+        "level": 3,
+        "title": "Joins"
+      },
+      {
+        "line": 160,
+        "level": 3,
+        "title": "Numbering Map"
+      },
+      {
+        "line": 164,
+        "level": 3,
+        "title": "Graph Inputs"
+      },
+      {
+        "line": 168,
+        "level": 3,
+        "title": "Dependency Files"
+      },
+      {
+        "line": 172,
+        "level": 3,
+        "title": "Renumber Inputs"
+      },
+      {
+        "line": 176,
+        "level": 3,
+        "title": "Pull Request Records"
+      },
+      {
+        "line": 180,
+        "level": 3,
+        "title": "Graph Result"
+      },
+      {
+        "line": 184,
+        "level": 3,
+        "title": "Rewritten Bodies"
+      },
+      {
+        "line": 188,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 192,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 194,
+        "level": 3,
+        "title": "Component Contention"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/dispatch-batch.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Dispatch Batch"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Compute Dispatch Batch"
+      },
+      {
+        "line": 28,
+        "level": 3,
+        "title": "Check Dispatch Start"
+      },
+      {
+        "line": 44,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 46,
+        "level": 3,
+        "title": "Authorization"
+      },
+      {
+        "line": 50,
+        "level": 3,
+        "title": "Survey Evidence"
+      },
+      {
+        "line": 54,
+        "level": 3,
+        "title": "Session Inventory"
+      },
+      {
+        "line": 58,
+        "level": 3,
+        "title": "Selection"
+      },
+      {
+        "line": 62,
+        "level": 3,
+        "title": "Preparations"
+      },
+      {
+        "line": 66,
+        "level": 3,
+        "title": "Survey Board"
+      },
+      {
+        "line": 70,
+        "level": 3,
+        "title": "Requested Lane"
+      },
+      {
+        "line": 74,
+        "level": 3,
+        "title": "Free Slots"
+      },
+      {
+        "line": 78,
+        "level": 3,
+        "title": "Batch"
+      },
+      {
+        "line": 82,
+        "level": 3,
+        "title": "Unit Identity"
+      },
+      {
+        "line": 86,
+        "level": 3,
+        "title": "Start Evidence"
+      },
+      {
+        "line": 90,
+        "level": 3,
+        "title": "Validated Unit"
+      },
+      {
+        "line": 94,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 98,
+        "level": 3,
+        "title": "Failure"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/epic-issue-body.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Epic Issue Body"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Populate Epic Issue Body"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Populate Epic Template"
+      },
+      {
+        "line": 17,
+        "level": 4,
+        "title": "2. Populate Shared Table"
+      },
+      {
+        "line": 21,
+        "level": 4,
+        "title": "3. Fill Epic Cells"
+      },
+      {
+        "line": 27,
+        "level": 4,
+        "title": "4. Build Draft Snapshot"
+      },
+      {
+        "line": 31,
+        "level": 4,
+        "title": "5. Validate Draft Body"
+      },
+      {
+        "line": 35,
+        "level": 4,
+        "title": "6. Identify Pending Links"
+      },
+      {
+        "line": 39,
+        "level": 4,
+        "title": "7. Provide Draft Findings"
+      },
+      {
+        "line": 43,
+        "level": 3,
+        "title": "Validate Epic Body"
+      },
+      {
+        "line": 47,
+        "level": 4,
+        "title": "1. Read Changed Paths"
+      },
+      {
+        "line": 51,
+        "level": 4,
+        "title": "2. Validate Kind Conditions"
+      },
+      {
+        "line": 56,
+        "level": 4,
+        "title": "3. Read Delivery Reach"
+      },
+      {
+        "line": 60,
+        "level": 4,
+        "title": "4. Identify Required Criteria"
+      },
+      {
+        "line": 64,
+        "level": 4,
+        "title": "5. Provide Local Findings"
+      },
+      {
+        "line": 68,
+        "level": 3,
+        "title": "Revise Epic Rows"
+      },
+      {
+        "line": 72,
+        "level": 4,
+        "title": "1. Apply Confirmed Changes"
+      },
+      {
+        "line": 78,
+        "level": 4,
+        "title": "2. Provide Revised Body"
+      },
+      {
+        "line": 82,
+        "level": 3,
+        "title": "Plan Gap Task"
+      },
+      {
+        "line": 86,
+        "level": 4,
+        "title": "1. Resolve Unmet Criteria"
+      },
+      {
+        "line": 94,
+        "level": 4,
+        "title": "2. Confirm Further Task"
+      },
+      {
+        "line": 101,
+        "level": 4,
+        "title": "3. Reconcile Revised Delivery"
+      },
+      {
+        "line": 107,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 109,
+        "level": 3,
+        "title": "Sync Epic"
+      },
+      {
+        "line": 139,
+        "level": 3,
+        "title": "Tick Epic Criteria"
+      },
+      {
+        "line": 154,
+        "level": 3,
+        "title": "Reserve Row"
+      },
+      {
+        "line": 177,
+        "level": 3,
+        "title": "Release Row"
+      },
+      {
+        "line": 198,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 200,
+        "level": 3,
+        "title": "Template"
+      },
+      {
+        "line": 234,
+        "level": 3,
+        "title": "Titles"
+      },
+      {
+        "line": 241,
+        "level": 3,
+        "title": "Proposal"
+      },
+      {
+        "line": 245,
+        "level": 3,
+        "title": "Work Breakdown"
+      },
+      {
+        "line": 288,
+        "level": 3,
+        "title": "Acceptance Criteria"
+      },
+      {
+        "line": 292,
+        "level": 3,
+        "title": "Open Questions"
+      },
+      {
+        "line": 296,
+        "level": 3,
+        "title": "Required Criteria"
+      },
+      {
+        "line": 320,
+        "level": 3,
+        "title": "Task Delivery"
+      },
+      {
+        "line": 342,
+        "level": 3,
+        "title": "Epic Record"
+      },
+      {
+        "line": 346,
+        "level": 3,
+        "title": "Initiative Context"
+      },
+      {
+        "line": 350,
+        "level": 3,
+        "title": "Task Rows"
+      },
+      {
+        "line": 354,
+        "level": 3,
+        "title": "Pull Request Records"
+      },
+      {
+        "line": 358,
+        "level": 3,
+        "title": "Issue Links"
+      },
+      {
+        "line": 362,
+        "level": 3,
+        "title": "Task Records"
+      },
+      {
+        "line": 366,
+        "level": 3,
+        "title": "Delivery Matches"
+      },
+      {
+        "line": 370,
+        "level": 3,
+        "title": "Project Checkout"
+      },
+      {
+        "line": 374,
+        "level": 3,
+        "title": "Evaluated Revision"
+      },
+      {
+        "line": 378,
+        "level": 3,
+        "title": "Epic Bases"
+      },
+      {
+        "line": 382,
+        "level": 3,
+        "title": "Output Body"
+      },
+      {
+        "line": 386,
+        "level": 3,
+        "title": "Criterion Selection"
+      },
+      {
+        "line": 390,
+        "level": 3,
+        "title": "Task Selection"
+      },
+      {
+        "line": 394,
+        "level": 3,
+        "title": "Board Items"
+      },
+      {
+        "line": 398,
+        "level": 3,
+        "title": "Planning Folder"
+      },
+      {
+        "line": 402,
+        "level": 3,
+        "title": "Engineering Worktree"
+      },
+      {
+        "line": 406,
+        "level": 3,
+        "title": "Validation Findings"
+      },
+      {
+        "line": 410,
+        "level": 3,
+        "title": "Row Result"
+      },
+      {
+        "line": 414,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 418,
+        "level": 3,
+        "title": "Epic Body"
+      },
+      {
+        "line": 422,
+        "level": 3,
+        "title": "Draft Metadata"
+      },
+      {
+        "line": 426,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 428,
+        "level": 3,
+        "title": "Test Evidence"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/epic.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Epic"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Check Epic Prerequisites"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Identify Named Prerequisites"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. Apply Whole-Epic Dependency"
+      },
+      {
+        "line": 19,
+        "level": 4,
+        "title": "3. Confirm Prerequisite Delivery"
+      },
+      {
+        "line": 23,
+        "level": 4,
+        "title": "4. Provide Prerequisite Evidence"
+      },
+      {
+        "line": 27,
+        "level": 3,
+        "title": "Inspect Epic Delivery"
+      },
+      {
+        "line": 31,
+        "level": 4,
+        "title": "1. Match Supplied Delivery"
+      },
+      {
+        "line": 37,
+        "level": 4,
+        "title": "2. Provide Delivery Findings"
+      },
+      {
+        "line": 41,
+        "level": 3,
+        "title": "Check Epic Readiness"
+      },
+      {
+        "line": 45,
+        "level": 4,
+        "title": "1. Inspect Current Delivery"
+      },
+      {
+        "line": 49,
+        "level": 4,
+        "title": "2. Confirm Integration Conditions"
+      },
+      {
+        "line": 53,
+        "level": 4,
+        "title": "3. Provide Integration Readiness"
+      },
+      {
+        "line": 57,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 59,
+        "level": 3,
+        "title": "Match Pull Requests"
+      },
+      {
+        "line": 71,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 73,
+        "level": 3,
+        "title": "Prerequisite Evidence"
+      },
+      {
+        "line": 77,
+        "level": 3,
+        "title": "Delivery State"
+      },
+      {
+        "line": 81,
+        "level": 3,
+        "title": "Delivery Findings"
+      },
+      {
+        "line": 112,
+        "level": 3,
+        "title": "Epic Record"
+      },
+      {
+        "line": 116,
+        "level": 3,
+        "title": "Initiative Evidence"
+      },
+      {
+        "line": 120,
+        "level": 3,
+        "title": "Prerequisite Records"
+      },
+      {
+        "line": 124,
+        "level": 3,
+        "title": "Pull Request Records"
+      },
+      {
+        "line": 128,
+        "level": 3,
+        "title": "Issue Links"
+      },
+      {
+        "line": 132,
+        "level": 3,
+        "title": "Verification Evidence"
+      },
+      {
+        "line": 136,
+        "level": 3,
+        "title": "Base Merges"
+      },
+      {
+        "line": 140,
+        "level": 3,
+        "title": "Output Body"
+      },
+      {
+        "line": 144,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 148,
+        "level": 3,
+        "title": "Epic Body"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/goal-trace.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Goal Trace"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Review Initiative Goal"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Identify Confirmed Goal Clauses"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. Build Goal Trace"
+      },
+      {
+        "line": 24,
+        "level": 4,
+        "title": "3. Read Marked Requirement Sources"
+      },
+      {
+        "line": 39,
+        "level": 4,
+        "title": "4. Check Acceptance Criteria"
+      },
+      {
+        "line": 43,
+        "level": 4,
+        "title": "5. Validate Local Drafts"
+      },
+      {
+        "line": 49,
+        "level": 4,
+        "title": "6. Check Outside Threats"
+      },
+      {
+        "line": 64,
+        "level": 4,
+        "title": "7. Provide Ranked Gaps"
+      },
+      {
+        "line": 71,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 73,
+        "level": 3,
+        "title": "Trace Table"
+      },
+      {
+        "line": 81,
+        "level": 3,
+        "title": "Gaps"
+      },
+      {
+        "line": 85,
+        "level": 3,
+        "title": "Goal Evidence"
+      },
+      {
+        "line": 89,
+        "level": 3,
+        "title": "Changed Surface"
+      },
+      {
+        "line": 93,
+        "level": 3,
+        "title": "Review Result"
+      },
+      {
+        "line": 97,
+        "level": 3,
+        "title": "Plan Bodies"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/hotfix-body.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Hot-fix Body"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Target"
+      },
+      {
+        "line": 12,
+        "level": 3,
+        "title": "Titles"
+      },
+      {
+        "line": 18,
+        "level": 3,
+        "title": "Sections"
+      },
+      {
+        "line": 22,
+        "level": 3,
+        "title": "Defect Evidence"
+      },
+      {
+        "line": 26,
+        "level": 3,
+        "title": "Hot-fix Identity"
+      },
+      {
+        "line": 30,
+        "level": 3,
+        "title": "Output Body"
+      },
+      {
+        "line": 34,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 36,
+        "level": 3,
+        "title": "Definition"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/hotfix.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Hot-fix"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Settle Hot-fix Board Status"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Read Current Issue"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. Read Current Board"
+      },
+      {
+        "line": 19,
+        "level": 4,
+        "title": "3. Apply Required Status"
+      },
+      {
+        "line": 23,
+        "level": 5,
+        "title": "A Status"
+      },
+      {
+        "line": 27,
+        "level": 5,
+        "title": "Off the Board, With an Item"
+      },
+      {
+        "line": 31,
+        "level": 5,
+        "title": "Off the Board, With No Item"
+      },
+      {
+        "line": 35,
+        "level": 4,
+        "title": "4. Provide Settled Board"
+      },
+      {
+        "line": 39,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 41,
+        "level": 3,
+        "title": "Sync Hot-fix Issue"
+      },
+      {
+        "line": 60,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 62,
+        "level": 3,
+        "title": "Delivery Unit"
+      },
+      {
+        "line": 76,
+        "level": 3,
+        "title": "Branch"
+      },
+      {
+        "line": 80,
+        "level": 3,
+        "title": "Delivering Pull Request"
+      },
+      {
+        "line": 90,
+        "level": 3,
+        "title": "Delivery Record"
+      },
+      {
+        "line": 97,
+        "level": 3,
+        "title": "Repository"
+      },
+      {
+        "line": 101,
+        "level": 3,
+        "title": "Hot-fix Record"
+      },
+      {
+        "line": 105,
+        "level": 3,
+        "title": "Board Evidence"
+      },
+      {
+        "line": 109,
+        "level": 3,
+        "title": "Pull Request Records"
+      },
+      {
+        "line": 113,
+        "level": 3,
+        "title": "Issue Links"
+      },
+      {
+        "line": 117,
+        "level": 3,
+        "title": "Delivery Selection"
+      },
+      {
+        "line": 123,
+        "level": 3,
+        "title": "Output Body"
+      },
+      {
+        "line": 127,
+        "level": 3,
+        "title": "Hot-fix Number"
+      },
+      {
+        "line": 131,
+        "level": 3,
+        "title": "Board Result"
+      },
+      {
+        "line": 135,
+        "level": 3,
+        "title": "Delivery Findings"
+      },
+      {
+        "line": 139,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 143,
+        "level": 3,
+        "title": "Hot-fix Identity"
+      },
+      {
+        "line": 147,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 149,
+        "level": 3,
+        "title": "Board Status"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/initiative-issue-body.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Initiative Issue Body"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Populate Initiative Issue Body"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Draft Scoped Body"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. Check Current Round"
+      },
+      {
+        "line": 19,
+        "level": 4,
+        "title": "3. Provide Draft Findings"
+      },
+      {
+        "line": 23,
+        "level": 3,
+        "title": "Draft Initiative Issue Body"
+      },
+      {
+        "line": 27,
+        "level": 4,
+        "title": "1. Populate Initiative Template"
+      },
+      {
+        "line": 33,
+        "level": 4,
+        "title": "2. Derive Problem and Boundary"
+      },
+      {
+        "line": 39,
+        "level": 4,
+        "title": "3. Write Source-Based Criteria"
+      },
+      {
+        "line": 45,
+        "level": 4,
+        "title": "4. Populate Shared Table"
+      },
+      {
+        "line": 49,
+        "level": 4,
+        "title": "5. Fill Initiative Cells"
+      },
+      {
+        "line": 55,
+        "level": 4,
+        "title": "6. Provide Draft Initiative Issue Body"
+      },
+      {
+        "line": 59,
+        "level": 3,
+        "title": "Validate Initiative Body"
+      },
+      {
+        "line": 63,
+        "level": 4,
+        "title": "1. Validate Kind Conditions"
+      },
+      {
+        "line": 67,
+        "level": 4,
+        "title": "2. Retain Current Title"
+      },
+      {
+        "line": 71,
+        "level": 4,
+        "title": "3. Identify Source Departures"
+      },
+      {
+        "line": 75,
+        "level": 4,
+        "title": "4. Provide Local Findings"
+      },
+      {
+        "line": 79,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 81,
+        "level": 3,
+        "title": "Sync Initiative"
+      },
+      {
+        "line": 98,
+        "level": 3,
+        "title": "Tick Initiative Criteria"
+      },
+      {
+        "line": 112,
+        "level": 3,
+        "title": "Fetch Source"
+      },
+      {
+        "line": 126,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 128,
+        "level": 3,
+        "title": "Template"
+      },
+      {
+        "line": 167,
+        "level": 3,
+        "title": "Titles"
+      },
+      {
+        "line": 173,
+        "level": 3,
+        "title": "Problem"
+      },
+      {
+        "line": 179,
+        "level": 3,
+        "title": "Proposal"
+      },
+      {
+        "line": 184,
+        "level": 3,
+        "title": "Work Breakdown"
+      },
+      {
+        "line": 199,
+        "level": 3,
+        "title": "Initiative Acceptance Criteria"
+      },
+      {
+        "line": 216,
+        "level": 3,
+        "title": "Non-Goals"
+      },
+      {
+        "line": 220,
+        "level": 3,
+        "title": "References"
+      },
+      {
+        "line": 227,
+        "level": 3,
+        "title": "Sources"
+      },
+      {
+        "line": 236,
+        "level": 3,
+        "title": "Proposal Context"
+      },
+      {
+        "line": 240,
+        "level": 3,
+        "title": "Initiative Record"
+      },
+      {
+        "line": 244,
+        "level": 3,
+        "title": "Epic Records"
+      },
+      {
+        "line": 248,
+        "level": 3,
+        "title": "Source Evidence"
+      },
+      {
+        "line": 252,
+        "level": 3,
+        "title": "Output Files"
+      },
+      {
+        "line": 256,
+        "level": 3,
+        "title": "Criterion Selection"
+      },
+      {
+        "line": 260,
+        "level": 3,
+        "title": "Validation Findings"
+      },
+      {
+        "line": 264,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 268,
+        "level": 3,
+        "title": "Requirement References"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/initiative.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Initiative"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Identity"
+      },
+      {
+        "line": 11,
+        "level": 3,
+        "title": "Delivery State"
+      },
+      {
+        "line": 19,
+        "level": 3,
+        "title": "Delivery Findings"
+      },
+      {
+        "line": 28,
+        "level": 3,
+        "title": "Initiative Record"
+      },
+      {
+        "line": 32,
+        "level": 3,
+        "title": "Epic Records"
+      },
+      {
+        "line": 36,
+        "level": 3,
+        "title": "Verification Evidence"
+      },
+      {
+        "line": 40,
+        "level": 3,
+        "title": "Development Evidence"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/issue-body.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Issue Body"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Write Issue Table"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Populate Shared Cells"
+      },
+      {
+        "line": 17,
+        "level": 4,
+        "title": "2. Check Finished Table"
+      },
+      {
+        "line": 21,
+        "level": 4,
+        "title": "3. Provide Written Issue Table"
+      },
+      {
+        "line": 25,
+        "level": 3,
+        "title": "Check Round of Edits"
+      },
+      {
+        "line": 29,
+        "level": 4,
+        "title": "1. Check Kind Conditions"
+      },
+      {
+        "line": 33,
+        "level": 4,
+        "title": "2. Run Body Format"
+      },
+      {
+        "line": 37,
+        "level": 4,
+        "title": "3. Provide Checked Round of Edits"
+      },
+      {
+        "line": 41,
+        "level": 3,
+        "title": "Validate Issue Body"
+      },
+      {
+        "line": 45,
+        "level": 4,
+        "title": "1. Run Body Format"
+      },
+      {
+        "line": 49,
+        "level": 4,
+        "title": "2. Review Supplied Conditions"
+      },
+      {
+        "line": 53,
+        "level": 4,
+        "title": "3. Provide Format Findings"
+      },
+      {
+        "line": 57,
+        "level": 3,
+        "title": "Apply Body Corrections"
+      },
+      {
+        "line": 61,
+        "level": 4,
+        "title": "1. Populate Missing Sections"
+      },
+      {
+        "line": 65,
+        "level": 4,
+        "title": "2. Apply Confirmed Decisions"
+      },
+      {
+        "line": 69,
+        "level": 4,
+        "title": "3. Record Kind Changes"
+      },
+      {
+        "line": 73,
+        "level": 4,
+        "title": "4. State Current Design"
+      },
+      {
+        "line": 77,
+        "level": 4,
+        "title": "5. Apply Criterion Changes"
+      },
+      {
+        "line": 82,
+        "level": 4,
+        "title": "6. Validate Corrected Body"
+      },
+      {
+        "line": 86,
+        "level": 4,
+        "title": "7. Provide Corrected File"
+      },
+      {
+        "line": 90,
+        "level": 3,
+        "title": "Build Body Snapshot"
+      },
+      {
+        "line": 94,
+        "level": 4,
+        "title": "1. Write Body Snapshot"
+      },
+      {
+        "line": 98,
+        "level": 4,
+        "title": "2. Provide Snapshot Path"
+      },
+      {
+        "line": 102,
+        "level": 3,
+        "title": "Repair Issue Format"
+      },
+      {
+        "line": 106,
+        "level": 4,
+        "title": "1. Validate Current Body"
+      },
+      {
+        "line": 111,
+        "level": 4,
+        "title": "2. Review Mechanical Changes"
+      },
+      {
+        "line": 117,
+        "level": 4,
+        "title": "3. Resolve Local Content"
+      },
+      {
+        "line": 124,
+        "level": 4,
+        "title": "4. Validate Saved Body"
+      },
+      {
+        "line": 130,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 132,
+        "level": 3,
+        "title": "Check Body Format"
+      },
+      {
+        "line": 156,
+        "level": 3,
+        "title": "List Reference Repositories"
+      },
+      {
+        "line": 164,
+        "level": 3,
+        "title": "Fetch Reference Repository"
+      },
+      {
+        "line": 176,
+        "level": 3,
+        "title": "Validate Reference Visibility"
+      },
+      {
+        "line": 186,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 188,
+        "level": 3,
+        "title": "Titles"
+      },
+      {
+        "line": 196,
+        "level": 3,
+        "title": "Labels"
+      },
+      {
+        "line": 202,
+        "level": 3,
+        "title": "Problem and Proposal"
+      },
+      {
+        "line": 213,
+        "level": 3,
+        "title": "Shared Acceptance Criteria"
+      },
+      {
+        "line": 224,
+        "level": 4,
+        "title": "Criterion Labels"
+      },
+      {
+        "line": 228,
+        "level": 4,
+        "title": "Verifiable"
+      },
+      {
+        "line": 235,
+        "level": 3,
+        "title": "Tables"
+      },
+      {
+        "line": 248,
+        "level": 3,
+        "title": "Reference Form"
+      },
+      {
+        "line": 252,
+        "level": 3,
+        "title": "Body"
+      },
+      {
+        "line": 280,
+        "level": 3,
+        "title": "References"
+      },
+      {
+        "line": 284,
+        "level": 3,
+        "title": "Coverage Reports"
+      },
+      {
+        "line": 296,
+        "level": 3,
+        "title": "Format Findings"
+      },
+      {
+        "line": 305,
+        "level": 3,
+        "title": "Body Evidence"
+      },
+      {
+        "line": 309,
+        "level": 3,
+        "title": "Kind Conditions"
+      },
+      {
+        "line": 313,
+        "level": 3,
+        "title": "Row Data"
+      },
+      {
+        "line": 317,
+        "level": 3,
+        "title": "Changed Bodies"
+      },
+      {
+        "line": 321,
+        "level": 3,
+        "title": "Confirmed Corrections"
+      },
+      {
+        "line": 325,
+        "level": 3,
+        "title": "Output Files"
+      },
+      {
+        "line": 329,
+        "level": 3,
+        "title": "Body Snapshot"
+      },
+      {
+        "line": 333,
+        "level": 3,
+        "title": "Reference Repositories"
+      },
+      {
+        "line": 337,
+        "level": 3,
+        "title": "Repository Snapshot"
+      },
+      {
+        "line": 341,
+        "level": 3,
+        "title": "Visibility Findings"
+      },
+      {
+        "line": 345,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 349,
+        "level": 3,
+        "title": "Body Record"
+      },
+      {
+        "line": 353,
+        "level": 3,
+        "title": "Initiative Record"
+      },
+      {
+        "line": 357,
+        "level": 3,
+        "title": "Epic Records"
+      },
+      {
+        "line": 361,
+        "level": 3,
+        "title": "Pull Request Records"
+      },
+      {
+        "line": 365,
+        "level": 3,
+        "title": "Changed File Records"
+      },
+      {
+        "line": 369,
+        "level": 3,
+        "title": "Project Checkout"
+      },
+      {
+        "line": 373,
+        "level": 3,
+        "title": "Evaluated Revision"
+      },
+      {
+        "line": 377,
+        "level": 3,
+        "title": "Snapshot Metadata"
+      },
+      {
+        "line": 381,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 383,
+        "level": 3,
+        "title": "Numbering"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/issue.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Issue"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Read Tracker Issue"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Select Issue Response"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. Read Requested Discussion"
+      },
+      {
+        "line": 19,
+        "level": 4,
+        "title": "3. Provide Read Tracker Issue"
+      },
+      {
+        "line": 23,
+        "level": 3,
+        "title": "Save Tracker Issue"
+      },
+      {
+        "line": 27,
+        "level": 4,
+        "title": "1. Take Supplied Changes"
+      },
+      {
+        "line": 31,
+        "level": 4,
+        "title": "2. Check Assigned Labels"
+      },
+      {
+        "line": 35,
+        "level": 4,
+        "title": "3. Create New Issue"
+      },
+      {
+        "line": 39,
+        "level": 4,
+        "title": "4. Change Existing Fields"
+      },
+      {
+        "line": 43,
+        "level": 4,
+        "title": "5. Publish Required Comment"
+      },
+      {
+        "line": 47,
+        "level": 4,
+        "title": "6. Read Saved Issue"
+      },
+      {
+        "line": 51,
+        "level": 4,
+        "title": "7. Compare Saved Fields"
+      },
+      {
+        "line": 55,
+        "level": 4,
+        "title": "8. Provide Save Tracker Issue"
+      },
+      {
+        "line": 59,
+        "level": 3,
+        "title": "Comment on Issue"
+      },
+      {
+        "line": 63,
+        "level": 4,
+        "title": "1. Prepare Feedback Reply"
+      },
+      {
+        "line": 67,
+        "level": 4,
+        "title": "2. Publish Supplied Comment"
+      },
+      {
+        "line": 73,
+        "level": 4,
+        "title": "3. Provide Comment URL"
+      },
+      {
+        "line": 77,
+        "level": 3,
+        "title": "Capture Issue Development"
+      },
+      {
+        "line": 81,
+        "level": 4,
+        "title": "1. Fetch Current Issue"
+      },
+      {
+        "line": 85,
+        "level": 4,
+        "title": "2. Read Development Links"
+      },
+      {
+        "line": 89,
+        "level": 4,
+        "title": "3. Provide Captured Files"
+      },
+      {
+        "line": 93,
+        "level": 3,
+        "title": "Confirm Repository Auto-Close"
+      },
+      {
+        "line": 97,
+        "level": 4,
+        "title": "1. Read Exposed Setting"
+      },
+      {
+        "line": 101,
+        "level": 4,
+        "title": "2. Confirm Unexposed Setting"
+      },
+      {
+        "line": 105,
+        "level": 4,
+        "title": "3. Provide Confirmed Setting"
+      },
+      {
+        "line": 116,
+        "level": 3,
+        "title": "Select Tracker Number"
+      },
+      {
+        "line": 120,
+        "level": 4,
+        "title": "1. Read Existing Titles"
+      },
+      {
+        "line": 124,
+        "level": 4,
+        "title": "2. Read Highest Prefix"
+      },
+      {
+        "line": 128,
+        "level": 4,
+        "title": "3. Confirm Unused Number"
+      },
+      {
+        "line": 132,
+        "level": 4,
+        "title": "4. Provide Confirmed Number"
+      },
+      {
+        "line": 136,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 138,
+        "level": 3,
+        "title": "Create Tracker Issue"
+      },
+      {
+        "line": 155,
+        "level": 3,
+        "title": "Patch Issue Body"
+      },
+      {
+        "line": 165,
+        "level": 3,
+        "title": "Fetch Issue Body"
+      },
+      {
+        "line": 175,
+        "level": 3,
+        "title": "Retitle Tracker Issue"
+      },
+      {
+        "line": 185,
+        "level": 3,
+        "title": "Add Issue Labels"
+      },
+      {
+        "line": 197,
+        "level": 3,
+        "title": "Remove Issue Label"
+      },
+      {
+        "line": 207,
+        "level": 3,
+        "title": "Fetch Issue Comments"
+      },
+      {
+        "line": 217,
+        "level": 3,
+        "title": "Fetch Tracker Issue"
+      },
+      {
+        "line": 228,
+        "level": 3,
+        "title": "Check Issue Closure"
+      },
+      {
+        "line": 243,
+        "level": 3,
+        "title": "Sweep Closure Evidence"
+      },
+      {
+        "line": 262,
+        "level": 3,
+        "title": "Close as Not Planned"
+      },
+      {
+        "line": 277,
+        "level": 3,
+        "title": "Post Inline Comment"
+      },
+      {
+        "line": 290,
+        "level": 3,
+        "title": "Post Comment File"
+      },
+      {
+        "line": 303,
+        "level": 3,
+        "title": "Set Completed State"
+      },
+      {
+        "line": 318,
+        "level": 3,
+        "title": "Capture Issue Links"
+      },
+      {
+        "line": 342,
+        "level": 3,
+        "title": "Fetch All Issues"
+      },
+      {
+        "line": 353,
+        "level": 3,
+        "title": "Fetch Closed Issues"
+      },
+      {
+        "line": 364,
+        "level": 3,
+        "title": "Fetch Selected Closed Issues"
+      },
+      {
+        "line": 378,
+        "level": 3,
+        "title": "Find Initiative Issue"
+      },
+      {
+        "line": 392,
+        "level": 3,
+        "title": "List Prefixed Titles"
+      },
+      {
+        "line": 404,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 406,
+        "level": 3,
+        "title": "Identity"
+      },
+      {
+        "line": 410,
+        "level": 3,
+        "title": "Content"
+      },
+      {
+        "line": 414,
+        "level": 3,
+        "title": "Discussion"
+      },
+      {
+        "line": 418,
+        "level": 3,
+        "title": "State"
+      },
+      {
+        "line": 422,
+        "level": 3,
+        "title": "Auto-Close Setting"
+      },
+      {
+        "line": 426,
+        "level": 3,
+        "title": "Repository"
+      },
+      {
+        "line": 430,
+        "level": 3,
+        "title": "Issue Record"
+      },
+      {
+        "line": 434,
+        "level": 3,
+        "title": "Output Files"
+      },
+      {
+        "line": 438,
+        "level": 3,
+        "title": "Closure Evidence Paths"
+      },
+      {
+        "line": 442,
+        "level": 3,
+        "title": "Discussion Selection"
+      },
+      {
+        "line": 446,
+        "level": 3,
+        "title": "Issue Changes"
+      },
+      {
+        "line": 450,
+        "level": 3,
+        "title": "Label Names"
+      },
+      {
+        "line": 454,
+        "level": 3,
+        "title": "Comment"
+      },
+      {
+        "line": 458,
+        "level": 3,
+        "title": "Delivery Evidence"
+      },
+      {
+        "line": 462,
+        "level": 3,
+        "title": "Transfer Evidence"
+      },
+      {
+        "line": 466,
+        "level": 3,
+        "title": "Authenticated Access"
+      },
+      {
+        "line": 470,
+        "level": 3,
+        "title": "Development Snapshot"
+      },
+      {
+        "line": 474,
+        "level": 3,
+        "title": "Issue Collection"
+      },
+      {
+        "line": 478,
+        "level": 3,
+        "title": "Audit Selection"
+      },
+      {
+        "line": 482,
+        "level": 3,
+        "title": "Closure Findings"
+      },
+      {
+        "line": 486,
+        "level": 3,
+        "title": "Tracker Prefix"
+      },
+      {
+        "line": 490,
+        "level": 3,
+        "title": "Tracker Number"
+      },
+      {
+        "line": 494,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 498,
+        "level": 3,
+        "title": "Issue Body"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/lane.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Lane"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Read Lane Assignments"
+      },
+      {
+        "line": 18,
+        "level": 3,
+        "title": "Write Lane Assignments"
+      },
+      {
+        "line": 29,
+        "level": 3,
+        "title": "Validate Lane Unit"
+      },
+      {
+        "line": 42,
+        "level": 3,
+        "title": "Evaluate Lane Admission"
+      },
+      {
+        "line": 58,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 60,
+        "level": 3,
+        "title": "Index"
+      },
+      {
+        "line": 64,
+        "level": 3,
+        "title": "Assignments"
+      },
+      {
+        "line": 68,
+        "level": 3,
+        "title": "Report Label"
+      },
+      {
+        "line": 72,
+        "level": 3,
+        "title": "Epic Body File"
+      },
+      {
+        "line": 76,
+        "level": 3,
+        "title": "Confirmed Map"
+      },
+      {
+        "line": 80,
+        "level": 3,
+        "title": "Output Body"
+      },
+      {
+        "line": 84,
+        "level": 3,
+        "title": "Unit Task Ids"
+      },
+      {
+        "line": 88,
+        "level": 3,
+        "title": "Requested Index"
+      },
+      {
+        "line": 92,
+        "level": 3,
+        "title": "Assignment Read Result"
+      },
+      {
+        "line": 96,
+        "level": 3,
+        "title": "Unit Lane Result"
+      },
+      {
+        "line": 100,
+        "level": 3,
+        "title": "Admission Result"
+      },
+      {
+        "line": 104,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 108,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 110,
+        "level": 3,
+        "title": "Unit Consistency"
+      },
+      {
+        "line": 114,
+        "level": 3,
+        "title": "Admission"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/placement.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Placement"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "List Orphans"
+      },
+      {
+        "line": 16,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 18,
+        "level": 3,
+        "title": "Source"
+      },
+      {
+        "line": 22,
+        "level": 3,
+        "title": "Destination"
+      },
+      {
+        "line": 26,
+        "level": 3,
+        "title": "Disposition"
+      },
+      {
+        "line": 30,
+        "level": 3,
+        "title": "Draft Bodies"
+      },
+      {
+        "line": 34,
+        "level": 3,
+        "title": "Links"
+      },
+      {
+        "line": 38,
+        "level": 3,
+        "title": "Placement Record"
+      },
+      {
+        "line": 49,
+        "level": 3,
+        "title": "Candidate Issues"
+      },
+      {
+        "line": 53,
+        "level": 3,
+        "title": "Destination Work"
+      },
+      {
+        "line": 57,
+        "level": 3,
+        "title": "Placement Inputs"
+      },
+      {
+        "line": 61,
+        "level": 3,
+        "title": "Issue Collection"
+      },
+      {
+        "line": 65,
+        "level": 3,
+        "title": "Confirmed Placement"
+      },
+      {
+        "line": 69,
+        "level": 3,
+        "title": "Rewrite Inputs"
+      },
+      {
+        "line": 73,
+        "level": 3,
+        "title": "Transfer Inputs"
+      },
+      {
+        "line": 77,
+        "level": 3,
+        "title": "Placement Result"
+      },
+      {
+        "line": 81,
+        "level": 3,
+        "title": "Candidate Destinations"
+      },
+      {
+        "line": 85,
+        "level": 3,
+        "title": "Saved Orphan"
+      },
+      {
+        "line": 89,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 93,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 95,
+        "level": 3,
+        "title": "Disposition Conditions"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/plan-change.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Plan Change"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Check Plan Change Autonomy"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Classify Pending Change"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. Provide Allowed Change"
+      },
+      {
+        "line": 19,
+        "level": 4,
+        "title": "3. Provide Held Change"
+      },
+      {
+        "line": 29,
+        "level": 3,
+        "title": "Record Plan Change"
+      },
+      {
+        "line": 33,
+        "level": 4,
+        "title": "1. Record Applied or Held Entry"
+      },
+      {
+        "line": 37,
+        "level": 4,
+        "title": "2. Provide Updated List"
+      },
+      {
+        "line": 41,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 43,
+        "level": 3,
+        "title": "Allowance"
+      },
+      {
+        "line": 47,
+        "level": 3,
+        "title": "Change Kinds"
+      },
+      {
+        "line": 57,
+        "level": 3,
+        "title": "Change List"
+      },
+      {
+        "line": 61,
+        "level": 3,
+        "title": "Entry"
+      },
+      {
+        "line": 65,
+        "level": 3,
+        "title": "Pending Change"
+      },
+      {
+        "line": 69,
+        "level": 3,
+        "title": "Change Details"
+      },
+      {
+        "line": 73,
+        "level": 3,
+        "title": "Autonomy Result"
+      },
+      {
+        "line": 77,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 79,
+        "level": 3,
+        "title": "Held Change"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/planning-record.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Planning Record"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Populate Planning Record"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Prepare Selected Record"
+      },
+      {
+        "line": 15,
+        "level": 5,
+        "title": "New Record"
+      },
+      {
+        "line": 20,
+        "level": 5,
+        "title": "Existing Record"
+      },
+      {
+        "line": 25,
+        "level": 5,
+        "title": "Common Record Conditions"
+      },
+      {
+        "line": 30,
+        "level": 4,
+        "title": "2. Register Supplied Artifacts"
+      },
+      {
+        "line": 36,
+        "level": 4,
+        "title": "3. Provide Populated Planning Record"
+      },
+      {
+        "line": 40,
+        "level": 3,
+        "title": "Publish Planning Record"
+      },
+      {
+        "line": 44,
+        "level": 4,
+        "title": "1. Find Engineering Checkout"
+      },
+      {
+        "line": 48,
+        "level": 4,
+        "title": "2. Publish Planning Files"
+      },
+      {
+        "line": 54,
+        "level": 4,
+        "title": "3. Provide Published Planning Record"
+      },
+      {
+        "line": 58,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 60,
+        "level": 3,
+        "title": "Find Engineering Worktree"
+      },
+      {
+        "line": 70,
+        "level": 3,
+        "title": "Commit Planning Record"
+      },
+      {
+        "line": 91,
+        "level": 3,
+        "title": "Add Planning Record"
+      },
+      {
+        "line": 107,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 109,
+        "level": 3,
+        "title": "Template"
+      },
+      {
+        "line": 133,
+        "level": 3,
+        "title": "Layout"
+      },
+      {
+        "line": 147,
+        "level": 3,
+        "title": "Header"
+      },
+      {
+        "line": 151,
+        "level": 3,
+        "title": "Executive Summary"
+      },
+      {
+        "line": 155,
+        "level": 3,
+        "title": "Artifacts"
+      },
+      {
+        "line": 160,
+        "level": 3,
+        "title": "Links"
+      },
+      {
+        "line": 164,
+        "level": 3,
+        "title": "Record Selection"
+      },
+      {
+        "line": 168,
+        "level": 3,
+        "title": "Planning Folder"
+      },
+      {
+        "line": 172,
+        "level": 3,
+        "title": "Engineering Worktree"
+      },
+      {
+        "line": 176,
+        "level": 3,
+        "title": "Project Checkout"
+      },
+      {
+        "line": 180,
+        "level": 3,
+        "title": "Commit Message File"
+      },
+      {
+        "line": 184,
+        "level": 3,
+        "title": "Publication Result"
+      },
+      {
+        "line": 188,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 190,
+        "level": 3,
+        "title": "Shared Worktree"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/proposal-body.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Proposal Body"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Validate Proposal Body"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Validate Kind Conditions"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. Provide Local Findings"
+      },
+      {
+        "line": 19,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 21,
+        "level": 3,
+        "title": "Template"
+      },
+      {
+        "line": 48,
+        "level": 3,
+        "title": "Titles"
+      },
+      {
+        "line": 54,
+        "level": 3,
+        "title": "Problem"
+      },
+      {
+        "line": 60,
+        "level": 3,
+        "title": "Goal"
+      },
+      {
+        "line": 65,
+        "level": 3,
+        "title": "Non-Goals"
+      },
+      {
+        "line": 70,
+        "level": 3,
+        "title": "Sections"
+      },
+      {
+        "line": 74,
+        "level": 3,
+        "title": "Proposal Context"
+      },
+      {
+        "line": 78,
+        "level": 3,
+        "title": "Proposal Record"
+      },
+      {
+        "line": 82,
+        "level": 3,
+        "title": "Output Body"
+      },
+      {
+        "line": 86,
+        "level": 3,
+        "title": "Validation Findings"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/pull-request-body.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Pull Request Body"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Populate Review Body"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Populate Base Review"
+      },
+      {
+        "line": 16,
+        "level": 4,
+        "title": "2. Account for Task Merge"
+      },
+      {
+        "line": 23,
+        "level": 4,
+        "title": "3. Provide Updated Body"
+      },
+      {
+        "line": 27,
+        "level": 3,
+        "title": "Repair Test Plan"
+      },
+      {
+        "line": 31,
+        "level": 4,
+        "title": "1. Convert Current Plan"
+      },
+      {
+        "line": 35,
+        "level": 4,
+        "title": "2. Inspect Preserved Coverage"
+      },
+      {
+        "line": 39,
+        "level": 4,
+        "title": "3. Verify Retained Evidence"
+      },
+      {
+        "line": 43,
+        "level": 4,
+        "title": "4. Provide Plan Findings"
+      },
+      {
+        "line": 47,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 49,
+        "level": 3,
+        "title": "Convert Test Plan"
+      },
+      {
+        "line": 60,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 62,
+        "level": 3,
+        "title": "Template"
+      },
+      {
+        "line": 93,
+        "level": 3,
+        "title": "Titles"
+      },
+      {
+        "line": 102,
+        "level": 3,
+        "title": "Review Body"
+      },
+      {
+        "line": 113,
+        "level": 3,
+        "title": "Test Plan"
+      },
+      {
+        "line": 132,
+        "level": 3,
+        "title": "Change Evidence"
+      },
+      {
+        "line": 136,
+        "level": 3,
+        "title": "Current Body"
+      },
+      {
+        "line": 140,
+        "level": 3,
+        "title": "Pull Request Record"
+      },
+      {
+        "line": 144,
+        "level": 3,
+        "title": "Overview URL"
+      },
+      {
+        "line": 148,
+        "level": 3,
+        "title": "Output Body"
+      },
+      {
+        "line": 152,
+        "level": 3,
+        "title": "Unresolved Evidence"
+      },
+      {
+        "line": 156,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 160,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 162,
+        "level": 3,
+        "title": "Test Coverage"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/pull-request.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Pull Request"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Merge Delivery Pull Request"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Read Target Review Requirements"
+      },
+      {
+        "line": 20,
+        "level": 4,
+        "title": "2. Merge Approved Delivery"
+      },
+      {
+        "line": 24,
+        "level": 5,
+        "title": "Task Merge"
+      },
+      {
+        "line": 28,
+        "level": 5,
+        "title": "Epic Merge"
+      },
+      {
+        "line": 32,
+        "level": 5,
+        "title": "Mutation Outcome"
+      },
+      {
+        "line": 40,
+        "level": 4,
+        "title": "3. Confirm Delivery Merge"
+      },
+      {
+        "line": 47,
+        "level": 3,
+        "title": "Access Development Links"
+      },
+      {
+        "line": 51,
+        "level": 4,
+        "title": "1. Read Complete Development Relation"
+      },
+      {
+        "line": 57,
+        "level": 4,
+        "title": "2. Edit Authorized Development Relation"
+      },
+      {
+        "line": 67,
+        "level": 4,
+        "title": "3. Provide Verified Relation"
+      },
+      {
+        "line": 71,
+        "level": 3,
+        "title": "Fetch Pull Request Issue Links"
+      },
+      {
+        "line": 75,
+        "level": 4,
+        "title": "1. Capture Complete Issue Links"
+      },
+      {
+        "line": 79,
+        "level": 4,
+        "title": "2. Require Complete Relation Evidence"
+      },
+      {
+        "line": 83,
+        "level": 4,
+        "title": "3. Refresh Changed Link Snapshot"
+      },
+      {
+        "line": 87,
+        "level": 4,
+        "title": "4. Provide Complete Snapshot"
+      },
+      {
+        "line": 91,
+        "level": 3,
+        "title": "Link Pull Request to Issue"
+      },
+      {
+        "line": 95,
+        "level": 4,
+        "title": "1. Add Development Relation"
+      },
+      {
+        "line": 99,
+        "level": 4,
+        "title": "2. Require Verified Edit"
+      },
+      {
+        "line": 103,
+        "level": 4,
+        "title": "3. Refresh Issue-Link Snapshot"
+      },
+      {
+        "line": 107,
+        "level": 4,
+        "title": "4. Provide Relation Evidence"
+      },
+      {
+        "line": 111,
+        "level": 3,
+        "title": "Fetch All Delivery Pull Requests"
+      },
+      {
+        "line": 115,
+        "level": 4,
+        "title": "1. Create Fresh Pull Collection"
+      },
+      {
+        "line": 119,
+        "level": 4,
+        "title": "2. Stop on Initial Failure"
+      },
+      {
+        "line": 123,
+        "level": 4,
+        "title": "3. Append Remaining Repositories"
+      },
+      {
+        "line": 127,
+        "level": 4,
+        "title": "4. Fetch Plan-Linked Pull Requests"
+      },
+      {
+        "line": 131,
+        "level": 4,
+        "title": "5. Report Incomplete Fetch"
+      },
+      {
+        "line": 135,
+        "level": 4,
+        "title": "6. Provide Complete Pull Collection"
+      },
+      {
+        "line": 139,
+        "level": 3,
+        "title": "Read Initiative Pull Requests"
+      },
+      {
+        "line": 143,
+        "level": 4,
+        "title": "1. Fetch Initiative-Prefixed Pull Requests"
+      },
+      {
+        "line": 147,
+        "level": 4,
+        "title": "2. Fetch All Plan-Linked Pull Requests"
+      },
+      {
+        "line": 151,
+        "level": 4,
+        "title": "3. Provide Initiative Pull Collection"
+      },
+      {
+        "line": 155,
+        "level": 3,
+        "title": "Read Pull Request State"
+      },
+      {
+        "line": 159,
+        "level": 4,
+        "title": "1. Save Complete Pull Response"
+      },
+      {
+        "line": 163,
+        "level": 4,
+        "title": "2. Fetch Requested Supporting Records"
+      },
+      {
+        "line": 167,
+        "level": 4,
+        "title": "3. Provide Requested Pull Records"
+      },
+      {
+        "line": 171,
+        "level": 3,
+        "title": "Publish Pull Request"
+      },
+      {
+        "line": 175,
+        "level": 4,
+        "title": "1. Create Delivery Pull Request"
+      },
+      {
+        "line": 182,
+        "level": 4,
+        "title": "2. Update Selected Pull Fields"
+      },
+      {
+        "line": 186,
+        "level": 4,
+        "title": "3. Read Saved Pull State"
+      },
+      {
+        "line": 190,
+        "level": 4,
+        "title": "4. Provide Saved Pull Record"
+      },
+      {
+        "line": 194,
+        "level": 3,
+        "title": "Merge Task Pull Requests"
+      },
+      {
+        "line": 198,
+        "level": 4,
+        "title": "1. Confirm Repository and Base"
+      },
+      {
+        "line": 202,
+        "level": 4,
+        "title": "2. Merge Verified Task Pull"
+      },
+      {
+        "line": 214,
+        "level": 4,
+        "title": "3. Confirm Task Merge Result"
+      },
+      {
+        "line": 219,
+        "level": 3,
+        "title": "Fetch Merge Readiness"
+      },
+      {
+        "line": 223,
+        "level": 4,
+        "title": "1. Read Current Pull Head"
+      },
+      {
+        "line": 228,
+        "level": 4,
+        "title": "2. Read Current Target Requirements"
+      },
+      {
+        "line": 239,
+        "level": 4,
+        "title": "3. Read Literal Head Evidence"
+      },
+      {
+        "line": 252,
+        "level": 4,
+        "title": "4. Confirm Stable Pull Head"
+      },
+      {
+        "line": 258,
+        "level": 3,
+        "title": "Hold Epic Review"
+      },
+      {
+        "line": 262,
+        "level": 4,
+        "title": "1. Mark Open Review Draft"
+      },
+      {
+        "line": 266,
+        "level": 4,
+        "title": "2. Confirm Review Draft State"
+      },
+      {
+        "line": 270,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 272,
+        "level": 3,
+        "title": "Retarget Pull Request"
+      },
+      {
+        "line": 283,
+        "level": 3,
+        "title": "Retitle Pull Request"
+      },
+      {
+        "line": 291,
+        "level": 3,
+        "title": "Open Task Pull Request"
+      },
+      {
+        "line": 308,
+        "level": 3,
+        "title": "Open Epic Pull Request"
+      },
+      {
+        "line": 326,
+        "level": 3,
+        "title": "Merge Pull Request"
+      },
+      {
+        "line": 343,
+        "level": 3,
+        "title": "Patch Pull Request Body"
+      },
+      {
+        "line": 353,
+        "level": 3,
+        "title": "Find Review Pull Request"
+      },
+      {
+        "line": 361,
+        "level": 3,
+        "title": "Submit Epic Merge"
+      },
+      {
+        "line": 377,
+        "level": 3,
+        "title": "Read Merge Result"
+      },
+      {
+        "line": 386,
+        "level": 3,
+        "title": "Set Development Link"
+      },
+      {
+        "line": 407,
+        "level": 3,
+        "title": "Remove Development Link"
+      },
+      {
+        "line": 427,
+        "level": 3,
+        "title": "Capture Pull Request Links"
+      },
+      {
+        "line": 449,
+        "level": 3,
+        "title": "Save Pull Request Snapshot"
+      },
+      {
+        "line": 457,
+        "level": 3,
+        "title": "Fetch Pull Request Reviews"
+      },
+      {
+        "line": 465,
+        "level": 3,
+        "title": "Fetch Initiative Pull Requests"
+      },
+      {
+        "line": 478,
+        "level": 3,
+        "title": "Fetch Linked Pull Requests"
+      },
+      {
+        "line": 499,
+        "level": 3,
+        "title": "Fetch Repository Delivery Pull Requests"
+      },
+      {
+        "line": 512,
+        "level": 3,
+        "title": "Append Repository Delivery Pull Requests"
+      },
+      {
+        "line": 525,
+        "level": 3,
+        "title": "Fetch Pull Request Files"
+      },
+      {
+        "line": 536,
+        "level": 3,
+        "title": "Fetch Head Check Runs"
+      },
+      {
+        "line": 544,
+        "level": 3,
+        "title": "Fetch Head Status"
+      },
+      {
+        "line": 552,
+        "level": 3,
+        "title": "Mark Review Ready"
+      },
+      {
+        "line": 571,
+        "level": 3,
+        "title": "Mark Review Draft"
+      },
+      {
+        "line": 579,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 581,
+        "level": 3,
+        "title": "State"
+      },
+      {
+        "line": 585,
+        "level": 3,
+        "title": "Scope"
+      },
+      {
+        "line": 589,
+        "level": 3,
+        "title": "Issue Links"
+      },
+      {
+        "line": 601,
+        "level": 3,
+        "title": "Identity"
+      },
+      {
+        "line": 605,
+        "level": 3,
+        "title": "Kind"
+      },
+      {
+        "line": 609,
+        "level": 3,
+        "title": "Verified Head"
+      },
+      {
+        "line": 613,
+        "level": 3,
+        "title": "Target Requirements"
+      },
+      {
+        "line": 617,
+        "level": 3,
+        "title": "Readiness Evidence"
+      },
+      {
+        "line": 621,
+        "level": 3,
+        "title": "Repository Prerequisite"
+      },
+      {
+        "line": 625,
+        "level": 3,
+        "title": "Merge Authorization"
+      },
+      {
+        "line": 629,
+        "level": 3,
+        "title": "Merge Result"
+      },
+      {
+        "line": 633,
+        "level": 3,
+        "title": "Merge Response"
+      },
+      {
+        "line": 637,
+        "level": 3,
+        "title": "Merge State"
+      },
+      {
+        "line": 641,
+        "level": 3,
+        "title": "Link Request"
+      },
+      {
+        "line": 645,
+        "level": 3,
+        "title": "Issue Identity"
+      },
+      {
+        "line": 649,
+        "level": 3,
+        "title": "Removal Decision"
+      },
+      {
+        "line": 653,
+        "level": 3,
+        "title": "Pull Request Records"
+      },
+      {
+        "line": 657,
+        "level": 3,
+        "title": "Issue-Link Snapshot"
+      },
+      {
+        "line": 661,
+        "level": 3,
+        "title": "Link-Snapshot Path"
+      },
+      {
+        "line": 665,
+        "level": 3,
+        "title": "Development Relation"
+      },
+      {
+        "line": 669,
+        "level": 3,
+        "title": "Repository List"
+      },
+      {
+        "line": 673,
+        "level": 3,
+        "title": "Issue Records"
+      },
+      {
+        "line": 677,
+        "level": 3,
+        "title": "Collection Path"
+      },
+      {
+        "line": 681,
+        "level": 3,
+        "title": "Initiative Prefix"
+      },
+      {
+        "line": 685,
+        "level": 3,
+        "title": "Output Files"
+      },
+      {
+        "line": 689,
+        "level": 3,
+        "title": "Record Selection"
+      },
+      {
+        "line": 693,
+        "level": 3,
+        "title": "Pull Request Record"
+      },
+      {
+        "line": 697,
+        "level": 3,
+        "title": "Changed Paths"
+      },
+      {
+        "line": 701,
+        "level": 3,
+        "title": "Reviews"
+      },
+      {
+        "line": 705,
+        "level": 3,
+        "title": "Body File"
+      },
+      {
+        "line": 709,
+        "level": 3,
+        "title": "Title"
+      },
+      {
+        "line": 713,
+        "level": 3,
+        "title": "Head Branch"
+      },
+      {
+        "line": 717,
+        "level": 3,
+        "title": "Base Branch"
+      },
+      {
+        "line": 721,
+        "level": 3,
+        "title": "Selected Changes"
+      },
+      {
+        "line": 725,
+        "level": 3,
+        "title": "Review Number"
+      },
+      {
+        "line": 729,
+        "level": 3,
+        "title": "Head Checks"
+      },
+      {
+        "line": 733,
+        "level": 3,
+        "title": "Head Status"
+      },
+      {
+        "line": 737,
+        "level": 3,
+        "title": "Published Reviews"
+      },
+      {
+        "line": 741,
+        "level": 3,
+        "title": "Epic Readiness"
+      },
+      {
+        "line": 745,
+        "level": 3,
+        "title": "Review State"
+      },
+      {
+        "line": 749,
+        "level": 3,
+        "title": "Node Metadata"
+      },
+      {
+        "line": 753,
+        "level": 3,
+        "title": "Query File"
+      },
+      {
+        "line": 757,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 761,
+        "level": 3,
+        "title": "Repository"
+      },
+      {
+        "line": 765,
+        "level": 3,
+        "title": "Project Checkout"
+      },
+      {
+        "line": 769,
+        "level": 3,
+        "title": "Unit Checkout"
+      },
+      {
+        "line": 773,
+        "level": 3,
+        "title": "Authenticated Access"
+      },
+      {
+        "line": 777,
+        "level": 3,
+        "title": "Failure"
+      },
+      {
+        "line": 781,
+        "level": 2,
+        "title": "Guidance"
+      },
+      {
+        "line": 783,
+        "level": 3,
+        "title": "Merge Permission"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/repository-graph.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Repository Graph"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Measure Repository Change"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Read Index Status"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. Refresh Absent or Stale Index"
+      },
+      {
+        "line": 21,
+        "level": 4,
+        "title": "3. Measure Change Surface"
+      },
+      {
+        "line": 25,
+        "level": 4,
+        "title": "4. Measure Changed Symbols"
+      },
+      {
+        "line": 29,
+        "level": 4,
+        "title": "5. Measure Reported Flows"
+      },
+      {
+        "line": 33,
+        "level": 4,
+        "title": "6. Check Response Freshness"
+      },
+      {
+        "line": 37,
+        "level": 5,
+        "title": "When the Index Is Behind"
+      },
+      {
+        "line": 45,
+        "level": 4,
+        "title": "7. Provide Current Measurements"
+      },
+      {
+        "line": 49,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 51,
+        "level": 3,
+        "title": "Index Status"
+      },
+      {
+        "line": 63,
+        "level": 3,
+        "title": "Index Repository"
+      },
+      {
+        "line": 75,
+        "level": 3,
+        "title": "Change Surface"
+      },
+      {
+        "line": 87,
+        "level": 3,
+        "title": "Symbol Context"
+      },
+      {
+        "line": 97,
+        "level": 3,
+        "title": "Flow Trace"
+      },
+      {
+        "line": 107,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 109,
+        "level": 3,
+        "title": "Revision"
+      },
+      {
+        "line": 113,
+        "level": 3,
+        "title": "Freshness"
+      },
+      {
+        "line": 117,
+        "level": 3,
+        "title": "Changed Symbols"
+      },
+      {
+        "line": 121,
+        "level": 3,
+        "title": "Symbol Relationships"
+      },
+      {
+        "line": 125,
+        "level": 3,
+        "title": "Flow Traces"
+      },
+      {
+        "line": 129,
+        "level": 3,
+        "title": "Review Checkout"
+      },
+      {
+        "line": 133,
+        "level": 3,
+        "title": "Requested Revision"
+      },
+      {
+        "line": 137,
+        "level": 3,
+        "title": "Base Branch"
+      },
+      {
+        "line": 141,
+        "level": 3,
+        "title": "Symbol Identity"
+      },
+      {
+        "line": 145,
+        "level": 3,
+        "title": "Flow Identity"
+      },
+      {
+        "line": 149,
+        "level": 3,
+        "title": "Graph Measurements"
+      },
+      {
+        "line": 153,
+        "level": 3,
+        "title": "Index State"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/repository-labels.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Repository Labels"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Ensure Repository Labels"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Read Repository Labels"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. Compare Required Names"
+      },
+      {
+        "line": 19,
+        "level": 4,
+        "title": "3. Create Missing Labels"
+      },
+      {
+        "line": 23,
+        "level": 4,
+        "title": "4. Provide Available Labels"
+      },
+      {
+        "line": 27,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 29,
+        "level": 3,
+        "title": "List Labels"
+      },
+      {
+        "line": 39,
+        "level": 3,
+        "title": "Create Label"
+      },
+      {
+        "line": 54,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 56,
+        "level": 3,
+        "title": "Label Identity"
+      },
+      {
+        "line": 60,
+        "level": 3,
+        "title": "Repository"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/review-finding.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Review Finding"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Report Review Finding"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Populate Verified Findings"
+      },
+      {
+        "line": 24,
+        "level": 5,
+        "title": "Verified Finding Set"
+      },
+      {
+        "line": 29,
+        "level": 4,
+        "title": "2. Resolve Pending Decisions"
+      },
+      {
+        "line": 36,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 38,
+        "level": 3,
+        "title": "Finding Content"
+      },
+      {
+        "line": 42,
+        "level": 3,
+        "title": "Decision State"
+      },
+      {
+        "line": 46,
+        "level": 3,
+        "title": "Finding Evidence"
+      },
+      {
+        "line": 50,
+        "level": 3,
+        "title": "Finding Set"
+      },
+      {
+        "line": 54,
+        "level": 3,
+        "title": "Finding Result"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/standalone-body.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Standalone Body"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Populate Standalone Body"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Populate Standalone Template"
+      },
+      {
+        "line": 20,
+        "level": 4,
+        "title": "2. Provide Populated Standalone Body"
+      },
+      {
+        "line": 24,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 26,
+        "level": 3,
+        "title": "Template"
+      },
+      {
+        "line": 54,
+        "level": 3,
+        "title": "Titles"
+      },
+      {
+        "line": 59,
+        "level": 3,
+        "title": "Sections"
+      },
+      {
+        "line": 63,
+        "level": 3,
+        "title": "Issue Context"
+      },
+      {
+        "line": 67,
+        "level": 3,
+        "title": "Current Body"
+      },
+      {
+        "line": 71,
+        "level": 3,
+        "title": "Confirmed Boundary"
+      },
+      {
+        "line": 75,
+        "level": 3,
+        "title": "Output Body"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/standup-report.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Standup Report"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Compose Standup Report"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Require Complete Link Snapshot"
+      },
+      {
+        "line": 15,
+        "level": 4,
+        "title": "2. Render Window Progress"
+      },
+      {
+        "line": 19,
+        "level": 4,
+        "title": "3. Provide Unresolved Initiatives"
+      },
+      {
+        "line": 23,
+        "level": 4,
+        "title": "4. Write Management Paragraph"
+      },
+      {
+        "line": 28,
+        "level": 4,
+        "title": "5. Render Final Report"
+      },
+      {
+        "line": 32,
+        "level": 4,
+        "title": "6. Provide Report Findings"
+      },
+      {
+        "line": 37,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 39,
+        "level": 3,
+        "title": "Summarise Progress"
+      },
+      {
+        "line": 61,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 63,
+        "level": 3,
+        "title": "Scope"
+      },
+      {
+        "line": 69,
+        "level": 3,
+        "title": "Sections"
+      },
+      {
+        "line": 91,
+        "level": 3,
+        "title": "Management Paragraph"
+      },
+      {
+        "line": 95,
+        "level": 3,
+        "title": "Unresolved Evidence"
+      },
+      {
+        "line": 99,
+        "level": 3,
+        "title": "Report Selection"
+      },
+      {
+        "line": 103,
+        "level": 3,
+        "title": "Initiative Records"
+      },
+      {
+        "line": 107,
+        "level": 3,
+        "title": "Output Paths"
+      },
+      {
+        "line": 111,
+        "level": 3,
+        "title": "Management File"
+      },
+      {
+        "line": 115,
+        "level": 3,
+        "title": "Report Result"
+      },
+      {
+        "line": 119,
+        "level": 3,
+        "title": "Board Items"
+      },
+      {
+        "line": 123,
+        "level": 3,
+        "title": "Pull Request Records"
+      },
+      {
+        "line": 127,
+        "level": 3,
+        "title": "Issue Link Snapshot"
+      },
+      {
+        "line": 131,
+        "level": 3,
+        "title": "Workspace"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/task-body.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Task Body"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Sync Task Issue"
+      },
+      {
+        "line": 25,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 27,
+        "level": 3,
+        "title": "Template"
+      },
+      {
+        "line": 55,
+        "level": 3,
+        "title": "Titles"
+      },
+      {
+        "line": 61,
+        "level": 3,
+        "title": "Open Questions"
+      },
+      {
+        "line": 67,
+        "level": 3,
+        "title": "Acceptance Criteria"
+      },
+      {
+        "line": 73,
+        "level": 3,
+        "title": "Sections"
+      },
+      {
+        "line": 78,
+        "level": 3,
+        "title": "Task Record"
+      },
+      {
+        "line": 82,
+        "level": 3,
+        "title": "Pull Request Records"
+      },
+      {
+        "line": 86,
+        "level": 3,
+        "title": "Issue Links"
+      },
+      {
+        "line": 90,
+        "level": 3,
+        "title": "Delivery Selection"
+      },
+      {
+        "line": 96,
+        "level": 3,
+        "title": "Output Body"
+      },
+      {
+        "line": 100,
+        "level": 3,
+        "title": "Delivery Findings"
+      },
+      {
+        "line": 104,
+        "level": 3,
+        "title": "Workspace"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/work-item.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Work Item"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Populate Work Item"
+      },
+      {
+        "line": 11,
+        "level": 4,
+        "title": "1. Populate Work Item File"
+      },
+      {
+        "line": 18,
+        "level": 4,
+        "title": "2. Provide Populated Work Item"
+      },
+      {
+        "line": 22,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 24,
+        "level": 3,
+        "title": "Template"
+      },
+      {
+        "line": 52,
+        "level": 3,
+        "title": "Identity"
+      },
+      {
+        "line": 56,
+        "level": 3,
+        "title": "Component"
+      },
+      {
+        "line": 65,
+        "level": 3,
+        "title": "Sections"
+      },
+      {
+        "line": 72,
+        "level": 3,
+        "title": "Task Context"
+      },
+      {
+        "line": 76,
+        "level": 3,
+        "title": "Work Item File"
+      }
+    ]
+  },
+  {
+    "file": "configuration.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Configuration"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Boards"
+      },
+      {
+        "line": 7,
+        "level": 3,
+        "title": "Theme Boards"
+      },
+      {
+        "line": 11,
+        "level": 3,
+        "title": "Proposals Board"
+      },
+      {
+        "line": 15,
+        "level": 2,
+        "title": "Themes"
+      },
+      {
+        "line": 27,
+        "level": 2,
+        "title": "Planning Records"
+      },
+      {
+        "line": 31,
+        "level": 2,
+        "title": "Standup"
+      }
+    ]
+  },
+  {
+    "file": "conventions.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Conventions"
+      }
+    ]
+  },
+  {
+    "file": "guidelines.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Guidelines"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "SOLID"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "Single Responsibility"
+      },
+      {
+        "line": 16,
+        "level": 3,
+        "title": "Open-Closed"
+      },
+      {
+        "line": 23,
+        "level": 3,
+        "title": "Liskov Substitution"
+      },
+      {
+        "line": 28,
+        "level": 3,
+        "title": "Interface Segregation"
+      },
+      {
+        "line": 37,
+        "level": 3,
+        "title": "Dependency Inversion"
+      },
+      {
+        "line": 44,
+        "level": 3,
+        "title": "Encapsulation"
+      },
+      {
+        "line": 51,
+        "level": 3,
+        "title": "Field Boundaries"
+      },
+      {
+        "line": 60,
+        "level": 3,
+        "title": "Policy Review"
+      },
+      {
+        "line": 67,
+        "level": 2,
+        "title": "Titles"
+      },
+      {
+        "line": 76,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 104,
+        "level": 2,
+        "title": "Prose"
+      },
+      {
+        "line": 125,
+        "level": 2,
+        "title": "Operations"
+      },
+      {
+        "line": 155,
+        "level": 2,
+        "title": "Modes"
+      },
+      {
+        "line": 193,
+        "level": 2,
+        "title": "Protocols"
+      },
+      {
+        "line": 216,
+        "level": 2,
+        "title": "Artifacts"
+      },
+      {
+        "line": 265,
+        "level": 2,
+        "title": "References"
+      },
+      {
+        "line": 280,
+        "level": 2,
+        "title": "Entry Point"
+      },
+      {
+        "line": 291,
+        "level": 2,
+        "title": "Scripts"
+      },
+      {
+        "line": 300,
+        "level": 2,
+        "title": "Progressive Disclosure"
+      },
+      {
+        "line": 313,
+        "level": 2,
+        "title": "Changes"
+      }
+    ]
+  },
+  {
+    "file": "modes/advance-mode.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Advance Mode"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Select the Board"
+      },
+      {
+        "line": 16,
+        "level": 3,
+        "title": "2. Sync"
+      },
+      {
+        "line": 23,
+        "level": 3,
+        "title": "3. Fetch"
+      },
+      {
+        "line": 31,
+        "level": 3,
+        "title": "4. Plan"
+      },
+      {
+        "line": 37,
+        "level": 3,
+        "title": "5. Resolve Missing Evidence"
+      },
+      {
+        "line": 49,
+        "level": 3,
+        "title": "6. Resolve Queue Decisions"
+      },
+      {
+        "line": 83,
+        "level": 3,
+        "title": "7. Write"
+      },
+      {
+        "line": 92,
+        "level": 3,
+        "title": "8. Report"
+      },
+      {
+        "line": 96,
+        "level": 2,
+        "title": "Outcomes"
+      }
+    ]
+  },
+  {
+    "file": "modes/align-mode.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Align Mode"
+      },
+      {
+        "line": 9,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 11,
+        "level": 3,
+        "title": "1. Discover Every Issue"
+      },
+      {
+        "line": 18,
+        "level": 3,
+        "title": "2. Fetch Each Issue"
+      },
+      {
+        "line": 26,
+        "level": 3,
+        "title": "3. Validate the Bodies"
+      },
+      {
+        "line": 32,
+        "level": 4,
+        "title": "Reference Visibility"
+      },
+      {
+        "line": 46,
+        "level": 4,
+        "title": "Validation Findings"
+      },
+      {
+        "line": 50,
+        "level": 3,
+        "title": "4. Publish Mechanical Fixes"
+      },
+      {
+        "line": 56,
+        "level": 3,
+        "title": "5. Review the Goal"
+      },
+      {
+        "line": 62,
+        "level": 3,
+        "title": "6. Resolve Content Decisions"
+      },
+      {
+        "line": 70,
+        "level": 4,
+        "title": "Standalone Boundary"
+      },
+      {
+        "line": 78,
+        "level": 4,
+        "title": "Other Content Corrections"
+      },
+      {
+        "line": 99,
+        "level": 3,
+        "title": "7. Check Criteria"
+      },
+      {
+        "line": 111,
+        "level": 3,
+        "title": "8. Check Dependencies"
+      },
+      {
+        "line": 121,
+        "level": 3,
+        "title": "9. Coverage"
+      },
+      {
+        "line": 165,
+        "level": 3,
+        "title": "10. Branches"
+      },
+      {
+        "line": 184,
+        "level": 3,
+        "title": "11. Unplaced Task Issues"
+      },
+      {
+        "line": 194,
+        "level": 3,
+        "title": "12. Review Pull Requests"
+      },
+      {
+        "line": 201,
+        "level": 3,
+        "title": "13. Re-Run"
+      },
+      {
+        "line": 213,
+        "level": 2,
+        "title": "Outcomes"
+      }
+    ]
+  },
+  {
+    "file": "modes/deliver-mode.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Deliver Mode"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Select"
+      },
+      {
+        "line": 15,
+        "level": 3,
+        "title": "2. Establish the Authorization"
+      },
+      {
+        "line": 26,
+        "level": 3,
+        "title": "3. Coordinate Delivery"
+      },
+      {
+        "line": 32,
+        "level": 3,
+        "title": "4. Report"
+      },
+      {
+        "line": 39,
+        "level": 3,
+        "title": "Refill Delivery Capacity"
+      },
+      {
+        "line": 43,
+        "level": 4,
+        "title": "1. Advance"
+      },
+      {
+        "line": 52,
+        "level": 4,
+        "title": "2. Fetch"
+      },
+      {
+        "line": 61,
+        "level": 4,
+        "title": "3. Survey"
+      },
+      {
+        "line": 80,
+        "level": 5,
+        "title": "Requested Hold Release"
+      },
+      {
+        "line": 84,
+        "level": 6,
+        "title": "Task Row Hold"
+      },
+      {
+        "line": 88,
+        "level": 6,
+        "title": "Hot-Fix Hold"
+      },
+      {
+        "line": 99,
+        "level": 5,
+        "title": "Survey Continuation"
+      },
+      {
+        "line": 105,
+        "level": 4,
+        "title": "4. Record Merge Results"
+      },
+      {
+        "line": 114,
+        "level": 4,
+        "title": "5. Select the Batch"
+      },
+      {
+        "line": 125,
+        "level": 4,
+        "title": "6. Start Units"
+      },
+      {
+        "line": 134,
+        "level": 4,
+        "title": "7. Await Progress"
+      },
+      {
+        "line": 143,
+        "level": 3,
+        "title": "Run Delivery Session"
+      },
+      {
+        "line": 147,
+        "level": 4,
+        "title": "1. Read the Brief"
+      },
+      {
+        "line": 154,
+        "level": 4,
+        "title": "2. Confirm the Reservation"
+      },
+      {
+        "line": 158,
+        "level": 4,
+        "title": "3. Plan"
+      },
+      {
+        "line": 164,
+        "level": 4,
+        "title": "4. Link the Work Items"
+      },
+      {
+        "line": 170,
+        "level": 4,
+        "title": "5. Match the Tests to the Criteria"
+      },
+      {
+        "line": 176,
+        "level": 4,
+        "title": "6. Implement"
+      },
+      {
+        "line": 188,
+        "level": 4,
+        "title": "7. Open the Pull Request"
+      },
+      {
+        "line": 210,
+        "level": 4,
+        "title": "8. Fix the Debt"
+      },
+      {
+        "line": 218,
+        "level": 4,
+        "title": "9. Review a Hot-Fix"
+      },
+      {
+        "line": 226,
+        "level": 5,
+        "title": "Verify Hot-Fix Readiness"
+      },
+      {
+        "line": 245,
+        "level": 5,
+        "title": "Restore Hot-Fix Draft"
+      },
+      {
+        "line": 255,
+        "level": 5,
+        "title": "Repair Hot-Fix Findings"
+      },
+      {
+        "line": 260,
+        "level": 4,
+        "title": "10. Merge"
+      },
+      {
+        "line": 268,
+        "level": 4,
+        "title": "11. Arising Issues"
+      },
+      {
+        "line": 275,
+        "level": 4,
+        "title": "12. Report the Changes"
+      },
+      {
+        "line": 282,
+        "level": 2,
+        "title": "Outcomes"
+      },
+      {
+        "line": 301,
+        "level": 2,
+        "title": "Guidance"
+      }
+    ]
+  },
+  {
+    "file": "modes/hoist-mode.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Hoist Mode"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Fetch"
+      },
+      {
+        "line": 13,
+        "level": 3,
+        "title": "2. List Candidates"
+      },
+      {
+        "line": 19,
+        "level": 3,
+        "title": "3. Triage"
+      },
+      {
+        "line": 23,
+        "level": 4,
+        "title": "Placement Options"
+      },
+      {
+        "line": 34,
+        "level": 4,
+        "title": "Option Order"
+      },
+      {
+        "line": 38,
+        "level": 3,
+        "title": "4. Decide Each Placement"
+      },
+      {
+        "line": 52,
+        "level": 3,
+        "title": "5. Apply"
+      },
+      {
+        "line": 54,
+        "level": 4,
+        "title": "Confirmed Destination"
+      },
+      {
+        "line": 58,
+        "level": 5,
+        "title": "1. Apply Confirmed Destination"
+      },
+      {
+        "line": 62,
+        "level": 6,
+        "title": "Existing Task"
+      },
+      {
+        "line": 69,
+        "level": 6,
+        "title": "New Task"
+      },
+      {
+        "line": 78,
+        "level": 6,
+        "title": "New Epic"
+      },
+      {
+        "line": 85,
+        "level": 6,
+        "title": "New Initiative Destination"
+      },
+      {
+        "line": 90,
+        "level": 6,
+        "title": "Hot-Fix Destination"
+      },
+      {
+        "line": 99,
+        "level": 6,
+        "title": "Leave"
+      },
+      {
+        "line": 103,
+        "level": 5,
+        "title": "2. Retain Saved Placement"
+      },
+      {
+        "line": 107,
+        "level": 4,
+        "title": "Kept or Left Issue"
+      },
+      {
+        "line": 111,
+        "level": 5,
+        "title": "1. Populate Selected Body"
+      },
+      {
+        "line": 115,
+        "level": 6,
+        "title": "Initiative Body"
+      },
+      {
+        "line": 119,
+        "level": 6,
+        "title": "Hot-Fix Body"
+      },
+      {
+        "line": 136,
+        "level": 6,
+        "title": "Standalone Body"
+      },
+      {
+        "line": 140,
+        "level": 6,
+        "title": "Common Body Content"
+      },
+      {
+        "line": 145,
+        "level": 5,
+        "title": "2. Validate and Save Body"
+      },
+      {
+        "line": 151,
+        "level": 5,
+        "title": "3. Settle Hot-fix Status"
+      },
+      {
+        "line": 155,
+        "level": 5,
+        "title": "4. Retain Saved Identity"
+      },
+      {
+        "line": 159,
+        "level": 4,
+        "title": "Transferred Work"
+      },
+      {
+        "line": 163,
+        "level": 5,
+        "title": "1. Transfer Tracked Work"
+      },
+      {
+        "line": 170,
+        "level": 5,
+        "title": "2. Prepare Closure Comment"
+      },
+      {
+        "line": 174,
+        "level": 5,
+        "title": "3. Close Transferred Orphan"
+      },
+      {
+        "line": 189,
+        "level": 4,
+        "title": "Review Continuation"
+      },
+      {
+        "line": 193,
+        "level": 3,
+        "title": "6. Review"
+      },
+      {
+        "line": 204,
+        "level": 3,
+        "title": "7. Report"
+      },
+      {
+        "line": 210,
+        "level": 2,
+        "title": "Outcomes"
+      }
+    ]
+  },
+  {
+    "file": "modes/plan-mode.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Plan Mode"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Take the Proposal"
+      },
+      {
+        "line": 19,
+        "level": 3,
+        "title": "2. Prepare the Planning Record"
+      },
+      {
+        "line": 25,
+        "level": 3,
+        "title": "3. Draft Each Initiative Body"
+      },
+      {
+        "line": 30,
+        "level": 3,
+        "title": "4. Populate the Epics"
+      },
+      {
+        "line": 41,
+        "level": 3,
+        "title": "5. Review the Drafts"
+      },
+      {
+        "line": 61,
+        "level": 3,
+        "title": "6. Publish"
+      },
+      {
+        "line": 84,
+        "level": 3,
+        "title": "7. Keep the Goal Current"
+      },
+      {
+        "line": 106,
+        "level": 3,
+        "title": "8. Prepare Epic Delivery"
+      },
+      {
+        "line": 120,
+        "level": 3,
+        "title": "9. Record Delivered Work"
+      },
+      {
+        "line": 134,
+        "level": 2,
+        "title": "Outcomes"
+      }
+    ]
+  },
+  {
+    "file": "modes/propose-mode.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Propose Mode"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Understand the Problem"
+      },
+      {
+        "line": 16,
+        "level": 3,
+        "title": "2. Gather Evidence"
+      },
+      {
+        "line": 22,
+        "level": 3,
+        "title": "3. Draft the Body"
+      },
+      {
+        "line": 40,
+        "level": 3,
+        "title": "4. Validate"
+      },
+      {
+        "line": 48,
+        "level": 3,
+        "title": "5. Publish"
+      },
+      {
+        "line": 54,
+        "level": 3,
+        "title": "6. Confirm Placement"
+      },
+      {
+        "line": 62,
+        "level": 3,
+        "title": "7. Place"
+      },
+      {
+        "line": 75,
+        "level": 3,
+        "title": "8. Report"
+      },
+      {
+        "line": 79,
+        "level": 2,
+        "title": "Outcomes"
+      }
+    ]
+  },
+  {
+    "file": "modes/revise-mode.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Revise Mode"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Read the Guidelines"
+      },
+      {
+        "line": 13,
+        "level": 3,
+        "title": "2. Understand the Request"
+      },
+      {
+        "line": 19,
+        "level": 3,
+        "title": "3. Work in a Worktree"
+      },
+      {
+        "line": 25,
+        "level": 3,
+        "title": "4. Revise"
+      },
+      {
+        "line": 33,
+        "level": 3,
+        "title": "5. Check Against the Guidelines"
+      },
+      {
+        "line": 45,
+        "level": 3,
+        "title": "6. Verify"
+      },
+      {
+        "line": 54,
+        "level": 3,
+        "title": "7. Deliver"
+      },
+      {
+        "line": 60,
+        "level": 2,
+        "title": "Outcomes"
+      },
+      {
+        "line": 67,
+        "level": 2,
+        "title": "Commands"
+      },
+      {
+        "line": 69,
+        "level": 3,
+        "title": "Run Tests"
+      },
+      {
+        "line": 77,
+        "level": 3,
+        "title": "Check Skill Files"
+      },
+      {
+        "line": 87,
+        "level": 3,
+        "title": "Compare Section Bodies"
+      },
+      {
+        "line": 101,
+        "level": 2,
+        "title": "Fields"
+      },
+      {
+        "line": 103,
+        "level": 3,
+        "title": "Workspace"
+      },
+      {
+        "line": 107,
+        "level": 3,
+        "title": "Skill Directory"
+      },
+      {
+        "line": 111,
+        "level": 3,
+        "title": "Base"
+      },
+      {
+        "line": 115,
+        "level": 3,
+        "title": "Head"
+      },
+      {
+        "line": 119,
+        "level": 3,
+        "title": "Test Result"
+      },
+      {
+        "line": 123,
+        "level": 3,
+        "title": "Skill Check Result"
+      },
+      {
+        "line": 127,
+        "level": 3,
+        "title": "Section Comparison"
+      }
+    ]
+  },
+  {
+    "file": "modes/standup-mode.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Standup Mode"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Select the Scope"
+      },
+      {
+        "line": 16,
+        "level": 3,
+        "title": "2. Bring Delivery Current"
+      },
+      {
+        "line": 20,
+        "level": 4,
+        "title": "Missing Checkpoint"
+      },
+      {
+        "line": 27,
+        "level": 4,
+        "title": "Refresh Selected Initiatives"
+      },
+      {
+        "line": 35,
+        "level": 3,
+        "title": "3. Fetch"
+      },
+      {
+        "line": 43,
+        "level": 3,
+        "title": "4. Compose"
+      },
+      {
+        "line": 47,
+        "level": 3,
+        "title": "5. Resolve Evidence"
+      },
+      {
+        "line": 55,
+        "level": 3,
+        "title": "6. Report"
+      },
+      {
+        "line": 67,
+        "level": 2,
+        "title": "Outcomes"
+      }
+    ]
+  },
+  {
+    "file": "modes/sync-mode.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Sync Mode"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Select"
+      },
+      {
+        "line": 31,
+        "level": 3,
+        "title": "2. Fetch"
+      },
+      {
+        "line": 39,
+        "level": 3,
+        "title": "3. Unnamed Deliveries"
+      },
+      {
+        "line": 49,
+        "level": 3,
+        "title": "4. Match Pull Requests to Tasks"
+      },
+      {
+        "line": 58,
+        "level": 3,
+        "title": "5. Sync Each Task Issue"
+      },
+      {
+        "line": 67,
+        "level": 3,
+        "title": "6. Sync Each Epic"
+      },
+      {
+        "line": 186,
+        "level": 3,
+        "title": "7. Verify"
+      },
+      {
+        "line": 199,
+        "level": 3,
+        "title": "8. Tick"
+      },
+      {
+        "line": 203,
+        "level": 3,
+        "title": "9. Patch"
+      },
+      {
+        "line": 207,
+        "level": 3,
+        "title": "10. Close"
+      },
+      {
+        "line": 222,
+        "level": 3,
+        "title": "11. Sync the Initiative"
+      },
+      {
+        "line": 232,
+        "level": 4,
+        "title": "Save Verified Initiative"
+      },
+      {
+        "line": 236,
+        "level": 4,
+        "title": "Close Complete Initiative"
+      },
+      {
+        "line": 240,
+        "level": 3,
+        "title": "12. Sync the Board"
+      },
+      {
+        "line": 248,
+        "level": 4,
+        "title": "Missing Board"
+      },
+      {
+        "line": 252,
+        "level": 5,
+        "title": "1. Create Absent Proposals Board"
+      },
+      {
+        "line": 256,
+        "level": 5,
+        "title": "2. Create Absent Theme Board"
+      },
+      {
+        "line": 278,
+        "level": 5,
+        "title": "3. Retain Copied Board"
+      },
+      {
+        "line": 282,
+        "level": 4,
+        "title": "Saved Board Delivery"
+      },
+      {
+        "line": 286,
+        "level": 5,
+        "title": "1. Read Current Delivery Evidence"
+      },
+      {
+        "line": 298,
+        "level": 5,
+        "title": "2. Plan Delivery Changes"
+      },
+      {
+        "line": 304,
+        "level": 5,
+        "title": "3. Apply and Confirm Calls"
+      },
+      {
+        "line": 313,
+        "level": 5,
+        "title": "4. Recompute Refreshed Board"
+      },
+      {
+        "line": 320,
+        "level": 5,
+        "title": "5. Retain Confirmed Board Statuses"
+      },
+      {
+        "line": 324,
+        "level": 3,
+        "title": "13. Explain Each Change Entering Review"
+      },
+      {
+        "line": 331,
+        "level": 3,
+        "title": "14. Report"
+      },
+      {
+        "line": 337,
+        "level": 4,
+        "title": "Closure Evidence Audit"
+      },
+      {
+        "line": 352,
+        "level": 4,
+        "title": "Per-Issue Report"
+      },
+      {
+        "line": 356,
+        "level": 2,
+        "title": "Outcomes"
+      }
+    ]
+  },
+  {
+    "file": "modes/understand-mode.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Understand Mode"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Select the Change"
+      },
+      {
+        "line": 16,
+        "level": 3,
+        "title": "2. Explain Each Change"
+      },
+      {
+        "line": 20,
+        "level": 3,
+        "title": "3. Report"
+      },
+      {
+        "line": 24,
+        "level": 2,
+        "title": "Outcomes"
+      }
+    ]
+  },
+  {
+    "file": "protocols/change-overview.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Change Overview"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Prepare the Evidence"
+      },
+      {
+        "line": 14,
+        "level": 4,
+        "title": "Changed Head"
+      },
+      {
+        "line": 20,
+        "level": 4,
+        "title": "Matching Head"
+      },
+      {
+        "line": 27,
+        "level": 4,
+        "title": "Changed Revision"
+      },
+      {
+        "line": 33,
+        "level": 4,
+        "title": "Freshness Result"
+      },
+      {
+        "line": 37,
+        "level": 3,
+        "title": "2. Write the Overview"
+      },
+      {
+        "line": 63,
+        "level": 3,
+        "title": "3. Register the Overview"
+      },
+      {
+        "line": 67,
+        "level": 3,
+        "title": "4. Publish and Link"
+      }
+    ]
+  },
+  {
+    "file": "protocols/epic-integration.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Epic Integration"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Prepare the Evidence"
+      },
+      {
+        "line": 20,
+        "level": 3,
+        "title": "2. Refresh and Validate"
+      },
+      {
+        "line": 27,
+        "level": 4,
+        "title": "Changed Branch Content"
+      },
+      {
+        "line": 33,
+        "level": 4,
+        "title": "Current Review Handoff"
+      },
+      {
+        "line": 48,
+        "level": 3,
+        "title": "3. Merge or Hand Off"
+      },
+      {
+        "line": 54,
+        "level": 4,
+        "title": "Human Handoff"
+      },
+      {
+        "line": 58,
+        "level": 4,
+        "title": "Harness Denial"
+      },
+      {
+        "line": 62,
+        "level": 4,
+        "title": "GitHub Refusal"
+      },
+      {
+        "line": 70,
+        "level": 4,
+        "title": "Confirmed Merge"
+      },
+      {
+        "line": 74,
+        "level": 3,
+        "title": "4. Confirm the Result"
+      }
+    ]
+  },
+  {
+    "file": "protocols/issue-closure.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Issue Closure"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Issue"
+      },
+      {
+        "line": 14,
+        "level": 3,
+        "title": "2. Pull Requests"
+      },
+      {
+        "line": 19,
+        "level": 3,
+        "title": "3. Check Delivery Completion"
+      },
+      {
+        "line": 23,
+        "level": 4,
+        "title": "Epic Completion"
+      },
+      {
+        "line": 38,
+        "level": 4,
+        "title": "Initiative Completion"
+      },
+      {
+        "line": 50,
+        "level": 4,
+        "title": "Completion Result"
+      },
+      {
+        "line": 54,
+        "level": 3,
+        "title": "4. Close"
+      },
+      {
+        "line": 81,
+        "level": 4,
+        "title": "Missing Evidence"
+      },
+      {
+        "line": 87,
+        "level": 4,
+        "title": "Incorrect Link"
+      },
+      {
+        "line": 94,
+        "level": 4,
+        "title": "Closure Result"
+      }
+    ]
+  },
+  {
+    "file": "protocols/issue-delivery.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Issue Delivery"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Hot-Fix"
+      },
+      {
+        "line": 17,
+        "level": 3,
+        "title": "2. Task Issues"
+      },
+      {
+        "line": 23,
+        "level": 3,
+        "title": "3. Epic Rows"
+      },
+      {
+        "line": 31,
+        "level": 3,
+        "title": "4. Coverage Agreement"
+      },
+      {
+        "line": 36,
+        "level": 3,
+        "title": "5. Criteria and Bodies"
+      },
+      {
+        "line": 40,
+        "level": 4,
+        "title": "Remaining Criteria"
+      },
+      {
+        "line": 46,
+        "level": 4,
+        "title": "Body Publication"
+      }
+    ]
+  },
+  {
+    "file": "protocols/review-pull-request.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Review Pull Request"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Find"
+      },
+      {
+        "line": 13,
+        "level": 4,
+        "title": "Missing Review Number"
+      },
+      {
+        "line": 19,
+        "level": 4,
+        "title": "Existing Review"
+      },
+      {
+        "line": 23,
+        "level": 3,
+        "title": "2. Populate"
+      },
+      {
+        "line": 27,
+        "level": 3,
+        "title": "3. Publish"
+      },
+      {
+        "line": 32,
+        "level": 3,
+        "title": "4. Confirm"
+      },
+      {
+        "line": 39,
+        "level": 3,
+        "title": "5. Review the Integration"
+      }
+    ]
+  },
+  {
+    "file": "protocols/task-merge.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Task Merge"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Record a Hot-Fix"
+      },
+      {
+        "line": 17,
+        "level": 3,
+        "title": "2. Read and Record"
+      },
+      {
+        "line": 23,
+        "level": 3,
+        "title": "3. Review"
+      },
+      {
+        "line": 27,
+        "level": 3,
+        "title": "4. Complete When Ready"
+      },
+      {
+        "line": 32,
+        "level": 3,
+        "title": "5. Close the Epic"
+      }
+    ]
+  },
+  {
+    "file": "protocols/unit-dispatch.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Unit Dispatch"
+      },
+      {
+        "line": 7,
+        "level": 2,
+        "title": "Procedure"
+      },
+      {
+        "line": 9,
+        "level": 3,
+        "title": "1. Check Execution Prerequisites"
+      },
+      {
+        "line": 14,
+        "level": 4,
+        "title": "Unit of Rows"
+      },
+      {
+        "line": 20,
+        "level": 3,
+        "title": "2. Publish the Record"
+      },
+      {
+        "line": 29,
+        "level": 3,
+        "title": "3. Hold the Unit"
+      },
+      {
+        "line": 33,
+        "level": 4,
+        "title": "Task Rows"
+      },
+      {
+        "line": 42,
+        "level": 4,
+        "title": "Hot-Fix Unit"
+      },
+      {
+        "line": 47,
+        "level": 5,
+        "title": "New Hot-Fix Unit"
+      },
+      {
+        "line": 55,
+        "level": 5,
+        "title": "Retained Hot-Fix Preparation"
+      },
+      {
+        "line": 59,
+        "level": 5,
+        "title": "Confirmed Hot-Fix Hold"
+      },
+      {
+        "line": 63,
+        "level": 4,
+        "title": "Hold Result"
+      },
+      {
+        "line": 67,
+        "level": 3,
+        "title": "4. Prepare the Session"
+      },
+      {
+        "line": 69,
+        "level": 4,
+        "title": "Unit Checkouts"
+      },
+      {
+        "line": 83,
+        "level": 4,
+        "title": "Delivery Brief"
+      },
+      {
+        "line": 93,
+        "level": 3,
+        "title": "5. Start the Worker"
+      }
+    ]
+  },
+  {
+    "file": "references/requirement-characteristics.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Requirement Characteristics"
+      },
+      {
+        "line": 5,
+        "level": 2,
+        "title": "Individual"
+      },
+      {
+        "line": 28,
+        "level": 2,
+        "title": "A Set"
+      },
+      {
+        "line": 43,
+        "level": 2,
+        "title": "Wording"
+      }
+    ]
+  },
+  {
+    "file": "rules.md",
+    "headings": [
+      {
+        "line": 1,
+        "level": 1,
+        "title": "Rules"
+      },
+      {
+        "line": 12,
+        "level": 2,
+        "title": "Link Roles"
+      }
+    ]
+  }
+]

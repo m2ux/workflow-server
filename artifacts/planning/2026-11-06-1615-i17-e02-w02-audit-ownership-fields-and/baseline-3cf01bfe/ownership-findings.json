@@ -1,0 +1,366 @@
+[
+  {
+    "id": "A01",
+    "status": "confirmed",
+    "guideline": "Single Responsibility / Rule Ownership; Field Boundaries",
+    "subject": "Board-state derivation and write jurisdiction",
+    "evidence": [
+      [
+        "artifacts/board-delivery.md",
+        187,
+        205
+      ],
+      [
+        "scripts/board.py",
+        600,
+        680
+      ],
+      [
+        "scripts/statuses.py",
+        134,
+        159
+      ]
+    ],
+    "problem": "Status Changes is now Guidance, but it combines completion/review/task policies, proposed status derivation and write jurisdiction in Board Delivery. This is a current ownership issue; the earlier Fields placement is resolved.",
+    "owner": "Board Status owns proposed changes and jurisdiction; each subject owns its lifecycle decisions; Board Delivery applies and confirms them.",
+    "components": [
+      "artifacts/board-status.md",
+      "artifacts/board-delivery.md",
+      "artifacts/hotfix.md",
+      "scripts/board.py",
+      "scripts/statuses.py"
+    ],
+    "disposition": "Retain W06/W07/W08 atomic artifact/consumer delivery. Additional script rows and unique criteria must be explicit before dispatch; reuse existing Changes/StatusField functions rather than presume a new CLI."
+  },
+  {
+    "id": "A02",
+    "status": "confirmed",
+    "guideline": "Open-Closed; Dependency Inversion",
+    "subject": "General prose branches on individual kinds",
+    "evidence": [
+      [
+        "modes/deliver-mode.md",
+        87,
+        97
+      ],
+      [
+        "modes/hoist-mode.md",
+        121,
+        153
+      ],
+      [
+        "protocols/unit-dispatch.md",
+        20,
+        60
+      ],
+      [
+        "protocols/issue-delivery.md",
+        9,
+        17
+      ],
+      [
+        "protocols/task-merge.md",
+        9,
+        17
+      ],
+      [
+        "artifacts/delivery-plan.md",
+        41,
+        59
+      ],
+      [
+        "artifacts/pull-request.md",
+        589,
+        598
+      ],
+      [
+        "artifacts/board-queue.md",
+        28,
+        38
+      ]
+    ],
+    "problem": "General delivery, placement, merge and board consumers enumerate hot-fix cases or depend directly on its concrete file. Adding a kind changes the callers.",
+    "owner": "The general family contract and its published kind registration; kind-specific rules stay with the kind.",
+    "components": [
+      "modes/deliver-mode.md",
+      "modes/hoist-mode.md",
+      "modes/align-mode.md",
+      "protocols/unit-dispatch.md",
+      "protocols/issue-delivery.md",
+      "protocols/task-merge.md",
+      "protocols/issue-closure.md",
+      "artifacts/delivery-plan.md",
+      "artifacts/delivery-branches.md",
+      "artifacts/delivery-brief.md",
+      "artifacts/dispatch-batch.md",
+      "artifacts/board-queue.md",
+      "artifacts/board-delivery.md",
+      "artifacts/pull-request.md",
+      "artifacts/agent-review.md",
+      "artifacts/standup-report.md",
+      "artifacts/board.md"
+    ],
+    "disposition": "Refine W03 by exact implementation file and preserve the operation/result interface. The complete kind-mention ledger supplies every current location; a mention alone is not a defect in a kind file or literal example."
+  },
+  {
+    "id": "A03",
+    "status": "confirmed",
+    "guideline": "Open-Closed; Dependency Inversion; Scripts / Kind Modules",
+    "subject": "General script kind dispatch",
+    "evidence": [
+      [
+        "scripts/deliver.py",
+        228,
+        315
+      ],
+      [
+        "scripts/board-queue.py",
+        339,
+        350
+      ],
+      [
+        "scripts/sync.py",
+        1012,
+        1046
+      ],
+      [
+        "scripts/progress.py",
+        398,
+        417
+      ],
+      [
+        "scripts/format.py",
+        430,
+        550
+      ],
+      [
+        "scripts/statuses.py",
+        134,
+        159
+      ],
+      [
+        "scripts/agent_review.py",
+        64,
+        87
+      ],
+      [
+        "scripts/dispatch.py",
+        23,
+        51
+      ],
+      [
+        "scripts/orphans.py",
+        72,
+        95
+      ]
+    ],
+    "problem": "General modules retain kind detection, grammar alternatives, policy exceptions and rendering paths inline. A dedicated hotfix.py exists, but caller switches remain.",
+    "owner": "One existing-kind registration and per-kind modules implementing a common interface; no second registry or speculative command surface.",
+    "components": [
+      "scripts/deliver.py",
+      "scripts/board-queue.py",
+      "scripts/sync.py",
+      "scripts/progress.py",
+      "scripts/format.py",
+      "scripts/statuses.py",
+      "scripts/agent_review.py",
+      "scripts/dispatch.py",
+      "scripts/orphans.py",
+      "scripts/hotfix.py"
+    ],
+    "disposition": "Refine W04 by actual file and interface. API subject direction, git object type, closure finding category and renumbering level are not automatically work-kind violations; their candidate rows are accepted controls."
+  },
+  {
+    "id": "A04",
+    "status": "confirmed",
+    "guideline": "Scripts / Shared Implementation; Single Responsibility",
+    "subject": "Repeated executable rules",
+    "evidence": [
+      [
+        "scripts/board-queue.py",
+        50,
+        60
+      ],
+      [
+        "scripts/deliver.py",
+        118,
+        121
+      ],
+      [
+        "scripts/board.py",
+        104,
+        105
+      ],
+      [
+        "scripts/sync.py",
+        134,
+        140
+      ],
+      [
+        "scripts/statuses.py",
+        53,
+        55
+      ],
+      [
+        "scripts/progress.py",
+        428,
+        433
+      ]
+    ],
+    "problem": "Tag parsing, completed-state tests and issue identity extraction have exact cross-module duplicates; priority-label interpretation is separately implemented in queue and report code.",
+    "owner": "The subject-owned common identity/state/priority capabilities. The automatic-dispatch correction already supplies a priority owner and is consumed rather than reimplemented.",
+    "components": [
+      "scripts/board-queue.py",
+      "scripts/deliver.py",
+      "scripts/board.py",
+      "scripts/sync.py",
+      "scripts/statuses.py",
+      "scripts/progress.py"
+    ],
+    "disposition": "Reuse the upstream priority capability from #1631/#1645 when available. Other repeated rules need one existing or justified subject home. Identical git subprocess wrappers are plumbing and are not a confirmed policy duplication."
+  },
+  {
+    "id": "A05",
+    "status": "confirmed",
+    "guideline": "Policy Review / Matched Contexts; Rule Ownership",
+    "subject": "Four inherited policy ambiguities",
+    "evidence": [
+      [
+        "modes/advance-mode.md",
+        59,
+        79
+      ],
+      [
+        "artifacts/board-queue.md",
+        126,
+        132
+      ],
+      [
+        "artifacts/architecture-overview.md",
+        93,
+        115
+      ],
+      [
+        "artifacts/agent-review.md",
+        17,
+        24
+      ],
+      [
+        "modes/deliver-mode.md",
+        210,
+        216
+      ]
+    ],
+    "problem": "Automatic decision continuation, backlog sibling handling, diagram sizing and hot-fix finding scope need approved interpretations grounded in matching-context evidence.",
+    "owner": "Advance; Board Queue; Architecture Overview; Agent Review, with callers linking the owning contract.",
+    "components": [
+      "modes/advance-mode.md",
+      "artifacts/board-queue.md",
+      "artifacts/architecture-overview.md",
+      "artifacts/agent-review.md",
+      "modes/deliver-mode.md",
+      "protocols/change-overview.md"
+    ],
+    "disposition": "Use policy-decisions.md and captured queue/validator/template observations. Apply no policy fix in this audit. AC17 is pending until all four individual decisions are confirmed."
+  },
+  {
+    "id": "A06",
+    "status": "confirmed",
+    "guideline": "Published Capabilities; Single Responsibility; explicit continuation",
+    "subject": "Retained-preparation creation route",
+    "evidence": [
+      [
+        "protocols/unit-dispatch.md",
+        68,
+        91
+      ],
+      [
+        "artifacts/delivery-branches.md",
+        269,
+        282
+      ]
+    ],
+    "problem": "Unit Dispatch accepts retained context, but its checkout preparation still selects the creation command unconditionally at the audited revision.",
+    "owner": "Unit Dispatch selects new versus retained continuation; Delivery Branches owns creation and read-only checkout identity validation.",
+    "components": [
+      "protocols/unit-dispatch.md",
+      "artifacts/delivery-branches.md"
+    ],
+    "disposition": "W10 consumes the existing #1631/#1645 correction after W09 and verifies the composed route. Do not duplicate its validation implementation or repair an upstream defect on a later branch."
+  },
+  {
+    "id": "A07",
+    "status": "confirmed",
+    "guideline": "Field Boundaries / Callable Transformations",
+    "subject": "Edge field embeds reader outcomes",
+    "evidence": [
+      [
+        "artifacts/dependency-graph.md",
+        119,
+        130
+      ]
+    ],
+    "problem": "Edges mixes the edge collection schema with reporting/placement/exit behavior required from every reader.",
+    "owner": "Dependency Graph callable validation contract; shared subject resolution policy in Guidance when necessary.",
+    "components": [
+      "artifacts/dependency-graph.md"
+    ],
+    "disposition": "Retain edge identity and resolvability invariants in Fields. Place command outcomes in the owning capability, preserve all readers and add observing negative cases."
+  },
+  {
+    "id": "A08",
+    "status": "resolved-historical",
+    "guideline": "Field Boundaries; Required Context",
+    "subject": "Historical Fields and prerequisite inventory",
+    "evidence": [
+      [
+        "artifacts/board-delivery.md",
+        185,
+        205
+      ],
+      [
+        "rules.md",
+        3,
+        5
+      ],
+      [
+        "guidelines.md",
+        33,
+        35
+      ]
+    ],
+    "problem": "The historical Status Changes field and prerequisite inventories are not present at this revision. The historical 13-artifact cycle is not a current before-use witness.",
+    "owner": "Current explicit context contracts and subject Guidance.",
+    "components": [],
+    "disposition": "Retain historical fixtures as regression provenance. Do not restore inventories, treat every link as a preload, or report broad reading alone as proof of a source ordering cycle."
+  },
+  {
+    "id": "A09",
+    "status": "resolved-by-user-disposition",
+    "guideline": "Work Item / Component; Delivery Plan / Work Units",
+    "subject": "Engineering-only audit delivery",
+    "evidence": [
+      [
+        "artifacts/work-item.md",
+        55,
+        62
+      ],
+      [
+        "artifacts/epic-issue-body.md",
+        325,
+        331
+      ],
+      [
+        "artifacts/delivery-plan.md",
+        39,
+        41
+      ]
+    ],
+    "problem": "The normal task-PR route has no truthful workspace component for an engineering-only audit, while Task Delivery permits commit references.",
+    "owner": "The user-approved one-task delivery disposition, without changing shared configuration or rules.",
+    "components": [
+      "engineering:artifacts/planning/2026-11-06-1615-i17-e02-w02-audit-ownership-fields-and/audit.md"
+    ],
+    "disposition": "Publish this audit through the confirmed engineering evidence commit and its existing row commit-link encoding. This exception applies to W02 alone."
+  }
+]

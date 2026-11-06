@@ -1,0 +1,3 @@
+Backlog parent/epic merge candidates: ['  merge #9 I01:E00: base i01/e00/workspace']
+Inventory running occupied= ['o/r#I01:E00:W01'] error= None
+Inventory paused occupied= None error= each session needs an observed identity and valid state

@@ -1,0 +1,1139 @@
+[
+  {
+    "file": "SKILL.md",
+    "role": "declared model or common guidance",
+    "sha256": "9b430e5ee43c5d0cf9d66d51ae7a87fc755f03a288841a7b6644dcbe11dc394a",
+    "lines": 81,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/acceptance-criteria.md",
+    "role": "artifact",
+    "sha256": "51a9e5254f6f6f94d583dd33cf079dc84260fae32f5e1936705e271b47472e94",
+    "lines": 118,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/agent-review.md",
+    "role": "artifact",
+    "sha256": "9850d6d316473515cd8d5c169758ef8038abf3e03e144b3ec7781472e58ec919",
+    "lines": 76,
+    "findings": [
+      "A02",
+      "A05"
+    ],
+    "kind_mention_lines": [
+      3,
+      19,
+      24,
+      28,
+      56
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/architecture-overview.md",
+    "role": "artifact",
+    "sha256": "8cd09b5bd4c488dce9a02eca9c96121b04931d81271ca6156cd9f475d130c449",
+    "lines": 135,
+    "findings": [
+      "A05"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/board-delivery.md",
+    "role": "artifact",
+    "sha256": "6465a24b63d832303d9291fcbbedff71a930ee4ad60792d15df291cb9fdd046e",
+    "lines": 205,
+    "findings": [
+      "A01",
+      "A02",
+      "A08",
+      "A10"
+    ],
+    "kind_mention_lines": [
+      199
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/board-queue.md",
+    "role": "artifact",
+    "sha256": "596d39401b296716837bd15a53fae32f6cece3c92183e89a118fdc0b1033653b",
+    "lines": 163,
+    "findings": [
+      "A02",
+      "A05",
+      "A10"
+    ],
+    "kind_mention_lines": [
+      3,
+      28,
+      38,
+      69,
+      102
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/board.md",
+    "role": "artifact",
+    "sha256": "028b138e77e4e3829f772e609eb2f63a351e13accc4cbad6babab1e6bca4c273",
+    "lines": 377,
+    "findings": [
+      "A02"
+    ],
+    "kind_mention_lines": [
+      375,
+      377
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/delivery-branches.md",
+    "role": "artifact",
+    "sha256": "4d650bc85ca948993244589128f78057605fbdf0f52f6970d2af4c7264c8cf74",
+    "lines": 505,
+    "findings": [
+      "A02",
+      "A06",
+      "A10"
+    ],
+    "kind_mention_lines": [
+      372,
+      373
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/delivery-brief.md",
+    "role": "artifact",
+    "sha256": "5f02402be4eb76d16541b99971f4e0257fc117013d2c215d3e59a7bfb6a2f7a1",
+    "lines": 41,
+    "findings": [
+      "A02",
+      "A10"
+    ],
+    "kind_mention_lines": [
+      13
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/delivery-evidence.md",
+    "role": "artifact",
+    "sha256": "d1d2e838c08803fa938f398024be23b53e5b66d64f093b0c58ec3c4c5ca34b96",
+    "lines": 77,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/delivery-plan.md",
+    "role": "artifact",
+    "sha256": "67abf4797f44ef9b29337f15f57abc55b731907a0fa4f7b869084b9118952569",
+    "lines": 123,
+    "findings": [
+      "A02",
+      "A09",
+      "A10"
+    ],
+    "kind_mention_lines": [
+      3,
+      41,
+      43,
+      45,
+      49,
+      51,
+      52,
+      56,
+      57,
+      59,
+      67
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/dependency-graph.md",
+    "role": "artifact",
+    "sha256": "5b073234c04caece390fca50572b74d9146cc421f83968c81e1159d077eb5dc9",
+    "lines": 199,
+    "findings": [
+      "A07"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/dispatch-batch.md",
+    "role": "artifact",
+    "sha256": "f215432c66aab6b22fd4c4791d1e87f0d814eb66c2cece3c82a4136381df23ff",
+    "lines": 100,
+    "findings": [
+      "A02",
+      "A10"
+    ],
+    "kind_mention_lines": [
+      30,
+      48
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/epic-issue-body.md",
+    "role": "kind-owned artifact",
+    "sha256": "44dcd178724518e8a889ceab7228ebb0f95768b15c22aaf4f987c9abf1d57ba9",
+    "lines": 430,
+    "findings": [
+      "A09"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/epic.md",
+    "role": "artifact",
+    "sha256": "6fc22ced54c6bdafed48f2b45b054ae56ef3e550729edb05bcb6e34c414acdaa",
+    "lines": 150,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/goal-trace.md",
+    "role": "artifact",
+    "sha256": "3c3e5bbf48438ea0ae9359d3c6035c086cd5b0b868371d2faca7fe35a931b097",
+    "lines": 99,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/hotfix-body.md",
+    "role": "kind-owned artifact",
+    "sha256": "5398447a3c285c7c9ae9d1ea6e459e8206992c63de66adf623091a4777cfbf5d",
+    "lines": 39,
+    "findings": [],
+    "kind_mention_lines": [
+      1,
+      3,
+      10,
+      14,
+      15,
+      16,
+      20,
+      24,
+      26,
+      28,
+      32,
+      38,
+      39
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/hotfix.md",
+    "role": "kind-owned artifact",
+    "sha256": "6ab1527b0099f7567d84e249418175feb76df6103d18dd35fe9418b327723100",
+    "lines": 154,
+    "findings": [
+      "A01"
+    ],
+    "kind_mention_lines": [
+      1,
+      3,
+      7,
+      9,
+      13,
+      17,
+      25,
+      33,
+      41,
+      43,
+      47,
+      55,
+      64,
+      66,
+      72,
+      78,
+      82,
+      84,
+      85,
+      87,
+      92,
+      94,
+      101,
+      103,
+      127,
+      129,
+      137,
+      143,
+      145,
+      151,
+      152,
+      153,
+      154
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/initiative-issue-body.md",
+    "role": "kind-owned artifact",
+    "sha256": "5aa82e51eb594eb928847ef066a95ae1d7e7d3a7550b60c17d04f2c3210932ca",
+    "lines": 270,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/initiative.md",
+    "role": "artifact",
+    "sha256": "9a92ec1f5ed86edbaa6af48f757a965c5f1ef6c99823c7f9d228cb4299e2f74c",
+    "lines": 42,
+    "findings": [
+      "A10"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/issue-body.md",
+    "role": "artifact",
+    "sha256": "5d09b20e0124110550bcd87c774b882a4ada78f7f87fc0e93d025d540a9241cb",
+    "lines": 387,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/issue.md",
+    "role": "artifact",
+    "sha256": "f753b8a6ae48b4d8f30ebdd6c2cfef55df2611b01e58905d1e2425ad4049195d",
+    "lines": 500,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/lane.md",
+    "role": "artifact",
+    "sha256": "63c3f85b1875c4a75e9e69e96d45a85d702882887fdb6de22d98ba90a4d314dc",
+    "lines": 116,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/placement.md",
+    "role": "artifact",
+    "sha256": "c382623332e5d8f1290a2108dd88f716649ac1b95761713660c1363605371453",
+    "lines": 104,
+    "findings": [],
+    "kind_mention_lines": [
+      46,
+      51,
+      55,
+      71,
+      79,
+      87,
+      99,
+      100
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/plan-change.md",
+    "role": "artifact",
+    "sha256": "7a3b2f05b30b6df30d7b2f560643c792d6c3d748e7fe2f39fd684b128674e747",
+    "lines": 85,
+    "findings": [],
+    "kind_mention_lines": [
+      27
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/planning-record.md",
+    "role": "artifact",
+    "sha256": "7deaea9b945c93fc59c332bd0970d9a13a8ba1278588bed73684fa71e96087ae",
+    "lines": 192,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/proposal-body.md",
+    "role": "kind-owned artifact",
+    "sha256": "659d4f11390c393de3ba6afce0b177adc0faab285687502159e1d855a63872a0",
+    "lines": 88,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/pull-request-body.md",
+    "role": "artifact",
+    "sha256": "43c60ddc274355a9bf25a950f5d7ba9f659927dc518dfedb6710f08ddc303210",
+    "lines": 167,
+    "findings": [],
+    "kind_mention_lines": [
+      96,
+      97
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/pull-request.md",
+    "role": "artifact",
+    "sha256": "6f45106d164f1e62158c7c228de09774613347d2a90351129c7eb95e1c7d80c4",
+    "lines": 788,
+    "findings": [
+      "A02",
+      "A10"
+    ],
+    "kind_mention_lines": [
+      306,
+      501,
+      514,
+      715,
+      785
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/repository-graph.md",
+    "role": "artifact",
+    "sha256": "abb198dec49a918482b85d8550815e9c1eb433a011b1bf89aab11d8980ca43c6",
+    "lines": 155,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/repository-labels.md",
+    "role": "artifact",
+    "sha256": "4e9edfa6a885c8739e5addef413d1b374d78defea8bfae5c17eb8a42b681ffe0",
+    "lines": 62,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/review-finding.md",
+    "role": "artifact",
+    "sha256": "84e7e96dbbefc72febcd7660a3833c82c95209b21ddc44af9e9cf37eee556646",
+    "lines": 56,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/standalone-body.md",
+    "role": "kind-owned artifact",
+    "sha256": "e16d491e1b031c619a644c0903105f14539914785cc94cd1f6a465c2d5f5dc18",
+    "lines": 77,
+    "findings": [],
+    "kind_mention_lines": [
+      3,
+      9,
+      18,
+      57,
+      61,
+      65
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/standup-report.md",
+    "role": "artifact",
+    "sha256": "a4067a6b67869d7d0667c7e64b942e213f9dbeb6040baec7b8a4d82becb1b0b1",
+    "lines": 133,
+    "findings": [
+      "A02"
+    ],
+    "kind_mention_lines": [
+      71,
+      83,
+      86,
+      87,
+      89
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "artifacts/task-body.md",
+    "role": "kind-owned artifact",
+    "sha256": "f4f7e2be55c36248102747d840fcf7b806fb6bed53fd2964050f2eef0d1f61c9",
+    "lines": 106,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "artifacts/work-item.md",
+    "role": "artifact",
+    "sha256": "49a81c5633e3fda62b78c1314b26dee1e1b4d04ed10cefbce8f6d2f7eb4f9cc4",
+    "lines": 78,
+    "findings": [
+      "A09"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "configuration.md",
+    "role": "declared model or common guidance",
+    "sha256": "d7951b91e17363489349bce8616373fe4e4bbb2f194d567e634c5ecc4aa13565",
+    "lines": 33,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "conventions.md",
+    "role": "declared model or common guidance",
+    "sha256": "da8a94ea01f2b8869d03314a2e436b422e3cf47d057d0cc3d6f3b856ee503270",
+    "lines": 29,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "guidelines.md",
+    "role": "declared model or common guidance",
+    "sha256": "343767fe828b3eb43a3e47df61bc3a0c56fb2c3da5f9e92c45622239e0a3fbb8",
+    "lines": 322,
+    "findings": [
+      "A08"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "modes/advance-mode.md",
+    "role": "mode",
+    "sha256": "ce00405f56432e92aa298a004ece4fcd9b3c90a3e975cd35edb6a1ddac9c101a",
+    "lines": 103,
+    "findings": [
+      "A05"
+    ],
+    "kind_mention_lines": [
+      3
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "modes/align-mode.md",
+    "role": "mode",
+    "sha256": "7756f2dae038c64fb64fd86c70be9ba59984ecdad3c8c3b7cc624316725dccf8",
+    "lines": 220,
+    "findings": [
+      "A02"
+    ],
+    "kind_mention_lines": [
+      3,
+      16
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "modes/deliver-mode.md",
+    "role": "mode",
+    "sha256": "ec831b8879a9e87f6f6c03c78815089bf00d032dce13a922cfb011f333386847",
+    "lines": 304,
+    "findings": [
+      "A02",
+      "A05",
+      "A10"
+    ],
+    "kind_mention_lines": [
+      88,
+      90,
+      92,
+      95,
+      156,
+      203,
+      212,
+      216,
+      218,
+      220,
+      226,
+      234,
+      237,
+      242,
+      245,
+      253,
+      255,
+      270
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "modes/hoist-mode.md",
+    "role": "mode",
+    "sha256": "d6ce162798ab44c1494a7b09fd0ddb7424cf0d892aa6e987c6b1ae52818502f1",
+    "lines": 217,
+    "findings": [
+      "A02"
+    ],
+    "kind_mention_lines": [
+      3,
+      27,
+      28,
+      90,
+      92,
+      94,
+      96,
+      97,
+      105,
+      119,
+      121,
+      123,
+      125,
+      132,
+      138,
+      143,
+      149,
+      151,
+      153,
+      157,
+      213,
+      215
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "modes/plan-mode.md",
+    "role": "mode",
+    "sha256": "33af14a707757c17b49f6abcdbb9ec95936831d347c3754761fc393ce259f88e",
+    "lines": 145,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "modes/propose-mode.md",
+    "role": "mode",
+    "sha256": "e39009f636bedde1499838fbb80beaf82d676a835633aba7d3edfc7976f9a428",
+    "lines": 86,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "modes/revise-mode.md",
+    "role": "mode",
+    "sha256": "9c28e2c9400087f9a6ad92ff6915f82e92c60dea520057fdf2dcd7d8fec2537b",
+    "lines": 129,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "modes/standup-mode.md",
+    "role": "mode",
+    "sha256": "083e939163602e91671a995e5f297d26eb2034403b10574d3a821878c5ff6629",
+    "lines": 76,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "modes/sync-mode.md",
+    "role": "mode",
+    "sha256": "ca41682b48da4f34df5bcdbbb9064a3cdf34e2766b5242b6bc49b359dfba7969",
+    "lines": 367,
+    "findings": [],
+    "kind_mention_lines": [
+      276
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "modes/understand-mode.md",
+    "role": "mode",
+    "sha256": "5d0708047bd8f91a5751605ed48364f8f9b7b6d2c6355bf0ce39925f788aae96",
+    "lines": 31,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "protocols/change-overview.md",
+    "role": "protocol",
+    "sha256": "5544269aca576aa79b75faa1e9eeed9d9bd6399778254b60a2ca79ccb8f0835e",
+    "lines": 82,
+    "findings": [
+      "A05"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "protocols/epic-integration.md",
+    "role": "protocol",
+    "sha256": "ea9c4fb7785675b7552d443f2682ab3a97fb2528817858556498dc5d35b96461",
+    "lines": 78,
+    "findings": [
+      "A10"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "protocols/issue-closure.md",
+    "role": "protocol",
+    "sha256": "9f1c0e37eb5ab8539380e61627aefb4eec081a050be73991f5ddaa3d86a40da8",
+    "lines": 97,
+    "findings": [
+      "A02"
+    ],
+    "kind_mention_lines": [
+      21
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "protocols/issue-delivery.md",
+    "role": "protocol",
+    "sha256": "930b3f5728896c03bbade6644bb69886e61732fa5a349b1d84f4141a45db9fd5",
+    "lines": 49,
+    "findings": [
+      "A02"
+    ],
+    "kind_mention_lines": [
+      3,
+      9,
+      11,
+      13
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "protocols/review-pull-request.md",
+    "role": "protocol",
+    "sha256": "22c1a3b209e568fecad752efca177577598b35f7c4ad049dd34f339ccb094eb9",
+    "lines": 46,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "protocols/task-merge.md",
+    "role": "protocol",
+    "sha256": "a2f7e8d564b8efd9a690e8b54113f0a11c8d4aaab6fb6a0e99ae889ead085ae1",
+    "lines": 38,
+    "findings": [
+      "A02"
+    ],
+    "kind_mention_lines": [
+      3,
+      9,
+      11,
+      12,
+      13,
+      14
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "protocols/unit-dispatch.md",
+    "role": "protocol",
+    "sha256": "5d27ef2df921fe62d84d7a0bfc6d2df140a97168559b7e6ffe577e8241c5495a",
+    "lines": 100,
+    "findings": [
+      "A02",
+      "A06",
+      "A10"
+    ],
+    "kind_mention_lines": [
+      24,
+      42,
+      44,
+      45,
+      47,
+      51,
+      55,
+      59
+    ],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "references/requirement-characteristics.md",
+    "role": "declared model or common guidance",
+    "sha256": "ac9fe4cc179fba843ec711218e0b0704320cb078f3c790b1e08b231d9a7d74ee",
+    "lines": 59,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "rules.json",
+    "role": "declared model or common guidance",
+    "sha256": "6f4e2adf6415a7037b9c7efc0c4cdf8c141d1a10241a7915dfdd72c6422b1899",
+    "lines": 109,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "rules.md",
+    "role": "declared model or common guidance",
+    "sha256": "43ddb0d354132778a6870f95f6a50f122312881e09b6f1944916cc9f303c4d61",
+    "lines": 14,
+    "findings": [
+      "A08"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "scripts/agent_review.py",
+    "role": "script module",
+    "sha256": "30e5146fe5c7be85d685c42b27ecb5a7703fe181a4405560e3c3538b2e251bb5",
+    "lines": 129,
+    "findings": [
+      "A03"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "scripts/align.py",
+    "role": "script module",
+    "sha256": "eea1875c77b7a3bd971254113a23fcc2f364a674e61b4f4379bf324386317195",
+    "lines": 134,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "scripts/board-queue.py",
+    "role": "script module",
+    "sha256": "ef6dd88ac850e4315f9e3036cbf6df040915b28d6a17e83057d6809bcbaf842a",
+    "lines": 454,
+    "findings": [
+      "A03",
+      "A04",
+      "A10"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "scripts/board.py",
+    "role": "script module",
+    "sha256": "bd9505702dfa6ccdf44d82947216e0d37c9700bc3c3a29ad5fbb4fc9768447ad",
+    "lines": 692,
+    "findings": [
+      "A01",
+      "A04",
+      "A10"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "scripts/closure-sweep.py",
+    "role": "script module",
+    "sha256": "b783ebb4728d888fef623a1f51fcc12eb0645cec52817b31a9ee6e920e3fe537",
+    "lines": 79,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "scripts/closure.py",
+    "role": "script module",
+    "sha256": "f950ec3881ca4125803aefc39458f67253e01dbcd8f0380068cf780d918a2e60",
+    "lines": 79,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "scripts/deliver.py",
+    "role": "script module",
+    "sha256": "ff4806c7c536884b3fba3893df448b154fe7364bcb75794a1fd5b10b7b428978",
+    "lines": 636,
+    "findings": [
+      "A03",
+      "A04",
+      "A10"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "scripts/deps.py",
+    "role": "script module",
+    "sha256": "5dd37e71ead6ca3e7a4548686bee8fb1c9fab9d492c48a74ab628e35bd390c9d",
+    "lines": 557,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "scripts/development-link.py",
+    "role": "script module",
+    "sha256": "268a93df3003892d210edbe59ca59485e9bf548acd8d04ad3b10b3fc5ff32758",
+    "lines": 158,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "scripts/development.py",
+    "role": "script module",
+    "sha256": "1a2eba1ebc43f4593cbd0e75320fcdcd1ce2401212f4d9038b5b04cd0afe7cc7",
+    "lines": 152,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "scripts/dispatch.py",
+    "role": "script module",
+    "sha256": "71db2e7d1f07fcaf8a0ecc70539b4dec082e6b240920484cc8fb070c97f42ec8",
+    "lines": 169,
+    "findings": [
+      "A03",
+      "A10"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "scripts/format.py",
+    "role": "script module",
+    "sha256": "f9986201e0ea6a6655ae7d319b5782a32a2f7a2ac2655b55751ed2a965907039",
+    "lines": 1142,
+    "findings": [
+      "A03"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "scripts/hotfix.py",
+    "role": "script module",
+    "sha256": "556e80435f5573b6e12e72ad3c9fc051f6aa2a2abee9b361cf64724a8f533aca",
+    "lines": 115,
+    "findings": [
+      "A03"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "scripts/lane.py",
+    "role": "script module",
+    "sha256": "0421ffd8cfd59acee9ff138ecf68ffd6dcc17c2cfb05cf334987ae0f90b72baf",
+    "lines": 166,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "scripts/linked-pull-requests.py",
+    "role": "script module",
+    "sha256": "7296ab3149794978a8ed56b6eb5872099e3183bee1ee040b6a1dd04bda000b33",
+    "lines": 113,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "scripts/links-by-issue.py",
+    "role": "script module",
+    "sha256": "7ce08f8b935d5ace36b777e8e63afb57e98148d4672e87d7c1c051355a4fcc28",
+    "lines": 51,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "scripts/links-by-pull-request.py",
+    "role": "script module",
+    "sha256": "9dc32f6408257fbbd70e8c1c846f92267b1b56ddf61640733605828b6a29a6af",
+    "lines": 48,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "scripts/orphans.py",
+    "role": "script module",
+    "sha256": "51a8e2024a4ca29d2d31adf6ea4314f010c784d83fe79252d2dbb9d5d44a02d7",
+    "lines": 112,
+    "findings": [
+      "A03"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "scripts/progress.py",
+    "role": "script module",
+    "sha256": "a83a9bfe8221ccf21617e504e4e0a922e70f414992cb0d49bedfb162c07d16d6",
+    "lines": 489,
+    "findings": [
+      "A03",
+      "A04"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "scripts/renumber.py",
+    "role": "script module",
+    "sha256": "a49ca51db93de5df9446ed8ca93d02b923bc025552a6a387de0ff7d319cc3d8d",
+    "lines": 187,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "scripts/revision-check.py",
+    "role": "script module",
+    "sha256": "324cb086b0f6d27485cd4578ed4fa47503c260309fe4537663158ae289012d07",
+    "lines": 100,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "scripts/statuses.py",
+    "role": "script module",
+    "sha256": "4c78b002ab46e1e8a59a6aac1fb848e0606e764ca28bec72a6a350b5912f5c3e",
+    "lines": 193,
+    "findings": [
+      "A01",
+      "A03",
+      "A04",
+      "A10"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "scripts/sync.py",
+    "role": "script module",
+    "sha256": "1eb82b1957a64b46b36eb6ff508cdb925ebdd98e702c6e54636175f0062d2380",
+    "lines": 1183,
+    "findings": [
+      "A03",
+      "A04"
+    ],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "Apply the referenced finding dispositions."
+  },
+  {
+    "file": "structure.json",
+    "role": "declared model or common guidance",
+    "sha256": "624ba73ffc65262af8ca271eabdab2657f2f8ec93e370f611fc4bd5d24504b84",
+    "lines": 42,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  },
+  {
+    "file": "vocabulary.json",
+    "role": "declared model or common guidance",
+    "sha256": "a934dd814bc3aabc5aa03b0f5104a531c138b36ec50fdc26bd385f629bb6a7be",
+    "lines": 4,
+    "findings": [],
+    "kind_mention_lines": [],
+    "review": "Subject/capability/contract and dependency review; Fields refreshed against historical semantic ledger where exact; script interfaces and kind conditions reviewed via the source AST inventory.",
+    "disposition": "No additional guideline breach identified by this architecture review; not a claim about arbitrary runtime correctness."
+  }
+]

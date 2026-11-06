@@ -1,0 +1,43 @@
+[
+  {
+    "id": "P1",
+    "confirmed": true,
+    "user_phrase": "Save, verify, recompute, then continue (Recommended)",
+    "decision": "An allowed automatic answer is saved, read back and recomputed; continue only on a complete refreshed queue. Held/unanswered remains pending. Recording alone proves no save/completeness.",
+    "confirmed_on": "2026-11-06",
+    "confirmation_source": "Coordinator forwarded the explicit user answer."
+  },
+  {
+    "id": "P2",
+    "confirmed": true,
+    "user_phrase": "in-progress work is paused and everything moves to backlog with its initiative",
+    "decision": "A Backlog initiative pauses ongoing work and cascades to every unfinished descendant, including In Progress/In Review; completed Done descendants remain Done.",
+    "confirmed_on": "2026-11-06",
+    "confirmation_source": "Coordinator forwarded the explicit latest behavior instruction and the completed-child choice.",
+    "status": "confirmed, superseding prior current-behavior selection",
+    "history": [
+      "Keep current behavior (Recommended)",
+      "inactive Ready epics of that retained initiative move to Backlog / this one",
+      "a backlogged initiative affects all of its children"
+    ],
+    "supersedes": "The prior prose-only current-behavior selection.",
+    "completed_boundary": "Completed children remain Done (Recommended)",
+    "delivery": "Dedicated I17 Backlog Pause epic; decision/map remain in E02 audit."
+  },
+  {
+    "id": "P3",
+    "confirmed": true,
+    "decision": "Five-to-ten is a readability target; a faithful smaller measured graph is valid. No padding; split complex diagrams by measured concept.",
+    "user_phrase": "Allow faithful smaller diagrams (Recommended)",
+    "confirmed_on": "2026-11-06",
+    "confirmation_source": "Coordinator forwarded the explicit user answer."
+  },
+  {
+    "id": "P4",
+    "confirmed": true,
+    "decision": "Introduced/change-related/affected-caller risks remain in scope and fixed; unrelated prior observations require scope evidence and a linked arising issue outside the finding collection. No relabeling to pass.",
+    "user_phrase": "Separate linked issue; fix change-related defects in the hot-fix (Recommended)",
+    "confirmed_on": "2026-11-06",
+    "confirmation_source": "Coordinator forwarded the explicit user answer."
+  }
+]

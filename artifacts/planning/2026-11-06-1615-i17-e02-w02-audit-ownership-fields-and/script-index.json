@@ -1,0 +1,3035 @@
+[
+  {
+    "file": "scripts/agent_review.py",
+    "functions": [
+      {
+        "name": "load_records",
+        "line": 16,
+        "end": 23,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "web_url",
+        "line": 26,
+        "end": 27,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "linked_record",
+        "line": 30,
+        "end": 48,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check",
+        "line": 51,
+        "end": 92,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "integration",
+        "line": 95,
+        "end": 98,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epic_check",
+        "line": 101,
+        "end": 115,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 118,
+        "end": 125,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 7,
+        "module": "argparse"
+      },
+      {
+        "line": 8,
+        "module": "json"
+      },
+      {
+        "line": 9,
+        "module": "re"
+      },
+      {
+        "line": 10,
+        "module": "pathlib"
+      },
+      {
+        "line": 11,
+        "module": "urllib.parse"
+      },
+      {
+        "line": 13,
+        "module": "hotfix"
+      }
+    ]
+  },
+  {
+    "file": "scripts/align.py",
+    "functions": [
+      {
+        "name": "repair_plan",
+        "line": 25,
+        "end": 66,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "repository_name",
+        "line": 69,
+        "end": 71,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "reference_repositories",
+        "line": 74,
+        "end": 84,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_references",
+        "line": 87,
+        "end": 101,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 104,
+        "end": 130,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 11,
+        "module": "argparse"
+      },
+      {
+        "line": 12,
+        "module": "json"
+      },
+      {
+        "line": 13,
+        "module": "re"
+      },
+      {
+        "line": 14,
+        "module": "pathlib"
+      },
+      {
+        "line": 15,
+        "module": "urllib.parse"
+      },
+      {
+        "line": 17,
+        "module": "format"
+      },
+      {
+        "line": 18,
+        "module": "sync"
+      }
+    ]
+  },
+  {
+    "file": "scripts/board-queue.py",
+    "functions": [
+      {
+        "name": "label_names",
+        "line": 46,
+        "end": 47,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "rank",
+        "line": 50,
+        "end": 53,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "tags",
+        "line": 56,
+        "end": 58,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "is_initiative",
+        "line": 61,
+        "end": 63,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "pending",
+        "line": 66,
+        "end": 77,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epic_rows",
+        "line": 80,
+        "end": 88,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "handed_off",
+        "line": 91,
+        "end": 94,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "active",
+        "line": 97,
+        "end": 103,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "Queue",
+        "line": 106,
+        "end": 377,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "__init__",
+        "line": 107,
+        "end": 122,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "line",
+        "line": 124,
+        "end": 125,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "place",
+        "line": 127,
+        "end": 129,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "load",
+        "line": 131,
+        "end": 147,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "repos",
+        "line": 149,
+        "end": 151,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "activate",
+        "line": 153,
+        "end": 180,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "park",
+        "line": 182,
+        "end": 198,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "shelve",
+        "line": 200,
+        "end": 224,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "pulls",
+        "line": 226,
+        "end": 229,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "holding",
+        "line": 231,
+        "end": 251,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "wait",
+        "line": 253,
+        "end": 259,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "ready_names",
+        "line": 261,
+        "end": 264,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "unranked",
+        "line": 266,
+        "end": 273,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "order",
+        "line": 275,
+        "end": 279,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "ready_units",
+        "line": 281,
+        "end": 313,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "place_sets",
+        "line": 315,
+        "end": 337,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "hotfixes",
+        "line": 339,
+        "end": 348,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "decide",
+        "line": 350,
+        "end": 377,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "named_keys",
+        "line": 380,
+        "end": 395,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 398,
+        "end": 447,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 26,
+        "module": "argparse"
+      },
+      {
+        "line": 27,
+        "module": "json"
+      },
+      {
+        "line": 28,
+        "module": "re"
+      },
+      {
+        "line": 29,
+        "module": "sys"
+      },
+      {
+        "line": 30,
+        "module": "collections"
+      },
+      {
+        "line": 31,
+        "module": "pathlib"
+      },
+      {
+        "line": 33,
+        "module": "board"
+      },
+      {
+        "line": 35,
+        "module": "lane"
+      },
+      {
+        "line": 36,
+        "module": "format"
+      },
+      {
+        "line": 37,
+        "module": "hotfix"
+      },
+      {
+        "line": 38,
+        "module": "statuses"
+      },
+      {
+        "line": 39,
+        "module": "sync"
+      }
+    ]
+  },
+  {
+    "file": "scripts/board.py",
+    "functions": [
+      {
+        "name": "load",
+        "line": 100,
+        "end": 101,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "completed",
+        "line": 104,
+        "end": 105,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "criteria_met",
+        "line": 108,
+        "end": 113,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "open_questions",
+        "line": 116,
+        "end": 118,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "rows",
+        "line": 121,
+        "end": 124,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "repo_of",
+        "line": 127,
+        "end": 130,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "issue_url",
+        "line": 133,
+        "end": 135,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "linked_issue",
+        "line": 138,
+        "end": 140,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "delivers",
+        "line": 143,
+        "end": 148,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "Resolution",
+        "line": 151,
+        "end": 157,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "weakest",
+        "line": 164,
+        "end": 171,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "Output",
+        "line": 174,
+        "end": 183,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "landing",
+        "line": 186,
+        "end": 190,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "off_route",
+        "line": 193,
+        "end": 195,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "Outputs",
+        "line": 198,
+        "end": 258,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "__init__",
+        "line": 210,
+        "end": 212,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "commit",
+        "line": 214,
+        "end": 216,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "consumer",
+        "line": 218,
+        "end": 230,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "read",
+        "line": 232,
+        "end": 258,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "Board",
+        "line": 261,
+        "end": 465,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "__init__",
+        "line": 262,
+        "end": 269,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "table",
+        "line": 271,
+        "end": 276,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "active",
+        "line": 278,
+        "end": 286,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "row_delivered",
+        "line": 288,
+        "end": 317,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "delivered_outputs",
+        "line": 319,
+        "end": 333,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "integrated",
+        "line": 335,
+        "end": 360,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "outputs_available",
+        "line": 362,
+        "end": 374,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "issue_delivered",
+        "line": 376,
+        "end": 380,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epic_prerequisites_met",
+        "line": 382,
+        "end": 394,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "startable",
+        "line": 396,
+        "end": 406,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "referenced_epics",
+        "line": 408,
+        "end": 429,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "met",
+        "line": 431,
+        "end": 465,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "in_flight",
+        "line": 469,
+        "end": 471,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "joined",
+        "line": 473,
+        "end": 481,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "units",
+        "line": 484,
+        "end": 501,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epic_state",
+        "line": 504,
+        "end": 545,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 548,
+        "end": 685,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "pr_open",
+        "line": 589,
+        "end": 591,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 68,
+        "module": "agent_review"
+      },
+      {
+        "line": 70,
+        "module": "argparse"
+      },
+      {
+        "line": 71,
+        "module": "json"
+      },
+      {
+        "line": 72,
+        "module": "re"
+      },
+      {
+        "line": 73,
+        "module": "sys"
+      },
+      {
+        "line": 74,
+        "module": "collections.abc"
+      },
+      {
+        "line": 75,
+        "module": "enum"
+      },
+      {
+        "line": 76,
+        "module": "pathlib"
+      },
+      {
+        "line": 77,
+        "module": "typing"
+      },
+      {
+        "line": 79,
+        "module": "format"
+      },
+      {
+        "line": 80,
+        "module": "statuses"
+      },
+      {
+        "line": 82,
+        "module": "sync"
+      }
+    ]
+  },
+  {
+    "file": "scripts/closure-sweep.py",
+    "functions": [
+      {
+        "name": "kind",
+        "line": 40,
+        "end": 43,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "sweep",
+        "line": 46,
+        "end": 51,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 54,
+        "end": 75,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 27,
+        "module": "argparse"
+      },
+      {
+        "line": 28,
+        "module": "json"
+      },
+      {
+        "line": 29,
+        "module": "sys"
+      },
+      {
+        "line": 30,
+        "module": "pathlib"
+      },
+      {
+        "line": 32,
+        "module": "closure"
+      },
+      {
+        "line": 33,
+        "module": "development"
+      },
+      {
+        "line": 34,
+        "module": "sync"
+      }
+    ]
+  },
+  {
+    "file": "scripts/closure.py",
+    "functions": [
+      {
+        "name": "snapshot",
+        "line": 32,
+        "end": 45,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "blockers",
+        "line": 48,
+        "end": 55,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 58,
+        "end": 75,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 21,
+        "module": "argparse"
+      },
+      {
+        "line": 22,
+        "module": "json"
+      },
+      {
+        "line": 23,
+        "module": "sys"
+      },
+      {
+        "line": 24,
+        "module": "pathlib"
+      },
+      {
+        "line": 26,
+        "module": "board"
+      },
+      {
+        "line": 27,
+        "module": "sync"
+      }
+    ]
+  },
+  {
+    "file": "scripts/deliver.py",
+    "functions": [
+      {
+        "name": "tags",
+        "line": 118,
+        "end": 120,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "is_epic",
+        "line": 123,
+        "end": 125,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "slug",
+        "line": 128,
+        "end": 131,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "ident_tag",
+        "line": 134,
+        "end": 135,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epic_bases",
+        "line": 138,
+        "end": 145,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "names",
+        "line": 148,
+        "end": 153,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "long_lived",
+        "line": 156,
+        "end": 158,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "changed_bases",
+        "line": 161,
+        "end": 188,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "task_branches",
+        "line": 191,
+        "end": 200,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "branch_lines",
+        "line": 203,
+        "end": 206,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "target_fault",
+        "line": 209,
+        "end": 223,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "hotfix_units",
+        "line": 226,
+        "end": 269,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "plan_passed",
+        "line": 272,
+        "end": 282,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "ready_merges",
+        "line": 285,
+        "end": 317,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "survey",
+        "line": 320,
+        "end": 447,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "place",
+        "line": 450,
+        "end": 474,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "base_url",
+        "line": 477,
+        "end": 486,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "whole_units",
+        "line": 489,
+        "end": 501,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "record_file",
+        "line": 504,
+        "end": 516,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "edit",
+        "line": 519,
+        "end": 582,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 585,
+        "end": 629,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 86,
+        "module": "agent_review"
+      },
+      {
+        "line": 88,
+        "module": "argparse"
+      },
+      {
+        "line": 89,
+        "module": "json"
+      },
+      {
+        "line": 90,
+        "module": "re"
+      },
+      {
+        "line": 91,
+        "module": "sys"
+      },
+      {
+        "line": 92,
+        "module": "collections"
+      },
+      {
+        "line": 93,
+        "module": "datetime"
+      },
+      {
+        "line": 94,
+        "module": "pathlib"
+      },
+      {
+        "line": 96,
+        "module": "board"
+      },
+      {
+        "line": 97,
+        "module": "deps"
+      },
+      {
+        "line": 98,
+        "module": "lane"
+      },
+      {
+        "line": 99,
+        "module": "statuses"
+      },
+      {
+        "line": 101,
+        "module": "format"
+      },
+      {
+        "line": 103,
+        "module": "hotfix"
+      },
+      {
+        "line": 104,
+        "module": "sync"
+      }
+    ]
+  },
+  {
+    "file": "scripts/deps.py",
+    "functions": [
+      {
+        "name": "cells",
+        "line": 83,
+        "end": 84,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "parse",
+        "line": 87,
+        "end": 153,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "normalise",
+        "line": 156,
+        "end": 163,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "read_components",
+        "line": 166,
+        "end": 187,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "is_directory",
+        "line": 190,
+        "end": 194,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "contention",
+        "line": 197,
+        "end": 201,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "recorded_units",
+        "line": 204,
+        "end": 219,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "joined_units",
+        "line": 222,
+        "end": 238,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "covered",
+        "line": 241,
+        "end": 243,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "outside_path",
+        "line": 246,
+        "end": 253,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "candidate_units",
+        "line": 256,
+        "end": 285,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epic_dependencies",
+        "line": 288,
+        "end": 309,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "prerequisites",
+        "line": 294,
+        "end": 304,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epic_depth",
+        "line": 312,
+        "end": 321,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "lv",
+        "line": 316,
+        "end": 319,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epic_priority",
+        "line": 324,
+        "end": 343,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_initiative",
+        "line": 346,
+        "end": 385,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "reaches",
+        "line": 350,
+        "end": 355,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 388,
+        "end": 553,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "visit",
+        "line": 447,
+        "end": 458,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "ancestors",
+        "line": 465,
+        "end": 470,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "lv",
+        "line": 509,
+        "end": 512,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "chains",
+        "line": 541,
+        "end": 543,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 61,
+        "module": "re"
+      },
+      {
+        "line": 62,
+        "module": "sys"
+      },
+      {
+        "line": 63,
+        "module": "pathlib"
+      },
+      {
+        "line": 65,
+        "module": "lane"
+      }
+    ]
+  },
+  {
+    "file": "scripts/development-link.py",
+    "functions": [
+      {
+        "name": "Failed",
+        "line": 37,
+        "end": 41,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "__init__",
+        "line": 40,
+        "end": 41,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "subject",
+        "line": 44,
+        "end": 48,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "same",
+        "line": 51,
+        "end": 53,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "name",
+        "line": 56,
+        "end": 57,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "error",
+        "line": 60,
+        "end": 68,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "gh",
+        "line": 71,
+        "end": 82,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "node_id",
+        "line": 85,
+        "end": 90,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "mutate",
+        "line": 93,
+        "end": 100,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "relation",
+        "line": 103,
+        "end": 111,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "send",
+        "line": 105,
+        "end": 106,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "link",
+        "line": 114,
+        "end": 130,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "listing",
+        "line": 133,
+        "end": 134,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 137,
+        "end": 154,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 22,
+        "module": "argparse"
+      },
+      {
+        "line": 23,
+        "module": "json"
+      },
+      {
+        "line": 24,
+        "module": "re"
+      },
+      {
+        "line": 25,
+        "module": "subprocess"
+      },
+      {
+        "line": 26,
+        "module": "sys"
+      },
+      {
+        "line": 27,
+        "module": "tempfile"
+      },
+      {
+        "line": 28,
+        "module": "collections"
+      },
+      {
+        "line": 29,
+        "module": "pathlib"
+      },
+      {
+        "line": 31,
+        "module": "development"
+      }
+    ]
+  },
+  {
+    "file": "scripts/development.py",
+    "functions": [
+      {
+        "name": "End",
+        "line": 29,
+        "end": 36,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "records",
+        "line": 45,
+        "end": 55,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "query",
+        "line": 58,
+        "end": 72,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "gh",
+        "line": 75,
+        "end": 86,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "fault",
+        "line": 89,
+        "end": 111,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "read",
+        "line": 114,
+        "end": 145,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "report",
+        "line": 148,
+        "end": 152,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 16,
+        "module": "json"
+      },
+      {
+        "line": 17,
+        "module": "subprocess"
+      },
+      {
+        "line": 18,
+        "module": "sys"
+      },
+      {
+        "line": 19,
+        "module": "tempfile"
+      },
+      {
+        "line": 20,
+        "module": "pathlib"
+      },
+      {
+        "line": 21,
+        "module": "typing"
+      }
+    ]
+  },
+  {
+    "file": "scripts/dispatch.py",
+    "functions": [
+      {
+        "name": "members",
+        "line": 27,
+        "end": 35,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "within",
+        "line": 38,
+        "end": 44,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "unit_members",
+        "line": 47,
+        "end": 52,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "inventory",
+        "line": 55,
+        "end": 68,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "batch",
+        "line": 71,
+        "end": 109,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_start",
+        "line": 112,
+        "end": 130,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "read",
+        "line": 133,
+        "end": 134,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 137,
+        "end": 165,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 15,
+        "module": "argparse"
+      },
+      {
+        "line": 16,
+        "module": "json"
+      },
+      {
+        "line": 17,
+        "module": "re"
+      },
+      {
+        "line": 18,
+        "module": "sys"
+      },
+      {
+        "line": 19,
+        "module": "pathlib"
+      },
+      {
+        "line": 21,
+        "module": "lane"
+      }
+    ]
+  },
+  {
+    "file": "scripts/format.py",
+    "functions": [
+      {
+        "name": "split_sections",
+        "line": 156,
+        "end": 169,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "prose",
+        "line": 172,
+        "end": 180,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "join_sections",
+        "line": 183,
+        "end": 188,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "cells",
+        "line": 191,
+        "end": 192,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "row",
+        "line": 195,
+        "end": 196,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "template_body",
+        "line": 199,
+        "end": 236,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "Template",
+        "line": 239,
+        "end": 245,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "__init__",
+        "line": 240,
+        "end": 245,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "work_table",
+        "line": 248,
+        "end": 253,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epic_issues",
+        "line": 256,
+        "end": 264,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "initiative_rows",
+        "line": 267,
+        "end": 269,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "title_name",
+        "line": 272,
+        "end": 276,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "description",
+        "line": 279,
+        "end": 281,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "cell",
+        "line": 284,
+        "end": 287,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "phrase",
+        "line": 290,
+        "end": 292,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "done_mark",
+        "line": 295,
+        "end": 299,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "id_cell",
+        "line": 302,
+        "end": 305,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "row_id",
+        "line": 308,
+        "end": 311,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "hrefs",
+        "line": 314,
+        "end": 316,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "reservation",
+        "line": 319,
+        "end": 322,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "id_form",
+        "line": 325,
+        "end": 329,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "depended_on",
+        "line": 332,
+        "end": 342,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "colon_refs",
+        "line": 345,
+        "end": 348,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "Required",
+        "line": 355,
+        "end": 361,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "git",
+        "line": 364,
+        "end": 365,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "filled",
+        "line": 368,
+        "end": 372,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "names",
+        "line": 375,
+        "end": 377,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "refs",
+        "line": 380,
+        "end": 381,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "required_criteria",
+        "line": 384,
+        "end": 413,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "Review",
+        "line": 416,
+        "end": 1090,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "__init__",
+        "line": 417,
+        "end": 428,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "run",
+        "line": 430,
+        "end": 465,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "run_standalone_kind",
+        "line": 467,
+        "end": 480,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_title",
+        "line": 482,
+        "end": 497,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_title_shape",
+        "line": 499,
+        "end": 506,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "labels",
+        "line": 508,
+        "end": 509,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_labels",
+        "line": 511,
+        "end": 525,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_body",
+        "line": 527,
+        "end": 590,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_initiative_criteria",
+        "line": 592,
+        "end": 610,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_references",
+        "line": 612,
+        "end": 656,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_plan_ids",
+        "line": 658,
+        "end": 673,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_history",
+        "line": 675,
+        "end": 684,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_criteria",
+        "line": 686,
+        "end": 691,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_outcomes",
+        "line": 693,
+        "end": 738,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_required",
+        "line": 740,
+        "end": 777,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "reorder",
+        "line": 779,
+        "end": 794,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "rank",
+        "line": 787,
+        "end": 789,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "fix_table",
+        "line": 796,
+        "end": 802,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "rewrite_table",
+        "line": 804,
+        "end": 895,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_prose",
+        "line": 897,
+        "end": 901,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_dependencies",
+        "line": 903,
+        "end": 916,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "fix_names",
+        "line": 918,
+        "end": 942,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_shared",
+        "line": 944,
+        "end": 958,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "fix_references",
+        "line": 960,
+        "end": 996,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "link",
+        "line": 969,
+        "end": 975,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "fix_leads",
+        "line": 998,
+        "end": 1021,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "opens_sub_bullets",
+        "line": 1024,
+        "end": 1027,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "fix_bullets",
+        "line": 1029,
+        "end": 1037,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_non_goals",
+        "line": 1039,
+        "end": 1051,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "fix_list",
+        "line": 1053,
+        "end": 1083,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "in_sequence",
+        "line": 1086,
+        "end": 1090,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 1093,
+        "end": 1138,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 100,
+        "module": "argparse"
+      },
+      {
+        "line": 101,
+        "module": "difflib"
+      },
+      {
+        "line": 102,
+        "module": "json"
+      },
+      {
+        "line": 103,
+        "module": "re"
+      },
+      {
+        "line": 104,
+        "module": "subprocess"
+      },
+      {
+        "line": 105,
+        "module": "sys"
+      },
+      {
+        "line": 106,
+        "module": "pathlib"
+      },
+      {
+        "line": 107,
+        "module": "typing"
+      },
+      {
+        "line": 109,
+        "module": "lane"
+      },
+      {
+        "line": 110,
+        "module": "hotfix"
+      }
+    ]
+  },
+  {
+    "file": "scripts/hotfix.py",
+    "functions": [
+      {
+        "name": "hotfix_tag",
+        "line": 18,
+        "end": 21,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "is_hotfix",
+        "line": 24,
+        "end": 25,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "hotfix_faults",
+        "line": 28,
+        "end": 43,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "board_status",
+        "line": 46,
+        "end": 56,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "targets",
+        "line": 59,
+        "end": 64,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "target",
+        "line": 67,
+        "end": 70,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "linking_pulls",
+        "line": 73,
+        "end": 76,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "delivery_fault",
+        "line": 79,
+        "end": 96,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "delivering_pulls",
+        "line": 99,
+        "end": 101,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "unit_state",
+        "line": 104,
+        "end": 114,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 8,
+        "module": "re"
+      },
+      {
+        "line": 32,
+        "module": "format"
+      },
+      {
+        "line": 61,
+        "module": "format"
+      },
+      {
+        "line": 75,
+        "module": "sync"
+      },
+      {
+        "line": 83,
+        "module": "sync"
+      }
+    ]
+  },
+  {
+    "file": "scripts/lane.py",
+    "functions": [
+      {
+        "name": "is_index",
+        "line": 15,
+        "end": 17,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "read_lanes",
+        "line": 20,
+        "end": 53,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "check_unit",
+        "line": 56,
+        "end": 66,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "admits",
+        "line": 69,
+        "end": 73,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "label",
+        "line": 76,
+        "end": 78,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "assign_lanes",
+        "line": 81,
+        "end": 122,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 125,
+        "end": 162,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 5,
+        "module": "argparse"
+      },
+      {
+        "line": 6,
+        "module": "json"
+      },
+      {
+        "line": 7,
+        "module": "re"
+      },
+      {
+        "line": 8,
+        "module": "pathlib"
+      }
+    ]
+  },
+  {
+    "file": "scripts/linked-pull-requests.py",
+    "functions": [
+      {
+        "name": "plan_issues",
+        "line": 35,
+        "end": 44,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "row_pulls",
+        "line": 47,
+        "end": 56,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "fetch",
+        "line": 59,
+        "end": 70,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 73,
+        "end": 109,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 21,
+        "module": "argparse"
+      },
+      {
+        "line": 22,
+        "module": "json"
+      },
+      {
+        "line": 23,
+        "module": "re"
+      },
+      {
+        "line": 24,
+        "module": "subprocess"
+      },
+      {
+        "line": 25,
+        "module": "sys"
+      },
+      {
+        "line": 26,
+        "module": "pathlib"
+      },
+      {
+        "line": 28,
+        "module": "development"
+      },
+      {
+        "line": 29,
+        "module": "format"
+      },
+      {
+        "line": 30,
+        "module": "sync"
+      }
+    ]
+  },
+  {
+    "file": "scripts/links-by-issue.py",
+    "functions": [
+      {
+        "name": "main",
+        "line": 27,
+        "end": 47,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 18,
+        "module": "argparse"
+      },
+      {
+        "line": 19,
+        "module": "json"
+      },
+      {
+        "line": 20,
+        "module": "sys"
+      },
+      {
+        "line": 21,
+        "module": "pathlib"
+      },
+      {
+        "line": 23,
+        "module": "development"
+      },
+      {
+        "line": 24,
+        "module": "sync"
+      }
+    ]
+  },
+  {
+    "file": "scripts/links-by-pull-request.py",
+    "functions": [
+      {
+        "name": "main",
+        "line": 24,
+        "end": 44,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 15,
+        "module": "argparse"
+      },
+      {
+        "line": 16,
+        "module": "json"
+      },
+      {
+        "line": 17,
+        "module": "sys"
+      },
+      {
+        "line": 18,
+        "module": "pathlib"
+      },
+      {
+        "line": 20,
+        "module": "development"
+      },
+      {
+        "line": 21,
+        "module": "sync"
+      }
+    ]
+  },
+  {
+    "file": "scripts/orphans.py",
+    "functions": [
+      {
+        "name": "pages",
+        "line": 41,
+        "end": 50,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "cited",
+        "line": 53,
+        "end": 56,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "labels",
+        "line": 59,
+        "end": 60,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "throwaway",
+        "line": 63,
+        "end": 65,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 68,
+        "end": 108,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 28,
+        "module": "argparse"
+      },
+      {
+        "line": 29,
+        "module": "json"
+      },
+      {
+        "line": 30,
+        "module": "re"
+      },
+      {
+        "line": 31,
+        "module": "sys"
+      },
+      {
+        "line": 32,
+        "module": "pathlib"
+      },
+      {
+        "line": 34,
+        "module": "hotfix"
+      }
+    ]
+  },
+  {
+    "file": "scripts/progress.py",
+    "functions": [
+      {
+        "name": "week_before",
+        "line": 102,
+        "end": 103,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "tags",
+        "line": 106,
+        "end": 108,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "reference",
+        "line": 111,
+        "end": 112,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "subtitle",
+        "line": 115,
+        "end": 118,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "task_name",
+        "line": 121,
+        "end": 122,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "pr_title",
+        "line": 125,
+        "end": 126,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "board_link",
+        "line": 129,
+        "end": 132,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "Summary",
+        "line": 135,
+        "end": 157,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "__init__",
+        "line": 139,
+        "end": 141,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "table",
+        "line": 143,
+        "end": 152,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "report",
+        "line": 154,
+        "end": 157,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "Section",
+        "line": 160,
+        "end": 181,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "__init__",
+        "line": 165,
+        "end": 169,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "group",
+        "line": 171,
+        "end": 172,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "render",
+        "line": 174,
+        "end": 181,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 184,
+        "end": 485,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "on_board",
+        "line": 221,
+        "end": 223,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epic_for",
+        "line": 255,
+        "end": 256,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "group_of",
+        "line": 258,
+        "end": 262,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "scopes_of",
+        "line": 264,
+        "end": 270,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "within",
+        "line": 309,
+        "end": 310,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "done",
+        "line": 312,
+        "end": 313,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "next_task",
+        "line": 315,
+        "end": 326,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "mark",
+        "line": 328,
+        "end": 332,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "add",
+        "line": 340,
+        "end": 344,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "listed",
+        "line": 365,
+        "end": 366,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "level",
+        "line": 428,
+        "end": 433,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "priority",
+        "line": 435,
+        "end": 444,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "named_by",
+        "line": 446,
+        "end": 451,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "rank",
+        "line": 453,
+        "end": 456,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 76,
+        "module": "argparse"
+      },
+      {
+        "line": 77,
+        "module": "json"
+      },
+      {
+        "line": 78,
+        "module": "re"
+      },
+      {
+        "line": 79,
+        "module": "sys"
+      },
+      {
+        "line": 80,
+        "module": "collections"
+      },
+      {
+        "line": 81,
+        "module": "collections.abc"
+      },
+      {
+        "line": 82,
+        "module": "datetime"
+      },
+      {
+        "line": 83,
+        "module": "pathlib"
+      },
+      {
+        "line": 85,
+        "module": "board"
+      },
+      {
+        "line": 86,
+        "module": "statuses"
+      },
+      {
+        "line": 87,
+        "module": "format"
+      },
+      {
+        "line": 88,
+        "module": "hotfix"
+      },
+      {
+        "line": 89,
+        "module": "sync"
+      }
+    ]
+  },
+  {
+    "file": "scripts/renumber.py",
+    "functions": [
+      {
+        "name": "parse_map",
+        "line": 49,
+        "end": 54,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "refuse_clashes",
+        "line": 57,
+        "end": 66,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "other_initiative",
+        "line": 69,
+        "end": 74,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "renumber_epics",
+        "line": 77,
+        "end": 96,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "repl",
+        "line": 86,
+        "end": 92,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "renumber_tasks",
+        "line": 99,
+        "end": 133,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "qualified",
+        "line": 107,
+        "end": 115,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "bare",
+        "line": 117,
+        "end": 123,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "named_epics",
+        "line": 136,
+        "end": 143,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 146,
+        "end": 183,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 33,
+        "module": "argparse"
+      },
+      {
+        "line": 34,
+        "module": "json"
+      },
+      {
+        "line": 35,
+        "module": "re"
+      },
+      {
+        "line": 36,
+        "module": "sys"
+      },
+      {
+        "line": 37,
+        "module": "pathlib"
+      }
+    ]
+  },
+  {
+    "file": "scripts/revision-check.py",
+    "functions": [
+      {
+        "name": "Parser",
+        "line": 33,
+        "end": 38,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "error",
+        "line": 36,
+        "end": 38,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "git",
+        "line": 41,
+        "end": 42,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "resolve",
+        "line": 45,
+        "end": 48,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "remove",
+        "line": 51,
+        "end": 57,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 60,
+        "end": 96,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 22,
+        "module": "argparse"
+      },
+      {
+        "line": 23,
+        "module": "json"
+      },
+      {
+        "line": 24,
+        "module": "shutil"
+      },
+      {
+        "line": 25,
+        "module": "subprocess"
+      },
+      {
+        "line": 26,
+        "module": "sys"
+      },
+      {
+        "line": 27,
+        "module": "tempfile"
+      },
+      {
+        "line": 28,
+        "module": "pathlib"
+      }
+    ]
+  },
+  {
+    "file": "scripts/statuses.py",
+    "functions": [
+      {
+        "name": "Jurisdiction",
+        "line": 37,
+        "end": 38,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "pages",
+        "line": 41,
+        "end": 50,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "key_of",
+        "line": 53,
+        "end": 55,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "label",
+        "line": 58,
+        "end": 59,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "option_name",
+        "line": 62,
+        "end": 64,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "status_of",
+        "line": 67,
+        "end": 70,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "board_items",
+        "line": 73,
+        "end": 78,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "assignee_calls",
+        "line": 81,
+        "end": 91,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "StatusField",
+        "line": 94,
+        "end": 116,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "__init__",
+        "line": 97,
+        "end": 112,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "settle",
+        "line": 114,
+        "end": 116,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "Changes",
+        "line": 119,
+        "end": 193,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "__init__",
+        "line": 125,
+        "end": 132,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "owns",
+        "line": 134,
+        "end": 154,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "place",
+        "line": 156,
+        "end": 176,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "report",
+        "line": 178,
+        "end": 189,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "id",
+        "line": 192,
+        "end": 193,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 19,
+        "module": "json"
+      },
+      {
+        "line": 20,
+        "module": "re"
+      },
+      {
+        "line": 21,
+        "module": "sys"
+      },
+      {
+        "line": 22,
+        "module": "pathlib"
+      },
+      {
+        "line": 24,
+        "module": "hotfix"
+      }
+    ]
+  },
+  {
+    "file": "scripts/sync.py",
+    "functions": [
+      {
+        "name": "attach_links",
+        "line": 114,
+        "end": 123,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "links_issue",
+        "line": 126,
+        "end": 131,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "issue_key",
+        "line": 134,
+        "end": 136,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "issue_done",
+        "line": 139,
+        "end": 140,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "load_issues",
+        "line": 143,
+        "end": 144,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "completed",
+        "line": 147,
+        "end": 152,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "for_epic",
+        "line": 155,
+        "end": 167,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "delivery_branch",
+        "line": 170,
+        "end": 173,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "compose_id",
+        "line": 176,
+        "end": 198,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epic_delivery",
+        "line": 201,
+        "end": 276,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "unmet_coverage",
+        "line": 279,
+        "end": 295,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "initiative_delivery",
+        "line": 298,
+        "end": 313,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epic_base",
+        "line": 316,
+        "end": 331,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "pr_repo",
+        "line": 334,
+        "end": 336,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "pending_refs",
+        "line": 339,
+        "end": 352,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "unmerged_epic_bases",
+        "line": 355,
+        "end": 382,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "base_lead",
+        "line": 385,
+        "end": 401,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "draft_bases",
+        "line": 404,
+        "end": 440,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "misrouted",
+        "line": 443,
+        "end": 464,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "belongs",
+        "line": 467,
+        "end": 480,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "initiative_titles",
+        "line": 483,
+        "end": 488,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epicless",
+        "line": 491,
+        "end": 500,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "task_titled",
+        "line": 503,
+        "end": 506,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "pull_numbers",
+        "line": 509,
+        "end": 510,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "references",
+        "line": 513,
+        "end": 518,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "review_references",
+        "line": 521,
+        "end": 548,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "named_files",
+        "line": 556,
+        "end": 560,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "head_path",
+        "line": 563,
+        "end": 576,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "review_changes",
+        "line": 579,
+        "end": 614,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "unlinked_reviews",
+        "line": 617,
+        "end": 629,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "cited",
+        "line": 632,
+        "end": 634,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "plan_rows",
+        "line": 637,
+        "end": 661,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "plan_claims",
+        "line": 664,
+        "end": 676,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "passed_criteria",
+        "line": 679,
+        "end": 703,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "prose_lines",
+        "line": 706,
+        "end": 716,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "assignments",
+        "line": 719,
+        "end": 732,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "plan_agreement",
+        "line": 735,
+        "end": 782,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "sync_done",
+        "line": 785,
+        "end": 813,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "Branches",
+        "line": 816,
+        "end": 823,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "git",
+        "line": 832,
+        "end": 833,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "origin_repository",
+        "line": 836,
+        "end": 841,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "read_branches",
+        "line": 844,
+        "end": 876,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "long_lived_names",
+        "line": 879,
+        "end": 886,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "epic_base_declarations",
+        "line": 889,
+        "end": 907,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "list_long_lived",
+        "line": 910,
+        "end": 920,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "pull_requests",
+        "line": 923,
+        "end": 925,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "Unreadable",
+        "line": 928,
+        "end": 929,
+        "kind": "ClassDef"
+      },
+      {
+        "name": "table",
+        "line": 932,
+        "end": 951,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "normalize_closed_table",
+        "line": 954,
+        "end": 965,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "title_repairs",
+        "line": 968,
+        "end": 980,
+        "kind": "FunctionDef"
+      },
+      {
+        "name": "main",
+        "line": 983,
+        "end": 1176,
+        "kind": "FunctionDef"
+      }
+    ],
+    "imports": [
+      {
+        "line": 92,
+        "module": "argparse"
+      },
+      {
+        "line": 93,
+        "module": "json"
+      },
+      {
+        "line": 94,
+        "module": "re"
+      },
+      {
+        "line": 95,
+        "module": "subprocess"
+      },
+      {
+        "line": 96,
+        "module": "sys"
+      },
+      {
+        "line": 97,
+        "module": "pathlib"
+      },
+      {
+        "line": 98,
+        "module": "typing"
+      },
+      {
+        "line": 100,
+        "module": "format"
+      },
+      {
+        "line": 101,
+        "module": "hotfix"
+      }
+    ]
+  }
+]

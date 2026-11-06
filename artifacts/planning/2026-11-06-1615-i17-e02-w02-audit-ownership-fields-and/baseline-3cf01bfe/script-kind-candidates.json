@@ -1,0 +1,626 @@
+[
+  {
+    "file": "scripts/agent_review.py",
+    "line": 86,
+    "condition": "hotfix_tag(pr) and disposition != 'fixed'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/agent_review.py",
+    "line": 64,
+    "condition": "hotfix_tag(pr)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/board-queue.py",
+    "line": 71,
+    "condition": "not any((delivers(pr, tag, epic) for epic in epics))",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/board-queue.py",
+    "line": 342,
+    "condition": "not is_hotfix(issue) or key not in self.status",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/board-queue.py",
+    "line": 248,
+    "condition": "not pending(self.prs, tag, {epic}, self.repos(key)) and active(self.board, epic_key, f'{self.line(key)} {row_name}')",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/board.py",
+    "line": 646,
+    "condition": "initiative['state'] == 'closed'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/board.py",
+    "line": 648,
+    "condition": "criteria_met(initiative)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/board.py",
+    "line": 190,
+    "condition": "INITIATIVE_REF.match(base)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/board.py",
+    "line": 222,
+    "condition": "not prefix",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/board.py",
+    "line": 647,
+    "condition": "completed(initiative)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/board.py",
+    "line": 227,
+    "condition": "prefix",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/deliver.py",
+    "line": 236,
+    "condition": "not tag or issue['state'] != 'open'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/deliver.py",
+    "line": 243,
+    "condition": "kind == 'undeclared'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/deliver.py",
+    "line": 257,
+    "condition": "state != 'unit' or kind",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/deliver.py",
+    "line": 293,
+    "condition": "(tag := hotfix_tag(issue)) and issue['state'] == 'open'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/deliver.py",
+    "line": 300,
+    "condition": "(tag := hotfix_tag(pull))",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/deliver.py",
+    "line": 309,
+    "condition": "(initiative, epic) not in epics",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/deliver.py",
+    "line": 359,
+    "condition": "not is_epic(issue) or status.get(key) not in STARTED",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/deliver.py",
+    "line": 246,
+    "condition": "kind == 'unresolved'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/deliver.py",
+    "line": 301,
+    "condition": "any((delivering_pulls([pull], key, fixed) and (not target_fault(key, fixed, names, repository)[0]) for key, fixed in hotfixes.items())) and plan_passed(pull.get('body') or '')",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/deps.py",
+    "line": 498,
+    "condition": "initiative and (not unsupported_joins)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/development-link.py",
+    "line": 86,
+    "condition": "kind == 'issues'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 434,
+    "condition": "is_hotfix(self.issue)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 456,
+    "condition": "self.kind is None",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 459,
+    "condition": "self.kind != 'task' and 'type:task' in self.labels()",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 492,
+    "condition": "self.kind == 'epic' and self.initiative",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 516,
+    "condition": "self.kind == 'proposal'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 518,
+    "condition": "self.kind == 'hot-fix'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 524,
+    "condition": "self.kind in ('initiative', 'epic', 'hot-fix') and (not themes)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 581,
+    "condition": "self.kind == 'epic'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 614,
+    "condition": "self.kind not in ('initiative', 'epic', 'task') or not self.number",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 619,
+    "condition": "self.initiative",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 727,
+    "condition": "self.kind == 'epic'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 920,
+    "condition": "self.kind != 'initiative' or not self.epics",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 962,
+    "condition": "self.kind == 'initiative'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 1081,
+    "condition": "not all(numbers) or not self.in_sequence(tag, [int(m[1]) for m in numbers])",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 1088,
+    "condition": "tag == 'AC'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 1113,
+    "condition": "args.initiative",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 533,
+    "condition": "self.kind not in ('issue', 'hot-fix')",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 534,
+    "condition": "other != self.kind and sum((h in Template(other).headings for h in names)) > own",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 544,
+    "condition": "h == 'Non-Goals' and self.kind in ('issue', 'hot-fix')",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 620,
+    "condition": "self.initiative.get('number')",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 623,
+    "condition": "self.kind == 'initiative'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 759,
+    "condition": "not (pr.get('title') or '').startswith(prefix)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 1076,
+    "condition": "all(numbers) and self.in_sequence(tag, [int(m[1]) for m in numbers])",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 513,
+    "condition": "self.kind == 'hot-fix'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 547,
+    "condition": "h == 'Non-Goals' and self.kind not in ('initiative', 'proposal')",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 559,
+    "condition": "self.kind == 'epic'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 965,
+    "condition": "self.initiative",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 914,
+    "condition": "self.kind == 'initiative'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 572,
+    "condition": "self.kind in ('initiative', 'proposal')",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/format.py",
+    "line": 545,
+    "condition": "self.kind == 'hot-fix'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/hotfix.py",
+    "line": 86,
+    "condition": "hotfix_tag(pull) != tag",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/progress.py",
+    "line": 198,
+    "condition": "args.initiative",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/progress.py",
+    "line": 212,
+    "condition": "(t := tags(given['title'])) and (not t[1])",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/progress.py",
+    "line": 259,
+    "condition": "k in initiatives",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/progress.py",
+    "line": 267,
+    "condition": "k in initiatives",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/progress.py",
+    "line": 347,
+    "condition": "k in initiatives and done(k)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/progress.py",
+    "line": 420,
+    "condition": "not (k := initiative_issue.get(scope))",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/progress.py",
+    "line": 440,
+    "condition": "(initiative := initiative_issue.get(scope)) is None",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/renumber.py",
+    "line": 141,
+    "condition": "m and m[1] == initiative",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/renumber.py",
+    "line": 89,
+    "condition": "other_initiative(text, m.start(), initiative, name in outside) or old not in mapping",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/renumber.py",
+    "line": 109,
+    "condition": "other_initiative(text, m.start(), initiative, name in outside) or int(m[1]) != epic",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 321,
+    "condition": "not ref.startswith(prefix)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 861,
+    "condition": "kind.returncode != 0",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 863,
+    "condition": "kind.stdout.strip() != 'blob'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1014,
+    "condition": "not m and (not hotfix)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1016,
+    "condition": "hotfix",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1021,
+    "condition": "kind != 'initiative' and (not args.prs)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1023,
+    "condition": "kind in ('epic', 'hot-fix') and args.prs and (not args.links)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1028,
+    "condition": "kind == 'hot-fix'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1040,
+    "condition": "kind == 'epic' or args.project",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1042,
+    "condition": "kind == 'epic' and (not LONG_LIVED)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1046,
+    "condition": "kind == 'epic' and issue['state'] == 'closed'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1053,
+    "condition": "kind in SINGLE",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1124,
+    "condition": "kind == 'epic' and rows",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1130,
+    "condition": "kind not in SINGLE and rows",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1146,
+    "condition": "kind == 'epic' and args.prs and LONG_LIVED",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1158,
+    "condition": "kind not in SINGLE",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 162,
+    "condition": "not matched or matched.groups() != (initiative, epic)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 164,
+    "condition": "epic_base((p.get('head') or {}).get('ref') or '', initiative, epic)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 194,
+    "condition": "other is None or delivery_branch(other, initiative) in named.values()",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 210,
+    "condition": "title and title[1] == initiative and (title[2] == epic) and title[3]",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 369,
+    "condition": "not title or title.groups() != (initiative, epic)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 371,
+    "condition": "epic_base(base, initiative, epic)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 419,
+    "condition": "not title or title.groups() != (initiative, epic)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 424,
+    "condition": "epic_base(head, initiative, epic) == base and pr.get('state') == 'open'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 487,
+    "condition": "prefix and prefix[1] == initiative",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 498,
+    "condition": "re.match(f'\\\\[I{initiative}(?!\\\\d)', title) and (not (prefix and prefix[2]))",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 533,
+    "condition": "not title or title.groups() != (initiative, epic)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 535,
+    "condition": "pr.get('merged_at') and epic_base(base, initiative, epic)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 537,
+    "condition": "epic_base(head, initiative, epic) and pr.get('state') == 'open'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 591,
+    "condition": "not (epic_base(head.get('ref') or '', initiative, epic) and pr.get('state') == 'open')",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 625,
+    "condition": "not epic_base(head, initiative, epic)",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 796,
+    "condition": "kind == 'epic'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 975,
+    "condition": "prefix and (prefix[1] != initiative or prefix[2] not in (None, epic))",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1055,
+    "condition": "args.pr and (not pr) and (kind == 'hot-fix')",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1072,
+    "condition": "kind == 'epic'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1096,
+    "condition": "kind in SINGLE",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1097,
+    "condition": "kind == 'epic'",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 460,
+    "condition": "not lived and (not epic_base(base, initiative, epic))",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 979,
+    "condition": "prefix",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1099,
+    "condition": "kind in SINGLE",
+    "candidate_only": true
+  },
+  {
+    "file": "scripts/sync.py",
+    "line": 1108,
+    "condition": "kind in SINGLE",
+    "candidate_only": true
+  }
+]

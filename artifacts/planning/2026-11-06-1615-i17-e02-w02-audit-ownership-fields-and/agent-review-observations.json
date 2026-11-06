@@ -1,0 +1,173 @@
+{
+  "revision": "86df5e4c2ccc2516b46cb0be7cf89e1cc258480f",
+  "captures": [
+    {
+      "name": "no-findings",
+      "pull": {
+        "number": 10,
+        "title": "[F04] Reject Bad Keys",
+        "body": "## References\n\n[Agent review](https://github.com/o/r/blob/engineering/review.json)\n",
+        "html_url": "https://github.com/o/r/pull/10",
+        "node_id": "PR_node10",
+        "state": "open",
+        "draft": true,
+        "merged_at": null,
+        "base": {
+          "ref": "workspace",
+          "repo": {
+            "full_name": "o/r"
+          },
+          "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "head": {
+          "ref": "i07/e00/workspace",
+          "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "record": {
+        "pull_request": "https://github.com/o/r/pull/10",
+        "head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "base": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "url": "https://github.com/o/r/blob/engineering/review.json",
+        "reviewer": "delivery agent",
+        "reviewed_at": "2026-10-31T10:00:00Z",
+        "scope": "Complete target...head integration diff, definitions and callers.",
+        "criteria": "AC1\u2013AC3 verified against behavior and regression fixtures.",
+        "validation": "Regression fixtures and planner suite passed.",
+        "findings": [],
+        "base_ref": "workspace"
+      },
+      "result": null
+    },
+    {
+      "name": "in-scope-fixed",
+      "pull": {
+        "number": 10,
+        "title": "[F04] Reject Bad Keys",
+        "body": "## References\n\n[Agent review](https://github.com/o/r/blob/engineering/review.json)\n",
+        "html_url": "https://github.com/o/r/pull/10",
+        "node_id": "PR_node10",
+        "state": "open",
+        "draft": true,
+        "merged_at": null,
+        "base": {
+          "ref": "workspace",
+          "repo": {
+            "full_name": "o/r"
+          },
+          "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "head": {
+          "ref": "i07/e00/workspace",
+          "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "record": {
+        "pull_request": "https://github.com/o/r/pull/10",
+        "head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "base": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "url": "https://github.com/o/r/blob/engineering/review.json",
+        "reviewer": "delivery agent",
+        "reviewed_at": "2026-10-31T10:00:00Z",
+        "scope": "Complete target...head integration diff, definitions and callers.",
+        "criteria": "AC1\u2013AC3 verified against behavior and regression fixtures.",
+        "validation": "Regression fixtures and planner suite passed.",
+        "findings": [
+          {
+            "description": "Affected caller defect",
+            "severity": "nonblocking",
+            "disposition": "fixed",
+            "ticket": "https://github.com/o/r/issues/5",
+            "evidence": "https://github.com/o/r/commit/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "base_ref": "workspace"
+      },
+      "result": null
+    },
+    {
+      "name": "unrelated-deferred-in-findings",
+      "pull": {
+        "number": 10,
+        "title": "[F04] Reject Bad Keys",
+        "body": "## References\n\n[Agent review](https://github.com/o/r/blob/engineering/review.json)\n",
+        "html_url": "https://github.com/o/r/pull/10",
+        "node_id": "PR_node10",
+        "state": "open",
+        "draft": true,
+        "merged_at": null,
+        "base": {
+          "ref": "workspace",
+          "repo": {
+            "full_name": "o/r"
+          },
+          "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "head": {
+          "ref": "i07/e00/workspace",
+          "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "record": {
+        "pull_request": "https://github.com/o/r/pull/10",
+        "head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "base": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "url": "https://github.com/o/r/blob/engineering/review.json",
+        "reviewer": "delivery agent",
+        "reviewed_at": "2026-10-31T10:00:00Z",
+        "scope": "Complete target...head integration diff, definitions and callers.",
+        "criteria": "AC1\u2013AC3 verified against behavior and regression fixtures.",
+        "validation": "Regression fixtures and planner suite passed.",
+        "findings": [
+          {
+            "description": "Unrelated pre-existing observation",
+            "severity": "nonblocking",
+            "disposition": "deferred",
+            "ticket": "https://github.com/o/r/issues/5",
+            "evidence": "https://github.com/o/r/commit/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "base_ref": "workspace"
+      },
+      "result": "unfixed finding on a hot-fix's delivering pull request"
+    },
+    {
+      "name": "unrelated-linked-outside-findings",
+      "pull": {
+        "number": 10,
+        "title": "[F04] Reject Bad Keys",
+        "body": "## References\n\n[Agent review](https://github.com/o/r/blob/engineering/review.json)\n",
+        "html_url": "https://github.com/o/r/pull/10",
+        "node_id": "PR_node10",
+        "state": "open",
+        "draft": true,
+        "merged_at": null,
+        "base": {
+          "ref": "workspace",
+          "repo": {
+            "full_name": "o/r"
+          },
+          "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "head": {
+          "ref": "i07/e00/workspace",
+          "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "record": {
+        "pull_request": "https://github.com/o/r/pull/10",
+        "head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "base": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "url": "https://github.com/o/r/blob/engineering/review.json",
+        "reviewer": "delivery agent",
+        "reviewed_at": "2026-10-31T10:00:00Z",
+        "scope": "Complete target...head integration diff, definitions and callers. Outside the reviewed change: unrelated prior debt recorded in https://github.com/o/r/issues/5.",
+        "criteria": "AC1\u2013AC3 verified against behavior and regression fixtures.",
+        "validation": "Regression fixtures and planner suite passed.",
+        "findings": [],
+        "base_ref": "workspace"
+      },
+      "result": null
+    }
+  ]
+}

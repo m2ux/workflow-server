@@ -1,0 +1,38 @@
+{
+  "initial_revision": "3cf01bfe28cf16d24b823cd97bda907e85992dc8",
+  "current_revision": "86df5e4c2ccc2516b46cb0be7cf89e1cc258480f",
+  "integrated_workspace_revision": "50da3794d96e816a1938e1643a0f79fc0596bc37",
+  "ancestry_verified": true,
+  "full_tree_delta": [
+    "skills/work-planner/artifacts/pull-request.md",
+    "skills/work-planner/modes/deliver-mode.md",
+    "skills/work-planner/protocols/epic-integration.md",
+    "skills/work-planner/test/README.md",
+    "skills/work-planner/test/test_hotfix_readiness.py",
+    "skills/work-planner/test/test_merge_outcomes.py",
+    "skills/work-planner/test/test_readme.py"
+  ],
+  "governed_files_changed": [
+    "artifacts/pull-request.md",
+    "modes/deliver-mode.md",
+    "protocols/epic-integration.md"
+  ],
+  "initial_fields": 516,
+  "current_fields": 518,
+  "fields_delta": {
+    "changed": [
+      "artifacts/pull-request.md#merge-result"
+    ],
+    "added": [
+      "artifacts/pull-request.md#merge-response",
+      "artifacts/pull-request.md#merge-state"
+    ]
+  },
+  "historical_semantic_ledger": {
+    "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-11-06-1616-field-shapes/field-ledger.json",
+    "sha256": "7b7b13f52d5d986095ccfd1c58215d0b350c6eb227734473251a25d3180f29cb",
+    "use": "Only exact current contract matches reuse prior semantic review; changed/new contracts are read separately."
+  },
+  "e04_disposition": "Integrated and delivered; exact-head outcome, hot-fix ready/draft restoration and bounded integration retry/terminal contracts read in complete governed-document delta.",
+  "e05_disposition": "Separate draft under review, not in this audit source. No publication fix is claimed delivered here."
+}
