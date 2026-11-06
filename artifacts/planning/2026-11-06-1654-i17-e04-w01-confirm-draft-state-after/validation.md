@@ -42,7 +42,7 @@ Readers A and B independently interpret seven captured scenarios at the pinned t
 
 Read the complete task diff, the surrounding hot-fix review and merge steps, the Pull Request state/draft command contracts, and Agent Review's current-evidence validator. The readiness failure routes retain the hold and findings; restoration uses fresh metadata, selects the owning draft command and reads its result. Failed or disagreeing restoration remains an explicit discrepancy. Only the successful ready/current-review route advances to merge.
 
-Source search found no surviving claim in the changed recovery route that a requested restoration alone establishes draft state. Pre-existing prerequisite-cycle cleanup remains E02's work. The Pull Request draft-command preamble's integration-only wording was reported to the parallel W02 owner for its shared-command contract revision.
+Source search found no surviving claim in the changed recovery route that a requested restoration alone establishes draft state. E02 owns current prerequisite-boundary verification; a historical cycle does not establish a current defect. The Pull Request draft-command preamble's integration-only wording was reported to the parallel W02 owner for its shared-command contract revision.
 
 ## Plan Changes
 

@@ -60,4 +60,3 @@ The skill is an object model in prose: an artifact owns state and callable capab
   Compare policy statements against identical inputs and entry conditions, recording pinned source, current prose, observed outcomes and the owning contract. Different contexts may legitimately produce different outcomes. Record competing interpretations and obtain confirmation before a policy-changing fix.
 - **Evidence controls.**
   Use actual captured data and observable decisions to distinguish policy outcomes. Retain valid enums, conditional invariants, result shapes, literal examples, ordinary definition cycles and bounded retries as controls. Keywords or copied instruction strings alone establish neither a breach nor a passing behavior.
-

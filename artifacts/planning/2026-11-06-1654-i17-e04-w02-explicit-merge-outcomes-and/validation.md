@@ -47,9 +47,13 @@ The coordinator refreshed the repository's requirements: `workspace` requires on
 
 - Deliver reaches the task merge owner through Merge Task Pull Requests, with current board, repository prerequisite, base and verified-head evidence. The selected mutation's linked input supplies the exact SHA; its raw response and readback have separate shapes. The caller returns terminal results and retries only a classified GitHub refusal after fresh evidence.
 - Sync/Task Merge reaches Epic Integration as a whole protocol. The merge step selects the owning operation and its result contract; terminal result branches return before the success-only readback. A GitHub refusal selects withdrawal and Refresh and Validate before its sole retry.
-- The same Rules, Conventions and common contracts are reused at the same source revision. The changed command and outcome branches link the selected capabilities and result shapes at use. Existing prerequisite-cycle work remains in E02.
+- The same Rules, Conventions and common contracts are reused at the same source revision. The changed command and outcome branches link the selected capabilities and result shapes at use. E02 owns current prerequisite-boundary verification; a historical cycle does not establish a current defect.
 - Readers A and B independently interpret seven captured scenarios at the pinned task heads; their [first](recovery-reader-a.md) and [second](recovery-reader-b.md) receipts confirm selected operation order and terminal-claim boundaries. The bounded fixture run remains offline execution evidence. The readers recover truncated reads and report pre-existing broad-context overhead; that disclosure limitation remains in [Skill Separation](https://github.com/m2ux/workflow-server/issues/1615), with no context-saving or complete disclosure-conformance claim.
 
 ## Plan Changes
 
 No plan change is applied or held by this unit.
+
+## Combined Recovery Revision
+
+Current task head: `bfbd05f62dff19b4af8242933e8ffcec133132e4`. The branch integrates W01 merge `522a7c73f24cdc32a5a9c4bad18f407e770d3057`; its only conflict was the test catalogue, whose combined rows retain both route modules and the mixed document/script coverage. The Pull Request and Epic Integration source blobs are identical to the independently read candidate. The combined suite runs 990 tests: 989 pass and one opt-in live test skips. The installed checker reads 59 files with zero findings. See [planner output](e04-combined-planner.log) and [checker output](e04-combined-checker.log).
