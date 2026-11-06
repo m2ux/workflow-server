@@ -33,3 +33,7 @@ The user approved planning these inherited gaps. This record defines their imple
 | [Plan review](review.md) | Goal, scope, criterion grain, atomic unit and verification limits |
 | [Original graph](dependencies-before.log) | Current I17 graph before E04 |
 | [Revised graph](dependencies-after.log) | E04 rows, joins, components and derived epic dependency |
+
+## Published Epic
+
+[E04 Delivery Failure Recovery](https://github.com/m2ux/workflow-server/issues/1654) — priority 6; three task rows, two delivery units, seven criteria.

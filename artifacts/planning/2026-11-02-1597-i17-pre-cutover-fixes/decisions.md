@@ -143,3 +143,7 @@ The user confirms Work Planner as the sole acceptance scope. Specimen fixtures v
 ## Retained Preparation Follow-up — 2026-11-06
 
 The user selected “Plan it in E02” for the preservation review's pre-existing retained-worktree ambiguity. E02 W10 consumes the existing correction from #1631 / PR #1645 and the completed separation diagnostics, reconciles the protocol route and verifies non-mutating reuse and single-start behavior. The plan adds three criteria with one task owner, keeps the existing rows and priority, and authorizes no implementation or merge.
+
+## 2026-11-06 — Delivery failure recovery
+
+The user approved planning the inherited post-ready draft-restoration and epic refusal-handling gaps, then confirmed new E04 at priority 6. E00 stays closed, E02 retains ownership-preserving scope, and E04 consumes E01:W08. E04 W02/W03 join for the merge result and its epic caller; W01 is independent. E02 audit includes these planned component corrections before splitting and dispatching its exact file changes.

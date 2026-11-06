@@ -90,3 +90,7 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | The extraction row that waits on it | [m2ux/prosiform-skills I16:E00](https://github.com/m2ux/prosiform-skills/issues/2) |
 | Skill at the planned revision | [workspace@785a5ee8c](https://github.com/m2ux/workflow-server/tree/785a5ee8c715b802498aa41712e0489425a22cfa/skills/work-planner) |
 | Board | [Process: How Work Is Planned and Delivered](https://github.com/users/m2ux/projects/17) |
+
+## Delivery Failure Recovery
+
+[E04](https://github.com/m2ux/workflow-server/issues/1654) owns the approved inherited draft-restoration and merge-refusal gaps at priority 6. Its [planning record](../2026-11-06-1597-delivery-failure-recovery/README.md) owns the design, task files and review evidence.
