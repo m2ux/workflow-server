@@ -1,0 +1,17 @@
+test_changed_head_after_ready_restores_before_repair (test_hotfix_readiness.HotFixReadiness.test_changed_head_after_ready_restores_before_repair) ... ok
+test_failed_ready_write_restores_a_partial_write_before_repair (test_hotfix_readiness.HotFixReadiness.test_failed_ready_write_restores_a_partial_write_before_repair) ... ok
+test_failed_restoration_reads_and_stops_with_the_discrepancy (test_hotfix_readiness.HotFixReadiness.test_failed_restoration_reads_and_stops_with_the_discrepancy) ... ok
+test_initial_invalid_draft_review_confirms_without_an_extra_write (test_hotfix_readiness.HotFixReadiness.test_initial_invalid_draft_review_confirms_without_an_extra_write) ... ok
+test_initial_invalid_ready_review_restores_and_reads_before_repair (test_hotfix_readiness.HotFixReadiness.test_initial_invalid_ready_review_restores_and_reads_before_repair) ... ok
+test_missing_restoration_call_changes_the_observed_failure_route (test_hotfix_readiness.HotFixReadiness.test_missing_restoration_call_changes_the_observed_failure_route) ... ok
+test_new_review_finding_after_ready_restores_before_repair (test_hotfix_readiness.HotFixReadiness.test_new_review_finding_after_ready_restores_before_repair) ... ok
+test_passing_draft_reaches_merge_once_after_ready_readback (test_hotfix_readiness.HotFixReadiness.test_passing_draft_reaches_merge_once_after_ready_readback) ... ok
+test_passing_ready_reaches_merge_once_without_a_ready_write (test_hotfix_readiness.HotFixReadiness.test_passing_ready_reaches_merge_once_without_a_ready_write) ... ok
+test_successful_write_with_ready_readback_stops (test_hotfix_readiness.HotFixReadiness.test_successful_write_with_ready_readback_stops) ... ok
+test_unreadable_or_closed_initial_state_stops_without_writes (test_hotfix_readiness.HotFixReadiness.test_unreadable_or_closed_initial_state_stops_without_writes) ... ok
+test_unreadable_restoration_readback_stops (test_hotfix_readiness.HotFixReadiness.test_unreadable_restoration_readback_stops) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.015s
+
+OK

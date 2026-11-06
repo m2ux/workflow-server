@@ -13,6 +13,12 @@ The unit targets its verified epic base and retains the epic's acceptance criter
 | Artifact | What it holds |
 | --- | --- |
 | [w01.md](w01.md) | Implementation and validation plan for W01. |
+| [validation.md](validation.md) | Criterion and regression evidence. |
+| [e02-w01-planner-tests.log](e02-w01-planner-tests.log) | Exact local validation output. |
+| [e02-w01-shared-tests.log](e02-w01-shared-tests.log) | Exact local validation output. |
+| [e02-w01-skill-check.log](e02-w01-skill-check.log) | Exact local validation output. |
+| [solid-reader-a.md](solid-reader-a.md) | Independent reader receipt and source interpretation. |
+| [solid-reader-b.md](solid-reader-b.md) | Independent reader receipt and source interpretation. |
 
 ## Links
 
