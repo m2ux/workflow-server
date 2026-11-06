@@ -23,3 +23,5 @@ The audit fixes the subject-policy homes and script interfaces before implementa
 ## Publication
 
 The engineering record is published before the issue links its new work-item files. The saved epic is read back and revalidated after the body update. Implementation remains future E02 work.
+
+The saved issue body matches bodies/e02.md exactly. Its title, open state and labels (including priority) match the input snapshot. The saved body validates with zero fixes, applications or decisions; fields-epic-readback.json and fields-saved-format.log preserve the actual results.

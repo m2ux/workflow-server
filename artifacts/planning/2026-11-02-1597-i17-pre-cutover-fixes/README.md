@@ -34,6 +34,8 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | [E02 format result](e02/fields-format.log) | Final draft has no format or decision findings |
 | [E02 dependency result](e02/fields-dependencies.log) | Join, ordering and dependency checks with retained baseline advisory |
 | [E02 plan audit](e02/fields-plan-audit.json) | Exact new joined unit, components and preserved producer edge |
+| [Saved E02 readback](e02/fields-epic-readback.json) | Exact published body, retained identity/state/priority and linked work items |
+| [Saved E02 format result](e02/fields-saved-format.log) | Published body has no format or decision findings |
 | [E03 body](bodies/e03.md) | The Delivery Lanes epic body as saved |
 | [E03 W01](e03/w01.md) | Work item declares an optional lane |
 | [E03 W02](e03/w02.md) | Task table carries the lane column |
