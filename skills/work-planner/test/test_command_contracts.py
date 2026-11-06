@@ -27,8 +27,17 @@ def arguments(document, heading, values, omit=()):
     payload = '\n'.join(lines[first:last + 1]).removeprefix('<big><pre>').removesuffix('</pre></big>')
     visible = html.unescape(checker.ARGUMENT_LINK.sub(lambda match: match[1], payload))
     supplied = {'workspace': str(ROOT.parents[1]), **values}
+    repeated = {key: value for key, value in supplied.items() if isinstance(value, list)}
+    supplied.update({key: value[0] for key, value in repeated.items()})
     concrete = re.sub(r'<([^>]+)>', lambda match: str(supplied[match[1]]), visible)
     tokens = shlex.split(re.sub(r'\\\n[ \t]*', '', concrete))
+    for key, members in repeated.items():
+        value_index = tokens.index(str(members[0]))
+        flag = tokens[value_index - 1]
+        specification = '\n'.join(lines[start:end])
+        if not re.search(r'Repeat `' + re.escape(flag) + r'`', specification):
+            raise AssertionError(heading + ': no repeated-argument contract for ' + flag)
+        tokens[value_index - 1:value_index + 1] = [part for member in members for part in (flag, str(member))]
     script = tokens.index('python3') + 1
     selected = []
     index = script + 1
@@ -135,6 +144,64 @@ class DocumentedCommandBehavior(unittest.TestCase):
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertTrue(output.is_file(), 'the requested body is absent')
         self.assertIn(f'| [E00]({url("issues", 2)}) | Work | AC1 | | ✓ |', output.read_text())
+
+    def test_development_snapshot_example_is_valid_closure_evidence(self):
+        path = ROOT / 'artifacts/issue.md'
+        lines, _, headings = checker.scan(path)
+        start = next(index for index, depth, title in headings
+                     if depth == 3 and title == 'Development Snapshot')
+        end = checker.heading_end(headings, start, 3, len(lines))
+        values = re.findall(r'`([^`]+)`', '\n'.join(lines[start:end]))
+        snapshot = next(json.loads(value) for value in values if value.startswith('{'))
+        record = issue(943, '[I07:E00] Queue Plan: Work', repo='owner/repo',
+                       body='## Acceptance Criteria\n\n- [x] **AC1.** Holds.\n')
+        done = run('closure.py', '--issue', self.snapshot('closed issue.json', record),
+                   '--development', self.snapshot('development.json', snapshot))
+        self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+        self.assertIn('closure gate: passed', done.stdout)
+
+    def test_reservation_uses_the_published_record_date(self):
+        output = self.root / 'reserved epic.md'
+        record = issue(943, '[I07:E00] Queue Plan: Work',
+                       body=epic_body(('W01', 'Work', '')))
+        records = 'https://github.com/o/r/tree/engineering/artifacts/planning'
+        done = self.execute('epic-issue-body.md', 'Reserve Row', {
+            'epic-json-file': self.snapshot('epic.json', record),
+            'task-ids': 'W01',
+            'board-items-file': self.snapshot('items.json', [{**item(record, 'Ready'), 'id': 1943}]),
+            'records-base-url': records, 'record-date': '2001-02-03',
+            'output-body-file': str(output),
+        })
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn(records + '/2001-02-03-943-i07-e00-w01-work', output.read_text())
+
+    def test_epic_sync_evaluates_every_supplied_base(self):
+        checkout = self.root / 'checkout'
+        repository(checkout, 'main', 'workflows')
+        git(checkout, 'branch', 'workflows')
+        for branch in ('main', 'workflows'):
+            git(checkout, 'checkout', '-b', 'i07/e00/' + branch, branch)
+            git(checkout, 'commit', '--allow-empty', '-m', branch + ' work')
+        record = issue(943, '[I07:E00] Queue Plan: Work',
+                       body=epic_body((f'[W01]({url("pull", 950)}), [W01]({url("pull", 951)})', 'Work', '')))
+        pulls = [pr(number, '[I07:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i07/e00/' + branch, head='i07/e00/w01-work-' + branch)
+                 for number, branch in ((950, 'main'), (951, 'workflows'))]
+        pulls_path = self.root / 'prs.json'
+        pulls_path.write_text('\n'.join(json.dumps(pull) for pull in pulls))
+        done = self.execute('epic-issue-body.md', 'Sync Epic', {
+            'epic-json-file': self.snapshot('epic.json', record),
+            'pull-request-records-file': str(pulls_path),
+            'issue-link-snapshot-file': self.snapshot('links.json', []),
+            'task-json-file': '', 'task-pull-request-map': 'W01=950,W01=951',
+            'checkout': str(checkout),
+            'epic-base-revision': ['i07/e00/main', 'i07/e00/workflows'],
+            'output-body-file': str(self.root / 'synced epic.md'),
+        }, omit=('--tasks',))
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertNotIn('no --revision names it', done.stdout)
+        self.assertIn('draft: i07/e00/main', done.stdout)
+        self.assertIn('draft: i07/e00/workflows', done.stdout)
 
     def format_values(self, record):
         output = self.root / 'formatted body.md'

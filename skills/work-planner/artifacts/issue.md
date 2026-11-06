@@ -466,7 +466,7 @@ Authenticated access to the repository and its issue Development relations.
 
 ### Development Snapshot
 
-A complete issue-links file, keyed by issue number and carrying its repository identity. Each issue maps to all Development pull requests across repositories and states, or an empty array after a complete empty read. eg `links-943.json`, `{"943": [{"repo": "owner/repo", "number": 980, "state": "MERGED"}]}`
+A complete issue-links file with a `repository` identity and an `issues` object keyed by issue number. Each issue maps to all Development pull requests across repositories and states, or an empty array after a complete empty read. eg `links-943.json`, `{"repository": "owner/repo", "issues": {"943": [{"repo": "owner/repo", "number": 980, "state": "MERGED"}]}}`
 
 ### Issue Collection
 

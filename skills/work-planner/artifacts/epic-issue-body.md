@@ -126,7 +126,7 @@ Link each named task id to the open or merged pull requests naming the epic it i
 - A pull request whose head is an epic base is the pull request that merges that base, and is not matched to a task.
 - An unmerged epic base keeps the epic open, even when every row is delivered and every criterion is ticked.
 - An epic base is reported `draft` only where it holds a commit its long-lived branch lacks. The base is read at the `--revision` naming it and the long-lived branch beside it on the same remote, so `origin/i07/e00/main` is compared with `origin/main`; a base no `--revision` names is reported `unevaluable`.
-- Read long-lived branch names from `config/branches` at each supplied epic-base revision, such as `origin/i07/e00/main`; each `source` line names its path, commit and repository.
+- Read long-lived branch names from `config/branches` at each supplied epic-base revision, such as `origin/i07/e00/main`; each `source` line names its path, commit and repository. Repeat `--revision` for every fetched epic base.
 - An absent, empty or unreadable statement, and statements that disagree across the bases, are reported `unevaluable` with their source. Without the long-lived branch names, the run names each check it did not make as `not checked`, and an epic that would otherwise be closable is not.
 - An open review pull request's Changes paths are read at its head commit in the `--project` repository: a path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree. A head commit the repository does not hold is reported `unevaluable`.
 - Passed checks settle criteria under [Test Evidence](#test-evidence).
@@ -182,6 +182,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --reserve [**&lt;task-ids&gt;**](#task-selection "○") &#92;
   --items '[**&lt;board-items-file&gt;**](#board-items "○")' &#92;
   --records '[**&lt;records-base-url&gt;**](#planning-folder "○")' &#92;
+  --date [**&lt;record-date&gt;**](#planning-folder "○") &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
