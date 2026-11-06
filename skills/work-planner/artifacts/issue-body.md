@@ -48,7 +48,7 @@ Run [Check Body Format](#check-body-format "ƒ") for the selected body.
 
 #### 2. Review Supplied Conditions
 
-Review the body against the supplied field conditions.
+Review the body against the shared [Fields](#fields) and the supplied kind conditions.
 
 #### 3. Provide Format Findings
 

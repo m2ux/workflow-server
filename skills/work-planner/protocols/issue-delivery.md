@@ -45,5 +45,5 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 #### Body Publication
 
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the retained epic body and each task body provided by Record Task Delivery.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the retained epic body and each [task body](../artifacts/task-body.md#output-body) provided in step 2.
 - Provide the saved identities and findings to the caller.

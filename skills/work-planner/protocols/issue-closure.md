@@ -56,7 +56,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Use the issue identity and successful normal delivery result.
 
 - Apply [Capture Issue Development](../artifacts/issue.md#capture-issue-development "ƒ") for the issue in [Identity](../artifacts/issue.md#identity), saving its current JSON and Development snapshot to [Output Files](../artifacts/issue.md#output-files).
-- The issue's entire Development field establishes membership, across repositories and states. Titles, branch names, body mentions and a list filtered to one initiative do not. An empty field adds no [pull request](../artifacts/issue.md#identity) requirement.
+- The issue's entire Development field establishes membership, across repositories and states. Titles, branch names, body mentions and a list filtered to one initiative do not. An empty field adds no [pull request](../artifacts/pull-request.md#identity) requirement.
 
 - Run [Check Issue Closure](../artifacts/issue.md#check-issue-closure "ƒ") with those two files.
 

@@ -24,6 +24,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Use the confirmed proposal context and selected output path.
 
 - Populate the [Template](../artifacts/proposal-body.md#template) from [Proposal Context](../artifacts/proposal-body.md#proposal-context) at the destination in [Output Body](../artifacts/proposal-body.md#output-body).
+- The complete body must meet the shared [Body](../artifacts/issue-body.md#body) conditions, and its labels must meet [Labels](../artifacts/issue-body.md#labels).
 - The title must meet the shared [Titles](../artifacts/issue-body.md#titles) conditions and the proposal [Titles](../artifacts/proposal-body.md#titles).
 - The Problem must meet the shared [Problem and Proposal](../artifacts/issue-body.md#problem-and-proposal) conditions.
 - All populated fields must meet [Fields](../artifacts/proposal-body.md#fields).
