@@ -145,3 +145,4 @@ Runtime meanings live in [Link Roles](https://github.com/m2ux/workflow-server/bl
 | [Command quote instruments](command-quote-instruments.tar.gz) | Executed inventory, conversion and exact-delta verification scripts |
 | [Command source manifest](command-quote-source-manifest.json) | Current commit and 115 verified source hashes |
 | [Final quote document check](command-quote-documents.log) | 13 passing document tests after the final guideline wording |
+| [Command review gate](command-quote-review-gate.log) | Published current-head review matches the ready PR and target |
