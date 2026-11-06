@@ -17,3 +17,16 @@ Run focused checkout/command checks, the complete planner suite and installed mo
 | Resource | Link |
 | --- | --- |
 | Style PR | https://github.com/m2ux/workflow-server/pull/1641 |
+
+## Artifacts
+
+| Artifact | What it holds |
+| --- | --- |
+| [Validation](validation.md) | Exact source, scoped context, test changes, preservation and limits |
+| [changes.json](changes.json) | Reproducible change inventory or verification evidence |
+| [preservation.json](preservation.json) | Reproducible change inventory or verification evidence |
+| [verify.py](verify.py) | Reproducible change inventory or verification evidence |
+| [checkout-tests.log](checkout-tests.log) | Reproducible change inventory or verification evidence |
+| [command-tests.log](command-tests.log) | Reproducible change inventory or verification evidence |
+| [planner-tests.log](planner-tests.log) | Reproducible change inventory or verification evidence |
+| [model.log](model.log) | Reproducible change inventory or verification evidence |

@@ -1,0 +1,306 @@
+{
+  "baseline": "04dc3cee068b37bd5ebe37b09266e8559c7c15dc",
+  "counts": {
+    "commands": 116,
+    "fields_sections": 36,
+    "templates": 9,
+    "removed_metadata": 33,
+    "working_directory_commands": 15,
+    "checkout_sensitive_capabilities": 22,
+    "selected_call_lines": 72
+  },
+  "files": [
+    {
+      "file": "skills/work-planner/SKILL.md",
+      "sha256": "9b430e5ee43c5d0cf9d66d51ae7a87fc755f03a288841a7b6644dcbe11dc394a",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+      "sha256": "8621980639066b828835389bd40a796921d721373a8279775667978b954399bb",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/agent-review.md",
+      "sha256": "b8c95ee11bdf3fc1e66274776832e4fba6cd1e7a8ef4ab0568c220e0209b71dc",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/architecture-overview.md",
+      "sha256": "160a1ec4054ef0874b4bc29c338c7f7d11b87a28f63525466692516710bf3ccc",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "sha256": "7751b03735f0e2fc94e1a7d97fe5eac3974b2ea3ea59b32decae1114004d32fb",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "sha256": "a3c792d68cadb9db66744a4718dea8757f5e2f4bc025665e35c739a6751b072b",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "sha256": "4d32f25eef0a6b3c3eb63439e79211f95193b9d96e1034e7b40a9baf3143002a",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-branches.md",
+      "sha256": "fa0225db19612e42d88d357c57c4f7589abdfbcdaec449ba4a00fe9a9ade03f6",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-brief.md",
+      "sha256": "8f61a3f52846ef56ca9d81b8356fbb5c348e6456da8ca2f9736e4eeaa9022297",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-evidence.md",
+      "sha256": "b87ac076592bed2614f6c30aee1c2ad3f56b17a88bf5de7f53a9ca460b73c156",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/delivery-plan.md",
+      "sha256": "68a00b5826892c956756eacc955cfb909a79b21868f412640a30622415b081ad",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "sha256": "5d07b5896d40a7f20212bc68ebed5cf3df3b9d00d66b49a40e8ea7e8aaac8ebd",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/dispatch-batch.md",
+      "sha256": "e81d9c5a3e45908ea62ab6399b276a48e24c8ed3b8da6f9f0ccc370ff1c7b345",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic-issue-body.md",
+      "sha256": "763c1a5d1a169e7379e2ef516af8ba1c2cca0ddcc3be8eb5492ecb4058a5431d",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/epic.md",
+      "sha256": "b10282315c19259bfa61742e5ca43fb783b23744543824bf5f8866572e643e52",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/goal-trace.md",
+      "sha256": "c00d26998faa6ff541abd098f6620d87e916085c019f28079d96c26e2fea3d13",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix-body.md",
+      "sha256": "8acba62a046050ac0fc66f57ba1e6595b52c5be05f4152d9d18665e1eaeba6bf",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/hotfix.md",
+      "sha256": "4a7de6907442b3a8f089a71935b7d8db9f27d763464c89898df059b656206351",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "sha256": "7ec63e6ad852375524016fdfd7c75ae6e8ac5c3397ccf81a24a6afeca6922718",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/initiative.md",
+      "sha256": "43321e5a7b165dc710f93976e169cd8f1f4654312ecf30bd3c5c43fb65b8ae75",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue-body.md",
+      "sha256": "0e143056dabec6e899040f94638fba610bc84eadd4f6e9487c1518956a622e12",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/issue.md",
+      "sha256": "ed33dd6d55c35e04a4229052dea0226b662b4770fa3cb7894d039adbe2d38047",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "sha256": "faa8b05010ad36652550e562be470bf2926ab29e9db81df5a2a8e30c4e028a13",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/placement.md",
+      "sha256": "063c099c642049fa733cee8400dbf5a2f729a0fe575923bb410466deabb6c57c",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/plan-change.md",
+      "sha256": "9f72d980d0946b66265035d36002bf8737b84ce9b12dcad98c68a9677628440c",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "sha256": "7fe7a1a16d2b51cc15365090d39711851be0b9386e7afcf04f62b8eecfbf1dd0",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/proposal-body.md",
+      "sha256": "6733f3e31a49b963d31c3125d6428530b5555f17fc38c152796ce52bd6f30ea8",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request-body.md",
+      "sha256": "d599d031e0163644bc549ae3acb2bc7b28eaf4b2a31fc84e6de4fbd31ab65500",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/pull-request.md",
+      "sha256": "f4d752f29008363bc623eb7dc0f54653a8c4c4c7798fd05db525b2cf0b49c47f",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "sha256": "abb198dec49a918482b85d8550815e9c1eb433a011b1bf89aab11d8980ca43c6",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-labels.md",
+      "sha256": "4e9edfa6a885c8739e5addef413d1b374d78defea8bfae5c17eb8a42b681ffe0",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/review-finding.md",
+      "sha256": "84e7e96dbbefc72febcd7660a3833c82c95209b21ddc44af9e9cf37eee556646",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/standalone-body.md",
+      "sha256": "3889812f957afebcb8d9adc0e5489c0bfd4b9f915b740b3c5b815a42764fefc4",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "sha256": "5b1511b3e315cca134be761f35d3dc39e840030f0b434eeafde8bf51c5f35e25",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/task-body.md",
+      "sha256": "44a5a5621fe129893a540c1d89a233763cfb70cfd27425b804eaf3557952d1b8",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/artifacts/work-item.md",
+      "sha256": "c8828782ab4d4998986e1c250332601a1ca898cf46466138a422057b1bc8eca8",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/configuration.md",
+      "sha256": "d7951b91e17363489349bce8616373fe4e4bbb2f194d567e634c5ecc4aa13565",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/conventions.md",
+      "sha256": "da8a94ea01f2b8869d03314a2e436b422e3cf47d057d0cc3d6f3b856ee503270",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/guidelines.md",
+      "sha256": "23f8bb6c88a74ab62ce73af54be7c4c07052aee08e19f4284d710d7c2037a011",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/modes/advance-mode.md",
+      "sha256": "a48fd09d717057182196dba98e51a8da150d2dc2ad34efc4f6e9ed7b5f6396e1",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/modes/align-mode.md",
+      "sha256": "5a59ca7ece8196172a297249ca0ec24b73fd76bacb2099e63b12b497af21c911",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/modes/deliver-mode.md",
+      "sha256": "fd0eb149572d406c5a1c7f0813be3c0171eea2df06e570bfec194a6cad14239d",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/modes/hoist-mode.md",
+      "sha256": "ec3275388de1a34382375d7b8d85f92d12b4b7bed4e38d3f33f49b1b61a4ce13",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/modes/plan-mode.md",
+      "sha256": "bdcc746b19be12bf7ea79244607a31c854bd845cba17b683f7f4e3807d6f5697",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/modes/propose-mode.md",
+      "sha256": "07b4f6da6666449f8316efe28484b1a422db19c8b69031ca89f4deb55e3b0cc7",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/modes/revise-mode.md",
+      "sha256": "d2c9343eeb78dedab128381f027ff2d86ac6f36a109c862807e9f1b0c3dee385",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/modes/standup-mode.md",
+      "sha256": "911aa291e087e50f8132c138fa958af77f170bed5d357960dc7af8cd7c692563",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/modes/sync-mode.md",
+      "sha256": "e37e1555898889ce85207473369d803a723897ac974bf744647a1f8b98c018ce",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/modes/understand-mode.md",
+      "sha256": "bcb732bf802f90ad8f14280c7aea74c40c5c04b23316cb9c8338a0ff559abd6d",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/protocols/change-overview.md",
+      "sha256": "63793ba2470a1b97a771375019a178c72a2ee624b166c3cdc97c9db65787fcc3",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/protocols/epic-integration.md",
+      "sha256": "642f78886f47c817dc05437fef1ca9ada8ea837fbf983f6cbf199eab8aace067",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/protocols/issue-closure.md",
+      "sha256": "bf6beef5148bd316c972a78f213b0ef609733f4f864795ec4d78b919caeeb561",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/protocols/issue-delivery.md",
+      "sha256": "4694b490aee2df2c65d7f326faa532b2e7cfba49067c192ff738d4ce026ee63e",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/protocols/review-pull-request.md",
+      "sha256": "49086f8693d623cdaa1c6d6314357b0694f1c99d4cb4618aa759bcc6e8b1206b",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/protocols/task-merge.md",
+      "sha256": "b5833ce4458ea072d0dc4bdd95f201d5b45e41098b66478844c7027535b6e5b9",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/protocols/unit-dispatch.md",
+      "sha256": "78875fb5797c027443c126d692480743b4d961d80552583c6132f1d02923ceed",
+      "changed": true
+    },
+    {
+      "file": "skills/work-planner/references/requirement-characteristics.md",
+      "sha256": "ac9fe4cc179fba843ec711218e0b0704320cb078f3c790b1e08b231d9a7d74ee",
+      "changed": false
+    },
+    {
+      "file": "skills/work-planner/rules.md",
+      "sha256": "781b296eb9d795a16f16cc7a6f7e242e7fc3797a773aaec4b5dc3a24054dc631",
+      "changed": false
+    }
+  ],
+  "unchanged_invocations_headings_fields_prerequisites_templates": true,
+  "reading_paths": "Same named documents, prerequisite sections and called capabilities; five graph command specifications explicitly link their existing local Review Checkout field."
+}

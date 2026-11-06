@@ -1,0 +1,107 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "removed_declarations": 10,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "removed_declarations": 5,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/conventions.md",
+    "removed_declarations": 0,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/guidelines.md",
+    "removed_declarations": 0,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/modes/advance-mode.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/modes/align-mode.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/modes/deliver-mode.md",
+    "removed_declarations": 2,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/modes/hoist-mode.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/modes/plan-mode.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/modes/propose-mode.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/modes/standup-mode.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/modes/understand-mode.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/protocols/change-overview.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/protocols/epic-integration.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-closure.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-delivery.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/protocols/review-pull-request.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/protocols/task-merge.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  },
+  {
+    "file": "skills/work-planner/protocols/unit-dispatch.md",
+    "removed_declarations": 1,
+    "invocations_and_headings_identical": true
+  }
+]
