@@ -1,0 +1,33 @@
+{
+  "base": "d22b9a1919f1ba8bfe60017e420b7d9527519dd0",
+  "markdown_files": 58,
+  "original_named_fields": 564,
+  "current_named_fields": 516,
+  "reviewed_original_fields": 564,
+  "dispositions": {
+    "inline rule": 19,
+    "clarified data": 54,
+    "linked data": 1,
+    "retained data": 449,
+    "separated data and rule": 2,
+    "consolidated data constraints": 1,
+    "merged value invariant": 5,
+    "merged document schema": 3,
+    "shared policy": 23,
+    "remove implied input": 1,
+    "split data and rule": 2,
+    "consolidated document schema": 3,
+    "split data": 1
+  },
+  "unchanged_invocations": 117,
+  "unchanged_literal_templates": 9,
+  "runtime_scripts_changed": [],
+  "new_fields": [
+    "artifacts/acceptance-criteria.md#criterion",
+    "artifacts/board.md#theme-board-title",
+    "artifacts/issue-body.md#labels",
+    "artifacts/lane.md#assignment-read-result",
+    "artifacts/lane.md#unit-lane-result",
+    "artifacts/lane.md#admission-result"
+  ]
+}

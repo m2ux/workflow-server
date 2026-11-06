@@ -1,0 +1,1685 @@
+differing: skills/work-planner/artifacts/acceptance-criteria.md ### Verify Selected Criteria
+  --- skills/work-planner/artifacts/acceptance-criteria.md
+  +++ skills/work-planner/artifacts/acceptance-criteria.md
+  @@ -2,14 +2,20 @@
+   
+   #### 1. Confirm Criterion Readiness
+   
+  -- Confirm [Delivery Evidence](#delivery-evidence) establishes [Readiness](#readiness) for the [Criterion Selection](#criterion-selection) in the [Issue Body](#issue-body).
+  -- Provide evidence that fails Readiness as a blocker for that criterion.
+  +- Confirm [Delivery Evidence](#delivery-evidence) establishes readiness for the [Criterion Selection](#criterion-selection) in the [Issue Body](#issue-body).
+  +- Provide evidence that fails readiness as a blocker for that criterion.
+  +
+  +- A task criterion is ready to verify when its delivering pull request, open or merged, supplies readable evidence at the revision being checked. Epic criteria require their delivering rows to be delivered. An unreadable dependency leaves a criterion unready; tracker closure requires merged delivery.
+   
+   #### 2. Run Named Instruments
+   
+  -- Run each criterion's named [instrument](#instrument) at the delivering pull request head for an open task, or its merged revision for delivered work, meeting [Instrument Checkout](#instrument-checkout).
+  +- Run each criterion's named [instrument](#instrument) at the delivering pull request head for an open task, or its merged revision for delivered work.
+   - Run [Run at Revision](#run-at-revision) with the [project checkout](#project-checkout), that revision and the instrument.
+  -- Record the result against the commit it reports, meeting [Instrument Result](#instrument-result).
+  +- Record the [Instrument Result](#instrument-result) against the commit it reports.
+  +
+  +- An instrument runs in a checkout of the project at the exact revision it is verifying, which the caller supplies. A checkout the caller is editing is not that revision, so a criterion verified against uncommitted work is unverified. A branch or tag is resolved to one commit before the run, and the checkout made for the run is removed after it whatever the instrument returns.
+  +
+  +- A criterion is verified only on a passing run of its named instrument, recorded against the tested revisions as [Coverage Reports](#coverage-reports) define. A failed, unavailable or inconclusive instrument leaves it unverified, and an unverified criterion is not ticked.
+   
+   #### 3. Provide Criterion Evidence
+   
+differing: skills/work-planner/artifacts/acceptance-criteria.md ### Tick Verified Criteria
+  --- skills/work-planner/artifacts/acceptance-criteria.md
+  +++ skills/work-planner/artifacts/acceptance-criteria.md
+  @@ -2,9 +2,11 @@
+   
+   #### 1. Record Verified Criteria
+   
+  -- Record the criteria from [Issue Evidence](#issue-evidence), meeting [Tick State](#tick-state).
+  +- Record the criteria from [Issue Evidence](#issue-evidence).
+   - For an epic, Run [Tick Epic Criteria](#tick-epic-criteria) with the verified criterion ids.
+   - For an initiative, Run [Tick Initiative Criteria](#tick-initiative-criteria) with the verified criterion ids.
+  +
+  +- A ticked criterion carries verification evidence. Epic criteria can derive that evidence from passed checks under [Test Evidence](#test-evidence). Done on the row or table that cites it must follow [Tables](#tables) and [Work Breakdown](#work-breakdown). A criterion refused as not ready to verify is provided unticked with what it is missing.
+   
+   #### 2. Provide Body Disposition
+   
+identical: skills/work-planner/artifacts/acceptance-criteria.md ### Run at Revision
+differing: skills/work-planner/artifacts/acceptance-criteria.md ### Instrument Result
+  --- skills/work-planner/artifacts/acceptance-criteria.md
+  +++ skills/work-planner/artifacts/acceptance-criteria.md
+  @@ -1 +1 @@
+  -A criterion is verified only on a passing run of its named instrument, recorded against the tested revisions as [Coverage Reports](#coverage-reports) define. A failed, unavailable or inconclusive instrument leaves it unverified, and an unverified criterion is not ticked.
+  +The first standard-output line is a JSON object with `revision`, the resolved commit SHA, and `checkout`, the temporary checkout path; subsequent standard output is the instrument's output. The result also carries the process exit status and standard error. Helper failure can omit the JSON header. The status and error cases are specified by [Run at Revision](#run-at-revision). eg `{"revision":"3f2a1c0d9b1e0000000000000000000000000000","checkout":"/tmp/criterion-check"}`
+differing: skills/work-planner/artifacts/acceptance-criteria.md ### Criterion Selection
+  --- skills/work-planner/artifacts/acceptance-criteria.md
+  +++ skills/work-planner/artifacts/acceptance-criteria.md
+  @@ -1 +1 @@
+  -The supplied criterion ids selected for verification or confirmed as verified for recording.
+  +The supplied [Criterion](#criterion) ids selected for verification or confirmed as verified for recording.
+identical: skills/work-planner/artifacts/acceptance-criteria.md ### Issue Evidence
+identical: skills/work-planner/artifacts/acceptance-criteria.md ### Delivery Evidence
+identical: skills/work-planner/artifacts/acceptance-criteria.md ### Instrument
+identical: skills/work-planner/artifacts/acceptance-criteria.md ### Project Checkout
+identical: skills/work-planner/artifacts/acceptance-criteria.md ### Revision
+identical: skills/work-planner/artifacts/acceptance-criteria.md ### Verification Evidence
+identical: skills/work-planner/artifacts/acceptance-criteria.md ### Output Body
+identical: skills/work-planner/artifacts/acceptance-criteria.md ### Workspace
+identical: skills/work-planner/artifacts/acceptance-criteria.md ### Issue Body
+differing: skills/work-planner/artifacts/agent-review.md ### Produce Agent Review
+  --- skills/work-planner/artifacts/agent-review.md
+  +++ skills/work-planner/artifacts/agent-review.md
+  @@ -8,10 +8,12 @@
+   
+   - Record findings with severity and disposition. A nonblocking deferred finding names its ticket.
+   
+  -- When the findings require fixes under [Review Record](#review-record):
+  +- When a blocking finding or any hot-fix finding requires a fix:
+   - Fix every required finding on the reviewed branch.
+   - Run appropriate regression checks.
+   - Apply [Produce Agent Review](#produce-agent-review) for the resulting head with fresh metadata and updated validation evidence, then provide its review record to the requester and stop.
+  +
+  +- Blocking findings, and every finding on a hot-fix's delivering pull request, must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff.
+   
+   #### 3. Write Revision Review Record
+   
+identical: skills/work-planner/artifacts/agent-review.md ### Validate Agent Review
+differing: skills/work-planner/artifacts/agent-review.md ### Review Record
+  --- skills/work-planner/artifacts/agent-review.md
+  +++ skills/work-planner/artifacts/agent-review.md
+  @@ -1,3 +1,3 @@
+   Each record contains `pull_request` (the full GitHub URL), `head` and `base` (full commit SHAs), `url` (the published HTTPS record URL), `reviewer`, `reviewed_at`, `scope`, `criteria`, `validation` and `findings`. The scope describes the full integration diff and inspected callers; criteria and validation describe the evidence inspected and its results. The pull request body links the published record.
+   
+  -Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. Blocking findings, and every finding on a hot-fix's delivering pull request, must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff. A record on a hot-fix's delivering pull request also carries `base_ref`, the name of its base branch. A record is current while it names the pull request's head and base SHAs. One on a hot-fix's delivering pull request is current while it names its head SHA and its base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. The last record for the same revision is authoritative.
+  +Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. A record on a hot-fix's delivering pull request also carries `base_ref`, the name of its base branch. A record is current while it names the pull request's head and base SHAs. One on a hot-fix's delivering pull request is current while it names its head SHA and its base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. The last record for the same revision is authoritative.
+identical: skills/work-planner/artifacts/agent-review.md ### Review Inputs
+identical: skills/work-planner/artifacts/agent-review.md ### Pull Request Record
+identical: skills/work-planner/artifacts/agent-review.md ### Published Reviews
+identical: skills/work-planner/artifacts/agent-review.md ### Review Eligibility
+identical: skills/work-planner/artifacts/agent-review.md ### Workspace
+identical: skills/work-planner/artifacts/architecture-overview.md ### Template
+differing: skills/work-planner/artifacts/architecture-overview.md ### Diagrams
+  --- skills/work-planner/artifacts/architecture-overview.md
+  +++ skills/work-planner/artifacts/architecture-overview.md
+  @@ -9,3 +9,9 @@
+   | Before and After | A pair in the notation of the structure they show | The arrangement the change replaces beside the one it establishes | When the change rearranges structure or reorders a flow |
+   
+   Component node shapes: `[text]` a module, `[(text)]` a store, `[[text]]` a process boundary, `([text])` an actor.
+  +
+  +Five to ten elements. A diagram that needs more splits by concept, and relationships between areas carry it rather than the internals of one.
+  +
+  +An element the change adds or alters carries a distinct fill, and untouched context is grey. A name and its fill hold across every diagram in the overview.
+  +
+  +Every edge names its interaction, and its direction is the direction data or control travels.
+identical: skills/work-planner/artifacts/architecture-overview.md ### Code References
+differing: skills/work-planner/artifacts/architecture-overview.md ### What Changed
+  --- skills/work-planner/artifacts/architecture-overview.md
+  +++ skills/work-planner/artifacts/architecture-overview.md
+  @@ -1 +1 @@
+  -What Changed states the behaviour each area now has. The change-by-change listing is the pull request's Changes section, which the overview links rather than reproduces.
+  +The overview's What Changed section: area names and the behaviour each area now has. The change-by-change listing is the pull request's Changes section, which the overview links rather than reproduces.
+identical: skills/work-planner/artifacts/architecture-overview.md ### Reading Order
+identical: skills/work-planner/artifacts/architecture-overview.md ### Measurements
+identical: skills/work-planner/artifacts/architecture-overview.md ### Pull Request Head
+differing: skills/work-planner/artifacts/architecture-overview.md ### Overview File
+  --- skills/work-planner/artifacts/architecture-overview.md
+  +++ skills/work-planner/artifacts/architecture-overview.md
+  @@ -1 +1 @@
+  -The supplied local output path and the overview contents at that path. The file is absent until populated.
+  +The supplied local output path and the overview contents at that path. The file is absent until populated. Summary, Structure, Behaviour, What Changed and Reading Order are always present. Risks and Watch Points, and References, are deleted when they have nothing to say.
+identical: skills/work-planner/artifacts/board-delivery.md ### Record Epic Review
+identical: skills/work-planner/artifacts/board-delivery.md ### Record Dispatch Status
+differing: skills/work-planner/artifacts/board-delivery.md ### Compute Board Changes
+  --- skills/work-planner/artifacts/board-delivery.md
+  +++ skills/work-planner/artifacts/board-delivery.md
+  @@ -23,3 +23,5 @@
+   
+   - Require the complete [Issue Link Snapshot](#issue-link-snapshot); refuse the computation without it.
+   - Supply published review records linked from each open epic integration pull request; retain missing records as handoff blockers.
+  +
+  +- Assignee changes must follow [Assignees](#assignees). A newly added issue receives its status on a subsequent pass using refreshed items. Apply [Status Changes](#status-changes) to the supplied evidence.
+differing: skills/work-planner/artifacts/board-delivery.md ### Compute Dispatch Status
+  --- skills/work-planner/artifacts/board-delivery.md
+  +++ skills/work-planner/artifacts/board-delivery.md
+  @@ -13,3 +13,5 @@
+     --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' &#92;
+     --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews)'
+   </pre></big>
+  +
+  +- Apply the dispatch jurisdiction in [Status Changes](#status-changes). Assignee changes must follow [Assignees](#assignees).
+identical: skills/work-planner/artifacts/board-delivery.md ### Status Changes
+differing: skills/work-planner/artifacts/board-delivery.md ### Change Calls
+  --- skills/work-planner/artifacts/board-delivery.md
+  +++ skills/work-planner/artifacts/board-delivery.md
+  @@ -1 +1 @@
+  -The result contains calls for issues to add, items to remove, Status to set and assignees to add or remove. Each call names its affected issue and board item. Assignees must follow [Assignees](#assignees).
+  +A collection of executable calls for issues to add, items to remove, Status to set and assignees to add or remove. Each call names its affected issue and board item.
+differing: skills/work-planner/artifacts/board-delivery.md ### Missing Evidence
+  --- skills/work-planner/artifacts/board-delivery.md
+  +++ skills/work-planner/artifacts/board-delivery.md
+  @@ -1 +1 @@
+  -Unresolved issue references identify dependency records the caller must supply before a complete result. A newly added issue receives its status on a subsequent pass using refreshed items.
+  +A collection of unresolved issue references identifying dependency records missing from the supplied evidence. Each reference retains its repository and issue number.
+identical: skills/work-planner/artifacts/board-delivery.md ### Resolved Issues
+identical: skills/work-planner/artifacts/board-delivery.md ### Review Selection
+identical: skills/work-planner/artifacts/board-delivery.md ### Saved Identities
+identical: skills/work-planner/artifacts/board-delivery.md ### Dispatch Selection
+identical: skills/work-planner/artifacts/board-delivery.md ### Board Changes
+identical: skills/work-planner/artifacts/board-delivery.md ### Confirmed Statuses
+identical: skills/work-planner/artifacts/board-delivery.md ### Initiative Record
+identical: skills/work-planner/artifacts/board-delivery.md ### Epic Records
+identical: skills/work-planner/artifacts/board-delivery.md ### Task Records
+identical: skills/work-planner/artifacts/board-delivery.md ### Pull Request Records
+identical: skills/work-planner/artifacts/board-delivery.md ### Published Reviews
+identical: skills/work-planner/artifacts/board-delivery.md ### Issue Link Snapshot
+identical: skills/work-planner/artifacts/board-delivery.md ### Board Identity
+identical: skills/work-planner/artifacts/board-delivery.md ### Board Fields
+identical: skills/work-planner/artifacts/board-delivery.md ### Board Items
+identical: skills/work-planner/artifacts/board-delivery.md ### Output Directory
+identical: skills/work-planner/artifacts/board-delivery.md ### Output Paths
+identical: skills/work-planner/artifacts/board-delivery.md ### Assignee Login
+identical: skills/work-planner/artifacts/board-delivery.md ### Workspace
+differing: skills/work-planner/artifacts/board-queue.md ### Compute Board Queue
+  --- skills/work-planner/artifacts/board-queue.md
+  +++ skills/work-planner/artifacts/board-queue.md
+  @@ -13,10 +13,27 @@
+   </pre></big>
+   
+   - Include each supplied [Resolved Issues](#resolved-issues) file with `--others`.
+  -- Limit proposed writes to [Status Scope](#status-scope).
+   
+   - Repeat `--unplanned` for each supplied [Unplanned Initiative](#unplanned-initiatives).
+   
+   - The computation reads [Read Lane Assignments](#read-lane-assignments) and runs [Validate Lane Unit](#validate-lane-unit) internally with each complete free unit derived after queue placement.
+   - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix’s, which its [Board Status](#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
+   - Distinguish pending decisions and missing evidence under [Completeness](#completeness). The requester supplies further evidence and confirmed decisions for another pass and applies the proposed changes.
+  +
+  +- The highest priority set is In Progress, all together. The next set is Ready, all together. Lower sets stay in Backlog. When the highest set leaves In Progress, the Ready set moves to In Progress.
+  +- An initiative in Backlog with no priority label stays there. An initiative in Ready with no priority label moves to Backlog, as [Backlog Cascade](#backlog-cascade) states.
+  +- An initiative In Progress with no priority label needs a decision: a positive integer keeps it In Progress; none sends it to Backlog once its epics' work has completed.
+  +- An initiative stays In Progress while an epic its Work Breakdown lists is [active](#epic-activity), [handed off](#epic-handoff) or In Review, even when a higher set has started, as Board Delivery holds it In Progress. The epic's integration pull request is not activity; the epic's In Review status is what holds the initiative while that pull request awaits its merge. The highest set moves to In Progress immediately. Once that work completes, a lower set moves to Ready if it is the next number, or Backlog if a number sits between it and the highest.
+  +- An initiative confirmed unplanned follows the same wait, then moves to Backlog as [Backlog Cascade](#backlog-cascade) states.
+  +- An initiative In Review or Done remains in that state.
+  +
+  +- Each hot-fix stands where its [Board Status](#board-status) places it.
+  +
+  +- On an initiative Ready or In Progress, an [active](#epic-activity) epic is In Progress even with open questions. A delivered task row alone is not activity.
+  +- On that initiative, an inactive epic can start when every entry of its initiative row's Depends on cell is delivered, every prerequisite epic that row names is closed as completed, all of each prerequisite's bases have merged into their long-lived branches, and the epic's Open Questions section is empty.
+  +- Of the epics that can start, those carrying the highest priority number are next and Ready, all together. The highest counts the epics already In Progress, so an epic of a lower number waits while a higher one runs.
+  +- An epic with no priority label is never Ready, whatever its siblings' state, so one that can start stays in Backlog.
+  +- Any other Ready or In Progress epic of that initiative moves to Backlog.
+  +- An epic In Review or Done, or [handed off](#epic-handoff), remains in that state.
+  +- A Ready epic of an initiative that is neither Ready nor In Progress moves to Backlog. An epic is Ready only on an initiative Ready or In Progress.
+  +- An initiative kept In Progress only while its epics' work completes readies none of its epics: its active epics are In Progress, and its inactive epics in Ready or In Progress move to Backlog.
+differing: skills/work-planner/artifacts/board-queue.md ### Board Identity
+  --- skills/work-planner/artifacts/board-queue.md
+  +++ skills/work-planner/artifacts/board-queue.md
+  @@ -1 +1 @@
+  -The queue belongs to one theme board, identified as `users/{owner}/projectsV2/{id}` or `orgs/{owner}/projectsV2/{id}`. Its source snapshots contain board items with Status, board fields, initiative pull requests and any off-board issues its rows depend on. eg `users/<owner>/projectsV2/9`
+  +The theme board identity as `users/{owner}/projectsV2/{id}` or `orgs/{owner}/projectsV2/{id}`. eg `users/<owner>/projectsV2/9`
+differing: skills/work-planner/artifacts/board-queue.md ### Priority Sets
+  --- skills/work-planner/artifacts/board-queue.md
+  +++ skills/work-planner/artifacts/board-queue.md
+  @@ -1,4 +1,4 @@
+  -A parallel work map assigns a positive integer to each ranked initiative. Every initiative with the same number runs together as one set. One left unordered stays in Backlog.
+  +A parallel work map is a mapping from initiative identity to positive integer priority. Every initiative with the same number runs together as one set. One left unordered stays in Backlog.
+   
+   The epics of one initiative carry their own sets. Every epic with the same number starts together, and a number is compared only with its siblings'.
+   
+identical: skills/work-planner/artifacts/board-queue.md ### Backlog Cascade
+identical: skills/work-planner/artifacts/board-queue.md ### Epic Activity
+identical: skills/work-planner/artifacts/board-queue.md ### Epic Handoff
+identical: skills/work-planner/artifacts/board-queue.md ### Task Eligibility
+differing: skills/work-planner/artifacts/board-queue.md ### Ready Units
+  --- skills/work-planner/artifacts/board-queue.md
+  +++ skills/work-planner/artifacts/board-queue.md
+  @@ -1 +1 @@
+  -A Ready unit contains one unjoined row or all rows of a unit defined by [Joins](#joins). Every member must be free and undelivered and meet [Task Eligibility](#task-eligibility) under its epic's proposed status; row availability follows [Task Delivery](#task-delivery). Units include rows with no linked work item. Status and assignee calls depend on priority and delivery state.
+  +A collection of units, each carrying initiative, epic and member task ids plus its [lane report label](#report-label). A unit contains one unjoined row or all rows of a unit defined by [Joins](#joins). Every member must be free and undelivered and meet [Task Eligibility](#task-eligibility) under its epic's proposed status; row availability follows [Task Delivery](#task-delivery). Units include rows with no linked work item. Status and assignee calls depend on priority and delivery state.
+identical: skills/work-planner/artifacts/board-queue.md ### Proposed Changes
+identical: skills/work-planner/artifacts/board-queue.md ### Report Lines
+identical: skills/work-planner/artifacts/board-queue.md ### Unresolvable Dependencies
+identical: skills/work-planner/artifacts/board-queue.md ### Completeness
+identical: skills/work-planner/artifacts/board-queue.md ### Resolved Issues
+identical: skills/work-planner/artifacts/board-queue.md ### Unplanned Initiatives
+differing: skills/work-planner/artifacts/board-queue.md ### Queue Result
+  --- skills/work-planner/artifacts/board-queue.md
+  +++ skills/work-planner/artifacts/board-queue.md
+  @@ -1 +1 @@
+  -The proposed calls, report lines and unresolved references, retaining pending decisions, missing evidence and invalid assignments.
+  +A report containing proposed [changes](#proposed-changes), [Report Lines](#report-lines) and unresolved issue references, with the command exit status. The call files are written in [Output Directory](#output-directory). Pending decisions, missing evidence and invalid assignments remain explicit in the report; this is not a JSON envelope.
+identical: skills/work-planner/artifacts/board-queue.md ### Board Items
+identical: skills/work-planner/artifacts/board-queue.md ### Pull Request Records
+identical: skills/work-planner/artifacts/board-queue.md ### Issue Link Snapshot
+identical: skills/work-planner/artifacts/board-queue.md ### Board Fields
+identical: skills/work-planner/artifacts/board-queue.md ### Output Directory
+identical: skills/work-planner/artifacts/board-queue.md ### Assignee Login
+identical: skills/work-planner/artifacts/board-queue.md ### Workspace
+identical: skills/work-planner/artifacts/board.md ### Select Project Board
+identical: skills/work-planner/artifacts/board.md ### Create Proposals Board
+identical: skills/work-planner/artifacts/board.md ### Place Issue on Board
+identical: skills/work-planner/artifacts/board.md ### Read Board State
+identical: skills/work-planner/artifacts/board.md ### Read Board Configuration
+identical: skills/work-planner/artifacts/board.md ### Find Board Template
+identical: skills/work-planner/artifacts/board.md ### Copy Board Template
+identical: skills/work-planner/artifacts/board.md ### Link Board to Repository
+identical: skills/work-planner/artifacts/board.md ### Find Proposals Board
+identical: skills/work-planner/artifacts/board.md ### Add Issue to Board
+identical: skills/work-planner/artifacts/board.md ### Set Item Status
+identical: skills/work-planner/artifacts/board.md ### Remove Board Item
+identical: skills/work-planner/artifacts/board.md ### Fetch Board Fields
+identical: skills/work-planner/artifacts/board.md ### Find Theme Board
+identical: skills/work-planner/artifacts/board.md ### Find Status Field
+identical: skills/work-planner/artifacts/board.md ### Fetch Board Items with Status
+identical: skills/work-planner/artifacts/board.md ### Fetch Board Item
+identical: skills/work-planner/artifacts/board.md ### Find User
+differing: skills/work-planner/artifacts/board.md ### Themes
+  --- skills/work-planner/artifacts/board.md
+  +++ skills/work-planner/artifacts/board.md
+  @@ -1,3 +1,3 @@
+  -Every initiative belongs to one theme, and each theme has one project board. Each project names its own themes.
+  +The project's named themes and their board associations. Each initiative has exactly one theme, and each theme has one project board. An initiative carries one `theme:*` label, and each of its epics carries the same one.
+   
+   Project examples are in [Themes](#themes).
+identical: skills/work-planner/artifacts/board.md ### Repositories
+identical: skills/work-planner/artifacts/board.md ### Assignees
+identical: skills/work-planner/artifacts/board.md ### Standalone Issues
+identical: skills/work-planner/artifacts/board.md ### Proposals
+identical: skills/work-planner/artifacts/board.md ### Board Owner
+identical: skills/work-planner/artifacts/board.md ### Board Selection
+identical: skills/work-planner/artifacts/board.md ### Board Coordinates
+identical: skills/work-planner/artifacts/board.md ### Repository
+identical: skills/work-planner/artifacts/board.md ### Theme Provenance
+identical: skills/work-planner/artifacts/board.md ### Selected Kind
+identical: skills/work-planner/artifacts/board.md ### Template Selection
+identical: skills/work-planner/artifacts/board.md ### Copy Title
+identical: skills/work-planner/artifacts/board.md ### Selected Board
+identical: skills/work-planner/artifacts/board.md ### Copied Board
+identical: skills/work-planner/artifacts/board.md ### Issue Id
+identical: skills/work-planner/artifacts/board.md ### Initial Status
+identical: skills/work-planner/artifacts/board.md ### Item Coordinates
+identical: skills/work-planner/artifacts/board.md ### Status Field
+identical: skills/work-planner/artifacts/board.md ### Status Input File
+identical: skills/work-planner/artifacts/board.md ### Output Files
+identical: skills/work-planner/artifacts/board.md ### Board State
+identical: skills/work-planner/artifacts/board.md ### Board Configuration
+identical: skills/work-planner/artifacts/board.md ### Authenticated Access
+identical: skills/work-planner/artifacts/board.md ### Assignee Login
+identical: skills/work-planner/artifacts/board.md ### Membership Result
+identical: skills/work-planner/artifacts/board.md ### Optional Item
+identical: skills/work-planner/artifacts/board.md ### Link Result
+identical: skills/work-planner/artifacts/board.md ### Board Fields File
+identical: skills/work-planner/artifacts/board.md ### Board Items File
+identical: skills/work-planner/artifacts/board.md ### Theme Name
+identical: skills/work-planner/artifacts/delivery-branches.md ### Prepare Delivery Bases
+identical: skills/work-planner/artifacts/delivery-branches.md ### Update Epic Base
+identical: skills/work-planner/artifacts/delivery-branches.md ### Update Task Branch
+identical: skills/work-planner/artifacts/delivery-branches.md ### Create Pull Request Worktree
+identical: skills/work-planner/artifacts/delivery-branches.md ### Read Delivery Branches
+identical: skills/work-planner/artifacts/delivery-branches.md ### List Epic Bases
+identical: skills/work-planner/artifacts/delivery-branches.md ### List Long-Lived Branches
+identical: skills/work-planner/artifacts/delivery-branches.md ### Fetch Remote Branch
+identical: skills/work-planner/artifacts/delivery-branches.md ### Publish Epic Base
+differing: skills/work-planner/artifacts/delivery-branches.md ### Merge Remote Branch
+  --- skills/work-planner/artifacts/delivery-branches.md
+  +++ skills/work-planner/artifacts/delivery-branches.md
+  @@ -5,3 +5,13 @@
+   <big><pre>
+   git merge --no-edit 'origin/[**&lt;source-branch&gt;**](#source-branch)'
+   </pre></big>
+  +
+  +- Every worktree of a repository shares one stash list, so a delivery session that stashes names its entry with a message no other session's entry carries, and acts on that entry alone.
+  +
+  +- **Found.**
+  +  An entry is found by its message, never by its position in the list.
+  +- **Restored.**
+  +  An entry is restored with `git stash apply` on that entry's commit, never with a bare `git stash pop`, which takes whichever entry tops the list.
+  +- **Dropped.**
+  +  The session that made an entry drops it once restored, by the `stash@{<n>}` reference its message holds at that moment, since `git stash drop` takes no bare commit.
+  +- eg `git stash push -m "i11/e10/w29 before base merge"`, then `git stash list --format='%H %gd %s'` to find the entry, `git stash apply <entry-commit>`, and `git stash drop "stash@{<n>}"`.
+identical: skills/work-planner/artifacts/delivery-branches.md ### Push Epic Base
+identical: skills/work-planner/artifacts/delivery-branches.md ### Push Task Branch
+identical: skills/work-planner/artifacts/delivery-branches.md ### Add Task Worktree
+identical: skills/work-planner/artifacts/delivery-branches.md ### Fetch Review Head
+identical: skills/work-planner/artifacts/delivery-branches.md ### Add Epic Base Worktree
+identical: skills/work-planner/artifacts/delivery-branches.md ### Add Review Worktree
+identical: skills/work-planner/artifacts/delivery-branches.md ### Fetch Branch Protection
+identical: skills/work-planner/artifacts/delivery-branches.md ### Fetch Active Branch Rules
+identical: skills/work-planner/artifacts/delivery-branches.md ### Read Checkout Revision
+identical: skills/work-planner/artifacts/delivery-branches.md ### Read Checkout Status
+differing: skills/work-planner/artifacts/delivery-branches.md ### Branches
+  --- skills/work-planner/artifacts/delivery-branches.md
+  +++ skills/work-planner/artifacts/delivery-branches.md
+  @@ -1,4 +1,4 @@
+  -A project states its long-lived branches in `config/branches` at its root, one name per line. A run reads the statement at the commit it evaluates, in the repository its checkout locates; which worktree the checkout is, and what its working files hold, choose nothing. The evaluated revision is fetched before it is read.
+  +The project's ordered long-lived branch names, declared in `config/branches` at its root, one name per line. A run reads the statement at the commit it evaluates, in the repository its checkout locates; which worktree the checkout is, and what its working files hold, choose nothing. The evaluated revision is fetched before it is read.
+   
+   - An epic sync evaluates each of its epic bases, such as `origin/i07/e00/main` and `origin/i07/e00/workflows`. Declarations that disagree across those bases leave the names unevaluable, and each is reported with its source.
+   - A read of one epic's branches evaluates its epic base, such as `origin/i07/e00/main`.
+differing: skills/work-planner/artifacts/delivery-branches.md ### Epic Bases
+  --- skills/work-planner/artifacts/delivery-branches.md
+  +++ skills/work-planner/artifacts/delivery-branches.md
+  @@ -1,3 +1,5 @@
+  +The epic's base-branch collection, one branch per changed long-lived branch.
+  +
+   - Each long-lived branch an epic changes has a base branch, named for the initiative, the epic and that branch, and rooted in that long-lived branch. Its prerequisite epics are closed as completed with every delivery base merged.
+   - eg `i07/e00/main` for an epic base cut from `main`.
+   - The base's last segment is its long-lived branch, which gives the target it merges and is merged into.
+identical: skills/work-planner/artifacts/delivery-branches.md ### Producer Outputs
+differing: skills/work-planner/artifacts/delivery-branches.md ### Review Worktrees
+  --- skills/work-planner/artifacts/delivery-branches.md
+  +++ skills/work-planner/artifacts/delivery-branches.md
+  @@ -1,3 +1,3 @@
+  -A reviewed pull request is read in a detached worktree, named by its number under the `pr` folder of the worktree directory of the repository's main working tree.
+  +The detached checkout path for a reviewed pull request, named by its repository-local number under the `pr` folder of the worktree directory of the repository's main working tree.
+   
+   - eg `.worktrees/pr/950` for pull request 950.
+differing: skills/work-planner/artifacts/delivery-branches.md ### Task Branches
+  --- skills/work-planner/artifacts/delivery-branches.md
+  +++ skills/work-planner/artifacts/delivery-branches.md
+  @@ -1,4 +1,4 @@
+  -A unit's task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`. The unit's pull request is opened from this branch into that base.
+  +A collection of task-branch, base-branch and worktree-path triples for the unit. Each task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`. The unit's pull request is opened from this branch into that base.
+   
+   - **Changed branches.**
+     A unit changes the long-lived branches its rows' work items name in their [Component](#component) declarations. A unit of an epic with one base changes that base.
+identical: skills/work-planner/artifacts/delivery-branches.md ### Epic Identity
+identical: skills/work-planner/artifacts/delivery-branches.md ### Changed Branches
+identical: skills/work-planner/artifacts/delivery-branches.md ### Prerequisite Evidence
+identical: skills/work-planner/artifacts/delivery-branches.md ### Source Branch
+identical: skills/work-planner/artifacts/delivery-branches.md ### Epic-Base Name
+identical: skills/work-planner/artifacts/delivery-branches.md ### Task Branch
+identical: skills/work-planner/artifacts/delivery-branches.md ### Base Branch
+identical: skills/work-planner/artifacts/delivery-branches.md ### Worktree Path
+identical: skills/work-planner/artifacts/delivery-branches.md ### Pull Request Number
+identical: skills/work-planner/artifacts/delivery-branches.md ### Verified Head
+identical: skills/work-planner/artifacts/delivery-branches.md ### Target Branch
+identical: skills/work-planner/artifacts/delivery-branches.md ### Output Files
+identical: skills/work-planner/artifacts/delivery-branches.md ### Branch Names
+identical: skills/work-planner/artifacts/delivery-branches.md ### Epic-Base Names
+identical: skills/work-planner/artifacts/delivery-branches.md ### Branch Result
+identical: skills/work-planner/artifacts/delivery-branches.md ### Worktree Result
+identical: skills/work-planner/artifacts/delivery-branches.md ### Target Requirements
+identical: skills/work-planner/artifacts/delivery-branches.md ### Checkout Commit
+identical: skills/work-planner/artifacts/delivery-branches.md ### Checkout Status
+identical: skills/work-planner/artifacts/delivery-branches.md ### Workspace
+identical: skills/work-planner/artifacts/delivery-branches.md ### Repository
+identical: skills/work-planner/artifacts/delivery-branches.md ### Project Checkout
+identical: skills/work-planner/artifacts/delivery-branches.md ### Unit Checkout
+identical: skills/work-planner/artifacts/delivery-branches.md ### Checkout
+identical: skills/work-planner/artifacts/delivery-branches.md ### Revision
+identical: skills/work-planner/artifacts/delivery-branches.md ### Failure
+identical: skills/work-planner/artifacts/delivery-branches.md ### Missing Destination
+identical: skills/work-planner/artifacts/delivery-branches.md ### Successful Merge
+differing: skills/work-planner/artifacts/delivery-brief.md ### Location
+  --- skills/work-planner/artifacts/delivery-brief.md
+  +++ skills/work-planner/artifacts/delivery-brief.md
+  @@ -1 +1 @@
+  -The brief is a working file, not part of the delivered change, so it sits in a working directory outside every repository it names. Absent a supplied path it takes the session's scratchpad, named for the unit.
+  +The brief's local working-file path, outside every repository it names because the brief is not part of the delivered change. Absent a supplied path, it is the session's scratchpad named for the unit.
+identical: skills/work-planner/artifacts/delivery-brief.md ### Work Identity
+identical: skills/work-planner/artifacts/delivery-brief.md ### Planning Record
+differing: skills/work-planner/artifacts/delivery-brief.md ### Validation Scope
+  --- skills/work-planner/artifacts/delivery-brief.md
+  +++ skills/work-planner/artifacts/delivery-brief.md
+  @@ -1 +1 @@
+  -The brief carries the tests required by the unit's criteria, meeting [Test Coverage](#test-coverage). It identifies the work item's test rows and requires implementation and verification of that scope.
+  +The mapping from the unit's criteria to the work item's required test rows, with instructions requiring implementation and verification of that scope. The mapping must meet [Test Coverage](#test-coverage).
+identical: skills/work-planner/artifacts/delivery-brief.md ### Change Autonomy
+differing: skills/work-planner/artifacts/delivery-brief.md ### Execution Instructions
+  --- skills/work-planner/artifacts/delivery-brief.md
+  +++ skills/work-planner/artifacts/delivery-brief.md
+  @@ -1 +1 @@
+  -The caller supplies the session procedure and its invocation context. The brief includes that procedure with its planning, publication, merge, debt and arising-issue obligations, plus the confirmed decisions and evidence needed to execute it. A missing instruction or prerequisite is a finding provided to the caller.
+  +The supplied session-procedure reference and invocation context, including its planning, publication, merge, debt and arising-issue obligations, with the confirmed decisions and evidence needed to execute it. A missing instruction or prerequisite is a finding provided to the caller.
+identical: skills/work-planner/artifacts/delivery-brief.md ### Output Path
+identical: skills/work-planner/artifacts/delivery-brief.md ### Brief Path
+identical: skills/work-planner/artifacts/delivery-brief.md ### Missing Context
+differing: skills/work-planner/artifacts/delivery-evidence.md ### Read Delivery Evidence
+  --- skills/work-planner/artifacts/delivery-evidence.md
+  +++ skills/work-planner/artifacts/delivery-evidence.md
+  @@ -22,4 +22,6 @@
+   
+   #### 4. Provide Complete Evidence
+   
+  -Provide the current [Pull Request Records](#pull-request-records), [Issue-Link Snapshot](#issue-link-snapshot) and [Delivery Findings](#delivery-findings) to the requester, reporting incomplete evidence as [Failure](#failure).
+  +- Provide the current [Pull Request Records](#pull-request-records), [Issue-Link Snapshot](#issue-link-snapshot) and [Delivery Findings](#delivery-findings) to the requester, reporting incomplete evidence as [Failure](#failure).
+  +
+  +- Evidence is complete when every pull request the plan links has a record, whatever its title. Incomplete evidence is a blocker, not a partial result.
+identical: skills/work-planner/artifacts/delivery-evidence.md ### Pull Request Records
+identical: skills/work-planner/artifacts/delivery-evidence.md ### Issue-Link Snapshot
+identical: skills/work-planner/artifacts/delivery-evidence.md ### Delivery Findings
+differing: skills/work-planner/artifacts/delivery-evidence.md ### Named Delivery
+  --- skills/work-planner/artifacts/delivery-evidence.md
+  +++ skills/work-planner/artifacts/delivery-evidence.md
+  @@ -1 +1 @@
+  -A pull request that delivers an epic carries that epic's reference in its title, as `[I07:E00] Purpose`.
+  +The reference to an epic-delivering pull request, whose title carries that epic's reference as `[I07:E00] Purpose`.
+identical: skills/work-planner/artifacts/delivery-evidence.md ### Selected Repositories
+identical: skills/work-planner/artifacts/delivery-evidence.md ### Initiative Prefix
+identical: skills/work-planner/artifacts/delivery-evidence.md ### Issue Records
+identical: skills/work-planner/artifacts/delivery-evidence.md ### Snapshot Paths
+identical: skills/work-planner/artifacts/delivery-evidence.md ### Authenticated Access
+identical: skills/work-planner/artifacts/delivery-evidence.md ### Failure
+identical: skills/work-planner/artifacts/delivery-plan.md ### Compute Available Work
+identical: skills/work-planner/artifacts/delivery-plan.md ### Work Units
+identical: skills/work-planner/artifacts/delivery-plan.md ### Hot-fix Units
+identical: skills/work-planner/artifacts/delivery-plan.md ### Report Lines
+identical: skills/work-planner/artifacts/delivery-plan.md ### Branch Context
+identical: skills/work-planner/artifacts/delivery-plan.md ### Dispatch Export
+identical: skills/work-planner/artifacts/delivery-plan.md ### Board Items
+identical: skills/work-planner/artifacts/delivery-plan.md ### Pull Request Records
+identical: skills/work-planner/artifacts/delivery-plan.md ### Issue-Link Snapshot
+identical: skills/work-planner/artifacts/delivery-plan.md ### Epic-Base Names
+identical: skills/work-planner/artifacts/delivery-plan.md ### Engineering Worktree
+identical: skills/work-planner/artifacts/delivery-plan.md ### Off-Board Issues
+identical: skills/work-planner/artifacts/delivery-plan.md ### Requested Lane
+identical: skills/work-planner/artifacts/delivery-plan.md ### Record Date
+identical: skills/work-planner/artifacts/delivery-plan.md ### Dispatch-Export Path
+identical: skills/work-planner/artifacts/delivery-plan.md ### Plan Report
+identical: skills/work-planner/artifacts/delivery-plan.md ### Workspace
+identical: skills/work-planner/artifacts/delivery-plan.md ### Project Checkout
+identical: skills/work-planner/artifacts/delivery-plan.md ### Revision
+identical: skills/work-planner/artifacts/delivery-plan.md ### Failure
+identical: skills/work-planner/artifacts/dependency-graph.md ### Check Dependencies and Numbering
+differing: skills/work-planner/artifacts/dependency-graph.md ### Check Dependencies
+  --- skills/work-planner/artifacts/dependency-graph.md
+  +++ skills/work-planner/artifacts/dependency-graph.md
+  @@ -20,3 +20,10 @@
+   - It reports a work item declaring a directory: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.
+   - It prints the proposed [Epic Priority](#epic-priority) of each epic, largest first.
+   - Its supplied inputs are published body text or local drafts.
+  +
+  +- The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the components its rows declare. Epics sharing a number start together, so the number asserts they can run in parallel, and it holds a set only where both of these do.
+  +
+  +- **Prerequisite depth establishes when an epic may start.**
+  +  An epic with no prerequisite epic, one whose tasks are not yet written among them, carries the largest number, and each other epic takes one less than the smallest its prerequisites carry.
+  +- **Component contention establishes whether it can.**
+  +  An epic holding a row that contends with a row of an epic of the same depth takes the number below that depth, and the epics depending on it follow it down, as [Component Contention](#component-contention) states.
+identical: skills/work-planner/artifacts/dependency-graph.md ### Renumber Tasks
+identical: skills/work-planner/artifacts/dependency-graph.md ### Renumber Epics
+identical: skills/work-planner/artifacts/dependency-graph.md ### Scope
+identical: skills/work-planner/artifacts/dependency-graph.md ### Source
+differing: skills/work-planner/artifacts/dependency-graph.md ### Edges
+  --- skills/work-planner/artifacts/dependency-graph.md
+  +++ skills/work-planner/artifacts/dependency-graph.md
+  @@ -1,4 +1,4 @@
+  -A task edge names the producing row for each output the depending row consumes. An edge a task's prose implies is carried explicitly.
+  +The collection of producer-to-consumer task-row references. A task edge names the producing row for each output the depending row consumes. An edge a task's prose implies is carried explicitly.
+   
+   - **An edge names rows, never an epic.**
+     A row naming an epic gates its task on every row of that epic, including the rows it consumes nothing from, which is how a [whole-epic edge](#whole-epic-edges) the rows do not justify reaches the initiative.
+differing: skills/work-planner/artifacts/dependency-graph.md ### Whole-Epic Edges
+  --- skills/work-planner/artifacts/dependency-graph.md
+  +++ skills/work-planner/artifacts/dependency-graph.md
+  @@ -1,4 +1,4 @@
+  -An initiative Depends on cell takes the epics it derives, as [Work Breakdown](#work-breakdown) states. It derives one only where every row of the dependent epic requires every row of the prerequisite, through the task edges alone: a task row names rows, so no cell can assert a whole epic that the rows do not already establish.
+  +The collection of initiative-table epic dependency references. An initiative Depends on cell takes the epics it derives, as [Work Breakdown](#work-breakdown) states. It derives one only where every row of the dependent epic requires every row of the prerequisite, through the task edges alone: a task row names rows, so no cell can assert a whole epic that the rows do not already establish.
+   
+   - **The edge is the coarsest gate the plan has.**
+     It holds the dependent epic until the prerequisite closes, not until the row it consumes merges, and it drops the dependent a [priority](#epic-priority) number, so the board keeps it out of Ready while the prerequisite runs.
+differing: skills/work-planner/artifacts/dependency-graph.md ### Epic Priority
+  --- skills/work-planner/artifacts/dependency-graph.md
+  +++ skills/work-planner/artifacts/dependency-graph.md
+  @@ -1,6 +1 @@
+  -The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the components its rows declare. Epics sharing a number start together, so the number asserts they can run in parallel, and it holds a set only where both of these do.
+  -
+  -- **Prerequisite depth establishes when an epic may start.**
+  -  An epic with no prerequisite epic, one whose tasks are not yet written among them, carries the largest number, and each other epic takes one less than the smallest its prerequisites carry.
+  -- **Component contention establishes whether it can.**
+  -  An epic holding a row that contends with a row of an epic of the same depth takes the number below that depth, and the epics depending on it follow it down, as [Component Contention](#component-contention) states.
+  +A map from each supplied epic id to one positive integer priority, ordered largest first in the report. Equal priorities identify epics that may run in parallel under the derived dependency and component constraints.
+identical: skills/work-planner/artifacts/dependency-graph.md ### Component Contention
+differing: skills/work-planner/artifacts/dependency-graph.md ### Joins
+  --- skills/work-planner/artifacts/dependency-graph.md
+  +++ skills/work-planner/artifacts/dependency-graph.md
+  @@ -1,4 +1,4 @@
+  -The undelivered rows of one epic whose work items declare one [component](#component) are a candidate unit: one pull request writes that file once, where separate ones each rebase on the last. Rows declaring different components need no accounting.
+  +The candidate joined units, each a set of task ids in one epic. The undelivered rows of one epic whose work items declare one [component](#component) are a candidate unit: one pull request writes that file once, where separate ones each rebase on the last. Rows declaring different components need no accounting.
+   
+   - **A joined unit has one lane.**
+     Joined rows must meet [Unit Consistency](#unit-consistency).
+identical: skills/work-planner/artifacts/dependency-graph.md ### Numbering Map
+identical: skills/work-planner/artifacts/dependency-graph.md ### Graph Inputs
+identical: skills/work-planner/artifacts/dependency-graph.md ### Dependency Files
+identical: skills/work-planner/artifacts/dependency-graph.md ### Renumber Inputs
+identical: skills/work-planner/artifacts/dependency-graph.md ### Pull Request Records
+identical: skills/work-planner/artifacts/dependency-graph.md ### Graph Result
+identical: skills/work-planner/artifacts/dependency-graph.md ### Rewritten Bodies
+identical: skills/work-planner/artifacts/dependency-graph.md ### Workspace
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Compute Dispatch Batch
+differing: skills/work-planner/artifacts/dispatch-batch.md ### Check Dispatch Start
+  --- skills/work-planner/artifacts/dispatch-batch.md
+  +++ skills/work-planner/artifacts/dispatch-batch.md
+  @@ -11,3 +11,5 @@
+     --sessions '[**&lt;session-inventory-file&gt;**](#session-inventory)' &#92;
+     --capacity [**&lt;free-slot-count&gt;**](#free-slots)
+   </pre></big>
+  +
+  +- The start names one selected unit, has a currently free harness slot and overlaps no held or running session. Its supplied evidence names that unit, the planning record confirmed on the remote engineering branch, and the record associated with its confirmed hold. For rows, that association is read from every live row reservation; for a hot-fix it is the run's record for the unit whose board hold was confirmed. The evidence is gathered in that order before execution; any missing, mismatched or unverified evidence blocks the start.
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Authorization
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Survey Evidence
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Session Inventory
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Selection
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Preparations
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Survey Board
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Requested Lane
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Free Slots
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Batch
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Unit Identity
+differing: skills/work-planner/artifacts/dispatch-batch.md ### Start Evidence
+  --- skills/work-planner/artifacts/dispatch-batch.md
+  +++ skills/work-planner/artifacts/dispatch-batch.md
+  @@ -1 +1 @@
+  -The planning publication and reservation evidence for the selected unit, as [Start Readiness](#start-readiness) describes.
+  +A JSON object with `unit` (the repository-qualified selected unit id), `published_record` and `reserved_record` (planning-folder identity strings), and `reservation_verified` (a boolean). It records confirmed remote publication and the associated live hold. eg `{"unit": "o/r#I07:E00:W01", "published_record": "2026-11-05-943-i07-e00-w01-work", "reserved_record": "2026-11-05-943-i07-e00-w01-work", "reservation_verified": true}`
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Validated Unit
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Workspace
+identical: skills/work-planner/artifacts/dispatch-batch.md ### Failure
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Populate Epic Issue Body
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Validate Epic Body
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Revise Epic Rows
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Plan Gap Task
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Sync Epic
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Tick Epic Criteria
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Reserve Row
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Release Row
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Template
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Titles
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Proposal
+differing: skills/work-planner/artifacts/epic-issue-body.md ### Work Breakdown
+  --- skills/work-planner/artifacts/epic-issue-body.md
+  +++ skills/work-planner/artifacts/epic-issue-body.md
+  @@ -36,3 +36,5 @@
+     Task numbering must meet [Numbering](#numbering); a row whose id links a pull request is fixed.
+   - **Reference form.**
+     A table reference uses colons (`E01:W03`, `I05:E00:W02`), and every epic reference links to that epic's issue: `[E01:W03]()`. Prose uses a space (`E01 W03`).
+  +
+  +Work Breakdown contains its table. Explanatory prose belongs in Proposal. The body does not narrate execution order or how the tables work; Depends on carries the order.
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Test Evidence
+differing: skills/work-planner/artifacts/epic-issue-body.md ### Acceptance Criteria
+  --- skills/work-planner/artifacts/epic-issue-body.md
+  +++ skills/work-planner/artifacts/epic-issue-body.md
+  @@ -1 +1 @@
+  -An epic criterion must meet the [shared acceptance criteria](#shared-acceptance-criteria). Contradictions between criteria in one epic are findings.
+  +The epic's collection of labelled criterion statements. An epic criterion must meet the [shared acceptance criteria](#shared-acceptance-criteria). Contradictions between criteria in one epic are findings.
+differing: skills/work-planner/artifacts/epic-issue-body.md ### Open Questions
+  --- skills/work-planner/artifacts/epic-issue-body.md
+  +++ skills/work-planner/artifacts/epic-issue-body.md
+  @@ -1 +1 @@
+  -Each question holds only what is undecided and has a recommendation in the planning record. A settled point belongs in that record. No question remains when the epic starts.
+  +A collection of undecided question statements, each with a recommendation in the planning record. Settled points belong in that record. The collection is empty when the epic starts.
+differing: skills/work-planner/artifacts/epic-issue-body.md ### Required Criteria
+  --- skills/work-planner/artifacts/epic-issue-body.md
+  +++ skills/work-planner/artifacts/epic-issue-body.md
+  @@ -1,4 +1,4 @@
+  -A project states the criteria its epics must carry in `config/required-criteria.json` at its root. The file is a JSON array, and each entry is one required criterion with these fields, each a non-empty string except `paths`:
+  +The project's required-criterion declaration array. A project states the criteria its epics must carry in `config/required-criteria.json` at its root. The file is a JSON array, and each entry is one required criterion with these fields, each a non-empty string except `paths`:
+   
+   | Field | What it states |
+   | --- | --- |
+differing: skills/work-planner/artifacts/epic-issue-body.md ### Task Delivery
+  --- skills/work-planner/artifacts/epic-issue-body.md
+  +++ skills/work-planner/artifacts/epic-issue-body.md
+  @@ -1,3 +1,5 @@
+  +Each task's delivery state consists of its Task-cell references, reservation or work-item identity, per-branch delivery links and completion state.
+  +
+   - **Task ids.**
+     - An unreserved task awaiting its pull request links its file in the planning record: `[W01]()`. The file name is the task id in lower case.
+     - Every link on a task row names that row's id, and the row carries one delivery per long-lived branch its unit changes. A reserved task links only its planning folder: `[W01]()`. Every row of a joined unit links the one folder its first row names. The folder's README links each work-item file by the name the row's link carries. Releasing the reservation points the row to that file.
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Epic Record
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Initiative Context
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Task Rows
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Pull Request Records
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Issue Links
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Task Records
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Delivery Matches
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Project Checkout
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Evaluated Revision
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Epic Bases
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Output Body
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Criterion Selection
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Task Selection
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Board Items
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Planning Folder
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Engineering Worktree
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Validation Findings
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Row Result
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Workspace
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Epic Body
+identical: skills/work-planner/artifacts/epic-issue-body.md ### Draft Metadata
+identical: skills/work-planner/artifacts/epic.md ### Check Epic Prerequisites
+identical: skills/work-planner/artifacts/epic.md ### Inspect Epic Delivery
+identical: skills/work-planner/artifacts/epic.md ### Check Epic Readiness
+identical: skills/work-planner/artifacts/epic.md ### Match Pull Requests
+identical: skills/work-planner/artifacts/epic.md ### Prerequisite Evidence
+identical: skills/work-planner/artifacts/epic.md ### Delivery State
+identical: skills/work-planner/artifacts/epic.md ### Delivery Findings
+identical: skills/work-planner/artifacts/epic.md ### Epic Record
+identical: skills/work-planner/artifacts/epic.md ### Initiative Evidence
+identical: skills/work-planner/artifacts/epic.md ### Prerequisite Records
+identical: skills/work-planner/artifacts/epic.md ### Pull Request Records
+identical: skills/work-planner/artifacts/epic.md ### Issue Links
+identical: skills/work-planner/artifacts/epic.md ### Verification Evidence
+identical: skills/work-planner/artifacts/epic.md ### Base Merges
+identical: skills/work-planner/artifacts/epic.md ### Output Body
+identical: skills/work-planner/artifacts/epic.md ### Workspace
+identical: skills/work-planner/artifacts/epic.md ### Epic Body
+identical: skills/work-planner/artifacts/goal-trace.md ### Review Initiative Goal
+identical: skills/work-planner/artifacts/goal-trace.md ### Trace Table
+identical: skills/work-planner/artifacts/goal-trace.md ### Gaps
+identical: skills/work-planner/artifacts/goal-trace.md ### Goal Evidence
+identical: skills/work-planner/artifacts/goal-trace.md ### Changed Surface
+identical: skills/work-planner/artifacts/goal-trace.md ### Review Result
+identical: skills/work-planner/artifacts/goal-trace.md ### Plan Bodies
+identical: skills/work-planner/artifacts/hotfix-body.md ### Definition
+identical: skills/work-planner/artifacts/hotfix-body.md ### Target
+identical: skills/work-planner/artifacts/hotfix-body.md ### Titles
+identical: skills/work-planner/artifacts/hotfix-body.md ### Sections
+identical: skills/work-planner/artifacts/hotfix-body.md ### Defect Evidence
+identical: skills/work-planner/artifacts/hotfix-body.md ### Hot-fix Identity
+identical: skills/work-planner/artifacts/hotfix-body.md ### Output Body
+identical: skills/work-planner/artifacts/hotfix.md ### Settle Hot-fix Board Status
+identical: skills/work-planner/artifacts/hotfix.md ### Sync Hot-fix Issue
+identical: skills/work-planner/artifacts/hotfix.md ### Board Status
+differing: skills/work-planner/artifacts/hotfix.md ### Delivery Unit
+  --- skills/work-planner/artifacts/hotfix.md
+  +++ skills/work-planner/artifacts/hotfix.md
+  @@ -1,3 +1,5 @@
+  +The hot-fix unit record: its issue identity, board state, branch, target base, worktree and delivery evidence.
+  +
+   - An open hot-fix Ready on the board is a delivery unit of its own, whatever any epic's state. Its issue is the unit's task issue; it has no row and no epic record.
+   - Its Coverage is every criterion it carries. Its record folder takes its prefix and title name as a task id and Description.
+   - Its component lies on its [target](#target), which its session's work item declares.
+identical: skills/work-planner/artifacts/hotfix.md ### Branch
+differing: skills/work-planner/artifacts/hotfix.md ### Delivering Pull Request
+  --- skills/work-planner/artifacts/hotfix.md
+  +++ skills/work-planner/artifacts/hotfix.md
+  @@ -1,3 +1,5 @@
+  +A repository-qualified reference to the hot-fix's delivering pull request.
+  +
+   - A pull request delivers a hot-fix when its title opens with the hot-fix's prefix, `[F00] Purpose`, it lives in the hot-fix's repository, its base is the hot-fix's [target](#target), and its Development field links the hot-fix.
+   - It is opened from the hot-fix's [branch](#branch), as a draft.
+   - It is marked ready for review only once its review cycle is complete: its current [agent review](#review-record) leaves every finding fixed.
+differing: skills/work-planner/artifacts/hotfix.md ### Delivery Record
+  --- skills/work-planner/artifacts/hotfix.md
+  +++ skills/work-planner/artifacts/hotfix.md
+  @@ -1,2 +1,4 @@
+  +The hot-fix issue's criterion evidence, delivering pull-request reference and closure state.
+  +
+   - A hot-fix's merge is recorded on its own issue alone: its criteria and delivering pull request, then its closure. It records nothing on an epic or initiative.
+   - Its board item must follow [Board Status](#board-status) once the issue closes.
+identical: skills/work-planner/artifacts/hotfix.md ### Repository
+identical: skills/work-planner/artifacts/hotfix.md ### Hot-fix Record
+identical: skills/work-planner/artifacts/hotfix.md ### Board Evidence
+identical: skills/work-planner/artifacts/hotfix.md ### Pull Request Records
+identical: skills/work-planner/artifacts/hotfix.md ### Issue Links
+identical: skills/work-planner/artifacts/hotfix.md ### Delivery Selection
+identical: skills/work-planner/artifacts/hotfix.md ### Output Body
+identical: skills/work-planner/artifacts/hotfix.md ### Hot-fix Number
+identical: skills/work-planner/artifacts/hotfix.md ### Board Result
+identical: skills/work-planner/artifacts/hotfix.md ### Delivery Findings
+identical: skills/work-planner/artifacts/hotfix.md ### Workspace
+identical: skills/work-planner/artifacts/hotfix.md ### Hot-fix Identity
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Populate Initiative Issue Body
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Draft Initiative Issue Body
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Validate Initiative Body
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Sync Initiative
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Tick Initiative Criteria
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Fetch Source
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Template
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Titles
+differing: skills/work-planner/artifacts/initiative-issue-body.md ### Problem
+  --- skills/work-planner/artifacts/initiative-issue-body.md
+  +++ skills/work-planner/artifacts/initiative-issue-body.md
+  @@ -1 +1,3 @@
+  +The initiative body's Problem prose section.
+  +
+   - A Problem must meet [Problem and Proposal](#problem-and-proposal).
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Proposal
+differing: skills/work-planner/artifacts/initiative-issue-body.md ### Work Breakdown
+  --- skills/work-planner/artifacts/initiative-issue-body.md
+  +++ skills/work-planner/artifacts/initiative-issue-body.md
+  @@ -8,3 +8,5 @@
+   - An initiative dependency that only some tasks need, or that requires only part of its prerequisite epic, is overbroad. The output and its producing tasks establish the edge.
+   - An epic depending on a later epic is a backward reference.
+   - Epic numbering must meet [Numbering](#numbering).
+  +
+  +Work Breakdown contains its table. Explanatory prose belongs in Proposal. The body does not narrate execution order or how the tables work; Depends on carries the order.
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Initiative Acceptance Criteria
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Non-Goals
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### References
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Sources
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Proposal Context
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Initiative Record
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Epic Records
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Source Evidence
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Output Files
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Criterion Selection
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Validation Findings
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Workspace
+identical: skills/work-planner/artifacts/initiative-issue-body.md ### Requirement References
+identical: skills/work-planner/artifacts/initiative.md ### Identity
+identical: skills/work-planner/artifacts/initiative.md ### Delivery State
+identical: skills/work-planner/artifacts/initiative.md ### Delivery Findings
+identical: skills/work-planner/artifacts/initiative.md ### Initiative Record
+identical: skills/work-planner/artifacts/initiative.md ### Epic Records
+identical: skills/work-planner/artifacts/initiative.md ### Verification Evidence
+identical: skills/work-planner/artifacts/initiative.md ### Development Evidence
+identical: skills/work-planner/artifacts/issue-body.md ### Write Issue Table
+identical: skills/work-planner/artifacts/issue-body.md ### Check Round of Edits
+identical: skills/work-planner/artifacts/issue-body.md ### Validate Issue Body
+identical: skills/work-planner/artifacts/issue-body.md ### Apply Body Corrections
+identical: skills/work-planner/artifacts/issue-body.md ### Build Body Snapshot
+identical: skills/work-planner/artifacts/issue-body.md ### Repair Issue Format
+identical: skills/work-planner/artifacts/issue-body.md ### Check Body Format
+identical: skills/work-planner/artifacts/issue-body.md ### List Reference Repositories
+identical: skills/work-planner/artifacts/issue-body.md ### Fetch Reference Repository
+identical: skills/work-planner/artifacts/issue-body.md ### Validate Reference Visibility
+differing: skills/work-planner/artifacts/issue-body.md ### Titles
+  --- skills/work-planner/artifacts/issue-body.md
+  +++ skills/work-planner/artifacts/issue-body.md
+  @@ -1,29 +1,5 @@
+  -- **Titles.**
+  -  - A title is a short name, a colon, and a subtitle stating the outcome.
+  -  - The name is two or three words and the subtitle a succinct summary of at most ten, in title case.
+  -  - A prefixed title separates its levels with colons, then the name.
+  -- **Bodies.**
+  -  - Every body keeps the section order of its kind template and the columns of that kind's table.
+  -  - Fill each `{{…}}` and delete a section the template marks as optional when it has nothing to say.
+  -- **Code references.**
+  -  A body references code as a link on the words it supports, a permalink pinned to a commit with its line anchors, never a bare `path:line`: `the [extrinsic type](#L1231-L1232)`.
+  -- **Succinct items.**
+  -  Each Problem and Proposal item, and each of its sub-bullets, is at most two lines. A bold opener does not count toward the two. Several distinct points go in a bulleted list, never packed into those two lines.
+  -- **Bold leads.**
+  -  - A Problem or Proposal item that opens with a bold statement puts its body on the next line, indented under the bullet:
+  +The issue title string, with its kind's optional prefix.
+   
+  -    ```markdown
+  -    - **Length is the only check on entry.**
+  -      The data source decodes the key and never checks its value.
+  -    ```
+  -
+  -  - A bulleted item with sub-bullets keeps the line introducing them on its bold statement's line:
+  -
+  -    ```markdown
+  -    - **Framing is undocumented.** Nothing describes:
+  -      - the runtime's extrinsic type;
+  -    ```
+  -- **Labels.**
+  -  - Add `enhancement`, `bug` and `tech-debt` as they apply.
+  -  - eg `workflows` for workflow-server.
+  -  - Only labels that exist are applied.
+  +- The title separates its name and outcome subtitle with a colon.
+  +- The name is two or three words and the subtitle a succinct summary of at most ten, in title case.
+  +- A prefixed title separates its levels with colons, then the name.
+differing: skills/work-planner/artifacts/issue-body.md ### Problem and Proposal
+  --- skills/work-planner/artifacts/issue-body.md
+  +++ skills/work-planner/artifacts/issue-body.md
+  @@ -1,3 +1,5 @@
+  +The Problem and Proposal prose sections of an issue body. Their items carry the following content constraints.
+  +
+   - **Friction.**
+     A Problem states the friction as it is now. Its evidence is a count or a code link for that friction. A Problem does not describe the plan.
+   - **Plan ids.**
+differing: skills/work-planner/artifacts/issue-body.md ### Shared Acceptance Criteria
+  --- skills/work-planner/artifacts/issue-body.md
+  +++ skills/work-planner/artifacts/issue-body.md
+  @@ -1,4 +1,4 @@
+  -An acceptance criterion must meet these. A kind adds its own under its Acceptance Criteria.
+  +A collection of labelled criterion statements; each criterion must meet these constraints. A kind adds its own under its Acceptance Criteria.
+   
+   - States an end state, not an activity.
+   - Names or implies the instrument that observes it: a test, a guard, a command or a measure.
+differing: skills/work-planner/artifacts/issue-body.md ### Tables
+  --- skills/work-planner/artifacts/issue-body.md
+  +++ skills/work-planner/artifacts/issue-body.md
+  @@ -1,3 +1,5 @@
+  +The kind's row table, whose shared cell values have these shapes.
+  +
+   - **Done.**
+     The last column. Its cell is empty while the row is open, and a tick, ✓, when the row is complete.
+   - **Description.**
+identical: skills/work-planner/artifacts/issue-body.md ### Numbering
+differing: skills/work-planner/artifacts/issue-body.md ### Reference Form
+  --- skills/work-planner/artifacts/issue-body.md
+  +++ skills/work-planner/artifacts/issue-body.md
+  @@ -1 +1 @@
+  -Tables write references with colons, the form the scripts read. Prose uses a space.
+  +A row reference string: colon-separated levels in table cells, as the scripts read them, and space-separated levels in prose.
+differing: skills/work-planner/artifacts/issue-body.md ### Body
+  --- skills/work-planner/artifacts/issue-body.md
+  +++ skills/work-planner/artifacts/issue-body.md
+  @@ -1,4 +1,25 @@
+  -- **Stale references.**
+  -  A row number, issue link or decision wording agrees with the current plan.
+  -- **Body.**
+  -  A body states the plan as it is. It carries no change narrative. How the plan evolved belongs in the planning record and in commit and pull request bodies.
+  +The complete Markdown issue body with the sections and table columns defined by its kind template.
+  +
+  +A body states the plan as it is. It carries no change narrative. How the plan evolved belongs in the planning record and in commit and pull request bodies.
+  +
+  +Task and epic numbers, issue links and wording must agree with the current decisions and bodies. References to superseded decisions are findings.
+  +
+  +- Every template placeholder is populated; optional sections are present only when they have content.
+  +- **Code references.**
+  +  A body references code as a link on the words it supports, a permalink pinned to a commit with its line anchors, never a bare `path:line`: `the [extrinsic type](#L1231-L1232)`.
+  +- **Succinct items.**
+  +  Each Problem and Proposal item, and each of its sub-bullets, is at most two lines. A bold opener does not count toward the two. Several distinct points go in a bulleted list, never packed into those two lines.
+  +- **Bold leads.**
+  +  - A Problem or Proposal item that opens with a bold statement puts its body on the next line, indented under the bullet:
+  +
+  +    ```markdown
+  +    - **Length is the only check on entry.**
+  +      The data source decodes the key and never checks its value.
+  +    ```
+  +
+  +  - A bulleted item with sub-bullets keeps the line introducing them on its bold statement's line:
+  +
+  +    ```markdown
+  +    - **Framing is undocumented.** Nothing describes:
+  +      - the runtime's extrinsic type;
+  +    ```
+differing: skills/work-planner/artifacts/issue-body.md ### References
+  --- skills/work-planner/artifacts/issue-body.md
+  +++ skills/work-planner/artifacts/issue-body.md
+  @@ -1 +1 @@
+  -An issue's References section does not link issues or pull requests on the same board. A public issue's References cite public repositories; unavailable visibility is unresolved.
+  +The issue body's collection of labelled source links and descriptions. An issue's References section does not link issues or pull requests on the same board. A public issue's References cite public repositories; unavailable visibility is unresolved.
+differing: skills/work-planner/artifacts/issue-body.md ### Coverage Reports
+  --- skills/work-planner/artifacts/issue-body.md
+  +++ skills/work-planner/artifacts/issue-body.md
+  @@ -1,3 +1,5 @@
+  +A collection of entries identifying every criterion in the reviewed scope, its observing check and evidence, or why it is unobservable.
+  +
+   - **Unobservable items.**
+     An item a test cannot observe is named in the plan or the coverage report. It stays in the report.
+   - **The check matches the criterion.**
+differing: skills/work-planner/artifacts/issue-body.md ### Format Findings
+  --- skills/work-planner/artifacts/issue-body.md
+  +++ skills/work-planner/artifacts/issue-body.md
+  @@ -1,3 +1,5 @@
+  +A collection of tagged findings with the following variants.
+  +
+   - **Fixed.**
+     Structural changes preserve the wording and are present in the provided body file, with a body diff.
+   - **Apply.** Title or label changes for the caller to publish on the issue.
+identical: skills/work-planner/artifacts/issue-body.md ### Body Evidence
+identical: skills/work-planner/artifacts/issue-body.md ### Kind Conditions
+identical: skills/work-planner/artifacts/issue-body.md ### Row Data
+identical: skills/work-planner/artifacts/issue-body.md ### Changed Bodies
+identical: skills/work-planner/artifacts/issue-body.md ### Confirmed Corrections
+identical: skills/work-planner/artifacts/issue-body.md ### Output Files
+identical: skills/work-planner/artifacts/issue-body.md ### Body Snapshot
+identical: skills/work-planner/artifacts/issue-body.md ### Reference Repositories
+identical: skills/work-planner/artifacts/issue-body.md ### Repository Snapshot
+identical: skills/work-planner/artifacts/issue-body.md ### Visibility Findings
+identical: skills/work-planner/artifacts/issue-body.md ### Workspace
+identical: skills/work-planner/artifacts/issue-body.md ### Body Record
+identical: skills/work-planner/artifacts/issue-body.md ### Initiative Record
+identical: skills/work-planner/artifacts/issue-body.md ### Epic Records
+identical: skills/work-planner/artifacts/issue-body.md ### Pull Request Records
+identical: skills/work-planner/artifacts/issue-body.md ### Changed File Records
+identical: skills/work-planner/artifacts/issue-body.md ### Project Checkout
+identical: skills/work-planner/artifacts/issue-body.md ### Evaluated Revision
+identical: skills/work-planner/artifacts/issue-body.md ### Snapshot Metadata
+identical: skills/work-planner/artifacts/issue.md ### Read Tracker Issue
+identical: skills/work-planner/artifacts/issue.md ### Save Tracker Issue
+identical: skills/work-planner/artifacts/issue.md ### Comment on Issue
+identical: skills/work-planner/artifacts/issue.md ### Capture Issue Development
+differing: skills/work-planner/artifacts/issue.md ### Confirm Repository Auto-Close
+  --- skills/work-planner/artifacts/issue.md
+  +++ skills/work-planner/artifacts/issue.md
+  @@ -10,4 +10,11 @@
+   
+   #### 3. Provide Confirmed Setting
+   
+  -Provide the confirmed value. An unconfirmed setting is a blocker, and an enabled one leaves the caller to obtain authorization before the repository is reconfigured.
+  +- Provide the confirmed value. An unconfirmed setting is a blocker, and an enabled one leaves the caller to obtain authorization before the repository is reconfigured.
+  +
+  +- GitHub's **Auto-close issues with merged linked pull requests** repository setting, which must be disabled before a delivery pull request is linked or merged, so that closure follows the criteria rather than the merge.
+  +
+  +- The setting is confirmed per repository and holds for the session; it is not inferred from an issue that stayed open.
+  +- No REST field and no GraphQL field of `gh` 2.46 carries it, so on such a host the user's explicit answer is the only source.
+  +- An enabled or unconfirmed setting blocks delivery links and merges until the setting is confirmed disabled. Changing the setting requires the user's explicit authorization.
+  +- The setting gates the links and merges that precede closure; the closure gate takes no input from it.
+identical: skills/work-planner/artifacts/issue.md ### Select Tracker Number
+identical: skills/work-planner/artifacts/issue.md ### Create Tracker Issue
+identical: skills/work-planner/artifacts/issue.md ### Patch Issue Body
+identical: skills/work-planner/artifacts/issue.md ### Fetch Issue Body
+identical: skills/work-planner/artifacts/issue.md ### Retitle Tracker Issue
+identical: skills/work-planner/artifacts/issue.md ### Add Issue Labels
+identical: skills/work-planner/artifacts/issue.md ### Remove Issue Label
+identical: skills/work-planner/artifacts/issue.md ### Fetch Issue Comments
+identical: skills/work-planner/artifacts/issue.md ### Fetch Tracker Issue
+identical: skills/work-planner/artifacts/issue.md ### Check Issue Closure
+identical: skills/work-planner/artifacts/issue.md ### Sweep Closure Evidence
+identical: skills/work-planner/artifacts/issue.md ### Close as Not Planned
+identical: skills/work-planner/artifacts/issue.md ### Post Inline Comment
+identical: skills/work-planner/artifacts/issue.md ### Post Comment File
+identical: skills/work-planner/artifacts/issue.md ### Set Completed State
+identical: skills/work-planner/artifacts/issue.md ### Capture Issue Links
+identical: skills/work-planner/artifacts/issue.md ### Fetch All Issues
+identical: skills/work-planner/artifacts/issue.md ### Fetch Closed Issues
+identical: skills/work-planner/artifacts/issue.md ### Fetch Selected Closed Issues
+identical: skills/work-planner/artifacts/issue.md ### Find Initiative Issue
+identical: skills/work-planner/artifacts/issue.md ### List Prefixed Titles
+identical: skills/work-planner/artifacts/issue.md ### Identity
+identical: skills/work-planner/artifacts/issue.md ### Content
+identical: skills/work-planner/artifacts/issue.md ### Discussion
+identical: skills/work-planner/artifacts/issue.md ### State
+differing: skills/work-planner/artifacts/issue.md ### Auto-Close Setting
+  --- skills/work-planner/artifacts/issue.md
+  +++ skills/work-planner/artifacts/issue.md
+  @@ -1,6 +1 @@
+  -GitHub's **Auto-close issues with merged linked pull requests** repository setting, which must be disabled before a delivery pull request is linked or merged, so that closure follows the criteria rather than the merge.
+  -
+  -- The setting is confirmed per repository and holds for the session; it is not inferred from an issue that stayed open.
+  -- No REST field and no GraphQL field of `gh` 2.46 carries it, so on such a host the user's explicit answer is the only source.
+  -- An enabled or unconfirmed setting blocks delivery links and merges until the setting is confirmed disabled. Changing the setting requires the user's explicit authorization.
+  -- The setting gates the links and merges that precede closure; the closure gate takes no input from it.
+  +The repository's boolean **Auto-close issues with merged linked pull requests** setting, recorded as enabled or disabled with its repository identity and session confirmation evidence; an unknown value is unconfirmed. [Confirm Repository Auto-Close](#confirm-repository-auto-close) establishes the value and the delivery gate.
+identical: skills/work-planner/artifacts/issue.md ### Repository
+identical: skills/work-planner/artifacts/issue.md ### Issue Record
+identical: skills/work-planner/artifacts/issue.md ### Output Files
+identical: skills/work-planner/artifacts/issue.md ### Closure Evidence Paths
+identical: skills/work-planner/artifacts/issue.md ### Discussion Selection
+identical: skills/work-planner/artifacts/issue.md ### Issue Changes
+identical: skills/work-planner/artifacts/issue.md ### Label Names
+identical: skills/work-planner/artifacts/issue.md ### Comment
+identical: skills/work-planner/artifacts/issue.md ### Delivery Evidence
+identical: skills/work-planner/artifacts/issue.md ### Transfer Evidence
+identical: skills/work-planner/artifacts/issue.md ### Authenticated Access
+identical: skills/work-planner/artifacts/issue.md ### Development Snapshot
+identical: skills/work-planner/artifacts/issue.md ### Issue Collection
+identical: skills/work-planner/artifacts/issue.md ### Audit Selection
+identical: skills/work-planner/artifacts/issue.md ### Closure Findings
+identical: skills/work-planner/artifacts/issue.md ### Tracker Prefix
+identical: skills/work-planner/artifacts/issue.md ### Tracker Number
+identical: skills/work-planner/artifacts/issue.md ### Workspace
+identical: skills/work-planner/artifacts/issue.md ### Issue Body
+differing: skills/work-planner/artifacts/lane.md ### Read Lane Assignments
+  --- skills/work-planner/artifacts/lane.md
+  +++ skills/work-planner/artifacts/lane.md
+  @@ -1,7 +1,8 @@
+  -Read raw task-table Lane cells through the Lane module and provide [Lane Result](#lane-result) to the requester.
+  +Read raw task-table Lane cells through the Lane module and provide [Assignment Read Result](#assignment-read-result) to the requester.
+   
+   <big><pre>
+   "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py" read '[**&lt;epic-body-file&gt;**](#epic-body-file)'
+   </pre></big>
+   
+  -- Results should meet [Assignments](#assignments).
+  +- Read each task's bare [Index](#index) from its Lane cell, independently of work-item links. An empty cell is unlaned. Malformed cells produce findings and no assignment; a missing Lane column produces an empty assignment map.
+  +- JSON result commands exit 1 when `problems` is nonempty and 0 otherwise. Argument or input failures can exit before providing a JSON result.
+identical: skills/work-planner/artifacts/lane.md ### Write Lane Assignments
+differing: skills/work-planner/artifacts/lane.md ### Validate Lane Unit
+  --- skills/work-planner/artifacts/lane.md
+  +++ skills/work-planner/artifacts/lane.md
+  @@ -1,4 +1,4 @@
+  -Report a unit's common lane or assignment findings and provide [Lane Result](#lane-result) to the requester.
+  +Report a unit's common lane or assignment findings and provide [Unit Lane Result](#unit-lane-result) to the requester.
+   
+   <big><pre>
+   "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py" check &#92;
+  @@ -6,4 +6,5 @@
+     --unit '[**&lt;task-ids&gt;**](#unit-task-ids)'
+   </pre></big>
+   
+  -- Results should meet [Unit Consistency](#unit-consistency).
+  +- Validate the complete selected unit under [Unit Consistency](#unit-consistency). Findings from other rows remain in the result.
+  +- Use the result and exit behavior of [Read Lane Assignments](#read-lane-assignments); `lane: null` alone does not establish a valid unlaned unit.
+differing: skills/work-planner/artifacts/lane.md ### Evaluate Lane Admission
+  --- skills/work-planner/artifacts/lane.md
+  +++ skills/work-planner/artifacts/lane.md
+  @@ -1,4 +1,4 @@
+  -Report whether the request admits a valid unit and provide [Lane Result](#lane-result) to the requester.
+  +Report whether the request admits a valid unit and provide [Admission Result](#admission-result) to the requester.
+   
+   Omit the lane option when the request supplies none.
+   
+  @@ -9,4 +9,5 @@
+     --lane '[**&lt;lane-index&gt;**](#requested-index)'
+   </pre></big>
+   
+  -- Results should meet [Admission](#admission).
+  +- Apply [Admission](#admission) to the selected unit. Findings from other rows remain visible.
+  +- Use the result and exit behavior of [Read Lane Assignments](#read-lane-assignments). An admitted unit can coexist with an unrelated row finding, so inspect both `admitted` and `problems`.
+identical: skills/work-planner/artifacts/lane.md ### Index
+differing: skills/work-planner/artifacts/lane.md ### Assignments
+  --- skills/work-planner/artifacts/lane.md
+  +++ skills/work-planner/artifacts/lane.md
+  @@ -1 +1 @@
+  -Each task's Lane cell holds a bare [Index](#index), or is empty for an unlaned task. A populated cell's complete content is the index. Raw cells supply assignments independently of work-item links. Malformed cells supply findings and no assignment; a missing Lane column supplies no lane data.
+  +A map keyed by task id whose values are [Index](#index) strings or `null` for unlaned rows. Invalid cells and a missing Lane column contribute no assignment. eg `{"W01":"02","W02":null}`
+identical: skills/work-planner/artifacts/lane.md ### Unit Consistency
+identical: skills/work-planner/artifacts/lane.md ### Admission
+identical: skills/work-planner/artifacts/lane.md ### Report Label
+identical: skills/work-planner/artifacts/lane.md ### Epic Body File
+identical: skills/work-planner/artifacts/lane.md ### Confirmed Map
+identical: skills/work-planner/artifacts/lane.md ### Output Body
+identical: skills/work-planner/artifacts/lane.md ### Unit Task Ids
+identical: skills/work-planner/artifacts/lane.md ### Requested Index
+identical: skills/work-planner/artifacts/lane.md ### Workspace
+identical: skills/work-planner/artifacts/placement.md ### List Orphans
+identical: skills/work-planner/artifacts/placement.md ### Source
+identical: skills/work-planner/artifacts/placement.md ### Destination
+differing: skills/work-planner/artifacts/placement.md ### Disposition
+  --- skills/work-planner/artifacts/placement.md
+  +++ skills/work-planner/artifacts/placement.md
+  @@ -1 +1 @@
+  -Kept, subsumed or left, with a reason. A referenced planning record is carried with the source reference.
+  +A tagged value: kept, subsumed or left, with its reason. A referenced planning record accompanies the source reference.
+differing: skills/work-planner/artifacts/placement.md ### Draft Bodies
+  --- skills/work-planner/artifacts/placement.md
+  +++ skills/work-planner/artifacts/placement.md
+  @@ -1 +1 @@
+  -Each proposed body must meet its own kind's shape and states the result. It carries no account of how the work arrived. A source reference says what detail it holds.
+  +The collection of proposed complete issue-body documents, one per destination issue. Each proposed body must meet its own kind's shape and states the result. It carries no account of how the work arrived. A source reference says what detail it holds.
+identical: skills/work-planner/artifacts/placement.md ### Links
+identical: skills/work-planner/artifacts/placement.md ### Placement Record
+identical: skills/work-planner/artifacts/placement.md ### Disposition Conditions
+identical: skills/work-planner/artifacts/placement.md ### Candidate Issues
+identical: skills/work-planner/artifacts/placement.md ### Destination Work
+identical: skills/work-planner/artifacts/placement.md ### Placement Inputs
+identical: skills/work-planner/artifacts/placement.md ### Issue Collection
+identical: skills/work-planner/artifacts/placement.md ### Confirmed Placement
+identical: skills/work-planner/artifacts/placement.md ### Rewrite Inputs
+identical: skills/work-planner/artifacts/placement.md ### Transfer Inputs
+identical: skills/work-planner/artifacts/placement.md ### Placement Result
+identical: skills/work-planner/artifacts/placement.md ### Candidate Destinations
+identical: skills/work-planner/artifacts/placement.md ### Saved Orphan
+identical: skills/work-planner/artifacts/placement.md ### Workspace
+differing: skills/work-planner/artifacts/plan-change.md ### Check Plan Change Autonomy
+  --- skills/work-planner/artifacts/plan-change.md
+  +++ skills/work-planner/artifacts/plan-change.md
+  @@ -11,5 +11,9 @@
+   #### 3. Provide Held Change
+   
+   - Provide it as held otherwise, for the caller to settle as [Held Change](#held-change) states.
+  -- A change matching no kind is held, as is one matching [Initiative Creation](#initiative-creation) or [Hot-fix Creation](#hot-fix-creation).
+  +- A change matching no kind is held.
+   - An absent [allowance](#allowance) holds every change, so a run the user drives decides nothing on their behalf.
+  +
+  +- A new initiative is outside every allowance. The work stays where it is, open and unplaced, until the user decides where it belongs.
+  +
+  +- A new hot-fix is outside every allowance, since it runs ahead of all queued work. The work stays where it is until the user decides it is a hot-fix.
+identical: skills/work-planner/artifacts/plan-change.md ### Record Plan Change
+differing: skills/work-planner/artifacts/plan-change.md ### Allowance
+  --- skills/work-planner/artifacts/plan-change.md
+  +++ skills/work-planner/artifacts/plan-change.md
+  @@ -1 +1 @@
+  -The caller names the change kinds its run applies without asking. A run the user drives directly is supplied none.
+  +A supplied set of [Change Kinds](#change-kinds) the run may apply without asking, or no allowance for a user-driven run.
+differing: skills/work-planner/artifacts/plan-change.md ### Change Kinds
+  --- skills/work-planner/artifacts/plan-change.md
+  +++ skills/work-planner/artifacts/plan-change.md
+  @@ -5,5 +5,3 @@
+   | Migration | Work moved from one issue to another, with the renumbering that move forces |
+   | Re-prioritisation | A priority label, a queue order or a board status |
+   | Folded work | Criteria, scope or design added to an existing issue because the work in hand needs it |
+  -
+  -An option deciding to leave work where it is changes no plan, so it needs no allowance and takes no entry, unlike a change [held](#held-change) for the user to decide.
+identical: skills/work-planner/artifacts/plan-change.md ### Change List
+identical: skills/work-planner/artifacts/plan-change.md ### Entry
+differing: skills/work-planner/artifacts/plan-change.md ### Held Change
+  --- skills/work-planner/artifacts/plan-change.md
+  +++ skills/work-planner/artifacts/plan-change.md
+  @@ -1,3 +1,5 @@
+   A held change is left unapplied and its subject stays as it stands, so the next run sees the same decision. Its entry carries the recommended option, which is what the user is answering.
+   
+   A run working under an allowance records and reports a held change rather than asking, since the work it was dispatched for does not wait on an answer. A run supplied no allowance puts it to the user.
+  +
+  +An option deciding to leave work where it is changes no plan, so it needs no allowance and takes no entry, unlike a change [held](#held-change) for the user to decide.
+identical: skills/work-planner/artifacts/plan-change.md ### Pending Change
+identical: skills/work-planner/artifacts/plan-change.md ### Change Details
+identical: skills/work-planner/artifacts/plan-change.md ### Autonomy Result
+identical: skills/work-planner/artifacts/planning-record.md ### Populate Planning Record
+identical: skills/work-planner/artifacts/planning-record.md ### Publish Planning Record
+identical: skills/work-planner/artifacts/planning-record.md ### Find Engineering Worktree
+identical: skills/work-planner/artifacts/planning-record.md ### Commit Planning Record
+identical: skills/work-planner/artifacts/planning-record.md ### Add Planning Record
+identical: skills/work-planner/artifacts/planning-record.md ### Template
+identical: skills/work-planner/artifacts/planning-record.md ### Shared Worktree
+identical: skills/work-planner/artifacts/planning-record.md ### Layout
+identical: skills/work-planner/artifacts/planning-record.md ### Header
+identical: skills/work-planner/artifacts/planning-record.md ### Executive Summary
+identical: skills/work-planner/artifacts/planning-record.md ### Artifacts
+differing: skills/work-planner/artifacts/planning-record.md ### Links
+  --- skills/work-planner/artifacts/planning-record.md
+  +++ skills/work-planner/artifacts/planning-record.md
+  @@ -1 +1 @@
+  -External references only: a tracker issue, a parent epic, a pull request. An artifact of this plan is an Artifacts row.
+  +The README's external-reference table, with resource names and URLs. External references only: a tracker issue, a parent epic, a pull request. An artifact of this plan is an Artifacts row.
+identical: skills/work-planner/artifacts/planning-record.md ### Record Selection
+identical: skills/work-planner/artifacts/planning-record.md ### Planning Folder
+identical: skills/work-planner/artifacts/planning-record.md ### Engineering Worktree
+identical: skills/work-planner/artifacts/planning-record.md ### Project Checkout
+identical: skills/work-planner/artifacts/planning-record.md ### Commit Message File
+identical: skills/work-planner/artifacts/planning-record.md ### Publication Result
+identical: skills/work-planner/artifacts/proposal-body.md ### Validate Proposal Body
+identical: skills/work-planner/artifacts/proposal-body.md ### Template
+identical: skills/work-planner/artifacts/proposal-body.md ### Titles
+differing: skills/work-planner/artifacts/proposal-body.md ### Problem
+  --- skills/work-planner/artifacts/proposal-body.md
+  +++ skills/work-planner/artifacts/proposal-body.md
+  @@ -1 +1,3 @@
+  +The proposal body's Problem prose section.
+  +
+   - A Problem must meet [Problem and Proposal](#problem-and-proposal).
+identical: skills/work-planner/artifacts/proposal-body.md ### Goal
+identical: skills/work-planner/artifacts/proposal-body.md ### Non-Goals
+identical: skills/work-planner/artifacts/proposal-body.md ### Sections
+identical: skills/work-planner/artifacts/proposal-body.md ### Proposal Context
+identical: skills/work-planner/artifacts/proposal-body.md ### Proposal Record
+identical: skills/work-planner/artifacts/proposal-body.md ### Output Body
+identical: skills/work-planner/artifacts/proposal-body.md ### Validation Findings
+identical: skills/work-planner/artifacts/pull-request-body.md ### Populate Review Body
+identical: skills/work-planner/artifacts/pull-request-body.md ### Repair Test Plan
+identical: skills/work-planner/artifacts/pull-request-body.md ### Convert Test Plan
+identical: skills/work-planner/artifacts/pull-request-body.md ### Template
+identical: skills/work-planner/artifacts/pull-request-body.md ### Titles
+differing: skills/work-planner/artifacts/pull-request-body.md ### Review Body
+  --- skills/work-planner/artifacts/pull-request-body.md
+  +++ skills/work-planner/artifacts/pull-request-body.md
+  @@ -1,3 +1,5 @@
+  +The epic review document, containing Overview, Changes and References sections.
+  +
+   - Overview is one paragraph on what the base carries.
+   - Changes holds one heading per area, with a bullet per functional change.
+   - A Changes bullet states what the base does and carries no count of the corpus, such as how many specifications or files it holds. A count belongs in the unit's planning record, with the revision that produced it.
+identical: skills/work-planner/artifacts/pull-request-body.md ### Test Plan
+identical: skills/work-planner/artifacts/pull-request-body.md ### Test Coverage
+identical: skills/work-planner/artifacts/pull-request-body.md ### Change Evidence
+identical: skills/work-planner/artifacts/pull-request-body.md ### Current Body
+identical: skills/work-planner/artifacts/pull-request-body.md ### Pull Request Record
+identical: skills/work-planner/artifacts/pull-request-body.md ### Overview URL
+identical: skills/work-planner/artifacts/pull-request-body.md ### Output Body
+identical: skills/work-planner/artifacts/pull-request-body.md ### Unresolved Evidence
+identical: skills/work-planner/artifacts/pull-request-body.md ### Workspace
+identical: skills/work-planner/artifacts/pull-request.md ### Merge Delivery Pull Request
+identical: skills/work-planner/artifacts/pull-request.md ### Access Development Links
+identical: skills/work-planner/artifacts/pull-request.md ### Fetch Pull Request Issue Links
+identical: skills/work-planner/artifacts/pull-request.md ### Link Pull Request to Issue
+identical: skills/work-planner/artifacts/pull-request.md ### Fetch All Delivery Pull Requests
+identical: skills/work-planner/artifacts/pull-request.md ### Read Initiative Pull Requests
+identical: skills/work-planner/artifacts/pull-request.md ### Read Pull Request State
+differing: skills/work-planner/artifacts/pull-request.md ### Publish Pull Request
+  --- skills/work-planner/artifacts/pull-request.md
+  +++ skills/work-planner/artifacts/pull-request.md
+  @@ -4,6 +4,8 @@
+   
+   - For creation, Run [Open Task Pull Request](#open-task-pull-request) or Run [Open Epic Pull Request](#open-epic-pull-request) as the selected kind requires.
+   - For a task or epic pull request with a delivery issue, Apply [Link Pull Request to Issue](#link-pull-request-to-issue), meeting [Issue Links](#issue-links).
+  +
+  +- A pull request outside epic delivery targets a long-lived branch. An open stacked pull request targets its long-lived branch once its base merges.
+   
+   #### 2. Update Selected Pull Fields
+   
+identical: skills/work-planner/artifacts/pull-request.md ### Merge Task Pull Requests
+identical: skills/work-planner/artifacts/pull-request.md ### Fetch Merge Readiness
+identical: skills/work-planner/artifacts/pull-request.md ### Hold Epic Review
+identical: skills/work-planner/artifacts/pull-request.md ### Retarget Pull Request
+identical: skills/work-planner/artifacts/pull-request.md ### Retitle Pull Request
+identical: skills/work-planner/artifacts/pull-request.md ### Open Task Pull Request
+identical: skills/work-planner/artifacts/pull-request.md ### Open Epic Pull Request
+identical: skills/work-planner/artifacts/pull-request.md ### Merge Pull Request
+identical: skills/work-planner/artifacts/pull-request.md ### Patch Pull Request Body
+identical: skills/work-planner/artifacts/pull-request.md ### Find Review Pull Request
+identical: skills/work-planner/artifacts/pull-request.md ### Submit Epic Merge
+identical: skills/work-planner/artifacts/pull-request.md ### Read Merge Result
+identical: skills/work-planner/artifacts/pull-request.md ### Set Development Link
+identical: skills/work-planner/artifacts/pull-request.md ### Remove Development Link
+identical: skills/work-planner/artifacts/pull-request.md ### Capture Pull Request Links
+identical: skills/work-planner/artifacts/pull-request.md ### Save Pull Request Snapshot
+identical: skills/work-planner/artifacts/pull-request.md ### Fetch Pull Request Reviews
+identical: skills/work-planner/artifacts/pull-request.md ### Fetch Initiative Pull Requests
+identical: skills/work-planner/artifacts/pull-request.md ### Fetch Linked Pull Requests
+identical: skills/work-planner/artifacts/pull-request.md ### Fetch Repository Delivery Pull Requests
+identical: skills/work-planner/artifacts/pull-request.md ### Append Repository Delivery Pull Requests
+identical: skills/work-planner/artifacts/pull-request.md ### Fetch Pull Request Files
+identical: skills/work-planner/artifacts/pull-request.md ### Fetch Head Check Runs
+identical: skills/work-planner/artifacts/pull-request.md ### Fetch Head Status
+identical: skills/work-planner/artifacts/pull-request.md ### Mark Review Ready
+identical: skills/work-planner/artifacts/pull-request.md ### Mark Review Draft
+identical: skills/work-planner/artifacts/pull-request.md ### State
+differing: skills/work-planner/artifacts/pull-request.md ### Scope
+  --- skills/work-planner/artifacts/pull-request.md
+  +++ skills/work-planner/artifacts/pull-request.md
+  @@ -1 +1 @@
+  -A task pull request delivers one task, or a set of tasks that name each other in Joins.
+  +The task-id set delivered by the pull request. A task pull request delivers one task, or a set of tasks that name each other in Joins.
+identical: skills/work-planner/artifacts/pull-request.md ### Merge Permission
+differing: skills/work-planner/artifacts/pull-request.md ### Issue Links
+  --- skills/work-planner/artifacts/pull-request.md
+  +++ skills/work-planner/artifacts/pull-request.md
+  @@ -1,3 +1,5 @@
+  +The set of Development relations between issue and pull-request identities.
+  +
+   - GitHub shows the link in the pull request's Development field and in the issue's Linked pull requests field, which the project board reads.
+   - A task pull request links the task's issue, and a review pull request links its epic's issue.
+   - The link is addressed by issue, so a pull request whose work carries no issue links nothing. A task pull request delivering rows that have no issue of their own is the whole of what stays unlinked.
+identical: skills/work-planner/artifacts/pull-request.md ### Identity
+identical: skills/work-planner/artifacts/pull-request.md ### Kind
+identical: skills/work-planner/artifacts/pull-request.md ### Verified Head
+identical: skills/work-planner/artifacts/pull-request.md ### Target Requirements
+identical: skills/work-planner/artifacts/pull-request.md ### Readiness Evidence
+identical: skills/work-planner/artifacts/pull-request.md ### Repository Prerequisite
+identical: skills/work-planner/artifacts/pull-request.md ### Merge Authorization
+identical: skills/work-planner/artifacts/pull-request.md ### Merge Result
+identical: skills/work-planner/artifacts/pull-request.md ### Link Request
+identical: skills/work-planner/artifacts/pull-request.md ### Issue Identity
+identical: skills/work-planner/artifacts/pull-request.md ### Removal Decision
+identical: skills/work-planner/artifacts/pull-request.md ### Pull Request Records
+identical: skills/work-planner/artifacts/pull-request.md ### Issue-Link Snapshot
+identical: skills/work-planner/artifacts/pull-request.md ### Link-Snapshot Path
+identical: skills/work-planner/artifacts/pull-request.md ### Development Relation
+identical: skills/work-planner/artifacts/pull-request.md ### Repository List
+identical: skills/work-planner/artifacts/pull-request.md ### Issue Records
+identical: skills/work-planner/artifacts/pull-request.md ### Collection Path
+identical: skills/work-planner/artifacts/pull-request.md ### Initiative Prefix
+identical: skills/work-planner/artifacts/pull-request.md ### Output Files
+identical: skills/work-planner/artifacts/pull-request.md ### Record Selection
+identical: skills/work-planner/artifacts/pull-request.md ### Pull Request Record
+identical: skills/work-planner/artifacts/pull-request.md ### Changed Paths
+identical: skills/work-planner/artifacts/pull-request.md ### Reviews
+identical: skills/work-planner/artifacts/pull-request.md ### Body File
+identical: skills/work-planner/artifacts/pull-request.md ### Title
+identical: skills/work-planner/artifacts/pull-request.md ### Head Branch
+identical: skills/work-planner/artifacts/pull-request.md ### Base Branch
+identical: skills/work-planner/artifacts/pull-request.md ### Selected Changes
+identical: skills/work-planner/artifacts/pull-request.md ### Review Number
+identical: skills/work-planner/artifacts/pull-request.md ### Head Checks
+identical: skills/work-planner/artifacts/pull-request.md ### Head Status
+identical: skills/work-planner/artifacts/pull-request.md ### Published Reviews
+identical: skills/work-planner/artifacts/pull-request.md ### Epic Readiness
+identical: skills/work-planner/artifacts/pull-request.md ### Review State
+identical: skills/work-planner/artifacts/pull-request.md ### Node Metadata
+identical: skills/work-planner/artifacts/pull-request.md ### Query File
+identical: skills/work-planner/artifacts/pull-request.md ### Workspace
+identical: skills/work-planner/artifacts/pull-request.md ### Repository
+identical: skills/work-planner/artifacts/pull-request.md ### Project Checkout
+identical: skills/work-planner/artifacts/pull-request.md ### Unit Checkout
+identical: skills/work-planner/artifacts/pull-request.md ### Authenticated Access
+identical: skills/work-planner/artifacts/pull-request.md ### Failure
+identical: skills/work-planner/artifacts/repository-graph.md ### Measure Repository Change
+identical: skills/work-planner/artifacts/repository-graph.md ### Index Status
+identical: skills/work-planner/artifacts/repository-graph.md ### Index Repository
+identical: skills/work-planner/artifacts/repository-graph.md ### Change Surface
+identical: skills/work-planner/artifacts/repository-graph.md ### Symbol Context
+identical: skills/work-planner/artifacts/repository-graph.md ### Flow Trace
+identical: skills/work-planner/artifacts/repository-graph.md ### Revision
+identical: skills/work-planner/artifacts/repository-graph.md ### Freshness
+identical: skills/work-planner/artifacts/repository-graph.md ### Changed Symbols
+identical: skills/work-planner/artifacts/repository-graph.md ### Symbol Relationships
+identical: skills/work-planner/artifacts/repository-graph.md ### Flow Traces
+identical: skills/work-planner/artifacts/repository-graph.md ### Review Checkout
+identical: skills/work-planner/artifacts/repository-graph.md ### Requested Revision
+identical: skills/work-planner/artifacts/repository-graph.md ### Base Branch
+identical: skills/work-planner/artifacts/repository-graph.md ### Symbol Identity
+identical: skills/work-planner/artifacts/repository-graph.md ### Flow Identity
+identical: skills/work-planner/artifacts/repository-graph.md ### Graph Measurements
+identical: skills/work-planner/artifacts/repository-graph.md ### Index State
+identical: skills/work-planner/artifacts/repository-labels.md ### Ensure Repository Labels
+identical: skills/work-planner/artifacts/repository-labels.md ### List Labels
+identical: skills/work-planner/artifacts/repository-labels.md ### Create Label
+identical: skills/work-planner/artifacts/repository-labels.md ### Label Identity
+identical: skills/work-planner/artifacts/repository-labels.md ### Repository
+identical: skills/work-planner/artifacts/review-finding.md ### Report Review Finding
+identical: skills/work-planner/artifacts/review-finding.md ### Finding Content
+identical: skills/work-planner/artifacts/review-finding.md ### Decision State
+identical: skills/work-planner/artifacts/review-finding.md ### Finding Evidence
+identical: skills/work-planner/artifacts/review-finding.md ### Finding Set
+identical: skills/work-planner/artifacts/review-finding.md ### Finding Result
+differing: skills/work-planner/artifacts/standalone-body.md ### Populate Standalone Body
+  --- skills/work-planner/artifacts/standalone-body.md
+  +++ skills/work-planner/artifacts/standalone-body.md
+  @@ -7,6 +7,8 @@
+   - The Problem and Proposal must meet [Problem and Proposal](#problem-and-proposal).
+   - All populated fields must meet [Fields](#fields).
+   
+  +- The issue's placement must follow [Standalone Issues](#standalone-issues).
+  +
+   #### 2. Provide Populated Standalone Body
+   
+   Provide the populated [Output Body](#output-body) for publication.
+identical: skills/work-planner/artifacts/standalone-body.md ### Template
+identical: skills/work-planner/artifacts/standalone-body.md ### Titles
+identical: skills/work-planner/artifacts/standalone-body.md ### Sections
+identical: skills/work-planner/artifacts/standalone-body.md ### Issue Context
+identical: skills/work-planner/artifacts/standalone-body.md ### Current Body
+identical: skills/work-planner/artifacts/standalone-body.md ### Confirmed Boundary
+identical: skills/work-planner/artifacts/standalone-body.md ### Output Body
+identical: skills/work-planner/artifacts/standup-report.md ### Compose Standup Report
+identical: skills/work-planner/artifacts/standup-report.md ### Summarise Progress
+differing: skills/work-planner/artifacts/standup-report.md ### Scope
+  --- skills/work-planner/artifacts/standup-report.md
+  +++ skills/work-planner/artifacts/standup-report.md
+  @@ -1,3 +1,3 @@
+  -When no start date is supplied, the window follows [Standup Configuration](#standup). A supplied start date selects another window, such as the previous working day for a daily standup. An initiative filter names one initiative, qualified by repository when its number is ambiguous.
+  +The report window and optional repository-qualified initiative filter. When no start date is supplied, the window follows [Standup Configuration](#standup). A supplied start date selects another window, such as the previous working day for a daily standup. An initiative filter names one initiative, qualified by repository when its number is ambiguous.
+   
+   Each repository numbers its own initiatives, and an initiative's epics and task issues may live in other repositories. Each item's place follows the Work Breakdown links, or for a task issue the pull request whose Development field links it. A pull request counts towards the epic of its reference in the epic's repository or its initiative's.
+differing: skills/work-planner/artifacts/standup-report.md ### Sections
+  --- skills/work-planner/artifacts/standup-report.md
+  +++ skills/work-planner/artifacts/standup-report.md
+  @@ -1,3 +1,5 @@
+  +The report document's management paragraph, board link, initiative, Completed, In progress, Next, hot-fix and key sections.
+  +
+   The management paragraph is set off by blank lines, with the board's link beneath the heading.
+   
+   - **Initiatives.**
+identical: skills/work-planner/artifacts/standup-report.md ### Management Paragraph
+differing: skills/work-planner/artifacts/standup-report.md ### Unresolved Evidence
+  --- skills/work-planner/artifacts/standup-report.md
+  +++ skills/work-planner/artifacts/standup-report.md
+  @@ -1 +1 @@
+  -An unresolved initiative identifies its number and repository for the caller to fetch. An off-board dependency is blocked. An epic with unreadable Work Breakdown is summarised without tasks and provided as a finding. Unresolved lines are separate from the copyable report.
+  +A collection of unresolved initiative identities and dependency or unreadable-breakdown findings, separate from the report. An unresolved initiative identifies its number and repository for the caller to fetch. An off-board dependency is blocked. An epic with unreadable Work Breakdown is summarised without tasks and provided as a finding. Unresolved lines are separate from the copyable report.
+identical: skills/work-planner/artifacts/standup-report.md ### Report Selection
+identical: skills/work-planner/artifacts/standup-report.md ### Initiative Records
+identical: skills/work-planner/artifacts/standup-report.md ### Output Paths
+identical: skills/work-planner/artifacts/standup-report.md ### Management File
+identical: skills/work-planner/artifacts/standup-report.md ### Report Result
+identical: skills/work-planner/artifacts/standup-report.md ### Board Items
+identical: skills/work-planner/artifacts/standup-report.md ### Pull Request Records
+identical: skills/work-planner/artifacts/standup-report.md ### Issue Link Snapshot
+identical: skills/work-planner/artifacts/standup-report.md ### Workspace
+identical: skills/work-planner/artifacts/task-body.md ### Sync Task Issue
+identical: skills/work-planner/artifacts/task-body.md ### Template
+identical: skills/work-planner/artifacts/task-body.md ### Titles
+differing: skills/work-planner/artifacts/task-body.md ### Open Questions
+  --- skills/work-planner/artifacts/task-body.md
+  +++ skills/work-planner/artifacts/task-body.md
+  @@ -1 +1,3 @@
+  +The existing task issue's collection of unresolved question statements.
+  +
+   - Each holds only what is undecided, and is resolved before the task starts.
+differing: skills/work-planner/artifacts/task-body.md ### Acceptance Criteria
+  --- skills/work-planner/artifacts/task-body.md
+  +++ skills/work-planner/artifacts/task-body.md
+  @@ -1 +1,3 @@
+  +The existing task issue's collection of labelled criterion statements.
+  +
+   - A task criterion must meet the [shared acceptance criteria](#shared-acceptance-criteria).
+identical: skills/work-planner/artifacts/task-body.md ### Sections
+identical: skills/work-planner/artifacts/task-body.md ### Task Record
+identical: skills/work-planner/artifacts/task-body.md ### Pull Request Records
+identical: skills/work-planner/artifacts/task-body.md ### Issue Links
+identical: skills/work-planner/artifacts/task-body.md ### Delivery Selection
+identical: skills/work-planner/artifacts/task-body.md ### Output Body
+identical: skills/work-planner/artifacts/task-body.md ### Delivery Findings
+identical: skills/work-planner/artifacts/task-body.md ### Workspace
+identical: skills/work-planner/artifacts/work-item.md ### Populate Work Item
+identical: skills/work-planner/artifacts/work-item.md ### Template
+identical: skills/work-planner/artifacts/work-item.md ### Identity
+identical: skills/work-planner/artifacts/work-item.md ### Component
+identical: skills/work-planner/artifacts/work-item.md ### Sections
+identical: skills/work-planner/artifacts/work-item.md ### Task Context
+identical: skills/work-planner/artifacts/work-item.md ### Work Item File
+identical: skills/work-planner/configuration.md ### Theme Boards
+identical: skills/work-planner/configuration.md ### Proposals Board
+identical: skills/work-planner/modes/advance-mode.md ### 1. Select the Board
+identical: skills/work-planner/modes/advance-mode.md ### 2. Sync
+identical: skills/work-planner/modes/advance-mode.md ### 3. Fetch
+identical: skills/work-planner/modes/advance-mode.md ### 4. Plan
+identical: skills/work-planner/modes/advance-mode.md ### 5. Resolve Missing Evidence
+differing: skills/work-planner/modes/advance-mode.md ### 6. Resolve Queue Decisions
+  --- skills/work-planner/modes/advance-mode.md
+  +++ skills/work-planner/modes/advance-mode.md
+  @@ -2,7 +2,12 @@
+   
+   - Apply [Check Plan Change Autonomy](#check-plan-change-autonomy) for each line, with the allowance the caller supplied.
+   
+  -- For an automatic line, take its [recommended decision](#recommended-decisions) and Apply [Record Plan Change](#record-plan-change) with that decision.
+  +- For an automatic `order` or `ask` line, use these recommendations:
+  +
+  +- For `order`, priority 1 on every open initiative already In Progress or named by an open pull request, and no number on the rest. Where no initiative qualifies, nothing is under way and the line has no recommended answer.
+  +- For `ask`, the number of the highest set already running, so the initiative joins it, or 1 where no initiative carries a priority label.
+  +
+  +- For an automatic line, take its recommended decision and Apply [Record Plan Change](#record-plan-change) with that decision.
+   - A held line, and an automatic one the recommendation leaves without an answer, is settled as [Held Change](#held-change) states, following the interview rules in the [guidelines](#modes) where it reaches the user.
+   - A line this mode records rather than asks leaves the queue pending, which the write step reads as incomplete.
+   
+identical: skills/work-planner/modes/advance-mode.md ### 7. Write
+identical: skills/work-planner/modes/advance-mode.md ### 8. Report
+identical: skills/work-planner/modes/align-mode.md ### 1. Discover Every Issue
+identical: skills/work-planner/modes/align-mode.md ### 2. Fetch Each Issue
+identical: skills/work-planner/modes/align-mode.md ### 3. Validate the Bodies
+identical: skills/work-planner/modes/align-mode.md ### 4. Publish Mechanical Fixes
+identical: skills/work-planner/modes/align-mode.md ### 5. Review the Goal
+identical: skills/work-planner/modes/align-mode.md ### 6. Resolve Content Decisions
+identical: skills/work-planner/modes/align-mode.md ### 7. Check Criteria
+identical: skills/work-planner/modes/align-mode.md ### 8. Check Dependencies
+identical: skills/work-planner/modes/align-mode.md ### 9. Coverage
+identical: skills/work-planner/modes/align-mode.md ### 10. Branches
+identical: skills/work-planner/modes/align-mode.md ### 11. Unplaced Task Issues
+identical: skills/work-planner/modes/align-mode.md ### 12. Review Pull Requests
+identical: skills/work-planner/modes/align-mode.md ### 13. Re-Run
+identical: skills/work-planner/modes/deliver-mode.md ### 1. Select
+identical: skills/work-planner/modes/deliver-mode.md ### 2. Establish the Authorization
+identical: skills/work-planner/modes/deliver-mode.md ### 3. Coordinate Delivery
+identical: skills/work-planner/modes/deliver-mode.md ### 4. Report
+identical: skills/work-planner/modes/deliver-mode.md ### Refill Delivery Capacity
+differing: skills/work-planner/modes/deliver-mode.md ### Run Delivery Session
+  --- skills/work-planner/modes/deliver-mode.md
+  +++ skills/work-planner/modes/deliver-mode.md
+  @@ -65,9 +65,10 @@
+   
+   #### 8. Fix the Debt
+   
+  -- Fix the technical debt this unit's validation finds, as [Debt](#debt) states.
+  +- A unit, including a hot-fix, fixes every debt item its validation finds, from running its tests, auditing the definitions it changed and reviewing its pull request, on its task branch, so its open pull request carries each fix before it merges.
+  +- Debt in code outside the unit's change is an issue of its own, arising from the delivery.
+   
+  -- Carry each item that Debt leaves outside the unit's change into the arising-issues step.
+  +- Carry each item outside the unit's change into the arising-issues step.
+   - Continue to the review step for a hot-fix unit, and to the merge step otherwise.
+   
+   #### 9. Review a Hot-Fix
+  @@ -106,7 +107,7 @@
+   
+   #### 11. Arising Issues
+   
+  -- Apply [Save Tracker Issue](#save-tracker-issue) for each issue that arose during delivery as a standalone issue with no agent-engineering prefix.
+  +- Apply [Save Tracker Issue](#save-tracker-issue) for each issue that arose during delivery as a standalone issue with no agent-engineering prefix, following [Standalone Issues](#standalone-issues).
+   
+   - Follow [Hoist Mode]() in the project checkout with those new issue identities and the allowance the brief names, after the pull request is open and epic delivery is recorded.
+   - Apply [Record Plan Change](#record-plan-change) with each placement it applied and each it held.
+identical: skills/work-planner/modes/hoist-mode.md ### 1. Fetch
+identical: skills/work-planner/modes/hoist-mode.md ### 2. List Candidates
+identical: skills/work-planner/modes/hoist-mode.md ### 3. Triage
+identical: skills/work-planner/modes/hoist-mode.md ### 4. Decide Each Placement
+differing: skills/work-planner/modes/hoist-mode.md ### 5. Apply
+  --- skills/work-planner/modes/hoist-mode.md
+  +++ skills/work-planner/modes/hoist-mode.md
+  @@ -76,6 +76,10 @@
+   
+   - Retain the populated [Output Body](#output-body) for publication.
+   
+  +- A hot-fix belongs to no initiative or epic, and names no Depends on or Joins.
+  +- It sits on its theme's board.
+  +- Its priority 10, which its [Titles](#titles) label carries, ranks it nowhere: the queue places it by its [Board Status](#board-status), outside the priority sets.
+  +
+   ###### Standalone Body
+   
+   - For a standalone issue, Apply [Populate Standalone Body](#populate-standalone-body).
+identical: skills/work-planner/modes/hoist-mode.md ### 6. Review
+identical: skills/work-planner/modes/hoist-mode.md ### 7. Report
+identical: skills/work-planner/modes/plan-mode.md ### 1. Take the Proposal
+identical: skills/work-planner/modes/plan-mode.md ### 2. Prepare the Planning Record
+identical: skills/work-planner/modes/plan-mode.md ### 3. Draft Each Initiative Body
+identical: skills/work-planner/modes/plan-mode.md ### 4. Populate the Epics
+identical: skills/work-planner/modes/plan-mode.md ### 5. Review the Drafts
+identical: skills/work-planner/modes/plan-mode.md ### 6. Publish
+identical: skills/work-planner/modes/plan-mode.md ### 7. Keep the Goal Current
+identical: skills/work-planner/modes/plan-mode.md ### 8. Prepare Epic Delivery
+identical: skills/work-planner/modes/plan-mode.md ### 9. Record Delivered Work
+identical: skills/work-planner/modes/propose-mode.md ### 1. Understand the Problem
+identical: skills/work-planner/modes/propose-mode.md ### 2. Gather Evidence
+identical: skills/work-planner/modes/propose-mode.md ### 3. Draft the Body
+identical: skills/work-planner/modes/propose-mode.md ### 4. Validate
+identical: skills/work-planner/modes/propose-mode.md ### 5. Publish
+identical: skills/work-planner/modes/propose-mode.md ### 6. Confirm Placement
+identical: skills/work-planner/modes/propose-mode.md ### 7. Place
+identical: skills/work-planner/modes/propose-mode.md ### 8. Report
+identical: skills/work-planner/modes/revise-mode.md ### 1. Read the Guidelines
+identical: skills/work-planner/modes/revise-mode.md ### 2. Understand the Request
+identical: skills/work-planner/modes/revise-mode.md ### 3. Work in a Worktree
+identical: skills/work-planner/modes/revise-mode.md ### 4. Revise
+identical: skills/work-planner/modes/revise-mode.md ### 5. Check Against the Guidelines
+identical: skills/work-planner/modes/revise-mode.md ### 6. Verify
+identical: skills/work-planner/modes/revise-mode.md ### 7. Deliver
+identical: skills/work-planner/modes/revise-mode.md ### Run Tests
+identical: skills/work-planner/modes/revise-mode.md ### Check Skill Files
+identical: skills/work-planner/modes/revise-mode.md ### Compare Section Bodies
+identical: skills/work-planner/modes/revise-mode.md ### Workspace
+identical: skills/work-planner/modes/revise-mode.md ### Skill Directory
+identical: skills/work-planner/modes/revise-mode.md ### Base
+identical: skills/work-planner/modes/revise-mode.md ### Head
+identical: skills/work-planner/modes/revise-mode.md ### Test Result
+identical: skills/work-planner/modes/revise-mode.md ### Skill Check Result
+identical: skills/work-planner/modes/revise-mode.md ### Section Comparison
+identical: skills/work-planner/modes/standup-mode.md ### 1. Select the Scope
+identical: skills/work-planner/modes/standup-mode.md ### 2. Bring Delivery Current
+identical: skills/work-planner/modes/standup-mode.md ### 3. Fetch
+identical: skills/work-planner/modes/standup-mode.md ### 4. Compose
+identical: skills/work-planner/modes/standup-mode.md ### 5. Resolve Evidence
+identical: skills/work-planner/modes/standup-mode.md ### 6. Report
+identical: skills/work-planner/modes/sync-mode.md ### 1. Select
+identical: skills/work-planner/modes/sync-mode.md ### 2. Fetch
+identical: skills/work-planner/modes/sync-mode.md ### 3. Unnamed Deliveries
+identical: skills/work-planner/modes/sync-mode.md ### 4. Match Pull Requests to Tasks
+identical: skills/work-planner/modes/sync-mode.md ### 5. Sync Each Task Issue
+identical: skills/work-planner/modes/sync-mode.md ### 6. Sync Each Epic
+identical: skills/work-planner/modes/sync-mode.md ### 7. Verify
+identical: skills/work-planner/modes/sync-mode.md ### 8. Tick
+identical: skills/work-planner/modes/sync-mode.md ### 9. Patch
+identical: skills/work-planner/modes/sync-mode.md ### 10. Close
+identical: skills/work-planner/modes/sync-mode.md ### 11. Sync the Initiative
+differing: skills/work-planner/modes/sync-mode.md ### 12. Sync the Board
+  --- skills/work-planner/modes/sync-mode.md
+  +++ skills/work-planner/modes/sync-mode.md
+  @@ -23,7 +23,7 @@
+   
+   - Use the provided number as the copy source.
+   
+  -- Run [Copy Board Template](#copy-board-template) with that template number, the owner and the title required by [One Board Per Theme](#one-board-per-theme).
+  +- Run [Copy Board Template](#copy-board-template) with that template number, the owner and the title required by [Theme Board Title](#theme-board-title).
+   
+   - Retain the new board number. The copy carries the [theme-board fields](#theme-boards).
+   
+  @@ -31,6 +31,8 @@
+   
+   - Retain the [Copied Board](#copied-board) after linking succeeds.
+   - Require the new theme's label and board before an initiative takes that theme.
+  +
+  +- The theme board must hold the theme's initiatives, epics, task issues and hot-fixes.
+   
+   ##### 3. Retain Copied Board
+   
+identical: skills/work-planner/modes/sync-mode.md ### 13. Explain Each Change Entering Review
+identical: skills/work-planner/modes/sync-mode.md ### 14. Report
+identical: skills/work-planner/modes/understand-mode.md ### 1. Select the Change
+identical: skills/work-planner/modes/understand-mode.md ### 2. Explain Each Change
+identical: skills/work-planner/modes/understand-mode.md ### 3. Report
+identical: skills/work-planner/protocols/change-overview.md ### 1. Prepare the Evidence
+differing: skills/work-planner/protocols/change-overview.md ### 2. Write the Overview
+  --- skills/work-planner/protocols/change-overview.md
+  +++ skills/work-planner/protocols/change-overview.md
+  @@ -2,7 +2,7 @@
+   - Reuse its folder identity when one exists; otherwise choose a planning-folder identity whose reference is the pull request number and whose slug comes from its title.
+   - Apply [Populate Planning Record](#populate-planning-record) to prepare that folder.
+   - Take the graph [measurements](#measurements) from the evidence step and check the proposed diagrams.
+  -- The diagrams must meet [Measured Structure](#measured-structure) and [Diagrams](#diagrams).
+  +- The diagrams must meet [Diagrams](#diagrams).
+   
+   - Populate the overview from the [Template](#template) at the destination in [Overview File](#overview-file).
+   - All populated fields must meet [Fields](#fields).
+  @@ -13,3 +13,11 @@
+   - Retain the completed [Overview File](#overview-file) for registration in its planning record.
+   
+   - A repeat replaces its overview while preserving the record’s other content.
+  +
+  +- The reader is an engineer meeting this codebase for the first time. A component, type or function carries the name the diff carries, so the document and the diff name one thing once. A term the codebase coins is defined where it first appears.
+  +
+  +- A component diagram's areas and edges, and a sequence's step order, are the ones measured over the graph. A boundary taken from the directory layout, and a call order traced by hand, are each a defect.
+  +
+  +- Items of one kind go in a bulleted list, never packed into a paragraph. Each opens with a bold lead naming the item, and its body is the line beneath.
+  +
+  +- About two hundred lines, diagrams counted.
+identical: skills/work-planner/protocols/change-overview.md ### 3. Register the Overview
+identical: skills/work-planner/protocols/change-overview.md ### 4. Publish and Link
+identical: skills/work-planner/protocols/epic-integration.md ### 1. Prepare the Evidence
+identical: skills/work-planner/protocols/epic-integration.md ### 2. Refresh and Validate
+identical: skills/work-planner/protocols/epic-integration.md ### 3. Merge or Hand Off
+identical: skills/work-planner/protocols/epic-integration.md ### 4. Confirm the Result
+identical: skills/work-planner/protocols/issue-closure.md ### 1. Issue
+identical: skills/work-planner/protocols/issue-closure.md ### 2. Pull Requests
+identical: skills/work-planner/protocols/issue-closure.md ### 3. Check Delivery Completion
+identical: skills/work-planner/protocols/issue-closure.md ### 4. Close
+identical: skills/work-planner/protocols/issue-delivery.md ### 1. Hot-Fix
+identical: skills/work-planner/protocols/issue-delivery.md ### 2. Task Issues
+identical: skills/work-planner/protocols/issue-delivery.md ### 3. Epic Rows
+identical: skills/work-planner/protocols/issue-delivery.md ### 4. Coverage Agreement
+identical: skills/work-planner/protocols/issue-delivery.md ### 5. Criteria and Bodies
+identical: skills/work-planner/protocols/review-pull-request.md ### 1. Find
+identical: skills/work-planner/protocols/review-pull-request.md ### 2. Populate
+identical: skills/work-planner/protocols/review-pull-request.md ### 3. Publish
+identical: skills/work-planner/protocols/review-pull-request.md ### 4. Confirm
+identical: skills/work-planner/protocols/review-pull-request.md ### 5. Review the Integration
+identical: skills/work-planner/protocols/task-merge.md ### 1. Record a Hot-Fix
+identical: skills/work-planner/protocols/task-merge.md ### 2. Read and Record
+identical: skills/work-planner/protocols/task-merge.md ### 3. Review
+identical: skills/work-planner/protocols/task-merge.md ### 4. Complete When Ready
+identical: skills/work-planner/protocols/task-merge.md ### 5. Close the Epic
+identical: skills/work-planner/protocols/unit-dispatch.md ### 1. Check Execution Prerequisites
+differing: skills/work-planner/protocols/unit-dispatch.md ### 2. Publish the Record
+  --- skills/work-planner/protocols/unit-dispatch.md
+  +++ skills/work-planner/protocols/unit-dispatch.md
+  @@ -3,4 +3,4 @@
+   - For a hot-fix, use the component context its [Delivery Unit](#delivery-unit) defines.
+   - Apply [Populate Planning Record](#populate-planning-record) for the selected record folder.
+   - Apply [Publish Planning Record](#publish-planning-record) for that folder.
+  -- Retain its confirmed remote publication as the unit's [start evidence](#start-readiness).
+  +- Retain its confirmed remote publication as the unit's [Start Evidence](#start-evidence).
+identical: skills/work-planner/protocols/unit-dispatch.md ### 3. Hold the Unit
+identical: skills/work-planner/protocols/unit-dispatch.md ### 4. Prepare the Session
+identical: skills/work-planner/protocols/unit-dispatch.md ### 5. Start the Worker
+removed: skills/work-planner/artifacts/acceptance-criteria.md ### Readiness
+removed: skills/work-planner/artifacts/acceptance-criteria.md ### Instrument Checkout
+removed: skills/work-planner/artifacts/acceptance-criteria.md ### Tick State
+removed: skills/work-planner/artifacts/architecture-overview.md ### Register
+removed: skills/work-planner/artifacts/architecture-overview.md ### Measured Structure
+removed: skills/work-planner/artifacts/architecture-overview.md ### One Concept Per Diagram
+removed: skills/work-planner/artifacts/architecture-overview.md ### Highlight
+removed: skills/work-planner/artifacts/architecture-overview.md ### Labelled Edges
+removed: skills/work-planner/artifacts/architecture-overview.md ### Collections
+removed: skills/work-planner/artifacts/architecture-overview.md ### Length
+removed: skills/work-planner/artifacts/architecture-overview.md ### Sections
+removed: skills/work-planner/artifacts/board-queue.md ### Initiative Status
+removed: skills/work-planner/artifacts/board-queue.md ### Hot-fix Placement
+removed: skills/work-planner/artifacts/board-queue.md ### Epic Status
+removed: skills/work-planner/artifacts/board-queue.md ### Recommended Decisions
+removed: skills/work-planner/artifacts/board-queue.md ### Status Scope
+removed: skills/work-planner/artifacts/board.md ### One Theme
+removed: skills/work-planner/artifacts/board.md ### One Board Per Theme
+removed: skills/work-planner/artifacts/delivery-branches.md ### Stash Entries
+removed: skills/work-planner/artifacts/delivery-evidence.md ### Completeness
+removed: skills/work-planner/artifacts/delivery-plan.md ### Debt
+removed: skills/work-planner/artifacts/dispatch-batch.md ### Start Readiness
+removed: skills/work-planner/artifacts/epic-issue-body.md ### Breakdown Prose
+removed: skills/work-planner/artifacts/hotfix-body.md ### Membership
+removed: skills/work-planner/artifacts/hotfix-body.md ### Debt
+removed: skills/work-planner/artifacts/initiative-issue-body.md ### Breakdown Prose
+removed: skills/work-planner/artifacts/issue-body.md ### Stale References
+removed: skills/work-planner/artifacts/lane.md ### Lane Result
+removed: skills/work-planner/artifacts/plan-change.md ### Initiative Creation
+removed: skills/work-planner/artifacts/plan-change.md ### Hot-fix Creation
+removed: skills/work-planner/artifacts/pull-request.md ### Other Pull Requests
+added: skills/work-planner/artifacts/acceptance-criteria.md ### Criterion
+added: skills/work-planner/artifacts/board.md ### Theme Board Title
+added: skills/work-planner/artifacts/issue-body.md ### Labels
+added: skills/work-planner/artifacts/lane.md ### Assignment Read Result
+added: skills/work-planner/artifacts/lane.md ### Unit Lane Result
+added: skills/work-planner/artifacts/lane.md ### Admission Result
+860 sections at d22b9a1919f1ba8bfe60017e420b7d9527519dd0, 835 sections at HEAD, 122 added, removed or differing
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/workspace (name more with SBX_EXTRA_ROOTS=dir1:dir2)

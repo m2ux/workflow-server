@@ -1,0 +1,38 @@
+[
+  {
+    "field": "artifacts/acceptance-criteria.md#criterion",
+    "file": "artifacts/acceptance-criteria.md",
+    "title": "Criterion",
+    "body": "The id of one acceptance criterion in its owning issue body."
+  },
+  {
+    "field": "artifacts/board.md#theme-board-title",
+    "file": "artifacts/board.md",
+    "title": "Theme Board Title",
+    "body": "A proposal-derived board title is the originating proposal's exact `[Pxx]` designator, a space, the theme name, a colon, and its description: `[P03] Canon: Definitions Checked Against the Design Canon`. Preserve the proposal's digits exactly. A board with no originating proposal uses `Name: Description`."
+  },
+  {
+    "field": "artifacts/issue-body.md#labels",
+    "file": "artifacts/issue-body.md",
+    "title": "Labels",
+    "body": "The collection of repository label names attached to the issue.\n\nThe collection includes `enhancement`, `bug` and `tech-debt` as applicable; every name identifies an existing repository label. eg `workflows` for workflow-server."
+  },
+  {
+    "field": "artifacts/lane.md#assignment-read-result",
+    "file": "artifacts/lane.md",
+    "title": "Assignment Read Result",
+    "body": "One JSON object with `assignments`, the complete body-wide [Assignments](#assignments) map, and `problems`, an array of finding strings. An empty array means no findings. eg `{\"assignments\":{\"W01\":\"02\",\"W02\":null},\"problems\":[]}`"
+  },
+  {
+    "field": "artifacts/lane.md#unit-lane-result",
+    "file": "artifacts/lane.md",
+    "title": "Unit Lane Result",
+    "body": "One JSON object containing the members of [Assignment Read Result](#assignment-read-result), plus `lane`, the selected unit's common [Index](#index) or `null`. Null represents an unlaned unit or an invalid or undetermined unit; `problems` distinguishes them. eg `{\"assignments\":{\"W01\":\"02\",\"W02\":null},\"problems\":[],\"lane\":\"02\"}`"
+  },
+  {
+    "field": "artifacts/lane.md#admission-result",
+    "file": "artifacts/lane.md",
+    "title": "Admission Result",
+    "body": "One JSON object containing the members of [Unit Lane Result](#unit-lane-result), plus `admitted`, a boolean indicating whether the selected unit is valid and the request admits it. The shared members remain at the top level. Findings can concern rows outside the selected unit. eg `{\"assignments\":{\"W01\":\"02\",\"W02\":null},\"problems\":[],\"lane\":\"02\",\"admitted\":true}`"
+  }
+]

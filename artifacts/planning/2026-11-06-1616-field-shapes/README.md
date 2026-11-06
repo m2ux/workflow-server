@@ -23,3 +23,18 @@ Inventory all named Fields and their incoming links; account for whole-section s
 | Artifact | What it holds |
 | --- | --- |
 | [Field inventory](fields-before.json) | Complete pre-edit fields and incoming references |
+| [Field ledger](field-ledger.json) | Disposition and source contract for all 564 original named fields |
+| [New fields](new-fields.json) | Actual shapes of the six newly named fields |
+| [Preservation](preservation.json) | Invocation/template identity and runtime-script preservation |
+| [Verification script](verify.py) | Reproducible comparison with the pre-sweep commit |
+| [Reading checks](reading-checks.md) | Four fresh readers, actual local Lane results and inherited evidence limits |
+| [Installed model](model.log) | All Markdown checked against declarations and role contracts |
+| [Shared tests](shared-tests.log) | Shared checker regression result |
+| [Dispositions](dispositions.json) | Reviewed field destination and rationale map used by verification |
+| [Planner tests](planner-tests.log) | Complete planner regression result |
+| [Section comparison](section-comparison.log) | Intentional section changes against the baseline |
+| [Validation](validation.md) | Exact source, preserved behavior, tests and limits |
+
+## Result
+
+The field-shape sweep is committed and pushed as `c05a6a1818495506695592729273db9d8a14aa19`. All 564 original named fields are accounted for; 19 single-use rules are inline and 23 shared policies have one Guidance home. Data fields describe actual values and result shapes, including three concrete Lane JSON contracts. Runtime scripts, every invocation block and all literal templates are preserved. The planner suite runs 947 tests with one opt-in skip, 280 shared tests pass, and the installed model reports zero findings. Independent reads recover relocated rules and reproduce Lane outputs; inherited disclosure and policy ambiguities remain explicit in the reading record. PR #1641 stays draft.

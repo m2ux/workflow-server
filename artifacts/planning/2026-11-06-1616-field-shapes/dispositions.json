@@ -1,0 +1,577 @@
+{
+  "artifacts/lane.md#unit-consistency": {
+    "disposition": "shared policy",
+    "destination": "artifacts/lane.md#unit-consistency",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/lane.md#admission": {
+    "disposition": "shared policy",
+    "destination": "artifacts/lane.md#admission",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/lane.md#assignments": {
+    "disposition": "clarified data",
+    "destination": "artifacts/lane.md#assignments",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/lane.md#lane-result": {
+    "disposition": "split data",
+    "destination": "artifacts/lane.md#assignment-read-result, #unit-lane-result, #admission-result",
+    "reason": "Distinct CLI modes have distinct flat JSON result schemas."
+  },
+  "artifacts/acceptance-criteria.md#readiness": {
+    "disposition": "inline rule",
+    "destination": "artifacts/acceptance-criteria.md#1-confirm-criterion-readiness",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/acceptance-criteria.md#instrument-checkout": {
+    "disposition": "inline rule",
+    "destination": "artifacts/acceptance-criteria.md#2-run-named-instruments",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/acceptance-criteria.md#instrument-result": {
+    "disposition": "clarified data",
+    "destination": "artifacts/acceptance-criteria.md#instrument-result",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/acceptance-criteria.md#tick-state": {
+    "disposition": "inline rule",
+    "destination": "artifacts/acceptance-criteria.md#1-record-verified-criteria",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/board-delivery.md#status-changes": {
+    "disposition": "shared policy",
+    "destination": "artifacts/board-delivery.md#status-changes",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/board-queue.md#backlog-cascade": {
+    "disposition": "shared policy",
+    "destination": "artifacts/board-queue.md#backlog-cascade",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/board-queue.md#epic-activity": {
+    "disposition": "shared policy",
+    "destination": "artifacts/board-queue.md#epic-activity",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/board-queue.md#epic-handoff": {
+    "disposition": "shared policy",
+    "destination": "artifacts/board-queue.md#epic-handoff",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/board-queue.md#task-eligibility": {
+    "disposition": "shared policy",
+    "destination": "artifacts/board-queue.md#task-eligibility",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/board-queue.md#unresolvable-dependencies": {
+    "disposition": "shared policy",
+    "destination": "artifacts/board-queue.md#unresolvable-dependencies",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/board-queue.md#completeness": {
+    "disposition": "shared policy",
+    "destination": "artifacts/board-queue.md#completeness",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/delivery-branches.md#producer-outputs": {
+    "disposition": "shared policy",
+    "destination": "artifacts/delivery-branches.md#producer-outputs",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/delivery-plan.md#debt": {
+    "disposition": "inline rule",
+    "destination": "modes/deliver-mode.md#8-fix-the-debt",
+    "reason": "One delivery capability owns debt after its hot-fix restatement is consolidated."
+  },
+  "artifacts/dependency-graph.md#component-contention": {
+    "disposition": "shared policy",
+    "destination": "artifacts/dependency-graph.md#component-contention",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/epic-issue-body.md#test-evidence": {
+    "disposition": "shared policy",
+    "destination": "artifacts/epic-issue-body.md#test-evidence",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/hotfix-body.md#definition": {
+    "disposition": "shared policy",
+    "destination": "artifacts/hotfix-body.md#definition",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/hotfix.md#board-status": {
+    "disposition": "shared policy",
+    "destination": "artifacts/hotfix.md#board-status",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/plan-change.md#held-change": {
+    "disposition": "shared policy",
+    "destination": "artifacts/plan-change.md#held-change",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/planning-record.md#shared-worktree": {
+    "disposition": "shared policy",
+    "destination": "artifacts/planning-record.md#shared-worktree",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/pull-request.md#merge-permission": {
+    "disposition": "shared policy",
+    "destination": "artifacts/pull-request.md#merge-permission",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/issue-body.md#numbering": {
+    "disposition": "shared policy",
+    "destination": "artifacts/issue-body.md#numbering",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/board-queue.md#initiative-status": {
+    "disposition": "inline rule",
+    "destination": "artifacts/board-queue.md#compute-board-queue",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/board-queue.md#hot-fix-placement": {
+    "disposition": "inline rule",
+    "destination": "artifacts/board-queue.md#compute-board-queue",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/board-queue.md#epic-status": {
+    "disposition": "inline rule",
+    "destination": "artifacts/board-queue.md#compute-board-queue",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/board-queue.md#status-scope": {
+    "disposition": "remove implied input",
+    "destination": "artifacts/board-queue.md#compute-board-queue",
+    "reason": "No queue parameter supplies a scope object; the existing explicit jurisdiction rule governs proposed writes."
+  },
+  "artifacts/board-queue.md#board-identity": {
+    "disposition": "clarified data",
+    "destination": "artifacts/board-queue.md#board-identity",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/board-queue.md#priority-sets": {
+    "disposition": "clarified data",
+    "destination": "artifacts/board-queue.md#priority-sets",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/board-queue.md#ready-units": {
+    "disposition": "clarified data",
+    "destination": "artifacts/board-queue.md#ready-units",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/board-queue.md#queue-result": {
+    "disposition": "clarified data",
+    "destination": "artifacts/board-queue.md#queue-result",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/board-delivery.md#missing-evidence": {
+    "disposition": "clarified data",
+    "destination": "artifacts/board-delivery.md#missing-evidence",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/board-delivery.md#change-calls": {
+    "disposition": "clarified data",
+    "destination": "artifacts/board-delivery.md#change-calls",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/board.md#themes": {
+    "disposition": "clarified data",
+    "destination": "artifacts/board.md#themes",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/board.md#one-theme": {
+    "disposition": "merged value invariant",
+    "destination": "artifacts/board.md#themes",
+    "reason": "Theme-label cardinality constrains the theme association, not a separate field."
+  },
+  "artifacts/board.md#assignees": {
+    "disposition": "shared policy",
+    "destination": "artifacts/board.md#assignees",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/board.md#proposals": {
+    "disposition": "shared policy",
+    "destination": "artifacts/board.md#proposals",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/board.md#one-board-per-theme": {
+    "disposition": "split data and rule",
+    "destination": "artifacts/board.md#theme-board-title; modes/sync-mode.md#ensure-theme-board",
+    "reason": "Board-title value remains a field; repository linkage and membership belong to board creation."
+  },
+  "artifacts/board.md#standalone-issues": {
+    "disposition": "shared policy",
+    "destination": "artifacts/board.md#standalone-issues",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/architecture-overview.md#one-concept-per-diagram": {
+    "disposition": "merged value invariant",
+    "destination": "artifacts/architecture-overview.md#diagrams",
+    "reason": "Diagram size, fill and edge labels are constraints of diagram values."
+  },
+  "artifacts/architecture-overview.md#highlight": {
+    "disposition": "merged value invariant",
+    "destination": "artifacts/architecture-overview.md#diagrams",
+    "reason": "Diagram size, fill and edge labels are constraints of diagram values."
+  },
+  "artifacts/architecture-overview.md#labelled-edges": {
+    "disposition": "merged value invariant",
+    "destination": "artifacts/architecture-overview.md#diagrams",
+    "reason": "Diagram size, fill and edge labels are constraints of diagram values."
+  },
+  "artifacts/architecture-overview.md#register": {
+    "disposition": "inline rule",
+    "destination": "protocols/change-overview.md#2-write-the-overview",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/architecture-overview.md#measured-structure": {
+    "disposition": "inline rule",
+    "destination": "protocols/change-overview.md#2-write-the-overview",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/architecture-overview.md#collections": {
+    "disposition": "inline rule",
+    "destination": "protocols/change-overview.md#2-write-the-overview",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/architecture-overview.md#length": {
+    "disposition": "inline rule",
+    "destination": "protocols/change-overview.md#2-write-the-overview",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/architecture-overview.md#overview-file": {
+    "disposition": "clarified data",
+    "destination": "artifacts/architecture-overview.md#overview-file",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/architecture-overview.md#sections": {
+    "disposition": "merged document schema",
+    "destination": "artifacts/architecture-overview.md#overview-file",
+    "reason": "Required and optional section members describe the overview document."
+  },
+  "artifacts/architecture-overview.md#what-changed": {
+    "disposition": "clarified data",
+    "destination": "artifacts/architecture-overview.md#what-changed",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/delivery-evidence.md#completeness": {
+    "disposition": "inline rule",
+    "destination": "artifacts/delivery-evidence.md#4-provide-complete-evidence",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/delivery-evidence.md#named-delivery": {
+    "disposition": "clarified data",
+    "destination": "artifacts/delivery-evidence.md#named-delivery",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/epic-issue-body.md#breakdown-prose": {
+    "disposition": "merged document schema",
+    "destination": "artifacts/epic-issue-body.md#work-breakdown",
+    "reason": "Work Breakdown has one table value; prose belongs to the Proposal member."
+  },
+  "artifacts/initiative-issue-body.md#breakdown-prose": {
+    "disposition": "merged document schema",
+    "destination": "artifacts/initiative-issue-body.md#work-breakdown",
+    "reason": "Work Breakdown has one table value; prose belongs to the Proposal member."
+  },
+  "artifacts/plan-change.md#initiative-creation": {
+    "disposition": "inline rule",
+    "destination": "artifacts/plan-change.md#3-provide-held-change",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/plan-change.md#hot-fix-creation": {
+    "disposition": "inline rule",
+    "destination": "artifacts/plan-change.md#3-provide-held-change",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/plan-change.md#allowance": {
+    "disposition": "clarified data",
+    "destination": "artifacts/plan-change.md#allowance",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/issue-body.md#stale-references": {
+    "disposition": "merged value invariant",
+    "destination": "artifacts/issue-body.md#body",
+    "reason": "Referential consistency constrains the issue body as a whole."
+  },
+  "artifacts/issue-body.md#titles": {
+    "disposition": "clarified data",
+    "destination": "artifacts/issue-body.md#titles",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/issue-body.md#problem-and-proposal": {
+    "disposition": "clarified data",
+    "destination": "artifacts/issue-body.md#problem-and-proposal",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/issue-body.md#shared-acceptance-criteria": {
+    "disposition": "clarified data",
+    "destination": "artifacts/issue-body.md#shared-acceptance-criteria",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/issue-body.md#tables": {
+    "disposition": "clarified data",
+    "destination": "artifacts/issue-body.md#tables",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/issue-body.md#reference-form": {
+    "disposition": "clarified data",
+    "destination": "artifacts/issue-body.md#reference-form",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/issue-body.md#coverage-reports": {
+    "disposition": "clarified data",
+    "destination": "artifacts/issue-body.md#coverage-reports",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/issue-body.md#format-findings": {
+    "disposition": "clarified data",
+    "destination": "artifacts/issue-body.md#format-findings",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/pull-request.md#other-pull-requests": {
+    "disposition": "inline rule",
+    "destination": "artifacts/pull-request.md#1-create-delivery-pull-request",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/delivery-branches.md#stash-entries": {
+    "disposition": "inline rule",
+    "destination": "artifacts/delivery-branches.md#merge-remote-branch",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/hotfix-body.md#membership": {
+    "disposition": "inline rule",
+    "destination": "modes/hoist-mode.md#hot-fix-body",
+    "reason": "One owning capability; preserve all rule text at its execution point."
+  },
+  "artifacts/hotfix-body.md#debt": {
+    "disposition": "inline rule",
+    "destination": "modes/deliver-mode.md#8-fix-the-debt",
+    "reason": "The unit's existing debt step explicitly covers hot-fix delivery."
+  },
+  "artifacts/agent-review.md#review-record": {
+    "disposition": "separated data and rule",
+    "destination": "artifacts/agent-review.md#review-record; #2-resolve-review-findings",
+    "reason": "Record schema and freshness invariants remain; repair and handoff actions belong to the reviewer."
+  },
+  "artifacts/delivery-branches.md#branches": {
+    "disposition": "clarified data",
+    "destination": "artifacts/delivery-branches.md#branches",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/delivery-branches.md#epic-bases": {
+    "disposition": "clarified data",
+    "destination": "artifacts/delivery-branches.md#epic-bases",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/delivery-branches.md#review-worktrees": {
+    "disposition": "clarified data",
+    "destination": "artifacts/delivery-branches.md#review-worktrees",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/delivery-branches.md#task-branches": {
+    "disposition": "clarified data",
+    "destination": "artifacts/delivery-branches.md#task-branches",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/delivery-brief.md#location": {
+    "disposition": "clarified data",
+    "destination": "artifacts/delivery-brief.md#location",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/delivery-brief.md#validation-scope": {
+    "disposition": "clarified data",
+    "destination": "artifacts/delivery-brief.md#validation-scope",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/delivery-brief.md#execution-instructions": {
+    "disposition": "clarified data",
+    "destination": "artifacts/delivery-brief.md#execution-instructions",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/dependency-graph.md#edges": {
+    "disposition": "clarified data",
+    "destination": "artifacts/dependency-graph.md#edges",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/dependency-graph.md#whole-epic-edges": {
+    "disposition": "clarified data",
+    "destination": "artifacts/dependency-graph.md#whole-epic-edges",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/dependency-graph.md#joins": {
+    "disposition": "clarified data",
+    "destination": "artifacts/dependency-graph.md#joins",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/hotfix.md#delivery-unit": {
+    "disposition": "clarified data",
+    "destination": "artifacts/hotfix.md#delivery-unit",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/hotfix.md#delivery-record": {
+    "disposition": "clarified data",
+    "destination": "artifacts/hotfix.md#delivery-record",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/pull-request.md#scope": {
+    "disposition": "clarified data",
+    "destination": "artifacts/pull-request.md#scope",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/pull-request.md#issue-links": {
+    "disposition": "clarified data",
+    "destination": "artifacts/pull-request.md#issue-links",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/standup-report.md#scope": {
+    "disposition": "clarified data",
+    "destination": "artifacts/standup-report.md#scope",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/standup-report.md#sections": {
+    "disposition": "clarified data",
+    "destination": "artifacts/standup-report.md#sections",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/standup-report.md#unresolved-evidence": {
+    "disposition": "clarified data",
+    "destination": "artifacts/standup-report.md#unresolved-evidence",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/board-queue.md#recommended-decisions": {
+    "disposition": "inline rule",
+    "destination": "modes/advance-mode.md#6-resolve-queue-decisions",
+    "reason": "The sole deciding caller owns this recommendation algorithm."
+  },
+  "artifacts/placement.md#disposition-conditions": {
+    "disposition": "shared policy",
+    "destination": "artifacts/placement.md#disposition-conditions",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/pull-request-body.md#test-coverage": {
+    "disposition": "shared policy",
+    "destination": "artifacts/pull-request-body.md#test-coverage",
+    "reason": "Shared behavioral policy; stable subject-owned Guidance anchor, not caller-supplied data."
+  },
+  "artifacts/dependency-graph.md#epic-priority": {
+    "disposition": "clarified data",
+    "destination": "artifacts/dependency-graph.md#epic-priority",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/dispatch-batch.md#start-evidence": {
+    "disposition": "clarified data",
+    "destination": "artifacts/dispatch-batch.md#start-evidence",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/dispatch-batch.md#start-readiness": {
+    "disposition": "split data and rule",
+    "destination": "artifacts/dispatch-batch.md#start-evidence; #check-dispatch-start",
+    "reason": "The input record is Start Evidence; selection, capacity, evidence ordering and refusal belong to the start check."
+  },
+  "artifacts/issue.md#auto-close-setting": {
+    "disposition": "clarified data",
+    "destination": "artifacts/issue.md#auto-close-setting",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/epic-issue-body.md#task-delivery": {
+    "disposition": "clarified data",
+    "destination": "artifacts/epic-issue-body.md#task-delivery",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/pull-request-body.md#review-body": {
+    "disposition": "clarified data",
+    "destination": "artifacts/pull-request-body.md#review-body",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/epic-issue-body.md#required-criteria": {
+    "disposition": "clarified data",
+    "destination": "artifacts/epic-issue-body.md#required-criteria",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/hotfix.md#delivering-pull-request": {
+    "disposition": "clarified data",
+    "destination": "artifacts/hotfix.md#delivering-pull-request",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/placement.md#disposition": {
+    "disposition": "clarified data",
+    "destination": "artifacts/placement.md#disposition",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/epic-issue-body.md#acceptance-criteria": {
+    "disposition": "clarified data",
+    "destination": "artifacts/epic-issue-body.md#acceptance-criteria",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/epic-issue-body.md#open-questions": {
+    "disposition": "clarified data",
+    "destination": "artifacts/epic-issue-body.md#open-questions",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/initiative-issue-body.md#problem": {
+    "disposition": "clarified data",
+    "destination": "artifacts/initiative-issue-body.md#problem",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/proposal-body.md#problem": {
+    "disposition": "clarified data",
+    "destination": "artifacts/proposal-body.md#problem",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/task-body.md#acceptance-criteria": {
+    "disposition": "clarified data",
+    "destination": "artifacts/task-body.md#acceptance-criteria",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/task-body.md#open-questions": {
+    "disposition": "clarified data",
+    "destination": "artifacts/task-body.md#open-questions",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/planning-record.md#links": {
+    "disposition": "clarified data",
+    "destination": "artifacts/planning-record.md#links",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/placement.md#draft-bodies": {
+    "disposition": "clarified data",
+    "destination": "artifacts/placement.md#draft-bodies",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/issue-body.md#references": {
+    "disposition": "clarified data",
+    "destination": "artifacts/issue-body.md#references",
+    "reason": "Explicit value shape; its state constraints stay with the value."
+  },
+  "artifacts/acceptance-criteria.md#criterion-selection": {
+    "disposition": "linked data",
+    "destination": "artifacts/acceptance-criteria.md#criterion-selection",
+    "reason": "Criterion ids link to their one named scalar definition."
+  },
+  "artifacts/architecture-overview.md#diagrams": {
+    "disposition": "consolidated data constraints",
+    "destination": "artifacts/architecture-overview.md#diagrams",
+    "reason": "Diagram size, fill and edge labels are constraints on the same diagram values."
+  },
+  "artifacts/epic-issue-body.md#work-breakdown": {
+    "disposition": "consolidated document schema",
+    "destination": "artifacts/epic-issue-body.md#work-breakdown",
+    "reason": "The Work Breakdown member contains its table; explanatory prose belongs to Proposal."
+  },
+  "artifacts/initiative-issue-body.md#work-breakdown": {
+    "disposition": "consolidated document schema",
+    "destination": "artifacts/initiative-issue-body.md#work-breakdown",
+    "reason": "The Work Breakdown member contains its table; explanatory prose belongs to Proposal."
+  },
+  "artifacts/issue-body.md#body": {
+    "disposition": "consolidated document schema",
+    "destination": "artifacts/issue-body.md#body",
+    "reason": "Body structure, code links, item formatting and referential consistency constrain one Markdown document."
+  },
+  "artifacts/plan-change.md#change-kinds": {
+    "disposition": "separated data and rule",
+    "destination": "artifacts/plan-change.md#change-kinds",
+    "reason": "The kind enumeration stays a data table; held/unchanged disposition policy has its shared Guidance home."
+  }
+}
