@@ -1,0 +1,47 @@
+[
+  {
+    "file": "skills/work-planner/modes/standup-mode.md",
+    "line": 32,
+    "text": "Use the delivery results and board state a caller passed in, where this run follows one that already brought the board current. A request made directly by the user supplies none, so the checkpoint is absent."
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "line": 90,
+    "text": "Apply the status [Board Status](#board-status) gives that state and Status:"
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "line": 19,
+    "text": "Prepare the directory in [Record Selection](#record-selection \"○\") using the matching branch."
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "line": 55,
+    "text": "Execute only the branch matching [Confirmed Placement](#confirmed-placement \"○\"):"
+  },
+  {
+    "file": "skills/work-planner/protocols/unit-dispatch.md",
+    "line": 48,
+    "text": "Apply [Read Board State](../artifacts/board.md#read-board-state \"ƒ\") for the selected board immediately before acquiring the unit's hold."
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-delivery.md",
+    "line": 51,
+    "text": "Use the epic body provided by Record Epic Delivery."
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-closure.md",
+    "line": 33,
+    "text": "For a task or a hot-fix, retain the task delivery result its delivering pull request established."
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-closure.md",
+    "line": 54,
+    "text": "Apply [Close Tracker Issue](../artifacts/issue.md#close-tracker-issue \"ƒ\") with the issue identity and the successful normal delivery result."
+  },
+  {
+    "file": "skills/work-planner/protocols/review-pull-request.md",
+    "line": 23,
+    "text": "Use the review number in the supplied delivery findings."
+  }
+]

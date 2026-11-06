@@ -1,0 +1,21 @@
+{
+  "head": "4882414d678268aaa282fb4c0b184f14e3e47d1b",
+  "previous": "eedc9a212ae38449a16638dc190b0e2f16d1a828",
+  "files": 115,
+  "initial_snapshot_unchanged": true,
+  "final_snapshot_unchanged": true,
+  "final_matches_commit": true,
+  "post_reader_refinements": [
+    "skills/scripts/check_skill_files.py",
+    "skills/test/test_check_skill_files.py",
+    "skills/work-planner/artifacts/hotfix.md",
+    "skills/work-planner/artifacts/placement.md",
+    "skills/work-planner/artifacts/planning-record.md",
+    "skills/work-planner/modes/standup-mode.md",
+    "skills/work-planner/protocols/issue-closure.md",
+    "skills/work-planner/protocols/issue-delivery.md",
+    "skills/work-planner/protocols/review-pull-request.md",
+    "skills/work-planner/protocols/unit-dispatch.md"
+  ],
+  "refinement_scope": "Original branch-prologue bullet prefixes restored; helper docstring clarified; role-model guard and negative regression. Active Work Planner command roles, URLs, usage semantics and continuations are unchanged."
+}

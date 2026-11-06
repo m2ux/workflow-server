@@ -1,0 +1,242 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/agent-review.md",
+    "step": "1. Validate Agent Review",
+    "text": "Run the following command using [Pull Request Record](#pull-request-record \"○\"), [Published Reviews](#published-reviews \"○\"), [Workspace](#workspace \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "step": "1. Compute Dispatch Status",
+    "text": "Run the following command using [Board Items](#board-items \"○\"), [Board Identity](#board-identity \"○\"), [Board Fields](#board-fields \"○\"), [Output Directory](#output-directory \"○\"), [Assignee Login](#assignee-login \"○\"), [Dispatch Selection](#dispatch-selection \"○\"), [Pull Request Records](#pull-request-records \"○\"), [Published Reviews](#published-reviews \"○\"), [Workspace](#workspace \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "step": "1. Find Board Template",
+    "text": "Run the following command using [Board Owner](#board-owner \"○\"), [Template Selection](#template-selection \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "step": "1. Copy Board Template",
+    "text": "- Run the following command using [Board Owner](#board-owner \"○\"), [Template Selection](#template-selection \"○\"), [Copy Title](#copy-title \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "step": "1. Link Board to Repository",
+    "text": "Run the following command using [Board Coordinates](#board-coordinates \"○\"), [Repository](#repository \"○\"), [Board Owner](#board-owner \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "step": "1. Find Proposals Board",
+    "text": "Run the following command using [Board Owner](#board-owner \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "step": "1. Add Issue to Board",
+    "text": "Run the following command using [Board Coordinates](#board-coordinates \"○\"), [Issue Id](#issue-id \"○\"), [Board Owner](#board-owner \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "step": "1. Set Item Status",
+    "text": "- Run the following command using [Board Coordinates](#board-coordinates \"○\"), [Item Coordinates](#item-coordinates \"○\"), [Status Input File](#status-input-file \"○\"), [Board Owner](#board-owner \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "step": "1. Remove Board Item",
+    "text": "Run the following command using [Board Coordinates](#board-coordinates \"○\"), [Item Coordinates](#item-coordinates \"○\"), [Board Owner](#board-owner \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "step": "1. Fetch Board Fields",
+    "text": "Run the following command using [Board Coordinates](#board-coordinates \"○\"), [Board Fields File](#board-fields-file \"○\"), [Board Owner](#board-owner \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "step": "1. Find Theme Board",
+    "text": "Run the following command using [Board Owner](#board-owner \"○\"), [Theme Name](#theme-name \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "step": "1. Find Status Field",
+    "text": "Run the following command using [Board Coordinates](#board-coordinates \"○\"), [Board Owner](#board-owner \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "step": "1. Fetch Board Items with Status",
+    "text": "Run the following command using [Board Coordinates](#board-coordinates \"○\"), [Status Field](#status-field \"○\"), [Board Items File](#board-items-file \"○\"), [Board Owner](#board-owner \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "step": "1. Fetch Board Item",
+    "text": "Run the following command using [Board Coordinates](#board-coordinates \"○\"), [Item Coordinates](#item-coordinates \"○\"), [Status Field](#status-field \"○\"), [Board Owner](#board-owner \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "step": "1. List Long-Lived Branches",
+    "text": "- Run the command using [Workspace](#workspace \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "step": "1. Fetch Branch Protection",
+    "text": "Run the command using [Repository](#repository \"○\"), [Target Branch](#target-branch \"○\"), [Output Files](#output-files \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "step": "1. Fetch Active Branch Rules",
+    "text": "Run the command using [Repository](#repository \"○\"), [Target Branch](#target-branch \"○\"), [Output Files](#output-files \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "step": "1. Read Checkout Revision",
+    "text": "Run the command using [Checkout](#checkout \"○\"), [Revision](#revision \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "step": "1. Read Checkout Status",
+    "text": "Run the command using [Checkout](#checkout \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "step": "1. Check Dependencies",
+    "text": "- Run the following command using [Workspace](#workspace \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "step": "1. Renumber Tasks",
+    "text": "- Run the following command using [Renumber Inputs](#renumber-inputs \"○\"), [Workspace](#workspace \"○\"), [Dependency Files](#dependency-files \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "step": "1. Renumber Epics",
+    "text": "- Run the following command using [Renumber Inputs](#renumber-inputs \"○\"), [Pull Request Records](#pull-request-records \"○\"), [Workspace](#workspace \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "step": "1. Check Dispatch Start",
+    "text": "- Run the command using [Workspace](#workspace \"○\"), [Batch](#batch \"○\"), [Unit Identity](#unit-identity \"○\"), [Start Evidence](#start-evidence \"○\"), [Session Inventory](#session-inventory \"○\"), [Free Slots](#free-slots \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "step": "1. Read Lane Assignments",
+    "text": "Run the following command using [Epic Body File](#epic-body-file \"○\"), [Workspace](#workspace \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "step": "1. Write Lane Assignments",
+    "text": "Run the following command using [Epic Body File](#epic-body-file \"○\"), [Confirmed Map](#confirmed-map \"○\"), [Output Body](#output-body \"○\"), [Workspace](#workspace \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "step": "1. Validate Lane Unit",
+    "text": "Run the following command using [Epic Body File](#epic-body-file \"○\"), [Unit Task Ids](#unit-task-ids \"○\"), [Workspace](#workspace \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "step": "1. Evaluate Lane Admission",
+    "text": "- Run the following command using [Epic Body File](#epic-body-file \"○\"), [Unit Task Ids](#unit-task-ids \"○\"), [Requested Index](#requested-index \"○\"), [Workspace](#workspace \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "step": "1. List Orphans",
+    "text": "Run the following command using [Issue Collection](#issue-collection \"○\"), [Workspace](#workspace \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "step": "1. Find Engineering Worktree",
+    "text": "- Run the following command using [Project Checkout](#project-checkout \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "step": "1. Commit Planning Record",
+    "text": "- Run the following command using [Engineering Worktree](#engineering-worktree \"○\"), [Commit Message File](#commit-message-file \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "step": "1. Retarget Pull Request",
+    "text": "Run the command using [Identity](#identity \"○\"), [Base Branch](#base-branch \"○\"), [Repository](#repository \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "step": "1. Retitle Pull Request",
+    "text": "Run the command using [Identity](#identity \"○\"), [Title](#title \"○\"), [Repository](#repository \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "step": "1. Open Task Pull Request",
+    "text": "- Run the command using [Repository](#repository \"○\"), [Head Branch](#head-branch \"○\"), [Base Branch](#base-branch \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "step": "1. Open Epic Pull Request",
+    "text": "- Run the command using [Repository](#repository \"○\"), [Head Branch](#head-branch \"○\"), [Base Branch](#base-branch \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "step": "1. Patch Pull Request Body",
+    "text": "- Run the command using [Identity](#identity \"○\"), [Body File](#body-file \"○\"), [Repository](#repository \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "step": "1. Find Review Pull Request",
+    "text": "Run the command using [Repository](#repository \"○\"), [Head Branch](#head-branch \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "step": "1. Read Merge Result",
+    "text": "Run the command using [Identity](#identity \"○\"), [Repository](#repository \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "step": "1. Save Pull Request Snapshot",
+    "text": "Run the command using [Identity](#identity \"○\"), [Output Files](#output-files \"○\"), [Repository](#repository \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "step": "1. Fetch Pull Request Reviews",
+    "text": "Run the command using [Identity](#identity \"○\"), [Output Files](#output-files \"○\"), [Repository](#repository \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "step": "1. Fetch Pull Request Files",
+    "text": "Run the command using [Identity](#identity \"○\"), [Output Files](#output-files \"○\"), [Repository](#repository \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "step": "1. Fetch Head Check Runs",
+    "text": "Run the command using [Repository](#repository \"○\"), [Verified Head](#verified-head \"○\"), [Output Files](#output-files \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "step": "1. Fetch Head Status",
+    "text": "Run the command using [Repository](#repository \"○\"), [Verified Head](#verified-head \"○\"), [Output Files](#output-files \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "step": "1. Mark Review Draft",
+    "text": "Run the command using [Identity](#identity \"○\"), [Repository](#repository \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "step": "1. Change Surface",
+    "text": "- Run the following command using [Base Branch](#base-branch \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "step": "1. Symbol Context",
+    "text": "Run the following command using [Symbol Identity](#symbol-identity \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "step": "1. Flow Trace",
+    "text": "Run the following command using [Flow Identity](#flow-identity \"○\")."
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "step": "1. Summarise Progress",
+    "text": "- Run the following command using [Board Items](#board-items \"○\"), [Pull Request Records](#pull-request-records \"○\"), [Management File](#management-file \"○\"), [Workspace](#workspace \"○\")."
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "step": "1. Run Skill Tests",
+    "text": "Run the following command in the [workspace checkout](#workspace \"○\")."
+  }
+]

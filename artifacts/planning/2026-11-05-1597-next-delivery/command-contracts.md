@@ -15,6 +15,6 @@ Compare old/new input and output obligations for every operation independently f
 ## Progress
 
 - [x] Confirm command-backed contracts, deduplication and continuation style.
-- [ ] In progress: revise parser, corpus, guidelines and consuming readers together.
-- [ ] Audit retained obligations, command semantics, regressions and reading evidence.
-- [ ] Commit, push and publish current review handoff.
+- [x] Revise parser, corpus, guidelines and consuming readers together.
+- [x] Audit retained obligations, command semantics, regressions and reading evidence.
+- [ ] In progress: publish current review handoff; product commit is pushed.

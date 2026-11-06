@@ -4,15 +4,7 @@
 
 ## Summary
 
-Work Planner expresses procedures as heading steps and links each consumed input and provided output to its Field in step prose. Markdown link titles identify input, output and callable operation roles; commands execute in their owning steps. Each skill's declarations select the shared checker model used by the converted corpus and its document readers.
-
-## Symbol Notation
-
-Symbol-notation revision `fbce2c7535b1518dd3ebb4dbe845b67576186d94` uses ○ input, ● output and ƒ for called operations, protocols and procedures. The diagrams and native graph archive below retain their explicit structural baseline `00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01`; the [current verification](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-validation.md) separately records the exact notation-preservation audit and final parser checks.
-
-## Command Quoting
-
-Current revision `eedc9a212ae38449a16638dc190b0e2f16d1a828` uses value-type shell quoting. The [command audit](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/command-quote-audit.json) records 114 argv-preserving quote removals. The measured structure below retains its stated baseline.
+Work Planner uses heading steps and linked contracts where values are consumed or provided in prose or executing commands. Link titles identify input, output and callable roles; command parameters carry their own contracts. Shared declaration, lexical and role readers validate the installed corpus, while checkout readers interpret escaped command continuations.
 
 ## Structure
 
@@ -84,29 +76,60 @@ flowchart LR
     class S context
 ```
 
+### Contract Readers
+
+These native CALLS relationships connect validation and checkout inputs through the shared role collector and target checks.
+
+```mermaid
+flowchart LR
+    subgraph Consumers [Validation and checkout inputs]
+        C[check]
+        H[heading_model]
+        I[Document.inputs]
+    end
+    subgraph Roles [Shared contract interpretation]
+        V[link_roles]
+        R[role_links]
+        B[scan_blocks]
+        L[link_role]
+        O[operation_target]
+        F[field_contract]
+    end
+    C -->|validates roles| V
+    V -->|collects links| R
+    H -->|collects contracts| R
+    I -->|collects inputs| R
+    R -->|reads boundaries| B
+    R -->|decodes role| L
+    V -->|checks callable| O
+    V -->|checks field| F
+    classDef changed fill:#c8e6c9,stroke:#2e7d32
+    class C,H,I,V,R,B,L,O,F changed
+```
+
 ### Shared Interpretation
 
-- **[scan_blocks](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/scripts/check_skill_files.py#L210).**
+- **[scan_blocks](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/scripts/check_skill_files.py#L215).**
   Owns fence and HTML boundaries so payload headings, brackets and sample links retain their literal role.
-- **[contract](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/scripts/check_skill_files.py#L363).**
+- **[contract](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/scripts/check_skill_files.py#L368).**
   Selects the exact-file or family declaration used by structural, citation and execution readers.
-- **[heading_model](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/scripts/check_skill_files.py#L532).**
-  Validates numbered headings, preambles, contract links and Apply/Follow routing for the selected model.
+- **[heading_model](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/scripts/check_skill_files.py#L550).**
+  Validates numbered headings, preambles, actual-use contract links and Apply/Follow routing for the selected model.
 
 ### Contextual Roles
 
-The checker's link_roles validates role targets and operation_target recognizes callable procedures from declarations. The contextual-input readers reuse the same link parser while retaining independent command and checkout assertions. [Link Roles](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/work-planner/rules.md#link-roles) owns runtime meanings.
+[role_links](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/scripts/check_skill_files.py#L499) collects explicit prose and bold command annotations outside fenced specimens. link_roles validates Field/callable targets; heading_model and Document.inputs share the collector. Document.commands uses [logical_command_lines](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/scripts/check_skill_files.py#L512) for token-boundary continuations while retaining independent checkout and publication assertions. [Link Roles](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/work-planner/rules.md#link-roles) owns runtime meanings.
 
 ### Consuming Readers
 
-- **[Document](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/work-planner/test/test_checkouts.py#L59).**
+- **[Document](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/work-planner/test/test_checkouts.py#L59).**
   Reads actual declarations, invocation boundaries and execution regions for checkout propagation checks.
-- **[executable_scripts](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/work-planner/test/test_documents.py#L15).**
+- **[executable_scripts](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/work-planner/test/test_documents.py#L15).**
   Discovers scripts through cited executing operations; literal specimens and unexecuted invocations supply no coverage.
 
 ## Behaviour
 
-The [flow atlas](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-flow-atlas.md) contains one sequence diagram and pinned source references for each of the 37 reported affected processes; the following measured path illustrates the checker entry.
+The [flow atlas](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-flow-atlas.md) contains one sequence diagram and pinned source references for each of the 40 reported affected processes; the following measured path illustrates the checker entry.
 
 ### Checker Entry to Heading Boundary
 
@@ -140,7 +163,7 @@ sequenceDiagram
 ### Instruction Corpus
 
 - **Callable procedures.**
-  Heading steps and subject-owned operations give callers a stable execution home. Every callable link has the operation title; input and output links attach their role titles at natural prose uses, with Provide steps for results.
+  Heading steps and subject-owned operations give callers a stable execution home. Every callable link has the operation title; input and output links attach their role titles at actual prose or executing-command uses, with Provide steps for results.
 - **Common context.**
   Entry-point mode selection reaches rules and conventions; consumers reach deployed configuration at its owning sections.
 - **Contained items.**
@@ -157,20 +180,20 @@ The [pull request's Changes](https://github.com/m2ux/workflow-server/pull/1641) 
 
 ## Reading Order
 
-1. **[SKILL.md](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/work-planner/SKILL.md#L1)** — entry-point context and mode selection.
-2. **[guidelines.md](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/work-planner/guidelines.md#L15)** — procedure, invocation and ownership contracts.
-3. **[structure.json](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/work-planner/structure.json#L1)** — installed family and exact-file declarations.
-4. **[board-delivery.md](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/work-planner/artifacts/board-delivery.md#L37)** — a representative operation with caller inputs and single/multiple item steps.
-5. **[check_skill_files.py](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/scripts/check_skill_files.py#L197)** — shared lexical boundaries followed by declaration and heading validation.
-6. **[test_documents.py](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/work-planner/test/test_documents.py#L15)** — installed-model operation, prerequisite and script-reach assertions.
-7. **[test_checkouts.py](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/work-planner/test/test_checkouts.py#L60)** — execution discovery and transitive checkout propagation.
+1. **[SKILL.md](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/work-planner/SKILL.md#L1)** — entry-point context and mode selection.
+2. **[guidelines.md](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/work-planner/guidelines.md#L15)** — procedure, invocation and ownership contracts.
+3. **[structure.json](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/work-planner/structure.json#L1)** — installed family and exact-file declarations.
+4. **[board-delivery.md](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/work-planner/artifacts/board-delivery.md#L37)** — a representative operation with caller inputs and single/multiple item steps.
+5. **[check_skill_files.py](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/scripts/check_skill_files.py#L197)** — shared lexical boundaries followed by declaration and heading validation.
+6. **[test_documents.py](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/work-planner/test/test_documents.py#L15)** — installed-model operation, prerequisite and script-reach assertions.
+7. **[test_checkouts.py](https://github.com/m2ux/workflow-server/blob/4882414d678268aaa282fb4c0b184f14e3e47d1b/skills/work-planner/test/test_checkouts.py#L60)** — execution discovery and transitive checkout propagation.
 
 ## Risks and Watch Points
 
 - **Graph coverage.**
-  The final index reports 308 total processes and 37 affected ones. It also reports 159 unranked candidate entries, 590 skipped callees and 21 budget-cut walks; an absent edge or process cannot establish that a path does not exist.
+  The final index reports 311 total processes and 40 affected ones. It also reports 160 unranked candidate entries, 590 skipped callees and 21 budget-cut walks; an absent edge or process cannot establish that a path does not exist.
 - **Evidence limits.**
-  The current symbol-notation installed checker and both test suites pass. Six contextual-contract reading plans remain Partial for over-reading, prerequisite closure, truncation and receipt limits; the [verification record](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-validation.md) preserves those boundaries.
+  The current installed checker and both test suites pass. Two command-contract plans and earlier reading trials remain Partial for over-reading, prerequisite closure, truncation and receipt limits; the [verification record](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-validation.md) preserves those boundaries.
 - **Scope.**
   The migration covers Work Planner and its shared-checker support. Other skills' existing findings are outside its zero-finding gate.
 

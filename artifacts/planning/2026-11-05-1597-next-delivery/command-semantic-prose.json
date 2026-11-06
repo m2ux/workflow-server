@@ -1,0 +1,565 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "line": 55,
+    "before": "- Run this command from the [workspace](#workspace \"○\") [checkout](#project-checkout \"○\") using [Revision](#revision \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "line": 126,
+    "before": "- Run the following command using [Initiative Record](#initiative-record \"○\"), [Epic Records](#epic-records \"○\"), [Task Records](#task-records \"○\"), [Published Reviews](#published-reviews \"○\"), [Board Identity](#board-identity \"○\"), [Board Fields](#board-fields \"○\"), [Board Items](#board-items \"○\"), [Output Directory](#output-directory \"○\"), [Resolved Issues](#resolved-issues \"○\"), [Workspace](#workspace \"○\").",
+    "after": "- Include each supplied [Resolved Issues](#resolved-issues \"○\") file with `--others`.",
+    "preserved_noncommand_inputs": [
+      "#resolved-issues"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "line": 41,
+    "before": "- Run the following command using [Board Items](#board-items \"○\"), [Board Fields](#board-fields \"○\"), [Output Directory](#output-directory \"○\"), [Resolved Issues](#resolved-issues \"○\"), [Status Scope](#status-scope \"○\"), [Workspace](#workspace \"○\").",
+    "after": "- Include each supplied [Resolved Issues](#resolved-issues \"○\") file with `--others`.\n- Limit proposed writes to [Status Scope](#status-scope \"○\").",
+    "preserved_noncommand_inputs": [
+      "#resolved-issues",
+      "#status-scope"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "line": 440,
+    "before": "Run the following command using [Authenticated Access](#authenticated-access \"○\").",
+    "after": "Require [Authenticated Access](#authenticated-access \"○\") before executing the command.",
+    "preserved_noncommand_inputs": [
+      "#authenticated-access"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "line": 214,
+    "before": "- Run the command in the [Project Checkout](#project-checkout \"○\"), using [Epic Identity](#epic-identity \"○\").",
+    "after": "- Run in the [Project Checkout](#project-checkout \"○\").",
+    "preserved_noncommand_inputs": [
+      "#project-checkout"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "line": 269,
+    "before": "Run the command in the [Checkout](#checkout \"○\"), using [Source Branch](#source-branch \"○\").",
+    "after": "Run in the [Checkout](#checkout \"○\").",
+    "preserved_noncommand_inputs": [
+      "#checkout"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "line": 287,
+    "before": "Run the command in the [Project Checkout](#project-checkout \"○\"), using [Source Branch](#source-branch \"○\"), [Epic-Base Name](#epic-base-name \"○\"), [Prerequisite Evidence](#prerequisite-evidence \"○\"), [Missing Destination](#missing-destination \"○\").",
+    "after": "Run in the [Project Checkout](#project-checkout \"○\").\nRequire [Missing Destination](#missing-destination \"○\"), [Prerequisite Evidence](#prerequisite-evidence \"○\") before executing the command.",
+    "preserved_noncommand_inputs": [
+      "#missing-destination",
+      "#prerequisite-evidence",
+      "#project-checkout"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "line": 305,
+    "before": "Run the command in the [Checkout](#checkout \"○\"), using [Source Branch](#source-branch \"○\").",
+    "after": "Run in the [Checkout](#checkout \"○\").",
+    "preserved_noncommand_inputs": [
+      "#checkout"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "line": 323,
+    "before": "Run the command in the [Checkout](#checkout \"○\"), using [Successful Merge](#successful-merge \"○\").",
+    "after": "Run in the [Checkout](#checkout \"○\").\nRequire [Successful Merge](#successful-merge \"○\") before executing the command.",
+    "preserved_noncommand_inputs": [
+      "#checkout",
+      "#successful-merge"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "line": 341,
+    "before": "Run the command using [Unit Checkout](#unit-checkout \"○\"), [Task Branch](#task-branch \"○\"), [Successful Merge](#successful-merge \"○\").",
+    "after": "Run in the [Unit Checkout](#unit-checkout \"○\").\nRequire [Successful Merge](#successful-merge \"○\") before executing the command.",
+    "preserved_noncommand_inputs": [
+      "#successful-merge",
+      "#unit-checkout"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "line": 365,
+    "before": "- Run the command in the [Project Checkout](#project-checkout \"○\"), using [Worktree Path](#worktree-path \"○\"), [Task Branch](#task-branch \"○\"), [Base Branch](#base-branch \"○\"), [Prerequisite Evidence](#prerequisite-evidence \"○\").",
+    "after": "- Run in the [Project Checkout](#project-checkout \"○\").\n- Require [Prerequisite Evidence](#prerequisite-evidence \"○\") before executing the command.",
+    "preserved_noncommand_inputs": [
+      "#prerequisite-evidence",
+      "#project-checkout"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "line": 391,
+    "before": "Run the command in the [Project Checkout](#project-checkout \"○\"), using [Pull Request Number](#pull-request-number \"○\").",
+    "after": "Run in the [Project Checkout](#project-checkout \"○\").",
+    "preserved_noncommand_inputs": [
+      "#project-checkout"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "line": 415,
+    "before": "- Run the command in the [Project Checkout](#project-checkout \"○\"), using [Worktree Path](#worktree-path \"○\"), [Epic-Base Name](#epic-base-name \"○\").",
+    "after": "- Run in the [Project Checkout](#project-checkout \"○\").",
+    "preserved_noncommand_inputs": [
+      "#project-checkout"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "line": 441,
+    "before": "- Run the command in the [Project Checkout](#project-checkout \"○\"), using [Worktree Path](#worktree-path \"○\"), [Verified Head](#verified-head \"○\").",
+    "after": "- Run in the [Project Checkout](#project-checkout \"○\").",
+    "preserved_noncommand_inputs": [
+      "#project-checkout"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "line": 37,
+    "before": "- Run the command using [Workspace](#workspace \"○\"), [Board Items](#board-items \"○\"), [Pull Request Records](#pull-request-records \"○\"), [Issue-Link Snapshot](#issue-link-snapshot \"○\"), [Off-Board Issues](#off-board-issues \"○\"), [Requested Lane](#requested-lane \"○\"), [Dispatch-Export Path](#dispatch-export-path \"○\").",
+    "after": "- Save the survey export at [Dispatch-Export Path](#dispatch-export-path \"○\").\n- Include each supplied [Off-Board Issues](#off-board-issues \"○\") file with `--others`.",
+    "preserved_noncommand_inputs": [
+      "#dispatch-export-path",
+      "#off-board-issues"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "line": 44,
+    "before": "- Run the command using [Workspace](#workspace \"○\"), [Authorization](#authorization \"○\"), [Survey Evidence](#survey-evidence \"○\"), [Session Inventory](#session-inventory \"○\"), [Survey Board](#survey-board \"○\"), [Requested Lane](#requested-lane \"○\"), [Free Slots](#free-slots \"○\"), [Batch](#batch \"○\").",
+    "after": "- Honor [Requested Lane](#requested-lane \"○\") when selecting units.",
+    "preserved_noncommand_inputs": [
+      "#requested-lane"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "line": 182,
+    "before": "- Run this command from the [workspace](#workspace \"○\") [checkout](#project-checkout \"○\") using [Epic Record](#epic-record \"○\"), [Task Records](#task-records \"○\"), [Delivery Matches](#delivery-matches \"○\"), [Epic Bases](#epic-bases \"○\"), [Output Body](#output-body \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "line": 216,
+    "before": "- Run this command from the [workspace](#workspace \"○\") checkout using [Epic Record](#epic-record \"○\"), [Pull Request Records](#pull-request-records \"○\"), [Issue Links](#issue-links \"○\"), [Output Body](#output-body \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "line": 240,
+    "before": "- Run this command from the [workspace](#workspace \"○\") checkout using [Epic Record](#epic-record \"○\"), [Task Selection](#task-selection \"○\"), [Board Items](#board-items \"○\"), [Planning Folder](#planning-folder \"○\"), [Output Body](#output-body \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "line": 269,
+    "before": "- Run this command from the [workspace](#workspace \"○\") checkout using [Epic Record](#epic-record \"○\"), [Task Selection](#task-selection \"○\"), [Engineering Worktree](#engineering-worktree \"○\"), [Output Body](#output-body \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "line": 90,
+    "before": "- Run this command from the [workspace](#workspace \"○\") checkout using [Epic Record](#epic-record \"○\"), [Pull Request Records](#pull-request-records \"○\"), [Issue Links](#issue-links \"○\"), [Output Body](#output-body \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "line": 114,
+    "before": "- Run this command from the [workspace](#workspace \"○\") checkout using [Hot-fix Record](#hot-fix-record \"○\"), [Pull Request Records](#pull-request-records \"○\"), [Issue Links](#issue-links \"○\"), [Delivery Selection](#delivery-selection \"○\"), [Output Body](#output-body \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "line": 141,
+    "before": "- Run this command from the [workspace](#workspace \"○\") checkout using [Initiative Record](#initiative-record \"○\"), [Epic Records](#epic-records \"○\"), [Output Files](#output-files \"○\").",
+    "after": "- Use [Output Files](#output-files \"○\") to select the destination.",
+    "preserved_noncommand_inputs": [
+      "#output-files"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "line": 167,
+    "before": "- Run this command from the [workspace](#workspace \"○\") checkout using [Initiative Record](#initiative-record \"○\"), [Epic Records](#epic-records \"○\"), [Output Files](#output-files \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "line": 191,
+    "before": "Run this command from the repository checkout using [Source Evidence](#source-evidence \"○\"), [Output Files](#output-files \"○\").",
+    "after": "Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "line": 163,
+    "before": "- Run this command from the [workspace](#workspace \"○\") checkout using [Body Record](#body-record \"○\"), [Kind Conditions](#kind-conditions \"○\"), [Output Files](#output-files \"○\").",
+    "after": "- Validate the body against [Kind Conditions](#kind-conditions \"○\").",
+    "preserved_noncommand_inputs": [
+      "#kind-conditions"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "line": 188,
+    "before": "Run this command from the [workspace](#workspace \"○\") checkout using [Body Record](#body-record \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "line": 210,
+    "before": "- Run this command from the repository checkout using [Reference Repositories](#reference-repositories \"○\"), [Output Files](#output-files \"○\").",
+    "after": "- Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "line": 234,
+    "before": "- Run this command from the [workspace](#workspace \"○\") checkout using [Body Record](#body-record \"○\"), [Repository Snapshot](#repository-snapshot \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 269,
+    "before": "- Run this command from the [repository](#repository \"○\") checkout using [Issue Changes](#issue-changes \"○\"), [Label Names](#label-names \"○\").",
+    "after": "- Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 293,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Identity](#identity \"○\"), [Issue Changes](#issue-changes \"○\").",
+    "after": "Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 315,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Identity](#identity \"○\"), [Output Files](#output-files \"○\").",
+    "after": "Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 337,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Identity](#identity \"○\"), [Issue Changes](#issue-changes \"○\").",
+    "after": "Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 359,
+    "before": "- Run this command from the [repository](#repository \"○\") checkout using [Identity](#identity \"○\"), [Label Names](#label-names \"○\").",
+    "after": "- Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 383,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Identity](#identity \"○\"), [Label Names](#label-names \"○\").",
+    "after": "Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 405,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Identity](#identity \"○\").",
+    "after": "Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 427,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Identity](#identity \"○\"), [Output Files](#output-files \"○\"), [Issue Record](#issue-record \"○\").",
+    "after": "Run in the repository checkout.\nUse [Output Files](#output-files \"○\") to select the destination.",
+    "preserved_noncommand_inputs": [
+      "#output-files"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 449,
+    "before": "- Run this command from the [workspace](#workspace \"○\") checkout using [Issue Record](#issue-record \"○\"), [Development Snapshot](#development-snapshot \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 475,
+    "before": "- Run this command from the [workspace](#workspace \"○\") checkout using [Issue Collection](#issue-collection \"○\"), [Development Snapshot](#development-snapshot \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 514,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Identity](#identity \"○\"), [Transfer Evidence](#transfer-evidence \"○\").",
+    "after": "Run in the repository checkout.\nBase the transfer pointer on [Transfer Evidence](#transfer-evidence \"○\").",
+    "preserved_noncommand_inputs": [
+      "#transfer-evidence"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 536,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Identity](#identity \"○\"), [Comment](#comment \"○\").",
+    "after": "Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 558,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Identity](#identity \"○\"), [Comment](#comment \"○\").",
+    "after": "Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 580,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Identity](#identity \"○\"), [Delivery Evidence](#delivery-evidence \"○\"), [Closure Findings](#closure-findings \"○\").",
+    "after": "Run in the repository checkout.\nRequire [Closure Findings](#closure-findings \"○\"), [Delivery Evidence](#delivery-evidence \"○\") before executing the command.",
+    "preserved_noncommand_inputs": [
+      "#closure-findings",
+      "#delivery-evidence"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 602,
+    "before": "- Run this command from the repository checkout using [Issue Collection](#issue-collection \"○\"), [Authenticated Access](#authenticated-access \"○\"), [Output Files](#output-files \"○\"), [Workspace](#workspace \"○\"), [Development Snapshot](#development-snapshot \"○\").",
+    "after": "- Run in the repository checkout.\n- Require [Authenticated Access](#authenticated-access \"○\") before executing the command.\n- Use [Output Files](#output-files \"○\") to select the destination.",
+    "preserved_noncommand_inputs": [
+      "#authenticated-access",
+      "#output-files"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 640,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Output Files](#output-files \"○\"), [Issue Collection](#issue-collection \"○\").",
+    "after": "Run in the repository checkout.\nUse [Output Files](#output-files \"○\") to select the destination.",
+    "preserved_noncommand_inputs": [
+      "#output-files"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 662,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Output Files](#output-files \"○\"), [Issue Collection](#issue-collection \"○\").",
+    "after": "Run in the repository checkout.\nUse [Output Files](#output-files \"○\") to select the destination.",
+    "preserved_noncommand_inputs": [
+      "#output-files"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 684,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Audit Selection](#audit-selection \"○\"), [Output Files](#output-files \"○\"), [Issue Collection](#issue-collection \"○\").",
+    "after": "Run in the repository checkout.\nUse [Output Files](#output-files \"○\") to select the destination.",
+    "preserved_noncommand_inputs": [
+      "#output-files"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 706,
+    "before": "- Run this command from the [repository](#repository \"○\") checkout using [Tracker Prefix](#tracker-prefix \"○\").",
+    "after": "- Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "line": 730,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Tracker Prefix](#tracker-prefix \"○\").",
+    "after": "Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "line": 114,
+    "before": "- Run the following command using [Engineering Worktree](#engineering-worktree \"○\"), [Planning Folder](#planning-folder \"○\").",
+    "after": "- Run in the [Engineering Worktree](#engineering-worktree \"○\").",
+    "preserved_noncommand_inputs": [
+      "#engineering-worktree"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "line": 97,
+    "before": "- Run this command from the [workspace](#workspace \"○\") checkout using [Output Body](#output-body \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "line": 443,
+    "before": "- Run the command using [Identity](#identity \"○\"), [Merge Authorization](#merge-authorization \"○\"), [Repository](#repository \"○\").",
+    "after": "- Require [Merge Authorization](#merge-authorization \"○\") before executing the command.",
+    "preserved_noncommand_inputs": [
+      "#merge-authorization"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "line": 514,
+    "before": "- Run the command using [Identity](#identity \"○\"), [Verified Head](#verified-head \"○\"), [Target Requirements](#target-requirements \"○\"), [Readiness Evidence](#readiness-evidence \"○\"), [Merge Authorization](#merge-authorization \"○\"), [Repository](#repository \"○\").",
+    "after": "- Require [Merge Authorization](#merge-authorization \"○\"), [Readiness Evidence](#readiness-evidence \"○\"), [Target Requirements](#target-requirements \"○\") before executing the command.",
+    "preserved_noncommand_inputs": [
+      "#merge-authorization",
+      "#readiness-evidence",
+      "#target-requirements"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "line": 560,
+    "before": "- Run the command using [Workspace](#workspace \"○\"), [Issue Identity](#issue-identity \"○\"), [Authenticated Access](#authenticated-access \"○\"), [Repository Prerequisite](#repository-prerequisite \"○\").",
+    "after": "- Require [Authenticated Access](#authenticated-access \"○\"), [Repository Prerequisite](#repository-prerequisite \"○\") before executing the command.",
+    "preserved_noncommand_inputs": [
+      "#authenticated-access",
+      "#repository-prerequisite"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "line": 597,
+    "before": "- Run the command using [Workspace](#workspace \"○\"), [Identity](#identity \"○\"), [Issue Identity](#issue-identity \"○\"), [Authenticated Access](#authenticated-access \"○\"), [Removal Decision](#removal-decision \"○\").",
+    "after": "- Require [Authenticated Access](#authenticated-access \"○\"), [Removal Decision](#removal-decision \"○\") before executing the command.",
+    "preserved_noncommand_inputs": [
+      "#authenticated-access",
+      "#removal-decision"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "line": 631,
+    "before": "- Run the command using [Workspace](#workspace \"○\"), [Link-Snapshot Path](#link-snapshot-path \"○\"), [Authenticated Access](#authenticated-access \"○\").",
+    "after": "- Require [Authenticated Access](#authenticated-access \"○\") before executing the command.",
+    "preserved_noncommand_inputs": [
+      "#authenticated-access"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "line": 717,
+    "before": "Run the command using [Repository](#repository \"○\"), [Initiative Prefix](#initiative-prefix \"○\"), [Collection Path](#collection-path \"○\"), [Pull Request Records](#pull-request-records \"○\").",
+    "after": "Use [Collection Path](#collection-path \"○\") for the saved collection.",
+    "preserved_noncommand_inputs": [
+      "#collection-path"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "line": 739,
+    "before": "- Run the command using [Workspace](#workspace \"○\"), [Collection Path](#collection-path \"○\"), [Issue Records](#issue-records \"○\"), [Pull Request Records](#pull-request-records \"○\").",
+    "after": "- Use [Collection Path](#collection-path \"○\") for the saved collection.",
+    "preserved_noncommand_inputs": [
+      "#collection-path"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "line": 768,
+    "before": "Run the command using [Repository](#repository \"○\"), [Collection Path](#collection-path \"○\"), [Pull Request Records](#pull-request-records \"○\").",
+    "after": "Use [Collection Path](#collection-path \"○\") for the saved collection.",
+    "preserved_noncommand_inputs": [
+      "#collection-path"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "line": 790,
+    "before": "Run the command using [Repository](#repository \"○\"), [Collection Path](#collection-path \"○\"), [Pull Request Records](#pull-request-records \"○\").",
+    "after": "Use [Collection Path](#collection-path \"○\") for the saved collection.",
+    "preserved_noncommand_inputs": [
+      "#collection-path"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "line": 878,
+    "before": "- Run the command using [Node Metadata](#node-metadata \"○\").",
+    "after": "- Build the selected GraphQL mutation from [Node Metadata](#node-metadata \"○\") before running it.",
+    "preserved_noncommand_inputs": [
+      "#node-metadata"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "line": 53,
+    "before": "Run the following command using [Requested Revision](#requested-revision \"○\").",
+    "after": "Compare the indexed commit with [Requested Revision](#requested-revision \"○\").",
+    "preserved_noncommand_inputs": [
+      "#requested-revision"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "line": 71,
+    "before": "Run the following command using [Requested Revision](#requested-revision \"○\").",
+    "after": "Compare the indexed commit with [Requested Revision](#requested-revision \"○\").",
+    "preserved_noncommand_inputs": [
+      "#requested-revision"
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-labels.md",
+    "line": 33,
+    "before": "Run this command from the [repository](#repository \"○\") checkout with the supplied inputs.",
+    "after": "Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-labels.md",
+    "line": 49,
+    "before": "Run this command from the [repository](#repository \"○\") checkout using [Label Identity](#label-identity \"○\").",
+    "after": "Run in the repository checkout.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "line": 34,
+    "before": "- Run this command from the [workspace](#workspace \"○\") checkout using [Task Record](#task-record \"○\"), [Pull Request Records](#pull-request-records \"○\"), [Issue Links](#issue-links \"○\"), [Delivery Selection](#delivery-selection \"○\"), [Output Body](#output-body \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "line": 91,
+    "before": "Run the following command in the [workspace checkout](#workspace \"○\") for the selected [Skill Directory](#skill-directory \"○\"); repeat the skill argument for additional affected skills.",
+    "after": "Repeat the skill argument for additional affected skills.",
+    "preserved_noncommand_inputs": []
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "line": 113,
+    "before": "- Run the following command in the [workspace checkout](#workspace \"○\") for [Skill Directory](#skill-directory \"○\"), comparing [Base](#base \"○\") with [Head](#head \"○\").",
+    "after": "",
+    "preserved_noncommand_inputs": []
+  }
+]

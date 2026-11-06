@@ -1,0 +1,723 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && python3 skills/work-planner/scripts/revision-check.py --project /projects/workflow-server --revision i11/e16/workspace -- \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 -m pytest skills/work-planner/test -q",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  python3 skills/work-planner/scripts/revision-check.py \\\n  --project /projects/workflow-server \\\n  --revision i11/e16/workspace \\\n  -- \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 \\\n  -m pytest skills/work-planner/test \\\n  -q",
+    "visible_length": 213,
+    "lines": 7
+  },
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && python3 skills/work-planner/scripts/revision-check.py --project '[**&lt;checkout&gt;**](#project-checkout \"○\")' --revision '[**&lt;revision&gt;**](#revision \"○\")' -- [**&lt;instrument-command&gt;**](#instrument \"○\")",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  python3 skills/work-planner/scripts/revision-check.py \\\n  --project '[**&lt;checkout&gt;**](#project-checkout \"○\")' \\\n  --revision '[**&lt;revision&gt;**](#revision \"○\")' \\\n  -- [**&lt;instrument-command&gt;**](#instrument \"○\")",
+    "visible_length": 144,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/agent-review.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/agent_review.py --pr '[**&lt;pull-request-json-file&gt;**](#pull-request-record \"○\")' --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/agent_review.py \\\n  --pr '[**&lt;pull-request-json-file&gt;**](#pull-request-record \"○\")' \\\n  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"○\")'",
+    "visible_length": 169,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py --items '[**&lt;board-items-file&gt;**](#board-items \"○\")' --board [**&lt;board-identity&gt;**](#board-identity \"○\") --fields '[**&lt;board-fields-file&gt;**](#board-fields \"○\")' --out '[**&lt;output-directory&gt;**](#output-directory \"○\")' --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"○\")' --progress [**&lt;held-issue-numbers&gt;**](#dispatch-selection \"○\") --review [**&lt;complete-epic-numbers&gt;**](#dispatch-selection \"○\") --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py \\\n  --items '[**&lt;board-items-file&gt;**](#board-items \"○\")' \\\n  --board [**&lt;board-identity&gt;**](#board-identity \"○\") \\\n  --fields '[**&lt;board-fields-file&gt;**](#board-fields \"○\")' \\\n  --out '[**&lt;output-directory&gt;**](#output-directory \"○\")' \\\n  --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"○\")' \\\n  --progress [**&lt;held-issue-numbers&gt;**](#dispatch-selection \"○\") \\\n  --review [**&lt;complete-epic-numbers&gt;**](#dispatch-selection \"○\") \\\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' \\\n  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"○\")'",
+    "visible_length": 375,
+    "lines": 11
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --links links.json --board users/[**&lt;owner&gt;**](#board-identity \"○\")/projectsV2/9 --fields fields.json --items items.json --out board/ --assignee m2ux",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/board.py issue-936.json \\\n  --epics issue-943.json issue-937.json \\\n  --tasks issue-637.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --board users/[**&lt;owner&gt;**](#board-identity \"○\")/projectsV2/9 \\\n  --fields fields.json \\\n  --items items.json \\\n  --out board/ \\\n  --assignee m2ux",
+    "visible_length": 304,
+    "lines": 11
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"○\")' --epics '[**&lt;epic-json-file&gt;**](#epic-records \"○\")' --tasks '[**&lt;task-json-file&gt;**](#task-records \"○\")' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"○\")' --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"○\")' --board [**&lt;board-identity&gt;**](#board-identity \"○\") --fields '[**&lt;board-fields-file&gt;**](#board-fields \"○\")' --items '[**&lt;board-items-file&gt;**](#board-items \"○\")' --out '[**&lt;output-directory&gt;**](#output-directory \"○\")' --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"○\")' \\\n  --epics '[**&lt;epic-json-file&gt;**](#epic-records \"○\")' \\\n  --tasks '[**&lt;task-json-file&gt;**](#task-records \"○\")' \\\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' \\\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"○\")' \\\n  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews \"○\")' \\\n  --board [**&lt;board-identity&gt;**](#board-identity \"○\") \\\n  --fields '[**&lt;board-fields-file&gt;**](#board-fields \"○\")' \\\n  --items '[**&lt;board-items-file&gt;**](#board-items \"○\")' \\\n  --out '[**&lt;output-directory&gt;**](#output-directory \"○\")' \\\n  --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"○\")'",
+    "visible_length": 424,
+    "lines": 12
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/board-queue.py --items items.json --prs prs.json --links links.json --board users/[**&lt;owner&gt;**](#board-identity \"○\")/projectsV2/9 --fields fields.json --out board/ --assignee m2ux",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/board-queue.py \\\n  --items items.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --board users/[**&lt;owner&gt;**](#board-identity \"○\")/projectsV2/9 \\\n  --fields fields.json \\\n  --out board/ \\\n  --assignee m2ux",
+    "visible_length": 234,
+    "lines": 9
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/board-queue.py --items '[**&lt;board-items-file&gt;**](#board-items \"○\")' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"○\")' --board [**&lt;board-identity&gt;**](#board-identity \"○\") --fields '[**&lt;board-fields-file&gt;**](#board-fields \"○\")' --out '[**&lt;output-directory&gt;**](#output-directory \"○\")' --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/board-queue.py \\\n  --items '[**&lt;board-items-file&gt;**](#board-items \"○\")' \\\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' \\\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"○\")' \\\n  --board [**&lt;board-identity&gt;**](#board-identity \"○\") \\\n  --fields '[**&lt;board-fields-file&gt;**](#board-fields \"○\")' \\\n  --out '[**&lt;output-directory&gt;**](#output-directory \"○\")' \\\n  --assignee '[**&lt;assignee-login&gt;**](#assignee-login \"○\")'",
+    "visible_length": 311,
+    "lines": 9
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "before": "gh api --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"○\")/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field \"○\")\" > '[**&lt;board-items-file&gt;**](#board-items-file \"○\")'",
+    "after": "gh api \\\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"○\")/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field \"○\")\" \\\n  > '[**&lt;board-items-file&gt;**](#board-items-file \"○\")'",
+    "visible_length": 126,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "before": "gh api --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2/9/fields?per_page=100\" --jq '.&#91;&#93; | select(.name == \"Status\") | .id'",
+    "after": "gh api \\\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2/9/fields?per_page=100\" \\\n  --jq '.&#91;&#93; | select(.name == \"Status\") | .id'",
+    "visible_length": 111,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "before": "gh api --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"○\")/fields?per_page=100\" --jq '.&#91;&#93; | select(.name == \"Status\") | .id'",
+    "after": "gh api \\\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"○\")/fields?per_page=100\" \\\n  --jq '.&#91;&#93; | select(.name == \"Status\") | .id'",
+    "visible_length": 124,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "before": "gh api --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2?per_page=100\" --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub(\"^\\\\&#91;P&#91;0-9&#93;+\\\\&#93; \"; \"\") | startswith(\"Canon: \")) | .number'",
+    "after": "gh api \\\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2?per_page=100\" \\\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub(\"^\\\\&#91;P&#91;0-9&#93;+\\\\&#93; \"; \"\") | startswith(\"Canon: \")) | .number'",
+    "visible_length": 172,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "before": "gh api --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2?per_page=100\" --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub(\"^\\\\&#91;P&#91;0-9&#93;+\\\\&#93; \"; \"\") | startswith(\"[**&lt;theme-name&gt;**](#theme-name \"○\"): \")) | .number'",
+    "after": "gh api \\\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2?per_page=100\" \\\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub(\"^\\\\&#91;P&#91;0-9&#93;+\\\\&#93; \"; \"\") | startswith(\"[**&lt;theme-name&gt;**](#theme-name \"○\"): \")) | .number'",
+    "visible_length": 179,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "before": "gh api --method PATCH users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"○\")/items/[**&lt;item-id&gt;**](#item-coordinates \"○\") --input '[**&lt;status-input-file&gt;**](#status-input-file \"○\")' --jq .id",
+    "after": "gh api \\\n  --method PATCH users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates \"○\")/items/[**&lt;item-id&gt;**](#item-coordinates \"○\") \\\n  --input '[**&lt;status-input-file&gt;**](#status-input-file \"○\")' \\\n  --jq .id",
+    "visible_length": 116,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "before": "gh api --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2?per_page=100\" --jq '.&#91;&#93; | select(.closed | not) | select(.title == \"Proposals\") | .number'",
+    "after": "gh api \\\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2?per_page=100\" \\\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title == \"Proposals\") | .number'",
+    "visible_length": 134,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "before": "gh project copy [**&lt;template-number&gt;**](#template-selection \"○\") --source-owner [**&lt;owner&gt;**](#board-owner \"○\") --target-owner [**&lt;owner&gt;**](#board-owner \"○\") --title '[**&lt;board-title&gt;**](#copy-title \"○\")' --format json --jq .number",
+    "after": "gh project copy [**&lt;template-number&gt;**](#template-selection \"○\") \\\n  --source-owner [**&lt;owner&gt;**](#board-owner \"○\") \\\n  --target-owner [**&lt;owner&gt;**](#board-owner \"○\") \\\n  --title '[**&lt;board-title&gt;**](#copy-title \"○\")' \\\n  --format json \\\n  --jq .number",
+    "visible_length": 130,
+    "lines": 6
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "before": "gh api --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2?per_page=100\" --jq '.&#91;&#93; | select(.closed | not) | select(.title == \"[**&lt;template-title&gt;**](#template-selection \"○\")\") | .number'",
+    "after": "gh api \\\n  --paginate \"users/[**&lt;owner&gt;**](#board-owner \"○\")/projectsV2?per_page=100\" \\\n  --jq '.&#91;&#93; | select(.closed | not) | select(.title == \"[**&lt;template-title&gt;**](#template-selection \"○\")\") | .number'",
+    "visible_length": 141,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py --names --project '[**<checkout>**](#project-checkout \"○\")' --revision origin/i07/e00/main",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py \\\n  --names \\\n  --project '[**<checkout>**](#project-checkout \"○\")' \\\n  --revision origin/i07/e00/main",
+    "visible_length": 151,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py --names --project '[**<checkout>**](#project-checkout \"○\")' --revision '[**<revision>**](#revision \"○\")'",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py \\\n  --names \\\n  --project '[**<checkout>**](#project-checkout \"○\")' \\\n  --revision '[**<revision>**](#revision \"○\")'",
+    "visible_length": 144,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '[**<checkout>**](#project-checkout \"○\")' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '[**<checkout>**](#project-checkout \"○\")/.engineering' --lane 2",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py \\\n  --items items.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --project '[**<checkout>**](#project-checkout \"○\")' \\\n  --revision origin/workspace \\\n  --bases i07/e00/main,i07/e00/workflows \\\n  --engineering '[**<checkout>**](#project-checkout \"○\")/.engineering' \\\n  --lane 2",
+    "visible_length": 284,
+    "lines": 10
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py --items '[**<board-items-file>**](#board-items \"○\")' --prs '[**<pull-request-records-file>**](#pull-request-records \"○\")' --links '[**<issue-link-snapshot-file>**](#issue-link-snapshot \"○\")' --project '[**<checkout>**](#project-checkout \"○\")' --revision '[**<revision>**](#revision \"○\")' --bases '[**<epic-base-names>**](#epic-base-names \"○\")' --engineering '[**<engineering-worktree>**](#engineering-worktree \"○\")' --lane [**<lane-index>**](#requested-lane \"○\")",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py \\\n  --items '[**<board-items-file>**](#board-items \"○\")' \\\n  --prs '[**<pull-request-records-file>**](#pull-request-records \"○\")' \\\n  --links '[**<issue-link-snapshot-file>**](#issue-link-snapshot \"○\")' \\\n  --project '[**<checkout>**](#project-checkout \"○\")' \\\n  --revision '[**<revision>**](#revision \"○\")' \\\n  --bases '[**<epic-base-names>**](#epic-base-names \"○\")' \\\n  --engineering '[**<engineering-worktree>**](#engineering-worktree \"○\")' \\\n  --lane [**<lane-index>**](#requested-lane \"○\")",
+    "visible_length": 328,
+    "lines": 10
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py --initiative 07 --prs prs.json --map 6:0,0:1 live-936.md live-943.md",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py \\\n  --initiative 07 \\\n  --prs prs.json \\\n  --map 6:0,0:1 live-936.md live-943.md",
+    "visible_length": 162,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py --initiative [**&lt;initiative-number&gt;**](#renumber-inputs \"○\") --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' --map [**&lt;epic-number-map&gt;**](#renumber-inputs \"○\") '[**&lt;body-file&gt;**](#renumber-inputs \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py \\\n  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs \"○\") \\\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' \\\n  --map [**&lt;epic-number-map&gt;**](#renumber-inputs \"○\") '[**&lt;body-file&gt;**](#renumber-inputs \"○\")'",
+    "visible_length": 200,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py --initiative 07 --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py \\\n  --initiative 07 \\\n  --epic 1 \\\n  --own live-937.md \\\n  --tasks 7:3,3:5 live-*.md",
+    "visible_length": 162,
+    "lines": 6
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py --initiative [**&lt;initiative-number&gt;**](#renumber-inputs \"○\") --epic [**&lt;epic-number&gt;**](#renumber-inputs \"○\") --own '[**&lt;epic-body-file&gt;**](#dependency-files \"○\")' --tasks [**&lt;task-number-map&gt;**](#renumber-inputs \"○\") '[**&lt;affected-body-file&gt;**](#renumber-inputs \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/renumber.py \\\n  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs \"○\") \\\n  --epic [**&lt;epic-number&gt;**](#renumber-inputs \"○\") \\\n  --own '[**&lt;epic-body-file&gt;**](#dependency-files \"○\")' \\\n  --tasks [**&lt;task-number-map&gt;**](#renumber-inputs \"○\") '[**&lt;affected-body-file&gt;**](#renumber-inputs \"○\")'",
+    "visible_length": 221,
+    "lines": 6
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deps.py I=/drafts/live-936.md E00=/drafts/live-943.md E01=/drafts/live-937.md E00:W01=/drafts/e00/w01.md E01:W01=/drafts/e01/w01.md R=/records/joins.md",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deps.py I=/drafts/live-936.md \\\n  E00=/drafts/live-943.md E01=/drafts/live-937.md E00:W01=/drafts/e00/w01.md E01:W01=/drafts/e01/w01.md \\\n  R=/records/joins.md",
+    "visible_length": 233,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deps.py 'I=[**&lt;initiative-body-file&gt;**](#dependency-files \"○\")' '[**&lt;epic-id&gt;**](#dependency-files \"○\")=[**&lt;epic-body-file&gt;**](#dependency-files \"○\")' '[**&lt;epic-id&gt;**](#dependency-files \"○\"):[**&lt;task-id&gt;**](#dependency-files \"○\")=[**&lt;work-item-file&gt;**](#dependency-files \"○\")' 'R=[**&lt;record-file&gt;**](#dependency-files \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deps.py 'I=[**&lt;initiative-body-file&gt;**](#dependency-files \"○\")' \\\n  '[**&lt;epic-id&gt;**](#dependency-files \"○\")=[**&lt;epic-body-file&gt;**](#dependency-files \"○\")' '[**&lt;epic-id&gt;**](#dependency-files \"○\"):[**&lt;task-id&gt;**](#dependency-files \"○\")=[**&lt;work-item-file&gt;**](#dependency-files \"○\")' 'R=[**&lt;record-file&gt;**](#dependency-files \"○\")'",
+    "visible_length": 202,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/dispatch.py start --batch '[**<batch-file>**](#batch \"○\")' --unit [**<unit-identity>**](#unit-identity \"○\") --evidence '[**<start-evidence-file>**](#start-evidence \"○\")' --sessions '[**<session-inventory-file>**](#session-inventory \"○\")' --capacity [**<free-slot-count>**](#free-slots \"○\")",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/dispatch.py start \\\n  --batch '[**<batch-file>**](#batch \"○\")' \\\n  --unit [**<unit-identity>**](#unit-identity \"○\") \\\n  --evidence '[**<start-evidence-file>**](#start-evidence \"○\")' \\\n  --sessions '[**<session-inventory-file>**](#session-inventory \"○\")' \\\n  --capacity [**<free-slot-count>**](#free-slots \"○\")",
+    "visible_length": 247,
+    "lines": 7
+  },
+  {
+    "file": "skills/work-planner/artifacts/dispatch-batch.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/dispatch.py batch --authorization '[**<authorization-file>**](#authorization \"○\")' --plan '[**<dispatch-export-file>**](#survey-evidence \"○\")' --sessions '[**<session-inventory-file>**](#session-inventory \"○\")' --capacity [**<free-slot-count>**](#free-slots \"○\") --board [**<survey-board>**](#survey-board \"○\") > '[**<batch-file>**](#batch \"○\")'",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/dispatch.py batch \\\n  --authorization '[**<authorization-file>**](#authorization \"○\")' \\\n  --plan '[**<dispatch-export-file>**](#survey-evidence \"○\")' \\\n  --sessions '[**<session-inventory-file>**](#session-inventory \"○\")' \\\n  --capacity [**<free-slot-count>**](#free-slots \"○\") \\\n  --board [**<survey-board>**](#survey-board \"○\") \\\n  > '[**<batch-file>**](#batch \"○\")'",
+    "visible_length": 277,
+    "lines": 8
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --release W01 --engineering .engineering --fix fixed-943.md",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py \\\n  --epic issue-943.json \\\n  --release W01 \\\n  --engineering .engineering \\\n  --fix fixed-943.md",
+    "visible_length": 174,
+    "lines": 6
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py --epic '[**&lt;epic-json-file&gt;**](#epic-record \"○\")' --release [**&lt;task-ids&gt;**](#task-selection \"○\") --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree \"○\")' --fix '[**&lt;output-body-file&gt;**](#output-body \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py \\\n  --epic '[**&lt;epic-json-file&gt;**](#epic-record \"○\")' \\\n  --release [**&lt;task-ids&gt;**](#task-selection \"○\") \\\n  --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree \"○\")' \\\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"○\")'",
+    "visible_length": 205,
+    "lines": 6
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --reserve W01,W02 --items items.json --records https://github.com/[**&lt;owner&gt;**](#planning-folder \"○\")/[**&lt;repo&gt;**](#planning-folder \"○\")/tree/engineering/artifacts/planning --fix fixed-943.md",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py \\\n  --epic issue-943.json \\\n  --reserve W01,W02 \\\n  --items items.json \\\n  --records https://github.com/[**&lt;owner&gt;**](#planning-folder \"○\")/[**&lt;repo&gt;**](#planning-folder \"○\")/tree/engineering/artifacts/planning \\\n  --fix fixed-943.md",
+    "visible_length": 250,
+    "lines": 7
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py --epic '[**&lt;epic-json-file&gt;**](#epic-record \"○\")' --reserve [**&lt;task-ids&gt;**](#task-selection \"○\") --items '[**&lt;board-items-file&gt;**](#board-items \"○\")' --records '[**&lt;records-base-url&gt;**](#planning-folder \"○\")' --fix '[**&lt;output-body-file&gt;**](#output-body \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py \\\n  --epic '[**&lt;epic-json-file&gt;**](#epic-record \"○\")' \\\n  --reserve [**&lt;task-ids&gt;**](#task-selection \"○\") \\\n  --items '[**&lt;board-items-file&gt;**](#board-items \"○\")' \\\n  --records '[**&lt;records-base-url&gt;**](#planning-folder \"○\")' \\\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"○\")'",
+    "visible_length": 226,
+    "lines": 7
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --tick AC1,AC3 --fix fixed-943.md",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-943.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --tick AC1,AC3 \\\n  --fix fixed-943.md",
+    "visible_length": 172,
+    "lines": 6
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"○\")' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"○\")' --tick [**&lt;criterion-ids&gt;**](#criterion-selection \"○\") --fix '[**&lt;output-body-file&gt;**](#output-body \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"○\")' \\\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' \\\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"○\")' \\\n  --tick [**&lt;criterion-ids&gt;**](#criterion-selection \"○\") \\\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"○\")'",
+    "visible_length": 231,
+    "lines": 6
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --tasks issue-637.json --link W01=950,W01=951,W02=950 --project '[**&lt;checkout&gt;**](#project-checkout \"○\")' --revision origin/i07/e00/main --revision origin/i07/e00/workflows --fix fixed-943.md",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-943.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --tasks issue-637.json \\\n  --link W01=950,W01=951,W02=950 \\\n  --project '[**&lt;checkout&gt;**](#project-checkout \"○\")' \\\n  --revision origin/i07/e00/main \\\n  --revision origin/i07/e00/workflows \\\n  --fix fixed-943.md",
+    "visible_length": 301,
+    "lines": 10
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"○\")' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"○\")' --tasks '[**&lt;task-json-file&gt;**](#task-records \"○\")' --link '[**&lt;task-pull-request-map&gt;**](#delivery-matches \"○\")' --project '[**&lt;checkout&gt;**](#project-checkout \"○\")' --revision '[**&lt;epic-base-revision&gt;**](#epic-bases \"○\")' --fix '[**&lt;output-body-file&gt;**](#output-body \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"○\")' \\\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' \\\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"○\")' \\\n  --tasks '[**&lt;task-json-file&gt;**](#task-records \"○\")' \\\n  --link '[**&lt;task-pull-request-map&gt;**](#delivery-matches \"○\")' \\\n  --project '[**&lt;checkout&gt;**](#project-checkout \"○\")' \\\n  --revision '[**&lt;epic-base-revision&gt;**](#epic-bases \"○\")' \\\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"○\")'",
+    "visible_length": 325,
+    "lines": 9
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --fix epic-body.md",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-943.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --fix epic-body.md",
+    "visible_length": 157,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"○\")' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"○\")' --fix '[**&lt;epic-body-file&gt;**](#output-body \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record \"○\")' \\\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' \\\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"○\")' \\\n  --fix '[**&lt;epic-body-file&gt;**](#output-body \"○\")'",
+    "visible_length": 206,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-874.json --prs prs.json --links links.json --pr 950 --tick AC1 --fix fixed-874.md",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-874.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --pr 950 \\\n  --tick AC1 \\\n  --fix fixed-874.md",
+    "visible_length": 177,
+    "lines": 7
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;hot-fix-json-file&gt;**](#hot-fix-record \"○\")' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"○\")' --pr [**&lt;pull-request-number&gt;**](#delivery-selection \"○\") --tick [**&lt;criterion-ids&gt;**](#delivery-selection \"○\") --fix '[**&lt;output-body-file&gt;**](#output-body \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;hot-fix-json-file&gt;**](#hot-fix-record \"○\")' \\\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' \\\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"○\")' \\\n  --pr [**&lt;pull-request-number&gt;**](#delivery-selection \"○\") \\\n  --tick [**&lt;criterion-ids&gt;**](#delivery-selection \"○\") \\\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"○\")'",
+    "visible_length": 261,
+    "lines": 7
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "before": "gh api 'repos/m2ux/workflow-server/contents/docs/spec.md?ref=4a217fe6' --jq .content | base64 -d > source-R1.md",
+    "after": "gh api 'repos/m2ux/workflow-server/contents/docs/spec.md?ref=4a217fe6' \\\n  --jq .content \\\n  | base64 \\\n  -d \\\n  > source-R1.md",
+    "visible_length": 111,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "before": "gh api 'repos/[**&lt;owner&gt;**](#source-evidence \"○\")/[**&lt;repository&gt;**](#source-evidence \"○\")/contents/[**&lt;source-path&gt;**](#source-evidence \"○\")?ref=[**&lt;revision&gt;**](#source-evidence \"○\")' --jq .content | base64 -d > '[**&lt;source-file&gt;**](#output-files \"○\")'",
+    "after": "gh api 'repos/[**&lt;owner&gt;**](#source-evidence \"○\")/[**&lt;repository&gt;**](#source-evidence \"○\")/contents/[**&lt;source-path&gt;**](#source-evidence \"○\")?ref=[**&lt;revision&gt;**](#source-evidence \"○\")' \\\n  --jq .content \\\n  | base64 \\\n  -d \\\n  > '[**&lt;source-file&gt;**](#output-files \"○\")'",
+    "visible_length": 117,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json --tick AC2 --fix fixed-936.md",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-936.json \\\n  --epics issue-943.json issue-937.json \\\n  --tick AC2 \\\n  --fix fixed-936.md",
+    "visible_length": 172,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"○\")' --epics '[**&lt;epic-json-file&gt;**](#epic-records \"○\")' --tick [**&lt;criterion-ids&gt;**](#criterion-selection \"○\") --fix '[**&lt;output-body-file&gt;**](#output-files \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"○\")' \\\n  --epics '[**&lt;epic-json-file&gt;**](#epic-records \"○\")' \\\n  --tick [**&lt;criterion-ids&gt;**](#criterion-selection \"○\") \\\n  --fix '[**&lt;output-body-file&gt;**](#output-files \"○\")'",
+    "visible_length": 191,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-936.json \\\n  --epics issue-943.json issue-937.json",
+    "visible_length": 142,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"○\")' --epics '[**&lt;epic-json-file&gt;**](#epic-records \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record \"○\")' \\\n  --epics '[**&lt;epic-json-file&gt;**](#epic-records \"○\")'",
+    "visible_length": 141,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/format.py issue.json --fix fixed.md",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/format.py issue.json \\\n  --fix fixed.md",
+    "visible_length": 117,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/format.py '[**&lt;issue-json-file&gt;**](#body-record \"○\")' --fix '[**&lt;output-body-file&gt;**](#output-files \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/format.py '[**&lt;issue-json-file&gt;**](#body-record \"○\")' \\\n  --fix '[**&lt;output-body-file&gt;**](#output-files \"○\")'",
+    "visible_length": 138,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "gh api --paginate 'repos/m2ux/workflow-server/issues?state=all&per_page=100' --jq '.&#91;&#93; | select(.title | test(\"^\\\\&#91;I&#91;0-9&#93;{2}\\\\&#93;\")) | .title'",
+    "after": "gh api \\\n  --paginate 'repos/m2ux/workflow-server/issues?state=all&per_page=100' \\\n  --jq '.&#91;&#93; | select(.title | test(\"^\\\\&#91;I&#91;0-9&#93;{2}\\\\&#93;\")) | .title'",
+    "visible_length": 140,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "gh api --paginate 'repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repository&gt;**](#repository \"○\")/issues?state=all&per_page=100' --jq '.&#91;&#93; | select(.title | test(\"^\\\\&#91;[**&lt;prefix-letter&gt;**](#tracker-prefix \"○\")&#91;0-9&#93;{2}\\\\&#93;\")) | .title'",
+    "after": "gh api \\\n  --paginate 'repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repository&gt;**](#repository \"○\")/issues?state=all&per_page=100' \\\n  --jq '.&#91;&#93; | select(.title | test(\"^\\\\&#91;[**&lt;prefix-letter&gt;**](#tracker-prefix \"○\")&#91;0-9&#93;{2}\\\\&#93;\")) | .title'",
+    "visible_length": 154,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "gh api --paginate \"repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues?state=all&per_page=100\" --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith(\"&#91;I08&#93;\")) | .number'",
+    "after": "gh api \\\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues?state=all&per_page=100\" \\\n  --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith(\"&#91;I08&#93;\")) | .number'",
+    "visible_length": 162,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "gh api --paginate \"repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues?state=all&per_page=100\" --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith(\"[**&lt;initiative-prefix&gt;**](#tracker-prefix \"○\")\")) | .number'",
+    "after": "gh api \\\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues?state=all&per_page=100\" \\\n  --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith(\"[**&lt;initiative-prefix&gt;**](#tracker-prefix \"○\")\")) | .number'",
+    "visible_length": 176,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "gh api --paginate \"repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues?state=closed&per_page=100\" --jq '.&#91;&#93; | select(&#91;.number&#93; | inside(&#91;637, 943, 946&#93;))' > closed-issues.json",
+    "after": "gh api \\\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues?state=closed&per_page=100\" \\\n  --jq '.&#91;&#93; | select(&#91;.number&#93; | inside(&#91;637, 943, 946&#93;))' \\\n  > closed-issues.json",
+    "visible_length": 151,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "gh api --paginate \"repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues?state=closed&per_page=100\" --jq '.&#91;&#93; | select(&#91;.number&#93; | inside(&#91;[**&lt;issue-numbers&gt;**](#audit-selection \"○\")&#93;))' > '[**&lt;issues-json-file&gt;**](#issue-collection \"○\")'",
+    "after": "gh api \\\n  --paginate \"repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues?state=closed&per_page=100\" \\\n  --jq '.&#91;&#93; | select(&#91;.number&#93; | inside(&#91;[**&lt;issue-numbers&gt;**](#audit-selection \"○\")&#93;))' \\\n  > '[**&lt;issues-json-file&gt;**](#issue-collection \"○\")'",
+    "visible_length": 155,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && python3 skills/work-planner/scripts/links-by-issue.py --issues issue-943.json --out links-943.json",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  python3 skills/work-planner/scripts/links-by-issue.py \\\n  --issues issue-943.json \\\n  --out links-943.json",
+    "visible_length": 118,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && python3 skills/work-planner/scripts/links-by-issue.py --issues '[**&lt;issues-json-file&gt;**](#issue-collection \"○\")' --out '[**&lt;issue-links-file&gt;**](#development-snapshot \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  python3 skills/work-planner/scripts/links-by-issue.py \\\n  --issues '[**&lt;issues-json-file&gt;**](#issue-collection \"○\")' \\\n  --out '[**&lt;issue-links-file&gt;**](#development-snapshot \"○\")'",
+    "visible_length": 130,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "gh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues/[**&lt;issue-number&gt;**](#identity \"○\") -f state=closed -f state_reason=completed --jq .state",
+    "after": "gh api \\\n  --method PATCH repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues/[**&lt;issue-number&gt;**](#identity \"○\") \\\n  -f state=closed \\\n  -f state_reason=completed \\\n  --jq .state",
+    "visible_length": 118,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "gh api --method POST repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues/[**&lt;issue-number&gt;**](#identity \"○\")/comments -F 'body=@[**&lt;comment-file&gt;**](#comment \"○\")' --jq .html_url",
+    "after": "gh api \\\n  --method POST repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues/[**&lt;issue-number&gt;**](#identity \"○\")/comments \\\n  -F 'body=@[**&lt;comment-file&gt;**](#comment \"○\")' \\\n  --jq .html_url",
+    "visible_length": 113,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "gh api --method POST repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues/[**&lt;issue-number&gt;**](#identity \"○\")/comments -f body='[**&lt;comment-text&gt;**](#comment \"○\")' --jq .html_url",
+    "after": "gh api \\\n  --method POST repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues/[**&lt;issue-number&gt;**](#identity \"○\")/comments \\\n  -f body='[**&lt;comment-text&gt;**](#comment \"○\")' \\\n  --jq .html_url",
+    "visible_length": 112,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "gh api --method PATCH repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues/[**&lt;issue-number&gt;**](#identity \"○\") -f state=closed -f state_reason=not_planned --jq .state",
+    "after": "gh api \\\n  --method PATCH repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues/[**&lt;issue-number&gt;**](#identity \"○\") \\\n  -f state=closed \\\n  -f state_reason=not_planned \\\n  --jq .state",
+    "visible_length": 120,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/closure-sweep.py --issues closed-issues.json --issue-links issue-links.json",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/closure-sweep.py \\\n  --issues closed-issues.json \\\n  --issue-links issue-links.json",
+    "visible_length": 157,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/closure-sweep.py --issues '[**&lt;issues-json-file&gt;**](#issue-collection \"○\")' --issue-links '[**&lt;issue-links-file&gt;**](#development-snapshot \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/closure-sweep.py \\\n  --issues '[**&lt;issues-json-file&gt;**](#issue-collection \"○\")' \\\n  --issue-links '[**&lt;issue-links-file&gt;**](#development-snapshot \"○\")'",
+    "visible_length": 163,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/closure.py --issue issue-943.json --development links-943.json",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/closure.py \\\n  --issue issue-943.json \\\n  --development links-943.json",
+    "visible_length": 144,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/closure.py --issue '[**&lt;issue-json-file&gt;**](#issue-record \"○\")' --development '[**&lt;issue-links-file&gt;**](#development-snapshot \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/closure.py \\\n  --issue '[**&lt;issue-json-file&gt;**](#issue-record \"○\")' \\\n  --development '[**&lt;issue-links-file&gt;**](#development-snapshot \"○\")'",
+    "visible_length": 155,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "gh api --method POST repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues -f title='[**&lt;title&gt;**](#issue-changes \"○\")' -F body=@body.md -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names \"○\")' --jq .number",
+    "after": "gh api \\\n  --method POST repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues \\\n  -f title='[**&lt;title&gt;**](#issue-changes \"○\")' \\\n  -F body=@body.md \\\n  -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names \"○\")' \\\n  --jq .number",
+    "visible_length": 119,
+    "lines": 6
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "before": "gh api --method POST repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues -f title='[**&lt;title&gt;**](#issue-changes \"○\")' -F 'body=@[**&lt;body-file&gt;**](#issue-changes \"○\")' -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names \"○\")' --jq .number",
+    "after": "gh api \\\n  --method POST repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/issues \\\n  -f title='[**&lt;title&gt;**](#issue-changes \"○\")' \\\n  -F 'body=@[**&lt;body-file&gt;**](#issue-changes \"○\")' \\\n  -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names \"○\")' \\\n  --jq .number",
+    "visible_length": 125,
+    "lines": 6
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/orphans.py '[**&lt;issues-json-file&gt;**](#issue-collection \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/orphans.py '[**&lt;issues-json-file&gt;**](#issue-collection \"○\")'",
+    "visible_length": 113,
+    "lines": 2
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "before": "cd .engineering && git add -A && (git diff --cached --quiet || git commit -F /tmp/msg.txt) && git fetch origin engineering && git rebase origin/engineering && git push",
+    "after": "cd .engineering && \\\n  git add \\\n  -A && \\\n  (git diff \\\n  --cached \\\n  --quiet || git commit \\\n  -F /tmp/msg.txt) && \\\n  git fetch origin engineering && \\\n  git rebase origin/engineering && \\\n  git push",
+    "visible_length": 167,
+    "lines": 10
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "before": "cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree \"○\")' && git add -A && (git diff --cached --quiet || git commit -F '[**&lt;message-file&gt;**](#commit-message-file \"○\")') && git fetch origin engineering && git rebase origin/engineering && git push",
+    "after": "cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree \"○\")' && \\\n  git add \\\n  -A && \\\n  (git diff \\\n  --cached \\\n  --quiet || git commit \\\n  -F '[**&lt;message-file&gt;**](#commit-message-file \"○\")') && \\\n  git fetch origin engineering && \\\n  git rebase origin/engineering && \\\n  git push",
+    "visible_length": 183,
+    "lines": 10
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --paginate repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls/[**<pull-request-number>**](#identity \"○\")/files --jq '.[].filename' > '[**<changed-paths-file>**](#output-files \"○\")'",
+    "after": "gh api \\\n  --paginate repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls/[**<pull-request-number>**](#identity \"○\")/files \\\n  --jq '.[].filename' \\\n  > '[**<changed-paths-file>**](#output-files \"○\")'",
+    "visible_length": 117,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --paginate \"repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls?state=all&per_page=100\" --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' >> prs.json",
+    "after": "gh api \\\n  --paginate \"repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls?state=all&per_page=100\" \\\n  --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' \\\n  >> prs.json",
+    "visible_length": 148,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --paginate \"repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls?state=all&per_page=100\" --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' >> '[**<pull-request-records-file>**](#pull-request-records \"○\")'",
+    "after": "gh api \\\n  --paginate \"repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls?state=all&per_page=100\" \\\n  --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' \\\n  >> '[**<pull-request-records-file>**](#pull-request-records \"○\")'",
+    "visible_length": 169,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --paginate \"repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls?state=all&per_page=100\" --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' > prs.json",
+    "after": "gh api \\\n  --paginate \"repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls?state=all&per_page=100\" \\\n  --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' \\\n  > prs.json",
+    "visible_length": 147,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --paginate \"repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls?state=all&per_page=100\" --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' > '[**<pull-request-records-file>**](#pull-request-records \"○\")'",
+    "after": "gh api \\\n  --paginate \"repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls?state=all&per_page=100\" \\\n  --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' \\\n  > '[**<pull-request-records-file>**](#pull-request-records \"○\")'",
+    "visible_length": 168,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && python3 skills/work-planner/scripts/linked-pull-requests.py --prs prs.json --issues issue-936.json issue-943.json issue-637.json",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  python3 skills/work-planner/scripts/linked-pull-requests.py \\\n  --prs prs.json \\\n  --issues issue-936.json issue-943.json issue-637.json",
+    "visible_length": 148,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && python3 skills/work-planner/scripts/linked-pull-requests.py --prs '[**<pull-request-records-file>**](#pull-request-records \"○\")' --issues '[**<issue-file>**](#issue-records \"○\")' ...",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  python3 skills/work-planner/scripts/linked-pull-requests.py \\\n  --prs '[**<pull-request-records-file>**](#pull-request-records \"○\")' \\\n  --issues '[**<issue-file>**](#issue-records \"○\")' ...",
+    "visible_length": 143,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --paginate \"repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls?state=all&per_page=100\" --jq '.[] | select(.title | startswith(\"[I07\"))' > prs.json",
+    "after": "gh api \\\n  --paginate \"repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls?state=all&per_page=100\" \\\n  --jq '.[] | select(.title | startswith(\"[I07\"))' \\\n  > prs.json",
+    "visible_length": 129,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --paginate \"repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls?state=all&per_page=100\" --jq '.[] | select(.title | startswith(\"[**<initiative-prefix>**](#initiative-prefix \"○\")\"))' > '[**<pull-request-records-file>**](#pull-request-records \"○\")'",
+    "after": "gh api \\\n  --paginate \"repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls?state=all&per_page=100\" \\\n  --jq '.[] | select(.title | startswith(\"[**<initiative-prefix>**](#initiative-prefix \"○\")\"))' \\\n  > '[**<pull-request-records-file>**](#pull-request-records \"○\")'",
+    "visible_length": 165,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && python3 skills/work-planner/scripts/links-by-pull-request.py --prs prs.json --out links.json",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  python3 skills/work-planner/scripts/links-by-pull-request.py \\\n  --prs prs.json \\\n  --out links.json",
+    "visible_length": 112,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && python3 skills/work-planner/scripts/links-by-pull-request.py --prs '[**<pull-request-records-file>**](#pull-request-records \"○\")' --out '[**<issue-link-snapshot-file>**](#link-snapshot-path \"○\")'",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  python3 skills/work-planner/scripts/links-by-pull-request.py \\\n  --prs '[**<pull-request-records-file>**](#pull-request-records \"○\")' \\\n  --out '[**<issue-link-snapshot-file>**](#link-snapshot-path \"○\")'",
+    "visible_length": 151,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && python3 skills/work-planner/scripts/development-link.py remove --issue m2ux/workflow-server#637 --pull m2ux/workflow-server#950",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  python3 skills/work-planner/scripts/development-link.py remove \\\n  --issue m2ux/workflow-server#637 \\\n  --pull m2ux/workflow-server#950",
+    "visible_length": 147,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && python3 skills/work-planner/scripts/development-link.py remove --issue [**<issue-owner>**](#issue-identity \"○\")/[**<issue-repo>**](#issue-identity \"○\")#[**<issue-number>**](#issue-identity \"○\") --pull [**<pr-owner>**](#identity \"○\")/[**<pr-repo>**](#identity \"○\")#[**<pull-request-number>**](#identity \"○\")",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  python3 skills/work-planner/scripts/development-link.py remove \\\n  --issue [**<issue-owner>**](#issue-identity \"○\")/[**<issue-repo>**](#issue-identity \"○\")#[**<issue-number>**](#issue-identity \"○\") \\\n  --pull [**<pr-owner>**](#identity \"○\")/[**<pr-repo>**](#identity \"○\")#[**<pull-request-number>**](#identity \"○\")",
+    "visible_length": 182,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && python3 skills/work-planner/scripts/development-link.py add --issue m2ux/workflow-server#637 --pull m2ux/workflow-server#950",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  python3 skills/work-planner/scripts/development-link.py add \\\n  --issue m2ux/workflow-server#637 \\\n  --pull m2ux/workflow-server#950",
+    "visible_length": 144,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && python3 skills/work-planner/scripts/development-link.py add --issue [**<issue-owner>**](#issue-identity \"○\")/[**<issue-repo>**](#issue-identity \"○\")#[**<issue-number>**](#issue-identity \"○\") --pull [**<pr-owner>**](#identity \"○\")/[**<pr-repo>**](#identity \"○\")#[**<pull-request-number>**](#identity \"○\")",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  python3 skills/work-planner/scripts/development-link.py add \\\n  --issue [**<issue-owner>**](#issue-identity \"○\")/[**<issue-repo>**](#issue-identity \"○\")#[**<issue-number>**](#issue-identity \"○\") \\\n  --pull [**<pr-owner>**](#identity \"○\")/[**<pr-repo>**](#identity \"○\")#[**<pull-request-number>**](#identity \"○\")",
+    "visible_length": 179,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls/[**<pull-request-number>**](#identity \"○\") --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'",
+    "after": "gh api repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls/[**<pull-request-number>**](#identity \"○\") \\\n  --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'",
+    "visible_length": 123,
+    "lines": 2
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --method PUT repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls/980/merge -f merge_method=merge -f sha=[**<head-sha>**](#verified-head \"○\") --jq '{merged, message, sha}'",
+    "after": "gh api \\\n  --method PUT repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls/980/merge \\\n  -f merge_method=merge \\\n  -f sha=[**<head-sha>**](#verified-head \"○\") \\\n  --jq '{merged, message, sha}'",
+    "visible_length": 126,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --method PUT repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls/[**<pull-request-number>**](#identity \"○\")/merge -f merge_method=merge -f sha=[**<head-sha>**](#verified-head \"○\") --jq '{merged, message, sha}'",
+    "after": "gh api \\\n  --method PUT repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls/[**<pull-request-number>**](#identity \"○\")/merge \\\n  -f merge_method=merge \\\n  -f sha=[**<head-sha>**](#verified-head \"○\") \\\n  --jq '{merged, message, sha}'",
+    "visible_length": 144,
+    "lines": 5
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --method POST repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls -f title='[I07:E00] Name' -f head=i07/e00/main -f base=main -F draft=true -F body=@body.md --jq .html_url",
+    "after": "gh api \\\n  --method POST repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls \\\n  -f title='[I07:E00] Name' \\\n  -f head=i07/e00/main \\\n  -f base=main \\\n  -F draft=true \\\n  -F body=@body.md \\\n  --jq .html_url",
+    "visible_length": 153,
+    "lines": 8
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --method POST repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls -f title='[**<title>**](#title \"○\")' -f head='[**<epic-base>**](#head-branch \"○\")' -f base='[**<long-lived-base>**](#base-branch \"○\")' -F draft=true -F 'body=@[**<body-file>**](#body-file \"○\")' --jq .html_url",
+    "after": "gh api \\\n  --method POST repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls \\\n  -f title='[**<title>**](#title \"○\")' \\\n  -f head='[**<epic-base>**](#head-branch \"○\")' \\\n  -f base='[**<long-lived-base>**](#base-branch \"○\")' \\\n  -F draft=true \\\n  -F 'body=@[**<body-file>**](#body-file \"○\")' \\\n  --jq .html_url",
+    "visible_length": 168,
+    "lines": 8
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --method POST repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls -f title='[F00] Reject Bad Keys' -f head=f00-key-validation -f base=workspace -F body=@body.md -F draft=true --jq .html_url",
+    "after": "gh api \\\n  --method POST repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls \\\n  -f title='[F00] Reject Bad Keys' \\\n  -f head=f00-key-validation \\\n  -f base=workspace \\\n  -F body=@body.md \\\n  -F draft=true \\\n  --jq .html_url",
+    "visible_length": 171,
+    "lines": 8
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --method POST repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls -f title='[I07:E00] Purpose' -f head=i07/e00/w01-purpose -f base=i07/e00/main -F body=@body.md --jq .html_url",
+    "after": "gh api \\\n  --method POST repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls \\\n  -f title='[I07:E00] Purpose' \\\n  -f head=i07/e00/w01-purpose \\\n  -f base=i07/e00/main \\\n  -F body=@body.md \\\n  --jq .html_url",
+    "visible_length": 157,
+    "lines": 7
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --method POST repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls -f title='[**<title>**](#title \"○\")' -f head='[**<task-branch>**](#head-branch \"○\")' -f base='[**<base>**](#base-branch \"○\")' -F 'body=@[**<body-file>**](#body-file \"○\")' --jq .html_url",
+    "after": "gh api \\\n  --method POST repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls \\\n  -f title='[**<title>**](#title \"○\")' \\\n  -f head='[**<task-branch>**](#head-branch \"○\")' \\\n  -f base='[**<base>**](#base-branch \"○\")' \\\n  -F 'body=@[**<body-file>**](#body-file \"○\")' \\\n  --jq .html_url",
+    "visible_length": 145,
+    "lines": 7
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "gh api --method PATCH repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls/[**<pull-request-number>**](#identity \"○\") -f base='[**<target-branch>**](#base-branch \"○\")' --jq .base.ref",
+    "after": "gh api \\\n  --method PATCH repos/[**<owner>**](#repository \"○\")/[**<repo>**](#repository \"○\")/pulls/[**<pull-request-number>**](#identity \"○\") \\\n  -f base='[**<target-branch>**](#base-branch \"○\")' \\\n  --jq .base.ref",
+    "visible_length": 111,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-labels.md",
+    "before": "gh api --method POST repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/labels -f name='[**&lt;label&gt;**](#label-identity \"○\")' -f color=[**&lt;hex-colour&gt;**](#label-identity \"○\") -f description='[**&lt;description&gt;**](#label-identity \"○\")' --jq .name",
+    "after": "gh api \\\n  --method POST repos/[**&lt;owner&gt;**](#repository \"○\")/[**&lt;repo&gt;**](#repository \"○\")/labels \\\n  -f name='[**&lt;label&gt;**](#label-identity \"○\")' \\\n  -f color=[**&lt;hex-colour&gt;**](#label-identity \"○\") \\\n  -f description='[**&lt;description&gt;**](#label-identity \"○\")' \\\n  --jq .name",
+    "visible_length": 130,
+    "lines": 6
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --links links.json --since 2026-09-21 --initiative I08 --initiatives issue-946.json --summary summary.txt",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/progress.py \\\n  --items items.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --since 2026-09-21 \\\n  --initiative I08 \\\n  --initiatives issue-946.json \\\n  --summary summary.txt",
+    "visible_length": 233,
+    "lines": 9
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/progress.py --items '[**&lt;board-items-file&gt;**](#board-items \"○\")' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"○\")' --since [**&lt;window-start-date&gt;**](#report-selection \"○\") --initiative [**&lt;initiative-filter&gt;**](#report-selection \"○\") --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records \"○\")' --summary '[**&lt;management-paragraph-file&gt;**](#management-file \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/progress.py \\\n  --items '[**&lt;board-items-file&gt;**](#board-items \"○\")' \\\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' \\\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot \"○\")' \\\n  --since [**&lt;window-start-date&gt;**](#report-selection \"○\") \\\n  --initiative [**&lt;initiative-filter&gt;**](#report-selection \"○\") \\\n  --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records \"○\")' \\\n  --summary '[**&lt;management-paragraph-file&gt;**](#management-file \"○\")'",
+    "visible_length": 335,
+    "lines": 9
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-637.json --prs prs.json --links links.json --pr 950 --tick AC1 --fix fixed-637.md",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py issue-637.json \\\n  --prs prs.json \\\n  --links links.json \\\n  --pr 950 \\\n  --tick AC1 \\\n  --fix fixed-637.md",
+    "visible_length": 177,
+    "lines": 7
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "before": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;task-json-file&gt;**](#task-record \"○\")' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"○\")' --pr [**&lt;pull-request-number&gt;**](#delivery-selection \"○\") --tick [**&lt;criterion-ids&gt;**](#delivery-selection \"○\") --fix '[**&lt;output-body-file&gt;**](#output-body \"○\")'",
+    "after": "cd \"[**&lt;workspace&gt;**](#workspace \"○\")\" && \\\n  \"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 skills/work-planner/scripts/sync.py '[**&lt;task-json-file&gt;**](#task-record \"○\")' \\\n  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records \"○\")' \\\n  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links \"○\")' \\\n  --pr [**&lt;pull-request-number&gt;**](#delivery-selection \"○\") \\\n  --tick [**&lt;criterion-ids&gt;**](#delivery-selection \"○\") \\\n  --fix '[**&lt;output-body-file&gt;**](#output-body \"○\")'",
+    "visible_length": 258,
+    "lines": 7
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "before": "cd \"[**<workspace>**](#workspace \"○\")\" && \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/scripts/check_skill_files.py --compare \"[**<base>**](#base \"○\")\" \"[**<head>**](#head \"○\")\" \"[**<skill-directory>**](#skill-directory \"○\")\"",
+    "after": "cd \"[**<workspace>**](#workspace \"○\")\" && \\\n  \"[**<workspace>**](#workspace \"○\")/scripts/sbx\" python3 skills/scripts/check_skill_files.py \\\n  --compare \"[**<base>**](#base \"○\")\" \"[**<head>**](#head \"○\")\" \"[**<skill-directory>**](#skill-directory \"○\")\"",
+    "visible_length": 137,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "before": "\"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"○\")/skills/work-planner/scripts/lane.py\" admit '[**&lt;epic-body-file&gt;**](#epic-body-file \"○\")' --unit '[**&lt;task-ids&gt;**](#unit-task-ids \"○\")' --lane '[**&lt;lane-index&gt;**](#requested-index \"○\")'",
+    "after": "\"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"○\")/skills/work-planner/scripts/lane.py\" admit \\\n  '[**&lt;epic-body-file&gt;**](#epic-body-file \"○\")' \\\n  --unit '[**&lt;task-ids&gt;**](#unit-task-ids \"○\")' \\\n  --lane '[**&lt;lane-index&gt;**](#requested-index \"○\")'",
+    "visible_length": 150,
+    "lines": 4
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "before": "\"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"○\")/skills/work-planner/scripts/lane.py\" check '[**&lt;epic-body-file&gt;**](#epic-body-file \"○\")' --unit '[**&lt;task-ids&gt;**](#unit-task-ids \"○\")'",
+    "after": "\"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"○\")/skills/work-planner/scripts/lane.py\" check \\\n  '[**&lt;epic-body-file&gt;**](#epic-body-file \"○\")' \\\n  --unit '[**&lt;task-ids&gt;**](#unit-task-ids \"○\")'",
+    "visible_length": 128,
+    "lines": 3
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "before": "\"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"○\")/skills/work-planner/scripts/lane.py\" assign '[**&lt;epic-body-file&gt;**](#epic-body-file \"○\")' --map '[**&lt;confirmed-map-file&gt;**](#confirmed-map \"○\")' --out '[**&lt;output-body-path&gt;**](#output-body \"○\")'",
+    "after": "\"[**&lt;workspace&gt;**](#workspace \"○\")/scripts/sbx\" python3 \"[**&lt;workspace&gt;**](#workspace \"○\")/skills/work-planner/scripts/lane.py\" assign \\\n  '[**&lt;epic-body-file&gt;**](#epic-body-file \"○\")' \\\n  --map '[**&lt;confirmed-map-file&gt;**](#confirmed-map \"○\")' \\\n  --out '[**&lt;output-body-path&gt;**](#output-body \"○\")'",
+    "visible_length": 165,
+    "lines": 4
+  }
+]

@@ -1,0 +1,75 @@
+{
+  "archive_sha256": "ff0435c45d397d23dbe302cb2b267e67238c784be61989b1cfc58e28bc6b1614",
+  "members": [
+    {
+      "member": "project17-audit-command-contracts.py",
+      "bytes": 6154,
+      "sha256": "6ff0d6d50613a2288120298f33c6a47e0ff652706706832e0d06b9b4887e001c"
+    },
+    {
+      "member": "project17-command-contract-final-freeze.py",
+      "bytes": 263,
+      "sha256": "a0a1110ec6d7bfe4c0807cef2908e0fd3d532831794caaece62c3a289c1d5235"
+    },
+    {
+      "member": "project17-command-contract-readers.py",
+      "bytes": 7771,
+      "sha256": "f7df0db13496b2d4738471c58ab06ad9fe1f1c3ee9e64d1d0a148a16935fc9e7"
+    },
+    {
+      "member": "project17-command-contract-tests.py",
+      "bytes": 4657,
+      "sha256": "ea4de9195c85ca81d6a3fb2f63bd56f84a466e221357f636bd98cfd7240de51b"
+    },
+    {
+      "member": "project17-edit-command-contract-parser.py",
+      "bytes": 5555,
+      "sha256": "7a147978515325c904c317afaadd6ed3508a80eba9283d4c25772f0e10d3b174"
+    },
+    {
+      "member": "project17-fix-command-contract-controls.py",
+      "bytes": 611,
+      "sha256": "2118806ade80880f79ec24466e98fa32ba7414fb95a093ee8027c32b34ebed72"
+    },
+    {
+      "member": "project17-migrate-command-contracts.py",
+      "bytes": 3764,
+      "sha256": "314844e78bd5da1a6798d957a723dbb9b03722e4f875338ddececdaf38daa6bc"
+    },
+    {
+      "member": "project17-plan-command-contracts.py",
+      "bytes": 2677,
+      "sha256": "add4a80b58293599ba5c55ab9ece5215dae720869f0c0bb4267eadc5f6f8071b"
+    },
+    {
+      "member": "project17-publish-command-contract-evidence.py",
+      "bytes": 14932,
+      "sha256": "a59c8ea8e0c7168d9d08d8fc0bfc4405c4f9005534473a5e82168bd5b927aab8"
+    },
+    {
+      "member": "project17-deduplicate-command-prose.py",
+      "bytes": 4190,
+      "sha256": "108a503d63cf3acf734ebc7ec4caeca003da1bb962ff17962f8d65c0d64988c4"
+    },
+    {
+      "member": "project17-review-command-flag-prose.py",
+      "bytes": 3962,
+      "sha256": "99c872b3009c34c8457f2d9f663ed4b166a43a934ad753928828f9c5dafcf247"
+    },
+    {
+      "member": "project17-wrap-command-lines.py",
+      "bytes": 5160,
+      "sha256": "f5cc8559206d0a9f885f8cddcc9f22e78f979102b05a57aef445c379e096d8ea"
+    },
+    {
+      "member": "project17-restore-unrelated-branch-format.py",
+      "bytes": 2045,
+      "sha256": "80bf2dbd4e3cebc18b2536f7db6b2295f2fdfb2568567c25ff1a8b255bd03322"
+    },
+    {
+      "member": "project17-command-role-model-guard.py",
+      "bytes": 1053,
+      "sha256": "6e3a82f82ea40b5e5354cd03aab192448ec732f4e2f7ffa73294cab4212afa12"
+    }
+  ]
+}

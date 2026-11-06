@@ -1,0 +1,1290 @@
+{
+  "archive_sha256": "976f83d3b116cfec9e989db274faf23cb8895fea85d4839ca294192468bab461",
+  "members": [
+    {
+      "member": "board/inputs.json",
+      "bytes": 3566,
+      "sha256": "42bae5997112e92e65e9328242b9bf0a7880a559d1405215e803e686a83d37f7"
+    },
+    {
+      "member": "board/observations.json",
+      "bytes": 1474,
+      "sha256": "873ddb873dd5602d36ffb8ac176c12c7e34aa1e178c8cf0590c6a54d98d056d7"
+    },
+    {
+      "member": "board/plan.md",
+      "bytes": 12472,
+      "sha256": "2ea9f94920018d3d10989726ce9e4c5af38b35d5e26b851d9f5ed9c4aebf3de8"
+    },
+    {
+      "member": "board/read-audit.md",
+      "bytes": 8376,
+      "sha256": "f90b2148e5c31b41880ac8f69d42dc67a855a866c8c8718f0874df47eb140e25"
+    },
+    {
+      "member": "board/receipts/read-0.json",
+      "bytes": 4960,
+      "sha256": "a6f8070a92a8ff0ad9fba5d6a92e60cc589beade273228596d4d43b8bf17e2d1"
+    },
+    {
+      "member": "board/receipts/read-1.json",
+      "bytes": 10892,
+      "sha256": "b628a94e968a38726142ffa5db440bd96af7acca2f3d3a7080170a9ba9034a06"
+    },
+    {
+      "member": "board/receipts/read-10.json",
+      "bytes": 1852,
+      "sha256": "e713708a6e7858b3bf343b16957cca8b1779c2b136d28c4cfb0423d6500d6013"
+    },
+    {
+      "member": "board/receipts/read-11.json",
+      "bytes": 15137,
+      "sha256": "87bb6b066c17d5488dc8868d2cc17bc61a0f7faab02fd85175321e5cba96ee2e"
+    },
+    {
+      "member": "board/receipts/read-12.json",
+      "bytes": 34997,
+      "sha256": "bd832d74d72ffc422ba457ca416e853a272017c223c50ce42e0a9eb201b8005c"
+    },
+    {
+      "member": "board/receipts/read-13.json",
+      "bytes": 28951,
+      "sha256": "b1a0f090b5645d8c84b1a49cfa6c0595453ccf8ad9a37260f3cd0de618361961"
+    },
+    {
+      "member": "board/receipts/read-14.json",
+      "bytes": 11028,
+      "sha256": "bb709c8f2750a9c451dafd88c3856dbbfec3949eb19b764db8b4d44e4de4f8e6"
+    },
+    {
+      "member": "board/receipts/read-15.json",
+      "bytes": 3739,
+      "sha256": "97d78b69392af461cc2e55c0e05a95eb3e3eaf5ad0b5630b9c8a2a33689ee63d"
+    },
+    {
+      "member": "board/receipts/read-16.json",
+      "bytes": 1109,
+      "sha256": "2940a4b69ef1ff3d8fc961937eea4bc45382363503b21393b4bcf64ac25644d2"
+    },
+    {
+      "member": "board/receipts/read-17.json",
+      "bytes": 968,
+      "sha256": "4714f1340d68e59e04a98c70f2f858a847c6044de2b68a6d5485c8cc24eb64ff"
+    },
+    {
+      "member": "board/receipts/read-2.json",
+      "bytes": 44753,
+      "sha256": "7041f07bb6690a38dd10f3a09b57a5e69fd815bbe02b25d271099d4c3ba2474b"
+    },
+    {
+      "member": "board/receipts/read-3.json",
+      "bytes": 4700,
+      "sha256": "aa59f43f78d1801ef617071e2b3a788f6eeaf022f93324cc1a15a3707209bc9a"
+    },
+    {
+      "member": "board/receipts/read-4.json",
+      "bytes": 20275,
+      "sha256": "2f5808e983a7bd2d00853bbd9e6fbbfabb260ecba6b7fbbaeb53ad18e28b5cdc"
+    },
+    {
+      "member": "board/receipts/read-5.json",
+      "bytes": 11156,
+      "sha256": "af766e9cffbc7e51749691c10d9cf6b0915999d6f3ce2d09eb69d91011a39034"
+    },
+    {
+      "member": "board/receipts/read-6.json",
+      "bytes": 15676,
+      "sha256": "ef8ae1a33f12710f89594725f00036e0353d5686f403f28aecebd40a423f5a95"
+    },
+    {
+      "member": "board/receipts/read-7.json",
+      "bytes": 3027,
+      "sha256": "1a1a805cc36e5f74d7fc071d545abaab94a6e3a6d2be7e4abc036eb77372edab"
+    },
+    {
+      "member": "board/receipts/read-8.json",
+      "bytes": 5416,
+      "sha256": "dc37656b06fc65054781784caf91be2dbe34c5ca640c4e4bc51a424b50c75d36"
+    },
+    {
+      "member": "board/receipts/read-9.json",
+      "bytes": 9936,
+      "sha256": "d9075cab243e7f599822f49c90104a5f950c43dbcfde5037881bd6c26cb6bf04"
+    },
+    {
+      "member": "revise/read-audit.md",
+      "bytes": 4409,
+      "sha256": "af3f0fcd617d0dcbfe78ebff36fe0f8958ce63f8a7fe6917efe999f26634d78e"
+    },
+    {
+      "member": "revise/read-receipts.json",
+      "bytes": 209831,
+      "sha256": "ff6327bed19a149b9f761307a728028e1706e6be7e18b3d010609a269abb947a"
+    },
+    {
+      "member": "revise/verification-plan.md",
+      "bytes": 12885,
+      "sha256": "ac690fc8d2be84cc881a5efe8e4bc78b83ead18070fb84dc585beb7bfa620881"
+    },
+    {
+      "member": "source/initial/manifest.json",
+      "bytes": 13332,
+      "sha256": "1df213b835b8cc23542c31b6675cc5172ad924ffa8a74bc34b9d9970f1977bb6"
+    },
+    {
+      "member": "source/initial/source/skills/guidelines.md",
+      "bytes": 17820,
+      "sha256": "d90747bede3d11cba454541bd66a4f711f87e8fac99ec33b3ee0f2d9d6895b91"
+    },
+    {
+      "member": "source/initial/source/skills/scripts/check_skill_files.py",
+      "bytes": 71358,
+      "sha256": "3c13b89b5723d1eb16a51bf8da90f7c45770a09539f89567d129b2d0f78e8960"
+    },
+    {
+      "member": "source/initial/source/skills/test/test_check_skill_files.py",
+      "bytes": 113613,
+      "sha256": "95df76fa38fd9ecb392869961f0b02326a48d9610fe2b6db6d48520782d18fcc"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/SKILL.md",
+      "bytes": 4516,
+      "sha256": "9b430e5ee43c5d0cf9d66d51ae7a87fc755f03a288841a7b6644dcbe11dc394a"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/acceptance-criteria.md",
+      "bytes": 7254,
+      "sha256": "bf55a3f68cde36455a9d19eae3324dd3fa8dc31c30a1060e2d2349fc30b271a5"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/agent-review.md",
+      "bytes": 4865,
+      "sha256": "0751c7930d542e2f1dace1f919de6d69d989717a0f738453acffcf7434b925f2"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/architecture-overview.md",
+      "bytes": 6453,
+      "sha256": "81cc892368cb151f10bdd710d9aabc8f00d302673c0f05f44c5d75b696a0eb19"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/board-delivery.md",
+      "bytes": 14819,
+      "sha256": "80484974c9cde8fa9acf6f1e9f5de2519f8538f4c0ba9a1dc76af7ff80bfe7f4"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/board-queue.md",
+      "bytes": 14474,
+      "sha256": "9f922972dc3cf9437fef3e013aca96d91b69bee10a0a7bdf5328f3a3d499ca54"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/board.md",
+      "bytes": 19024,
+      "sha256": "5f21fad76937161ebb5d707f58d36e86f18b41663b581c44a535c37601e7361c"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/delivery-branches.md",
+      "bytes": 27919,
+      "sha256": "45dc8c8ea3884ab6dd04c3c9b8ee322e709c3bf4d42bf2279da7b20d37b78855"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/delivery-brief.md",
+      "bytes": 2917,
+      "sha256": "25431f15b8c143ad615f657806fe4fe8c35c00c591c3629d031985457af71723"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/delivery-evidence.md",
+      "bytes": 3763,
+      "sha256": "af87290a8596e6e4573e03594811edfdbfe7affc1a0c39088fb18002bc4227aa"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/delivery-plan.md",
+      "bytes": 10546,
+      "sha256": "85fce10deb67c7a837fab3e642c4e8255278a53b6efb741ba690358543ac6564"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/dependency-graph.md",
+      "bytes": 15940,
+      "sha256": "9d33f561e717f2fb876f65d9d9afb4cc5727dbb8f7184154dff5fd7e537226c3"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/dispatch-batch.md",
+      "bytes": 7836,
+      "sha256": "a44aa9edf1d55d5926db88b2f2e8bb929036f47e577b77650ccc3c0631294c63"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/epic-issue-body.md",
+      "bytes": 30674,
+      "sha256": "435aecb78f6c527a6566a2c8deb82edc8b5f5facfbdf913f305008557a6adfdf"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/epic.md",
+      "bytes": 11639,
+      "sha256": "0547f48f6d8eb57c530f0b84c5b7920cc56377fcea54208c8033ed82b571bfe8"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/goal-trace.md",
+      "bytes": 5074,
+      "sha256": "ffa7860898a25d88a327ce8ff059e966a9d7ede025bf0b7c5418045bd7418d9a"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/hotfix-body.md",
+      "bytes": 2739,
+      "sha256": "1660e973b6fd3606d9a0979c136675dc2d4c42c380a2eeb121440d49090b8864"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/hotfix.md",
+      "bytes": 9877,
+      "sha256": "353a8977b4e4424cdc5ed302dfaf8a0fbdc8867a7daa07a451d8ebedcef283e4"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/initiative-issue-body.md",
+      "bytes": 16396,
+      "sha256": "e425ceafb75b03940dcd40e5c4a100731e38a9ef5b706e128034575fdfc5a6b4"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/initiative.md",
+      "bytes": 2934,
+      "sha256": "da5def749651f7a2da94c37d989c691bbe38ab4a46dd2a8f9ce7e946c84eb3ab"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/issue-body.md",
+      "bytes": 17411,
+      "sha256": "fa4ec23cf0e1dafa2698b855a69e98454795e2bbb25abed1b40b2648e757f0b9"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/issue.md",
+      "bytes": 34306,
+      "sha256": "387d707cfe2d2a36e5fdedc85b1ee97c3f3f17cade748c6af8b01fb746f88c9d"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/lane.md",
+      "bytes": 5914,
+      "sha256": "dcf5ec905131d69d341b6849da15307b45eb5484d9142cb3e1231586574d333e"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/placement.md",
+      "bytes": 11500,
+      "sha256": "c982a00d5e6940312449bf747892906c79297a31f210775a2f8432dd6a9130fd"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/plan-change.md",
+      "bytes": 3455,
+      "sha256": "e0542d448a0538011d8aa4af2c026f37bec15b119bdda90c6cf5a635c4f4fa31"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/planning-record.md",
+      "bytes": 7605,
+      "sha256": "b9aac29c980f4f993e8ac42480182077a157ee044e378075117565a3663c871f"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/proposal-body.md",
+      "bytes": 3012,
+      "sha256": "d43f7c104ba03515cf30bff852624d1eb3276b29dfb686a8db7b42921bcd81cb"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/pull-request-body.md",
+      "bytes": 10393,
+      "sha256": "f190780a389116ad7ae48fb869ef34778b90654c64c682254141846d8327af45"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/pull-request.md",
+      "bytes": 49398,
+      "sha256": "2642a3e347660e12a1b527922ad647186d6c447deb02614976e2c0c67fc0e2a7"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/repository-graph.md",
+      "bytes": 5654,
+      "sha256": "85468a28becd4c9cab05534d73f329d0395865a117e140c7ce1dbec4f27dbb79"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/repository-labels.md",
+      "bytes": 1861,
+      "sha256": "415675efcccae9e9908f7724fddaacd749d6a289dec31b21b1cb089c0923a69d"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/review-finding.md",
+      "bytes": 2255,
+      "sha256": "63d8456e7e9f8cd8717d4e04a2753b05c8e91ae51c0fd62c3bf68c9fbafe488f"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/standalone-body.md",
+      "bytes": 2590,
+      "sha256": "013a3951016e0d96bc396196f020a1ca884c0cda1a73bdf4fae05b8a6a8f26a3"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/standup-report.md",
+      "bytes": 7713,
+      "sha256": "e8704a66f09ccc022c24a543c5ce0c11cb192eb9b2f8ae236251a88eb61f78a9"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/task-body.md",
+      "bytes": 4225,
+      "sha256": "0b68441e83bf5317fcd52d8a8a9c6a317f961bfc9adb124c9d3ee3bc5bf10eb1"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/artifacts/work-item.md",
+      "bytes": 3395,
+      "sha256": "a0a89299a3f3b91288090a38c84ea9c857803a5da7f65a074637ea3068c61b00"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/configuration.md",
+      "bytes": 1158,
+      "sha256": "d7951b91e17363489349bce8616373fe4e4bbb2f194d567e634c5ecc4aa13565"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/conventions.md",
+      "bytes": 2531,
+      "sha256": "86cb6ddac9d07b1e11a0bccb3358e898a55a6db81e736dbb7780cc198af1b609"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/guidelines.md",
+      "bytes": 24144,
+      "sha256": "d999b18c0934fea3b62f09fe9b2c2c5b23608c7ec818201d5248b4ecc1b7703d"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/modes/advance-mode.md",
+      "bytes": 6626,
+      "sha256": "07f289ff4cf158d7ea4068e1d935d5a3c89b489b4b26f29d7cfb30ce556a000b"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/modes/align-mode.md",
+      "bytes": 15169,
+      "sha256": "a29b7c11f26e6a0c92ab8df262b5eaef6261bc73eb54196875a11aaab71febbe"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/modes/deliver-mode.md",
+      "bytes": 19078,
+      "sha256": "d153d1b5420386f5620f372720eebf74544efd546aa63b0ebd385a94e6709cb7"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/modes/hoist-mode.md",
+      "bytes": 4766,
+      "sha256": "37fde236e3691d0ed271b13a0cc21d670ff22f9f0d99b1798aeae23c6c20ce37"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/modes/plan-mode.md",
+      "bytes": 10627,
+      "sha256": "23123ee45f1ed0a53ded2e494a08fd4a2f31178546f0a4ada50f707a6ae5c9d0"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/modes/propose-mode.md",
+      "bytes": 3386,
+      "sha256": "69f836194d3de32e2f3dc6d1f9e4e49c4190ff4b89b9c9c622e6f7d74f8a092c"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/modes/revise-mode.md",
+      "bytes": 5700,
+      "sha256": "14a38d6b9759e24f66496f6fcff89bc947824b6196676356cc028acb0c1d3541"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/modes/standup-mode.md",
+      "bytes": 4504,
+      "sha256": "411188250e390872b6c9359ac32830fd2052df58e20a0d1c41e0d01afd072412"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/modes/sync-mode.md",
+      "bytes": 17160,
+      "sha256": "a02316706ae11101350370350104c237831b90ca2c9c44dbf7fde7326b0053d9"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/modes/understand-mode.md",
+      "bytes": 1420,
+      "sha256": "d127967d5a9b8f5c7568df8f51bac1eb061df6f6940961b4bfe336246cf4d904"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/protocols/change-overview.md",
+      "bytes": 3765,
+      "sha256": "f0002287f0119bfee55dda893f59327417565f009782df8823eae5a4c3a1c73c"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/protocols/epic-integration.md",
+      "bytes": 5596,
+      "sha256": "fd62372f55177da51905fc9905f34c3825d861fdd165f4ca3d181add75640b19"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/protocols/issue-closure.md",
+      "bytes": 3049,
+      "sha256": "1b6c78fa608de7249bf348a7ff60abe08b21e50fcac2bfd4ec753da7d5d09251"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/protocols/issue-delivery.md",
+      "bytes": 3719,
+      "sha256": "5f243e0c619de9bd72ffdde05c65221e19f96e96c33c8aa57804960028112af5"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/protocols/review-pull-request.md",
+      "bytes": 3346,
+      "sha256": "a5fd7461596b20155aca1743b78114d12c4ac68d9bd8ac7445f7f02ac671dcb4"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/protocols/task-merge.md",
+      "bytes": 2920,
+      "sha256": "ecb499d4485fbd6aa3fe89c3a62d288db0fb3d22ce1af7eaf8bb44200739ae13"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/protocols/unit-dispatch.md",
+      "bytes": 5095,
+      "sha256": "aa17dcf5f189879ae9852bd225408cd86d3717a29458a0b6a41dfbafb1dc8283"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/references/requirement-characteristics.md",
+      "bytes": 2848,
+      "sha256": "ac9fe4cc179fba843ec711218e0b0704320cb078f3c790b1e08b231d9a7d74ee"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/rules.json",
+      "bytes": 4418,
+      "sha256": "2066859c5543ec17b6ba768cda208d9628f7628b4e45a449e792846466cf54bf"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/rules.md",
+      "bytes": 1698,
+      "sha256": "22f04f9df0d4f4057c2ade4212ccab4ef27324a03f4a08ea66e5b3c3e8c0f0c1"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/agent_review.py",
+      "bytes": 5893,
+      "sha256": "30e5146fe5c7be85d685c42b27ecb5a7703fe181a4405560e3c3538b2e251bb5"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/align.py",
+      "bytes": 6107,
+      "sha256": "eea1875c77b7a3bd971254113a23fcc2f364a674e61b4f4379bf324386317195"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/board-queue.py",
+      "bytes": 21063,
+      "sha256": "ef6dd88ac850e4315f9e3036cbf6df040915b28d6a17e83057d6809bcbaf842a"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/board.py",
+      "bytes": 35856,
+      "sha256": "bd9505702dfa6ccdf44d82947216e0d37c9700bc3c3a29ad5fbb4fc9768447ad"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/closure-sweep.py",
+      "bytes": 3981,
+      "sha256": "b783ebb4728d888fef623a1f51fcc12eb0645cec52817b31a9ee6e920e3fe537"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/closure.py",
+      "bytes": 3885,
+      "sha256": "f950ec3881ca4125803aefc39458f67253e01dbcd8f0380068cf780d918a2e60"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/deliver.py",
+      "bytes": 33846,
+      "sha256": "ff4806c7c536884b3fba3893df448b154fe7364bcb75794a1fd5b10b7b428978"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/deps.py",
+      "bytes": 26124,
+      "sha256": "5dd37e71ead6ca3e7a4548686bee8fb1c9fab9d492c48a74ab628e35bd390c9d"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/development-link.py",
+      "bytes": 6651,
+      "sha256": "268a93df3003892d210edbe59ca59485e9bf548acd8d04ad3b10b3fc5ff32758"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/development.py",
+      "bytes": 7069,
+      "sha256": "1a2eba1ebc43f4593cbd0e75320fcdcd1ce2401212f4d9038b5b04cd0afe7cc7"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/dispatch.py",
+      "bytes": 7697,
+      "sha256": "71db2e7d1f07fcaf8a0ecc70539b4dec082e6b240920484cc8fb070c97f42ec8"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/format.py",
+      "bytes": 59112,
+      "sha256": "f9986201e0ea6a6655ae7d319b5782a32a2f7a2ac2655b55751ed2a965907039"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/hotfix.py",
+      "bytes": 5694,
+      "sha256": "556e80435f5573b6e12e72ad3c9fc051f6aa2a2abee9b361cf64724a8f533aca"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/lane.py",
+      "bytes": 6918,
+      "sha256": "0421ffd8cfd59acee9ff138ecf68ffd6dcc17c2cfb05cf334987ae0f90b72baf"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/linked-pull-requests.py",
+      "bytes": 4927,
+      "sha256": "7296ab3149794978a8ed56b6eb5872099e3183bee1ee040b6a1dd04bda000b33"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/links-by-issue.py",
+      "bytes": 2348,
+      "sha256": "7ce08f8b935d5ace36b777e8e63afb57e98148d4672e87d7c1c051355a4fcc28"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/links-by-pull-request.py",
+      "bytes": 2113,
+      "sha256": "9dc32f6408257fbbd70e8c1c846f92267b1b56ddf61640733605828b6a29a6af"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/orphans.py",
+      "bytes": 5381,
+      "sha256": "51a8e2024a4ca29d2d31adf6ea4314f010c784d83fe79252d2dbb9d5d44a02d7"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/progress.py",
+      "bytes": 25544,
+      "sha256": "a83a9bfe8221ccf21617e504e4e0a922e70f414992cb0d49bedfb162c07d16d6"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/renumber.py",
+      "bytes": 8320,
+      "sha256": "a49ca51db93de5df9446ed8ca93d02b923bc025552a6a387de0ff7d319cc3d8d"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/revision-check.py",
+      "bytes": 4273,
+      "sha256": "324cb086b0f6d27485cd4578ed4fa47503c260309fe4537663158ae289012d07"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/statuses.py",
+      "bytes": 8748,
+      "sha256": "4c78b002ab46e1e8a59a6aac1fb848e0606e764ca28bec72a6a350b5912f5c3e"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/scripts/sync.py",
+      "bytes": 62563,
+      "sha256": "1eb82b1957a64b46b36eb6ff508cdb925ebdd98e702c6e54636175f0062d2380"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/structure.json",
+      "bytes": 1141,
+      "sha256": "86c976172619bc8ed85a5de37c3388222edad129bd8986a182f076b5e99e7e80"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/fixtures.py",
+      "bytes": 8039,
+      "sha256": "c5bbcc2c7139d1519dc8e6998fef8baf596418e5ea09c0e74c3e1582a7ffc3da"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_agent_review.py",
+      "bytes": 7504,
+      "sha256": "b4daf14e6a5d529048fb5130c6b704b1ff97718e44f28ce0178dace8920ee986"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_align.py",
+      "bytes": 7147,
+      "sha256": "1c26ef56615da9f90bf38477030f2e8165dce2431c9fe11ca709a41a66dfb62f"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_board.py",
+      "bytes": 38345,
+      "sha256": "cb354d163bdbdcb446d6dfe686209cd72f6f614575112c86e85750b5b6fe3e8c"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_board_queue.py",
+      "bytes": 51128,
+      "sha256": "7dbf6e6476efe4e25da333b11c540ea703d5d136b5a10008c5d6272faba0c8d0"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_checkouts.py",
+      "bytes": 22287,
+      "sha256": "5404d21e7b85cac84177f2bb4fa8d8d6b3d5a7a1fede6682baabee3a47101cfc"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_closure.py",
+      "bytes": 6155,
+      "sha256": "6e8cc727769aedc9c95776dcdfce899da23fd9c917e975dabe04130538432101"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_closure_sweep.py",
+      "bytes": 7112,
+      "sha256": "30a9c180fdd5069b05917da739b6d6d5793c034d4aab654e363a6d56b3703815"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_deliver.py",
+      "bytes": 59364,
+      "sha256": "119b4a56d06ed9a5e36d2c6fe8c19aa12f8f37ac1bc41be1b5e9a9dec61b193d"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_deps.py",
+      "bytes": 37033,
+      "sha256": "2b11c1e1028465274e6cd6cae4d36159b468d204823de93329f22cc1eed16416"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_development_link.py",
+      "bytes": 11714,
+      "sha256": "12e94cffbcf251cb8582cfb464e39d8f73de76ee10905073d6c2f5b1c14562de"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_dispatch.py",
+      "bytes": 17585,
+      "sha256": "f41f1fffe3c681dd9a5367a3024c792e2593a7731ee31750b802e720c94ceae9"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_documents.py",
+      "bytes": 16127,
+      "sha256": "af501149f77db9360184c61cbd81310892e5ee3641712e51d49c0503624072a9"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_format.py",
+      "bytes": 54256,
+      "sha256": "4c24d19e88d0651dc982e411fdf24d95ca49116dd38703468daa7621354cac55"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_hotfix.py",
+      "bytes": 7714,
+      "sha256": "1a122bbf904057f416a10f3cdb81f0de3e9003b00a057b277b1a05bf2c3d4585"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_lane.py",
+      "bytes": 6269,
+      "sha256": "82e1dc86c5fcbda9c07161bcf7b16d553b4212b5ff79dfdc99e4dae7cef7d4dc"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_link_capture.py",
+      "bytes": 22528,
+      "sha256": "39e76f3a33c8328469b7447e7ea27395fca9c41bdbdf85829bc88042d6bed836"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_modes.py",
+      "bytes": 4077,
+      "sha256": "86be9fcf2c567bebe1360f48f55d608262248f83e643912bcdd0b7b9110e2bb3"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_orphans.py",
+      "bytes": 3353,
+      "sha256": "145e6816ccb681c57bbbd99ed3a496d94fcc5259cec700cf35a4893e947eb637"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_plan_mode.py",
+      "bytes": 5376,
+      "sha256": "b780672e6ed26456d3da4433264ec585820a5d3fbd932425c4ce1619c089b63c"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_progress.py",
+      "bytes": 34476,
+      "sha256": "9a9d28927ef2513c5d0a3ddad6c70c57437797fd167c14d4dfd6e9ba025cdca1"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_renumber.py",
+      "bytes": 12431,
+      "sha256": "a7f50c42b2c81b54e88fe45f255968f04b13045176fbde9fed3f64df05027d77"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_revision_check.py",
+      "bytes": 5036,
+      "sha256": "f23c9426e3102f08b63c317efed05bf5229357d034d57a0625168655f8275b1d"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_shared.py",
+      "bytes": 3996,
+      "sha256": "416bfaa57010e5da7cb619214c06b5c0793ee70dcb9cbb078e1e7871f648bbdf"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_statuses.py",
+      "bytes": 8675,
+      "sha256": "ee6f4f3282b521ec7fe4925bc645a0f42f8bc64b971224aa26bfd95a597b8959"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_sync.py",
+      "bytes": 116735,
+      "sha256": "876cf60b2dec02384fa8692b097642f65449ba4afd615982faeb135c06138580"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_templates.py",
+      "bytes": 4296,
+      "sha256": "22a09ce544802172155032a594e39938dbbdb7e14f45343138804acf18d4c3fe"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/test/test_worktrees.py",
+      "bytes": 5119,
+      "sha256": "24709daf50cd1e64da7fd063b08688173fc3aefe5c7f3e5eed86e2a5f78f936a"
+    },
+    {
+      "member": "source/initial/source/skills/work-planner/vocabulary.json",
+      "bytes": 69,
+      "sha256": "a934dd814bc3aabc5aa03b0f5104a531c138b36ec50fdc26bd385f629bb6a7be"
+    },
+    {
+      "member": "source/final/manifest.json",
+      "bytes": 13332,
+      "sha256": "3bc334a142b167d6ad1230a271f746f04c3649e4f9ce138dd9a534b3916415c6"
+    },
+    {
+      "member": "source/final/source/skills/guidelines.md",
+      "bytes": 17820,
+      "sha256": "d90747bede3d11cba454541bd66a4f711f87e8fac99ec33b3ee0f2d9d6895b91"
+    },
+    {
+      "member": "source/final/source/skills/scripts/check_skill_files.py",
+      "bytes": 71384,
+      "sha256": "1c319e600eee4c043743b9a5d7d181bd28c5a9a31eb82b1b8ab03f041646440c"
+    },
+    {
+      "member": "source/final/source/skills/test/test_check_skill_files.py",
+      "bytes": 114010,
+      "sha256": "9b102baf9142b8bfa3667d4ce8b603c4a23009bda8817eccff881337491bdb39"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/SKILL.md",
+      "bytes": 4516,
+      "sha256": "9b430e5ee43c5d0cf9d66d51ae7a87fc755f03a288841a7b6644dcbe11dc394a"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/acceptance-criteria.md",
+      "bytes": 7254,
+      "sha256": "bf55a3f68cde36455a9d19eae3324dd3fa8dc31c30a1060e2d2349fc30b271a5"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/agent-review.md",
+      "bytes": 4865,
+      "sha256": "0751c7930d542e2f1dace1f919de6d69d989717a0f738453acffcf7434b925f2"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/architecture-overview.md",
+      "bytes": 6453,
+      "sha256": "81cc892368cb151f10bdd710d9aabc8f00d302673c0f05f44c5d75b696a0eb19"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/board-delivery.md",
+      "bytes": 14819,
+      "sha256": "80484974c9cde8fa9acf6f1e9f5de2519f8538f4c0ba9a1dc76af7ff80bfe7f4"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/board-queue.md",
+      "bytes": 14474,
+      "sha256": "9f922972dc3cf9437fef3e013aca96d91b69bee10a0a7bdf5328f3a3d499ca54"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/board.md",
+      "bytes": 19024,
+      "sha256": "5f21fad76937161ebb5d707f58d36e86f18b41663b581c44a535c37601e7361c"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/delivery-branches.md",
+      "bytes": 27919,
+      "sha256": "45dc8c8ea3884ab6dd04c3c9b8ee322e709c3bf4d42bf2279da7b20d37b78855"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/delivery-brief.md",
+      "bytes": 2917,
+      "sha256": "25431f15b8c143ad615f657806fe4fe8c35c00c591c3629d031985457af71723"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/delivery-evidence.md",
+      "bytes": 3763,
+      "sha256": "af87290a8596e6e4573e03594811edfdbfe7affc1a0c39088fb18002bc4227aa"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/delivery-plan.md",
+      "bytes": 10546,
+      "sha256": "85fce10deb67c7a837fab3e642c4e8255278a53b6efb741ba690358543ac6564"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/dependency-graph.md",
+      "bytes": 15940,
+      "sha256": "9d33f561e717f2fb876f65d9d9afb4cc5727dbb8f7184154dff5fd7e537226c3"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/dispatch-batch.md",
+      "bytes": 7836,
+      "sha256": "a44aa9edf1d55d5926db88b2f2e8bb929036f47e577b77650ccc3c0631294c63"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/epic-issue-body.md",
+      "bytes": 30674,
+      "sha256": "435aecb78f6c527a6566a2c8deb82edc8b5f5facfbdf913f305008557a6adfdf"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/epic.md",
+      "bytes": 11639,
+      "sha256": "0547f48f6d8eb57c530f0b84c5b7920cc56377fcea54208c8033ed82b571bfe8"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/goal-trace.md",
+      "bytes": 5074,
+      "sha256": "ffa7860898a25d88a327ce8ff059e966a9d7ede025bf0b7c5418045bd7418d9a"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/hotfix-body.md",
+      "bytes": 2739,
+      "sha256": "1660e973b6fd3606d9a0979c136675dc2d4c42c380a2eeb121440d49090b8864"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/hotfix.md",
+      "bytes": 9879,
+      "sha256": "bbb21b694b1386607c3b51de0231d857a9c13a8180978b0bd89c483b86248702"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/initiative-issue-body.md",
+      "bytes": 16396,
+      "sha256": "e425ceafb75b03940dcd40e5c4a100731e38a9ef5b706e128034575fdfc5a6b4"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/initiative.md",
+      "bytes": 2934,
+      "sha256": "da5def749651f7a2da94c37d989c691bbe38ab4a46dd2a8f9ce7e946c84eb3ab"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/issue-body.md",
+      "bytes": 17411,
+      "sha256": "fa4ec23cf0e1dafa2698b855a69e98454795e2bbb25abed1b40b2648e757f0b9"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/issue.md",
+      "bytes": 34306,
+      "sha256": "387d707cfe2d2a36e5fdedc85b1ee97c3f3f17cade748c6af8b01fb746f88c9d"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/lane.md",
+      "bytes": 5914,
+      "sha256": "dcf5ec905131d69d341b6849da15307b45eb5484d9142cb3e1231586574d333e"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/placement.md",
+      "bytes": 11502,
+      "sha256": "e7924a8337e12c45144a371b79c4fb2c205553502a0bf59951d5aa00e71a597d"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/plan-change.md",
+      "bytes": 3455,
+      "sha256": "e0542d448a0538011d8aa4af2c026f37bec15b119bdda90c6cf5a635c4f4fa31"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/planning-record.md",
+      "bytes": 7607,
+      "sha256": "b03ca7f097a4ff664e23c31e79e6f99d67e5fa0ef1aaa277e76fdfda16ad4fe9"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/proposal-body.md",
+      "bytes": 3012,
+      "sha256": "d43f7c104ba03515cf30bff852624d1eb3276b29dfb686a8db7b42921bcd81cb"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/pull-request-body.md",
+      "bytes": 10393,
+      "sha256": "f190780a389116ad7ae48fb869ef34778b90654c64c682254141846d8327af45"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/pull-request.md",
+      "bytes": 49398,
+      "sha256": "2642a3e347660e12a1b527922ad647186d6c447deb02614976e2c0c67fc0e2a7"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/repository-graph.md",
+      "bytes": 5654,
+      "sha256": "85468a28becd4c9cab05534d73f329d0395865a117e140c7ce1dbec4f27dbb79"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/repository-labels.md",
+      "bytes": 1861,
+      "sha256": "415675efcccae9e9908f7724fddaacd749d6a289dec31b21b1cb089c0923a69d"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/review-finding.md",
+      "bytes": 2255,
+      "sha256": "63d8456e7e9f8cd8717d4e04a2753b05c8e91ae51c0fd62c3bf68c9fbafe488f"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/standalone-body.md",
+      "bytes": 2590,
+      "sha256": "013a3951016e0d96bc396196f020a1ca884c0cda1a73bdf4fae05b8a6a8f26a3"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/standup-report.md",
+      "bytes": 7713,
+      "sha256": "e8704a66f09ccc022c24a543c5ce0c11cb192eb9b2f8ae236251a88eb61f78a9"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/task-body.md",
+      "bytes": 4225,
+      "sha256": "0b68441e83bf5317fcd52d8a8a9c6a317f961bfc9adb124c9d3ee3bc5bf10eb1"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/artifacts/work-item.md",
+      "bytes": 3395,
+      "sha256": "a0a89299a3f3b91288090a38c84ea9c857803a5da7f65a074637ea3068c61b00"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/configuration.md",
+      "bytes": 1158,
+      "sha256": "d7951b91e17363489349bce8616373fe4e4bbb2f194d567e634c5ecc4aa13565"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/conventions.md",
+      "bytes": 2531,
+      "sha256": "86cb6ddac9d07b1e11a0bccb3358e898a55a6db81e736dbb7780cc198af1b609"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/guidelines.md",
+      "bytes": 24144,
+      "sha256": "d999b18c0934fea3b62f09fe9b2c2c5b23608c7ec818201d5248b4ecc1b7703d"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/modes/advance-mode.md",
+      "bytes": 6626,
+      "sha256": "07f289ff4cf158d7ea4068e1d935d5a3c89b489b4b26f29d7cfb30ce556a000b"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/modes/align-mode.md",
+      "bytes": 15169,
+      "sha256": "a29b7c11f26e6a0c92ab8df262b5eaef6261bc73eb54196875a11aaab71febbe"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/modes/deliver-mode.md",
+      "bytes": 19078,
+      "sha256": "d153d1b5420386f5620f372720eebf74544efd546aa63b0ebd385a94e6709cb7"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/modes/hoist-mode.md",
+      "bytes": 4766,
+      "sha256": "37fde236e3691d0ed271b13a0cc21d670ff22f9f0d99b1798aeae23c6c20ce37"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/modes/plan-mode.md",
+      "bytes": 10627,
+      "sha256": "23123ee45f1ed0a53ded2e494a08fd4a2f31178546f0a4ada50f707a6ae5c9d0"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/modes/propose-mode.md",
+      "bytes": 3386,
+      "sha256": "69f836194d3de32e2f3dc6d1f9e4e49c4190ff4b89b9c9c622e6f7d74f8a092c"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/modes/revise-mode.md",
+      "bytes": 5700,
+      "sha256": "14a38d6b9759e24f66496f6fcff89bc947824b6196676356cc028acb0c1d3541"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/modes/standup-mode.md",
+      "bytes": 4506,
+      "sha256": "6681363f8467d56504bbed0d54192e17991183b760e49a631582ccd8ce0b2e5e"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/modes/sync-mode.md",
+      "bytes": 17160,
+      "sha256": "a02316706ae11101350370350104c237831b90ca2c9c44dbf7fde7326b0053d9"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/modes/understand-mode.md",
+      "bytes": 1420,
+      "sha256": "d127967d5a9b8f5c7568df8f51bac1eb061df6f6940961b4bfe336246cf4d904"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/protocols/change-overview.md",
+      "bytes": 3765,
+      "sha256": "f0002287f0119bfee55dda893f59327417565f009782df8823eae5a4c3a1c73c"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/protocols/epic-integration.md",
+      "bytes": 5596,
+      "sha256": "fd62372f55177da51905fc9905f34c3825d861fdd165f4ca3d181add75640b19"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/protocols/issue-closure.md",
+      "bytes": 3053,
+      "sha256": "e582803da74152a13ee923829a0d1360a07d6df343c02cff83ec7513a933e988"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/protocols/issue-delivery.md",
+      "bytes": 3721,
+      "sha256": "4da1f6c5917ab6151e1c168e7f74c167bfde1dfc6d407a1c06272355eb0edd03"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/protocols/review-pull-request.md",
+      "bytes": 3348,
+      "sha256": "1b228b54413d958a7e74584cbe7acdd14d6f1c0ab7ba75443d51f0e5eb7d6247"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/protocols/task-merge.md",
+      "bytes": 2920,
+      "sha256": "ecb499d4485fbd6aa3fe89c3a62d288db0fb3d22ce1af7eaf8bb44200739ae13"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/protocols/unit-dispatch.md",
+      "bytes": 5097,
+      "sha256": "3b460361ddf90c660596c444840c5606e6d3867ec9d3d473229f6431770849df"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/references/requirement-characteristics.md",
+      "bytes": 2848,
+      "sha256": "ac9fe4cc179fba843ec711218e0b0704320cb078f3c790b1e08b231d9a7d74ee"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/rules.json",
+      "bytes": 4418,
+      "sha256": "2066859c5543ec17b6ba768cda208d9628f7628b4e45a449e792846466cf54bf"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/rules.md",
+      "bytes": 1698,
+      "sha256": "22f04f9df0d4f4057c2ade4212ccab4ef27324a03f4a08ea66e5b3c3e8c0f0c1"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/agent_review.py",
+      "bytes": 5893,
+      "sha256": "30e5146fe5c7be85d685c42b27ecb5a7703fe181a4405560e3c3538b2e251bb5"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/align.py",
+      "bytes": 6107,
+      "sha256": "eea1875c77b7a3bd971254113a23fcc2f364a674e61b4f4379bf324386317195"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/board-queue.py",
+      "bytes": 21063,
+      "sha256": "ef6dd88ac850e4315f9e3036cbf6df040915b28d6a17e83057d6809bcbaf842a"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/board.py",
+      "bytes": 35856,
+      "sha256": "bd9505702dfa6ccdf44d82947216e0d37c9700bc3c3a29ad5fbb4fc9768447ad"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/closure-sweep.py",
+      "bytes": 3981,
+      "sha256": "b783ebb4728d888fef623a1f51fcc12eb0645cec52817b31a9ee6e920e3fe537"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/closure.py",
+      "bytes": 3885,
+      "sha256": "f950ec3881ca4125803aefc39458f67253e01dbcd8f0380068cf780d918a2e60"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/deliver.py",
+      "bytes": 33846,
+      "sha256": "ff4806c7c536884b3fba3893df448b154fe7364bcb75794a1fd5b10b7b428978"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/deps.py",
+      "bytes": 26124,
+      "sha256": "5dd37e71ead6ca3e7a4548686bee8fb1c9fab9d492c48a74ab628e35bd390c9d"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/development-link.py",
+      "bytes": 6651,
+      "sha256": "268a93df3003892d210edbe59ca59485e9bf548acd8d04ad3b10b3fc5ff32758"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/development.py",
+      "bytes": 7069,
+      "sha256": "1a2eba1ebc43f4593cbd0e75320fcdcd1ce2401212f4d9038b5b04cd0afe7cc7"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/dispatch.py",
+      "bytes": 7697,
+      "sha256": "71db2e7d1f07fcaf8a0ecc70539b4dec082e6b240920484cc8fb070c97f42ec8"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/format.py",
+      "bytes": 59112,
+      "sha256": "f9986201e0ea6a6655ae7d319b5782a32a2f7a2ac2655b55751ed2a965907039"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/hotfix.py",
+      "bytes": 5694,
+      "sha256": "556e80435f5573b6e12e72ad3c9fc051f6aa2a2abee9b361cf64724a8f533aca"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/lane.py",
+      "bytes": 6918,
+      "sha256": "0421ffd8cfd59acee9ff138ecf68ffd6dcc17c2cfb05cf334987ae0f90b72baf"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/linked-pull-requests.py",
+      "bytes": 4927,
+      "sha256": "7296ab3149794978a8ed56b6eb5872099e3183bee1ee040b6a1dd04bda000b33"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/links-by-issue.py",
+      "bytes": 2348,
+      "sha256": "7ce08f8b935d5ace36b777e8e63afb57e98148d4672e87d7c1c051355a4fcc28"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/links-by-pull-request.py",
+      "bytes": 2113,
+      "sha256": "9dc32f6408257fbbd70e8c1c846f92267b1b56ddf61640733605828b6a29a6af"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/orphans.py",
+      "bytes": 5381,
+      "sha256": "51a8e2024a4ca29d2d31adf6ea4314f010c784d83fe79252d2dbb9d5d44a02d7"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/progress.py",
+      "bytes": 25544,
+      "sha256": "a83a9bfe8221ccf21617e504e4e0a922e70f414992cb0d49bedfb162c07d16d6"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/renumber.py",
+      "bytes": 8320,
+      "sha256": "a49ca51db93de5df9446ed8ca93d02b923bc025552a6a387de0ff7d319cc3d8d"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/revision-check.py",
+      "bytes": 4273,
+      "sha256": "324cb086b0f6d27485cd4578ed4fa47503c260309fe4537663158ae289012d07"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/statuses.py",
+      "bytes": 8748,
+      "sha256": "4c78b002ab46e1e8a59a6aac1fb848e0606e764ca28bec72a6a350b5912f5c3e"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/scripts/sync.py",
+      "bytes": 62563,
+      "sha256": "1eb82b1957a64b46b36eb6ff508cdb925ebdd98e702c6e54636175f0062d2380"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/structure.json",
+      "bytes": 1141,
+      "sha256": "86c976172619bc8ed85a5de37c3388222edad129bd8986a182f076b5e99e7e80"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/fixtures.py",
+      "bytes": 8039,
+      "sha256": "c5bbcc2c7139d1519dc8e6998fef8baf596418e5ea09c0e74c3e1582a7ffc3da"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_agent_review.py",
+      "bytes": 7504,
+      "sha256": "b4daf14e6a5d529048fb5130c6b704b1ff97718e44f28ce0178dace8920ee986"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_align.py",
+      "bytes": 7147,
+      "sha256": "1c26ef56615da9f90bf38477030f2e8165dce2431c9fe11ca709a41a66dfb62f"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_board.py",
+      "bytes": 38345,
+      "sha256": "cb354d163bdbdcb446d6dfe686209cd72f6f614575112c86e85750b5b6fe3e8c"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_board_queue.py",
+      "bytes": 51128,
+      "sha256": "7dbf6e6476efe4e25da333b11c540ea703d5d136b5a10008c5d6272faba0c8d0"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_checkouts.py",
+      "bytes": 22287,
+      "sha256": "5404d21e7b85cac84177f2bb4fa8d8d6b3d5a7a1fede6682baabee3a47101cfc"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_closure.py",
+      "bytes": 6155,
+      "sha256": "6e8cc727769aedc9c95776dcdfce899da23fd9c917e975dabe04130538432101"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_closure_sweep.py",
+      "bytes": 7112,
+      "sha256": "30a9c180fdd5069b05917da739b6d6d5793c034d4aab654e363a6d56b3703815"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_deliver.py",
+      "bytes": 59364,
+      "sha256": "119b4a56d06ed9a5e36d2c6fe8c19aa12f8f37ac1bc41be1b5e9a9dec61b193d"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_deps.py",
+      "bytes": 37033,
+      "sha256": "2b11c1e1028465274e6cd6cae4d36159b468d204823de93329f22cc1eed16416"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_development_link.py",
+      "bytes": 11714,
+      "sha256": "12e94cffbcf251cb8582cfb464e39d8f73de76ee10905073d6c2f5b1c14562de"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_dispatch.py",
+      "bytes": 17585,
+      "sha256": "f41f1fffe3c681dd9a5367a3024c792e2593a7731ee31750b802e720c94ceae9"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_documents.py",
+      "bytes": 16127,
+      "sha256": "af501149f77db9360184c61cbd81310892e5ee3641712e51d49c0503624072a9"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_format.py",
+      "bytes": 54256,
+      "sha256": "4c24d19e88d0651dc982e411fdf24d95ca49116dd38703468daa7621354cac55"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_hotfix.py",
+      "bytes": 7714,
+      "sha256": "1a122bbf904057f416a10f3cdb81f0de3e9003b00a057b277b1a05bf2c3d4585"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_lane.py",
+      "bytes": 6269,
+      "sha256": "82e1dc86c5fcbda9c07161bcf7b16d553b4212b5ff79dfdc99e4dae7cef7d4dc"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_link_capture.py",
+      "bytes": 22528,
+      "sha256": "39e76f3a33c8328469b7447e7ea27395fca9c41bdbdf85829bc88042d6bed836"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_modes.py",
+      "bytes": 4077,
+      "sha256": "86be9fcf2c567bebe1360f48f55d608262248f83e643912bcdd0b7b9110e2bb3"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_orphans.py",
+      "bytes": 3353,
+      "sha256": "145e6816ccb681c57bbbd99ed3a496d94fcc5259cec700cf35a4893e947eb637"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_plan_mode.py",
+      "bytes": 5376,
+      "sha256": "b780672e6ed26456d3da4433264ec585820a5d3fbd932425c4ce1619c089b63c"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_progress.py",
+      "bytes": 34476,
+      "sha256": "9a9d28927ef2513c5d0a3ddad6c70c57437797fd167c14d4dfd6e9ba025cdca1"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_renumber.py",
+      "bytes": 12431,
+      "sha256": "a7f50c42b2c81b54e88fe45f255968f04b13045176fbde9fed3f64df05027d77"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_revision_check.py",
+      "bytes": 5036,
+      "sha256": "f23c9426e3102f08b63c317efed05bf5229357d034d57a0625168655f8275b1d"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_shared.py",
+      "bytes": 3996,
+      "sha256": "416bfaa57010e5da7cb619214c06b5c0793ee70dcb9cbb078e1e7871f648bbdf"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_statuses.py",
+      "bytes": 8675,
+      "sha256": "ee6f4f3282b521ec7fe4925bc645a0f42f8bc64b971224aa26bfd95a597b8959"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_sync.py",
+      "bytes": 116735,
+      "sha256": "876cf60b2dec02384fa8692b097642f65449ba4afd615982faeb135c06138580"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_templates.py",
+      "bytes": 4296,
+      "sha256": "22a09ce544802172155032a594e39938dbbdb7e14f45343138804acf18d4c3fe"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/test/test_worktrees.py",
+      "bytes": 5119,
+      "sha256": "24709daf50cd1e64da7fd063b08688173fc3aefe5c7f3e5eed86e2a5f78f936a"
+    },
+    {
+      "member": "source/final/source/skills/work-planner/vocabulary.json",
+      "bytes": 69,
+      "sha256": "a934dd814bc3aabc5aa03b0f5104a531c138b36ec50fdc26bd385f629bb6a7be"
+    }
+  ]
+}

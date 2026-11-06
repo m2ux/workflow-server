@@ -1,10 +1,10 @@
 {
-  "head": "00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01",
+  "head": "4882414d678268aaa282fb4c0b184f14e3e47d1b",
   "base": "03d353300ca4804194fd50d316d73e3bf1270d1d",
-  "symbols": 1805,
-  "contexts": 1805,
-  "flows": 37,
-  "ordered_steps": 163,
+  "symbols": 1817,
+  "contexts": 1817,
+  "flows": 40,
+  "ordered_steps": 172,
   "fresh_status_pair": true,
   "failures": [],
   "limits": "Indexed static paths, not observed runtime traces. Native responses omit staleness blocks; paired status evidence binds index freshness. Exact process-membership rows supplement ranked flow queries and uncapped raw edges supplement bounded context windows. Analyzer coverage warnings remain."

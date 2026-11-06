@@ -78,14 +78,14 @@ All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab
 | --- | --- |
 | [Integration verification](integration-validation.md) | Current command checks, composed criterion review and explicit evidence boundaries |
 | [Agent review](integration-agent-review.json) | Current head and target, composed review scope and finding dispositions |
-| [Measured flow atlas](integration-flow-atlas.md) | Structural baseline sequences for every reported affected process |
+| [Measured flow atlas](integration-flow-atlas.md) | Current-head sequences for every reported affected process |
 | [Native graph measurements](integration-graph.tar.gz) | Complete contexts, raw relationships, ordered flows and instruments |
 | [Measurement manifest](integration-graph-manifest.json) | Archive members and hashes |
-| [Graph audit](integration-graph-audit.json) | Structural baseline context/flow order and freshness |
+| [Graph audit](integration-graph-audit.json) | Current-head context/flow order and freshness |
 | [Step item inventory](step-item-audit.json) | Every step and exact bullet-prefix correction |
 | [Step preservation](step-preservation.json) | Exact procedure text, payload and route preservation |
 | [Work Planner result](integration-work-planner.log) | 934-test Work Planner run with one opt-in skip |
-| [Shared checker result](integration-shared-checker.log) | 263-test shared checker run |
+| [Shared checker result](integration-shared-checker.log) | 270-test shared checker run |
 | [Installed model result](integration-installed-check.log) | 58 files and zero findings |
 | [Final document result](step-document-check.log) | 13 affected document checks |
 | [Delivery reconciliation](integration-sync.log) | Sole expected unmerged integration base |
@@ -152,3 +152,20 @@ Runtime meanings live in [Link Roles](https://github.com/m2ux/workflow-server/bl
 | Artifact | What it holds |
 | --- | --- |
 | [Command contracts](command-contracts.md) | Authoritative command links, prose deduplication and multiline shell verification |
+
+| [Contract audit](command-contract-audit.json) | 240 operations, 824 inputs, 361 outputs and 204 preserved invocations |
+| [Independent obligations](command-contract-ledger.json) | Baseline contracts reconciled independently from annotations |
+| [Removed parameter lists](command-prose-removals.json) | Pure duplicate introductory lists |
+| [Retained semantic prose](command-semantic-prose.json) | Sentence-level usage preservation and remaining intro review |
+| [Flag prose review](command-flag-review.json) | Removed glosses and retained argument-use semantics |
+| [Continuation audit](command-wrap-audit.json) | Readable wrapping and literal command preservation |
+| [Branch prefix audit](command-branch-prefix-restoration.json) | Original unrelated branch-prologue bullets retained |
+| [Source identity](command-contract-source-identity.json) | Reader snapshots, final commit equality and refinements |
+| [Initial manifest](command-contract-initial-manifest.json) | Exact 115-file reader snapshot |
+| [Final manifest](command-contract-final-manifest.json) | Exact 115-file committed source |
+| [Reading review](command-contract-reading-review.md) | Two independent plans and explicit Partial limits |
+| [Reading evidence](command-contract-reading.tar.gz) | Raw receipts, plans and frozen source trees |
+| [Reading manifest](command-contract-reading-manifest.json) | Reading archive identities |
+| [Executed instruments](command-contract-instruments.tar.gz) | Conversion, tests, preservation and publication instruments |
+| [Instrument manifest](command-contract-instruments-manifest.json) | Exact instrument archive identities |
+| [Published review gate](command-contract-review-gate.log) | Fetched current-head review matches the ready PR and target |

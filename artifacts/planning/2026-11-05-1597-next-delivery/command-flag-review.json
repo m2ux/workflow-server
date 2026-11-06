@@ -1,0 +1,167 @@
+[
+  {
+    "file": "acceptance-criteria.md",
+    "before": "- `--project` is any checkout of the repository; `--revision` is the branch, tag or commit under verification. The [instrument](#instrument \"○\") follows `--` and runs at the checkout's top level.",
+    "after": "- The instrument follows `--` and runs at the checkout’s top level."
+  },
+  {
+    "file": "board-delivery.md",
+    "before": "- `--epics`, `--tasks`, `--prs` and `--links` receive the related records and complete [link snapshot](#issue-link-snapshot \"○\"). `--agent-reviews` supplies the published review records fetched from the open epic [pull requests](#pull-request-records \"○\"); absent evidence holds those epics In Progress.",
+    "after": "- Missing published agent-review evidence holds the epic In Progress."
+  },
+  {
+    "file": "board-delivery.md",
+    "before": "- `--board`, `--fields` and `--items` identify the current board state.",
+    "after": ""
+  },
+  {
+    "file": "board-delivery.md",
+    "before": "- `--out` receives the call files; `--assignee` is the supplied [login](#assignee-login \"○\").",
+    "after": ""
+  },
+  {
+    "file": "board-delivery.md",
+    "before": "- `--others` supplies each resolved dependency issue.",
+    "after": ""
+  },
+  {
+    "file": "board-queue.md",
+    "before": "- `--items` is the board's items with Status.",
+    "after": ""
+  },
+  {
+    "file": "board-queue.md",
+    "before": "- `--prs` is the [pull requests](#pull-request-records \"○\") that name an initiative or a hot-fix.",
+    "after": ""
+  },
+  {
+    "file": "board-queue.md",
+    "before": "- `--links` is the [issue-link snapshot](#issue-link-snapshot \"○\") of those pull requests, where the hot-fix each one delivers is read.",
+    "after": ""
+  },
+  {
+    "file": "board-queue.md",
+    "before": "- `--board` is the [board identity](#board-identity \"○\").",
+    "after": ""
+  },
+  {
+    "file": "board-queue.md",
+    "before": "- `--fields` is the board's fields.",
+    "after": ""
+  },
+  {
+    "file": "board-queue.md",
+    "before": "- `--out` is the directory the calls are written to.",
+    "after": ""
+  },
+  {
+    "file": "board-queue.md",
+    "before": "- `--assignee` is the [login](#assignee-login \"○\") assigned to work from Ready.",
+    "after": ""
+  },
+  {
+    "file": "board-queue.md",
+    "before": "- `--others` is an issue file for an issue the rows depend on that is not on the board. Repeatable.",
+    "after": ""
+  },
+  {
+    "file": "board-queue.md",
+    "before": "- `--unplanned` supplies each [Unplanned Initiative](#unplanned-initiatives \"○\"). Repeatable.",
+    "after": "- Repeat `--unplanned` for each supplied [Unplanned Initiative](#unplanned-initiatives \"○\")."
+  },
+  {
+    "file": "delivery-branches.md",
+    "before": "- `--project` is any [checkout of the project](#project-checkout \"○\"). `--revision` is the evaluated [revision](#revision \"○\") [Branches](#branches) names for the run.",
+    "after": "- Select the evaluated revision according to [Branches](#branches)."
+  },
+  {
+    "file": "delivery-plan.md",
+    "before": "- `--items`, `--prs` and `--links` receive the supplied snapshots. A row's own links, which say whether its work is under way, are read from the epic body.",
+    "after": "- Read each row’s own links from the epic body to determine whether its work is under way."
+  },
+  {
+    "file": "delivery-plan.md",
+    "before": "- `--project` is the [checkout](#project-checkout \"○\") and `--revision` the evaluated [revision](#revision \"○\"); `--bases` receives [Epic-Base Names](#epic-base-names \"○\").",
+    "after": ""
+  },
+  {
+    "file": "delivery-plan.md",
+    "before": "- `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run.",
+    "after": "- Fetch the project checkout’s remote epic bases and long-lived branches before reading producer outputs against them."
+  },
+  {
+    "file": "delivery-plan.md",
+    "before": "- `--engineering` is the [engineering worktree](#engineering-worktree \"○\"), where each free row's work-item file is read.",
+    "after": "- Read each free row’s work-item file from the supplied engineering worktree."
+  },
+  {
+    "file": "delivery-plan.md",
+    "before": "- `--others` supplies each resolved off-board issue; `--date` selects another [record date](#record-date \"○\").",
+    "after": "- Use `--date` to override the [record date](#record-date \"○\")."
+  },
+  {
+    "file": "delivery-plan.md",
+    "before": "- `--lane <id>` supplies the requested bare decimal index. Omit it when the run names no lane. The offered units meet [Admission](lane.md#admission).",
+    "after": "- Omit `--lane` when the run names no lane. Offered units meet [Admission](lane.md#admission)."
+  },
+  {
+    "file": "delivery-plan.md",
+    "before": "- `--dispatch-plan '<dispatch-export-file>'` writes the [dispatch export](#dispatch-export \"●\").",
+    "after": "- Use `--dispatch-plan` when saving a [dispatch export](#dispatch-export \"●\")."
+  },
+  {
+    "file": "epic-issue-body.md",
+    "before": "- `--project` is a checkout of the project and each `--revision` one of the epic's bases, such as `origin/i07/e00/main`. The long-lived branch names are the ones `config/branches` states at those commits, and each `source` line names a path, commit and repository.",
+    "after": "- Read long-lived branch names from `config/branches` at each supplied epic-base revision, such as `origin/i07/e00/main`; each `source` line names its path, commit and repository."
+  },
+  {
+    "file": "epic-issue-body.md",
+    "before": "- `--link` names each task id and the pull request number it links. An id repeats once for each pull request, one per long-lived branch its unit changes. The row keeps the deliveries it links in place and gains each named one it lacks, so a repeated run leaves it unchanged. `--tasks` is the task issues. `--links` is the [pull requests](#pull-request-records \"○\")' Development-linked issues. `--fix` is the body written with the Done ticks.",
+    "after": "- Repeat a task id in `--link` once per pull request, one per long-lived branch its unit changes. Retain its existing deliveries and add only those missing, so repeated execution is idempotent."
+  },
+  {
+    "file": "epic-issue-body.md",
+    "before": "- `--items` is the board's items with Status.",
+    "after": ""
+  },
+  {
+    "file": "epic-issue-body.md",
+    "before": "- `--records` is the URL of the planning records folder, needed when no row id in the epic links a record.",
+    "after": "- Supply the planning-records base URL when no epic row links a record."
+  },
+  {
+    "file": "epic-issue-body.md",
+    "before": "- `--engineering` is the checkout holding the planning records. A row whose folder there holds no such file, or whose README does not link it, is refused.",
+    "after": "- Refuse a row when its planning folder contains no matching work-item file or its README does not link that file."
+  },
+  {
+    "file": "repository-graph.md",
+    "before": "- `--base-ref` is the pull request's base, so the surface is the change rather than the branch's whole history.",
+    "after": "- Compare against the pull request’s base to isolate its change from the branch’s full history."
+  },
+  {
+    "file": "standup-report.md",
+    "before": "- `--links` is the supplied complete pull-request [issue-link snapshot](#issue-link-snapshot \"○\"); it identifies the issue each pull request delivers.",
+    "after": ""
+  },
+  {
+    "file": "standup-report.md",
+    "before": "- `--since` supplies the window start in [Report Selection](#report-selection \"○\"), selecting the [window](#scope).",
+    "after": "- Select the reporting [window](#scope) from the supplied [Report Selection](#report-selection \"○\")."
+  },
+  {
+    "file": "standup-report.md",
+    "before": "- `--initiative` selects the initiative filter in [Report Selection](#report-selection \"○\"). **Examples:** `I08`, `owner/repo:I08`.",
+    "after": "- An initiative filter can be `I08` or `owner/repo:I08`."
+  },
+  {
+    "file": "standup-report.md",
+    "before": "- `--initiatives` gives supplied off-board [initiative records](#initiative-records \"○\"), each as a separate file argument.",
+    "after": "- Pass each supplied off-board [initiative record](#initiative-records \"○\") as a separate argument after `--initiatives`."
+  },
+  {
+    "file": "standup-report.md",
+    "before": "- `--summary` gives the paragraph for management.",
+    "after": ""
+  }
+]
