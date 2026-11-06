@@ -106,7 +106,7 @@ The task and epic statuses owned by a delivery dispatch.
 
 #### 1. Compute Dispatch Calls
 
-Apply [Compute Dispatch Status](#compute-dispatch-status "ƒ") with the [Dispatch Selection](#dispatch-selection "○") for the [Board Identity](#board-identity "○"), the [Board Items](#board-items "○") and [Board Fields](#board-fields "○"), [Pull Request Records](#pull-request-records "○") and [Published Reviews](#published-reviews "○"), writing calls to [Output Directory](#output-directory "○") for [Assignee Login](#assignee-login "○"). A missing or failing agent review blocks the In Review write.
+Run [Compute Dispatch Status](#compute-dispatch-status "ƒ") with the [Dispatch Selection](#dispatch-selection "○") for the [Board Identity](#board-identity "○"), the [Board Items](#board-items "○") and [Board Fields](#board-fields "○"), [Pull Request Records](#pull-request-records "○") and [Published Reviews](#published-reviews "○"), writing calls to [Output Directory](#output-directory "○") for [Assignee Login](#assignee-login "○"). A missing or failing agent review blocks the In Review write.
 
 #### 2. Apply and Confirm Calls
 
@@ -116,30 +116,6 @@ Apply [Compute Dispatch Status](#compute-dispatch-status "ƒ") with the [Dispatc
 #### 3. Provide Saved Statuses
 
 Provide [Confirmed Statuses](#confirmed-statuses "●") with saved statuses or unresolved discrepancies.
-
-### Compute Dispatch Status
-
-Renders board calls within the dispatch jurisdiction.
-
-#### 1. Compute Dispatch Status
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py &#92;
-  --items '[**&lt;board-items-file&gt;**](#board-items "○")' &#92;
-  --board [**&lt;board-identity&gt;**](#board-identity "○") &#92;
-  --fields '[**&lt;board-fields-file&gt;**](#board-fields "○")' &#92;
-  --out '[**&lt;output-directory&gt;**](#output-directory "○")' &#92;
-  --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")' &#92;
-  --progress [**&lt;held-issue-numbers&gt;**](#dispatch-selection "○") &#92;
-  --review [**&lt;complete-epic-numbers&gt;**](#dispatch-selection "○") &#92;
-  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
-  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")'
-</pre></big>
-
-#### 2. Provide Computed Dispatch Status
-
-Provide [Board Changes](#board-changes "●") to the requester.
 
 ## Commands
 
@@ -166,6 +142,26 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --items '[**&lt;board-items-file&gt;**](#board-items "○")' &#92;
   --out '[**&lt;output-directory&gt;**](#output-directory "○")' &#92;
   --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")'
+</pre></big>
+
+Provide [Board Changes](#board-changes "●") to the requester.
+
+### Compute Dispatch Status
+
+Renders board calls within the dispatch jurisdiction.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py &#92;
+  --items '[**&lt;board-items-file&gt;**](#board-items "○")' &#92;
+  --board [**&lt;board-identity&gt;**](#board-identity "○") &#92;
+  --fields '[**&lt;board-fields-file&gt;**](#board-fields "○")' &#92;
+  --out '[**&lt;output-directory&gt;**](#output-directory "○")' &#92;
+  --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")' &#92;
+  --progress [**&lt;held-issue-numbers&gt;**](#dispatch-selection "○") &#92;
+  --review [**&lt;complete-epic-numbers&gt;**](#dispatch-selection "○") &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")'
 </pre></big>
 
 Provide [Board Changes](#board-changes "●") to the requester.
