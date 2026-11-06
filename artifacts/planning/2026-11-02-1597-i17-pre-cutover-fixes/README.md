@@ -64,6 +64,7 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | [E02 prerequisite format check](e02/prerequisite-format.log) | Zero-finding draft validation |
 | [E02 prerequisite dependencies](e02/prerequisite-dependencies.log) | Current initiative dependency/join validation and retained advisory |
 | [E02 dependency input snapshots](e02/prerequisite-dependency-inputs.json) | Current initiative and sibling epic records used by the check |
+| [E02 prerequisite saved readback](e02/prerequisite-epic-readback.json) | Exact published body and retained issue metadata |
 
 ## Links
 

@@ -28,3 +28,5 @@ The row ids, E01 producer edge, all Depends on/Joins/Lane/Done cells, existing W
 ## Publication
 
 The engineering record is pushed before the issue cites it. A current pre-write snapshot guards against overwriting an independently changed issue body. The saved body, title, state and labels are read back and the saved body is revalidated. Delivery remains governed by the existing producer edge and epic workflow.
+
+The published epic body matches bodies/e02.md exactly. Its title, open state and complete label set match the pre-write input. The saved issue is recorded in prerequisite-epic-readback.json.
