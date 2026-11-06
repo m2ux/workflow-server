@@ -1,0 +1,34 @@
+{
+  "parent": {
+    "number": 1597,
+    "url": "https://github.com/m2ux/workflow-server/issues/1597",
+    "body_sha256": "27c82a47095664b1064bd2a4751dc26e055ed932e8902d0753eb3d3d9983293f",
+    "exact_body_readback": true
+  },
+  "e02": {
+    "number": 1615,
+    "url": "https://github.com/m2ux/workflow-server/issues/1615",
+    "body_sha256": "7ee77d3b4fc4dd2518349e9681b4ca61a9342420a152611f29d2975ec5e2f28b",
+    "exact_body_readback": true
+  },
+  "epic": {
+    "number": 1654,
+    "url": "https://github.com/m2ux/workflow-server/issues/1654",
+    "state": "open",
+    "priority": 6,
+    "body_sha256": "ab6d2dac6bf0869b46e4aeef4f679e9facbdedc646c22e280c9a02a1319c48eb",
+    "exact_body_readback": true
+  },
+  "board": {
+    "project": 17,
+    "item": "PVTI_lAHOCotKsc4Bl8nizhGgSgA",
+    "status": "Backlog",
+    "url": "https://github.com/m2ux/workflow-server/issues/1654"
+  },
+  "style_pr": {
+    "url": "https://github.com/m2ux/workflow-server/pull/1641",
+    "draft": true,
+    "head": "5006038c6a076a9025458f06ccd1bdba99efdddd"
+  },
+  "e02_existing_body_preserved": true
+}

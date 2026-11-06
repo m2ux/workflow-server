@@ -37,3 +37,11 @@ The user approved planning these inherited gaps. This record defines their imple
 ## Published Epic
 
 [E04 Delivery Failure Recovery](https://github.com/m2ux/workflow-server/issues/1654) — priority 6; three task rows, two delivery units, seven criteria.
+
+## Publication Evidence
+
+| Artifact | What it holds |
+| --- | --- |
+| [Exact readback](publication.json) | Issue identities/body hashes, unchanged E02 content, priority 6, confirmed Backlog and draft style PR head |
+| [Saved epic validation](epic-format.log) | Zero format findings with current project criteria |
+| [Saved initiative validation](initiative-format.log) | Zero findings across all five saved epics |
