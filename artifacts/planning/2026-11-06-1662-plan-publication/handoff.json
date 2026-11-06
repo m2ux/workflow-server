@@ -1,0 +1,13 @@
+{
+  "outcome": "human-handoff",
+  "pull_request": "https://github.com/m2ux/workflow-server/pull/1662",
+  "head": "581c525137d0779649ad97e89370bafbde927d34",
+  "target": "workspace",
+  "base": "50da3794d96e816a1938e1643a0f79fc0596bc37",
+  "draft": false,
+  "mergeable": true,
+  "mergeable_state": "blocked",
+  "required_approving_review_count": 1,
+  "board_status": "In Review",
+  "approval": "Pending human review"
+}

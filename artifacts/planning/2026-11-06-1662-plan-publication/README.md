@@ -89,6 +89,8 @@ The target requires human approval; published agent review establishes the conte
 | [finalize_review_record.py](finalize_review_record.py) | Pinned graph receipt or overview verification evidence. |
 | [refresh_measurement_inputs.py](refresh_measurement_inputs.py) | Pinned graph receipt or overview verification evidence. |
 | [renew_artifacts.py](renew_artifacts.py) | Pinned graph receipt or overview verification evidence. |
+| [handoff.json](handoff.json) | Confirmed tracker delivery or review-handoff state. |
+| [board-readback.json](board-readback.json) | Confirmed tracker delivery or review-handoff state. |
 
 ## Links
 

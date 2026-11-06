@@ -141,6 +141,11 @@ The target requires human approval; published agent review establishes the conte
 | [status-before.txt](status-before.txt) | Pinned graph receipt or overview verification evidence. |
 | [test-symbols.json](test-symbols.json) | Pinned graph receipt or overview verification evidence. |
 | [index.log](index.log) | Pinned graph receipt or overview verification evidence. |
+| [delivery-result.json](delivery-result.json) | Confirmed tracker delivery or review-handoff state. |
+| [closed-issue.json](closed-issue.json) | Confirmed tracker delivery or review-handoff state. |
+| [development.json](development.json) | Confirmed tracker delivery or review-handoff state. |
+| [board-readback.json](board-readback.json) | Confirmed tracker delivery or review-handoff state. |
+| [closure-audit.log](closure-audit.log) | Confirmed tracker delivery or review-handoff state. |
 
 ## Links
 
