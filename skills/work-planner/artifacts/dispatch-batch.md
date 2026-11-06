@@ -48,7 +48,7 @@ Selects the next batch without tracker writes or worker execution.
 - The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py batch --authorization '[**<authorization-file>**](#authorization)' --plan '[**<dispatch-export-file>**](#survey-evidence)' --sessions '[**<session-inventory-file>**](#session-inventory)' --capacity '[**<free-slot-count>**](#free-slots)' --board '[**<survey-board>**](#survey-board)' > '[**<batch-file>**](#batch)'
+cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py batch --authorization '[**<authorization-file>**](#authorization)' --plan '[**<dispatch-export-file>**](#survey-evidence)' --sessions '[**<session-inventory-file>**](#session-inventory)' --capacity [**<free-slot-count>**](#free-slots) --board [**<survey-board>**](#survey-board) > '[**<batch-file>**](#batch)'
 </pre></big>
 
 #### 2. Provide Computed Dispatch Batch
@@ -66,7 +66,7 @@ Checks one selected unit immediately before execution.
 - Exit 0 returns the selected unit; exit 1 names the blocking condition.
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py start --batch '[**<batch-file>**](#batch)' --unit '[**<unit-identity>**](#unit-identity)' --evidence '[**<start-evidence-file>**](#start-evidence)' --sessions '[**<session-inventory-file>**](#session-inventory)' --capacity '[**<free-slot-count>**](#free-slots)'
+cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py start --batch '[**<batch-file>**](#batch)' --unit [**<unit-identity>**](#unit-identity) --evidence '[**<start-evidence-file>**](#start-evidence)' --sessions '[**<session-inventory-file>**](#session-inventory)' --capacity [**<free-slot-count>**](#free-slots)
 </pre></big>
 
 #### 2. Provide Checked Dispatch Start

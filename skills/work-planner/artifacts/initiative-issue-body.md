@@ -169,7 +169,7 @@ Ticks confirmed initiative criteria, refusing any not ready to verify, and ticks
 - Pass every epic JSON file as a separate argument after `--epics`. `<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection "○").
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record)' --epics '[**&lt;epic-json-file&gt;**](#epic-records)' --tick '[**&lt;criterion-ids&gt;**](#criterion-selection)' --fix '[**&lt;output-body-file&gt;**](#output-files)'
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record)' --epics '[**&lt;epic-json-file&gt;**](#epic-records)' --tick [**&lt;criterion-ids&gt;**](#criterion-selection) --fix '[**&lt;output-body-file&gt;**](#output-files)'
 </pre></big>
 
 **Example:**

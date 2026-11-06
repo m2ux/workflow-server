@@ -393,7 +393,7 @@ Run the command in the [Project Checkout](#project-checkout "○"), using [Pull 
 **Acts on:** the checkout it runs in.
 
 <big><pre>
-git fetch origin 'pull/[**<pull-request-number>**](#pull-request-number)/head'
+git fetch origin pull/[**<pull-request-number>**](#pull-request-number)/head
 </pre></big>
 
 **Example:**
@@ -445,7 +445,7 @@ Creates a detached worktree at the fetched review head.
 - The path resolves against the directory the command runs in, so supply it as [Review Worktrees](#review-worktrees) anchors it rather than relative to a linked worktree.
 
 <big><pre>
-git worktree add --detach '[**<worktree-path>**](#worktree-path)' '[**<head-commit>**](#verified-head)'
+git worktree add --detach '[**<worktree-path>**](#worktree-path)' [**<head-commit>**](#verified-head)
 </pre></big>
 
 #### 2. Provide Added Review Worktree
@@ -467,7 +467,7 @@ gh api 'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/branches/[**<
 **Example:**
 
 <big><pre>
-gh api 'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/branches/main/protection' > protection.json
+gh api repos/[**<owner>**](#repository)/[**<repo>**](#repository)/branches/main/protection > protection.json
 </pre></big>
 
 #### 2. Provide Fetched Branch Protection
@@ -489,7 +489,7 @@ gh api --paginate 'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/ru
 **Example:**
 
 <big><pre>
-gh api --paginate 'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/rules/branches/main' > branch-rules.json
+gh api --paginate repos/[**<owner>**](#repository)/[**<repo>**](#repository)/rules/branches/main > branch-rules.json
 </pre></big>
 
 #### 2. Provide Fetched Active Branch Rules

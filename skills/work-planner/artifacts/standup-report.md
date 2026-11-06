@@ -59,7 +59,7 @@ Prints the standup from supplied board items, pull request records and their iss
 - The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --since '[**&lt;window-start-date&gt;**](#report-selection)' --initiative '[**&lt;initiative-filter&gt;**](#report-selection)' --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records)' --summary '[**&lt;management-paragraph-file&gt;**](#management-file)'
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --since [**&lt;window-start-date&gt;**](#report-selection) --initiative [**&lt;initiative-filter&gt;**](#report-selection) --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records)' --summary '[**&lt;management-paragraph-file&gt;**](#management-file)'
 </pre></big>
 
 **Example:**

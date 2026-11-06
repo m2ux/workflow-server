@@ -45,7 +45,7 @@ Computes available work from supplied board and delivery snapshots.
 - `--dispatch-plan '<dispatch-export-file>'` writes the [dispatch export](#dispatch-export "●").
 
 <big><pre>
-cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '[**<board-items-file>**](#board-items)' --prs '[**<pull-request-records-file>**](#pull-request-records)' --links '[**<issue-link-snapshot-file>**](#issue-link-snapshot)' --project '[**<checkout>**](#project-checkout)' --revision '[**<revision>**](#revision)' --bases '[**<epic-base-names>**](#epic-base-names)' --engineering '[**<engineering-worktree>**](#engineering-worktree)' --lane '[**<lane-index>**](#requested-lane)'
+cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '[**<board-items-file>**](#board-items)' --prs '[**<pull-request-records-file>**](#pull-request-records)' --links '[**<issue-link-snapshot-file>**](#issue-link-snapshot)' --project '[**<checkout>**](#project-checkout)' --revision '[**<revision>**](#revision)' --bases '[**<epic-base-names>**](#epic-base-names)' --engineering '[**<engineering-worktree>**](#engineering-worktree)' --lane [**<lane-index>**](#requested-lane)
 </pre></big>
 
 **Example:**

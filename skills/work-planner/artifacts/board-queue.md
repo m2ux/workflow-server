@@ -51,13 +51,13 @@ Prints proposed Status and assignee calls, [report lines](#report-lines) and unr
 - `--unplanned` supplies each [Unplanned Initiative](#unplanned-initiatives "○"). Repeatable.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --board '[**&lt;board-identity&gt;**](#board-identity)' --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)'
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --board [**&lt;board-identity&gt;**](#board-identity) --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items items.json --prs prs.json --links links.json --board 'users/[**&lt;owner&gt;**](#board-identity)/projectsV2/9' --fields fields.json --out board/ --assignee m2ux
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items items.json --prs prs.json --links links.json --board users/[**&lt;owner&gt;**](#board-identity)/projectsV2/9 --fields fields.json --out board/ --assignee m2ux
 </pre></big>
 
 #### 2. Provide Computed Board Queue

@@ -49,7 +49,7 @@ Creates the label specified by its name, colour and description.
 Run this command from the [repository](#repository "○") checkout using [Label Identity](#label-identity "○").
 
 <big><pre>
-gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/labels' -f name='[**&lt;label&gt;**](#label-identity)' -f color='[**&lt;hex-colour&gt;**](#label-identity)' -f description='[**&lt;description&gt;**](#label-identity)' --jq .name
+gh api --method POST repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/labels -f name='[**&lt;label&gt;**](#label-identity)' -f color=[**&lt;hex-colour&gt;**](#label-identity) -f description='[**&lt;description&gt;**](#label-identity)' --jq .name
 </pre></big>
 
 #### 2. Provide Created Label

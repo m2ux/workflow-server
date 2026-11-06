@@ -218,7 +218,7 @@ Ticks confirmed epic criteria, refusing any not ready to verify, and ticks compl
 - `<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection "○").
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links)' --tick '[**&lt;criterion-ids&gt;**](#criterion-selection)' --fix '[**&lt;output-body-file&gt;**](#output-body)'
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links)' --tick [**&lt;criterion-ids&gt;**](#criterion-selection) --fix '[**&lt;output-body-file&gt;**](#output-body)'
 </pre></big>
 
 **Example:**
@@ -247,13 +247,13 @@ Holds each named unit for one session, by setting its record folder as the singl
 - `<task-ids>` is a comma-separated list of task ids; `<records-base-url>` identifies the planning records folder.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic '[**&lt;epic-json-file&gt;**](#epic-record)' --reserve '[**&lt;task-ids&gt;**](#task-selection)' --items '[**&lt;board-items-file&gt;**](#board-items)' --records '[**&lt;records-base-url&gt;**](#planning-folder)' --fix '[**&lt;output-body-file&gt;**](#output-body)'
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic '[**&lt;epic-json-file&gt;**](#epic-record)' --reserve [**&lt;task-ids&gt;**](#task-selection) --items '[**&lt;board-items-file&gt;**](#board-items)' --records '[**&lt;records-base-url&gt;**](#planning-folder)' --fix '[**&lt;output-body-file&gt;**](#output-body)'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --reserve W01,W02 --items items.json --records 'https://github.com/[**&lt;owner&gt;**](#planning-folder)/[**&lt;repo&gt;**](#planning-folder)/tree/engineering/artifacts/planning' --fix fixed-943.md
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --reserve W01,W02 --items items.json --records https://github.com/[**&lt;owner&gt;**](#planning-folder)/[**&lt;repo&gt;**](#planning-folder)/tree/engineering/artifacts/planning --fix fixed-943.md
 </pre></big>
 
 #### 2. Provide Reserved Row
@@ -275,7 +275,7 @@ Frees each named task row, by replacing the planning-folder link with its work-i
 - `<task-ids>` is a comma-separated list of task ids.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic '[**&lt;epic-json-file&gt;**](#epic-record)' --release '[**&lt;task-ids&gt;**](#task-selection)' --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree)' --fix '[**&lt;output-body-file&gt;**](#output-body)'
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic '[**&lt;epic-json-file&gt;**](#epic-record)' --release [**&lt;task-ids&gt;**](#task-selection) --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree)' --fix '[**&lt;output-body-file&gt;**](#output-body)'
 </pre></big>
 
 **Example:**

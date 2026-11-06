@@ -271,13 +271,13 @@ Creates an issue from a body file, with its title and labels, and prints its num
 - Repeat `-f 'labels[]=<label>'` for each supplied label.
 
 <big><pre>
-gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues' -f title='[**&lt;title&gt;**](#issue-changes)' -F 'body=@[**&lt;body-file&gt;**](#issue-changes)' -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq .number
+gh api --method POST repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues -f title='[**&lt;title&gt;**](#issue-changes)' -F 'body=@[**&lt;body-file&gt;**](#issue-changes)' -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq .number
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues' -f title='[**&lt;title&gt;**](#issue-changes)' -F body=@body.md -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq .number
+gh api --method POST repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues -f title='[**&lt;title&gt;**](#issue-changes)' -F body=@body.md -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq .number
 </pre></big>
 
 #### 2. Provide Created Tracker Issue
@@ -293,13 +293,13 @@ Replaces an issue's body from a file.
 Run this command from the [repository](#repository "○") checkout using [Identity](#identity "○"), [Issue Changes](#issue-changes "○").
 
 <big><pre>
-gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)' -F 'body=@[**&lt;body-file&gt;**](#issue-changes)' --jq .number
+gh api --method PATCH repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity) -F 'body=@[**&lt;body-file&gt;**](#issue-changes)' --jq .number
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943' -F body=@body.md --jq .number
+gh api --method PATCH repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943 -F body=@body.md --jq .number
 </pre></big>
 
 #### 2. Provide Patch Issue Body
@@ -315,13 +315,13 @@ Saves an issue's body alone.
 Run this command from the [repository](#repository "○") checkout using [Identity](#identity "○"), [Output Files](#output-files "○").
 
 <big><pre>
-gh api 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)' --jq .body > '[**&lt;output-body-file&gt;**](#output-files)'
+gh api repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity) --jq .body > '[**&lt;output-body-file&gt;**](#output-files)'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943' --jq .body > live-943.md
+gh api repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943 --jq .body > live-943.md
 </pre></big>
 
 #### 2. Provide Fetched Issue Body
@@ -337,13 +337,13 @@ Replaces an issue's title.
 Run this command from the [repository](#repository "○") checkout using [Identity](#identity "○"), [Issue Changes](#issue-changes "○").
 
 <big><pre>
-gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)' -f title='[**&lt;title&gt;**](#issue-changes)' --jq .title
+gh api --method PATCH repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity) -f title='[**&lt;title&gt;**](#issue-changes)' --jq .title
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943' -f title='[**&lt;title&gt;**](#issue-changes)' --jq .title
+gh api --method PATCH repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943 -f title='[**&lt;title&gt;**](#issue-changes)' --jq .title
 </pre></big>
 
 #### 2. Provide Retitled Tracker Issue
@@ -361,13 +361,13 @@ Adds labels to an issue.
 - Repeat `-f 'labels[]=<label>'` for each supplied label.
 
 <big><pre>
-gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/labels' -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq '.&#91;&#93;.name'
+gh api --method POST repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/labels -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq '.&#91;&#93;.name'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943/labels' -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq '.&#91;&#93;.name'
+gh api --method POST repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943/labels -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq '.&#91;&#93;.name'
 </pre></big>
 
 #### 2. Provide Added Issue Labels
@@ -405,13 +405,13 @@ Prints an issue's comments.
 Run this command from the [repository](#repository "○") checkout using [Identity](#identity "○").
 
 <big><pre>
-gh api --paginate 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments'
+gh api --paginate repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --paginate 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874/comments'
+gh api --paginate repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874/comments
 </pre></big>
 
 #### 2. Provide Fetched Issue Comments
@@ -427,13 +427,13 @@ Saves an issue whole, as JSON, for the scripts that read issues.
 Run this command from the [repository](#repository "○") checkout using [Identity](#identity "○"), [Output Files](#output-files "○"), [Issue Record](#issue-record "○").
 
 <big><pre>
-gh api 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)' > '[**&lt;issue-json-file&gt;**](#issue-record)'
+gh api repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity) > '[**&lt;issue-json-file&gt;**](#issue-record)'
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943' > issue-943.json
+gh api repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943 > issue-943.json
 </pre></big>
 
 #### 2. Provide Fetched Tracker Issue
@@ -514,13 +514,13 @@ Closes an issue whose work another issue tracks.
 Run this command from the [repository](#repository "○") checkout using [Identity](#identity "○"), [Transfer Evidence](#transfer-evidence "○").
 
 <big><pre>
-gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)' -f state=closed -f state_reason=not_planned --jq .state
+gh api --method PATCH repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity) -f state=closed -f state_reason=not_planned --jq .state
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874' -f state=closed -f state_reason=not_planned --jq .state
+gh api --method PATCH repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874 -f state=closed -f state_reason=not_planned --jq .state
 </pre></big>
 
 #### 2. Provide Closed as Not Planned
@@ -536,13 +536,13 @@ Posts one line of exact comment text and returns its URL.
 Run this command from the [repository](#repository "○") checkout using [Identity](#identity "○"), [Comment](#comment "○").
 
 <big><pre>
-gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments' -f body='[**&lt;comment-text&gt;**](#comment)' --jq .html_url
+gh api --method POST repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments -f body='[**&lt;comment-text&gt;**](#comment)' --jq .html_url
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/637/comments' -f body='Delivered by #950.' --jq .html_url
+gh api --method POST repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/637/comments -f body='Delivered by #950.' --jq .html_url
 </pre></big>
 
 #### 2. Provide Post Inline Comment
@@ -558,13 +558,13 @@ Posts a complete comment file and returns its URL.
 Run this command from the [repository](#repository "○") checkout using [Identity](#identity "○"), [Comment](#comment "○").
 
 <big><pre>
-gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments' -F 'body=@[**&lt;comment-file&gt;**](#comment)' --jq .html_url
+gh api --method POST repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments -F 'body=@[**&lt;comment-file&gt;**](#comment)' --jq .html_url
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874/comments' -F body=@comment-874.md --jq .html_url
+gh api --method POST repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874/comments -F body=@comment-874.md --jq .html_url
 </pre></big>
 
 #### 2. Provide Post Comment File
@@ -580,13 +580,13 @@ Sets an issue to closed with the completed reason and returns its state.
 Run this command from the [repository](#repository "○") checkout using [Identity](#identity "○"), [Delivery Evidence](#delivery-evidence "○"), [Closure Findings](#closure-findings "○").
 
 <big><pre>
-gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)' -f state=closed -f state_reason=completed --jq .state
+gh api --method PATCH repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity) -f state=closed -f state_reason=completed --jq .state
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943' -f state=closed -f state_reason=completed --jq .state
+gh api --method PATCH repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943 -f state=closed -f state_reason=completed --jq .state
 </pre></big>
 
 #### 2. Provide Saved Completed State

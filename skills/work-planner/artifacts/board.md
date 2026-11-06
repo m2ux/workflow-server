@@ -212,7 +212,7 @@ Copies the supplied template into a new open board with the supplied title and p
 - The copy's JSON is one project; `.number` identifies the new board.
 
 <big><pre>
-gh project copy '[**&lt;template-number&gt;**](#template-selection)' --source-owner '[**&lt;owner&gt;**](#board-owner)' --target-owner '[**&lt;owner&gt;**](#board-owner)' --title '[**&lt;board-title&gt;**](#copy-title)' --format json --jq .number
+gh project copy [**&lt;template-number&gt;**](#template-selection) --source-owner [**&lt;owner&gt;**](#board-owner) --target-owner [**&lt;owner&gt;**](#board-owner) --title '[**&lt;board-title&gt;**](#copy-title)' --format json --jq .number
 </pre></big>
 
 #### 2. Provide Copied Board Template
@@ -228,7 +228,7 @@ Links one board to the supplied repository.
 Run the following command using [Board Coordinates](#board-coordinates "○"), [Repository](#repository "○"), [Board Owner](#board-owner "○").
 
 <big><pre>
-gh project link '[**&lt;board-number&gt;**](#board-coordinates)' --owner '[**&lt;owner&gt;**](#board-owner)' --repo '[**&lt;repo&gt;**](#repository)'
+gh project link [**&lt;board-number&gt;**](#board-coordinates) --owner [**&lt;owner&gt;**](#board-owner) --repo [**&lt;repo&gt;**](#repository)
 </pre></big>
 
 #### 2. Provide Linked Board to Repository
@@ -260,13 +260,13 @@ Adds the caller-supplied issue to a board and prints the new item's id.
 Run the following command using [Board Coordinates](#board-coordinates "○"), [Issue Id](#issue-id "○"), [Board Owner](#board-owner "○").
 
 <big><pre>
-gh api --method POST 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items' -f type=Issue -F 'id=[**&lt;issue-id&gt;**](#issue-id)' --jq .id
+gh api --method POST users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items -f type=Issue -F id=[**&lt;issue-id&gt;**](#issue-id) --jq .id
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method POST 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/items' -f type=Issue -F id=3040123456 --jq .id
+gh api --method POST users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/items -f type=Issue -F id=3040123456 --jq .id
 </pre></big>
 
 #### 2. Provide Added Issue to Board
@@ -286,13 +286,13 @@ Sets one board item's Status.
 **Example payload:** `{"fields":[{"id":419167630,"value":"OPTION"}]}`.
 
 <big><pre>
-gh api --method PATCH 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)' --input '[**&lt;status-input-file&gt;**](#status-input-file)' --jq .id
+gh api --method PATCH users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates) --input '[**&lt;status-input-file&gt;**](#status-input-file)' --jq .id
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method PATCH 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/items/1001' --input status-backlog.json --jq .id
+gh api --method PATCH users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/items/1001 --input status-backlog.json --jq .id
 </pre></big>
 
 #### 2. Provide Saved Item Status
@@ -308,13 +308,13 @@ Removes one item from a board, leaving its issue as it stands.
 Run the following command using [Board Coordinates](#board-coordinates "○"), [Item Coordinates](#item-coordinates "○"), [Board Owner](#board-owner "○").
 
 <big><pre>
-gh api --method DELETE 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)'
+gh api --method DELETE users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)
 </pre></big>
 
 **Example:**
 
 <big><pre>
-gh api --method DELETE 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items/1001'
+gh api --method DELETE users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items/1001
 </pre></big>
 
 #### 2. Provide Removed Board Item

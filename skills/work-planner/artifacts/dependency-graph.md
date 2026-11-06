@@ -101,7 +101,7 @@ Renumbers one epic's tasks by the map given, in the files given.
 - Only rows no pull request names may be renumbered. Inspect the rewritten files before publishing them.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative '[**&lt;initiative-number&gt;**](#renumber-inputs)' --epic '[**&lt;epic-number&gt;**](#renumber-inputs)' --own '[**&lt;epic-body-file&gt;**](#dependency-files)' --tasks '[**&lt;task-number-map&gt;**](#renumber-inputs)' '[**&lt;affected-body-file&gt;**](#renumber-inputs)'
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative [**&lt;initiative-number&gt;**](#renumber-inputs) --epic [**&lt;epic-number&gt;**](#renumber-inputs) --own '[**&lt;epic-body-file&gt;**](#dependency-files)' --tasks [**&lt;task-number-map&gt;**](#renumber-inputs) '[**&lt;affected-body-file&gt;**](#renumber-inputs)'
 </pre></big>
 
 **Example:**
@@ -126,7 +126,7 @@ Renumbers an initiative's epics across supplied body files.
 - Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.
 
 <big><pre>
-cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative '[**&lt;initiative-number&gt;**](#renumber-inputs)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --map '[**&lt;epic-number-map&gt;**](#renumber-inputs)' '[**&lt;body-file&gt;**](#renumber-inputs)'
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative [**&lt;initiative-number&gt;**](#renumber-inputs) --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --map [**&lt;epic-number-map&gt;**](#renumber-inputs) '[**&lt;body-file&gt;**](#renumber-inputs)'
 </pre></big>
 
 **Example:**

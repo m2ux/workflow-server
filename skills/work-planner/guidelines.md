@@ -56,7 +56,7 @@ These rules apply to mode and protocol procedures and artifact operations.
 These rules govern command and access invocations inside executing steps. Procedural operations follow Procedure and Artifacts below.
 
 - **Spec layout.**
-  A command or access invocation occupies raw HTML `<big><pre>…</pre></big>` in the step that runs it. The step states where it runs, its inputs, applicable example and REST gap for GraphQL, preserving command syntax, quoting, argument order and line breaks. Preconditions and refusals belong to the governing step.
+  A command or access invocation occupies raw HTML `<big><pre>…</pre></big>` in the step that runs it. The step states where it runs, its inputs, applicable example and REST gap for GraphQL, preserving command syntax, required quoting, argument order and line breaks. Preconditions and refusals belong to the governing step.
 - **One command.**
   Each invocation exposes one command or access action. Put sequencing, branching, repetition and readback in the governing procedure. A working-directory prefix and output-filter pipeline belong to the command they serve. Optional flags for one command share its invocation.
 - **One home.**
@@ -69,7 +69,7 @@ These rules govern command and access invocations inside executing steps. Proced
 - **Placed paths.**
   A command that creates a worktree or other lasting location takes a path its caller composes. Its executing step cites the field that places that kind and states that the path resolves against the directory the command runs in.
 - **Parameter placeholders.**
-  Command templates use descriptive `<input-name>` placeholders for variable identities, branches, paths, dates, filters and values, aligned with their contextual Field references. Contract-backed argument names are bold Markdown links, `[**<input-name>**](#input-contract)`, inside the HTML block; literal syntax remains literal. Quote shell arguments containing placeholders and escape substituted values for their shell, URL, query or payload context. Keep required literals, enum values, field names and installed script paths literal. State list separators, mapping syntax and repeated arguments beside the command. JSON templates preserve the required value types.
+  Command templates use descriptive `<input-name>` placeholders for variable identities, branches, paths, dates, filters and values, aligned with their contextual Field references. Contract-backed argument names are bold Markdown links, `[**<input-name>**](#input-contract)`, inside the HTML block; literal syntax remains literal. Quote variable paths, free text, refs, query strings and values that may contain shell metacharacters; leave validated shell-safe numeric values and identifiers unquoted. Escape substituted values for their shell, URL, query or payload context. Keep required literals, enum values, field names and installed script paths literal. State list separators, mapping syntax and repeated arguments beside the command. JSON templates preserve the required value types.
 - **Concrete examples.**
   Retain hard-coded values in explicitly labelled examples beside the executing step's generic command or payload template so their shape remains clear. Examples illustrate input values; they do not supply defaults or identify the current target.
 - **Local scripts.**
