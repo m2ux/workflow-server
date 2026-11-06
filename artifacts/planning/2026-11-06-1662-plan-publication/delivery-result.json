@@ -1,0 +1,11 @@
+{
+  "outcome": "confirmed-merge",
+  "pull_request": "https://github.com/m2ux/workflow-server/pull/1662",
+  "head": "581c525137d0779649ad97e89370bafbde927d34",
+  "target": "workspace",
+  "merge_commit": "52fd426468cf3c860cf163f351e0f26c0568203c",
+  "merged": true,
+  "issue": 1655,
+  "issue_state": "closed",
+  "board_status": "Done"
+}

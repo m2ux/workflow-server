@@ -98,3 +98,9 @@ The target requires human approval; published agent review establishes the conte
 | --- | --- |
 | Integration PR | https://github.com/m2ux/workflow-server/pull/1662 |
 | Epic | https://github.com/m2ux/workflow-server/issues/1655 |
+
+- [delivery-result.json](delivery-result.json) — confirmed integration delivery evidence.
+
+- [closed-issue.json](closed-issue.json) — confirmed integration delivery evidence.
+
+- [development.json](development.json) — confirmed integration delivery evidence.

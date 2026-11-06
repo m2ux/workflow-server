@@ -121,3 +121,11 @@ The audit and approved decisions are delivered here. E06 names a proposed Backlo
 | --- | --- |
 | Epic | https://github.com/m2ux/workflow-server/issues/1615 |
 | Integration | https://github.com/m2ux/workflow-server/pull/1659 |
+
+- [delivery-criterion.log](delivery-criterion.log) — confirmed audit delivery evidence.
+
+- [saved-epic.json](saved-epic.json) — confirmed audit delivery evidence.
+
+- [board-readback.json](board-readback.json) — confirmed audit delivery evidence.
+
+- [changes.json](changes.json) — applied plan changes and held draft publication.

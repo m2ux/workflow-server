@@ -1,0 +1,26 @@
+[
+  {
+    "kind": "Folded work",
+    "subject": "#1615 W02",
+    "status": "applied",
+    "option": "User-approved audit delivery through published engineering commit40d65b775; exact-commit instrument and independent semantic review pass."
+  },
+  {
+    "kind": "Migration",
+    "subject": "#1615 AC5 and Backlog Pause",
+    "status": "applied",
+    "option": "Audit retains confirmed P2 decision; dedicated plan owns unfinished-descendant runtime pause/cascade. Completed descendants remain Done."
+  },
+  {
+    "kind": "Task creation",
+    "subject": "#1615 W11/AC18",
+    "status": "prepared",
+    "option": "One-file automatic-answer continuation at Advance, depends only on completed W02; pending publication/readback."
+  },
+  {
+    "kind": "Epic creation",
+    "subject": "I17 Backlog Pause",
+    "status": "held",
+    "option": "Dedicated epic draft exists; tracker publication waits for exact producer-row graph validation."
+  }
+]
