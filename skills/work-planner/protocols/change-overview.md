@@ -4,17 +4,6 @@ The published architecture overview, planning record and pull request link that 
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
-## Prerequisites
-
-Read these files first.
-
-- [Pull Request](../artifacts/pull-request.md)
-- [Delivery Branches](../artifacts/delivery-branches.md)
-- [Repository Graph](../artifacts/repository-graph.md)
-- [Planning Record](../artifacts/planning-record.md)
-- [Architecture Overview](../artifacts/architecture-overview.md)
-- [Pull Request Body](../artifacts/pull-request-body.md)
-
 ## Procedure
 
 ### 1. Prepare the Evidence

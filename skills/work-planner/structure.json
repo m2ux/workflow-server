@@ -4,7 +4,7 @@
     "link_roles": true
   },
   "modes": {
-    "sections": ["Prerequisites", "Procedure", "Outcomes", "Commands", "Fields", "Guidance"],
+    "sections": ["Procedure", "Outcomes", "Commands", "Fields", "Guidance"],
     "required": ["Procedure", "Outcomes"],
     "procedures": "Procedure",
     "steps": "headings",
@@ -16,7 +16,7 @@
     "contracts": "Fields"
   },
   "protocols": {
-    "sections": ["Prerequisites", "Procedure", "Commands", "Fields", "Guidance"],
+    "sections": ["Procedure", "Commands", "Fields", "Guidance"],
     "required": ["Procedure"],
     "procedures": "Procedure",
     "steps": "headings",
@@ -28,7 +28,7 @@
     "contracts": "Fields"
   },
   "artifacts": {
-    "sections": ["Prerequisites", "Operations", "Commands", "Fields", "Guidance"],
+    "sections": ["Operations", "Commands", "Fields", "Guidance"],
     "required": ["Fields"],
     "procedures": "Operations",
     "steps": "headings",

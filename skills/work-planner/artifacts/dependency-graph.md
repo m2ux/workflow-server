@@ -2,17 +2,6 @@
 
 The task edges an initiative's epics declare, and the row numbers that graph permits.
 
-## Prerequisites
-
-Read these files first.
-
-- [Lane](lane.md)
-- [Issue](issue.md)
-- [Initiative Issue Body](initiative-issue-body.md)
-- [Work Item](work-item.md)
-- [Plan Change](plan-change.md)
-- [Delivery Branches](delivery-branches.md)
-
 ## Operations
 
 ### Check Dependencies and Numbering

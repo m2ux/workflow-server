@@ -4,19 +4,6 @@ One epic base merged into its long-lived branch, on current branch, epic and pul
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue](../artifacts/issue.md)
-- [Pull Request](../artifacts/pull-request.md)
-- [Delivery Branches](../artifacts/delivery-branches.md)
-- [Epic](../artifacts/epic.md)
-- [Board Delivery](../artifacts/board-delivery.md)
-- [Agent Review](../artifacts/agent-review.md)
-- [Change Overview](change-overview.md "ƒ")
-- [Review Pull Request](review-pull-request.md "ƒ")
-
 ## Procedure
 
 ### 1. Prepare the Evidence

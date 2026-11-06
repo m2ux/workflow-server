@@ -2,12 +2,6 @@
 
 A proposed destination and disposition for one orphan's work.
 
-## Prerequisites
-
-Read these files first.
-
-- [Hot-fix Body](hotfix-body.md)
-
 ## Commands
 
 ### List Orphans

@@ -2,13 +2,6 @@
 
 The body of an existing task issue, and the record of its delivery.
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue Body](issue-body.md)
-- [Epic Issue Body](epic-issue-body.md)
-
 ## Commands
 
 ### Sync Task Issue

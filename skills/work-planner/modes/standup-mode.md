@@ -4,18 +4,6 @@ Summarises a project board as a standup, in Slack markup for pasting into a chan
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
-## Prerequisites
-
-Read these files first.
-
-- [Board](../artifacts/board.md)
-- [Pull Request](../artifacts/pull-request.md)
-- [Standup Report](../artifacts/standup-report.md)
-- [Issue](../artifacts/issue.md)
-- [Epic Issue Body](../artifacts/epic-issue-body.md)
-- [Issue Body](../artifacts/issue-body.md)
-- [Sync Mode](sync-mode.md "ƒ")
-
 ## Procedure
 
 ### 1. Select the Scope

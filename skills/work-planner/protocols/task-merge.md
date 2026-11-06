@@ -4,19 +4,6 @@ What the task, epic, board and initiative records, or a hot-fix's issue, become 
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
-## Prerequisites
-
-Read these files first.
-
-- [Delivery Evidence](../artifacts/delivery-evidence.md)
-- [Epic Issue Body](../artifacts/epic-issue-body.md)
-- [Initiative Issue Body](../artifacts/initiative-issue-body.md)
-- [Hot-fix](../artifacts/hotfix.md)
-- [Epic Integration](epic-integration.md "ƒ")
-- [Issue Closure](issue-closure.md "ƒ")
-- [Issue Delivery](issue-delivery.md "ƒ")
-- [Review Pull Request](review-pull-request.md "ƒ")
-
 ## Procedure
 
 ### 1. Record a Hot-Fix

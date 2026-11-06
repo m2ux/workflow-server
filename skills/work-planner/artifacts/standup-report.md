@@ -2,14 +2,6 @@
 
 A board progress report for a selected window, formatted for pasting into Slack.
 
-## Prerequisites
-
-Read these files first.
-
-- [Hot-fix Body](hotfix-body.md)
-- [Hot-fix](hotfix.md)
-- [Configuration](../configuration.md)
-
 ## Operations
 
 ### Compose Standup Report

@@ -2,13 +2,6 @@
 
 The admitted units selected for the currently free worker slots of one authorized delivery run.
 
-## Prerequisites
-
-Read these files first.
-
-- [Lane](lane.md)
-- [Delivery Plan](delivery-plan.md)
-
 ## Commands
 
 ### Compute Dispatch Batch

@@ -2,14 +2,6 @@
 
 Populates one hot-fix issue body.
 
-## Prerequisites
-
-Read these files first.
-
-- [Standalone Body](standalone-body.md)
-- [Board Queue](board-queue.md)
-- [Delivery Branches](delivery-branches.md)
-
 ## Fields
 
 ### Target

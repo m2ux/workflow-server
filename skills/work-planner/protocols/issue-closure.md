@@ -4,16 +4,6 @@ Fresh closure evidence assembled across an issue and its linked pull requests, a
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue](../artifacts/issue.md)
-- [Pull Request](../artifacts/pull-request.md)
-- [Delivery Branches](../artifacts/delivery-branches.md)
-- [Epic](../artifacts/epic.md)
-- [Initiative](../artifacts/initiative.md)
-
 ## Procedure
 
 ### 1. Issue

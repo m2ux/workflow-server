@@ -2,12 +2,6 @@
 
 A planning record is a folder. README.md is its entry point: it answers what the work is, and links to every other artifact the plan produces. Each artifact is the home of its own content. The progress of the work is the theme's project board.
 
-## Prerequisites
-
-Read these files first.
-
-- [Configuration](../configuration.md)
-
 ## Operations
 
 ### Populate Planning Record

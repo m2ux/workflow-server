@@ -2,17 +2,6 @@
 
 A hot-fix's board status, delivery unit and branch, delivering pull requests, hold and delivery record.
 
-## Prerequisites
-
-Read these files first.
-
-- [Hot-fix Body](hotfix-body.md)
-- [Issue](issue.md)
-- [Board](board.md)
-- [Board Delivery](board-delivery.md)
-- [Placement](placement.md)
-- [Agent Review](agent-review.md)
-
 ## Operations
 
 ### Settle Hot-fix Board Status

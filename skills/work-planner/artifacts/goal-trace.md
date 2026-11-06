@@ -2,14 +2,6 @@
 
 The table tying each clause of a confirmed goal to the initiative criteria that make it true, the epics that deliver them, and the source requirements they answer to, with the ranked gaps that trace exposes.
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue Body](issue-body.md)
-- [Initiative Issue Body](initiative-issue-body.md)
-- [Planning Record](planning-record.md)
-
 ## Operations
 
 ### Review Initiative Goal

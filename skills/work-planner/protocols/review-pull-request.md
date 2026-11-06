@@ -4,16 +4,6 @@ The draft pull request and body that present one epic base's delivered changes f
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
-## Prerequisites
-
-Read these files first.
-
-- [Pull Request](../artifacts/pull-request.md)
-- [Pull Request Body](../artifacts/pull-request-body.md)
-- [Epic Issue Body](../artifacts/epic-issue-body.md)
-- [Agent Review](../artifacts/agent-review.md)
-- [Planning Record](../artifacts/planning-record.md)
-
 ## Procedure
 
 ### 1. Find

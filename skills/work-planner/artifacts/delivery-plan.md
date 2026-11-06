@@ -2,17 +2,6 @@
 
 The available units, held rows and hot-fixes, blocked work and merge candidates for one board.
 
-## Prerequisites
-
-Read these files first.
-
-- [Lane](lane.md)
-- [Epic Issue Body](epic-issue-body.md)
-- [Delivery Branches](delivery-branches.md)
-- [Work Item](work-item.md)
-- [Hot-fix](hotfix.md)
-- [Hot-fix Body](hotfix-body.md)
-
 ## Commands
 
 ### Compute Available Work

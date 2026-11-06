@@ -2,13 +2,6 @@
 
 The shape every issue body shares: its title, its Problem and Proposal, its acceptance criteria, and its work-breakdown table.
 
-## Prerequisites
-
-Read these files first.
-
-- [Requirement Characteristics](../references/requirement-characteristics.md)
-- [Issue](issue.md)
-
 ## Operations
 
 ### Write Issue Table

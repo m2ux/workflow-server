@@ -4,13 +4,6 @@ Changes the skill itself: SKILL.md, its modes, artifacts, references and scripts
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
-## Prerequisites
-
-Read these files first.
-
-- [Skill Guidelines](../../guidelines.md)
-- [Guidelines](../guidelines.md)
-
 ## Procedure
 
 ### 1. Read the Guidelines

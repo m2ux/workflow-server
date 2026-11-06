@@ -2,12 +2,6 @@
 
 The theme or proposals board, its membership and each item's status.
 
-## Prerequisites
-
-Read these files first.
-
-- [Configuration](../configuration.md)
-
 ## Operations
 
 ### Select Project Board

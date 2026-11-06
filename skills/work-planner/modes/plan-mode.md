@@ -4,28 +4,6 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
-## Prerequisites
-
-Read these files first.
-
-- [Lane](../artifacts/lane.md)
-- [Guidelines](../guidelines.md)
-- [Planning Record](../artifacts/planning-record.md)
-- [Pull Request](../artifacts/pull-request.md)
-- [Issue](../artifacts/issue.md)
-- [Initiative Issue Body](../artifacts/initiative-issue-body.md)
-- [Epic Issue Body](../artifacts/epic-issue-body.md)
-- [Work Item](../artifacts/work-item.md)
-- [Repository Labels](../artifacts/repository-labels.md)
-- [Issue Body](../artifacts/issue-body.md)
-- [Epic](../artifacts/epic.md)
-- [Delivery Branches](../artifacts/delivery-branches.md)
-- [Review Finding](../artifacts/review-finding.md)
-- [Goal Trace](../artifacts/goal-trace.md)
-- [Dependency Graph](../artifacts/dependency-graph.md)
-- [Propose Mode](propose-mode.md "ƒ")
-- [Sync Mode](sync-mode.md "ƒ")
-
 ## Procedure
 
 ### 1. Take the Proposal

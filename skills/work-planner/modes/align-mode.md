@@ -6,29 +6,6 @@ Alignment checks conformity to work-planning rules; judgement of content fitness
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue](../artifacts/issue.md)
-- [Initiative Issue Body](../artifacts/initiative-issue-body.md)
-- [Proposal Body](../artifacts/proposal-body.md)
-- [Epic Issue Body](../artifacts/epic-issue-body.md)
-- [Issue Body](../artifacts/issue-body.md)
-- [Acceptance Criteria](../artifacts/acceptance-criteria.md)
-- [Task Body](../artifacts/task-body.md)
-- [Standalone Body](../artifacts/standalone-body.md)
-- [Goal Trace](../artifacts/goal-trace.md)
-- [Review Finding](../artifacts/review-finding.md)
-- [Dependency Graph](../artifacts/dependency-graph.md)
-- [Requirement Characteristics](../references/requirement-characteristics.md)
-- [Pull Request](../artifacts/pull-request.md)
-- [Pull Request Body](../artifacts/pull-request-body.md)
-- [Delivery Evidence](../artifacts/delivery-evidence.md)
-- [Initiative](../artifacts/initiative.md)
-- [Epic](../artifacts/epic.md)
-- [Delivery Branches](../artifacts/delivery-branches.md)
-
 ## Procedure
 
 ### 1. Discover Every Issue

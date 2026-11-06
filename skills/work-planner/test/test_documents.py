@@ -34,33 +34,6 @@ def executable_scripts(paths):
 
 
 class DocumentInterfaces(unittest.TestCase):
-    def test_prerequisites_match_direct_required_reads(self):
-        for folder in ('modes', 'artifacts', 'protocols'):
-            for path in sorted((ROOT / folder).glob('*.md')):
-                with self.subTest(file=path.name):
-                    lines, fenced, headings = checker.scan(path)
-                    section = None
-                    declared, used = set(), set()
-                    by_line = {i: title for i, level, title in headings if level == 2}
-                    sections = {}
-                    for i in range(len(lines)):
-                        section = by_line.get(i, section)
-                        sections[i] = section
-                    for i, target in checker.targets(path, lines, fenced):
-                        name = target.partition('#')[0]
-                        if not name:
-                            continue
-                        destination = (path.parent / name).resolve()
-                        if destination == path:
-                            self.assertNotEqual(sections[i], 'Prerequisites', 'a prerequisite cannot require its own document')
-                            continue
-                        if sections[i] == 'Prerequisites':
-                            declared.add(destination)
-                        elif sections[i] in ('Procedure', 'Operations', 'Commands', 'Fields',
-                                             'Outcomes', 'Guidance'):
-                            used.add(destination)
-                    self.assertEqual(declared, used)
-
     def test_artifact_operations_have_multiple_linked_references(self):
         paths = sorted(path for path in ROOT.rglob('*.md') if 'test' not in path.relative_to(ROOT).parts)
         references = {}

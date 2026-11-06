@@ -4,16 +4,6 @@ Scopes one problem: the friction, the evidence, and the boundary, and states the
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
-## Prerequisites
-
-Read these files first.
-
-- [Proposal Body](../artifacts/proposal-body.md)
-- [Repository Labels](../artifacts/repository-labels.md)
-- [Issue](../artifacts/issue.md)
-- [Board](../artifacts/board.md)
-- [Issue Body](../artifacts/issue-body.md)
-
 ## Procedure
 
 ### 1. Understand the Problem

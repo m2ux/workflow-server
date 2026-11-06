@@ -2,17 +2,6 @@
 
 The queue for one theme board: initiative priority sets, hot-fix status, status and assignee changes, pending decisions, waiting work, next epics, Ready units and epics waiting on a priority.
 
-## Prerequisites
-
-Read these files first.
-
-- [Lane](lane.md)
-- [Board](board.md)
-- [Epic Issue Body](epic-issue-body.md)
-- [Dependency Graph](dependency-graph.md)
-- [Delivery Branches](delivery-branches.md)
-- [Hot-fix](hotfix.md)
-
 ## Commands
 
 ### Compute Board Queue

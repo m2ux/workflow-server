@@ -2,15 +2,6 @@
 
 Populates one standalone issue body.
 
-## Prerequisites
-
-Read these files first.
-
-- [Board](board.md)
-
-- [Issue Body](issue-body.md)
-- [Epic Issue Body](epic-issue-body.md)
-
 ## Operations
 
 ### Populate Standalone Body

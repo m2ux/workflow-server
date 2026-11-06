@@ -4,23 +4,6 @@ Brings the chosen standalone issues into the agent-engineering structure, or lea
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue](../artifacts/issue.md)
-- [Placement](../artifacts/placement.md)
-- [Hot-fix Body](../artifacts/hotfix-body.md)
-- [Plan Change](../artifacts/plan-change.md)
-- [Guidelines](../guidelines.md)
-- [Issue Body](../artifacts/issue-body.md)
-- [Dependency Graph](../artifacts/dependency-graph.md)
-- [Epic Issue Body](../artifacts/epic-issue-body.md)
-- [Hot-fix](../artifacts/hotfix.md)
-- [Initiative Issue Body](../artifacts/initiative-issue-body.md)
-- [Repository Labels](../artifacts/repository-labels.md)
-- [Standalone Body](../artifacts/standalone-body.md)
-
 ## Procedure
 
 ### 1. Fetch

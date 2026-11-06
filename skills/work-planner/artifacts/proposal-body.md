@@ -2,12 +2,6 @@
 
 Populates one proposal body.
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue Body](issue-body.md)
-
 ## Operations
 
 ### Validate Proposal Body

@@ -4,19 +4,6 @@ Decides which initiatives, epics and hot-fixes on a theme board are underway and
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
-## Prerequisites
-
-Read these files first.
-
-- [Board](../artifacts/board.md)
-- [Pull Request](../artifacts/pull-request.md)
-- [Board Queue](../artifacts/board-queue.md)
-- [Issue](../artifacts/issue.md)
-- [Repository Labels](../artifacts/repository-labels.md)
-- [Plan Change](../artifacts/plan-change.md)
-- [Guidelines](../guidelines.md)
-- [Sync Mode](sync-mode.md "ƒ")
-
 ## Procedure
 
 ### 1. Select the Board

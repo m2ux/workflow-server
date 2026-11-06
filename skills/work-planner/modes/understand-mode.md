@@ -4,12 +4,6 @@ Explains the named pull request's changes through a measured architecture overvi
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
-## Prerequisites
-
-Read these files first.
-
-- [Change Overview](../protocols/change-overview.md "ƒ")
-
 ## Procedure
 
 ### 1. Select the Change

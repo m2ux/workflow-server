@@ -4,34 +4,6 @@ Keeps an authorized theme-board scope moving through delivery while eligible wor
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
-## Prerequisites
-
-Read these files first.
-
-- [Lane](../artifacts/lane.md)
-- [Board](../artifacts/board.md)
-- [Pull Request](../artifacts/pull-request.md)
-- [Delivery Evidence](../artifacts/delivery-evidence.md)
-- [Epic](../artifacts/epic.md)
-- [Delivery Branches](../artifacts/delivery-branches.md)
-- [Delivery Plan](../artifacts/delivery-plan.md)
-- [Dispatch Batch](../artifacts/dispatch-batch.md)
-- [Issue](../artifacts/issue.md)
-- [Hot-fix](../artifacts/hotfix.md)
-- [Guidelines](../guidelines.md)
-- [Epic Issue Body](../artifacts/epic-issue-body.md)
-- [Planning Record](../artifacts/planning-record.md)
-- [Delivery Brief](../artifacts/delivery-brief.md)
-- [Plan Change](../artifacts/plan-change.md)
-- [Agent Review](../artifacts/agent-review.md)
-- [Work Item](../artifacts/work-item.md)
-- [Pull Request Body](../artifacts/pull-request-body.md)
-- [Issue Body](../artifacts/issue-body.md)
-- [Task Merge](../protocols/task-merge.md "ƒ")
-- [Unit Dispatch](../protocols/unit-dispatch.md "ƒ")
-- [Advance Mode](advance-mode.md "ƒ")
-- [Hoist Mode](hoist-mode.md "ƒ")
-
 ## Procedure
 
 ### 1. Select

@@ -2,13 +2,6 @@
 
 The long-lived branches, epic bases and task branches used for delivery.
 
-## Prerequisites
-
-Read these files first.
-
-- [Work Item](work-item.md)
-- [Hot-fix](hotfix.md)
-
 ## Operations
 
 ### Prepare Delivery Bases

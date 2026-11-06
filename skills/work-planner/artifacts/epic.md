@@ -2,13 +2,6 @@
 
 An epic's prerequisite evidence, task delivery findings, integration readiness and completion state.
 
-## Prerequisites
-
-Read these files first.
-
-- [Initiative Issue Body](initiative-issue-body.md)
-- [Issue](issue.md)
-
 ## Operations
 
 ### Check Epic Prerequisites

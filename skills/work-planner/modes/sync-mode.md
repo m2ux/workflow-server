@@ -4,29 +4,6 @@ Records delivery on an initiative, its epics, and their task issues. Each task t
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue](../artifacts/issue.md)
-- [Issue Body](../artifacts/issue-body.md)
-- [Acceptance Criteria](../artifacts/acceptance-criteria.md)
-- [Task Body](../artifacts/task-body.md)
-- [Pull Request](../artifacts/pull-request.md)
-- [Delivery Evidence](../artifacts/delivery-evidence.md)
-- [Epic](../artifacts/epic.md)
-- [Epic Issue Body](../artifacts/epic-issue-body.md)
-- [Initiative Issue Body](../artifacts/initiative-issue-body.md)
-- [Board](../artifacts/board.md)
-- [Work Item](../artifacts/work-item.md)
-- [Board Delivery](../artifacts/board-delivery.md)
-- [Plan Change](../artifacts/plan-change.md)
-- [Epic Integration](../protocols/epic-integration.md "ƒ")
-- [Issue Closure](../protocols/issue-closure.md "ƒ")
-- [Review Pull Request](../protocols/review-pull-request.md "ƒ")
-- [Understand Mode](understand-mode.md "ƒ")
-- [Configuration](../configuration.md)
-
 ## Procedure
 
 ### 1. Select

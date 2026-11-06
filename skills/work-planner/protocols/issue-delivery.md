@@ -4,17 +4,6 @@ The task and epic bodies, or a hot-fix's body, brought to what one pull request'
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
-## Prerequisites
-
-Read these files first.
-
-- [Task Body](../artifacts/task-body.md)
-- [Epic Issue Body](../artifacts/epic-issue-body.md)
-- [Epic](../artifacts/epic.md)
-- [Acceptance Criteria](../artifacts/acceptance-criteria.md)
-- [Issue](../artifacts/issue.md)
-- [Hot-fix](../artifacts/hotfix.md)
-
 ## Procedure
 
 ### 1. Hot-Fix

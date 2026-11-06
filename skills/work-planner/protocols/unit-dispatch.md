@@ -4,21 +4,6 @@ One admitted unit held, prepared and started in its delivery session.
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
-## Prerequisites
-
-Read these files first.
-
-- [Dispatch Batch](../artifacts/dispatch-batch.md)
-- [Epic Issue Body](../artifacts/epic-issue-body.md)
-- [Pull Request](../artifacts/pull-request.md)
-- [Planning Record](../artifacts/planning-record.md)
-- [Issue](../artifacts/issue.md)
-- [Board](../artifacts/board.md)
-- [Board Delivery](../artifacts/board-delivery.md)
-- [Hot-fix](../artifacts/hotfix.md)
-- [Delivery Branches](../artifacts/delivery-branches.md)
-- [Delivery Brief](../artifacts/delivery-brief.md)
-
 ## Procedure
 
 ### 1. Check Execution Prerequisites

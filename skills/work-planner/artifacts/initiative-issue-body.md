@@ -2,14 +2,6 @@
 
 Populates one initiative body. The body states the goal as criteria and lists the epics that deliver them.
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue Body](issue-body.md)
-- [Requirement Characteristics](../references/requirement-characteristics.md)
-- [Initiative](initiative.md)
-
 ## Operations
 
 ### Populate Initiative Issue Body

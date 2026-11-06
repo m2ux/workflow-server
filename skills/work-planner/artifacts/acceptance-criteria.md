@@ -2,14 +2,6 @@
 
 The verification state of an issue's acceptance criteria: what each criterion's instrument reported, against which revision, and which criteria that evidence lets a body tick.
 
-## Prerequisites
-
-Read these files first.
-
-- [Issue Body](issue-body.md)
-- [Epic Issue Body](epic-issue-body.md)
-- [Initiative Issue Body](initiative-issue-body.md)
-
 ## Operations
 
 ### Verify Selected Criteria
