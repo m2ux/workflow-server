@@ -1,0 +1,9 @@
+# Advance Procedural Reading
+
+Use the installed Work Planner at the checkout/revision in candidate.txt. This is a read-only offline exercise of Advance step 6 with a queue already computed. Follow its source and linked context; do not inspect the test implementation, expected-observations.md or validation.md. No tracker writes are authorized.
+
+For each scenario A–J in scenarios.json, begin a fresh journal by running `observe.py <scenario> start`. The response supplies the actual initial queue, captured inputs and caller allowance. Select the operations required by the source by running `observe.py <scenario> '<operation name>'`. The fixture supplies an operation response and records the actual selections; it makes no routing decision. Run through sandbox Python using an absolute sandbox launcher. `Compute Board Queue` executes the installed queue program against the latest supplied board read (or the initial snapshot before one).
+
+Available operation responses: Check Plan Change Autonomy, Record Plan Change, Ensure Repository Labels, Save Tracker Issue, Read Board State, Compute Board Queue. For a decision with an answer, supply it as a final CLI argument to Record Plan Change (e.g. a number or `none`); other calls take no answer. For J the user has received the question and supplies no answer. For H and I, report the next continuation after the first recomputation; additional missing-evidence or decision resolution has no supplied replies. Stop at the boundary of step 7; record whether that boundary is eligible and why.
+
+Write your trace to reader-result.md: context actually read; recommended/selected answer; ordered operations observed; terminal or next continuation; evidence used to reach it. Report any conflicting prose or missing context. These are fixture responses, not live tracker saves. Include source revision and journal paths.

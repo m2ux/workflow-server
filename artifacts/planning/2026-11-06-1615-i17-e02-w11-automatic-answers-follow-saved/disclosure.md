@@ -1,0 +1,9 @@
+# Required Context Review
+
+The affected entry is Advance / Resolve Queue Decisions, reached from the board-scoped Advance mode and its existing common Rules and Conventions. This patch changes continuation, not operation ownership or command signatures.
+
+The trace reads Report Lines, Check Plan Change Autonomy with the caller allowance, recommendations in Advance, and Record Plan Change for an automatic answer. Held Change and the interview rules apply conditionally to held/unanswered decisions. An answer reaches Ensure Repository Labels, Save Tracker Issue, Read Board State and Compute Board Queue in that order. The queue retains its PR/link snapshots, resolved issues and confirmed unplanned identities. Save Tracker Issue owns its saved issue comparison; Advance checks the refreshed board evidence before recomputation. Completeness remains at Board Queue and is already linked by Write; the decision continuation links that same definition at its newly explicit gate. Missing evidence and pending decisions continue through the existing steps 5 and 6. Step 7's Status/assignee writes and convergence readback retain their existing gate.
+
+The installed shared and skill guidelines are read whole before editing. The affected mode follows the mode/Procedure/Prose/SOLID rules. Artifact Fields and callable contracts have no shape change, so no model mapping changes are necessary. The installed document/model tests and 59-file shared checker validate the links and layout. The source-selected fixture adapter is bounded and reports its limitations; a separate blinded reader packet exercises agent interpretation. Reader completion remains coordinator-owned evidence until its receipt is available.
+
+No disclosure efficiency or token-saving claim is made. The adapter and local source reads do not establish live tracker persistence or a production agent run.

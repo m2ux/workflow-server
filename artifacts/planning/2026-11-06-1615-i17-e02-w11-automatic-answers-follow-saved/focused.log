@@ -1,0 +1,19 @@
+test_automatic_answer_saves_reads_and_recomputes_before_write (test_advance_decisions.AdvanceDecisions.test_automatic_answer_saves_reads_and_recomputes_before_write) ... ok
+test_automatic_ask_answer_recomputes_from_its_saved_number (test_advance_decisions.AdvanceDecisions.test_automatic_ask_answer_recomputes_from_its_saved_number) ... ok
+test_automatic_decision_without_an_answer_stays_pending (test_advance_decisions.AdvanceDecisions.test_automatic_decision_without_an_answer_stays_pending) ... ok
+test_captured_converged_snapshot_has_no_further_calls (test_advance_decisions.AdvanceDecisions.test_captured_converged_snapshot_has_no_further_calls) ... ok
+test_failed_save_stops_before_queue_continuation (test_advance_decisions.AdvanceDecisions.test_failed_save_stops_before_queue_continuation) ... ok
+test_held_decision_has_no_priority_or_status_write (test_advance_decisions.AdvanceDecisions.test_held_decision_has_no_priority_or_status_write) ... ok
+test_missing_dependency_evidence_keeps_recomputation_pending (test_advance_decisions.AdvanceDecisions.test_missing_dependency_evidence_keeps_recomputation_pending) ... ok
+test_missing_source_readback_call_changes_the_observed_result (test_advance_decisions.AdvanceDecisions.test_missing_source_readback_call_changes_the_observed_result) ... ok
+test_missing_source_recompute_call_cannot_reuse_initial_queue (test_advance_decisions.AdvanceDecisions.test_missing_source_recompute_call_cannot_reuse_initial_queue) ... ok
+test_none_answer_retains_confirmed_unplanned_identity (test_advance_decisions.AdvanceDecisions.test_none_answer_retains_confirmed_unplanned_identity) ... ok
+test_refreshed_queue_with_another_decision_stays_pending (test_advance_decisions.AdvanceDecisions.test_refreshed_queue_with_another_decision_stays_pending) ... ok
+test_stale_readback_does_not_confirm_the_answer (test_advance_decisions.AdvanceDecisions.test_stale_readback_does_not_confirm_the_answer) ... ok
+test_unavailable_readback_stops_before_recomputation (test_advance_decisions.AdvanceDecisions.test_unavailable_readback_stops_before_recomputation) ... ok
+test_user_answer_uses_the_same_saved_evidence_route (test_advance_decisions.AdvanceDecisions.test_user_answer_uses_the_same_saved_evidence_route) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.928s
+
+OK

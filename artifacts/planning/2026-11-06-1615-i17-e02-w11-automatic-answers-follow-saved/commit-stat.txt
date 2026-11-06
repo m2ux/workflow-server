@@ -1,0 +1,6 @@
+29e85bae7 advance automatic answers through saved queue evidence
+ skills/work-planner/modes/advance-mode.md          |  10 +-
+ skills/work-planner/test/README.md                 |   4 +-
+ skills/work-planner/test/advance-captures.json     | 217 +++++++++++++++++++++
+ skills/work-planner/test/test_advance_decisions.py | 213 ++++++++++++++++++++
+ 4 files changed, 440 insertions(+), 4 deletions(-)

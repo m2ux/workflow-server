@@ -1,0 +1,14 @@
+Unit: I17:E02:W11
+Task checkout: /home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w11-automatic-answers-follow-saved
+Task branch and upstream: i17/e02/w11-automatic-answers-follow-saved, origin/i17/e02/w11-automatic-answers-follow-saved
+Base: d0cabbc4f2840556650069e0158a3fcd13d82532
+Committed and pushed head: 29e85bae7d4008b75fe9526edf523b8540a92215
+Commit subject: advance automatic answers through saved queue evidence
+Plain git push succeeded and created same-named remote branch.
+git ls-remote readback: remote-head.txt
+Tracked and untracked worktree status: clean (empty clean-status.txt).
+Production component: Advance Mode only.
+Other changed files: test_advance_decisions.py, advance-captures.json, test/README.md.
+Full planner:1018 run/1017pass/1 opt-in skip. Shared:280pass. Focused:14pass. Skill check:59files/0findings. Whitespace:0findings.
+Reader packet and operation fixture pinned in packet-manifest.sha256; reader receipt pending coordinator.
+No tracker/engineering/PR/merge mutations performed by worker. AC18 complete evidence remains pending the independent fresh-context trace.
