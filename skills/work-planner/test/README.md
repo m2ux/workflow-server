@@ -44,6 +44,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_development_link](test_development_link.py) | Development links added and removed by [development-link](../scripts/development-link.py), and read back from both ends |
 | [test_dispatch](test_dispatch.py) | Continuous dispatch from real delivery surveys and observed worker events |
 | [test_format](test_format.py) | [format](../scripts/format.py) on standalone issues |
+| [test_hotfix_readiness](test_hotfix_readiness.py) | Hot-fix readiness routes restore and confirm draft before repair |
 | [test_hotfix](test_hotfix.py) | [hotfix](../scripts/hotfix.py): a hot-fix's identity, target, board status, delivering pull requests and delivery unit state |
 | [test_lane](test_lane.py) | Lane's raw-cell, assignment, consistency and admission contracts |
 | [test_link_capture](test_link_capture.py) | The Development relation read from each end by [links-by-pull-request](../scripts/links-by-pull-request.py) and [links-by-issue](../scripts/links-by-issue.py), and the linked pull requests [linked-pull-requests](../scripts/linked-pull-requests.py) adds to a collection |
@@ -76,13 +77,13 @@ These modules read the skill's own documents rather than a script.
 
 ## Coverage
 
-One row per script in `../scripts`, then one per document the prose tests read. The table is the reverse of the catalogue: it answers what exercises a given file. Each module carries its test count, which is the only signal of how much of a subject a module reaches.
+One row per script in `../scripts`, then one per document the tests read. The table is the reverse of the catalogue: it answers what exercises a given file. Each module carries its test count, which is the only signal of how much of a subject a module reaches.
 
 ### Scripts
 
 | Script | Exercised by |
 | --- | --- |
-| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (16) |
+| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (16), [test_hotfix_readiness](test_hotfix_readiness.py) (12) |
 | [align](../scripts/align.py) | [test_align](test_align.py) (18) |
 | [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (11) |
 | [board-queue](../scripts/board-queue.py) | [test_board_queue](test_board_queue.py) (75) |
@@ -113,9 +114,10 @@ One row per script in `../scripts`, then one per document the prose tests read. 
 | `*/SKILL.md` | [test_modes](test_modes.py) (4) |
 | [README](README.md) | [test_readme](test_readme.py) (14) |
 | [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
-| `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (13) |
 | [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
+| [deliver-mode](../modes/deliver-mode.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_worktrees](test_worktrees.py) (2) |
 | [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (8) |
 | [configuration](../configuration.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |

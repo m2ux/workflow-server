@@ -205,13 +205,13 @@ class Coverage(unittest.TestCase):
             with self.subTest(script=script):
                 self.assertEqual(set(Path(target).stem for target in linked(row[1])), holders)
 
-    def test_a_document_row_names_the_prose_modules_that_read_it(self):
+    def test_a_document_row_names_the_modules_that_read_it(self):
         for row in rows(DOCUMENT_COVERAGE):
             document = subject(row[0])
             readers = {Path(name).stem for name in modules() + [THIS]
-                       if not scripts_named(name) and document in documents(name)}
+                       if document in documents(name)}
             with self.subTest(document=document):
-                self.assertTrue(readers, f'{document} is read by no prose module')
+                self.assertTrue(readers, f'{document} is read by no module')
                 self.assertEqual(set(Path(target).stem for target in linked(row[1])), readers)
 
     def test_each_count_is_the_modules_test_methods(self):
