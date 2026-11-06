@@ -30,6 +30,12 @@ The review records real losses separately from intended style changes and pre-ex
 | [Shared Tests](shared-tests.log) | Shared checker regression suite |
 | [Installed Checker](installed-checker.log) | Installed model result |
 | [Section Comparison](section-comparison.log) | Complete original-to-corrected third-level section comparison |
+| [Command Rendering](command-rendering.md) | Line-leading redirection finding, correction and verification limits |
+| [Rendering Evidence](command-rendering.json) | Eight original/corrected invocations and local rendered HTML |
+| [Rendering Document Tests](rendering-documents.log) | Thirteen document checks |
+| [Rendering Checkout Tests](rendering-checkouts.log) | Twelve checkout checks |
+| [Rendering Command Tests](rendering-contracts.log) | Nine command behavior checks |
+| [Rendering Skill Check](rendering-checker.log) | Installed model check after redirection escaping |
 
 ## Links
 
