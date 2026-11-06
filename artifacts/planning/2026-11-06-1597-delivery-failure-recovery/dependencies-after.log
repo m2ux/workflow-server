@@ -1,0 +1,74 @@
+--- problems
+none
+
+--- joins: candidate units, rows of one epic extending one component
+none
+
+--- advisory: numbering against start order
+E03:W14 (level 2) is numbered after E03:W13 (level 3)
+
+--- levels (0 = can start now)
+0 E00:W01 - Planning commits directly to engineering
+0 E00:W02 - Not-planned epic leaves its initiative
+0 E00:W03 - Board sync removes uncited not-planned items
+0 E00:W04 - Sync reads every linked pull request
+0 E01:W01 - Per-skill style model and checker
+0 E03:W01 - Work item declares an optional lane
+0 E03:W02 - Task table carries the lane column
+1 E01:W02 - Rules, conventions and configuration files
+1 E03:W03 - Work item holds its component declaration
+1 E03:W04 - Joined rows share one lane
+1 E03:W05 - Dependency check reads task table lanes
+1 E03:W06 - Lane cells validate and survive table writes
+1 E03:W07 - Delivery plan admits units by lane
+2 E01:W03 - Modes in the new style
+2 E01:W04 - Protocols in the new style
+2 E01:W05 - Issue and body artifacts in the new style
+2 E01:W06 - Board, queue, planning and review artifacts restyled
+2 E01:W07 - Delivery, branch and pull-request artifacts restyled
+2 E03:W08 - Available-work survey filters units by lane
+2 E03:W09 - Deliver mode passes the requested lane
+2 E03:W10 - Plan mode writes task row lanes
+2 E03:W11 - Board queue reports Ready units' lanes
+2 E03:W12 - Board-queue script prints Ready unit lanes
+2 E03:W14 - Cross-epic joins receive bounded diagnostics
+3 E01:W08 - Activate the Work Planner style model
+3 E03:W13 - Advance mode reports Ready unit lanes
+4 E02:W01 - SOLID guidelines, Fields and read-context boundaries
+4 E04:W01 - Confirm draft state after failed hot-fix readiness
+4 E04:W02 - Explicit merge outcomes and permission boundaries
+4 E04:W03 - Epic continuation follows the merge outcome
+5 E02:W02 - Audit ownership, Fields and prerequisite boundaries
+6 E02:W03 - Generic prose in general artifacts and modes
+6 E02:W04 - Generic interfaces in general scripts
+6 E02:W05 - Rule ownership and bounded prerequisite reads
+7 E02:W06 - Board Status artifact and transformations
+7 E02:W07 - Board Delivery calls the status operations
+7 E02:W08 - Hot-fix uses the extracted status contract
+8 E02:W09 - Detect Fields behavior and prerequisite violations
+9 E02:W10 - Retained preparations select verified worktree reuse
+
+--- component contention: rows of different epics extending one component
+none
+not checked, no component read: E00:W01, E00:W02, E00:W03, E00:W04, E01:W01, E01:W02, E01:W03, E01:W04, E01:W05, E01:W06, E01:W07, E01:W08, E02:W01, E02:W02, E02:W03, E02:W04, E02:W05, E02:W06, E02:W07, E02:W08, E02:W09, E02:W10, E03:W01, E03:W02, E03:W03, E03:W04, E03:W05, E03:W06, E03:W07, E03:W08, E03:W09, E03:W10, E03:W11, E03:W12, E03:W13, E03:W14
+
+--- epic priority (epics sharing a number start together)
+2 E00
+2 E01
+2 E03
+1 E02
+1 E04
+
+--- longest chains: 45, each of 10 steps
+on every chain: E01:W01, E01:W02, E01:W08, E02:W01, E02:W02, E02:W09, E02:W10
+E01:W01 -> E01:W02 -> E01:W03 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W03 -> E02:W06 -> E02:W09 -> E02:W10
+E01:W01 -> E01:W02 -> E01:W04 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W03 -> E02:W06 -> E02:W09 -> E02:W10
+E01:W01 -> E01:W02 -> E01:W05 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W03 -> E02:W06 -> E02:W09 -> E02:W10
+E01:W01 -> E01:W02 -> E01:W06 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W03 -> E02:W06 -> E02:W09 -> E02:W10
+E01:W01 -> E01:W02 -> E01:W07 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W03 -> E02:W06 -> E02:W09 -> E02:W10
+E01:W01 -> E01:W02 -> E01:W03 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W04 -> E02:W06 -> E02:W09 -> E02:W10
+E01:W01 -> E01:W02 -> E01:W04 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W04 -> E02:W06 -> E02:W09 -> E02:W10
+E01:W01 -> E01:W02 -> E01:W05 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W04 -> E02:W06 -> E02:W09 -> E02:W10
+E01:W01 -> E01:W02 -> E01:W06 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W04 -> E02:W06 -> E02:W09 -> E02:W10
+E01:W01 -> E01:W02 -> E01:W07 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W04 -> E02:W06 -> E02:W09 -> E02:W10
+... 35 more
