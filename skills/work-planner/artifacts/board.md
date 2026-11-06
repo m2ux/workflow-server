@@ -356,12 +356,7 @@ Either the supplied theme name or the proposals-board selection.
 
 The supplied existing board owner and number.
 
-**Example:**
-
-```text
-owner: m2ux
-board-number: 13
-```
+eg `owner: m2ux`, `board-number: 13`
 
 ### Repository
 
@@ -395,11 +390,7 @@ The new board owner and number. The number is absent until the copy succeeds.
 
 The supplied numeric issue id; it is distinct from the issue number.
 
-**Example:**
-
-```text
-3040123456
-```
+eg `3040123456`
 
 ### Initial Status
 
@@ -409,39 +400,21 @@ The initial Status selected by the caller.
 
 The supplied board item id and board coordinates.
 
-**Example:**
-
-```text
-board: users/m2ux/projectsV2/13
-item-id: 1001
-```
+eg `board: users/m2ux/projectsV2/13`, `item-id: 1001`
 
 ### Status Field
 
 The supplied Status field id and its option ids.
 
-**Example:**
-
-```text
-field-id: 419167630
-option-id: OPTION
-```
+eg `field-id: 419167630`, `option-id: OPTION`
 
 ### Status Input File
 
 The local input file containing the selected Status field id as a JSON integer and option id as a JSON string, from the fetched board fields.
 
-**Example:**
+eg `status-backlog.json`
 
-```text
-status-backlog.json
-```
-
-**Example contents:**
-
-```json
-{"fields":[{"id":419167630,"value":"OPTION"}]}
-```
+eg `{"fields": [{"id": 419167630, "value": "OPTION"}]}`
 
 ### Output Files
 
@@ -479,28 +452,16 @@ The repository link operation result for the supplied board.
 
 The supplied local output path for the complete board-field definitions.
 
-**Example:**
-
-```text
-fields.json
-```
+eg `fields.json`
 
 ### Board Items File
 
 The supplied local output path for the board items with Status and their complete issues.
 
-**Example:**
-
-```text
-items.json
-```
+eg `items.json`
 
 ### Theme Name
 
 The supplied theme name, excluding any originating proposal designator.
 
-**Example:**
-
-```text
-Canon
-```
+eg `Canon`

@@ -46,11 +46,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 The queue belongs to one theme board, identified as `users/{owner}/projectsV2/{id}` or `orgs/{owner}/projectsV2/{id}`. Its source snapshots contain board items with Status, board fields, initiative pull requests and any off-board issues its rows depend on.
 
-**Example:**
-
-```text
-users/<owner>/projectsV2/9
-```
+eg `users/<owner>/projectsV2/9`
 
 ### Priority Sets
 
@@ -171,61 +167,37 @@ The proposed calls, report lines and unresolved references, retaining pending de
 
 The supplied current board items with Status and their complete issue records, at the local paginated snapshot path.
 
-**Example:**
-
-```text
-items.json
-```
+eg `items.json`
 
 ### Pull Request Records
 
 The supplied complete initiative and hot-fix pull request records, one JSON object per nonempty line at the local file path.
 
-**Example:**
-
-```text
-prs.json
-```
+eg `prs.json`
 
 ### Issue Link Snapshot
 
 The complete supplied pull-request issue-link snapshot at its local JSON path.
 
-**Example:**
-
-```text
-links.json
-```
+eg `links.json`
 
 ### Board Fields
 
 The supplied board-field definitions at their local snapshot path.
 
-**Example:**
-
-```text
-fields.json
-```
+eg `fields.json`
 
 ### Output Directory
 
 The supplied local directory receiving proposed calls.
 
-**Example:**
-
-```text
-board/
-```
+eg `board/`
 
 ### Assignee Login
 
 The supplied login assigned to work from Ready.
 
-**Example:**
-
-```text
-m2ux
-```
+eg `m2ux`
 
 ### Workspace
 

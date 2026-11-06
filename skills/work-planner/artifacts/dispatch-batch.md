@@ -54,9 +54,7 @@ cd "[**<workspace>**](#workspace "○")" && &#92;
 
 One run records its board identity, scope selectors and requested lane in a JSON object. The scope is the selected board (`["*"]`), or a list of repository-qualified initiative, epic, task or hot-fix identities, such as `o/r#I07`, `o/r#I07:E00`, `o/r#I07:E00:W01` or `o/r#F02`. Every row of a joined unit must fall within that scope. An explicit joined selector, `o/r#I07:E00:W01+W02`, authorizes both rows. The requested lane meets [Index](lane.md#index), represented as `null` when none is requested.
 
-```json
-{"board": "users/o/projectsV2/7", "scope": ["o/r#I07"], "lane": null}
-```
+eg `{"board": "users/o/projectsV2/7", "scope": ["o/r#I07"], "lane": null}`
 
 ### Survey Evidence
 
@@ -66,9 +64,7 @@ The input is the [dispatch export](delivery-plan.md#dispatch-export) from a curr
 
 The harness supplies each observed session's `unit`, `session` identity and `state`: `preparing`, `running`, `review`, `blocked` or `completed`. Every state except `completed` holds its rows against another start. Only observed execution changes justify a state update. Free capacity is the harness's actual available worker slots, accounting for the coordinator, other sessions and component contributors; a review or blocked label alone frees no slot.
 
-```json
-[{"unit": "o/r#I07:E00:W01", "session": "worker-1", "state": "running"}]
-```
+eg `[{"unit": "o/r#I07:E00:W01", "session": "worker-1", "state": "running"}]`
 
 ### Selection
 
@@ -82,9 +78,7 @@ A preparation is this run's selected unit with its published record, captured co
 
 The start names one selected unit, has a currently free harness slot and overlaps no held or running session. Its supplied evidence names that unit, the planning record confirmed on the remote engineering branch, and the record associated with its confirmed hold. For rows, that association is read from every live row reservation; for a hot-fix it is the run's record for the unit whose board hold was confirmed. The evidence is gathered in that order before execution; any missing, mismatched or unverified evidence blocks the start.
 
-```json
-{"unit": "o/r#I07:E00:W01", "published_record": "2026-11-05-943-i07-e00-w01-work", "reserved_record": "2026-11-05-943-i07-e00-w01-work", "reservation_verified": true}
-```
+eg `{"unit": "o/r#I07:E00:W01", "published_record": "2026-11-05-943-i07-e00-w01-work", "reserved_record": "2026-11-05-943-i07-e00-w01-work", "reservation_verified": true}`
 
 ### Survey Board
 

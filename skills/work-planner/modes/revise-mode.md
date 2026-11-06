@@ -117,11 +117,7 @@ Checkout containing the installed skill, its scripts and tests.
 
 Affected skill directory. Comparison takes each skill directory the move touches.
 
-**Example:**
-
-```text
-skills/work-planner
-```
+eg `skills/work-planner`
 
 ### Base
 

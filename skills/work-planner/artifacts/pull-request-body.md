@@ -190,11 +190,7 @@ The optional existing complete pull request body.
 
 The supplied current REST pull request JSON.
 
-**Example:**
-
-```text
-pr-950.json
-```
+eg `pr-950.json`
 
 ### Overview URL
 
@@ -204,11 +200,7 @@ The published architecture overview URL on the engineering branch.
 
 The supplied local destination for the complete body.
 
-**Example:**
-
-```text
-fixed-950.md
-```
+eg `fixed-950.md`
 
 ### Unresolved Evidence
 

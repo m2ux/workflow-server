@@ -497,11 +497,7 @@ gh api &#92;
 
 The issue has its repository, number and URL. A new issue has its repository before creation supplies its number and URL.
 
-**Example:**
-
-```text
-943
-```
+eg `943`
 
 ### Content
 
@@ -528,31 +524,19 @@ GitHub's **Auto-close issues with merged linked pull requests** repository setti
 
 The tracker repository owner and name. Commands use these supplied values as owner and repo, or repository.
 
-**Example:**
-
-```text
-m2ux/workflow-server
-```
+eg `m2ux/workflow-server`
 
 ### Issue Record
 
 The complete current tracker issue JSON at the supplied local path, carrying its [Identity](#identity), [Content](#content) and [State](#state).
 
-**Example:**
-
-```text
-issue-943.json
-```
+eg `issue-943.json`
 
 ### Output Files
 
 The supplied local destinations for the requested issue, body, discussion, collection or Development evidence.
 
-**Example:**
-
-```text
-live-943.md
-```
+eg `live-943.md`
 
 ### Closure Evidence Paths
 
@@ -566,11 +550,7 @@ Whether the supplied request needs the issue discussion.
 
 The supplied complete body file, title and labels for creation, or the selected body and metadata changes for an existing issue, with an optional comment file.
 
-**Example:**
-
-```text
-body.md
-```
+eg `body.md`
 
 ### Label Names
 
@@ -580,12 +560,7 @@ The supplied repository label names for creation, addition or removal. An assign
 
 The supplied exact comment text, as one line or a complete local file, with the reviewer identity and addressed feedback for a reply. A posted comment also has its saved URL.
 
-**Example:**
-
-```text
-comment-text: Delivered by #950.
-comment-file: comment-874.md
-```
+eg `comment-text: Delivered by #950.`, `comment-file: comment-874.md`
 
 ### Delivery Evidence
 
@@ -603,63 +578,33 @@ Authenticated access to the repository and its issue Development relations.
 
 A complete issue-links file, keyed by issue number and carrying its repository identity. Each issue maps to all Development pull requests across repositories and states, or an empty array after a complete empty read.
 
-**Example:**
+eg `links-943.json`
 
-```text
-links-943.json
-```
-
-**Example contents:**
-
-```json
-{
-  "943": [{"repo": "owner/repo", "number": 980, "state": "MERGED"}]
-}
-```
+eg `{"943": [{"repo": "owner/repo", "number": 980, "state": "MERGED"}]}`
 
 ### Issue Collection
 
 One supplied tracker issue JSON or a collection of issue records. Pull request entries carry a pull_request field.
 
-**Example:**
-
-```text
-closed-issues.json
-```
+eg `closed-issues.json`
 
 ### Audit Selection
 
 The supplied issue numbers to audit, separated by commas, or the selection of every closed issue in the repository.
 
-**Example:**
-
-```text
-637, 943, 946
-```
+eg `637, 943, 946`
 
 ### Closure Findings
 
 The closure gate verdict or the sweep results, retaining each issue identity, state reason and finding, with execution failures identified.
 
-**Example output:**
-
-```text
-unsupported: owner/repo#943 closed as completed: acceptance criteria are missing or unticked; owner/repo#980 not merged (closed) - Work Title
-unevaluable: owner/repo#944 closed as completed: Development links not captured - Other Title
-not planned: owner/repo#945 closed as not_planned: acceptance criteria are missing or unticked - Moved Title
-1 unsupported, 1 unevaluable, 1 not planned
-```
+eg `unsupported: owner/repo#943 closed as completed: acceptance criteria are missing or unticked; owner/repo#980 not merged (closed) - Work Title`, `unevaluable: owner/repo#944 closed as completed: Development links not captured - Other Title`, `not planned: owner/repo#945 closed as not_planned: acceptance criteria are missing or unticked - Moved Title`, `1 unsupported, 1 unevaluable, 1 not planned`
 
 ### Tracker Prefix
 
 The supplied kind prefix letter, initiative prefix or existing prefixed titles. An initiative prefix includes the initiative id and its enclosing brackets.
 
-**Example:**
-
-```text
-initiative-prefix: [I08]
-prefix-letter: I
-```
+eg `initiative-prefix: [I08]`, `prefix-letter: I`
 
 ### Tracker Number
 

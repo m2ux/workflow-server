@@ -328,20 +328,7 @@ A project states the criteria its epics must carry in `config/required-criteria.
   A missing or empty file at the evaluated commit, or an empty array, declares no required criterion, and the check reports none. A project declaring nothing acquires no other project's criteria.
 - **An unreadable statement is unevaluable.**
   A revision resolving to no commit, unreadable JSON, a value other than an array, or an entry lacking a field or stating `paths` as anything but a non-empty list of non-empty strings leaves the project's required criteria unevaluable. The check reports that and names the fault, and reports no epic as lacking a criterion.
-- **Example.**
-  workflow-server requires its corpus audit of work that changes the workflow definitions under `corpus` on `workflows`:
-
-  ```json
-  [
-    {
-      "branch": "workflows",
-      "paths": ["corpus"],
-      "criterion": "The definitions this epic changes carry no outstanding confirmed finding, one neither fixed on the epic's branch nor taken by an issue, as the canon audit's coverage report shows.",
-      "phrase": "canon audit",
-      "row": "Canon audit of the changed definitions"
-    }
-  ]
-  ```
+- workflow-server requires its corpus audit of work that changes the workflow definitions under `corpus` on `workflows`: eg `[{"branch": "workflows", "paths": ["corpus"], "criterion": "The definitions this epic changes carry no outstanding confirmed finding, one neither fixed on the epic's branch nor taken by an issue, as the canon audit's coverage report shows.", "phrase": "canon audit", "row": "Canon audit of the changed definitions"}]`
 
 ### Task Delivery
 
@@ -371,11 +358,7 @@ Work Breakdown contains its table. Explanatory prose belongs in Proposal. The bo
 
 The supplied complete current epic issue JSON.
 
-**Example:**
-
-```text
-issue-943.json
-```
+eg `issue-943.json`
 
 ### Initiative Context
 
@@ -389,41 +372,25 @@ The proposed task rows or confirmed row changes, including descriptions, Coverag
 
 The supplied current pull request records for the epic.
 
-**Example:**
-
-```text
-prs.json
-```
+eg `prs.json`
 
 ### Issue Links
 
 The complete supplied issue-link snapshot.
 
-**Example:**
-
-```text
-links.json
-```
+eg `links.json`
 
 ### Task Records
 
 The supplied task issue JSON files.
 
-**Example:**
-
-```text
-issue-637.json
-```
+eg `issue-637.json`
 
 ### Delivery Matches
 
 The confirmed task-to-pull-request matches supplied by the caller.
 
-**Example:**
-
-```text
-W01=950,W01=951,W02=950
-```
+eg `W01=950,W01=951,W02=950`
 
 ### Project Checkout
 
@@ -437,72 +404,43 @@ The fetched revision supplied for evaluation at the project checkout.
 
 The fetched epic bases supplied for recording delivery, each identified by its revision.
 
-**Example:**
-
-```text
-origin/i07/e00/main
-origin/i07/e00/workflows
-```
+eg `origin/i07/e00/main`, `origin/i07/e00/workflows`
 
 ### Output Body
 
 The supplied local output path for the complete body.
 
-**Example:**
-
-```text
-fixed-943.md
-```
+eg `fixed-943.md`
 
 ### Criterion Selection
 
 The supplied verified criterion ids, or the unmet criterion ids and their delivery evidence for gap planning.
 
-**Example:**
-
-```text
-AC1,AC3
-```
+eg `AC1,AC3`
 
 ### Task Selection
 
 The confirmed task ids for the selected delivery units. A release selection also carries the supplied explicit user decision releasing the hold.
 
-**Example:**
-
-```text
-W01,W02
-```
+eg `W01,W02`
 
 ### Board Items
 
 The supplied current board items, including Status.
 
-**Example:**
-
-```text
-items.json
-```
+eg `items.json`
 
 ### Planning Folder
 
 The existing supplied planning-folder identity, planning-records base URL and the date the record is opened.
 
-**Example:**
-
-```text
-https://github.com/<owner>/<repo>/tree/engineering/artifacts/planning
-```
+eg `https://github.com/<owner>/<repo>/tree/engineering/artifacts/planning`
 
 ### Engineering Worktree
 
 The supplied engineering checkout containing the planning records.
 
-**Example:**
-
-```text
-.engineering
-```
+eg `.engineering`
 
 ### Validation Findings
 

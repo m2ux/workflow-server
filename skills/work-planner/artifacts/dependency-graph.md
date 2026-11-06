@@ -185,41 +185,19 @@ The supplied initiative and epic bodies or local drafts, work-item files for tas
 
 The initiative body file, each epic id and body file, each task id and work-item file, and each record file accounting for split candidate units. Files are absolute paths.
 
-**Example:**
-
-```text
-I=/drafts/live-936.md
-E00=/drafts/live-943.md
-E01=/drafts/live-937.md
-E00:W01=/drafts/e00/w01.md
-E01:W01=/drafts/e01/w01.md
-R=/records/joins.md
-```
+eg `I=/drafts/live-936.md`, `E00=/drafts/live-943.md`, `E01=/drafts/live-937.md`, `E00:W01=/drafts/e00/w01.md`, `E01:W01=/drafts/e01/w01.md`, `R=/records/joins.md`
 
 ### Renumber Inputs
 
 The initiative number, epic number for task renumbering, owning epic body for task renumbering, confirmed numbering map and affected body files, with explicitly authorized outside-initiative files when supplied.
 
-**Example:**
-
-```text
-initiative-number: 07
-epic-number: 1
-task-number-map: 7:3,3:5
-affected-body-file: live-*.md
-epic-number-map: 6:0,0:1
-body-file: live-936.md live-943.md
-```
+eg `initiative-number: 07`, `epic-number: 1`, `task-number-map: 7:3,3:5`, `affected-body-file: live-*.md`, `epic-number-map: 6:0,0:1`, `body-file: live-936.md live-943.md`
 
 ### Pull Request Records
 
 The supplied current complete pull request records, one JSON object per nonempty line at the local file path.
 
-**Example:**
-
-```text
-prs.json
-```
+eg `prs.json`
 
 ### Graph Result
 

@@ -179,21 +179,13 @@ The supplied record identity, folder path, artifact files and external links.
 
 The supplied folder path and its registered artifact files, meeting [Layout](#layout). A new folder is absent until created.
 
-**Example:**
-
-```text
-artifacts/planning/2026-10-15-950-queue-plan
-```
+eg `artifacts/planning/2026-10-15-950-queue-plan`
 
 ### Engineering Worktree
 
 The checkout holding the engineering branch, as an absolute path.
 
-**Example:**
-
-```text
-.engineering
-```
+eg `.engineering`
 
 ### Project Checkout
 
@@ -203,11 +195,7 @@ Any supplied checkout of the project.
 
 The supplied local file holding the exact commit message.
 
-**Example:**
-
-```text
-/tmp/msg.txt
-```
+eg `/tmp/msg.txt`
 
 ### Publication Result
 

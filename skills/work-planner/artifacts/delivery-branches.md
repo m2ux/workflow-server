@@ -402,18 +402,15 @@ A project states its long-lived branches in `config/branches` at its root, one n
 - A delivery survey evaluates the long-lived branch that states the project's branches, such as `origin/workspace`.
 - Verification of merged delivery evaluates the merged commit.
 
-- **Example.**
-  workflow-server's `config/branches` names `docker`, `main`, `workflows` and `workspace`.
+- eg `docker`, `main`, `workflows` and `workspace` in workflow-server's `config/branches`.
 
 ### Epic Bases
 
 - Each long-lived branch an epic changes has a base branch, named for the initiative, the epic and that branch, and rooted in that long-lived branch. Its prerequisite epics are closed as completed with every delivery base merged.
-- **Example.**
-  An epic base cut from `main` is `i07/e00/main`.
+- eg `i07/e00/main` for an epic base cut from `main`.
 - The base's last segment is its long-lived branch, which gives the target it merges and is merged into.
 - Each base is worked in one worktree, named by the base under the worktree directory of the repository's main working tree.
-- **Example.**
-  `i07/e00/main` merges `main`, and is checked out at `.worktrees/i07/e00/main`.
+- eg `i07/e00/main` merges `main` and is checked out at `.worktrees/i07/e00/main`.
 - Every pull request delivering the epic's tasks targets that epic base.
 - A completed epic is delivered by merging each base into its long-lived branch. The epic stays open until every base has merged. Another epic still incomplete holds no base back unless it is a prerequisite.
 - An epic sync reports each open or merged pull request off these routes as `target`: a task pull request into anything but one of its epic's bases, and an integration pull request into anything but the long-lived branch its head names.
@@ -432,15 +429,13 @@ A task row naming another epic's row starts once that row is delivered and each 
   The producer epic's other rows and its closure.
 - **Record.**
   Each reading names the producer row, the delivery, the output commit, the consumer revision and commit, and the answer. The integration, review and human-approval gates on each epic stand apart from it.
-- **Example.**
-  `#944 W02: E00:W01 #9 3f2a1c0d9b1e available at origin/i07/e01/main 8c4d2e7a1f30`.
+- eg `#944 W02: E00:W01 #9 3f2a1c0d9b1e available at origin/i07/e01/main 8c4d2e7a1f30`.
 
 ### Review Worktrees
 
 A reviewed pull request is read in a detached worktree, named by its number under the `pr` folder of the worktree directory of the repository's main working tree.
 
-- **Example.**
-  Pull request 950 is read at `.worktrees/pr/950`.
+- eg `.worktrees/pr/950` for pull request 950.
 
 ### Task Branches
 
@@ -452,8 +447,7 @@ A unit's task branch is cut from the epic base for the long-lived branch the uni
   A free row linking no work item is unplanned: its session writes the work item after dispatch. Its unit changes every epic base, and the session opens a pull request only from each branch its work changes.
 - **Several long-lived branches.**
   A unit whose rows name more than one long-lived branch takes one task branch per epic base it changes, cut from that base, since the bases share no history. Each is the unit's branch with the base's long-lived branch as its last slug word, and opens its own pull request into its own base.
-- **Example.**
-  A unit changing `main` and `workflows` works on `i01/e02/w04-write-defaults-main` from `i01/e02/main` and `i01/e02/w04-write-defaults-workflows` from `i01/e02/workflows`.
+- eg `i01/e02/w04-write-defaults-main` from `i01/e02/main` and `i01/e02/w04-write-defaults-workflows` from `i01/e02/workflows` for a unit changing `main` and `workflows`.
 - **Hot-fix.**
   A hot-fix works on the branch its [Branch](hotfix.md#branch) names.
 
@@ -469,18 +463,13 @@ Every worktree of a repository shares one stash list, so a delivery session that
   An entry is restored with `git stash apply` on that entry's commit, never with a bare `git stash pop`, which takes whichever entry tops the list.
 - **Dropped.**
   The session that made an entry drops it once restored, by the `stash@{<n>}` reference its message holds at that moment, since `git stash drop` takes no bare commit.
-- **Example.**
-  `git stash push -m "i11/e10/w29 before base merge"`, then `git stash list --format='%H %gd %s'` to find the entry, `git stash apply <entry-commit>`, and `git stash drop "stash@{<n>}"`.
+- eg `git stash push -m "i11/e10/w29 before base merge"`, then `git stash list --format='%H %gd %s'` to find the entry, `git stash apply <entry-commit>`, and `git stash drop "stash@{<n>}"`.
 
 ### Epic Identity
 
 The initiative and epic identifier, with an epic branch prefix of `i<initiative-number>/e<epic-number>`.
 
-**Example:**
-
-```text
-i07/e00
-```
+eg `i07/e00`
 
 ### Changed Branches
 
@@ -498,51 +487,31 @@ The source branch name without the `origin/` prefix.
 
 The full epic-base branch name.
 
-**Example:**
-
-```text
-i07/e00/main
-```
+eg `i07/e00/main`
 
 ### Task Branch
 
 The destination task branch name.
 
-**Example:**
-
-```text
-i07/e00/w01-queue-plan
-```
+eg `i07/e00/w01-queue-plan`
 
 ### Base Branch
 
 The fetched base from which the task branch is rooted.
 
-**Example:**
-
-```text
-i07/e00/main
-```
+eg `i07/e00/main`
 
 ### Worktree Path
 
 The caller-composed lasting path, resolved against the checkout running the command and placed under the project’s worktree directory.
 
-**Example:**
-
-```text
-.worktrees/i07/e00/w01-queue-plan
-```
+eg `.worktrees/i07/e00/w01-queue-plan`
 
 ### Pull Request Number
 
 The repository-local pull request number.
 
-**Example:**
-
-```text
-950
-```
+eg `950`
 
 ### Verified Head
 
@@ -552,22 +521,13 @@ The literal verified head commit used to read a reviewed change.
 
 The long-lived target branch whose current protection and active rules govern readiness.
 
-**Example:**
-
-```text
-main
-```
+eg `main`
 
 ### Output Files
 
 Destination paths for the requested protection and active-rule responses.
 
-**Example:**
-
-```text
-branch-protection-file: protection.json
-branch-rules-file: branch-rules.json
-```
+eg `branch-protection-file: protection.json`, `branch-rules-file: branch-rules.json`
 
 ### Branch Names
 
@@ -621,11 +581,7 @@ The supplied repository checkout in which a git operation acts; callers name the
 
 The fetched commit or revision evaluated by the run.
 
-**Example:**
-
-```text
-origin/i07/e00/main
-```
+eg `origin/i07/e00/main`
 
 ### Failure
 

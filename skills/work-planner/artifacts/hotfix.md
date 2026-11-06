@@ -160,11 +160,7 @@ The supplied repository owner and name.
 
 The supplied complete current hot-fix issue JSON.
 
-**Example:**
-
-```text
-issue-874.json
-```
+eg `issue-874.json`
 
 ### Board Evidence
 
@@ -174,21 +170,13 @@ The supplied board identity, most recently read board items with Status and fiel
 
 The supplied current pull request records.
 
-**Example:**
-
-```text
-prs.json
-```
+eg `prs.json`
 
 ### Issue Links
 
 The complete supplied issue-link snapshot.
 
-**Example:**
-
-```text
-links.json
-```
+eg `links.json`
 
 ### Delivery Selection
 
@@ -196,22 +184,13 @@ Verified criterion ids may be empty when recording delivery without requesting c
 
 The confirmed delivering pull request number and the verified criterion ids.
 
-**Example:**
-
-```text
-pull-request-number: 950
-criterion-ids: AC1
-```
+eg `pull-request-number: 950`, `criterion-ids: AC1`
 
 ### Output Body
 
 The supplied local destination for the complete provided body.
 
-**Example:**
-
-```text
-fixed-874.md
-```
+eg `fixed-874.md`
 
 ### Hot-fix Number
 

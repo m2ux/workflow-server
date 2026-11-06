@@ -198,11 +198,7 @@ The current orphan body, candidate destinations, proposed work and supplied plan
 
 The complete supplied repository issue collection, at its local JSON file path.
 
-**Example:**
-
-```text
-issues.json
-```
+eg `issues.json`
 
 ### Confirmed Placement
 

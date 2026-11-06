@@ -86,51 +86,31 @@ The optional JSON export holds exactly the available units in report order. Each
 
 The current board-items snapshot file, including each issue body.
 
-**Example:**
-
-```text
-items.json
-```
+eg `items.json`
 
 ### Pull Request Records
 
 The current pull request records snapshot file.
 
-**Example:**
-
-```text
-prs.json
-```
+eg `prs.json`
 
 ### Issue-Link Snapshot
 
 The complete Development relation snapshot file.
 
-**Example:**
-
-```text
-links.json
-```
+eg `links.json`
 
 ### Epic-Base Names
 
 A comma-separated list of full epic-base branch names.
 
-**Example:**
-
-```text
-i07/e00/main,i07/e00/workflows
-```
+eg `i07/e00/main,i07/e00/workflows`
 
 ### Engineering Worktree
 
 The engineering checkout where each free row’s linked work-item file is read.
 
-**Example:**
-
-```text
-<checkout>/.engineering
-```
+eg `<checkout>/.engineering`
 
 ### Off-Board Issues
 
@@ -140,11 +120,7 @@ Each resolved off-board issue record supplied through `--others`.
 
 The optional requested bare decimal lane index; absent when the run names no lane, meeting [Index](lane.md#index).
 
-**Example:**
-
-```text
-2
-```
+eg `2`
 
 ### Record Date
 
@@ -170,11 +146,7 @@ The project repository checkout supplied for branch and delivery reads or writes
 
 The fetched commit or revision evaluated by the run.
 
-**Example:**
-
-```text
-origin/workspace
-```
+eg `origin/workspace`
 
 ### Failure
 

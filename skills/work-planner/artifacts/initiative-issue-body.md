@@ -273,54 +273,31 @@ The scoped proposal, confirmed goal clauses, requirement sources and epic summar
 
 The supplied complete current initiative issue JSON.
 
-**Example:**
-
-```text
-issue-936.json
-```
+eg `issue-936.json`
 
 ### Epic Records
 
 Every linked epic's current JSON.
 
-**Example:**
-
-```text
-issue-943.json issue-937.json
-```
+eg `issue-943.json issue-937.json`
 
 ### Source Evidence
 
 The source locations, checkout paths and authenticated source access supplied for reading, with the contents and source identities once read. A pinned GitHub source has its repository owner and name, path and pinned revision, URL-encoded for the request.
 
-**Example:**
-
-```text
-repository: m2ux/workflow-server
-source-path: docs/spec.md
-revision: 4a217fe6
-```
+eg `repository: m2ux/workflow-server`, `source-path: docs/spec.md`, `revision: 4a217fe6`
 
 ### Output Files
 
 The supplied local destinations for source contents or a complete body; the body output is optional when only a delivery report is requested.
 
-**Example:**
-
-```text
-output-body-file: fixed-936.md
-source-file: source-R1.md
-```
+eg `output-body-file: fixed-936.md`, `source-file: source-R1.md`
 
 ### Criterion Selection
 
 The supplied verified criterion ids.
 
-**Example:**
-
-```text
-AC2
-```
+eg `AC2`
 
 ### Validation Findings
 

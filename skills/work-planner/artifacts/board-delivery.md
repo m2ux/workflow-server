@@ -204,41 +204,25 @@ The saved item statuses or unresolved discrepancies provided after item readback
 
 The supplied complete current initiative JSON at its local file path.
 
-**Example:**
-
-```text
-issue-936.json
-```
+eg `issue-936.json`
 
 ### Epic Records
 
 The supplied complete current epic JSON records, each at a separate local file path.
 
-**Example:**
-
-```text
-issue-943.json issue-937.json
-```
+eg `issue-943.json issue-937.json`
 
 ### Task Records
 
 The supplied complete current task issue JSON records, each at a separate local file path.
 
-**Example:**
-
-```text
-issue-637.json
-```
+eg `issue-637.json`
 
 ### Pull Request Records
 
 The supplied freshly fetched complete REST pull request records, one JSON object per nonempty line at the local file path.
 
-**Example:**
-
-```text
-prs.json
-```
+eg `prs.json`
 
 ### Published Reviews
 
@@ -248,51 +232,31 @@ The JSON list of published agent-review records fetched from their linked planni
 
 The supplied complete pull-request issue-link snapshot at its local file path.
 
-**Example:**
-
-```text
-links.json
-```
+eg `links.json`
 
 ### Board Identity
 
 The supplied users/owner/projectsV2/number or orgs/owner/projectsV2/number board identity.
 
-**Example:**
-
-```text
-users/m2ux/projectsV2/9
-```
+eg `users/m2ux/projectsV2/9`
 
 ### Board Fields
 
 The supplied board field definitions at their local snapshot path.
 
-**Example:**
-
-```text
-fields.json
-```
+eg `fields.json`
 
 ### Board Items
 
 The supplied board items with Status and their complete issue records, at the local paginated snapshot path.
 
-**Example:**
-
-```text
-items.json
-```
+eg `items.json`
 
 ### Output Directory
 
 The supplied local directory receiving generated calls.
 
-**Example:**
-
-```text
-board/
-```
+eg `board/`
 
 ### Output Paths
 
@@ -302,11 +266,7 @@ The supplied local paths for fetched evidence and generated calls.
 
 The supplied login assigned to work from Ready.
 
-**Example:**
-
-```text
-m2ux
-```
+eg `m2ux`
 
 ### Workspace
 
