@@ -56,6 +56,9 @@ Verify exact preservation of invocation blocks, literal templates, Fields, capab
 | [validation.md](validation.md) | Committed source, preserved contracts, checks and evidence limits |
 | [section-comparison.log](section-comparison.log) | Third-level body preservation; inventory/rule changes are checked separately |
 
+| [e02-readback.json](e02-readback.json) | Exact saved E02 body and metadata |
+| [e02-saved-format.log](e02-saved-format.log) | Zero-finding saved-body check |
+
 ## Result
 
 Committed and pushed as `c3d4f5b7bafba00096f71c8f53f213e57a264cba`. All 43 inventories are removed and context is selected through in-text links. Command/Fields/template content and actual execution/dependency gates are preserved. The model reports zero findings; planner 945 passed/one skip; shared checker 280 passed. Two independent passes cover each of Standup, Understand and Revise, with task correctness and retrieval limitations recorded separately. Active E02 planning uses the same reading model. PR #1641 remains draft.
