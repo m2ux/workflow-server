@@ -120,3 +120,9 @@ Runtime meanings live in [Link Roles](https://github.com/m2ux/workflow-server/bl
 | [Initial source identity](context-initial-manifest.json) | First reading round, 115 frozen files |
 | [Final source identity](context-final-manifest.json) | Second reading round and definitive full-suite source |
 | [Source preservation](context-source-preservation.json) | Unchanged frozen trees and final integration equality |
+
+## Symbol Link Titles
+
+| Artifact | What it holds |
+| --- | --- |
+| [Symbol notation](symbol-link-titles.md) | Approved symbol mapping, scope, preservation check and validation |
