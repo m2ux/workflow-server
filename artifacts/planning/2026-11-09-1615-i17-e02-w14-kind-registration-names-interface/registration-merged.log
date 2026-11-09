@@ -1,0 +1,36 @@
+Interface operations and the general contract each fills:
+  Release Hold: Requested Hold Release -> modes/deliver-mode.md#requested-hold-release [resolves]
+  Record Dispatch Status: Record Dispatch Status -> artifacts/board-delivery.md#record-dispatch-status [resolves]
+  Record Delivery: Issue Delivery -> protocols/issue-delivery.md [resolves]
+  Record Merge: Task Merge -> protocols/task-merge.md [resolves]
+  Settle Board Status: Status Changes -> artifacts/board-delivery.md#status-changes [resolves]
+  Populate Body: Body -> artifacts/issue-body.md#body [resolves]
+  Review Before Merge: Produce Agent Review -> artifacts/agent-review.md#produce-agent-review [resolves]
+Kinds, their artifacts and the interface operations each supplies:
+  Proposal
+    Proposal Body -> artifacts/proposal-body.md [resolves]
+  Initiative
+    Initiative -> artifacts/initiative.md [resolves]
+    Initiative Issue Body -> artifacts/initiative-issue-body.md [resolves]
+      Populate Body: Populate Initiative Issue Body [present]
+  Epic
+    Epic -> artifacts/epic.md [resolves]
+    Epic Issue Body -> artifacts/epic-issue-body.md [resolves]
+      Populate Body: Populate Epic Issue Body [present]
+  Task
+    Task Body -> artifacts/task-body.md [resolves]
+  Standalone issue
+    Standalone Body -> artifacts/standalone-body.md [resolves]
+      Populate Body: Populate Standalone Body [present]
+  Hot-fix
+    Hot-fix -> artifacts/hotfix.md [resolves]
+      Release Hold: Release Hot-fix Hold [not yet in artifact]
+      Record Dispatch Status: Record Hot-fix Dispatch Status [not yet in artifact]
+      Record Delivery: Record Hot-fix Delivery [not yet in artifact]
+      Record Merge: Record Hot-fix Merge [not yet in artifact]
+      Settle Board Status: Settle Hot-fix Board Status [present]
+      Review Before Merge: Review Hot-fix Before Merge [not yet in artifact]
+    Hot-fix Body -> artifacts/hotfix-body.md [resolves]
+      Populate Body: Populate Hot-fix Body [not yet in artifact]
+Kinds: 6 Interface operations: 7
+Failures: none

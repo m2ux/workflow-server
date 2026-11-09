@@ -50,6 +50,16 @@ python3 registration-reader.py skills/work-planner                # checkout roo
 git diff --check origin/i17/e02/workspace HEAD                    # checkout root
 ```
 
+## Current Base
+
+The epic base moved to `d463fc463` (W17 #1667), merged into the branch at `ed41c8b9866b0272f8cb08c36494d05aee51fcaf`. The same checks at that head:
+
+- Planner: 1045 tests, one opt-in live-link skip ([planner-merged.log](planner-merged.log)).
+- Shared: 280 pass ([shared-merged.log](shared-merged.log)).
+- Skill checker: 59 files, zero findings ([skill-check-merged.log](skill-check-merged.log)).
+- Registration reader: six kinds, seven operations, no failures ([registration-merged.log](registration-merged.log)).
+- Whitespace: zero findings.
+
 ## Limits
 
 General callers still link to the hot-fix artifact directly; W22–W45 move each to the registration. The reader checks names and links, not that a kind operation's contract matches the general one; AC27 and AC28 observe that.
