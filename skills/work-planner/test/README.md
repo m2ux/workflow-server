@@ -99,9 +99,9 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (22) |
-| [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (185), [test_templates](test_templates.py) (6) |
+| [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
 | [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (21), [test_kinds](test_kinds.py) (9) |
-| [kinds](../scripts/kinds.py) | [test_dispatch](test_dispatch.py) (22), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (21), [test_kinds](test_kinds.py) (9) |
+| [kinds](../scripts/kinds.py) | [test_dispatch](test_dispatch.py) (22), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (21), [test_kinds](test_kinds.py) (9), [test_sync](test_sync.py) (187) |
 | [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (22), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
@@ -111,7 +111,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32) |
 | [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |
 | [statuses](../scripts/statuses.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (17), [test_statuses](test_statuses.py) (21) |
-| [sync](../scripts/sync.py) | [test_align](test_align.py) (18), [test_link_capture](test_link_capture.py) (22), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (185) |
+| [sync](../scripts/sync.py) | [test_align](test_align.py) (18), [test_link_capture](test_link_capture.py) (22), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (187) |
 
 ### Documents
 
