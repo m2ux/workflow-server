@@ -51,9 +51,9 @@ The search covers the kinds that depart from the planning hierarchy. Status Chan
 
 ## Current Base
 
-The epic base moved to `36c18a359` (W30 #1672), merged into the branch at `fd28ccdd0bb01a530d2647df42ad242459ded267`. The same checks at that head:
+The epic base moved to `b49480b09` (W30, W18, W26, W28, W20, W31, W22 and W24), merged into the branch at `f48826cb26b2e2bc8339382b9341bfa1ce1e6025`. The same checks at that head:
 
-- Planner: 1067 tests, one opt-in live-link skip ([planner-merged.log](planner-merged.log)).
+- Planner: 1095 tests, one opt-in live-link skip ([planner-merged.log](planner-merged.log)).
 - Shared: 280 pass ([shared-merged.log](shared-merged.log)).
 - Skill checker: 59 files, zero findings ([skill-check-merged.log](skill-check-merged.log)).
 - Kind search and route: zero hits, no failures ([membership-route-merged.log](membership-route-merged.log)).
