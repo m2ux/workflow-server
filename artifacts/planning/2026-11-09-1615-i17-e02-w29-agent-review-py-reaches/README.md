@@ -7,6 +7,7 @@ One separation fix row from the E02 component refinement. The declared one-file 
 | File | Purpose |
 | --- | --- |
 | [w29.md](w29.md) | Component, scope, implementation and observing validation for W29. |
+| [validation.md](validation.md) | Kind search, registry and full-check evidence for AC39, with its logs. |
 
 ## Links
 

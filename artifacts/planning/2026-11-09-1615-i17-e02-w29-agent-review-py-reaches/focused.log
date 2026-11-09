@@ -1,0 +1,59 @@
+test_changed_head_or_target_blocks (test_agent_review.AgentReview.test_changed_head_or_target_blocks) ... ok
+test_current_published_review_passes (test_agent_review.AgentReview.test_current_published_review_passes) ... ok
+test_deferred_nonblocker_requires_ticket (test_agent_review.AgentReview.test_deferred_nonblocker_requires_ticket) ... ok
+test_every_open_epic_integration_needs_review (test_agent_review.AgentReview.test_every_open_epic_integration_needs_review) ... ok
+test_example_record_links_do_not_establish_publication (test_agent_review.AgentReview.test_example_record_links_do_not_establish_publication) ... ok
+test_fixed_blocker_requires_evidence_and_current_review (test_agent_review.AgentReview.test_fixed_blocker_requires_evidence_and_current_review) ... ok
+test_handoff_check_cli_round_trip (test_agent_review.AgentReview.test_handoff_check_cli_round_trip) ... ok
+test_latest_same_revision_record_is_authoritative (test_agent_review.AgentReview.test_latest_same_revision_record_is_authoritative) ... ok
+test_missing_review_blocks (test_agent_review.AgentReview.test_missing_review_blocks) ... ok
+test_missing_scope_criteria_validation_or_link_blocks (test_agent_review.AgentReview.test_missing_scope_criteria_validation_or_link_blocks) ... ok
+test_open_or_deferred_blocker_blocks (test_agent_review.AgentReview.test_open_or_deferred_blocker_blocks) ... ok
+test_reduced_snapshot_is_reported_without_crashing (test_agent_review.AgentReview.test_reduced_snapshot_is_reported_without_crashing) ... ok
+test_wrong_repository_or_task_pr_cannot_supply_review (test_agent_review.AgentReview.test_wrong_repository_or_task_pr_cannot_supply_review) ... ok
+test_a_changed_head_or_base_branch_makes_it_stale_and_a_moved_target_does_not (test_agent_review.HotFixReview.test_a_changed_head_or_base_branch_makes_it_stale_and_a_moved_target_does_not) ... ok
+test_a_record_written_from_the_pull_request_as_produce_says_passes (test_agent_review.HotFixReview.test_a_record_written_from_the_pull_request_as_produce_says_passes) ... ok
+test_every_finding_is_fixed (test_agent_review.HotFixReview.test_every_finding_is_fixed) ... ok
+test_a_registered_kind_is_selected_through_the_registry (test_agent_review.RegisteredKind.test_a_registered_kind_is_selected_through_the_registry) ... ok
+test_it_imports_no_kind_module_and_names_no_kind (test_agent_review.RegisteredKind.test_it_imports_no_kind_module_and_names_no_kind) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.199s
+
+OK
+test_changed_head_after_ready_restores_before_repair (test_hotfix_readiness.HotFixReadiness.test_changed_head_after_ready_restores_before_repair) ... ok
+test_failed_ready_write_restores_a_partial_write_before_repair (test_hotfix_readiness.HotFixReadiness.test_failed_ready_write_restores_a_partial_write_before_repair) ... ok
+test_failed_restoration_reads_and_stops_with_the_discrepancy (test_hotfix_readiness.HotFixReadiness.test_failed_restoration_reads_and_stops_with_the_discrepancy) ... ok
+test_initial_invalid_draft_review_confirms_without_an_extra_write (test_hotfix_readiness.HotFixReadiness.test_initial_invalid_draft_review_confirms_without_an_extra_write) ... ok
+test_initial_invalid_ready_review_restores_and_reads_before_repair (test_hotfix_readiness.HotFixReadiness.test_initial_invalid_ready_review_restores_and_reads_before_repair) ... ok
+test_missing_restoration_call_changes_the_observed_failure_route (test_hotfix_readiness.HotFixReadiness.test_missing_restoration_call_changes_the_observed_failure_route) ... ok
+test_new_review_finding_after_ready_restores_before_repair (test_hotfix_readiness.HotFixReadiness.test_new_review_finding_after_ready_restores_before_repair) ... ok
+test_passing_draft_reaches_merge_once_after_ready_readback (test_hotfix_readiness.HotFixReadiness.test_passing_draft_reaches_merge_once_after_ready_readback) ... ok
+test_passing_ready_reaches_merge_once_without_a_ready_write (test_hotfix_readiness.HotFixReadiness.test_passing_ready_reaches_merge_once_without_a_ready_write) ... ok
+test_successful_write_with_ready_readback_stops (test_hotfix_readiness.HotFixReadiness.test_successful_write_with_ready_readback_stops) ... ok
+test_unreadable_or_closed_initial_state_stops_without_writes (test_hotfix_readiness.HotFixReadiness.test_unreadable_or_closed_initial_state_stops_without_writes) ... ok
+test_unreadable_restoration_readback_stops (test_hotfix_readiness.HotFixReadiness.test_unreadable_restoration_readback_stops) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.029s
+
+OK
+test_a_defect_relabelled_as_unrelated_keeps_its_finding_and_fails_review (test_review_scope.ReviewScope.test_a_defect_relabelled_as_unrelated_keeps_its_finding_and_fails_review) ... ok
+test_a_new_caller_exposes_an_unchanged_helpers_failure (test_review_scope.ReviewScope.test_a_new_caller_exposes_an_unchanged_helpers_failure) ... ok
+test_changed_boundary_has_an_observable_failure (test_review_scope.ReviewScope.test_changed_boundary_has_an_observable_failure) ... ok
+test_every_fixed_hotfix_finding_requires_linked_evidence (test_review_scope.ReviewScope.test_every_fixed_hotfix_finding_requires_linked_evidence) ... ok
+test_exclusion_evidence_uses_the_existing_scope_and_findings_shape (test_review_scope.ReviewScope.test_exclusion_evidence_uses_the_existing_scope_and_findings_shape) ... ok
+test_fixture_evidence_establishes_each_cases_membership (test_review_scope.ReviewScope.test_fixture_evidence_establishes_each_cases_membership) ... ok
+test_integration_review_dispositions_and_missing_links (test_review_scope.ReviewScope.test_integration_review_dispositions_and_missing_links) ... ok
+test_introduced_defects_and_affected_caller_risks_are_findings (test_review_scope.ReviewScope.test_introduced_defects_and_affected_caller_risks_are_findings) ... ok
+test_only_evidenced_unrelated_debt_with_a_saved_issue_leaves_the_findings (test_review_scope.ReviewScope.test_only_evidenced_unrelated_debt_with_a_saved_issue_leaves_the_findings) ... ok
+test_resolved_membership_passes_only_when_every_finding_is_fixed (test_review_scope.ReviewScope.test_resolved_membership_passes_only_when_every_finding_is_fixed) ... ok
+test_scope_annotations_cannot_waive_an_open_or_deferred_hotfix_finding (test_review_scope.ReviewScope.test_scope_annotations_cannot_waive_an_open_or_deferred_hotfix_finding) ... ok
+test_scope_annotations_do_not_waive_a_blocking_integration_finding (test_review_scope.ReviewScope.test_scope_annotations_do_not_waive_a_blocking_integration_finding) ... ok
+test_scope_notes_do_not_establish_current_review_identity (test_review_scope.ReviewScope.test_scope_notes_do_not_establish_current_review_identity) ... ok
+test_unrelated_path_capture_keeps_its_fault_and_the_changed_callers_result (test_review_scope.ReviewScope.test_unrelated_path_capture_keeps_its_fault_and_the_changed_callers_result) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.009s
+
+OK
