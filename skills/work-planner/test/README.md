@@ -64,6 +64,7 @@ These modules exercise the skill's instruction routes and document contracts.
 
 | Module | What it guards |
 | --- | --- |
+| [test_architecture_diagrams](test_architecture_diagrams.py) | Architecture diagrams preserve measured topology and the consumer's owning contract |
 | [test_checkouts](test_checkouts.py) | Checkout-sensitive commands consume linked input contracts |
 | [test_documents](test_documents.py) | The installed prose API exposes complete inputs and directed reading paths |
 | [test_merge_outcomes](test_merge_outcomes.py) | Merge instructions bind verified heads and select terminal or bounded recovery routes |
@@ -118,6 +119,8 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
 | `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (13) |
 | [advance-mode](../modes/advance-mode.md) | [test_advance_decisions](test_advance_decisions.py) (14) |
+| [architecture-overview](../artifacts/architecture-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
+| [change-overview](../protocols/change-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
 | [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [deliver-mode](../modes/deliver-mode.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12) |

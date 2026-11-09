@@ -1,0 +1,130 @@
+{
+  "provenance": {
+    "pull_request": 1660,
+    "head": "ff94f4a28ee0134a10f46ba571a9795f5e6841f1",
+    "base": "9a924cfdda903ca64257449d8b5bf2ff762725ce",
+    "source": "e04-section-edges.json",
+    "relation": "CodeRelation CONTAINS",
+    "freshness": "captured index and requested head both ff94f4a; historical snapshot, not current branch graph",
+    "limitation": "Section containment only; no production execution order or agent call graph"
+  },
+  "nodes": {
+    "N0": {
+      "name": "1. Prepare the Evidence",
+      "path": "skills/work-planner/protocols/epic-integration.md",
+      "line": 9
+    },
+    "N1": {
+      "name": "2. Refresh and Validate",
+      "path": "skills/work-planner/protocols/epic-integration.md",
+      "line": 20
+    },
+    "N2": {
+      "name": "3. Merge or Hand Off",
+      "path": "skills/work-planner/protocols/epic-integration.md",
+      "line": 48
+    },
+    "N3": {
+      "name": "4. Confirm the Result",
+      "path": "skills/work-planner/protocols/epic-integration.md",
+      "line": 74
+    },
+    "N4": {
+      "name": "Changed Branch Content",
+      "path": "skills/work-planner/protocols/epic-integration.md",
+      "line": 27
+    },
+    "N5": {
+      "name": "Confirmed Merge",
+      "path": "skills/work-planner/protocols/epic-integration.md",
+      "line": 70
+    },
+    "N6": {
+      "name": "Current Review Handoff",
+      "path": "skills/work-planner/protocols/epic-integration.md",
+      "line": 33
+    },
+    "N7": {
+      "name": "Epic Integration",
+      "path": "skills/work-planner/protocols/epic-integration.md",
+      "line": 1
+    },
+    "N8": {
+      "name": "GitHub Refusal",
+      "path": "skills/work-planner/protocols/epic-integration.md",
+      "line": 62
+    },
+    "N9": {
+      "name": "Harness Denial",
+      "path": "skills/work-planner/protocols/epic-integration.md",
+      "line": 58
+    },
+    "N10": {
+      "name": "Human Handoff",
+      "path": "skills/work-planner/protocols/epic-integration.md",
+      "line": 54
+    },
+    "N11": {
+      "name": "Procedure",
+      "path": "skills/work-planner/protocols/epic-integration.md",
+      "line": 7
+    }
+  },
+  "edges": [
+    [
+      "N7",
+      "N11",
+      "CONTAINS"
+    ],
+    [
+      "N11",
+      "N0",
+      "CONTAINS"
+    ],
+    [
+      "N11",
+      "N1",
+      "CONTAINS"
+    ],
+    [
+      "N1",
+      "N4",
+      "CONTAINS"
+    ],
+    [
+      "N1",
+      "N6",
+      "CONTAINS"
+    ],
+    [
+      "N11",
+      "N2",
+      "CONTAINS"
+    ],
+    [
+      "N2",
+      "N10",
+      "CONTAINS"
+    ],
+    [
+      "N2",
+      "N9",
+      "CONTAINS"
+    ],
+    [
+      "N2",
+      "N8",
+      "CONTAINS"
+    ],
+    [
+      "N2",
+      "N5",
+      "CONTAINS"
+    ],
+    [
+      "N11",
+      "N3",
+      "CONTAINS"
+    ]
+  ]
+}
