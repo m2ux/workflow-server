@@ -51,3 +51,8 @@ git diff --check origin/i17/e02/workspace HEAD                    # checkout roo
 ## Limits
 
 The boundary reader pins phrases, not an agent's reading of the prose. `scripts/format.py` is unchanged; its required-criteria behaviour is what the fixtures observe.
+
+## Delivery
+
+- Pull request [#1670](https://github.com/m2ux/workflow-server/pull/1670), merged at `71329c3441369679c6a2a8d89b189f7410c06ee6`.
+- Change list: no plan change applied or held. No arising issue.
