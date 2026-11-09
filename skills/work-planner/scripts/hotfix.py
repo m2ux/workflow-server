@@ -1,46 +1,48 @@
 """A hot-fix's identity and lifecycle, as artifacts/hotfix-body.md and artifacts/hotfix.md state them.
 
 An issue whose title opens with [F00] is a hot-fix, and it carries the priority: 10 label. Its
-Overview names the long-lived branch it fixes in one Target: line. Its target, its board status,
-the pull requests that deliver it and the state of its delivery unit are read here, and the scripts
-that place, survey, record, check or report a hot-fix call these functions.
+Overview names the long-lived branch it fixes in one Target: line. This module supplies the hot-fix
+kind to the script registry, kinds.py: each operation of its Kind interface, with the inputs and
+results that interface states, reads a hot-fix's tag, body faults, target, board status, linking and
+delivering pull requests and the state of its delivery unit. hotfix_tag, is_hotfix and hotfix_faults
+are the names general scripts import directly.
 """
 import re
 
+from kinds import OFF_BOARD, Key
+
 HOTFIX = re.compile(r'^\[(F\d\d)\]')
 PRIORITY = 'priority: 10'
-OFF_BOARD = 'off the board'
 TARGET = re.compile(r'^Target: `([^`\s]+)`\s*$')
 ITEM = re.compile(r'^(?:[-*+]|\d+[.)])\s')
-Key = tuple[str, int]
 
 
-def hotfix_tag(item: dict) -> str | None:
+def tag(item: dict) -> str | None:
     """The [F00] tag an issue's or pull request's title opens with, which makes an issue a hot-fix."""
     matched = HOTFIX.match(item.get('title') or '')
     return matched[1] if matched else None
 
 
 def is_hotfix(issue: dict) -> bool:
-    return hotfix_tag(issue) is not None
+    return tag(issue) is not None
 
 
-def hotfix_faults(issue: dict) -> list[str]:
+def faults(issue: dict) -> list[str]:
     """The conditions of a hot-fix body that no other kind carries, each the issue fails: one Target:
     line, no open question, and an Acceptance Criteria section holding a criterion. format.py reports
     these beside its own checks."""
     from format import split_sections  # format imports this module
-    faults = []
+    found = []
     named = targets(issue)
     if len(named) != 1:
-        faults.append(f'{len(named) or "no"} Target: lines in the Overview; it names one target branch')
+        found.append(f'{len(named) or "no"} Target: lines in the Overview; it names one target branch')
     _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
     if any(line.strip() for heading, lines in sections if heading == 'Open Questions' for line in lines):
-        faults.append('open questions remain')
+        found.append('open questions remain')
     for heading, lines in sections:
         if heading == 'Acceptance Criteria' and not any(ITEM.match(line) for line in lines):
-            faults.append('no acceptance criterion')
-    return faults
+            found.append('no acceptance criterion')
+    return found
 
 
 def board_status(issue: dict, held: str | None, delivering: list[dict]) -> str | None:
@@ -81,10 +83,10 @@ def delivery_fault(pull: dict, key: Key, issue: dict) -> str:
     hot-fix's tag, it lives in the hot-fix's repository, its base is the hot-fix's target, and its
     Development field links the hot-fix."""
     from sync import links_issue, pr_repo  # sync imports format, which imports this module
-    tag, branch = hotfix_tag(issue), target(issue)
+    fixed, branch = tag(issue), target(issue)
     base = (pull.get('base') or {}).get('ref') or ''
-    if hotfix_tag(pull) != tag:
-        return f'its title does not open with [{tag}]'
+    if tag(pull) != fixed:
+        return f'its title does not open with [{fixed}]'
     if pr_repo(pull).lower() != key[0].lower():
         return f'it lives in {pr_repo(pull)}, not {key[0]}'
     if not branch:
@@ -113,3 +115,6 @@ def unit_state(issue: dict, held: str | None, linking: list[dict], delivering: l
         return 'running'
     return {'In Progress': 'hold', 'Ready': 'unit'}.get(held)
 
+
+hotfix_tag = tag
+hotfix_faults = faults
