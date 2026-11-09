@@ -33,6 +33,25 @@ def executable_scripts(paths):
     return run
 
 
+def registered_operations():
+    """Each kind operation the entry point's registration selects, by artifact and anchor, with the
+    registration line selecting it. A kind's operation takes the interface name with the artifact's
+    name, less a closing Body, after its verb."""
+    path = ROOT / 'SKILL.md'
+    lines = path.read_text().splitlines()
+    selected = {}
+    for index, line in enumerate(lines[:lines.index('## Modes')]):
+        match = re.match(r'  - \[([^\]]+)\]\(([^)\s#]+)\)  (.+)$', line)
+        if not match:
+            continue
+        text, target, operations = match.groups()
+        stem = re.sub(r' Body$', '', text)
+        for operation in operations.split(', '):
+            verb, _, rest = operation.partition(' ')
+            selected[(ROOT / target).resolve(), checker.anchor_of(f'{verb} {stem} {rest}')] = f'SKILL.md:{index + 1}'
+    return selected
+
+
 class DocumentInterfaces(unittest.TestCase):
     def test_artifact_operations_have_multiple_linked_references(self):
         paths = sorted(path for path in ROOT.rglob('*.md') if 'test' not in path.relative_to(ROOT).parts)
@@ -57,6 +76,9 @@ class DocumentInterfaces(unittest.TestCase):
                 key = destination, checker.anchor_of(fragment)
                 if key in references:
                     references[key].append(f'{path.relative_to(ROOT)}:{index + 1}')
+        for key, site in registered_operations().items():
+            if key in references:
+                references[key].append(site)
         self.assertTrue(references)
         for (path, operation), sites in references.items():
             with self.subTest(file=path.name, operation=operation):
