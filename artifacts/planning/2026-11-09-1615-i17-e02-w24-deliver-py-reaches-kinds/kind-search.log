@@ -1,0 +1,26 @@
+# kind search: deliver.py lines naming hotfix, hot-fix, an [Fnn] tag or a kind module import
+(none)
+
+# registry use in deliver.py
+99:from kinds import interface, kind_of
+228:        kind = kind_of(issue)
+231:        operations = interface(kind)
+289:        if (kind := kind_of(issue)) and issue['state'] == 'open':
+296:        if kind := kind_of(pull):
+297:            operations = interface(kind)
+
+# duplicate-function search: definitions of tags, key_of, issue_key and the title PREFIX across scripts
+board.py:87:PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+board.py:100:def tags(title: str) -> tuple[str, str, str] | None:
+board-queue.py:41:PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+board-queue.py:56:def tags(title: str) -> tuple[str, str, str] | None:
+format.py:122:PREFIX = re.compile(r'^\[(I\d\d)((?:[: ][EW]\d\d)*)\]')
+progress.py:106:def tags(title: str) -> tuple[str, str, str] | None:
+statuses.py:53:def key_of(issue: dict) -> Key:
+sync.py:103:PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+sync.py:133:def issue_key(issue: dict) -> tuple[str, int]:
+
+# deliver.py imports of the single homes
+96:from board import Board, Outputs, epic_state, in_flight, tags, units
+99:from kinds import interface, kind_of
+103:from sync import (Unreadable, attach_links, issue_key, long_lived_names, origin_repository, plan_rows,

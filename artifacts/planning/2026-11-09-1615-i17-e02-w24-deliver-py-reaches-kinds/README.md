@@ -7,6 +7,7 @@ One separation fix row from the E02 component refinement. The declared one-file 
 | File | Purpose |
 | --- | --- |
 | [w24.md](w24.md) | Component, scope, implementation and observing validation for W24. |
+| [validation.md](validation.md) | Observing tests, kind and duplicate-function search and full checks for AC31 and AC32. |
 
 ## Links
 
