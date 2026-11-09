@@ -4,7 +4,7 @@
 
 - Unit: I17:E02:W26, AC35.
 - Task base: `01f84933a` (origin/i17/e02/workspace after W14 #1668).
-- Task head: `674578c2328bc7061f7c258ea4ba48511788ec72`, branch `i17/e02/w26-sync-py-reaches-kinds`.
+- Task head: `d055c05d8e9a299f09b3e84074a3942886179cf0`, branch `i17/e02/w26-sync-py-reaches-kinds`, current with origin/i17/e02/workspace after W30 #1672 and W18 #1669; the change commit is `674578c23`.
 - Component: `skills/work-planner/scripts/sync.py`.
 
 ## Kind Search
@@ -24,7 +24,7 @@ AC35. [test_sync](https://github.com/m2ux/workflow-server/blob/i17/e02/w26-sync-
 
 ## Full Checks
 
-- Planner: 1061 tests, one opt-in live-link skip, [planner.log](planner.log) (includes installed document/model and catalogue checks).
+- Planner: 1069 tests at the merged head, one opt-in live-link skip, [planner.log](planner.log) (includes installed document/model and catalogue checks).
 - Shared: 280 pass, [shared.log](shared.log).
 - Skill checker: 59 files, zero findings, [skill-check.log](skill-check.log).
 - Whitespace: zero findings, [whitespace.log](whitespace.log).
@@ -38,3 +38,7 @@ python3 -m unittest discover -s skills/test                       # checkout roo
 python3 skills/scripts/check_skill_files.py skills/work-planner   # checkout root
 git diff --check origin/i17/e02/workspace HEAD                    # checkout root
 ```
+
+## Delivery
+
+[#1674](https://github.com/m2ux/workflow-server/pull/1674) merged at verified head `d055c05d8` with merge commit `a5bba6bb2e78cfff216f54809e0a5b2d21bd55bb`.
