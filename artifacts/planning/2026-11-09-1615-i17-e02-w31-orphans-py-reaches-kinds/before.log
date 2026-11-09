@@ -1,0 +1,29 @@
+test_an_open_hot_fix_is_neither_a_candidate_nor_a_destination (test_orphans.HotFixes.test_an_open_hot_fix_is_neither_a_candidate_nor_a_destination) ... ok
+test_a_proposal_is_not_an_orphan_or_an_initiative (test_orphans.Proposals.test_a_proposal_is_not_an_orphan_or_an_initiative) ... ok
+test_an_issue_of_any_registered_kind_is_neither_a_candidate_nor_a_destination (test_orphans.Registry.test_an_issue_of_any_registered_kind_is_neither_a_candidate_nor_a_destination) ... FAIL
+test_orphans_imports_no_kind_module (test_orphans.Registry.test_orphans_imports_no_kind_module) ... FAIL
+test_a_throwaway_is_neither_an_orphan_nor_a_cited_standalone_issue (test_orphans.Throwaways.test_a_throwaway_is_neither_an_orphan_nor_a_cited_standalone_issue) ... ok
+
+======================================================================
+FAIL: test_an_issue_of_any_registered_kind_is_neither_a_candidate_nor_a_destination (test_orphans.Registry.test_an_issue_of_any_registered_kind_is_neither_a_candidate_nor_a_destination)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/before/test/test_orphans.py", line 108, in test_an_issue_of_any_registered_kind_is_neither_a_candidate_nor_a_destination
+    self.assertIn('--- cited standalone issues (0)', text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '--- cited standalone issues (0)' not found in '--- orphans (1)\n#2 Loose note  []\n\n--- cited standalone issues (1)\n#1 [Z01] Stand In: Kind Of Its Own  [theme:canon]  cited by #3\n\n--- open initiatives and epics\n#3 [I07] Canon Walk: Definitions Checked  [theme:canon]\n'
+
+======================================================================
+FAIL: test_orphans_imports_no_kind_module (test_orphans.Registry.test_orphans_imports_no_kind_module)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/before/test/test_orphans.py", line 115, in test_orphans_imports_no_kind_module
+    self.assertIn('kinds', imported)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'kinds' not found in {'argparse', 're', 'hotfix', 'json', 'pathlib', 'sys'}
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.265s
+
+FAILED (failures=2)
+sbx: exit 1; writable: /tmp  (name more with SBX_EXTRA_ROOTS=dir1:dir2)

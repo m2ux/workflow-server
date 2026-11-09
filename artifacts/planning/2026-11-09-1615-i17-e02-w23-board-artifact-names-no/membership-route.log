@@ -1,0 +1,13 @@
+Kind search over artifacts/board.md:
+  0 hits
+Membership links:
+  ../SKILL.md [resolves]
+  board-delivery.md#status-changes [resolves]
+Membership route for each registered kind:
+  Proposal: Status Changes (board-delivery.md#status-changes)
+  Initiative: Status Changes (board-delivery.md#status-changes)
+  Epic: Status Changes (board-delivery.md#status-changes)
+  Task: Status Changes (board-delivery.md#status-changes)
+  Standalone issue: off every board, by artifacts/standalone-body.md#placement
+  Hot-fix: Settle Hot-fix Board Status in artifacts/hotfix.md, reaching board.md#read-board-state, board.md#place-issue-on-board, board.md#remove-board-item
+No failures

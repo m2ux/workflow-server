@@ -1,0 +1,19 @@
+Kind search over artifacts/board.md:
+  375: ### Standalone Issues
+  377: A standalone issue sits on no board.
+  2 hits
+Membership links:
+Membership route for each registered kind:
+  Proposal: Status Changes (board-delivery.md#status-changes)
+  Initiative: Status Changes (board-delivery.md#status-changes)
+  Epic: Status Changes (board-delivery.md#status-changes)
+  Task: Status Changes (board-delivery.md#status-changes)
+  Standalone issue: Status Changes (board-delivery.md#status-changes)
+  Hot-fix: Settle Hot-fix Board Status in artifacts/hotfix.md, reaching board.md#read-board-state, board.md#place-issue-on-board, board.md#remove-board-item
+Failures:
+  board.md:375 names a kind
+  board.md:377 names a kind
+  board.md: no ### Membership
+  Membership does not link ../SKILL.md
+  Membership does not link board-delivery.md#status-changes
+sbx: exit 1; writable: /tmp  (name more with SBX_EXTRA_ROOTS=dir1:dir2)

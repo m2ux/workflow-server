@@ -35,6 +35,9 @@ def resolves(base, target):
 
 def section(path, heading):
     lines = path.read_text().splitlines()
+    if heading not in lines:
+        failures.append(f'{path.name}: no {heading}')
+        return ''
     start = lines.index(heading)
     level = heading.split(' ')[0]
     end = next((i for i in range(start + 1, len(lines))

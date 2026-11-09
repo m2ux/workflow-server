@@ -1,0 +1,10 @@
+11:prefix. A proposal carries a [P00] prefix and type:proposal, and an issue of a kind of work the
+12:script registry holds opens with that kind's tag; neither is a hoist candidate, nor an initiative or
+15:either. An open issue without one of these prefixes, without a registered kind's tag, without
+29:import argparse
+30:import json
+31:import re
+32:import sys
+33:from pathlib import Path
+35:from kinds import kind_of
+89:                         and kind_of(i) is None
