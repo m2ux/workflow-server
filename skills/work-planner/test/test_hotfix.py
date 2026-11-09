@@ -1,4 +1,4 @@
-"""hotfix.py: a hot-fix's identity, target, board status, delivering pull requests and delivery unit state.
+"""hotfix.py: a hot-fix's identity, labels, target, board status, delivering pull requests and delivery unit state.
 """
 import sys
 import unittest
@@ -8,7 +8,7 @@ from fixtures import hotfix as hotfix_issue
 
 sys.path.insert(0, str(SCRIPTS))
 from hotfix import (OFF_BOARD, board_status, delivering_pulls, delivery_fault, hotfix_tag, is_hotfix,  # noqa: E402
-                    linking_pulls, target, targets, unit_state)
+                    labels, linking_pulls, target, targets, unit_state)
 from kinds import OFF_BOARD as OFF_THE_BOARD, interface  # noqa: E402
 
 KEY = ('o/r', 4)
@@ -32,6 +32,11 @@ class Identity(unittest.TestCase):
         self.assertEqual(hotfix_tag(hotfix()), 'F04')
         self.assertFalse(is_hotfix(issue(5, 'Key Validation: Reject Bad Keys', labels=('type:hot-fix',))))
         self.assertFalse(is_hotfix(issue(6, '[I07] Canon Walk: Definitions Checked')))
+
+
+class Labels(unittest.TestCase):
+    def test_a_hot_fix_carries_priority_ten_beside_its_type_and_theme(self):
+        self.assertEqual(labels(hotfix()), ['priority: 10'])
 
 
 class Target(unittest.TestCase):

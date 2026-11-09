@@ -6,10 +6,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import (commit_branches, declared, epic_body, git, hotfix, initiative_body, issue, links, pr,
-                      repository, run, url)
+from fixtures import (SCRIPTS, commit_branches, declared, epic_body, git, hotfix, hotfix_body, initiative_body, issue,
+                      links, pr, repository, run, url)
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
+sys.path.insert(0, str(SCRIPTS))
 from format import Review  # noqa: E402
 
 
@@ -1935,6 +1935,65 @@ class HotFixDelivery(unittest.TestCase):
         self.assertNotEqual(done.returncode, 0)
         self.assertIn('--pr 950: does not deliver F04: its base is main, not the target workspace',
                       done.stderr)
+
+
+class KindRegistry(unittest.TestCase):
+    """sync.py reaches each kind of work through the script registry, so registering a kind changes no
+    line of it."""
+
+    def test_sync_imports_no_kind_module_and_names_no_kind(self):
+        import ast
+        import re
+        from kinds import KINDS
+        source = (SCRIPTS / 'sync.py').read_text()
+        imported = set()
+        for node in ast.walk(ast.parse(source)):
+            if isinstance(node, ast.Import):
+                imported |= {alias.name for alias in node.names}
+            elif isinstance(node, ast.ImportFrom):
+                imported.add(node.module)
+        for kind, module in KINDS.items():
+            with self.subTest(kind=kind):
+                self.assertNotIn(module, imported)
+                for name in (kind, module):
+                    self.assertIsNone(re.search(rf'(?i){re.escape(name)}', source), name)
+
+    def test_an_issue_of_a_stand_in_kind_is_recorded_through_its_interface(self):
+        import contextlib
+        import io
+        import types
+        from unittest import mock
+        import kinds
+        import sync
+        stand_in = types.ModuleType('stand_in')
+        stand_in.tag = lambda item: 'Z04' if (item.get('title') or '').startswith('[Z04]') else None
+        stand_in.delivering_pulls = lambda prs, key, item: [p for p in prs if p['title'].startswith('[Z04]')]
+        stand_in.delivery_fault = lambda pull, key, item: 'its title does not open with [Z04]'
+        record = issue(4, '[Z04] Stand In', body=hotfix_body(None))
+        pulls = [pr(950, '[Z04] Stand In', merged='2026-11-01T00:00:00Z', base='workspace'),
+                 pr(951, 'Stand In', base='workspace')]
+        with tempfile.TemporaryDirectory() as tmp, \
+                mock.patch.dict(sys.modules, {'stand_in': stand_in}), \
+                mock.patch.dict(kinds.KINDS, {'stand-in': 'stand_in'}):
+            root = Path(tmp)
+            body, pulls_path, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
+            body.write_text(json.dumps(record))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            given = [str(body), '--prs', str(pulls_path), '--links', links_file(root, [links(950, 4), links(951, 4)]),
+                     '--fix', str(fixed)]
+            out = io.StringIO()
+            with mock.patch.object(sys, 'argv', ['sync.py', *given, '--pr', '950', '--tick', 'AC1,AC2']), \
+                    contextlib.redirect_stdout(out):
+                self.assertEqual(sync.main(), 0)
+            self.assertIn('#4 stand-in (open)', out.getvalue())
+            self.assertIn('linked: Z04 delivered by #950', out.getvalue())
+            self.assertIn('closable: yes', out.getvalue())
+            self.assertIn('- [x] **AC2.** Also holds.', fixed.read_text())
+            with mock.patch.object(sys, 'argv', ['sync.py', *given, '--pr', '951']), \
+                    self.assertRaises(SystemExit) as refused:
+                sync.main()
+            self.assertEqual(str(refused.exception.code),
+                             '--pr 951: does not deliver Z04: its title does not open with [Z04]')
 
 
 class LaneCellRecording(unittest.TestCase):
