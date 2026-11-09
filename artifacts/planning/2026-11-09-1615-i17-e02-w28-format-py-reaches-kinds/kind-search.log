@@ -1,0 +1,4 @@
+$ grep -n -i "hot-fix|hotfix|F00|priority" skills/work-planner/scripts/format.py   # at d3ad182bd
+(no matches; grep exit 1)
+$ grep -n "^from kinds import\|^from hotfix\|^import hotfix" skills/work-planner/scripts/format.py
+112:from kinds import KINDS, interface, kind_of

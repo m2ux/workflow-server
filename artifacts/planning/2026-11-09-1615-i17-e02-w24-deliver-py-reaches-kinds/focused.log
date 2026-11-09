@@ -71,37 +71,4 @@ test_deliver_reaches_tag_parsing_and_identity_through_their_single_homes (test_d
 test_a_finished_pull_request_is_merged (test_deliver.Survey.test_a_finished_pull_request_is_merged) ... ok
 test_a_held_sibling_does_not_hide_an_unresolvable_row (test_deliver.Survey.test_a_held_sibling_does_not_hide_an_unresolvable_row) ... ok
 test_a_held_task_holds_the_unit_it_joins (test_deliver.Survey.test_a_held_task_holds_the_unit_it_joins) ... ok
-test_a_linked_pass_result_allows_the_merge (test_deliver.Survey.test_a_linked_pass_result_allows_the_merge) ... ok
-test_a_merged_pull_request_is_not_merged_again (test_deliver.Survey.test_a_merged_pull_request_is_not_merged_again) ... ok
-test_a_passed_plan_without_a_task_issue_can_merge (test_deliver.Survey.test_a_passed_plan_without_a_task_issue_can_merge) ... ok
-test_a_pull_request_on_another_base_is_not_merged (test_deliver.Survey.test_a_pull_request_on_another_base_is_not_merged) ... ok
-test_a_task_issue_without_criteria_allows_a_passed_plan_to_merge (test_deliver.Survey.test_a_task_issue_without_criteria_allows_a_passed_plan_to_merge) ... ok
-test_a_unit_names_its_epic_base (test_deliver.Survey.test_a_unit_names_its_epic_base) ... ok
-test_a_unit_of_several_bases_declaring_none_is_undeclared (test_deliver.Survey.test_a_unit_of_several_bases_declaring_none_is_undeclared) ... ok
-test_a_unit_takes_a_branch_and_worktree_per_epic_base (test_deliver.Survey.test_a_unit_takes_a_branch_and_worktree_per_epic_base) ... ok
-test_a_unit_takes_only_the_epic_bases_its_rows_change (test_deliver.Survey.test_a_unit_takes_only_the_epic_bases_its_rows_change) ... ok
-test_a_work_item_is_read_only_from_the_engineering_checkout (test_deliver.Survey.test_a_work_item_is_read_only_from_the_engineering_checkout) ... ok
-test_an_entry_that_cannot_resolve_is_told_from_a_blocked_row (test_deliver.Survey.test_an_entry_that_cannot_resolve_is_told_from_a_blocked_row) ... ok
-test_an_incomplete_linked_result_withholds_the_merge (test_deliver.Survey.test_an_incomplete_linked_result_withholds_the_merge) ... ok
-test_an_open_pass_cell_is_not_merged (test_deliver.Survey.test_an_open_pass_cell_is_not_merged) ... ok
-test_an_unplanned_row_joined_to_a_declared_row_takes_every_epic_base (test_deliver.Survey.test_an_unplanned_row_joined_to_a_declared_row_takes_every_epic_base) ... ok
-test_an_unplanned_row_of_several_bases_takes_every_epic_base (test_deliver.Survey.test_an_unplanned_row_of_several_bases_takes_every_epic_base) ... ok
-test_an_unresolvable_epic_prerequisite_names_itself (test_deliver.Survey.test_an_unresolvable_epic_prerequisite_names_itself) ... ok
-test_an_unticked_epic_criterion_does_not_withhold_the_merge (test_deliver.Survey.test_an_unticked_epic_criterion_does_not_withhold_the_merge) ... ok
-test_an_unticked_task_criterion_allows_a_passed_plan_to_merge (test_deliver.Survey.test_an_unticked_task_criterion_allows_a_passed_plan_to_merge) ... ok
-test_epic_in_backlog_offers_nothing (test_deliver.Survey.test_epic_in_backlog_offers_nothing) ... ok
-test_free_row_of_a_started_epic_is_a_unit (test_deliver.Survey.test_free_row_of_a_started_epic_is_a_unit) ... ok
-test_initiative_prerequisite_blocks_dispatch_despite_ready_status (test_deliver.Survey.test_initiative_prerequisite_blocks_dispatch_despite_ready_status) ... ok
-test_joined_tasks_are_one_unit (test_deliver.Survey.test_joined_tasks_are_one_unit) ... ok
-test_only_the_row_naming_another_epic_waits_for_it (test_deliver.Survey.test_only_the_row_naming_another_epic_waits_for_it) ... ok
-test_row_linking_a_planning_folder_is_held (test_deliver.Survey.test_row_linking_a_planning_folder_is_held) ... ok
-test_row_linking_a_pull_request_is_neither (test_deliver.Survey.test_row_linking_a_pull_request_is_neither) ... ok
-test_row_linking_a_work_item_file_is_free (test_deliver.Survey.test_row_linking_a_work_item_file_is_free) ... ok
-test_sibling_epics_offer_their_units_in_one_survey (test_deliver.Survey.test_sibling_epics_offer_their_units_in_one_survey) ... ok
-test_the_producer_epics_closure_alone_starts_no_row (test_deliver.Survey.test_the_producer_epics_closure_alone_starts_no_row) ... ok
-test_undelivered_dependency_blocks_the_row (test_deliver.Survey.test_undelivered_dependency_blocks_the_row) ... ok
-
-----------------------------------------------------------------------
-Ran 102 tests in 12.939s
-
-OK
+test_a_linked_pass_result_allows_the_merge (test_deliver.Survey.test_a_linked_pass_result_allows_the_merge) ... 
