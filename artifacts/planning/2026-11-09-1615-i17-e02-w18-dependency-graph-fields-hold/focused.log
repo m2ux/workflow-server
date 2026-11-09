@@ -5,6 +5,6 @@ test_a_resolvable_entry_passes (test_deps.InvalidReferences.test_a_resolvable_en
 test_each_unresolvable_entry_is_named_and_the_run_exits_nonzero (test_deps.InvalidReferences.test_each_unresolvable_entry_is_named_and_the_run_exits_nonzero) ... ok
 
 ----------------------------------------------------------------------
-Ran 5 tests in 0.007s
+Ran 5 tests in 0.005s
 
 OK
