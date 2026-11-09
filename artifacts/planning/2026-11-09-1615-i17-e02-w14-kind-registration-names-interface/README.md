@@ -7,6 +7,14 @@ One separation fix row from the E02 component refinement. The declared one-file 
 | File | Purpose |
 | --- | --- |
 | [w14.md](w14.md) | Component, scope, implementation and observing validation for W14. |
+| [validation.md](validation.md) | Registration, reader observation and full checks at the task head. |
+| [registration-reader.py](registration-reader.py) | Reads the registration and resolves every link it holds. |
+| [registration.log](registration.log) | Reader output: kinds, artifacts, operations and contracts. |
+| [focused.log](focused.log) | Document, checkout and modes tests. |
+| [planner.log](planner.log) | Full Work Planner suite. |
+| [shared.log](shared.log) | Shared skills suite. |
+| [skill-check.log](skill-check.log) | Skill checker. |
+| [whitespace.log](whitespace.log) | Whitespace check; empty when clean. |
 
 ## Links
 

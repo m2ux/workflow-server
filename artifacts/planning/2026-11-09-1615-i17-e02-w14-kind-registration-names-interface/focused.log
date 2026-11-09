@@ -1,0 +1,49 @@
+test_artifact_operations_bind_arguments_at_their_use_and_consecutive_steps (test_documents.DocumentInterfaces.test_artifact_operations_bind_arguments_at_their_use_and_consecutive_steps) ... ok
+test_artifact_operations_have_multiple_linked_references (test_documents.DocumentInterfaces.test_artifact_operations_have_multiple_linked_references) ... ok
+test_calls_go_down_the_layer_stack (test_documents.DocumentInterfaces.test_calls_go_down_the_layer_stack)
+A mode aggregates protocol calls as an application calls services, ... ok
+test_every_operation_and_protocol_is_reached (test_documents.DocumentInterfaces.test_every_operation_and_protocol_is_reached)
+An operation exists because a procedure calls it. Splitting one ... ok
+test_every_script_is_run_by_a_cited_command (test_documents.DocumentInterfaces.test_every_script_is_run_by_a_cited_command)
+Scripts are invoked by cited executable sections or imported by ... ok
+test_link_text_names_no_dissolved_document (test_documents.DocumentInterfaces.test_link_text_names_no_dissolved_document)
+Link text naming a document outlives the document. `Work Breakdown ... ok
+test_protocols_are_entered_whole (test_documents.DocumentInterfaces.test_protocols_are_entered_whole)
+A protocol is one coordinated sequence, so a caller runs the file ... ok
+test_references_cannot_route_to_modes_or_artifacts (test_documents.DocumentInterfaces.test_references_cannot_route_to_modes_or_artifacts) ... ok
+test_script_reach_excludes_specimens_and_unexecuted_blocks (test_documents.DocumentInterfaces.test_script_reach_excludes_specimens_and_unexecuted_blocks) ... ok
+test_script_reach_requires_the_installed_command_declaration (test_documents.DocumentInterfaces.test_script_reach_requires_the_installed_command_declaration) ... ok
+test_a_report_of_the_operation_is_not_a_call (test_documents.EpicDeliveryCallers.test_a_report_of_the_operation_is_not_a_call) ... ok
+test_sync_epic_calls_pass_the_epic_bases (test_documents.EpicDeliveryCallers.test_sync_epic_calls_pass_the_epic_bases) ... ok
+test_sync_epic_takes_the_epic_bases (test_documents.EpicDeliveryCallers.test_sync_epic_takes_the_epic_bases) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.923s
+
+OK
+test_conventions_name_the_checkouts (test_checkouts.CheckoutVocabulary.test_conventions_name_the_checkouts)
+The vocabulary every checkout-selecting call draws from. ... ok
+test_each_call_to_an_acting_section_names_a_checkout (test_checkouts.CommandsActingOnTheirCheckout.test_each_call_to_an_acting_section_names_a_checkout)
+A call to an acting command, or to an operation reaching one, ... ok
+test_working_directory_commands_link_their_checkout_input (test_checkouts.CommandsActingOnTheirCheckout.test_working_directory_commands_link_their_checkout_input) ... ok
+test_actual_graph_commands_and_transitive_calls_are_present (test_checkouts.ExecutingCheckoutEvidence.test_actual_graph_commands_and_transitive_calls_are_present) ... ok
+test_calls_follow_heading_steps_and_exclude_literal_and_lead_links (test_checkouts.ExecutingCheckoutEvidence.test_calls_follow_heading_steps_and_exclude_literal_and_lead_links) ... ok
+test_inputs_require_actual_step_prose_or_command_annotations (test_checkouts.ExecutingCheckoutEvidence.test_inputs_require_actual_step_prose_or_command_annotations) ... ok
+test_installed_declaration_selects_execution_steps (test_checkouts.ExecutingCheckoutEvidence.test_installed_declaration_selects_execution_steps) ... ok
+test_named_commands_use_input_contracts_as_checkout_evidence (test_checkouts.ExecutingCheckoutEvidence.test_named_commands_use_input_contracts_as_checkout_evidence) ... ok
+test_checkout_roles_follow_command_and_transitive_input_contracts (test_checkouts.SelectedCheckoutContracts.test_checkout_roles_follow_command_and_transitive_input_contracts) ... ok
+test_selected_checkouts_reach_accepting_command_inputs (test_checkouts.SelectedCheckoutContracts.test_selected_checkouts_reach_accepting_command_inputs) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 5.574s
+
+OK
+test_a_list_holds_five_items_after_the_direction (test_modes.ModeSummaries.test_a_list_holds_five_items_after_the_direction) ... ok
+test_a_noun_phrase_and_a_gerund_hold (test_modes.ModeSummaries.test_a_noun_phrase_and_a_gerund_hold) ... ok
+test_a_placement_rule_is_not_a_capability_phrase (test_modes.ModeSummaries.test_a_placement_rule_is_not_a_capability_phrase) ... ok
+test_each_skill_names_a_capability (test_modes.ModeSummaries.test_each_skill_names_a_capability) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+OK
