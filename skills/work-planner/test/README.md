@@ -53,7 +53,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_progress](test_progress.py) | [progress](../scripts/progress.py): one test per rule its docstring states |
 | [test_renumber](test_renumber.py) | [renumber](../scripts/renumber.py) rewrites an initiative's epic numbers, or one epic's task numbers, across issue bodies |
 | [test_revision_check](test_revision_check.py) | An instrument runs at the commit a branch or tag resolves to, and the run leaves no checkout |
-| [test_review_scope](test_review_scope.py) | Review scope keeps actual hot-fix findings subject to strict disposition checks |
+| [test_review_scope](test_review_scope.py) | Review scope admits only evidenced unrelated debt with a saved arising issue outside findings, and keeps every actual finding subject to strict disposition checks |
 | [test_shared](test_shared.py) | The helpers [progress](../scripts/progress.py) shares with [board](../scripts/board.py), [sync](../scripts/sync.py) and [format](../scripts/format.py) |
 | [test_statuses](test_statuses.py) | The jurisdiction each mode's Status changes are held to, and the calls they render |
 | [test_sync](test_sync.py) | Done on a Work Breakdown row, ticked when the row is complete |
@@ -87,7 +87,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 
 | Script | Exercised by |
 | --- | --- |
-| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (16), [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_review_scope](test_review_scope.py) (8) |
+| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (16), [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_review_scope](test_review_scope.py) (14) |
 | [align](../scripts/align.py) | [test_align](test_align.py) (18) |
 | [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (11) |
 | [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (14), [test_board_queue](test_board_queue.py) (75) |

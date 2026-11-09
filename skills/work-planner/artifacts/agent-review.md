@@ -16,8 +16,8 @@ A review record for the exact integration revision.
 #### 2. Resolve Review Findings
 
 - Record findings with severity and disposition. A nonblocking deferred finding names its ticket.
-- Record excluded observations with their scope evidence and linked arising issues in the published review or planning evidence, outside the findings collection.
-- On an unresolved classification or an exclusion with missing scope evidence or an unsaved arising issue, provide the pending review and stop before handoff.
+- For each excluded observation, Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") for a new arising issue with no agent-engineering prefix, following [Standalone Issues](board.md#standalone-issues), then record the exclusion in the [Review Record](#review-record) `scope`, outside the findings collection.
+- An observation with an unresolved classification, missing scope evidence or an unsaved arising issue remains a finding with its required disposition.
 
 - When a blocking finding or any hot-fix finding requires a fix:
 - Fix every required finding on the reviewed branch.
@@ -54,7 +54,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Review Record
 
-Each record contains `pull_request` (the full GitHub URL), `head` and `base` (full commit SHAs), `url` (the published HTTPS record URL), `reviewer`, `reviewed_at`, `scope`, `criteria`, `validation` and `findings`. The scope describes the full integration diff and inspected callers; criteria and validation describe the evidence inspected and its results. The pull request body links the published record.
+Each record contains `pull_request` (the full GitHub URL), `head` and `base` (full commit SHAs), `url` (the published HTTPS record URL), `reviewer`, `reviewed_at`, `scope`, `criteria`, `validation` and `findings`. The scope describes the full integration diff, inspected callers and each excluded observation with its scope evidence and arising issue link; criteria and validation describe the evidence inspected and its results. The pull request body links the published record.
 
 Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. A record on a hot-fix's delivering pull request also carries `base_ref`, the name of its base branch. A record is current while it names the pull request's head and base SHAs. One on a hot-fix's delivering pull request is current while it names its head SHA and its base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. The last record for the same revision is authoritative.
 
@@ -84,4 +84,4 @@ The absolute supplied checkout path holding the installed Work Planner scripts a
 
 Findings cover defects introduced by the change, change-related defects and risks that compromise affected callers. A pre-existing defect remains in scope when the change exposes it or depends on its faulty behavior.
 
-An unrelated pre-existing observation is outside findings only when evidence establishes its earlier existence and independence from changed behavior and affected callers. That evidence identifies the observed problem, source revisions and relevant call-path comparison; it accompanies a linked arising issue in the published review or planning evidence outside findings.
+An unrelated pre-existing observation is outside findings only when evidence establishes its earlier existence and independence from changed behavior and affected callers. That evidence identifies the observed problem, source revisions and relevant call-path comparison; it accompanies a linked arising issue in the record's `scope`, outside findings.

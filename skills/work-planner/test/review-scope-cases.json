@@ -84,14 +84,18 @@
       "contract": "charge accepts an amount equal to the limit.",
       "observation": "The boundary request is rejected.",
       "severity": "blocking",
-      "issue": null
+      "issue": null,
+      "fault": "charge",
+      "membership": "finding"
     },
     "B": {
       "context": "s",
       "contract": "handle accepts the decimal text 0 and returns a numeric limit.",
       "observation": "A supported request raises ValueError.",
       "severity": "blocking",
-      "issue": null
+      "issue": null,
+      "fault": "parse_limit",
+      "membership": "finding"
     },
     "C": {
       "context": "t",
@@ -102,7 +106,9 @@
         "saved": true,
         "html_url": "https://example.test/issues/80",
         "number": 80
-      }
+      },
+      "fault": "legacy_limit",
+      "membership": "excluded"
     },
     "D": {
       "context": "t",
@@ -113,7 +119,9 @@
         "saved": false,
         "html_url": null,
         "number": null
-      }
+      },
+      "fault": "legacy_limit",
+      "membership": "finding"
     },
     "E": {
       "context": "u",
@@ -124,14 +132,18 @@
         "saved": true,
         "html_url": "https://example.test/issues/81",
         "number": 81
-      }
+      },
+      "fault": "legacy_limit",
+      "membership": "finding"
     },
     "F": {
       "context": "v",
       "contract": "handle returns uppercase text; public function documentation describes its accepted and returned values.",
       "observation": "The function documentation says the returned value is a number.",
       "severity": "nonblocking",
-      "issue": null
+      "issue": null,
+      "fault": "handle",
+      "membership": "finding"
     }
   }
 }
