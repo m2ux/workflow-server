@@ -48,3 +48,13 @@ git diff --check origin/i17/e02/workspace                         # checkout roo
 ## Limits
 
 The search covers the kinds that depart from the planning hierarchy. Status Changes in board-delivery.md still names kinds; W48 owns that file.
+
+## Current Base
+
+The epic base moved to `36c18a359` (W30 #1672), merged into the branch at `fd28ccdd0bb01a530d2647df42ad242459ded267`. The same checks at that head:
+
+- Planner: 1067 tests, one opt-in live-link skip ([planner-merged.log](planner-merged.log)).
+- Shared: 280 pass ([shared-merged.log](shared-merged.log)).
+- Skill checker: 59 files, zero findings ([skill-check-merged.log](skill-check-merged.log)).
+- Kind search and route: zero hits, no failures ([membership-route-merged.log](membership-route-merged.log)).
+- Whitespace: zero findings.
