@@ -1,0 +1,40 @@
+source: config/branches at 52fd426468cf3c860cf163f351e0f26c0568203c in /home/mike1/projects/dev/workflow-server/.git
+#1615 In Progress: [I17:E02]
+  unit I17:E02:W14: unlaned, coverage AC21, record 2026-11-09-1615-i17-e02-w14-kind-registration-names-interface, branch i17/e02/w14-kind-registration-names-interface, base i17/e02/workspace, worktree .worktrees/i17/e02/w14-kind-registration-names-interface
+  unit I17:E02:W15+W16: unlaned, coverage AC22, AC23, record 2026-11-09-1615-i17-e02-w15-one-script-registry-maps, branch i17/e02/w15-one-script-registry-maps, base i17/e02/workspace, worktree .worktrees/i17/e02/w15-one-script-registry-maps
+  unit I17:E02:W17: unlaned, coverage AC24, record 2026-11-09-1615-i17-e02-w17-board-script-owns-title, branch i17/e02/w17-board-script-owns-title, base i17/e02/workspace, worktree .worktrees/i17/e02/w17-board-script-owns-title
+  unit I17:E02:W18: unlaned, coverage AC25, record 2026-11-09-1615-i17-e02-w18-dependency-graph-fields-hold, branch i17/e02/w18-dependency-graph-fields-hold, base i17/e02/workspace, worktree .worktrees/i17/e02/w18-dependency-graph-fields-hold
+  unit I17:E02:W19: unlaned, coverage AC26, record 2026-11-09-1615-i17-e02-w19-required-criteria-field-holds, branch i17/e02/w19-required-criteria-field-holds, base i17/e02/workspace, worktree .worktrees/i17/e02/w19-required-criteria-field-holds
+  blocked I17:E02:W20: depends on W14
+  blocked I17:E02:W21: depends on W14
+  blocked I17:E02:W22: depends on W14
+  blocked I17:E02:W23: depends on W14
+  blocked I17:E02:W24: depends on W15, W16, W17
+  blocked I17:E02:W25: depends on W15, W16, W17, [#1631](https://github.com/m2ux/workflow-server/issues/1631)
+  blocked I17:E02:W26: depends on W15, W16
+  blocked I17:E02:W27: depends on W15, W16, W17, [#1631](https://github.com/m2ux/workflow-server/issues/1631)
+  blocked I17:E02:W28: depends on W15, W16
+  blocked I17:E02:W29: depends on W15, W16
+  blocked I17:E02:W30: depends on W15, W16
+  blocked I17:E02:W31: depends on W15, W16
+  blocked I17:E02:W32: depends on W20
+  blocked I17:E02:W33: depends on W20, W21
+  blocked I17:E02:W34: depends on W20
+  blocked I17:E02:W35: depends on W20
+  blocked I17:E02:W36: depends on W20
+  blocked I17:E02:W37: depends on W20
+  blocked I17:E02:W38: depends on W20
+  blocked I17:E02:W39: depends on W20
+  blocked I17:E02:W40: depends on W20
+  blocked I17:E02:W41: depends on W20
+  blocked I17:E02:W42: depends on W20
+  blocked I17:E02:W43: depends on W20
+  blocked I17:E02:W44: depends on W20
+  blocked I17:E02:W45: depends on W20
+  blocked I17:E02:W46: depends on W24, W25, W27
+  blocked I17:E02:W47+W48+W49: depends on W20, W46
+  blocked I17:E02:W50: depends on W26, W28, W29, W30, W31, W46
+  blocked I17:E02:W51: depends on W47, W48, W49
+  blocked I17:E02:W52: depends on W34, W51, [#1631](https://github.com/m2ux/workflow-server/issues/1631)
+  blocked I17:E02:W53: depends on W19, W23, W35, W37, W39, W43, W45, W51
+  available: 5, held: 0, blocked: 32, unresolvable: 0, undeclared: 0, merge: 0, unrecorded: 0, invalid: 0

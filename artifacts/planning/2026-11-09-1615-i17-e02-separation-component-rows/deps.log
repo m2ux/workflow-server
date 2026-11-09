@@ -2,7 +2,6 @@
 none
 
 --- joins: candidate units, rows of one epic extending one component
-E02:W13, E02:W44 extend workspace:skills/work-planner/artifacts/agent-review.md: split by rule, E02:W44 needs E02:W14, which needs E02:W13
 E02:W16, E02:W50 extend workspace:skills/work-planner/scripts/hotfix.py: split by rule, E02:W50 needs E02:W24, which needs E02:W16
 
 --- advisory: numbering against start order

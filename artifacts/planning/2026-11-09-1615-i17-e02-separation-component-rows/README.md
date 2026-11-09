@@ -55,7 +55,8 @@ The split follows the audit's component map. A kind registration in the entry po
 | [joins.md](joins.md) | Candidate units of one component that stay split, and why |
 | [changes.md](changes.md) | The change list this run applied or held |
 | [decisions.md](decisions.md) | Split decisions: numbering, test catalogue contention, dropped edges, criterion split |
-| [deps.log](deps.log) | Dependency and numbering check over the saved drafts |
+| [deps.log](deps.log) | Dependency and numbering check over the saved body |
+| [survey.log](survey.log) | Delivery survey after the save |
 | [epic-draft.md](epic-draft.md) | The epic body this run saved |
 
 ## Links
