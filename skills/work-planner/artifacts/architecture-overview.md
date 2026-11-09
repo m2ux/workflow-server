@@ -104,7 +104,7 @@ Every overview carries one structural diagram and one functional diagram. A furt
 
 Component node shapes: `[text]` a module, `[(text)]` a store, `[[text]]` a process boundary, `([text])` an actor.
 
-Five to ten elements. A diagram that needs more splits by concept, and relationships between areas carry it rather than the internals of one.
+Five to ten elements is a readability target. A faithful measured diagram may contain fewer elements without padding. A diagram that needs more splits by concept, and relationships between areas carry it rather than the internals of one.
 
 An element the change adds or alters carries a distinct fill, and untouched context is grey. A name and its fill hold across every diagram in the overview.
 
