@@ -50,7 +50,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_kinds](test_kinds.py) | The script registry, [kinds](../scripts/kinds.py), maps each kind of work to its module and selects an item's kind from its title, and each registered module supplies the Kind interface |
 | [test_lane](test_lane.py) | Lane's raw-cell, assignment, consistency and admission contracts |
 | [test_link_capture](test_link_capture.py) | The Development relation read from each end by [links-by-pull-request](../scripts/links-by-pull-request.py) and [links-by-issue](../scripts/links-by-issue.py), and the linked pull requests [linked-pull-requests](../scripts/linked-pull-requests.py) adds to a collection |
-| [test_orphans](test_orphans.py) | [orphans](../scripts/orphans.py) keeps a proposal out of the hoist candidates and out of the initiative list, and a declared throwaway out of both candidate groups |
+| [test_orphans](test_orphans.py) | [orphans](../scripts/orphans.py) keeps a proposal out of the hoist candidates and out of the initiative list, a declared throwaway out of both candidate groups, and an issue of each registered kind of work out of both, reaching the kind through the script registry |
 | [test_progress](test_progress.py) | [progress](../scripts/progress.py): one test per rule its docstring states |
 | [test_renumber](test_renumber.py) | [renumber](../scripts/renumber.py) rewrites an initiative's epic numbers, or one epic's task numbers, across issue bodies |
 | [test_revision_check](test_revision_check.py) | An instrument runs at the commit a branch or tag resolves to, and the run leaves no checkout |
@@ -102,12 +102,12 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (22) |
 | [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
 | [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (21), [test_kinds](test_kinds.py) (9) |
-| [kinds](../scripts/kinds.py) | [test_deliver](test_deliver.py) (102), [test_dispatch](test_dispatch.py) (22), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (21), [test_kinds](test_kinds.py) (9), [test_sync](test_sync.py) (187) |
+| [kinds](../scripts/kinds.py) | [test_deliver](test_deliver.py) (102), [test_dispatch](test_dispatch.py) (22), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (21), [test_kinds](test_kinds.py) (9), [test_orphans](test_orphans.py) (5), [test_sync](test_sync.py) (187) |
 | [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (22), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-pull-request](../scripts/links-by-pull-request.py) | [test_link_capture](test_link_capture.py) (22) |
-| [orphans](../scripts/orphans.py) | [test_orphans](test_orphans.py) (3) |
+| [orphans](../scripts/orphans.py) | [test_orphans](test_orphans.py) (5) |
 | [progress](../scripts/progress.py) | [test_progress](test_progress.py) (76) |
 | [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32) |
 | [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |
