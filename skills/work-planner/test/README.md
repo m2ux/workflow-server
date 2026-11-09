@@ -5,7 +5,7 @@ Work Planner plans work as GitHub issues and keeps that plan true until the work
 ## What Is Under Test
 
 - **The scripts.**
-  Twenty-three programs read those issue bodies, board items and pull request records, and report what a run should change. Most modules here hold one script to the rules its own docstring states.
+  Twenty-four programs read those issue bodies, board items and pull request records, and report what a run should change. Most modules here hold one script to the rules its own docstring states.
 - **The prose.**
   Modes, protocols and artifacts are instructions an agent follows. The modules check their shape: resolving links, contextual command contracts, selected checkout inputs, planning-record publication, worktree placement and this catalogue.
 - **Neither against a live tracker.**
@@ -47,6 +47,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_format](test_format.py) | [format](../scripts/format.py) on standalone issues |
 | [test_hotfix_readiness](test_hotfix_readiness.py) | Hot-fix readiness routes restore and confirm draft before repair |
 | [test_hotfix](test_hotfix.py) | [hotfix](../scripts/hotfix.py): a hot-fix's identity, target, board status, delivering pull requests and delivery unit state |
+| [test_kinds](test_kinds.py) | The script registry, [kinds](../scripts/kinds.py), maps each kind of work to its module and selects an item's kind from its title, and each registered module supplies the Kind interface |
 | [test_lane](test_lane.py) | Lane's raw-cell, assignment, consistency and admission contracts |
 | [test_link_capture](test_link_capture.py) | The Development relation read from each end by [links-by-pull-request](../scripts/links-by-pull-request.py) and [links-by-issue](../scripts/links-by-issue.py), and the linked pull requests [linked-pull-requests](../scripts/linked-pull-requests.py) adds to a collection |
 | [test_orphans](test_orphans.py) | [orphans](../scripts/orphans.py) keeps a proposal out of the hoist candidates and out of the initiative list, and a declared throwaway out of both candidate groups |
@@ -99,7 +100,8 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (19) |
 | [format](../scripts/format.py) | [test_format](test_format.py) (109), [test_shared](test_shared.py) (11), [test_sync](test_sync.py) (185), [test_templates](test_templates.py) (6) |
-| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (16) |
+| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (20), [test_kinds](test_kinds.py) (9) |
+| [kinds](../scripts/kinds.py) | [test_hotfix](test_hotfix.py) (20), [test_kinds](test_kinds.py) (9) |
 | [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (19), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
