@@ -99,7 +99,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (19) |
-| [format](../scripts/format.py) | [test_format](test_format.py) (109), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (185), [test_templates](test_templates.py) (6) |
+| [format](../scripts/format.py) | [test_format](test_format.py) (110), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (185), [test_templates](test_templates.py) (6) |
 | [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (20), [test_kinds](test_kinds.py) (9) |
 | [kinds](../scripts/kinds.py) | [test_hotfix](test_hotfix.py) (20), [test_kinds](test_kinds.py) (9) |
 | [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (19), [test_lane](test_lane.py) (12) |
