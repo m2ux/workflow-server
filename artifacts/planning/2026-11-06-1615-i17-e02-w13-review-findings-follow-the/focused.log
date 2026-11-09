@@ -1,0 +1,19 @@
+test_a_defect_relabelled_as_unrelated_keeps_its_finding_and_fails_review (test_review_scope.ReviewScope.test_a_defect_relabelled_as_unrelated_keeps_its_finding_and_fails_review) ... ok
+test_a_new_caller_exposes_an_unchanged_helpers_failure (test_review_scope.ReviewScope.test_a_new_caller_exposes_an_unchanged_helpers_failure) ... ok
+test_changed_boundary_has_an_observable_failure (test_review_scope.ReviewScope.test_changed_boundary_has_an_observable_failure) ... ok
+test_every_fixed_hotfix_finding_requires_linked_evidence (test_review_scope.ReviewScope.test_every_fixed_hotfix_finding_requires_linked_evidence) ... ok
+test_exclusion_evidence_uses_the_existing_scope_and_findings_shape (test_review_scope.ReviewScope.test_exclusion_evidence_uses_the_existing_scope_and_findings_shape) ... ok
+test_fixture_evidence_establishes_each_cases_membership (test_review_scope.ReviewScope.test_fixture_evidence_establishes_each_cases_membership) ... ok
+test_integration_review_dispositions_and_missing_links (test_review_scope.ReviewScope.test_integration_review_dispositions_and_missing_links) ... ok
+test_introduced_defects_and_affected_caller_risks_are_findings (test_review_scope.ReviewScope.test_introduced_defects_and_affected_caller_risks_are_findings) ... ok
+test_only_evidenced_unrelated_debt_with_a_saved_issue_leaves_the_findings (test_review_scope.ReviewScope.test_only_evidenced_unrelated_debt_with_a_saved_issue_leaves_the_findings) ... ok
+test_resolved_membership_passes_only_when_every_finding_is_fixed (test_review_scope.ReviewScope.test_resolved_membership_passes_only_when_every_finding_is_fixed) ... ok
+test_scope_annotations_cannot_waive_an_open_or_deferred_hotfix_finding (test_review_scope.ReviewScope.test_scope_annotations_cannot_waive_an_open_or_deferred_hotfix_finding) ... ok
+test_scope_annotations_do_not_waive_a_blocking_integration_finding (test_review_scope.ReviewScope.test_scope_annotations_do_not_waive_a_blocking_integration_finding) ... ok
+test_scope_notes_do_not_establish_current_review_identity (test_review_scope.ReviewScope.test_scope_notes_do_not_establish_current_review_identity) ... ok
+test_unrelated_path_capture_keeps_its_fault_and_the_changed_callers_result (test_review_scope.ReviewScope.test_unrelated_path_capture_keeps_its_fault_and_the_changed_callers_result) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.010s
+
+OK

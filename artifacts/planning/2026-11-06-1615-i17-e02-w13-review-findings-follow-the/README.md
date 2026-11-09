@@ -6,6 +6,7 @@ One independently approved policy owner fix, supplied by the completed E02 audit
 | --- | --- |
 | [w13.md](w13.md) | Component, scope, implementation and observing validation. |
 | [policy-units.md](policy-units.md) | Confirmed decisions, canonical owners and existing consumer boundaries. |
+| [validation.md](validation.md) | Review-scope fixtures, validator observations and full checks, with their logs. |
 
 ## Links
 
