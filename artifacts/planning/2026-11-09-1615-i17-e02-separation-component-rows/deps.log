@@ -1,0 +1,115 @@
+--- problems
+none
+
+--- joins: candidate units, rows of one epic extending one component
+E02:W13, E02:W44 extend workspace:skills/work-planner/artifacts/agent-review.md: split by rule, E02:W44 needs E02:W14, which needs E02:W13
+E02:W16, E02:W50 extend workspace:skills/work-planner/scripts/hotfix.py: split by rule, E02:W50 needs E02:W24, which needs E02:W16
+
+--- advisory: numbering against start order
+E03:W14 (level 2) is numbered after E03:W13 (level 3)
+
+--- levels (0 = can start now)
+0 E00:W01 - Planning commits directly to engineering
+0 E00:W02 - Not-planned epic leaves its initiative
+0 E00:W03 - Board sync removes uncited not-planned items
+0 E00:W04 - Sync reads every linked pull request
+0 E01:W01 - Per-skill style model and checker
+0 E03:W01 - Work item declares an optional lane
+0 E03:W02 - Task table carries the lane column
+1 E01:W02 - Rules, conventions and configuration files
+1 E03:W03 - Work item holds its component declaration
+1 E03:W04 - Joined rows share one lane
+1 E03:W05 - Dependency check reads task table lanes
+1 E03:W06 - Lane cells validate and survive table writes
+1 E03:W07 - Delivery plan admits units by lane
+2 E01:W03 - Modes in the new style
+2 E01:W04 - Protocols in the new style
+2 E01:W05 - Issue and body artifacts in the new style
+2 E01:W06 - Board, queue, planning and review artifacts restyled
+2 E01:W07 - Delivery, branch and pull-request artifacts restyled
+2 E03:W08 - Available-work survey filters units by lane
+2 E03:W09 - Deliver mode passes the requested lane
+2 E03:W10 - Plan mode writes task row lanes
+2 E03:W11 - Board queue reports Ready units' lanes
+2 E03:W12 - Board-queue script prints Ready unit lanes
+2 E03:W14 - Cross-epic joins receive bounded diagnostics
+3 E01:W08 - Activate the Work Planner style model
+3 E03:W13 - Advance mode reports Ready unit lanes
+4 E02:W01 - SOLID guidelines, Fields and read-context boundaries
+4 E04:W01 - Confirm draft state after failed hot-fix readiness
+4 E04:W02 - Explicit merge outcomes and permission boundaries
+4 E04:W03 - Epic continuation follows the merge outcome
+4 E05:W01 - Confirm epic and parent publication sequence
+5 E02:W02 - Audit ownership, Fields and prerequisite boundaries
+6 E02:W11 - Automatic answers follow saved queue evidence
+6 E02:W12 - Diagram fidelity governs readable size
+6 E02:W13 - Review findings follow the approved scope
+7 E02:W14 - Kind registration names interface operations
+7 E02:W15 - One script registry maps kinds to modules
+7 E02:W16 - Hot-fix module implements the kind interface
+7 E02:W17 - Board script owns title tag parsing
+7 E02:W18 - Dependency Graph fields hold shapes only
+7 E02:W19 - Required Criteria field holds the declaration
+8 E02:W20 - Hot-fix supplies the registered interface operations
+8 E02:W21 - Hot-fix Body owns body population
+8 E02:W22 - Align Mode names no individual kind
+8 E02:W23 - Board artifact names no individual kind
+8 E02:W24 - deliver.py reaches kinds through the registry
+8 E02:W25 - board-queue.py reaches kinds through the registry
+8 E02:W26 - sync.py reaches kinds through the registry
+8 E02:W27 - progress.py reaches kinds through the registry
+8 E02:W28 - format.py reaches kinds through the registry
+8 E02:W29 - agent_review.py reaches kinds through the registry
+8 E02:W30 - dispatch.py names no individual kind
+8 E02:W31 - orphans.py reaches kinds through the registry
+9 E02:W32 - Deliver Mode reaches kinds through registration
+9 E02:W33 - Hoist Mode reaches kinds through registration
+9 E02:W34 - Unit Dispatch reaches kinds through registration
+9 E02:W35 - Issue Delivery reaches kinds through registration
+9 E02:W36 - Task Merge reaches kinds through registration
+9 E02:W37 - Issue Closure names no individual kind
+9 E02:W38 - Delivery Plan units name no kind
+9 E02:W39 - Delivery Branches kind-free with bounded fields
+9 E02:W40 - Delivery Brief kind-free with bounded fields
+9 E02:W41 - Dispatch Batch names no individual kind
+9 E02:W42 - Board Queue artifact names no individual kind
+9 E02:W43 - Pull Request artifact names no individual kind
+9 E02:W44 - Agent Review names no individual kind
+9 E02:W45 - Standup Report names no individual kind
+9 E02:W46 - statuses.py kind-free with one identity
+10 E02:W47 - Board Status artifact and transformations
+10 E02:W48 - Board Delivery calls the status operations
+10 E02:W49 - Hot-fix uses the extracted status contract
+10 E02:W50 - Hot-fix module exports only its interface
+11 E02:W51 - Detect Fields behavior and prerequisite violations
+12 E02:W52 - Retained preparations select verified worktree reuse
+12 E02:W53 - Fresh reading trials confirm bounded entry routes
+
+--- component contention: rows of different epics extending one component
+none
+not checked, no component read: E00:W01, E00:W02, E00:W03, E00:W04, E01:W01, E01:W02, E01:W03, E01:W04, E01:W05, E01:W06, E01:W07, E01:W08, E02:W01, E02:W02, E02:W11, E02:W12, E03:W01, E03:W02, E03:W03, E03:W04, E03:W05, E03:W06, E03:W07, E03:W08, E03:W09, E03:W10, E03:W11, E03:W12, E03:W13, E03:W14, E04:W01, E04:W02, E04:W03, E05:W01
+
+--- epic priority (epics sharing a number start together)
+2 E00
+2 E01
+2 E03
+1 E02
+1 E04
+1 E05
+
+--- longest chains: 270, each of 13 steps
+on every chain: E01:W01, E01:W02, E01:W08, E02:W01, E02:W02, E02:W13, E02:W46, E02:W51
+E01:W01 -> E01:W02 -> E01:W03 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W13 -> E02:W15 -> E02:W24 -> E02:W46 -> E02:W47 -> E02:W51 -> E02:W52
+E01:W01 -> E01:W02 -> E01:W04 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W13 -> E02:W15 -> E02:W24 -> E02:W46 -> E02:W47 -> E02:W51 -> E02:W52
+E01:W01 -> E01:W02 -> E01:W05 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W13 -> E02:W15 -> E02:W24 -> E02:W46 -> E02:W47 -> E02:W51 -> E02:W52
+E01:W01 -> E01:W02 -> E01:W06 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W13 -> E02:W15 -> E02:W24 -> E02:W46 -> E02:W47 -> E02:W51 -> E02:W52
+E01:W01 -> E01:W02 -> E01:W07 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W13 -> E02:W15 -> E02:W24 -> E02:W46 -> E02:W47 -> E02:W51 -> E02:W52
+E01:W01 -> E01:W02 -> E01:W03 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W13 -> E02:W16 -> E02:W24 -> E02:W46 -> E02:W47 -> E02:W51 -> E02:W52
+E01:W01 -> E01:W02 -> E01:W04 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W13 -> E02:W16 -> E02:W24 -> E02:W46 -> E02:W47 -> E02:W51 -> E02:W52
+E01:W01 -> E01:W02 -> E01:W05 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W13 -> E02:W16 -> E02:W24 -> E02:W46 -> E02:W47 -> E02:W51 -> E02:W52
+E01:W01 -> E01:W02 -> E01:W06 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W13 -> E02:W16 -> E02:W24 -> E02:W46 -> E02:W47 -> E02:W51 -> E02:W52
+E01:W01 -> E01:W02 -> E01:W07 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W13 -> E02:W16 -> E02:W24 -> E02:W46 -> E02:W47 -> E02:W51 -> E02:W52
+... 260 more
+
+
+exit 0
