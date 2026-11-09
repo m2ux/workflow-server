@@ -1,0 +1,114 @@
+FFFFFFFE..
+======================================================================
+ERROR: test_unresolvable_entries_name_each_reader_and_its_outcome (test_deps.FieldBoundary.test_unresolvable_entries_name_each_reader_and_its_outcome)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w18-dependency-graph-fields-hold/skills/work-planner/test/test_deps.py", line 749, in test_unresolvable_entries_name_each_reader_and_its_outcome
+    guidance = sections_of(ARTIFACT.read_text())['Unresolvable Entries']
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'Unresolvable Entries'
+
+======================================================================
+FAIL: test_check_dependencies_states_each_outcome_the_fields_define (test_deps.FieldBoundary.test_check_dependencies_states_each_outcome_the_fields_define) (outcome='both resolutions, so neither is the cheaper answer')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w18-dependency-graph-fields-hold/skills/work-planner/test/test_deps.py", line 746, in test_check_dependencies_states_each_outcome_the_fields_define
+    self.assertIn(outcome, details)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: 'both resolutions, so neither is the cheaper answer' not found in '\n\nCheck the task dependency graph across the supplied epics, include the initiative\'s Depends on cells when `I=` is supplied, and provide [Graph Result](#graph-result "●") to the requester.\n\n<big><pre>\ncd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;\n  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deps.py \'I=[**&lt;initiative-body-file&gt;**](#dependency-files "○")\' &#92;\n  \'[**&lt;epic-id&gt;**](#dependency-files "○")=[**&lt;epic-body-file&gt;**](#dependency-files "○")\' \'[**&lt;epic-id&gt;**](#dependency-files "○"):[**&lt;task-id&gt;**](#dependency-files "○")=[**&lt;work-item-file&gt;**](#dependency-files "○")\' \'R=[**&lt;record-file&gt;**](#dependency-files "○")\'\n</pre></big>\n\n- Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.\n- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files "○") defines them.\n\n- Initiative edges must follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.\n- It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.\n- It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero.\n- It prints each candidate unit its rows do not join and no `R=` record line names exactly, with both resolutions and each direct edge a join drops, and each candidate split by rule with its reason, as [Joins](#joins) states. An `R=` file it cannot read is a problem.\n- An entry it cannot resolve is a problem naming the entry as written, as [Edges](#edges) states. Its second clause says what this run could not find, which is the epics it was given.\n- It prints each pair of rows in different epics whose work items declare one component, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.\n- A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic\'s rows, so a body carrying the retired form is reported once rather than taking its initiative\'s gates down with it.\n- It reads a declared component without its link, a wrapping code span, a trailing full stop or a leading `./`, and reports a work item it cannot read.\n- It reports a work item declaring a directory: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.\n- It prints the proposed [Epic Priority](#epic-priority) of each epic, largest first.\n- Its supplied inputs are published body text or local drafts.\n\n- The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the components its rows declare. Epics sharing a number start together, so the number asserts they can run in parallel, and it holds a set only where both of these do.\n\n- **Prerequisite depth establishes when an epic may start.**\n  An epic with no prerequisite epic, one whose tasks are not yet written among them, carries the largest number, and each other epic takes one less than the smallest its prerequisites carry.\n- **Component contention establishes whether it can.**\n  An epic holding a row that contends with a row of an epic of the same depth takes the number below that depth, and the epics depending on it follow it down, as [Component Contention](#component-contention) states.\n\n'
+
+======================================================================
+FAIL: test_check_dependencies_states_each_outcome_the_fields_define (test_deps.FieldBoundary.test_check_dependencies_states_each_outcome_the_fields_define) (outcome='split by rule with its reason, and asks no record line')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w18-dependency-graph-fields-hold/skills/work-planner/test/test_deps.py", line 746, in test_check_dependencies_states_each_outcome_the_fields_define
+    self.assertIn(outcome, details)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: 'split by rule with its reason, and asks no record line' not found in '\n\nCheck the task dependency graph across the supplied epics, include the initiative\'s Depends on cells when `I=` is supplied, and provide [Graph Result](#graph-result "●") to the requester.\n\n<big><pre>\ncd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;\n  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deps.py \'I=[**&lt;initiative-body-file&gt;**](#dependency-files "○")\' &#92;\n  \'[**&lt;epic-id&gt;**](#dependency-files "○")=[**&lt;epic-body-file&gt;**](#dependency-files "○")\' \'[**&lt;epic-id&gt;**](#dependency-files "○"):[**&lt;task-id&gt;**](#dependency-files "○")=[**&lt;work-item-file&gt;**](#dependency-files "○")\' \'R=[**&lt;record-file&gt;**](#dependency-files "○")\'\n</pre></big>\n\n- Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.\n- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files "○") defines them.\n\n- Initiative edges must follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.\n- It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.\n- It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero.\n- It prints each candidate unit its rows do not join and no `R=` record line names exactly, with both resolutions and each direct edge a join drops, and each candidate split by rule with its reason, as [Joins](#joins) states. An `R=` file it cannot read is a problem.\n- An entry it cannot resolve is a problem naming the entry as written, as [Edges](#edges) states. Its second clause says what this run could not find, which is the epics it was given.\n- It prints each pair of rows in different epics whose work items declare one component, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.\n- A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic\'s rows, so a body carrying the retired form is reported once rather than taking its initiative\'s gates down with it.\n- It reads a declared component without its link, a wrapping code span, a trailing full stop or a leading `./`, and reports a work item it cannot read.\n- It reports a work item declaring a directory: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.\n- It prints the proposed [Epic Priority](#epic-priority) of each epic, largest first.\n- Its supplied inputs are published body text or local drafts.\n\n- The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the components its rows declare. Epics sharing a number start together, so the number asserts they can run in parallel, and it holds a set only where both of these do.\n\n- **Prerequisite depth establishes when an epic may start.**\n  An epic with no prerequisite epic, one whose tasks are not yet written among them, carries the largest number, and each other epic takes one less than the smallest its prerequisites carry.\n- **Component contention establishes whether it can.**\n  An epic holding a row that contends with a row of an epic of the same depth takes the number below that depth, and the epics depending on it follow it down, as [Component Contention](#component-contention) states.\n\n'
+
+======================================================================
+FAIL: test_check_dependencies_states_each_outcome_the_fields_define (test_deps.FieldBoundary.test_check_dependencies_states_each_outcome_the_fields_define) (outcome='is a problem naming the entry as written, and the run exits nonzero')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w18-dependency-graph-fields-hold/skills/work-planner/test/test_deps.py", line 746, in test_check_dependencies_states_each_outcome_the_fields_define
+    self.assertIn(outcome, details)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: 'is a problem naming the entry as written, and the run exits nonzero' not found in '\n\nCheck the task dependency graph across the supplied epics, include the initiative\'s Depends on cells when `I=` is supplied, and provide [Graph Result](#graph-result "●") to the requester.\n\n<big><pre>\ncd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;\n  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deps.py \'I=[**&lt;initiative-body-file&gt;**](#dependency-files "○")\' &#92;\n  \'[**&lt;epic-id&gt;**](#dependency-files "○")=[**&lt;epic-body-file&gt;**](#dependency-files "○")\' \'[**&lt;epic-id&gt;**](#dependency-files "○"):[**&lt;task-id&gt;**](#dependency-files "○")=[**&lt;work-item-file&gt;**](#dependency-files "○")\' \'R=[**&lt;record-file&gt;**](#dependency-files "○")\'\n</pre></big>\n\n- Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.\n- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files "○") defines them.\n\n- Initiative edges must follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.\n- It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.\n- It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero.\n- It prints each candidate unit its rows do not join and no `R=` record line names exactly, with both resolutions and each direct edge a join drops, and each candidate split by rule with its reason, as [Joins](#joins) states. An `R=` file it cannot read is a problem.\n- An entry it cannot resolve is a problem naming the entry as written, as [Edges](#edges) states. Its second clause says what this run could not find, which is the epics it was given.\n- It prints each pair of rows in different epics whose work items declare one component, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.\n- A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic\'s rows, so a body carrying the retired form is reported once rather than taking its initiative\'s gates down with it.\n- It reads a declared component without its link, a wrapping code span, a trailing full stop or a leading `./`, and reports a work item it cannot read.\n- It reports a work item declaring a directory: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.\n- It prints the proposed [Epic Priority](#epic-priority) of each epic, largest first.\n- Its supplied inputs are published body text or local drafts.\n\n- The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the components its rows declare. Epics sharing a number start together, so the number asserts they can run in parallel, and it holds a set only where both of these do.\n\n- **Prerequisite depth establishes when an epic may start.**\n  An epic with no prerequisite epic, one whose tasks are not yet written among them, carries the largest number, and each other epic takes one less than the smallest its prerequisites carry.\n- **Component contention establishes whether it can.**\n  An epic holding a row that contends with a row of an epic of the same depth takes the number below that depth, and the epics depending on it follow it down, as [Component Contention](#component-contention) states.\n\n'
+
+======================================================================
+FAIL: test_no_field_states_a_reporting_placement_or_exit_outcome (test_deps.FieldBoundary.test_no_field_states_a_reporting_placement_or_exit_outcome) (field='Edges')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w18-dependency-graph-fields-hold/skills/work-planner/test/test_deps.py", line 737, in test_no_field_states_a_reporting_placement_or_exit_outcome
+    self.assertIsNone(OUTCOME.search(body), body)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <re.Match object; span=(1412, 1417), match='exits'> is not None : 
+
+The collection of producer-to-consumer task-row references. A task edge names the producing row for each output the depending row consumes. An edge a task's prose implies is carried explicitly.
+
+- **An edge names rows, never an epic.**
+  A row naming an epic gates its task on every row of that epic, including the rows it consumes nothing from, which is how a [whole-epic edge](#whole-epic-edges) the rows do not justify reaches the initiative.
+- **A task consuming from every row of an epic names the producing row for each output.**
+  An edge another in the cell already implies is dropped, so a prerequisite chain is named by its last row, and the whole-epic reach is what the rows establish either way.
+- **An edge to another epic's row waits for that row's outputs.**
+  The dependent row starts once the producing row is delivered and its outputs are available at the dependent epic's base, as [Producer Outputs](delivery-branches.md#producer-outputs) states; the producing epic's other rows and its closure gate nothing.
+- **An entry that cannot resolve is a permanent condition, not a prerequisite to come.**
+  An entry naming no row and linking no issue, naming an issue the run was not given, or naming a row the epic it points to does not carry, cannot resolve. Every tool reading the cell names the entry as written, leaves the row where it stands rather than placing it as work still to come, and exits nonzero.
+
+
+
+======================================================================
+FAIL: test_no_field_states_a_reporting_placement_or_exit_outcome (test_deps.FieldBoundary.test_no_field_states_a_reporting_placement_or_exit_outcome) (field='Epic Priority')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w18-dependency-graph-fields-hold/skills/work-planner/test/test_deps.py", line 737, in test_no_field_states_a_reporting_placement_or_exit_outcome
+    self.assertIsNone(OUTCOME.search(body), body)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <re.Match object; span=(98, 104), match='report'> is not None : 
+
+A map from each supplied epic id to one positive integer priority, ordered largest first in the report. Equal priorities identify epics that may run in parallel under the derived dependency and component constraints.
+
+
+
+======================================================================
+FAIL: test_no_field_states_a_reporting_placement_or_exit_outcome (test_deps.FieldBoundary.test_no_field_states_a_reporting_placement_or_exit_outcome) (field='Joins')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w18-dependency-graph-fields-hold/skills/work-planner/test/test_deps.py", line 737, in test_no_field_states_a_reporting_placement_or_exit_outcome
+    self.assertIsNone(OUTCOME.search(body), body)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <re.Match object; span=(816, 822), match='report'> is not None : 
+
+The candidate joined units, each a set of task ids in one epic. The undelivered rows of one epic whose work items declare one [component](work-item.md#component) are a candidate unit: one pull request writes that file once, where separate ones each rebase on the last. Rows declaring different components need no accounting.
+
+- **A joined unit has one lane.**
+  Joined rows must meet [Unit Consistency](lane.md#unit-consistency).
+- **A candidate is answered once.**
+  Its rows name each other in Joins, or one line of a record names exactly its rows and why they stay split. A line naming only some of its rows, or rows besides, accounts for none.
+- **Both resolutions are stated where the candidate is reported.**
+  Naming the rows in Joins asserts one pull request; the record line says why there are several. A report naming only the first makes the assertion the cheaper answer.
+- **A direct edge inside a candidate is the edge a join drops.**
+  The report names it, since the joined pull request orders the commits.
+- **Some candidates are split by rule.**
+  A candidate whose rows cover more than six criteria, or with a path between two of them through a row outside it, cannot join. The report names the reason, and no record line is asked for.
+
+
+
+======================================================================
+FAIL: test_no_field_states_a_reporting_placement_or_exit_outcome (test_deps.FieldBoundary.test_no_field_states_a_reporting_placement_or_exit_outcome) (field='Numbering Map')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w18-dependency-graph-fields-hold/skills/work-planner/test/test_deps.py", line 737, in test_no_field_states_a_reporting_placement_or_exit_outcome
+    self.assertIsNone(OUTCOME.search(body), body)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <re.Match object; span=(287, 294), match='refused'> is not None : 
+
+A comma-separated list of `<old-number>:<new-number>` pairs assigning each old number one distinct new number. A number a pull request already names is preserved, and a row a pull request names is not renumbered. A source absent from the supplied files, or a duplicate destination, is refused.
+
+
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.008s
+
+FAILED (failures=7, errors=1)
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w18-dependency-graph-fields-hold (name more with SBX_EXTRA_ROOTS=dir1:dir2)

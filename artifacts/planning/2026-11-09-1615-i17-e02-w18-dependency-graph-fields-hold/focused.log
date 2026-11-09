@@ -1,0 +1,10 @@
+test_check_dependencies_states_each_outcome_the_fields_define (test_deps.FieldBoundary.test_check_dependencies_states_each_outcome_the_fields_define) ... ok
+test_no_field_states_a_reporting_placement_or_exit_outcome (test_deps.FieldBoundary.test_no_field_states_a_reporting_placement_or_exit_outcome) ... ok
+test_unresolvable_entries_name_each_reader_and_its_outcome (test_deps.FieldBoundary.test_unresolvable_entries_name_each_reader_and_its_outcome) ... ok
+test_a_resolvable_entry_passes (test_deps.InvalidReferences.test_a_resolvable_entry_passes) ... ok
+test_each_unresolvable_entry_is_named_and_the_run_exits_nonzero (test_deps.InvalidReferences.test_each_unresolvable_entry_is_named_and_the_run_exits_nonzero) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.007s
+
+OK

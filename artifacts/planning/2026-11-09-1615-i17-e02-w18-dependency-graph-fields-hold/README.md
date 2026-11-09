@@ -7,6 +7,7 @@ One separation fix row from the E02 component refinement. The declared one-file 
 | File | Purpose |
 | --- | --- |
 | [w18.md](w18.md) | Component, scope, implementation and observing validation for W18. |
+| [validation.md](validation.md) | Clause placement, field-boundary reader, invalid-reference fixtures and full checks, with their logs. |
 
 ## Links
 
