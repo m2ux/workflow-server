@@ -119,8 +119,8 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | --- | --- |
 | `*/SKILL.md` | [test_modes](test_modes.py) (4) |
 | [README](README.md) | [test_readme](test_readme.py) (14) |
-| [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
-| `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (13) |
+| [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
+| `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (14) |
 | [advance-mode](../modes/advance-mode.md) | [test_advance_decisions](test_advance_decisions.py) (14) |
 | [architecture-overview](../artifacts/architecture-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
 | [change-overview](../protocols/change-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
@@ -129,14 +129,14 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [deliver-mode](../modes/deliver-mode.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_worktrees](test_worktrees.py) (2) |
 | [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (8) |
-| [configuration](../configuration.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
-| [conventions](../conventions.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
-| [guidelines](../guidelines.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
-| `modes/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| [configuration](../configuration.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
+| [conventions](../conventions.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
+| [guidelines](../guidelines.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
+| `modes/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
 | [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (8), [test_plan_publication](test_plan_publication.py) (14) |
-| `protocols/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
-| `references/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
-| [rules](../rules.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| `protocols/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
+| `references/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
+| [rules](../rules.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
 
 A count beside a module measures that module, not the subject it appears against. The 19 tests of [test_dispatch](test_dispatch.py) do not all touch [deliver](../scripts/deliver.py), so a row's numbers are not a total.
 

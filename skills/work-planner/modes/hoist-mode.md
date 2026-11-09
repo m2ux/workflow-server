@@ -94,7 +94,7 @@ Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every is
 - Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the labels hot-fix [Titles](../artifacts/hotfix-body.md#titles) name.
 
 - Retain the [hot-fix number](../artifacts/hotfix.md#hot-fix-number) for rewriting and saving the issue's body, title and labels. After the rewrite, the hot-fix status step below follows its [placement](../artifacts/placement.md#disposition-conditions).
-- Use the source issue as the destination with disposition Kept. The rewrite branch below supplies its body through [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body) and keeps the issue open.
+- Use the source issue as the destination with disposition Kept. The rewrite branch below supplies its hot-fix body and keeps the issue open.
 
 ###### Leave
 
