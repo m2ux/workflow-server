@@ -14,3 +14,9 @@ One separation fix row from the E02 component refinement. The declared one-file 
 - [Epic](https://github.com/m2ux/workflow-server/issues/1615)
 - [Component refinement](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-09-1615-i17-e02-separation-component-rows)
 - [Ownership audit](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-06-1615-i17-e02-w02-audit-ownership-fields-and)
+
+## Delivery
+
+- [#1673](https://github.com/m2ux/workflow-server/pull/1673) is open into `i17/e02/workspace` at verified head `8689b8c6e`, current with the base and with every Test Plan check passing; epic row W29 links it. The merge awaits a permission the session was refused.
+- Arising issue: [#1676](https://github.com/m2ux/workflow-server/issues/1676), the review operation the Kind interface lacks.
+- Plan changes: none applied. Held: placing #1676 as a folded row of I17:E02 ahead of W50.
