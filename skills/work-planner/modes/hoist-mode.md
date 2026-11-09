@@ -94,7 +94,7 @@ Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every is
 - Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the labels hot-fix [Titles](../artifacts/hotfix-body.md#titles) name.
 
 - Retain the [hot-fix number](../artifacts/hotfix.md#hot-fix-number) for rewriting and saving the issue's body, title and labels. After the rewrite, the hot-fix status step below follows its [placement](../artifacts/placement.md#disposition-conditions).
-- Use the source issue as the destination with disposition Kept. The rewrite branch below supplies its hot-fix body and keeps the issue open.
+- Use the source issue as the destination with disposition Kept. The rewrite branch below supplies its body through [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body) and keeps the issue open.
 
 ###### Leave
 
@@ -118,20 +118,7 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 
 ###### Hot-Fix Body
 
-- For a hot-fix, populate its body as follows.
-
-- Populate the standalone [Template](../artifacts/standalone-body.md#template) for [Hot-fix Identity](../artifacts/hotfix-body.md#hot-fix-identity) at the destination in [Output Body](../artifacts/hotfix-body.md#output-body).
-- The work must meet [Definition](../artifacts/hotfix-body.md#definition).
-- The title must meet the shared [Titles](../artifacts/issue-body.md#titles) conditions and the hot-fix [Titles](../artifacts/hotfix-body.md#titles).
-- Name the confirmed [Target](../artifacts/hotfix-body.md#target) in the Overview.
-- Populate the Problem and Proposal from [Defect Evidence](../artifacts/hotfix-body.md#defect-evidence), meeting [Problem and Proposal](../artifacts/issue-body.md#problem-and-proposal).
-- All populated fields must meet [Fields](../artifacts/hotfix-body.md#fields).
-
-- Retain the populated [Output Body](../artifacts/hotfix-body.md#output-body) for publication.
-
-- A hot-fix belongs to no initiative or epic, and names no Depends on or Joins.
-- It sits on its theme's board.
-- Its priority 10, which its [Titles](../artifacts/hotfix-body.md#titles) label carries, ranks it nowhere: the queue places it by its [Board Status](../artifacts/hotfix.md#board-status), outside the priority sets.
+- For a hot-fix, Apply [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body "ƒ").
 
 ###### Standalone Body
 
