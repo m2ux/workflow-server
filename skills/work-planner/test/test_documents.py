@@ -33,36 +33,8 @@ def executable_scripts(paths):
     return run
 
 
-def registered_operations():
-    """Each kind operation the SKILL.md registration names, as (artifact path, heading anchor). A
-    kind's operation takes the interface name with the kind's name after its verb."""
-    registered = set()
-    for line in (ROOT / 'SKILL.md').read_text().split('\n## ')[0].splitlines():
-        match = re.match(r'  - \[([^\]]+)\]\((artifacts/[\w-]+\.md)\)\s+(.+)$', line)
-        if not match:
-            continue
-        text, target, names = match.groups()
-        kind = re.sub(r' Body$', '', text)
-        for name in names.split(','):
-            verb, _, rest = name.strip().partition(' ')
-            registered.add(((ROOT / target).resolve(), checker.anchor_of(f'{verb} {kind} {rest}')))
-    return registered
-
-
 class DocumentInterfaces(unittest.TestCase):
-    def test_registration_names_kind_operations_their_artifacts_hold(self):
-        """General files select a kind's operation through the registration, so each
-        registered heading the naming rule derives that its artifact holds is reached there."""
-        registered = registered_operations()
-        anchors = {(path, operation) for path, operation in registered
-                   if operation in {checker.anchor_of(title) for _, _, title in checker.scan(path)[2]}}
-        self.assertIn(((ROOT / 'artifacts/hotfix-body.md').resolve(), 'populate-hot-fix-body'), anchors)
-        self.assertIn(((ROOT / 'artifacts/standalone-body.md').resolve(), 'populate-standalone-body'), anchors)
-        self.assertIn(((ROOT / 'artifacts/hotfix.md').resolve(), 'settle-hot-fix-board-status'), anchors)
-
     def test_artifact_operations_have_multiple_linked_references(self):
-        """An operation with one linked use belongs in its caller. The kind registration
-        is a use of each kind operation it names, which general files select through it."""
         paths = sorted(path for path in ROOT.rglob('*.md') if 'test' not in path.relative_to(ROOT).parts)
         references = {}
         for path in paths:
@@ -85,8 +57,6 @@ class DocumentInterfaces(unittest.TestCase):
                 key = destination, checker.anchor_of(fragment)
                 if key in references:
                     references[key].append(f'{path.relative_to(ROOT)}:{index + 1}')
-        for key in registered_operations() & references.keys():
-            references[key].append('SKILL.md registration')
         self.assertTrue(references)
         for (path, operation), sites in references.items():
             with self.subTest(file=path.name, operation=operation):

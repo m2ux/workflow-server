@@ -118,7 +118,7 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 
 ###### Hot-Fix Body
 
-- For a hot-fix, Apply [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body "ƒ").
+- For a hot-fix, Apply [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body "ƒ") with its number, theme label, target and defect evidence.
 
 ###### Standalone Body
 
@@ -127,7 +127,6 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 ###### Common Body Content
 
 - Carry evidence into Problem and design into Proposal.
-- Pass a hot-fix its supplied number, theme label and target.
 
 ##### 2. Validate and Save Body
 

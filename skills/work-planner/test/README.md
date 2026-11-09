@@ -69,6 +69,7 @@ These modules exercise the skill's instruction routes and document contracts.
 | [test_architecture_diagrams](test_architecture_diagrams.py) | Architecture diagrams preserve measured topology and the consumer's owning contract |
 | [test_checkouts](test_checkouts.py) | Checkout-sensitive commands consume linked input contracts |
 | [test_documents](test_documents.py) | The installed prose API exposes complete inputs and directed reading paths |
+| [test_kind_operations](test_kind_operations.py) | Each kind operation the registration links is supplied under its registered name and called with its general contract |
 | [test_merge_outcomes](test_merge_outcomes.py) | Merge instructions bind verified heads and select terminal or bounded recovery routes |
 | [test_modes](test_modes.py) | Mode summaries in each skill's [SKILL](../SKILL.md) |
 | [test_plan_mode](test_plan_mode.py) | Plan Mode keeps a plan in one home: its planning record on the engineering branch |
@@ -119,24 +120,28 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | --- | --- |
 | `*/SKILL.md` | [test_modes](test_modes.py) (4) |
 | [README](README.md) | [test_readme](test_readme.py) (14) |
-| [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
-| `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (14) |
+| [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13), [test_kind_operations](test_kind_operations.py) (15) |
+| `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (13) |
 | [advance-mode](../modes/advance-mode.md) | [test_advance_decisions](test_advance_decisions.py) (14) |
 | [architecture-overview](../artifacts/architecture-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
 | [change-overview](../protocols/change-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
 | [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [deliver-mode](../modes/deliver-mode.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12) |
+| [hotfix](../artifacts/hotfix.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_kind_operations](test_kind_operations.py) (15) |
+| [unit-dispatch](../protocols/unit-dispatch.md) | [test_kind_operations](test_kind_operations.py) (15) |
+| [hotfix-body](../artifacts/hotfix-body.md) | [test_kind_operations](test_kind_operations.py) (15) |
+| [hoist-mode](../modes/hoist-mode.md) | [test_kind_operations](test_kind_operations.py) (15) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_worktrees](test_worktrees.py) (2) |
 | [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (8) |
-| [configuration](../configuration.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
-| [conventions](../conventions.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
-| [guidelines](../guidelines.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
-| `modes/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
+| [configuration](../configuration.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| [conventions](../conventions.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| [guidelines](../guidelines.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| `modes/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
 | [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (8), [test_plan_publication](test_plan_publication.py) (14) |
-| `protocols/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
-| `references/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
-| [rules](../rules.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
+| `protocols/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| `references/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| [rules](../rules.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
 
 A count beside a module measures that module, not the subject it appears against. The 22 tests of [test_dispatch](test_dispatch.py) do not all touch [deliver](../scripts/deliver.py), so a row's numbers are not a total.
 
