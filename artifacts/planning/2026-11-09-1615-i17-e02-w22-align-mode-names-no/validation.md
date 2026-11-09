@@ -52,9 +52,9 @@ git diff --check origin/i17/e02/workspace                                       
 
 ## Current Base
 
-The epic base moved to `1bb44b2bf` (W30 #1672, W18 #1669), merged into the branch at `667e6c613b22642990d380a2f41b4269d3c3d3f0`. The same checks at that head:
+The epic base moved to `a5bba6bb2` (W30 #1672, W18 #1669, W26 #1674), merged into the branch at `cb35a1304ff74a8ce3c5eb40172ed72e8fbf4fc2`. The same checks at that head:
 
-- Planner: 1067 tests, one opt-in live-link skip ([planner-merged.log](planner-merged.log)).
+- Planner: 1069 tests, one opt-in live-link skip ([planner-merged.log](planner-merged.log)).
 - Shared: 280 pass ([shared-merged.log](shared-merged.log)).
 - Skill checker: 59 files, zero findings ([skill-check-merged.log](skill-check-merged.log)).
 - Kind search and route checks: zero matches, no failures ([align-routes-merged.log](align-routes-merged.log)).
