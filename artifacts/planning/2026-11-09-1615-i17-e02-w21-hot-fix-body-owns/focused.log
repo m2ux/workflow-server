@@ -16,11 +16,6 @@ test_script_reach_requires_the_installed_command_declaration (test_documents.Doc
 test_a_report_of_the_operation_is_not_a_call (test_documents.EpicDeliveryCallers.test_a_report_of_the_operation_is_not_a_call) ... ok
 test_sync_epic_calls_pass_the_epic_bases (test_documents.EpicDeliveryCallers.test_sync_epic_calls_pass_the_epic_bases) ... ok
 test_sync_epic_takes_the_epic_bases (test_documents.EpicDeliveryCallers.test_sync_epic_takes_the_epic_bases) ... ok
-
-----------------------------------------------------------------------
-Ran 13 tests in 0.863s
-
-OK
 test_conventions_name_the_checkouts (test_checkouts.CheckoutVocabulary.test_conventions_name_the_checkouts)
 The vocabulary every checkout-selecting call draws from. ... ok
 test_each_call_to_an_acting_section_names_a_checkout (test_checkouts.CommandsActingOnTheirCheckout.test_each_call_to_an_acting_section_names_a_checkout)
@@ -33,42 +28,25 @@ test_installed_declaration_selects_execution_steps (test_checkouts.ExecutingChec
 test_named_commands_use_input_contracts_as_checkout_evidence (test_checkouts.ExecutingCheckoutEvidence.test_named_commands_use_input_contracts_as_checkout_evidence) ... ok
 test_checkout_roles_follow_command_and_transitive_input_contracts (test_checkouts.SelectedCheckoutContracts.test_checkout_roles_follow_command_and_transitive_input_contracts) ... ok
 test_selected_checkouts_reach_accepting_command_inputs (test_checkouts.SelectedCheckoutContracts.test_selected_checkouts_reach_accepting_command_inputs) ... ok
-
-----------------------------------------------------------------------
-Ran 10 tests in 5.283s
-
-OK
 test_a_list_holds_five_items_after_the_direction (test_modes.ModeSummaries.test_a_list_holds_five_items_after_the_direction) ... ok
 test_a_noun_phrase_and_a_gerund_hold (test_modes.ModeSummaries.test_a_noun_phrase_and_a_gerund_hold) ... ok
 test_a_placement_rule_is_not_a_capability_phrase (test_modes.ModeSummaries.test_a_placement_rule_is_not_a_capability_phrase) ... ok
 test_each_skill_names_a_capability (test_modes.ModeSummaries.test_each_skill_names_a_capability) ... ok
-
-----------------------------------------------------------------------
-Ran 4 tests in 0.001s
-
-OK
+test_development_snapshot_example_is_valid_closure_evidence (test_command_contracts.DocumentedCommandBehavior.test_development_snapshot_example_is_valid_closure_evidence) ... ok
+test_dispatch_can_check_review_with_an_empty_progress_selection (test_command_contracts.DocumentedCommandBehavior.test_dispatch_can_check_review_with_an_empty_progress_selection) ... ok
+test_dispatch_can_hold_progress_with_an_empty_review_selection (test_command_contracts.DocumentedCommandBehavior.test_dispatch_can_hold_progress_with_an_empty_review_selection) ... ok
+test_epic_format_observes_project_required_criteria_and_changed_paths (test_command_contracts.DocumentedCommandBehavior.test_epic_format_observes_project_required_criteria_and_changed_paths) ... ok
+test_epic_format_resolves_cross_epic_rows_from_its_parent (test_command_contracts.DocumentedCommandBehavior.test_epic_format_resolves_cross_epic_rows_from_its_parent) ... ok
+test_epic_sync_evaluates_every_supplied_base (test_command_contracts.DocumentedCommandBehavior.test_epic_sync_evaluates_every_supplied_base) ... ok
+test_hotfix_delivery_records_its_pull_request_without_verified_criteria (test_command_contracts.DocumentedCommandBehavior.test_hotfix_delivery_records_its_pull_request_without_verified_criteria) ... ok
+test_initiative_delivery_writes_completed_rows_to_the_requested_body (test_command_contracts.DocumentedCommandBehavior.test_initiative_delivery_writes_completed_rows_to_the_requested_body) ... ok
+test_initiative_format_uses_linked_epic_titles (test_command_contracts.DocumentedCommandBehavior.test_initiative_format_uses_linked_epic_titles) ... ok
+test_lane_commands_provide_their_documented_flat_result_examples (test_command_contracts.DocumentedCommandBehavior.test_lane_commands_provide_their_documented_flat_result_examples) ... ok
+test_lane_result_distinguishes_invalid_and_valid_unlaned_units (test_command_contracts.DocumentedCommandBehavior.test_lane_result_distinguishes_invalid_and_valid_unlaned_units) ... ok
+test_reservation_uses_the_published_record_date (test_command_contracts.DocumentedCommandBehavior.test_reservation_uses_the_published_record_date) ... ok
+test_survey_writes_the_requested_dispatch_export (test_command_contracts.DocumentedCommandBehavior.test_survey_writes_the_requested_dispatch_export) ... ok
+test_task_delivery_records_its_pull_request_without_verified_criteria (test_command_contracts.DocumentedCommandBehavior.test_task_delivery_records_its_pull_request_without_verified_criteria) ... ok
 test_templates (unittest.loader._FailedTest.test_templates) ... ERROR
-
-======================================================================
-ERROR: test_templates (unittest.loader._FailedTest.test_templates)
-----------------------------------------------------------------------
-ImportError: Failed to import test module: test_templates
-Traceback (most recent call last):
-  File "/usr/lib/python3.14/unittest/loader.py", line 426, in _find_test_path
-    module = self._get_module_from_name(name)
-  File "/usr/lib/python3.14/unittest/loader.py", line 367, in _get_module_from_name
-    __import__(name)
-    ~~~~~~~~~~^^^^^^
-  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w21-hot-fix-body-owns/skills/work-planner/test/test_templates.py", line 8, in <module>
-    from format import BODY_ARTIFACTS, Template, template_body
-ModuleNotFoundError: No module named 'format'
-
-
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-FAILED (errors=1)
-sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w21-hot-fix-body-owns (name more with SBX_EXTRA_ROOTS=dir1:dir2)
 test_body_already_on_its_own_line_is_left (test_format.BoldLeads.test_body_already_on_its_own_line_is_left) ... ok
 test_body_before_a_paragraph_moves_to_the_next_line (test_format.BoldLeads.test_body_before_a_paragraph_moves_to_the_next_line) ... ok
 test_bold_inside_a_sentence_is_left (test_format.BoldLeads.test_bold_inside_a_sentence_is_left) ... ok
@@ -179,11 +157,6 @@ test_malformed_cell_survives_table_normalization (test_format.TaskRowLanes.test_
 test_malformed_populated_cells_name_their_row_and_keep_the_value (test_format.TaskRowLanes.test_malformed_populated_cells_name_their_row_and_keep_the_value) ... ok
 test_missing_lane_column_is_added_empty (test_format.TaskRowLanes.test_missing_lane_column_is_added_empty) ... ok
 test_normalization_preserves_lanes_by_task_with_done_last (test_format.TaskRowLanes.test_normalization_preserves_lanes_by_task_with_done_last) ... ok
-
-----------------------------------------------------------------------
-Ran 110 tests in 1.600s
-
-OK
 test_a_closed_hot_fix_is_done_or_off_the_board (test_hotfix.BoardStatus.test_a_closed_hot_fix_is_done_or_off_the_board) ... ok
 test_a_ready_delivering_pull_request_stands_it_in_review_and_a_draft_in_progress (test_hotfix.BoardStatus.test_a_ready_delivering_pull_request_stands_it_in_review_and_a_draft_in_progress) ... ok
 test_an_open_hot_fix_with_no_open_delivery_is_ready_unless_in_progress (test_hotfix.BoardStatus.test_an_open_hot_fix_with_no_open_delivery_is_ready_unless_in_progress) ... ok
@@ -205,21 +178,20 @@ test_an_open_draft_delivering_pull_request_makes_it_running (test_hotfix.UnitSta
 test_any_open_linking_pull_request_makes_it_running (test_hotfix.UnitState.test_any_open_linking_pull_request_makes_it_running) ... ok
 test_with_no_delivery_in_progress_is_its_hold_and_ready_its_unit (test_hotfix.UnitState.test_with_no_delivery_in_progress_is_its_hold_and_ready_its_unit) ... ok
 
+======================================================================
+ERROR: test_templates (unittest.loader._FailedTest.test_templates)
 ----------------------------------------------------------------------
-Ran 20 tests in 0.004s
+ImportError: Failed to import test module: test_templates
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w21-hot-fix-body-owns/skills/work-planner/test/test_templates.py", line 8, in <module>
+    from format import BODY_ARTIFACTS, Template, template_body
+ModuleNotFoundError: No module named 'format'
 
-OK
-test_development_snapshot_example_is_valid_closure_evidence (test_command_contracts.DocumentedCommandBehavior.test_development_snapshot_example_is_valid_closure_evidence) ... ok
-test_dispatch_can_check_review_with_an_empty_progress_selection (test_command_contracts.DocumentedCommandBehavior.test_dispatch_can_check_review_with_an_empty_progress_selection) ... ok
-test_dispatch_can_hold_progress_with_an_empty_review_selection (test_command_contracts.DocumentedCommandBehavior.test_dispatch_can_hold_progress_with_an_empty_review_selection) ... ok
-test_epic_format_observes_project_required_criteria_and_changed_paths (test_command_contracts.DocumentedCommandBehavior.test_epic_format_observes_project_required_criteria_and_changed_paths) ... ok
-test_epic_format_resolves_cross_epic_rows_from_its_parent (test_command_contracts.DocumentedCommandBehavior.test_epic_format_resolves_cross_epic_rows_from_its_parent) ... ok
-test_epic_sync_evaluates_every_supplied_base (test_command_contracts.DocumentedCommandBehavior.test_epic_sync_evaluates_every_supplied_base) ... ok
-test_hotfix_delivery_records_its_pull_request_without_verified_criteria (test_command_contracts.DocumentedCommandBehavior.test_hotfix_delivery_records_its_pull_request_without_verified_criteria) ... ok
-test_initiative_delivery_writes_completed_rows_to_the_requested_body (test_command_contracts.DocumentedCommandBehavior.test_initiative_delivery_writes_completed_rows_to_the_requested_body) ... ok
-test_initiative_format_uses_linked_epic_titles (test_command_contracts.DocumentedCommandBehavior.test_initiative_format_uses_linked_epic_titles) ... ok
-test_lane_commands_provide_their_documented_flat_result_examples (test_command_contracts.DocumentedCommandBehavior.test_lane_commands_provide_their_documented_flat_result_examples) ... ok
-test_lane_result_distinguishes_invalid_and_valid_unlaned_units (test_command_contracts.DocumentedCommandBehavior.test_lane_result_distinguishes_invalid_and_valid_unlaned_units) ... ok
-test_reservation_uses_the_published_record_date (test_command_contracts.DocumentedCommandBehavior.test_reservation_uses_the_published_record_date) ... ok
-test_survey_writes_the_requested_dispatch_export (test_command_contracts.DocumentedCommandBehavior.test_survey_writes_the_requested_dispatch_export) ... ok
-test_task_delivery_records_its_pull_request_without_verified_criteria (test_command_contracts.DocumentedCommandBehavior.test_task_delivery_records_its_pull_request_without_verified_criteria) ... 
+
+----------------------------------------------------------------------
+Ran 172 tests in 9.478s
+
+FAILED (errors=1)
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w21-hot-fix-body-owns (name more with SBX_EXTRA_ROOTS=dir1:dir2)
