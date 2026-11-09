@@ -6,14 +6,42 @@ description: >-
 
 # Work Planner
 
-Work Planner plans work as GitHub issues and keeps the plan current until the work is delivered. The issues are the plan:
+Work Planner plans work as GitHub issues and keeps the plan current until the work is delivered. The issues are the plan, and this list registers each kind of work with the artifacts holding it and the interface operations each supplies:
 
 - **Proposal**  States the problem and the goal, with no Work Breakdown.
+  - [Proposal Body](artifacts/proposal-body.md)
 - **Initiative**  States a goal and lists its epics.
+  - [Initiative](artifacts/initiative.md)
+  - [Initiative Issue Body](artifacts/initiative-issue-body.md)  Populate Body
 - **Epic**  Lists its tasks in a Work Breakdown table.
+  - [Epic](artifacts/epic.md)
+  - [Epic Issue Body](artifacts/epic-issue-body.md)  Populate Body
 - **Task**  One pull request's worth of work.
+  - [Task Body](artifacts/task-body.md)
 - **Standalone issue**  Work outside any initiative.
-- **[Hot-fix](artifacts/hotfix-body.md)**  A fix to a long-lived branch beside all queued work.
+  - [Standalone Body](artifacts/standalone-body.md)  Populate Body
+- **Hot-fix**  A fix to a long-lived branch beside all queued work.
+  - [Hot-fix](artifacts/hotfix.md)  Release Hold, Record Dispatch Status, Record Delivery, Record Merge, Settle Board Status, Review Before Merge
+  - [Hot-fix Body](artifacts/hotfix-body.md)  Populate Body
+
+A kind supplies an interface operation where its rules depart from the general route. General files select the operation through this registration, and each kind's operation fills the general contract linked here:
+
+- **Release Hold**
+  [Requested Hold Release](modes/deliver-mode.md#requested-hold-release)
+- **Record Dispatch Status**
+  [Record Dispatch Status](artifacts/board-delivery.md#record-dispatch-status "ƒ")
+- **Record Delivery**
+  [Issue Delivery](protocols/issue-delivery.md "ƒ")
+- **Record Merge**
+  [Task Merge](protocols/task-merge.md "ƒ")
+- **Settle Board Status**
+  [Status Changes](artifacts/board-delivery.md#status-changes)
+- **Populate Body**
+  [Body](artifacts/issue-body.md#body)
+- **Review Before Merge**
+  [Produce Agent Review](artifacts/agent-review.md#produce-agent-review "ƒ")
+
+A kind's operation takes the interface name with the kind's name after its verb: Settle Hot-fix Board Status, Populate Standalone Body.
 
 Each theme's project board shows where its items stand. The [proposals board](configuration.md#proposals-board) holds proposals. A planning record holds what an initiative leaves out: the evidence, the decisions and each review.
 
