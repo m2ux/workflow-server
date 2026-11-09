@@ -3,9 +3,9 @@
 ## Candidate
 
 - Unit: I17:E02:W18, AC25.
-- Task base: `01f84933a` (origin/i17/e02/workspace after W14 #1668, merged into the task branch).
+- Task base: `36c18a359` (origin/i17/e02/workspace after W30 #1672, merged into the task branch; test catalogue conflict resolved).
 - Change commit: `072d45f64`; checks below ran at the task head.
-- Task head: `67a98d3aeb1d98f94b7da4161d985c609c2d403b`, branch `i17/e02/w18-dependency-graph-fields-hold`.
+- Task head: `8ed936b6bbf2267c3b01cea5d734eaa0b43868a7`, branch `i17/e02/w18-dependency-graph-fields-hold`, merged by #1669 at `1bb44b2bf0c12fb2c5b83da09c01ada26b7cef03`.
 - Owner: `skills/work-planner/artifacts/dependency-graph.md`.
 
 ## Clause Placement
@@ -30,7 +30,7 @@ New `FieldBoundary` and `InvalidReferences` classes in `test/test_deps.py`, five
 
 ## Full Checks
 
-- Planner: 1064 tests, one opt-in live-link skip, [planner.log](planner.log) (includes document, model, checkout and catalogue checks).
+- Planner: 1067 tests, one opt-in live-link skip, [planner.log](planner.log) (includes document, model, checkout and catalogue checks).
 - Shared: 280 pass, [shared.log](shared.log).
 - Skill checker: 59 files, zero findings, [skill-check.log](skill-check.log).
 - Whitespace: zero findings, [whitespace.log](whitespace.log).
