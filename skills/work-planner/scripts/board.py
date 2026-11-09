@@ -77,9 +77,9 @@ from pathlib import Path
 from typing import NamedTuple
 
 from format import AC, LINK, TICK, cell, done_mark, hrefs, id_cell, reservation, row_id, split_sections
-from statuses import (DELIVERY, STATUSES, Changes, Jurisdiction, Key, StatusField, board_items,
-                      key_of, label)
-from sync import PR_REF, TICKED, Unreadable, attach_links, git, links_issue, pull_requests, table
+from statuses import DELIVERY, STATUSES, Changes, Jurisdiction, Key, StatusField, board_items, label
+from sync import (PR_REF, TICKED, Unreadable, attach_links, git, issue_done, issue_key, links_issue,
+                  pull_requests, table)
 
 TASK = re.compile(r'W\d\d')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
@@ -97,12 +97,21 @@ UNPLACED, RETAINED = 'unplaced', 'retained'
 READY_UNDER = ('Ready', 'In Progress')  # a parent Status under which a child can be Ready
 
 
+def tags(title: str) -> tuple[str, str, str] | None:
+    """The initiative, epic and task numbers an agent-engineering title opens with, each empty where
+    the tag names none, or None for a title with no [I00:E00:W00] tag."""
+    matched = PREFIX.match(title)
+    return (matched[1], matched[2] or '', matched[3] or '') if matched else None
+
+
+def is_initiative(issue: dict) -> bool:
+    """Whether the title's tag names an initiative alone: [I00]."""
+    parsed = tags(issue.get('title') or '')
+    return bool(parsed) and not any(parsed[1:])
+
+
 def load(paths: list[str]) -> dict[Key, dict]:
-    return {key_of(i): i for i in (json.loads(Path(p).read_text()) for p in paths)}
-
-
-def completed(issue: dict) -> bool:
-    return issue['state'] == 'closed' and issue.get('state_reason') == 'completed'
+    return {issue_key(i): i for i in (json.loads(Path(p).read_text()) for p in paths)}
 
 
 def criteria_met(issue: dict) -> bool:
@@ -368,8 +377,8 @@ class Board:
         if not outputs:
             self.outputs.lines.append(f'{why}: {producer} unverified: it links no merged delivery or commit')
             return Resolution.UNMET
-        found = PREFIX.match(self.issues.get(home, {}).get('title') or '')
-        prefix = f'i{found[1]}/e{found[2]}' if found and found[2] else ''
+        found = tags(self.issues.get(home, {}).get('title') or '')
+        prefix = f'i{found[0]}/e{found[1]}' if found and found[1] else ''
         return weakest([self.outputs.read(output, prefix, why) if output.repo.lower() == home[0].lower()
                         else self.integrated(output, why) for output in outputs])
 
@@ -377,7 +386,7 @@ class Board:
         if key not in self.issues:
             self.unresolved.append(f'{why}: {UNRESOLVABLE} {label(key, self.home)}: it is not given')
             return Resolution.UNRESOLVABLE
-        return Resolution.MET if completed(self.issues[key]) else Resolution.UNMET
+        return Resolution.MET if issue_done(self.issues[key]) else Resolution.UNMET
 
     def epic_prerequisites_met(self, key: Key, epics: dict[str, Key], why: str) -> Resolution:
         """Whether the whole epics an initiative row names as this one's prerequisites have reached
@@ -385,7 +394,7 @@ class Board:
         an epic's bases merge. A row naming one task of another epic gates that row alone."""
         answers = []
         for parent, issue in self.issues.items():
-            if not re.match(r'^\[I\d\d\]', issue.get('title') or ''):
+            if not is_initiative(issue):
                 continue
             header, listed = self.table(parent)
             for item in listed.values():
@@ -411,7 +420,7 @@ class Board:
         header, tasks = self.table(key)
         cells = [cell(header, task, 'Depends on') for task in tasks.values()]
         for parent, issue in self.issues.items():
-            if not re.match(r'^\[I\d\d\]', issue.get('title') or ''):
+            if not is_initiative(issue):
                 continue
             head, listed = self.table(parent)
             cells += [cell(head, item, 'Depends on') for item in listed.values()
@@ -565,11 +574,10 @@ def main() -> int:
             sys.exit(f'--{name} is required')
 
     initiative = json.loads(Path(args.initiative).read_text())
-    m = PREFIX.match(initiative['title'])
-    if not m or m[2]:
+    if not is_initiative(initiative):
         sys.exit(f"not an initiative: {initiative['title']}")
-    tag = m[1]
-    root = key_of(initiative)
+    tag = tags(initiative['title'])[0]
+    root = issue_key(initiative)
     home = root[0]
     epics, tasks = load(args.epics), load(args.tasks)
     issues = {**load(args.others), **tasks, **epics, root: initiative}
@@ -615,7 +623,7 @@ def main() -> int:
                 continue
             t = tasks[task_issue]
             if t['state'] == 'closed':
-                status[task_issue] = 'Done' if completed(t) else None
+                status[task_issue] = 'Done' if issue_done(t) else None
             elif pr_open(epic_key, task_issue) or reservation(ident):
                 status[task_issue] = 'In Progress'
             elif open_questions(t):
@@ -630,7 +638,7 @@ def main() -> int:
                 status[task_issue] = 'Ready' if gates is Resolution.MET else 'Backlog'
             task_epic[task_issue] = number
         if epic['state'] == 'closed':
-            status[number] = 'Done' if completed(epic) else None
+            status[number] = 'Done' if issue_done(epic) else None
         elif criteria_met(epic):
             problem = epic_check(epic, prs, reviews)
             status[number] = 'In Progress' if problem else 'In Review'
@@ -644,7 +652,7 @@ def main() -> int:
 
     epic_status = [status.get(n) for n in epic_ids.values()]
     if initiative['state'] == 'closed':
-        status[root] = 'Done' if completed(initiative) else None
+        status[root] = 'Done' if issue_done(initiative) else None
     elif criteria_met(initiative):
         status[root] = 'In Review'
     elif any(s in ('In Review', 'In Progress') for s in epic_status):
@@ -658,7 +666,7 @@ def main() -> int:
     on_board = {}
     for key, item_id, held, content in board_items(args.items):
         on_board[key] = (item_id, held)
-        if key not in status and content['state'] == 'closed' and not completed(content):
+        if key not in status and content['state'] == 'closed' and not issue_done(content):
             issues.setdefault(key, content)
             status[key] = None
 
