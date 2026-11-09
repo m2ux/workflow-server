@@ -1,12 +1,25 @@
-"""The work deliver.py finds available on a theme board, and the rows it reserves and releases.
+"""The work deliver.py finds available on a theme board, and the rows it reserves and releases;
+deliver.py reaches each kind of work through the script registry and each shared rule through its
+single home.
 """
+import ast
 import json
+import re
+import sys
 import tempfile
+import types
 import unittest
 from pathlib import Path
+from unittest import mock
 
-from fixtures import declared, git, hotfix, initiative_body, issue, item, links, pr, run, url, work_item
+from fixtures import SCRIPTS, declared, git, hotfix, initiative_body, issue, item, links, pr, run, url, work_item
 from test_agent_review import reviewed_pr
+
+sys.path.insert(0, str(SCRIPTS))
+import board  # noqa: E402
+import deliver  # noqa: E402
+import kinds  # noqa: E402
+import sync  # noqa: E402
 
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
 TODAY = '2026-10-06'
@@ -1045,6 +1058,98 @@ class LaneCellPreservation(unittest.TestCase):
                                       records={folder: record('W01', 'W02')})
         self.assertEqual(code, 0, report)
         self.assert_lane_rows(released, {'W01': ('2', ''), 'W02': ('2', '')})
+
+
+def code_of(source: str) -> tuple[set[str], set[str], list[str]]:
+    """The modules a script imports, every name it binds or reads, and each string constant outside
+    its docstrings."""
+    tree = ast.parse(source)
+    docstrings = {id(node.body[0].value) for node in ast.walk(tree)
+                  if isinstance(node, (ast.Module, ast.FunctionDef, ast.ClassDef)) and node.body
+                  and isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, ast.Constant)}
+    modules, names, strings = set(), set(), []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            modules |= {alias.name for alias in node.names}
+        elif isinstance(node, ast.ImportFrom):
+            modules.add(node.module or '')
+            names |= {alias.name for alias in node.names}
+        elif isinstance(node, ast.Name):
+            names.add(node.id)
+        elif isinstance(node, ast.Attribute):
+            names.add(node.attr)
+        elif isinstance(node, (ast.FunctionDef, ast.ClassDef)):
+            names.add(node.name)
+        elif isinstance(node, ast.Constant) and isinstance(node.value, str) and id(node) not in docstrings:
+            strings.append(node.value)
+    return modules, names, strings
+
+
+def stub_kind(tag: str = 'S01', state: str = 'unit', base: str = 'workspace') -> types.ModuleType:
+    """A kind module whose issues are titled [S01] and whose every pull request so titled delivers them."""
+    module = types.ModuleType('stubkind')
+    module.tag = lambda item: tag if (item.get('title') or '').startswith(f'[{tag}]') else None
+    module.target = lambda found: base
+    module.linking_pulls = lambda prs, key: [p for p in prs if module.tag(p)]
+    module.delivering_pulls = lambda prs, key, found: [p for p in prs if module.tag(p)]
+    module.unit_state = lambda found, held, linking, delivering: state
+    return module
+
+
+class KindRegistry(unittest.TestCase):
+    def test_deliver_imports_no_kind_module_and_names_no_kind(self):
+        modules, names, strings = code_of((SCRIPTS / 'deliver.py').read_text())
+        self.assertIn('kinds', modules)
+        for kind, module in kinds.KINDS.items():
+            with self.subTest(kind=kind):
+                self.assertNotIn(module, modules)
+                spelled = re.compile(re.escape(module) + '|' + re.escape(kind), re.IGNORECASE)
+                self.assertEqual([n for n in names if spelled.search(n)], [])
+                self.assertEqual([s for s in strings if spelled.search(s)], [])
+        self.assertEqual([s for s in strings if re.search(r'\[?F\d\d', s)], [])
+
+    def test_a_registered_kind_reaches_the_survey_through_the_registry(self):
+        stub = stub_kind()
+        found = issue(4, '[S01] Stub Work: Run It', body='- [ ] **AC1.** Holds.\n')
+        pulls = [pr(951, '[S01] Stub Work', body=PLAN, base='workspace')]
+        with mock.patch.dict(kinds.KINDS, {'stub': 'stubkind'}), mock.patch.dict(sys.modules, {'stubkind': stub}):
+            lines, available, *_ = deliver.kind_units({('o/r', 4): found}, {}, [], 'o/r', TODAY, (), '')
+            merges = deliver.ready_merges({('o/r', 4): found}, pulls, ('workspace',), 'o/r')
+        self.assertEqual(available, 1)
+        self.assertEqual([line.split(', record')[0] for line in lines],
+                         ['  unit S01 #4: unlaned, coverage AC1'])
+        self.assertEqual(merges, ['  merge #951 S01: base workspace'])
+
+    def test_each_state_a_kind_reads_prints_its_line(self):
+        found = issue(4, '[S01] Stub Work: Run It')
+        for state, line in (('hold', '  hold S01 #4: In Progress'), ('running', None), (None, None)):
+            with self.subTest(state=state), mock.patch.dict(kinds.KINDS, {'stub': 'stubkind'}), \
+                    mock.patch.dict(sys.modules, {'stubkind': stub_kind(state=state)}):
+                lines, available, *_ = deliver.kind_units({('o/r', 4): found}, {}, [], 'o/r', TODAY, (), '')
+                self.assertEqual(lines, [line] if line else [])
+                self.assertEqual(available, 0)
+
+    def test_a_kind_naming_no_target_offers_no_unit(self):
+        found = issue(4, '[S01] Stub Work: Run It')
+        with mock.patch.dict(kinds.KINDS, {'stub': 'stubkind'}), \
+                mock.patch.dict(sys.modules, {'stubkind': stub_kind(base='')}):
+            lines, available, undeclared, *_ = deliver.kind_units({('o/r', 4): found}, {}, [], 'o/r', TODAY, (), '')
+        self.assertEqual((available, undeclared), (0, 1))
+        self.assertTrue(lines[0].startswith('  undeclared S01 #4: '), lines)
+
+
+class SharedRules(unittest.TestCase):
+    def test_deliver_reaches_tag_parsing_and_identity_through_their_single_homes(self):
+        self.assertIs(deliver.tags, board.tags)
+        self.assertIs(deliver.issue_key, sync.issue_key)
+        for copy in ('key_of', 'PREFIX'):
+            with self.subTest(copy=copy):
+                self.assertFalse(hasattr(deliver, copy))
+
+    def test_deliver_defines_no_shared_rule(self):
+        tree = ast.parse((SCRIPTS / 'deliver.py').read_text())
+        defined = {node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)}
+        self.assertEqual(defined & {'tags', 'issue_key', 'key_of', 'issue_done', 'completed'}, set())
 
 
 if __name__ == '__main__':
