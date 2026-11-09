@@ -1,6 +1,6 @@
 # Align Mode
 
-Brings one or more existing proposal, initiative, epic, task, and standalone issues and/or pull requests into line with the plan they belong to and structurally aligns them with the guidelines they are held to.
+Brings one or more existing issues of any [registered kind](../SKILL.md), and/or pull requests, into line with the plan they belong to and structurally aligns them with the guidelines they are held to.
 
 Alignment checks conformity to work-planning rules; judgement of content fitness belongs to goal review.
 
@@ -13,7 +13,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Scope: issues the user names, an initiative with its open epics or a board with it's complete set of initiatives and epics.
 - Open issues only. A closed issue is aligned only when named.
 - Naming another initiative's issue approves format edits to it.
-- An open standalone issue that an aligned initiative, epic, or task cites is aligned with it.
+- An open issue outside any initiative that an aligned issue cites is aligned with it.
 
 ### 2. Fetch Each Issue
 
@@ -25,8 +25,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 3. Validate the Bodies
 
-- Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body "ƒ"), Apply [Validate Initiative Body](../artifacts/initiative-issue-body.md#validate-initiative-body "ƒ") or Apply [Validate Epic Body](../artifacts/epic-issue-body.md#validate-epic-body "ƒ") for that kind.
-- Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body "ƒ") with [task field conditions](../artifacts/task-body.md#fields) or [standalone field conditions](../artifacts/standalone-body.md#fields) for those bodies.
+- Apply the validate operation the body artifact of the issue's [registered kind](../SKILL.md) supplies.
+- For a kind whose body artifact supplies none, Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body "ƒ") with the [kind conditions](../artifacts/issue-body.md#kind-conditions) that artifact's Fields state.
 - Supply the fetched context and output files.
 
 #### Reference Visibility
@@ -56,7 +56,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 ### 5. Review the Goal
 
 - For initiative or epic scope, Apply [Review Initiative Goal](../artifacts/goal-trace.md#review-initiative-goal "ƒ") with the current initiative and epic evidence, confirmed goal clauses and marked sources.
-- For proposal, task or standalone scope, Apply [Check Round of Edits](../artifacts/issue-body.md#check-round-of-edits "ƒ") with the selected body, its kind's field conditions and format inputs; skip initiative goal review when no initiative is in scope.
+- For any other scope, Apply [Check Round of Edits](../artifacts/issue-body.md#check-round-of-edits "ƒ") with the selected body, its kind's field conditions and format inputs.
 - Apply [Report Review Finding](../artifacts/review-finding.md#report-review-finding "ƒ") with each finding. Numbering changes affect only rows no pull request names.
 
 ### 6. Resolve Content Decisions
@@ -64,16 +64,16 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Decide each non-mechanical finding with the user.
 
 - Apply [Apply Body Corrections](../artifacts/issue-body.md#apply-body-corrections "ƒ") with confirmed local resolutions, using the selected kind's template and field conditions.
-- Move initiative boundaries found as Non-Goals in an epic or task into the initiative's Non-Goals.
+- Move Non-Goals found in a body whose kind's template has no Non-Goals section into its initiative's Non-Goals, or, outside any initiative, into the boundary below.
 - Remove the misplaced section.
 
-#### Standalone Boundary
+#### Boundary Outside an Initiative
 
-- For a standalone body:
+- For such a body outside any initiative:
 
-- Apply [Populate Standalone Body](../artifacts/standalone-body.md#populate-standalone-body "ƒ") to [Current Body](../artifacts/standalone-body.md#current-body) with [Confirmed Boundary](../artifacts/standalone-body.md#confirmed-boundary), folding any Non-Goals into Proposal as a closing boundary and writing to [Output Body](../artifacts/standalone-body.md#output-body).
+- Apply the Populate Body operation its [registered kind](../SKILL.md) supplies to the current body with the confirmed boundary, folding any Non-Goals into Proposal as a closing boundary and writing to that operation's output body.
 
-- Retain the revised [Output Body](../artifacts/standalone-body.md#output-body) for publication.
+- Retain the revised output body for publication.
 
 #### Other Content Corrections
 
