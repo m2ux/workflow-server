@@ -21,7 +21,7 @@ Work Planner plans work as GitHub issues and keeps the plan current until the wo
 - **Standalone issue**  Work outside any initiative.
   - [Standalone Body](artifacts/standalone-body.md)  Populate Body
 - **Hot-fix**  A fix to a long-lived branch beside all queued work.
-  - [Hot-fix](artifacts/hotfix.md)  Release Hold, Record Dispatch Status, Record Delivery, Record Merge, Settle Board Status, Review Before Merge
+  - [Hot-fix](artifacts/hotfix.md)  [Release Hold](artifacts/hotfix.md#release-hot-fix-hold "ƒ"), [Record Dispatch Status](artifacts/hotfix.md#record-hot-fix-dispatch-status "ƒ"), [Record Delivery](artifacts/hotfix.md#record-hot-fix-delivery "ƒ"), [Record Merge](artifacts/hotfix.md#record-hot-fix-merge "ƒ"), [Settle Board Status](artifacts/hotfix.md#settle-hot-fix-board-status "ƒ"), [Review Before Merge](artifacts/hotfix.md#review-hot-fix-before-merge "ƒ")
   - [Hot-fix Body](artifacts/hotfix-body.md)  Populate Body
 
 A kind supplies an interface operation where its rules depart from the general route. General files select the operation through this registration, and each kind's operation fills the general contract linked here:

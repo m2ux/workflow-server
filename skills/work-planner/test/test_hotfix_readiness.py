@@ -13,7 +13,9 @@ sys.path.insert(0, str(SCRIPTS))
 from agent_review import check
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / 'modes' / 'deliver-mode.md'
+SOURCE = ROOT / 'artifacts' / 'hotfix.md'
+CALLER = ROOT / 'modes' / 'deliver-mode.md'
+STEPS = {'Verify Readiness': '#### 2. Verify Readiness', 'Restore Draft': '#### 3. Restore Draft'}
 CALL = re.compile(r'(?:Apply|Run) \[([^]]+)\]\([^)]* "ƒ"\)')
 
 
@@ -76,9 +78,8 @@ def walk(tracker, text=None):
     check is the installed validator; fresh-context readings cover agent interpretation.
     """
     text = SOURCE.read_text() if text is None else text
-    routes = {name: section(text, '##### ' + name).splitlines() for name in (
-        'Verify Hot-Fix Readiness', 'Restore Hot-Fix Draft')}
-    selected = 'Verify Hot-Fix Readiness'
+    routes = {name: section(text, heading).splitlines() for name, heading in STEPS.items()}
+    selected = 'Verify Readiness'
     for _ in range(2):
         redirected = False
         for raw in routes[selected]:
@@ -100,7 +101,7 @@ def walk(tracker, text=None):
                 continue
             if line.startswith(('If metadata is unreadable', 'On an unreadable or closed result')):
                 if tracker.current is None or tracker.current['state'] != 'open':
-                    result = 'blocked-restoration' if selected == 'Restore Hot-Fix Draft' else 'blocked-current-state'
+                    result = 'blocked-restoration' if selected == 'Restore Draft' else 'blocked-current-state'
                     return result, tracker.events
                 continue
             if line.startswith('On a finding, continue directly'):
@@ -110,9 +111,12 @@ def walk(tracker, text=None):
             elif line.startswith('On a finding or a draft readback'):
                 condition = bool(tracker.problem) or tracker.current['draft']
             elif line.startswith('Only a confirmed open, ready pull request'):
-                # This sentence selects the next step; the step owns the actual call.
-                operations = CALL.findall(section(text, '#### 10. Merge'))
-                assert 'Merge Task Pull Requests' in operations
+                # The operation provides Review State; its caller's next step owns the merge call.
+                caller = CALLER.read_text()
+                review = section(caller, '#### 9. Review a Hot-Fix')
+                assert 'Review Hot-fix Before Merge' in CALL.findall(review)
+                assert 'Continue to the merge step only with the confirmed ready [Review State]' in review
+                assert 'Merge Task Pull Requests' in CALL.findall(section(caller, '#### 10. Merge'))
                 tracker.events.append('Merge Task Pull Requests')
                 return 'merge', tracker.events
             elif line.startswith('If the restoration write failed'):
