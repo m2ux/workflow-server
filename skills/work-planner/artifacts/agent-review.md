@@ -16,7 +16,7 @@ A review record for the exact integration revision.
 #### 2. Resolve Review Findings
 
 - Record findings with severity and disposition. A nonblocking deferred finding names its ticket.
-- For each excluded observation, Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") for a new arising issue with no agent-engineering prefix, following [Standalone Issues](board.md#standalone-issues), then record the exclusion in the [Review Record](#review-record) `scope`, outside the findings collection.
+- For each excluded observation, Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") for a new arising issue with no agent-engineering prefix, following standalone [Placement](standalone-body.md#placement), then record the exclusion in the [Review Record](#review-record) `scope`, outside the findings collection.
 - An observation with an unresolved classification, missing scope evidence or an unsaved arising issue remains a finding with its required disposition.
 
 - When a blocking finding or any hot-fix finding requires a fix:
