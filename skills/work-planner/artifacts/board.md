@@ -372,6 +372,6 @@ An issue at Ready, In Progress, In Review or Done is assigned to the user; one i
 - **Declined.**
   It will not become an initiative. It has no assignee.
 
-### Standalone Issues
+### Membership
 
-A standalone issue sits on no board.
+Each [registered kind](../SKILL.md) of work reaches a board through its interface operations. A kind supplying Settle Board Status places, moves and removes its item through that operation, which reads and writes the board with this artifact's operations and commands. Every other item takes the Status [Status Changes](board-delivery.md#status-changes) gives it. A kind whose own artifact keeps its issues off every board has no item.
