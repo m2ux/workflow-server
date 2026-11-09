@@ -1,0 +1,149 @@
+{
+  "provenance": "Synthetic offline review repository; literal before/after sources and operation responses are fixture inputs, not historical tracker observations or real issue saves.",
+  "before_revision": "1111111111111111111111111111111111111111",
+  "head_revision": "2222222222222222222222222222222222222222",
+  "contexts": {
+    "r": {
+      "before": "def charge(amount, limit):\n    return amount <= limit\n",
+      "after": "def charge(amount, limit):\n    return amount < limit\n",
+      "probes": [
+        {
+          "function": "charge",
+          "args": [
+            10,
+            10
+          ]
+        }
+      ]
+    },
+    "s": {
+      "before": "def parse_limit(text):\n    return int(text.lstrip(\"0\"))\n\ndef handle(text):\n    return 100\n",
+      "after": "def parse_limit(text):\n    return int(text.lstrip(\"0\"))\n\ndef handle(text):\n    return parse_limit(text)\n",
+      "probes": [
+        {
+          "function": "handle",
+          "args": [
+            "0"
+          ]
+        },
+        {
+          "function": "parse_limit",
+          "args": [
+            "0"
+          ]
+        }
+      ]
+    },
+    "t": {
+      "before": "def normalize(text):\n    return text.strip()\n\ndef handle(text):\n    return normalize(text)\n\ndef legacy_limit(text):\n    return int(text.lstrip(\"0\"))\n",
+      "after": "def normalize(text):\n    return text.strip()\n\ndef handle(text):\n    return normalize(text).upper()\n\ndef legacy_limit(text):\n    return int(text.lstrip(\"0\"))\n",
+      "probes": [
+        {
+          "function": "handle",
+          "args": [
+            " ok "
+          ]
+        },
+        {
+          "function": "legacy_limit",
+          "args": [
+            "0"
+          ]
+        }
+      ]
+    },
+    "u": {
+      "before": "def legacy_limit(text):\n    return int(text.lstrip(\"0\"))\n\ndef handle(plugin, text):\n    return text.upper()\n",
+      "after": "def legacy_limit(text):\n    return int(text.lstrip(\"0\"))\n\ndef handle(plugin, text):\n    return plugin.normalize(text).upper()\n",
+      "probes": [
+        {
+          "function": "legacy_limit",
+          "args": [
+            "0"
+          ]
+        }
+      ],
+      "unavailable": "The plugin implementation, registration and downstream call paths are not supplied."
+    },
+    "v": {
+      "before": "def handle(text):\n    \"\"\"Return the supplied text.\"\"\"\n    return text\n",
+      "after": "def handle(text):\n    \"\"\"Return the supplied number.\"\"\"\n    return text.upper()\n",
+      "probes": [
+        {
+          "function": "handle",
+          "args": [
+            "ok"
+          ]
+        }
+      ]
+    }
+  },
+  "cases": {
+    "A": {
+      "context": "r",
+      "contract": "charge accepts an amount equal to the limit.",
+      "observation": "The boundary request is rejected.",
+      "severity": "blocking",
+      "issue": null,
+      "fault": "charge",
+      "membership": "finding"
+    },
+    "B": {
+      "context": "s",
+      "contract": "handle accepts the decimal text 0 and returns a numeric limit.",
+      "observation": "A supported request raises ValueError.",
+      "severity": "blocking",
+      "issue": null,
+      "fault": "parse_limit",
+      "membership": "finding"
+    },
+    "C": {
+      "context": "t",
+      "contract": "The requested hot-fix makes handle return trimmed uppercase text.",
+      "observation": "legacy_limit raises ValueError for decimal text 0.",
+      "severity": "blocking",
+      "issue": {
+        "saved": true,
+        "html_url": "https://example.test/issues/80",
+        "number": 80
+      },
+      "fault": "legacy_limit",
+      "membership": "excluded"
+    },
+    "D": {
+      "context": "t",
+      "contract": "The requested hot-fix makes handle return trimmed uppercase text.",
+      "observation": "legacy_limit raises ValueError for decimal text 0.",
+      "severity": "blocking",
+      "issue": {
+        "saved": false,
+        "html_url": null,
+        "number": null
+      },
+      "fault": "legacy_limit",
+      "membership": "finding"
+    },
+    "E": {
+      "context": "u",
+      "contract": "The requested hot-fix normalizes handle input through its supplied plugin.",
+      "observation": "legacy_limit raises ValueError for decimal text 0.",
+      "severity": "blocking",
+      "issue": {
+        "saved": true,
+        "html_url": "https://example.test/issues/81",
+        "number": 81
+      },
+      "fault": "legacy_limit",
+      "membership": "finding"
+    },
+    "F": {
+      "context": "v",
+      "contract": "handle returns uppercase text; public function documentation describes its accepted and returned values.",
+      "observation": "The function documentation says the returned value is a number.",
+      "severity": "nonblocking",
+      "issue": null,
+      "fault": "handle",
+      "membership": "finding"
+    }
+  }
+}
