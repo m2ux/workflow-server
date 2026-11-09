@@ -7,6 +7,7 @@ One separation fix row from the E02 component refinement. The declared one-file 
 | File | Purpose |
 | --- | --- |
 | [w26.md](w26.md) | Component, scope, implementation and observing validation for W26. |
+| [changes.md](changes.md) | Plan changes this delivery applied and held. |
 | [validation.md](validation.md) | Kind search, sync tests and full checks for AC35, with their logs. |
 | [focused.log](focused.log) | Verbose test_sync run. |
 | [planner.log](planner.log) | Full Work Planner suite. |
