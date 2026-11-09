@@ -1,0 +1,25 @@
+Kind search over modes/align-mode.md
+  matches: 0
+  registration selections at lines [3, 28, 74]
+Kind mentions at the base revision: 9
+  3: Brings one or more existing proposal, initiative, epic, task, and standalone issues and/or pull requests into line with the plan they belong
+  16: - An open standalone issue that an aligned initiative, epic, or task cites is aligned with it.
+  28: - Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body "ƒ"), Apply [Validate Initiative Body](../artifacts/in
+  29: - Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body "ƒ") with [task field conditions](../artifacts/task-body.md#fie
+  59: - For proposal, task or standalone scope, Apply [Check Round of Edits](../artifacts/issue-body.md#check-round-of-edits "ƒ") with the selecte
+  70: #### Standalone Boundary
+  72: - For a standalone body:
+  74: - Apply [Populate Standalone Body](../artifacts/standalone-body.md#populate-standalone-body "ƒ") to [Current Body](../artifacts/standalone-b
+  76: - Retain the revised [Output Body](../artifacts/standalone-body.md#output-body) for publication.
+Routes selected through the registration:
+  Proposal: validate -> Validate Proposal Body; boundary -> initiative Non-Goals or own section
+  Initiative: validate -> Validate Initiative Body; boundary -> initiative Non-Goals or own section
+  Epic: validate -> Validate Epic Body; boundary -> initiative Non-Goals or own section
+  Task: validate -> Validate Issue Body with task-body.md Fields; boundary -> initiative Non-Goals or own section
+  Standalone issue: validate -> Validate Issue Body with standalone-body.md Fields; boundary -> Populate Standalone Body
+  Hot-fix: validate -> Validate Issue Body with hotfix-body.md Fields; boundary -> Populate Hot-fix Body (not yet in artifact)
+Script registry selection on captured titles:
+  '[F00] Board: Status' -> hot-fix
+  '[I17:E02] Skill Separation' -> None
+  'Name: Subtitle' -> None
+Failures: none
