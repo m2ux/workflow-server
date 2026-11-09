@@ -96,6 +96,7 @@ class Substitution(unittest.TestCase):
                      {'number': 7, 'title': None, 'state': 'open', 'body': None}):
             with self.subTest(title=item['title']):
                 self.assertIn(type(kind.tag(item)), (str, type(None)))
+                self.assertIsInstance(kind.labels(item), list)
                 self.assertIsInstance(kind.faults(item), list)
                 self.assertIsInstance(kind.target(item), str)
                 self.assertIsInstance(kind.linking_pulls([], KEY), list)

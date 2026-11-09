@@ -48,9 +48,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For a new unit, use that issue, board identity and refreshed board items.
 
-- Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status "ƒ") with [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity) for In Progress and the supplied [Board Evidence](../artifacts/hotfix.md#board-evidence). That status is the hold [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
-
-- Retain [Board Result](../artifacts/hotfix.md#board-result) with the confirmed status or discrepancy. The session starts only once it is confirmed.
+- Apply [Record Hot-fix Dispatch Status](../artifacts/hotfix.md#record-hot-fix-dispatch-status "ƒ") with them, and retain the confirmed status or discrepancy it provides. The session starts only once it is confirmed.
 
 ##### Retained Hot-Fix Preparation
 

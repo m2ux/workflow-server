@@ -8,10 +8,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 1. Hot-Fix
 
-- For a [hot-fix](../artifacts/hotfix.md), recorded as its [Delivery Record](../artifacts/hotfix.md#delivery-record) states:
-- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
-- Run [Sync Hot-fix Issue](../artifacts/hotfix.md#sync-hot-fix-issue "ƒ") for the selected hot-fix and delivering pull request with the provided verified criterion ids.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
+- For a [hot-fix](../artifacts/hotfix.md), Apply [Record Hot-fix Delivery](../artifacts/hotfix.md#record-hot-fix-delivery "ƒ") for the selected hot-fix, its delivering pull request and the selected criterion ids in the project checkout.
 - Provide the saved identity and findings to the caller.
 
 ### 2. Task Issues

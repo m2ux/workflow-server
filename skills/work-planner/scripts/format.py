@@ -1,5 +1,5 @@
-"""Check a proposal, initiative, epic, task, hot-fix or standalone issue against its agent-engineering template, and
-fix what is mechanical.
+"""Check a proposal, initiative, epic, task, standalone issue or registered kind of work against its agent-engineering
+template, and fix what is mechanical.
 
 Usage:
   python3 format.py issue-943.json [--initiative issue-936.json] [--fix fixed-943.md]
@@ -22,12 +22,13 @@ unevaluable, unless another one is known to change a declared path. An epic carr
 one of its acceptance criteria holds its phrase, in any case.
 
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
-from the title prefix: [P00] proposal, [I07] initiative, [I07:E00] epic, [I07:E00:W01] task, [F00]
-hot-fix. A proposal also carries type:proposal; the [F00] prefix alone makes an issue a hot-fix,
-which also carries type:hot-fix. A type:task issue is a task whatever its prefix depth, so one whose
-prefix has no task id is checked as a task and reported as missing it. A hot-fix takes the standalone
-template, as artifacts/hotfix-body.md states. No prefix and no type:proposal is a standalone issue,
-which belongs to no initiative and takes artifacts/standalone-body.md. The format is read
+from the title prefix: [P00] proposal, [I07] initiative, [I07:E00] epic, [I07:E00:W01] task, or the
+tag of a kind of work the script registry, kinds.py, holds. A proposal also carries type:proposal; a
+registered kind's tag alone selects that kind, which also carries type:<kind>, a theme:* label and the
+labels its interface names. A type:task issue is a task whatever its prefix depth, so one whose
+prefix has no task id is checked as a task and reported as missing it. No prefix, no registered tag
+and no type:proposal is a standalone issue, which belongs to no initiative. A standalone issue and a
+registered kind take artifacts/standalone-body.md. The format is read
 from the Markdown template under Fields in each body artifact: its sections and their order, the sections it marks
 optional ("delete the section", in any case), and its Work Breakdown columns.
 
@@ -51,13 +52,14 @@ Fixed in the body written to --fix, keeping the issue's wording:
 Printed as fixes to apply to the issue itself:
   - a title prefix that separates levels with spaces, with its colon form
   - a type:* label that does not match the issue's kind, a theme:* label on a proposal, any type:* label on
-    a standalone issue, or a hot-fix without priority: 10 or with another priority:* label
+    a standalone issue, or a registered kind lacking a label its interface names or carrying another
+    label of that label's scope, the text up to its first colon
   - an epic checked with --initiative whose row there does not carry the epic's title name
 Left to decide, since each needs new content or a judgement:
   - a type:task issue whose title prefix has no task id, which its row in its epic's Work Breakdown supplies
-  - a type:hot-fix label on a title without an [F00] prefix, which is retitled or loses the label
-  - each condition of a hot-fix body that no other kind carries, as hotfix.hotfix_faults reads it,
-    prefixed "hot-fix:": one Target: line, no open question, and a criterion
+  - a registered kind's type:* label on a title without that kind's tag, which is retitled or loses the label
+  - each condition of a registered kind's body that no other kind carries, as its interface's faults
+    reads it, prefixed with the kind's name
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
@@ -75,7 +77,7 @@ Left to decide, since each needs new content or a judgement:
   - a populated Lane cell holding anything but a bare decimal index
   - a non-goal of more than one sentence, or one naming an initiative, epic, task or issue; a
     Non-Goals section in an epic or task, since non-goals belong to the initiative, or in a
-    standalone issue, whose Proposal states its boundary
+    standalone issue or registered kind, whose Proposal states its boundary
   - a Work Breakdown column the template lacks, a Done cell that is neither empty nor a tick, or a row id of
     the wrong form
   - a Coverage cell that does not name the criteria the row delivers (AC2, AC5), complete or open,
@@ -86,7 +88,7 @@ Left to decide, since each needs new content or a judgement:
     gap stand), and references partly labelled or not numbered from R1 without a gap, whether the
     labels are bold or plain
   - a References section that links issues or pull requests on the same board
-  - no theme:* label on an initiative, epic or hot-fix, a title without "Name: Subtitle" (after the prefix,
+  - no theme:* label on an initiative, epic or registered kind, a title without "Name: Subtitle" (after the prefix,
     or whole for a standalone issue), or a title whose name is not two or three words or whose
     subtitle runs past ten
   - an issue several row ids link, which backs several tasks and so belongs under References
@@ -107,7 +109,7 @@ from pathlib import Path
 from typing import NamedTuple
 
 from lane import read_lanes
-from hotfix import HOTFIX, PRIORITY, hotfix_faults, is_hotfix
+from kinds import KINDS, interface, kind_of
 
 ARTIFACTS = Path(__file__).resolve().parent.parent / 'artifacts'
 BODY_ARTIFACTS = {
@@ -116,11 +118,10 @@ BODY_ARTIFACTS = {
     'epic': 'epic-issue-body.md',
     'task': 'task-body.md',
     'issue': 'standalone-body.md',
-    'hot-fix': 'standalone-body.md',
 }
 PREFIX = re.compile(r'^\[(I\d\d)((?:[: ][EW]\d\d)*)\]')
 PROPOSAL = re.compile(r'^\[P\d\d\]')
-KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
+LEVELS = {0: 'initiative', 1: 'epic', 2: 'task'}
 MAX_CRITERIA = 3
 MAX_DESCRIPTION = 8
 TITLE_NAME = (2, 3)
@@ -270,10 +271,17 @@ def initiative_rows(body: str) -> list[str]:
 
 
 def title_name(title: str) -> str:
-    """The name a prefixed title gives its issue: the text between its [I07:E00] or [F00] prefix and
-    the first colon."""
-    rest = HOTFIX.sub('', PREFIX.sub('', title)).strip()
-    return rest.split(': ', 1)[0].strip()
+    """The name a prefixed title gives its issue: the text between its [I07:E00] prefix or registered
+    kind's tag and the first colon."""
+    return untagged(PREFIX.sub('', title)).strip().split(': ', 1)[0].strip()
+
+
+def untagged(title: str) -> str:
+    """The title after the tag of the registered kind it opens with, or the whole title when it opens
+    with none."""
+    item = {'title': title}
+    kind = kind_of(item)
+    return title.removeprefix(f'[{interface(kind).tag(item)}]') if kind else title
 
 
 def description(line: str, header: list[str]) -> str:
@@ -430,10 +438,14 @@ class Review:
     def run(self) -> str | None:
         title = self.issue['title']
         if 'type:proposal' in self.labels():
-            return self.run_standalone_kind('proposal', PROPOSAL, '[P00]')
-        if is_hotfix(self.issue):
-            fixed = self.run_standalone_kind('hot-fix', HOTFIX, '[F00]')
-            self.decide.extend(f'hot-fix: {fault}' for fault in hotfix_faults(self.issue))
+            rest = PROPOSAL.sub('', title)
+            if rest.strip() == title:
+                self.decide.append('title has no [P00] prefix')
+            return self.run_standalone_kind('proposal', rest)
+        kind = kind_of(self.issue)
+        if kind:
+            fixed = self.run_standalone_kind(kind, untagged(title))
+            self.decide.extend(f'{kind}: {fault}' for fault in interface(kind).faults(self.issue))
             return fixed
         m = PREFIX.match(title)
         if not m:
@@ -443,16 +455,18 @@ class Review:
                 self.check_title_shape(name, subtitle)
             else:
                 self.decide.append('title has no "Name: Subtitle"')
-            typed = [l for l in self.labels() if l.startswith('type:') and l != 'type:hot-fix']
+            registered = {f'type:{k}': k for k in KINDS}
+            typed = [l for l in self.labels() if l.startswith('type:') and l not in registered]
             if typed:
                 self.apply.append('labels: ' + ', '.join(f'remove {l}' for l in typed))
-            if 'type:hot-fix' in self.labels():
-                self.decide.append('type:hot-fix on a title without an [F00] prefix: retitle it as a hot-fix, '
-                                   'or remove the label')
+            for label in self.labels():
+                if label in registered:
+                    self.decide.append(f'{label} on a title without the {registered[label]} tag: retitle it as a '
+                                       f'{registered[label]}, or remove the label')
             return self.check_body()
         parts = re.findall(r'[EW]\d\d', m[2])
         self.number = m[1][1:]
-        self.kind = KINDS.get(len(parts))
+        self.kind = LEVELS.get(len(parts))
         if self.kind is None:
             self.decide.append(f'title prefix has too many levels: {m[0]}')
             return None
@@ -464,13 +478,10 @@ class Review:
         self.check_labels()
         return self.check_body()
 
-    def run_standalone_kind(self, kind: str, prefix: re.Pattern, form: str) -> str:
-        """Check a kind that belongs to no initiative and numbers its own title prefix, as form shows."""
-        title = self.issue['title']
+    def run_standalone_kind(self, kind: str, rest: str) -> str:
+        """Check a kind that belongs to no initiative, whose title after its own prefix is rest."""
         self.kind, self.number = kind, None
-        rest = prefix.sub('', title).strip()
-        if rest == title:
-            self.decide.append(f'title has no {form} prefix')
+        rest = rest.strip()
         if ': ' not in rest:
             self.decide.append('title has no "Name: Subtitle"')
         else:
@@ -510,27 +521,29 @@ class Review:
 
     def check_labels(self) -> None:
         labels = self.labels()
-        wanted = [f'type:{self.kind}'] + ([PRIORITY] if self.kind == 'hot-fix' else [])
+        named = interface(self.kind).labels(self.issue) if self.kind in KINDS else []
+        wanted = [f'type:{self.kind}'] + named
         themes = [l for l in labels if l.startswith('theme:')]
         wrong = [l for l in labels if l.startswith('type:') and l not in wanted]
         if self.kind == 'proposal':
             wrong += themes
-        if self.kind == 'hot-fix':
-            wrong += [l for l in labels if l.startswith('priority:') and l != PRIORITY]
+        scopes = {n.partition(':')[0] + ':' for n in named}
+        wrong += [l for l in labels if l.partition(':')[0] + ':' in scopes and l not in wanted]
         missing = [l for l in wanted if l not in labels]
         if wrong or missing:
             self.apply.append('labels: ' + ', '.join([f'remove {l}' for l in wrong] +
                                                       [f'add {l}' for l in missing]))
-        if self.kind in ('initiative', 'epic', 'hot-fix') and not themes:
+        if (self.kind in ('initiative', 'epic') or self.kind in KINDS) and not themes:
             self.decide.append('no theme:* label')
 
     def check_body(self) -> str:
         body = (self.issue.get('body') or '').replace('\r\n', '\n')
         preamble, sections = split_sections(body)
-        template = Template(self.kind)
+        standalone = self.kind == 'issue' or self.kind in KINDS
+        template = Template('issue' if standalone else self.kind)
         names = [h for h, _ in sections]
         own = sum(h in template.headings for h in names)
-        for other in KINDS.values() if self.kind not in ('issue', 'hot-fix') else ():
+        for other in LEVELS.values() if not standalone else ():
             if other != self.kind and sum(h in Template(other).headings for h in names) > own:
                 self.decide.append(f'body follows the {other} template, not the {self.kind} one')
                 return body
@@ -541,8 +554,8 @@ class Review:
             if h not in names and h not in template.optional:
                 self.decide.append(f'required section missing: {h}')
         for h in names:
-            if h == 'Non-Goals' and self.kind in ('issue', 'hot-fix'):
-                self.decide.append(f'Non-Goals: a {"hot-fix" if self.kind == "hot-fix" else "standalone issue"} '
+            if h == 'Non-Goals' and standalone:
+                self.decide.append(f'Non-Goals: a {"standalone issue" if self.kind == "issue" else self.kind} '
                                    'states its boundary in the Proposal')
             elif h == 'Non-Goals' and self.kind not in ('initiative', 'proposal'):
                 self.decide.append('Non-Goals belong to the initiative: lift any that bound it into the '

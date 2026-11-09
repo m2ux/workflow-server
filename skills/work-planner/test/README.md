@@ -46,7 +46,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_dispatch](test_dispatch.py) | Continuous dispatch from real delivery surveys and observed worker events |
 | [test_format](test_format.py) | [format](../scripts/format.py) on standalone issues |
 | [test_hotfix_readiness](test_hotfix_readiness.py) | Hot-fix readiness routes restore and confirm draft before repair |
-| [test_hotfix](test_hotfix.py) | [hotfix](../scripts/hotfix.py): a hot-fix's identity, target, board status, delivering pull requests and delivery unit state |
+| [test_hotfix](test_hotfix.py) | [hotfix](../scripts/hotfix.py): a hot-fix's identity, labels, target, board status, delivering pull requests and delivery unit state |
 | [test_kinds](test_kinds.py) | The script registry, [kinds](../scripts/kinds.py), maps each kind of work to its module and selects an item's kind from its title, and each registered module supplies the Kind interface |
 | [test_lane](test_lane.py) | Lane's raw-cell, assignment, consistency and admission contracts |
 | [test_link_capture](test_link_capture.py) | The Development relation read from each end by [links-by-pull-request](../scripts/links-by-pull-request.py) and [links-by-issue](../scripts/links-by-issue.py), and the linked pull requests [linked-pull-requests](../scripts/linked-pull-requests.py) adds to a collection |
@@ -69,6 +69,7 @@ These modules exercise the skill's instruction routes and document contracts.
 | [test_architecture_diagrams](test_architecture_diagrams.py) | Architecture diagrams preserve measured topology and the consumer's owning contract |
 | [test_checkouts](test_checkouts.py) | Checkout-sensitive commands consume linked input contracts |
 | [test_documents](test_documents.py) | The installed prose API exposes complete inputs and directed reading paths |
+| [test_kind_operations](test_kind_operations.py) | Each kind operation the registration links is supplied under its registered name and called with its general contract |
 | [test_merge_outcomes](test_merge_outcomes.py) | Merge instructions bind verified heads and select terminal or bounded recovery routes |
 | [test_modes](test_modes.py) | Mode summaries in each skill's [SKILL](../SKILL.md) |
 | [test_plan_mode](test_plan_mode.py) | Plan Mode keeps a plan in one home: its planning record on the engineering branch |
@@ -99,9 +100,9 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (22) |
-| [format](../scripts/format.py) | [test_format](test_format.py) (110), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
-| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (20), [test_kinds](test_kinds.py) (9) |
-| [kinds](../scripts/kinds.py) | [test_dispatch](test_dispatch.py) (22), [test_hotfix](test_hotfix.py) (20), [test_kinds](test_kinds.py) (9), [test_sync](test_sync.py) (187) |
+| [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
+| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (21), [test_kinds](test_kinds.py) (9) |
+| [kinds](../scripts/kinds.py) | [test_dispatch](test_dispatch.py) (22), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (21), [test_kinds](test_kinds.py) (9), [test_sync](test_sync.py) (187) |
 | [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (22), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
@@ -119,7 +120,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | --- | --- |
 | `*/SKILL.md` | [test_modes](test_modes.py) (4) |
 | [README](README.md) | [test_readme](test_readme.py) (14) |
-| [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13), [test_kind_operations](test_kind_operations.py) (11) |
 | `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (13) |
 | [advance-mode](../modes/advance-mode.md) | [test_advance_decisions](test_advance_decisions.py) (14) |
 | [architecture-overview](../artifacts/architecture-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
@@ -127,6 +128,8 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [deliver-mode](../modes/deliver-mode.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12) |
+| [hotfix](../artifacts/hotfix.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_kind_operations](test_kind_operations.py) (11) |
+| [unit-dispatch](../protocols/unit-dispatch.md) | [test_kind_operations](test_kind_operations.py) (11) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_worktrees](test_worktrees.py) (2) |
 | [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (8) |
 | [configuration](../configuration.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
