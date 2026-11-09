@@ -7,6 +7,7 @@ One separation fix row from the E02 component refinement. The declared one-file 
 | File | Purpose |
 | --- | --- |
 | [w20.md](w20.md) | Component, scope, implementation and observing validation for W20. |
+| [validation.md](validation.md) | Validation evidence and logs for the W20 pull request. |
 
 ## Links
 
