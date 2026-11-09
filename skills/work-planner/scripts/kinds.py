@@ -24,6 +24,10 @@ class Kind(Protocol):
     def tag(self, item: dict) -> str | None:
         """The kind's tag an issue's or pull request's title opens with, or None when it opens with none."""
 
+    def labels(self, issue: dict) -> list[str]:
+        """The labels the issue carries beside type:<kind> and its theme:* label. Each excludes any other
+        label of its scope, the text up to its first colon."""
+
     def faults(self, issue: dict) -> list[str]:
         """Each condition of the kind's body the issue fails that no other kind carries; empty when none."""
 
