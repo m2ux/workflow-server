@@ -10,12 +10,11 @@ One separation fix row from the E02 component refinement. The declared one-file 
 | [validation.md](validation.md) | Change, caller contract and full checks at the task head. |
 | [contract-reader.py](contract-reader.py) | Checks the operation against the registration, its contract and its callers. |
 | [contract.log](contract.log), [contract-base.log](contract-base.log) | Reader output at the task head and at the epic base. |
-| [focused.log](focused.log) | Document, checkout, modes, command-contract, format, hot-fix, template and readme tests. |
+| [focused.log](focused.log) | Kind operations, document, checkout, modes, command-contract, format, hot-fix, template and readme tests. |
 | [planner.log](planner.log) | Full Work Planner suite. |
 | [shared.log](shared.log) | Shared skills suite. |
 | [skill-check.log](skill-check.log) | Skill checker. |
 | [whitespace.log](whitespace.log) | Whitespace check; empty when clean. |
-| [planner-merged.log](planner-merged.log), [shared-merged.log](shared-merged.log), [skill-check-merged.log](skill-check-merged.log), [contract-merged.log](contract-merged.log) | The same checks after merging the current epic base. |
 
 ## Links
 
@@ -25,5 +24,5 @@ One separation fix row from the E02 component refinement. The declared one-file 
 
 ## Changes
 
-- Folded work, W21: Hoist Mode's Hot-Fix Body branch applies Populate Hot-fix Body, and the document test counts the kind registration as a use of each kind operation it names.
+- Folded work, W21: Hoist Mode applies Populate Hot-fix Body with its inputs, and the SKILL.md registration links the operation.
 - Arising issue [#1681](https://github.com/m2ux/workflow-server/issues/1681), standalone: the template test module runs alone.

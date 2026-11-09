@@ -1,5 +1,6 @@
 Registration
-  [ok] Hot-fix Body registers Populate Body: - [Hot-fix Body](artifacts/hotfix-body.md)  Populate Body
+  [ok] Hot-fix Body registers Populate Body: - [Hot-fix Body](artifacts/hotfix-body.md)  [Populate Body](artifacts/hotfix-body.md#populate-hot-fix-body "ƒ")
+  [ok] the registration links Populate Body to #populate-hot-fix-body
   [ok] naming rule derives Populate Hot-fix Body
   [ok] contract: [Body](artifacts/issue-body.md#body)
 Operation
@@ -27,11 +28,11 @@ Operation
   [ok] link hotfix.md#board-status resolves
   [ok] link #output-body resolves
 Callers
-  modes/hoist-mode.md:121 title='ƒ': - For a hot-fix, Apply [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body "ƒ").
-  [ok] 1 linked call site(s) plus the registration
+  modes/hoist-mode.md:121 title='ƒ': - For a hot-fix, Apply [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body "ƒ") with its number, theme label, target and defect evidence.
+  [ok] 1 general call site(s) beside the registration
   [ok] every linked use is an ƒ call that applies the operation
-  hoist Hot-Fix Body branch: ['###### Hot-Fix Body', '- For a hot-fix, Apply [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body "ƒ").']
+  hoist Hot-Fix Body branch: ['###### Hot-Fix Body', '- For a hot-fix, Apply [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body "ƒ") with its number, theme label, target and defect evidence.']
   [ok] hoist branch restates no body rule: []
-  [ok] caller passes number and theme label (Hot-fix Identity) and target (Target)
+  [ok] the call passes number and theme label (Hot-fix Identity), target (Target) and defect evidence
   [ok] no mode or protocol reads the operation inputs directly: []
 Failures: none
