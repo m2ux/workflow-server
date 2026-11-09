@@ -7,6 +7,7 @@ One separation fix row from the E02 component refinement. The declared one-file 
 | File | Purpose |
 | --- | --- |
 | [w19.md](w19.md) | Component, scope, implementation and observing validation for W19. |
+| [validation.md](validation.md) | Clause placement, observing tests and full checks at the task head, with their logs. |
 
 ## Links
 
