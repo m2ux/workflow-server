@@ -15,6 +15,7 @@ One separation fix row from the E02 component refinement. The declared one-file 
 | [shared.log](shared.log) | Shared skills suite. |
 | [skill-check.log](skill-check.log) | Skill checker. |
 | [whitespace.log](whitespace.log) | Whitespace check; empty when clean. |
+| [planner-current.log](planner-current.log) | Full Work Planner suite after merging the current epic base. |
 
 ## Links
 

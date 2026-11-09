@@ -41,3 +41,7 @@ git diff --check origin/i17/e02/workspace HEAD                    # checkout roo
 ## Finding
 
 `test_templates` fails when discovered alone: it imports `format` without putting the scripts folder on its path. Outside this change, raised as [#1681](https://github.com/m2ux/workflow-server/issues/1681).
+
+## Current Base
+
+The epic base moved to `85e6250c5` (W31 #1675), merged into the branch at `67fb1be02a468c702404e4ab7797b7e35806438d`, the merged head. There the planner suite runs 1093 tests with one opt-in skip ([planner-current.log](planner-current.log)); the shared suite (280), skill checker (zero findings), contract reader (no failures) and whitespace check (zero findings) pass.
