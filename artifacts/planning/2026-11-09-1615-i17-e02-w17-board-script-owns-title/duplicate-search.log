@@ -1,0 +1,13 @@
+scripts/board.py:100:def tags(title: str) -> tuple[str, str, str] | None:
+scripts/sync.py:134:def issue_key(issue: dict) -> tuple[str, int]:
+scripts/sync.py:139:def issue_done(issue: dict) -> bool:
+scripts/sync.py:147:def completed(paths: list[str]) -> dict[int, bool]:
+scripts/board-queue.py:41:PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+scripts/board-queue.py:56:def tags(title: str) -> tuple[str, str, str] | None:
+scripts/board.py:87:PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+scripts/board.py:100:def tags(title: str) -> tuple[str, str, str] | None:
+scripts/deliver.py:107:PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+scripts/deliver.py:118:def tags(title: str) -> tuple[str, str, str] | None:
+scripts/progress.py:106:def tags(title: str) -> tuple[str, str, str] | None:
+scripts/sync.py:103:PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+scripts/format.py:121:PREFIX = re.compile(r'^\[(I\d\d)((?:[: ][EW]\d\d)*)\]')
