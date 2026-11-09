@@ -94,15 +94,15 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (14), [test_board_queue](test_board_queue.py) (75) |
 | [closure](../scripts/closure.py) | [test_closure](test_closure.py) (13), [test_command_contracts](test_command_contracts.py) (14) |
 | [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) (14) |
-| [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (96), [test_dispatch](test_dispatch.py) (19) |
+| [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (96), [test_dispatch](test_dispatch.py) (22) |
 | [deps](../scripts/deps.py) | [test_deps](test_deps.py) (74) |
 | [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
-| [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (19) |
+| [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (22) |
 | [format](../scripts/format.py) | [test_format](test_format.py) (110), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (185), [test_templates](test_templates.py) (6) |
 | [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (20), [test_kinds](test_kinds.py) (9) |
-| [kinds](../scripts/kinds.py) | [test_hotfix](test_hotfix.py) (20), [test_kinds](test_kinds.py) (9), [test_orphans](test_orphans.py) (5) |
-| [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (19), [test_lane](test_lane.py) (12) |
+| [kinds](../scripts/kinds.py) | [test_dispatch](test_dispatch.py) (22), [test_hotfix](test_hotfix.py) (20), [test_kinds](test_kinds.py) (9), [test_orphans](test_orphans.py) (5) |
+| [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (22), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-pull-request](../scripts/links-by-pull-request.py) | [test_link_capture](test_link_capture.py) (22) |
@@ -138,7 +138,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | `references/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
 | [rules](../rules.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
 
-A count beside a module measures that module, not the subject it appears against. The 19 tests of [test_dispatch](test_dispatch.py) do not all touch [deliver](../scripts/deliver.py), so a row's numbers are not a total.
+A count beside a module measures that module, not the subject it appears against. The 22 tests of [test_dispatch](test_dispatch.py) do not all touch [deliver](../scripts/deliver.py), so a row's numbers are not a total.
 
 A folder row stays as code text because a link to a directory resolves to nothing a reader can open. [README](README.md) is this folder's own file, so [test_readme](test_readme.py) is the one row whose subject is the catalogue itself.
 
