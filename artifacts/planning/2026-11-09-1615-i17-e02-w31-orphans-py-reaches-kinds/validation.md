@@ -42,9 +42,13 @@ git diff --check origin/i17/e02/workspace HEAD                    # checkout roo
 
 ## Current Base
 
-The epic base moved to `1bb44b2bf` (W30 #1672, W18 #1669), merged into the branch at `968c0dd0a8cc298d3b7a94f0034ab04921511ffb`; the catalogue conflict on the `kinds` and `lane` rows kept both units' counts. The same checks at that head:
+The epic base moved to `49bbafbd7` (W30 #1672, W18 #1669, W26 #1674, W28 #1678, W20 #1680), merged into the branch through `579b77918298e2aee4be3418364613671c72a96a`; each catalogue conflict on the `kinds` row kept every unit's counts. The same checks at that head:
 
-- Planner: 1069 tests, one opt-in live-link skip ([planner-merged.log](planner-merged.log)).
+- Planner: 1089 tests, one opt-in live-link skip ([planner-merged.log](planner-merged.log)).
 - Shared: 280 pass ([shared-merged.log](shared-merged.log)).
 - Skill checker: 59 files, zero findings ([skill-check-merged.log](skill-check-merged.log)).
 - Whitespace: zero findings.
+
+## Delivery
+
+[#1675](https://github.com/m2ux/workflow-server/pull/1675) merged at verified head `579b77918` with merge commit `85e6250c5606ebd92702950920b5d89d10f8056c`.
