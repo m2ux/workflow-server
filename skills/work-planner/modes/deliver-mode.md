@@ -224,7 +224,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 11. Arising Issues
 
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") for each unsaved issue that arose during delivery as a standalone issue with no agent-engineering prefix, following [Standalone Issues](../artifacts/board.md#standalone-issues).
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") for each unsaved issue that arose during delivery as a standalone issue with no agent-engineering prefix, following standalone [Placement](../artifacts/standalone-body.md#placement).
 
 - Follow [Hoist Mode](hoist-mode.md "ƒ") in the project checkout with those new issue identities, each arising issue an agent review's exclusion saved, and the allowance the brief names, after the pull request is open and epic delivery is recorded.
 - Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with each placement it applied and each it held.
