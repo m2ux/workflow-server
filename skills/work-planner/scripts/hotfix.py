@@ -3,9 +3,9 @@
 An issue whose title opens with [F00] is a hot-fix, and it carries the priority: 10 label. Its
 Overview names the long-lived branch it fixes in one Target: line. This module supplies the hot-fix
 kind to the script registry, kinds.py: each operation of its Kind interface, with the inputs and
-results that interface states, reads a hot-fix's tag, body faults, target, board status, linking and
-delivering pull requests and the state of its delivery unit. hotfix_tag, is_hotfix and hotfix_faults
-are the names general scripts import directly.
+results that interface states, reads a hot-fix's tag, labels, body faults, target, board status,
+linking and delivering pull requests and the state of its delivery unit. hotfix_tag and is_hotfix are
+the names general scripts import directly.
 """
 import re
 
@@ -25,6 +25,11 @@ def tag(item: dict) -> str | None:
 
 def is_hotfix(issue: dict) -> bool:
     return tag(issue) is not None
+
+
+def labels(issue: dict) -> list[str]:
+    """The priority label for priority 10, which a hot-fix carries beside type:hot-fix and its theme."""
+    return [PRIORITY]
 
 
 def faults(issue: dict) -> list[str]:
@@ -117,4 +122,3 @@ def unit_state(issue: dict, held: str | None, linking: list[dict], delivering: l
 
 
 hotfix_tag = tag
-hotfix_faults = faults
