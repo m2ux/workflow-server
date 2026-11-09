@@ -44,8 +44,9 @@ print('Registration')
 skill = (ROOT / 'SKILL.md').read_text().splitlines()
 entry = next(line for line in skill if '(artifacts/hotfix-body.md)' in line)
 text = LINK.search(entry).group(1)
-ops = [o.strip() for o in entry.split(')', 1)[1].split(',') if o.strip()]
-check('Populate Body' in ops, f'{text} registers Populate Body: {entry.strip()}')
+ops = [name for name, _, _ in LINK.findall(entry.split(')', 1)[1])]
+check(ops == ['Populate Body'], f'{text} registers Populate Body: {entry.strip()}')
+check(f'(artifacts/hotfix-body.md#{ANCHOR} "ƒ")' in entry, f'the registration links Populate Body to #{ANCHOR}')
 derived = 'Populate ' + re.sub(r' Body$', '', text) + ' Body'
 check(derived == OPERATION, f'naming rule derives {derived}')
 contract = next(i for i, line in enumerate(skill) if line.startswith('- **Populate Body**'))
@@ -79,7 +80,7 @@ for _, target, _ in LINK.findall('\n'.join(procedure)):
 print('Callers')
 sites = []
 for path in sorted(ROOT.rglob('*.md')):
-    if 'test' in path.relative_to(ROOT).parts:
+    if 'test' in path.relative_to(ROOT).parts or path.name == 'SKILL.md':
         continue
     for number, line in enumerate(path.read_text().splitlines(), 1):
         for _, target, title in LINK.findall(line):
@@ -88,7 +89,7 @@ for path in sorted(ROOT.rglob('*.md')):
 for site in sites:
     print(f'  {site[0]}:{site[1]} title={site[2]!r}: {site[3]}')
 calls = [s for s in sites if s[2] == 'ƒ']
-check(len(sites) + 1 >= 2, f'{len(sites)} linked call site(s) plus the registration')
+check(len(sites) == 1, f'{len(sites)} general call site(s) beside the registration')
 check(calls and calls == sites and all('Apply [' + OPERATION in s[3] for s in calls),
       'every linked use is an ƒ call that applies the operation')
 hoist = ROOT / 'modes' / 'hoist-mode.md'
@@ -96,9 +97,8 @@ branch = body_of(hoist, 'Hot-Fix Body', 6)
 print('  hoist Hot-Fix Body branch:', [line for line in branch if line.strip()])
 restated = [t for _, t, _ in LINK.findall('\n'.join(branch)) if not t.endswith(f'#{ANCHOR}')]
 check(not restated, f'hoist branch restates no body rule: {restated}')
-common = '\n'.join(body_of(hoist, 'Common Body Content', 6))
-check(all(word in common for word in ('number', 'theme label', 'target')),
-      'caller passes number and theme label (Hot-fix Identity) and target (Target)')
+check(all(word in calls[0][3] for word in ('number', 'theme label', 'target', 'defect evidence')),
+      'the call passes number and theme label (Hot-fix Identity), target (Target) and defect evidence')
 elsewhere = [f'{p.relative_to(ROOT)}:{n}' for p in sorted((ROOT / 'modes').glob('*.md'))
              + sorted((ROOT / 'protocols').glob('*.md'))
              for n, line in enumerate(p.read_text().splitlines(), 1)

@@ -74,9 +74,11 @@ for line in skill[:skill.index('## Modes')]:
         kind = lead.group(1)
         kinds[kind] = []
     elif line.startswith('  - [') and kind:
-        text, target = LINK.search(line).groups()
-        ops = [o.strip() for o in line.split(')', 1)[1].split(',') if o.strip()]
-        kinds[kind].append((target, ops))
+        first = LINK.search(line)
+        rest = line[first.end():]
+        linked = {text: target for text, target in LINK.findall(rest)}
+        ops = linked or {o.strip(): None for o in rest.split(',') if o.strip()}
+        kinds[kind].append((first.group(2), ops))
 
 BOARD_OPS = ('board.md#read-board-state', 'board.md#place-issue-on-board', 'board.md#remove-board-item')
 print('Membership route for each registered kind:')
@@ -85,8 +87,14 @@ for kind, artifacts in kinds.items():
     for target, ops in artifacts:
         path = ROOT / target
         if 'Settle Board Status' in ops:
-            words = kind.split(' ')[0]
-            heading = f'### Settle {words} Board Status'
+            heading = f'### Settle {kind.split(" ")[0]} Board Status'
+            linked = ops['Settle Board Status']
+            if linked:
+                ok, path = resolves(ROOT / 'SKILL.md', linked)
+                failures += [] if ok else [f'{kind}: Settle Board Status link {linked} missing']
+                if ok:
+                    heading = next(f'### {t}' for _, _, t in checker.scan(path)[2]
+                                   if checker.anchor_of(t) == linked.partition('#')[2])
             body = section(path, heading)
             reached = [op for op in BOARD_OPS if op in body]
             route = f'{heading[4:]} in {target}, reaching {", ".join(reached)}'

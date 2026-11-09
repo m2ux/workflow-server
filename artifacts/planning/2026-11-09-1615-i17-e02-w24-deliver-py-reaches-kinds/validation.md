@@ -3,8 +3,8 @@
 ## Candidate
 
 - Unit: I17:E02:W24, AC31 and AC32.
-- Task base: `c695a1ef4` (origin/i17/e02/workspace after W28 #1678).
-- Task head: `1b9548323`, branch `i17/e02/w24-deliver-py-reaches-kinds`.
+- Task base: `49bbafbd7` (origin/i17/e02/workspace after W20 #1680).
+- Task head: `6f615357d`, branch `i17/e02/w24-deliver-py-reaches-kinds`.
 - Owner: `skills/work-planner/scripts/deliver.py` — `kind_units` and `ready_merges` select a kind with `kinds.kind_of` and reach its `tag`, `target`, `linking_pulls`, `delivering_pulls` and `unit_state` through `kinds.interface`; `target_fault` takes the target its kind reads. Title tags come from `board.tags`, issue identity from `sync.issue_key`.
 - Import graph: deliver imports board, kinds and sync; none of them imports deliver, and kinds loads each kind module on demand.
 
@@ -28,7 +28,7 @@
 
 ## Full Checks
 
-- Planner: 1082 tests, one opt-in live-link skip, [planner.log](planner.log).
+- Planner: 1093 tests, one opt-in live-link skip, [planner.log](planner.log).
 - Shared: 280 pass, [shared.log](shared.log).
 - Skill checker: 59 files, zero findings, [skill-check.log](skill-check.log).
 - Whitespace: zero findings, [whitespace.log](whitespace.log).
