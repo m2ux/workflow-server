@@ -7,6 +7,14 @@ One separation fix row from the E02 component refinement. The declared one-file 
 | File | Purpose |
 | --- | --- |
 | [w22.md](w22.md) | Component, scope, implementation and observing validation for W22. |
+| [validation.md](validation.md) | Plan of each kind mention, kind search, route checks and full checks at the task head. |
+| [align-routes.py](align-routes.py) | Kind search and route checks over Align Mode and the registration. |
+| [align-routes.log](align-routes.log) | Route check output. |
+| [documents.log](documents.log) | Document tests. |
+| [planner.log](planner.log) | Full Work Planner suite. |
+| [shared.log](shared.log) | Shared skills suite. |
+| [skill-check.log](skill-check.log) | Skill checker. |
+| [whitespace.log](whitespace.log) | Whitespace check; empty when clean. |
 
 ## Links
 
