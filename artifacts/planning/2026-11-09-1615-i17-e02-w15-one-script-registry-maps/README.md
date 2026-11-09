@@ -8,6 +8,7 @@ One separation fix row from the E02 component refinement. The declared one-file 
 | --- | --- |
 | [w15.md](w15.md) | Component, scope, implementation and observing validation for W15. |
 | [w16.md](w16.md) | Component, scope, implementation and observing validation for W16. |
+| [validation.md](validation.md) | Registry, substitution and full-check evidence for AC22 and AC23, with its logs. |
 
 ## Links
 
