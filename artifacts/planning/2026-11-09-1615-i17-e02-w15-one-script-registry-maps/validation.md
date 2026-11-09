@@ -3,8 +3,8 @@
 ## Candidate
 
 - Unit: I17:E02:W15+W16, AC22 and AC23.
-- Task base: `d463fc463` (origin/i17/e02/workspace after W17 #1667).
-- Task head: `cdc3c06c79e62c56715415c0bb827165e30b1437`, branch `i17/e02/w15-one-script-registry-maps`.
+- Task base: `71329c344` (origin/i17/e02/workspace after W19 #1670).
+- Task head: `54611bbfe360ede0aa4c15cf12b24c66ff2fe5b5`, branch `i17/e02/w15-one-script-registry-maps`.
 - Components: `skills/work-planner/scripts/kinds.py` (W15), `skills/work-planner/scripts/hotfix.py` (W16).
 
 ## Registry Tests
@@ -28,7 +28,7 @@ AC23. [test_kinds](https://github.com/m2ux/workflow-server/blob/i17/e02/w15-one-
 
 ## Full Checks
 
-- Planner: 1058 tests, one opt-in live-link skip, [planner.log](planner.log) (includes installed document/model and catalogue checks).
+- Planner: 1059 tests, one opt-in live-link skip, [planner.log](planner.log) (includes installed document/model and catalogue checks).
 - Shared: 280 pass, [shared.log](shared.log).
 - Skill checker: 59 files, zero findings, [skill-check.log](skill-check.log).
 - Whitespace: zero findings, [whitespace.log](whitespace.log).
