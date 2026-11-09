@@ -59,7 +59,12 @@ Read reach from each epic pull request's base, through an epic base or initiativ
 
 #### 4. Identify Required Criteria
 
-Include in the findings each [Required Criteria](#required-criteria) criterion an epic lacks whose work changes the criterion's paths on its branch, required criteria the declaration or the changed paths leave unevaluable, and any epic criterion no task row delivers.
+- Read the [Required Criteria](#required-criteria) declaration at the commit the [evaluated revision](#evaluated-revision) resolves to, in the repository the [project checkout](#project-checkout) locates, and name that path, commit and repository as the source. Which worktree the checkout is chooses nothing.
+- Read each pull request's changed files as the tracker lists them.
+- Include in the findings each declared criterion an epic lacks whose work changes the criterion's paths on its branch, and any epic criterion no task row delivers.
+- A declaration that declares nothing brings no required-criteria finding.
+- A revision resolving to no commit, or a [malformed statement](#required-criteria), leaves the project's required criteria unevaluable. Report that with the fault named, and report no epic as lacking a criterion.
+- A pull request reaching a declared branch whose changed files are not supplied leaves that criterion unevaluable, unless another pull request of the epic is known to change a declared path. Report it as unevaluable.
 
 #### 5. Provide Local Findings
 
@@ -307,14 +312,12 @@ The project's required-criterion declaration array. A project states the criteri
 
 - **The declared row delivers the criterion.**
   It carries the declared `row` as its Description, depends on the rows whose work changes the declared paths, and covers that criterion alone.
-- **The tracker states what the work changes.**
-  The check reads each pull request's changed files as the tracker lists them. A pull request reaching the declared branch whose changed files are not supplied leaves the criterion unevaluable, unless another pull request of the epic is known to change a declared path.
-- **The evaluated commit holds the statement.**
-  The check reads the file at the commit its evaluated revision resolves to, in the repository its checkout locates, and names that path, commit and repository as its source. Which worktree the checkout is, and what its working files hold, choose nothing.
+- **A committed file holds the declaration.**
+  The declaration is the file as one commit of the project's repository holds it. Working files declare nothing.
 - **A project declaring nothing requires nothing.**
-  A missing or empty file at the evaluated commit, or an empty array, declares no required criterion, and the check reports none. A project declaring nothing acquires no other project's criteria.
-- **An unreadable statement is unevaluable.**
-  A revision resolving to no commit, unreadable JSON, a value other than an array, or an entry lacking a field or stating `paths` as anything but a non-empty list of non-empty strings leaves the project's required criteria unevaluable. The check reports that and names the fault, and reports no epic as lacking a criterion.
+  A missing or empty file, or an empty array, declares no required criterion. A project declaring nothing acquires no other project's criteria.
+- **A malformed statement is no declaration.**
+  Unreadable JSON, a value other than an array, or an entry lacking a field or stating `paths` as anything but a non-empty list of non-empty strings is malformed.
 - workflow-server requires its corpus audit of work that changes the workflow definitions under `corpus` on `workflows`: eg `[{"branch": "workflows", "paths": ["corpus"], "criterion": "The definitions this epic changes carry no outstanding confirmed finding, one neither fixed on the epic's branch nor taken by an issue, as the canon audit's coverage report shows.", "phrase": "canon audit", "row": "Canon audit of the changed definitions"}]`
 
 ### Task Delivery
