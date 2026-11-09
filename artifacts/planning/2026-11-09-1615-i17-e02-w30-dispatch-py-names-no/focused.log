@@ -1,0 +1,27 @@
+test_a_registered_kinds_item_dispatches_through_the_registry (test_dispatch.Kinds.test_a_registered_kinds_item_dispatches_through_the_registry) ... ok
+test_an_unregistered_tag_is_no_dispatch_identity (test_dispatch.Kinds.test_an_unregistered_tag_is_no_dispatch_identity) ... ok
+test_dispatch_names_no_kind_and_imports_only_the_registry_lookup (test_dispatch.Kinds.test_dispatch_names_no_kind_and_imports_only_the_registry_lookup) ... ok
+test_actual_sessions_prevent_duplicates_even_from_a_stale_offer (test_dispatch.Refill.test_actual_sessions_prevent_duplicates_even_from_a_stale_offer) ... ok
+test_an_out_of_scope_preparation_does_not_keep_a_run_active (test_dispatch.Refill.test_an_out_of_scope_preparation_does_not_keep_a_run_active) ... ok
+test_capacity_event_refills_without_a_worker_completion (test_dispatch.Refill.test_capacity_event_refills_without_a_worker_completion) ... ok
+test_capacity_lost_during_preparation_resumes_the_same_held_unit (test_dispatch.Refill.test_capacity_lost_during_preparation_resumes_the_same_held_unit) ... ok
+test_failed_survey_removes_a_prior_dispatch_export (test_dispatch.Refill.test_failed_survey_removes_a_prior_dispatch_export) ... ok
+test_hotfix_export_uses_repository_qualified_identity (test_dispatch.Refill.test_hotfix_export_uses_repository_qualified_identity) ... ok
+test_independent_work_continues_beside_blockers_and_required_review (test_dispatch.Refill.test_independent_work_continues_beside_blockers_and_required_review) ... ok
+test_invalid_lane_units_leave_independent_export_and_refill_available (test_dispatch.Refill.test_invalid_lane_units_leave_independent_export_and_refill_available) ... ok
+test_joined_rows_are_one_slot_and_require_full_scope (test_dispatch.Refill.test_joined_rows_are_one_slot_and_require_full_scope) ... ok
+test_lane_admitted_export_is_bound_to_authorized_survey_context (test_dispatch.Refill.test_lane_admitted_export_is_bound_to_authorized_survey_context) ... ok
+test_one_authorization_refills_after_successive_completions (test_dispatch.Refill.test_one_authorization_refills_after_successive_completions) ... ok
+test_parent_selectors_cannot_be_dispatched_as_units (test_dispatch.Refill.test_parent_selectors_cannot_be_dispatched_as_units) ... ok
+test_real_lane_filtered_export_drives_dispatch_and_keeps_hotfixes (test_dispatch.Refill.test_real_lane_filtered_export_drives_dispatch_and_keeps_hotfixes) ... ok
+test_real_survey_excludes_holds_dependencies_and_backlog (test_dispatch.Refill.test_real_survey_excludes_holds_dependencies_and_backlog) ... ok
+test_scope_is_repository_qualified_and_has_component_boundaries (test_dispatch.Refill.test_scope_is_repository_qualified_and_has_component_boundaries) ... ok
+test_cli_returns_batch_and_checks_start_evidence (test_dispatch.Start.test_cli_returns_batch_and_checks_start_evidence) ... ok
+test_malformed_observations_fail_before_selection (test_dispatch.Start.test_malformed_observations_fail_before_selection) ... ok
+test_ordered_evidence_precedes_execution (test_dispatch.Start.test_ordered_evidence_precedes_execution) ... ok
+test_start_rechecks_capacity_and_session_identity (test_dispatch.Start.test_start_rechecks_capacity_and_session_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 2.768s
+
+OK

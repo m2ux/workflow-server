@@ -1,0 +1,13 @@
+# kind and import search over scripts/dispatch.py at 2c20d09c3
+## grep -n -i -E "hot.?fix|F[0-9][0-9]|F\\\\d|kinds|import" scripts/dispatch.py
+15:import argparse
+16:import json
+17:import re
+18:import sys
+19:from pathlib import Path
+21:from kinds import kind_of
+22:from lane import is_index
+## def registered / def members across scripts
+scripts/dispatch.py:31:def members(identity: str) -> set[str]:
+scripts/dispatch.py:43:def registered(tag: str) -> bool:
+scripts/dispatch.py:57:def unit_members(identity: str) -> set[str]:
