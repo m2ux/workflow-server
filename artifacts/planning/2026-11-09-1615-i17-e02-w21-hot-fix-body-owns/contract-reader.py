@@ -88,8 +88,9 @@ for path in sorted(ROOT.rglob('*.md')):
 for site in sites:
     print(f'  {site[0]}:{site[1]} title={site[2]!r}: {site[3]}')
 calls = [s for s in sites if s[2] == 'ƒ']
-check(len(sites) >= 2, f'{len(sites)} linked references')
-check(calls and all('Apply [' + OPERATION in s[3] for s in calls), 'each ƒ call site applies the operation')
+check(len(sites) + 1 >= 2, f'{len(sites)} linked call site(s) plus the registration')
+check(calls and calls == sites and all('Apply [' + OPERATION in s[3] for s in calls),
+      'every linked use is an ƒ call that applies the operation')
 hoist = ROOT / 'modes' / 'hoist-mode.md'
 branch = body_of(hoist, 'Hot-Fix Body', 6)
 print('  hoist Hot-Fix Body branch:', [line for line in branch if line.strip()])

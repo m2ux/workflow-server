@@ -1,5 +1,6 @@
 test_artifact_operations_bind_arguments_at_their_use_and_consecutive_steps (test_documents.DocumentInterfaces.test_artifact_operations_bind_arguments_at_their_use_and_consecutive_steps) ... ok
-test_artifact_operations_have_multiple_linked_references (test_documents.DocumentInterfaces.test_artifact_operations_have_multiple_linked_references) ... ok
+test_artifact_operations_have_multiple_linked_references (test_documents.DocumentInterfaces.test_artifact_operations_have_multiple_linked_references)
+An operation with one linked use belongs in its caller. The kind registration ... ok
 test_calls_go_down_the_layer_stack (test_documents.DocumentInterfaces.test_calls_go_down_the_layer_stack)
 A mode aggregates protocol calls as an application calls services, ... ok
 test_every_operation_and_protocol_is_reached (test_documents.DocumentInterfaces.test_every_operation_and_protocol_is_reached)
@@ -11,6 +12,8 @@ Link text naming a document outlives the document. `Work Breakdown ... ok
 test_protocols_are_entered_whole (test_documents.DocumentInterfaces.test_protocols_are_entered_whole)
 A protocol is one coordinated sequence, so a caller runs the file ... ok
 test_references_cannot_route_to_modes_or_artifacts (test_documents.DocumentInterfaces.test_references_cannot_route_to_modes_or_artifacts) ... ok
+test_registration_names_kind_operations_their_artifacts_hold (test_documents.DocumentInterfaces.test_registration_names_kind_operations_their_artifacts_hold)
+General files select a kind's operation through the registration, so each ... ok
 test_script_reach_excludes_specimens_and_unexecuted_blocks (test_documents.DocumentInterfaces.test_script_reach_excludes_specimens_and_unexecuted_blocks) ... ok
 test_script_reach_requires_the_installed_command_declaration (test_documents.DocumentInterfaces.test_script_reach_requires_the_installed_command_declaration) ... ok
 test_a_report_of_the_operation_is_not_a_call (test_documents.EpicDeliveryCallers.test_a_report_of_the_operation_is_not_a_call) ... ok
@@ -182,8 +185,25 @@ test_every_issue_kind_reads_only_its_body_sections (test_templates.ArtifactTempl
 test_examples_outside_fields_template_are_ignored (test_templates.ArtifactTemplates.test_examples_outside_fields_template_are_ignored) ... ok
 test_final_indented_specimens_close_without_entering_the_template (test_templates.ArtifactTemplates.test_final_indented_specimens_close_without_entering_the_template) ... ok
 test_missing_unclosed_empty_and_ambiguous_templates_fail (test_templates.ArtifactTemplates.test_missing_unclosed_empty_and_ambiguous_templates_fail) ... ok
+test_a_module_sits_under_the_table_its_scripts_put_it_in (test_readme.Catalogue.test_a_module_sits_under_the_table_its_scripts_put_it_in)
+A module that reaches a script is a script test, and one that ... ok
+test_every_module_has_one_row (test_readme.Catalogue.test_every_module_has_one_row) ... ok
+test_every_module_links_to_its_own_file (test_readme.Catalogue.test_every_module_links_to_its_own_file) ... ok
+test_the_description_is_the_docstring (test_readme.Catalogue.test_the_description_is_the_docstring)
+The row states what the docstring states. A link marks a name in one ... ok
+test_a_document_row_names_the_modules_that_read_it (test_readme.Coverage.test_a_document_row_names_the_modules_that_read_it) ... ok
+test_a_script_row_names_the_modules_that_reach_it (test_readme.Coverage.test_a_script_row_names_the_modules_that_reach_it) ... ok
+test_each_count_is_the_modules_test_methods (test_readme.Coverage.test_each_count_is_the_modules_test_methods)
+A count sits beside the module it measures, in every row naming it. ... ok
+test_each_named_module_carries_its_count (test_readme.Coverage.test_each_named_module_carries_its_count) ... ok
+test_every_document_the_prose_tests_read_has_a_row (test_readme.Coverage.test_every_document_the_prose_tests_read_has_a_row) ... ok
+test_every_prose_module_is_named_somewhere (test_readme.Coverage.test_every_prose_module_is_named_somewhere) ... ok
+test_every_script_has_one_row_and_links_to_it (test_readme.Coverage.test_every_script_has_one_row_and_links_to_it) ... ok
+test_the_readme_resolves_every_link (test_readme.ReadmeShape.test_the_readme_resolves_every_link) ... ok
+test_only_the_readme_carries_the_run_command (test_readme.RunCommand.test_only_the_readme_carries_the_run_command)
+A module restating the command once the README states it is a second ... ok
 
 ----------------------------------------------------------------------
-Ran 177 tests in 10.001s
+Ran 191 tests in 9.665s
 
 OK

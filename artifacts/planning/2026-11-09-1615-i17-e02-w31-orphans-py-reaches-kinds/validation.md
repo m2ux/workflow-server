@@ -39,3 +39,12 @@ python3 -m unittest discover -s skills/test                       # checkout roo
 python3 skills/scripts/check_skill_files.py skills/work-planner   # checkout root
 git diff --check origin/i17/e02/workspace HEAD                    # checkout root
 ```
+
+## Current Base
+
+The epic base moved to `1bb44b2bf` (W30 #1672, W18 #1669), merged into the branch at `968c0dd0a8cc298d3b7a94f0034ab04921511ffb`; the catalogue conflict on the `kinds` and `lane` rows kept both units' counts. The same checks at that head:
+
+- Planner: 1069 tests, one opt-in live-link skip ([planner-merged.log](planner-merged.log)).
+- Shared: 280 pass ([shared-merged.log](shared-merged.log)).
+- Skill checker: 59 files, zero findings ([skill-check-merged.log](skill-check-merged.log)).
+- Whitespace: zero findings.

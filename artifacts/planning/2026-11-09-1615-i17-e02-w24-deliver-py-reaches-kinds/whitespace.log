@@ -1,0 +1,1 @@
+git diff --check origin/i17/e02/workspace HEAD: exit 0, 0 findings
