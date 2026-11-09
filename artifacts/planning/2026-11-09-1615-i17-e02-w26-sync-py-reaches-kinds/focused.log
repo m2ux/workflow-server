@@ -188,6 +188,6 @@ test_a_run_given_no_branches_names_the_checks_it_did_not_make (test_sync.Unavail
 test_the_checks_left_unmade_are_named (test_sync.UnavailableDeclaration.test_the_checks_left_unmade_are_named) ... ok
 
 ----------------------------------------------------------------------
-Ran 187 tests in 32.497s
+Ran 187 tests in 32.218s
 
 OK
