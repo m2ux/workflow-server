@@ -9,6 +9,7 @@ from fixtures import hotfix as hotfix_issue
 sys.path.insert(0, str(SCRIPTS))
 from hotfix import (OFF_BOARD, board_status, delivering_pulls, delivery_fault, hotfix_tag, is_hotfix,  # noqa: E402
                     linking_pulls, target, targets, unit_state)
+from kinds import OFF_BOARD as OFF_THE_BOARD, interface  # noqa: E402
 
 KEY = ('o/r', 4)
 MERGED = '2026-11-01T00:00:00Z'
@@ -137,6 +138,37 @@ class UnitState(unittest.TestCase):
         for held in ('Ready', 'In Progress'):
             with self.subTest(held=held):
                 self.assertEqual(unit_state(hotfix(), held, [draft], [draft]), 'running')
+
+
+class ThroughTheRegistry(unittest.TestCase):
+    """Each operation of the Kind interface, reached as a general script reaches it."""
+
+    def setUp(self):
+        self.kind = interface('hot-fix')
+
+    def test_identity_target_and_faults(self):
+        self.assertEqual(self.kind.tag(hotfix()), 'F04')
+        self.assertIsNone(self.kind.tag(issue(6, '[I07] Canon Walk: Definitions Checked')))
+        self.assertEqual(self.kind.target(hotfix(aim='workspace')), 'workspace')
+        self.assertEqual(self.kind.target(hotfix(aim=None)), '')
+        self.assertEqual(self.kind.faults(hotfix()), [])
+        self.assertEqual(self.kind.faults(hotfix(aim=None)),
+                         ['no Target: lines in the Overview; it names one target branch'])
+
+    def test_board_status(self):
+        self.assertEqual(self.kind.board_status(hotfix(), None, [pr(951, '[F04] Fix', base='main')]), 'In Review')
+        self.assertEqual(self.kind.board_status(hotfix('closed', 'not_planned'), 'Ready', []), OFF_THE_BOARD)
+
+    def test_linking_and_delivering_pull_requests(self):
+        pulls = [linked(pr(951, '[F04] Fix', base='main'), 4), linked(pr(952, '[F04] Fix', base='workspace'), 4)]
+        self.assertEqual([p['number'] for p in self.kind.linking_pulls(pulls, KEY)], [951, 952])
+        self.assertEqual([p['number'] for p in self.kind.delivering_pulls(pulls, KEY, hotfix())], [951])
+        self.assertEqual(self.kind.delivery_fault(pulls[1], KEY, hotfix()), 'its base is workspace, not the target main')
+
+    def test_unit_state(self):
+        merged = [pr(951, '[F04] Fix', MERGED, base='main')]
+        self.assertEqual(self.kind.unit_state(hotfix(), 'Ready', merged, merged), 'unrecorded')
+        self.assertEqual(self.kind.unit_state(hotfix(), 'Ready', [], []), 'unit')
 
 
 if __name__ == '__main__':
