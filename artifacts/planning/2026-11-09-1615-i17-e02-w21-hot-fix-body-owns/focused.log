@@ -46,7 +46,6 @@ test_lane_result_distinguishes_invalid_and_valid_unlaned_units (test_command_con
 test_reservation_uses_the_published_record_date (test_command_contracts.DocumentedCommandBehavior.test_reservation_uses_the_published_record_date) ... ok
 test_survey_writes_the_requested_dispatch_export (test_command_contracts.DocumentedCommandBehavior.test_survey_writes_the_requested_dispatch_export) ... ok
 test_task_delivery_records_its_pull_request_without_verified_criteria (test_command_contracts.DocumentedCommandBehavior.test_task_delivery_records_its_pull_request_without_verified_criteria) ... ok
-test_templates (unittest.loader._FailedTest.test_templates) ... ERROR
 test_body_already_on_its_own_line_is_left (test_format.BoldLeads.test_body_already_on_its_own_line_is_left) ... ok
 test_body_before_a_paragraph_moves_to_the_next_line (test_format.BoldLeads.test_body_before_a_paragraph_moves_to_the_next_line) ... ok
 test_bold_inside_a_sentence_is_left (test_format.BoldLeads.test_bold_inside_a_sentence_is_left) ... ok
@@ -177,21 +176,14 @@ test_a_merged_pull_request_that_does_not_deliver_it_leaves_it_free (test_hotfix.
 test_an_open_draft_delivering_pull_request_makes_it_running (test_hotfix.UnitState.test_an_open_draft_delivering_pull_request_makes_it_running) ... ok
 test_any_open_linking_pull_request_makes_it_running (test_hotfix.UnitState.test_any_open_linking_pull_request_makes_it_running) ... ok
 test_with_no_delivery_in_progress_is_its_hold_and_ready_its_unit (test_hotfix.UnitState.test_with_no_delivery_in_progress_is_its_hold_and_ready_its_unit) ... ok
-
-======================================================================
-ERROR: test_templates (unittest.loader._FailedTest.test_templates)
-----------------------------------------------------------------------
-ImportError: Failed to import test module: test_templates
-Traceback (most recent call last):
-  File "/usr/lib/python3.14/unittest/loader.py", line 137, in loadTestsFromName
-    module = __import__(module_name)
-  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w21-hot-fix-body-owns/skills/work-planner/test/test_templates.py", line 8, in <module>
-    from format import BODY_ARTIFACTS, Template, template_body
-ModuleNotFoundError: No module named 'format'
-
+test_a_shorter_or_different_fence_inside_a_template_is_content (test_templates.ArtifactTemplates.test_a_shorter_or_different_fence_inside_a_template_is_content) ... ok
+test_an_indented_closing_fence_keeps_character_and_length_requirements (test_templates.ArtifactTemplates.test_an_indented_closing_fence_keeps_character_and_length_requirements) ... ok
+test_every_issue_kind_reads_only_its_body_sections (test_templates.ArtifactTemplates.test_every_issue_kind_reads_only_its_body_sections) ... ok
+test_examples_outside_fields_template_are_ignored (test_templates.ArtifactTemplates.test_examples_outside_fields_template_are_ignored) ... ok
+test_final_indented_specimens_close_without_entering_the_template (test_templates.ArtifactTemplates.test_final_indented_specimens_close_without_entering_the_template) ... ok
+test_missing_unclosed_empty_and_ambiguous_templates_fail (test_templates.ArtifactTemplates.test_missing_unclosed_empty_and_ambiguous_templates_fail) ... ok
 
 ----------------------------------------------------------------------
-Ran 172 tests in 9.478s
+Ran 177 tests in 10.001s
 
-FAILED (errors=1)
-sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w21-hot-fix-body-owns (name more with SBX_EXTRA_ROOTS=dir1:dir2)
+OK

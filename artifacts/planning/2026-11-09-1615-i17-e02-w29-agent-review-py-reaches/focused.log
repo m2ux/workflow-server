@@ -18,7 +18,7 @@ test_a_registered_kind_is_selected_through_the_registry (test_agent_review.Regis
 test_it_imports_no_kind_module_and_names_no_kind (test_agent_review.RegisteredKind.test_it_imports_no_kind_module_and_names_no_kind) ... ok
 
 ----------------------------------------------------------------------
-Ran 18 tests in 0.199s
+Ran 18 tests in 0.192s
 
 OK
 test_changed_head_after_ready_restores_before_repair (test_hotfix_readiness.HotFixReadiness.test_changed_head_after_ready_restores_before_repair) ... ok

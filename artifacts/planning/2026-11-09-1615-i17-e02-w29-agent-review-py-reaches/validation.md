@@ -4,7 +4,7 @@
 
 - Unit: I17:E02:W29, AC39.
 - Task base: `01f84933a` (origin/i17/e02/workspace after W14 #1668).
-- Task head: `c216313da4842c551d49a0184b20aa16daeed5f9`, branch `i17/e02/w29-agent-review-py-reaches`.
+- Task head: `8689b8c6ee7e86573a02c429ddd8e0fca22e8725`, branch `i17/e02/w29-agent-review-py-reaches`, current with `36c18a359` (origin/i17/e02/workspace after W30 #1672).
 - Component: `skills/work-planner/scripts/agent_review.py`.
 
 ## Plan
@@ -32,7 +32,7 @@ The existing [test_agent_review](https://github.com/m2ux/workflow-server/blob/i1
 
 ## Full Checks
 
-- Planner: 1061 tests, one opt-in live-link skip, [planner.log](planner.log) (includes installed document/model and catalogue checks).
+- Planner: 1064 tests, one opt-in live-link skip, [planner.log](planner.log) (includes installed document/model and catalogue checks).
 - Shared: 280 pass, [shared.log](shared.log).
 - Skill checker: 59 files, zero findings, [skill-check.log](skill-check.log).
 - Whitespace: zero findings, [whitespace.log](whitespace.log).
