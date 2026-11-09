@@ -12,3 +12,8 @@ One independently approved policy owner fix, supplied by the completed E02 audit
 
 - [Epic](https://github.com/m2ux/workflow-server/issues/1615)
 - [Audit decisions](https://github.com/m2ux/workflow-server/blob/40d65b7757717f6931dedec7a37243ffa9197db7/artifacts/planning/2026-11-06-1615-i17-e02-w02-audit-ownership-fields-and/policy-decisions.md)
+
+## Delivery
+
+- Pull request [#1666](https://github.com/m2ux/workflow-server/pull/1666), merged into i17/e02/workspace at a5435a843395bc917ecf099dc51bf14090feab1d from verified head 325f651361c53105f7daf54b7a195a387dad8073.
+- Plan changes: none applied, none held. Arising issues: none.
