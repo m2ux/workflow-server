@@ -46,7 +46,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_dispatch](test_dispatch.py) | Continuous dispatch from real delivery surveys and observed worker events |
 | [test_format](test_format.py) | [format](../scripts/format.py) on standalone issues |
 | [test_hotfix_readiness](test_hotfix_readiness.py) | Hot-fix readiness routes restore and confirm draft before repair |
-| [test_hotfix](test_hotfix.py) | [hotfix](../scripts/hotfix.py): a hot-fix's identity, target, board status, delivering pull requests and delivery unit state |
+| [test_hotfix](test_hotfix.py) | [hotfix](../scripts/hotfix.py): a hot-fix's identity, labels, target, board status, delivering pull requests and delivery unit state |
 | [test_kinds](test_kinds.py) | The script registry, [kinds](../scripts/kinds.py), maps each kind of work to its module and selects an item's kind from its title, and each registered module supplies the Kind interface |
 | [test_lane](test_lane.py) | Lane's raw-cell, assignment, consistency and admission contracts |
 | [test_link_capture](test_link_capture.py) | The Development relation read from each end by [links-by-pull-request](../scripts/links-by-pull-request.py) and [links-by-issue](../scripts/links-by-issue.py), and the linked pull requests [linked-pull-requests](../scripts/linked-pull-requests.py) adds to a collection |
@@ -94,15 +94,15 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (14), [test_board_queue](test_board_queue.py) (75) |
 | [closure](../scripts/closure.py) | [test_closure](test_closure.py) (13), [test_command_contracts](test_command_contracts.py) (14) |
 | [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) (14) |
-| [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (96), [test_dispatch](test_dispatch.py) (19) |
-| [deps](../scripts/deps.py) | [test_deps](test_deps.py) (74) |
+| [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (96), [test_dispatch](test_dispatch.py) (22) |
+| [deps](../scripts/deps.py) | [test_deps](test_deps.py) (79) |
 | [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
-| [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (19) |
-| [format](../scripts/format.py) | [test_format](test_format.py) (110), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (185), [test_templates](test_templates.py) (6) |
-| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (20), [test_kinds](test_kinds.py) (9) |
-| [kinds](../scripts/kinds.py) | [test_hotfix](test_hotfix.py) (20), [test_kinds](test_kinds.py) (9) |
-| [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (19), [test_lane](test_lane.py) (12) |
+| [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (22) |
+| [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
+| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (21), [test_kinds](test_kinds.py) (9) |
+| [kinds](../scripts/kinds.py) | [test_dispatch](test_dispatch.py) (22), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (21), [test_kinds](test_kinds.py) (9), [test_sync](test_sync.py) (187) |
+| [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (22), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-pull-request](../scripts/links-by-pull-request.py) | [test_link_capture](test_link_capture.py) (22) |
@@ -111,7 +111,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32) |
 | [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |
 | [statuses](../scripts/statuses.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (17), [test_statuses](test_statuses.py) (21) |
-| [sync](../scripts/sync.py) | [test_align](test_align.py) (18), [test_link_capture](test_link_capture.py) (22), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (185) |
+| [sync](../scripts/sync.py) | [test_align](test_align.py) (18), [test_link_capture](test_link_capture.py) (22), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (187) |
 
 ### Documents
 
@@ -138,7 +138,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | `references/` | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
 | [rules](../rules.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (14) |
 
-A count beside a module measures that module, not the subject it appears against. The 19 tests of [test_dispatch](test_dispatch.py) do not all touch [deliver](../scripts/deliver.py), so a row's numbers are not a total.
+A count beside a module measures that module, not the subject it appears against. The 22 tests of [test_dispatch](test_dispatch.py) do not all touch [deliver](../scripts/deliver.py), so a row's numbers are not a total.
 
 A folder row stays as code text because a link to a directory resolves to nothing a reader can open. [README](README.md) is this folder's own file, so [test_readme](test_readme.py) is the one row whose subject is the catalogue itself.
 
