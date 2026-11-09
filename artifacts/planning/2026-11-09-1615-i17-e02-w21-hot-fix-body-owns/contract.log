@@ -27,10 +27,9 @@ Operation
   [ok] link hotfix.md#board-status resolves
   [ok] link #output-body resolves
 Callers
-  modes/hoist-mode.md:97 title='': - Use the source issue as the destination with disposition Kept. The rewrite branch below supplies its body through [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body) and keeps the issue open.
   modes/hoist-mode.md:121 title='ƒ': - For a hot-fix, Apply [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body "ƒ").
-  [ok] 2 linked references
-  [ok] each ƒ call site applies the operation
+  [ok] 1 linked call site(s) plus the registration
+  [ok] every linked use is an ƒ call that applies the operation
   hoist Hot-Fix Body branch: ['###### Hot-Fix Body', '- For a hot-fix, Apply [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body "ƒ").']
   [ok] hoist branch restates no body rule: []
   [ok] caller passes number and theme label (Hot-fix Identity) and target (Target)

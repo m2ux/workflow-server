@@ -3,8 +3,8 @@
 ## Candidate
 
 - Unit: I17:E02:W28, AC38.
-- Task base: `36c18a359` (origin/i17/e02/workspace after W30 #1672).
-- Task head: `d3ad182bd`, branch `i17/e02/w28-format-py-reaches-kinds`.
+- Task base: `a5bba6bb2` (origin/i17/e02/workspace after W26 #1674).
+- Task head: `2ad7e53a1`, branch `i17/e02/w28-format-py-reaches-kinds`.
 - Owner: `skills/work-planner/scripts/format.py` selects a registered kind with `kinds.kind_of` and reads its tag, labels and body faults through `kinds.interface`. A registered kind takes the standalone template and a theme label; its interface names any further labels, and each excludes other labels of its scope.
 - Folded design: the Kind interface gains `labels(issue)` (`kinds.py`) and the hot-fix module supplies it as `[priority: 10]` (`hotfix.py`). The `hotfix_faults` alias, which lost its only caller, is removed.
 - Import graph: format imports kinds; kinds imports no general script and a kind module only on lookup, and hotfix imports format only inside functions, so the graph stays acyclic.
@@ -29,7 +29,7 @@
 
 ## Full Checks
 
-- Planner: 1069 tests, one opt-in live-link skip, [planner.log](planner.log) (includes installed document/model and catalogue checks).
+- Planner: 1076 tests, one opt-in live-link skip, [planner.log](planner.log) (includes installed document/model and catalogue checks).
 - Shared: 280 pass, [shared.log](shared.log).
 - Skill checker: 59 files, zero findings, [skill-check.log](skill-check.log).
 - Whitespace: zero findings, [whitespace.log](whitespace.log).

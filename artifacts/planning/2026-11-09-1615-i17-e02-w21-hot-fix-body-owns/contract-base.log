@@ -1,0 +1,14 @@
+Registration
+  [ok] Hot-fix Body registers Populate Body: - [Hot-fix Body](artifacts/hotfix-body.md)  Populate Body
+  [ok] naming rule derives Populate Hot-fix Body
+  [ok] contract: [Body](artifacts/issue-body.md#body)
+Operation
+  [FAIL] hotfix-body.md has an Operations section
+  [FAIL] Operations holds []
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-11-09-1615-i17-e02-w21-hot-fix-body-owns/contract-reader.py", line 61, in <module>
+    procedure = body_of(ARTIFACT, OPERATION, 3)
+  File "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-11-09-1615-i17-e02-w21-hot-fix-body-owns/contract-reader.py", line 34, in body_of
+    start = next(i for i, d, t in headings if d == depth and t == title)
+StopIteration
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w21-hot-fix-body-owns (name more with SBX_EXTRA_ROOTS=dir1:dir2)

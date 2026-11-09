@@ -1,4 +1,1 @@
-work-planner/modes/hoist-mode.md:97: operation link role — [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body)
-work-planner/modes/hoist-mode.md:97: operation call verb — Apply [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body)
-59 files checked, 2 findings
-sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w21-hot-fix-body-owns (name more with SBX_EXTRA_ROOTS=dir1:dir2)
+59 files checked, 0 findings

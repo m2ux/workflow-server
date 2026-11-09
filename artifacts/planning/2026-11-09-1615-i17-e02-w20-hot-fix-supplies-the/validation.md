@@ -3,8 +3,8 @@
 ## Candidate
 
 - Unit: I17:E02:W20, AC27.
-- Task base: `1bb44b2bf` (origin/i17/e02/workspace after W18 #1669).
-- Task head: `4c74c0131a586cc63947462f8780241f5561ba10`, branch `i17/e02/w20-hot-fix-supplies-the`.
+- Task base: `a5bba6bb2` (origin/i17/e02/workspace after W26 #1674).
+- Task head: `83a3bc4c9315f3ea2f643d873f40b0283793a90f`, branch `i17/e02/w20-hot-fix-supplies-the`.
 - Component: `skills/work-planner/artifacts/hotfix.md`.
 
 ## Operations
@@ -26,13 +26,13 @@ Adding the operations alone leaves each with no caller and its steps in two home
 
 ## Observing Tests
 
-- `test_kind_operations` (new, 11 tests): registration names map to supplied operations with matching anchors; each operation ends by providing its result; general callers select each by its registered name and supply the contract inputs; Record Dispatch Status and Review Before Merge substitute the general operations; no moved step remains inline in the four callers. Against the base hotfix.md it fails 5 tests and errors on 19 ([focused.log](focused.log) shows the passing run).
+- `test_kind_operations` (new, 11 tests): registration names map to supplied operations with matching anchors; each operation ends by providing its result; general callers select each by its registered name and supply the contract inputs; Record Dispatch Status and Review Before Merge substitute the general operations; no moved step remains inline in the four callers. Run with test_hotfix_readiness against the base hotfix.md, the two modules report 5 failures and 19 errors ([focused.log](focused.log) shows the passing run).
 - `test_hotfix_readiness` (12 tests) walks the readiness route in hotfix.md and confirms Deliver Mode continues to Merge only on Review State; every outcome is unchanged.
 - `test_command_contracts` keeps the Sync Hot-fix Issue contract outcome.
 
 ## Full Checks
 
-- Planner: 1078 tests, one opt-in live-link skip, [planner.log](planner.log).
+- Planner: 1080 tests, one opt-in live-link skip, [planner.log](planner.log).
 - Shared: 280 pass, [shared.log](shared.log).
 - Skill checker: 59 files, zero findings, [skill-check.log](skill-check.log).
 - Whitespace: zero findings, [whitespace.log](whitespace.log).

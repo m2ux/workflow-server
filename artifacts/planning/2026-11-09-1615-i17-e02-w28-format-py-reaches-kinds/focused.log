@@ -146,6 +146,6 @@ test_any_open_linking_pull_request_makes_it_running (test_hotfix.UnitState.test_
 test_with_no_delivery_in_progress_is_its_hold_and_ready_its_unit (test_hotfix.UnitState.test_with_no_delivery_in_progress_is_its_hold_and_ready_its_unit) ... ok
 
 ----------------------------------------------------------------------
-Ran 146 tests in 1.839s
+Ran 146 tests in 2.230s
 
 OK
