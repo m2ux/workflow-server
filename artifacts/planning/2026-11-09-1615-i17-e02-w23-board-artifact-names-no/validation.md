@@ -58,3 +58,7 @@ The epic base moved to `b49480b09` (W30, W18, W26, W28, W20, W31, W22 and W24), 
 - Skill checker: 59 files, zero findings ([skill-check-merged.log](skill-check-merged.log)).
 - Kind search and route: zero hits, no failures ([membership-route-merged.log](membership-route-merged.log)).
 - Whitespace: zero findings.
+
+## Merge
+
+[#1677](https://github.com/m2ux/workflow-server/pull/1677) merged into `i17/e02/workspace` at `83f89b7fdd96286081c1c94ad385ab6b42060e57` from head `f48826cb26b2e2bc8339382b9341bfa1ce1e6025`. Epic #1615 links W23 to #1677 and ticks AC30; review #1659 carries T20 and R18.
