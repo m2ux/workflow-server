@@ -15,3 +15,8 @@ One separation fix row from the E02 component refinement. The declared one-file 
 - [Epic](https://github.com/m2ux/workflow-server/issues/1615)
 - [Component refinement](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-09-1615-i17-e02-separation-component-rows)
 - [Ownership audit](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-06-1615-i17-e02-w02-audit-ownership-fields-and)
+
+## Delivery
+
+- [#1671](https://github.com/m2ux/workflow-server/pull/1671) merged into `i17/e02/workspace` at `a5951a316`; epic rows W15 and W16 link it, AC22 and AC23 are ticked, and review [#1659](https://github.com/m2ux/workflow-server/pull/1659) carries it as T10 and R8.
+- Plan changes: none applied, none held. Arising issues: none.

@@ -47,3 +47,7 @@ git diff --check origin/i17/e02/workspace HEAD                    # checkout roo
 ## Limits
 
 General scripts still import hot-fix names directly; rows W24–W31 and W46 move each to the registry, and W50 removes the names left without a caller.
+
+## Delivery
+
+[#1671](https://github.com/m2ux/workflow-server/pull/1671) merged at verified head `54611bbfe` with merge commit `a5951a3163fdfbd145930f57afc5bb5fc264e438`.
