@@ -3,8 +3,8 @@
 ## Candidate
 
 - Unit: I17:E02:W20, AC27.
-- Task base: `a5bba6bb2` (origin/i17/e02/workspace after W26 #1674).
-- Task head: `83a3bc4c9315f3ea2f643d873f40b0283793a90f`, branch `i17/e02/w20-hot-fix-supplies-the`.
+- Task base: `c695a1ef4` (origin/i17/e02/workspace after W28 #1678).
+- Task head: `7be5232816b479b8cab2990a879e653b35322fa9`, branch `i17/e02/w20-hot-fix-supplies-the`.
 - Component: `skills/work-planner/artifacts/hotfix.md`.
 
 ## Operations
@@ -32,7 +32,7 @@ Adding the operations alone leaves each with no caller and its steps in two home
 
 ## Full Checks
 
-- Planner: 1080 tests, one opt-in live-link skip, [planner.log](planner.log).
+- Planner: 1087 tests, one opt-in live-link skip, [planner.log](planner.log).
 - Shared: 280 pass, [shared.log](shared.log).
 - Skill checker: 59 files, zero findings, [skill-check.log](skill-check.log).
 - Whitespace: zero findings, [whitespace.log](whitespace.log).
