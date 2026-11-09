@@ -44,4 +44,4 @@ git diff --check origin/i17/e02/workspace HEAD                    # checkout roo
 
 ## Current Base
 
-The epic base moved to `b49480b09` (W31 #1675, W22 #1679, W24 #1683), merged into the branch at `33da45253a1ab16912f019b16a74d0d142f69c9b`, the merged head. There the planner suite runs 1099 tests with one opt-in skip ([planner-current.log](planner-current.log)); the shared suite (280), skill checker (zero findings), contract reader (no failures) and whitespace check (zero findings) pass.
+The epic base moved to `83f89b7fd` (W31 #1675, W22 #1679, W24 #1683, W23 #1677), merged into the branch at `b575f56b4476ba3a5eab3b60d7a83057135eccef`, the merged head. There the planner suite runs 1099 tests with one opt-in skip ([planner-current.log](planner-current.log)); the shared suite (280), skill checker (zero findings), contract reader (no failures) and whitespace check (zero findings) pass.
