@@ -213,7 +213,7 @@ class HotfixContracts(unittest.TestCase):
                     self.assertIn(inputs, line)
 
     def test_unit_dispatch_supplies_the_issue_and_board_evidence(self):
-        hold = section((ROOT / 'protocols' / 'unit-dispatch.md').read_text(), '##### New Issue Unit')
+        hold = section((ROOT / 'protocols' / 'unit-dispatch.md').read_text(), '##### New Kind Unit')
         self.assertIn('use that issue, board identity and refreshed board items', hold)
         self.assertIn('The session starts only once it is confirmed', hold)
 

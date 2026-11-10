@@ -85,9 +85,9 @@ The continuing coordinator for one authorized delivery scope.
 
 - For a task-row hold, Run [Release Row](../artifacts/epic-issue-body.md#release-row "ƒ") with the engineering worktree, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
 
-###### Issue Hold
+###### Kind Unit Hold
 
-- For a hold on an issue whose [registered kind](../SKILL.md) supplies Release Hold, Apply the Release Hold operation that kind supplies with its issue and the selected board, and retain the board result or refusal it provides.
+- For the hold of a [kind unit](../artifacts/delivery-plan.md#kind-units) whose [registered kind](../SKILL.md) supplies Release Hold, Apply the Release Hold operation that kind supplies with its issue and the selected board, and retain the board result or refusal it provides.
 
 ##### Survey Continuation
 
@@ -146,7 +146,7 @@ The authorized unit carried from its supplied brief through implementation and d
 
 #### 2. Confirm the Reservation
 
-Confirm the supplied reserved folder exists and the unit remains held for this session before changing its worktree: its rows' reservations for a unit of rows, or, for a unit of one issue, the hold the artifact of the issue's [registered kind](../SKILL.md) defines.
+Confirm the supplied reserved folder exists and the unit remains held for this session before changing its worktree: its rows' reservations for a unit of rows, or, for a [kind unit](../artifacts/delivery-plan.md#kind-units), the hold the artifact of its [registered kind](../SKILL.md) defines.
 
 #### 3. Plan
 
