@@ -279,7 +279,7 @@ The columns are `Task | Description | Coverage | Depends on | Joins | Lane | Don
   - A joined unit holds no Depends on between its members: the pull request orders their commits.
   - Only a path between two members through a task outside the unit bars a join.
   - A joined unit covers at most six criteria, two full rows' worth, so it stays one pull request's worth.
-  - Joins are complete before any issue of the epic is created. Each candidate unit, the rows declaring one component, is answered as [Joins](dependency-graph.md#joins) states.
+  - Joins are complete before any issue of the epic is created. Each candidate unit, the rows declaring one file, is answered as [Joins](dependency-graph.md#joins) states.
   - An empty cell is a task that shares no pull request.
 - **Lane.**
   The row's delivery lane must meet [Assignments](lane.md#assignments).

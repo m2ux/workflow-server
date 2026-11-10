@@ -32,7 +32,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Ask once per initiative whether it uses lanes as an [Interview](../guidelines.md#modes), recommending a choice from its proposed parallel delivery. Reuse the initiative's recorded decision when it has one.
 - For an initiative using lanes, propose each task row's [Lane](../artifacts/lane.md#index) index as a map for the user to confirm, assigning joined rows together as [Unit Consistency](../artifacts/lane.md#unit-consistency) requires. Record the confirmed map in the planning record. For an initiative without lanes, leave the row lanes empty.
 - Apply [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body "ƒ") for each epic and each new task row, passing each confirmed optional lane index with the row and an output path in the record's folder.
-- Apply [Populate Work Item](../artifacts/work-item.md#populate-work-item "ƒ") for each task with its scope, design, the component its implementation extends, criteria, test requirements and an output file in the record's folder.
+- Apply [Populate Work Item](../artifacts/work-item.md#populate-work-item "ƒ") for each task with its scope, design, each file its implementation changes, criteria, test requirements and an output file in the record's folder.
 - Register each draft body and provided work-item file in the planning record.
 - Resolve Open Questions before work starts.
 - Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "ƒ") across the drafts and the provided work-item files.
@@ -108,7 +108,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Repeat that review until clear.
 - After each round, Apply [Check Round of Edits](../artifacts/issue-body.md#check-round-of-edits "ƒ") on affected bodies.
 
-- Whenever tasks, edges or a work item's component change, Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "ƒ") again.
+- Whenever tasks, edges or a work item's declared files change, Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "ƒ") again.
 
 - Put the proposed Epic Priority map to the user again where the edges or the contention moved an epic's number.
 - Save each confirmed change as that epic's priority label.

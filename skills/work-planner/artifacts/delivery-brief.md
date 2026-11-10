@@ -14,7 +14,7 @@ The brief names the epic or hot-fix issue URL, task ids, Descriptions, covered a
 
 ### Planning Record
 
-The brief names the reserved planning folder and engineering worktree. Each task has one work-item file in that folder, registered in its README, and the brief carries the component the caller read from the file the plan was checked against, which is the one this file declares. Its row retains the folder link while reserved.
+The brief names the reserved planning folder and engineering worktree. Each task has one work-item file in that folder, registered in its README, and the brief carries the declared files the caller read from the file the plan was checked against, which are the ones this file declares. Its row retains the folder link while reserved.
 
 ### Validation Scope
 

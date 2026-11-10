@@ -101,7 +101,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 **Target.**
 
-- Confirm the base it names against its work item's [Component](../artifacts/work-item.md#component): the confirmed base is the epic base of the long-lived branch that Component names, whether the finding names that base, another, or one of several.
+- Confirm the base it names against its work item's [Component](../artifacts/work-item.md#component): the confirmed bases are the epic bases of the long-lived branches its declared files name, whether the finding names one of them, another base, or several.
 
 - A unit whose work items name several long-lived branches takes each task branch's base from the long-lived branch its last slug word names.
 
