@@ -7,6 +7,8 @@ One consolidated separation row; it changes every file its work item declares.
 | File | Purpose |
 | --- | --- |
 | [w34.md](w34.md) | Files, scope, implementation and observing validation for W34. |
+| [validation.md](validation.md) | Kind search, route checks and suite results at the verified head, with their logs. |
+| [w34-routes.py](w34-routes.py) | Kind search over the six general callers and route resolution through the registration. |
 
 ## Links
 

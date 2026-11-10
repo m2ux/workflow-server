@@ -1,0 +1,29 @@
+test_each_selected_operation_resolves_for_every_kind_supplying_it (test_kind_operations.GeneralCallers.test_each_selected_operation_resolves_for_every_kind_supplying_it)
+Each interface the declared files select reaches, for every kind that registers it, an operation its ... ok
+test_each_selection_names_a_registered_interface (test_kind_operations.GeneralCallers.test_each_selection_names_a_registered_interface) ... ok
+test_the_general_contracts_resolve (test_kind_operations.GeneralCallers.test_the_general_contracts_resolve) ... ok
+test_the_kind_search_finds_no_kind_name_or_link (test_kind_operations.GeneralCallers.test_the_kind_search_finds_no_kind_name_or_link)
+A capitalised Proposal names the body section, a literal; initiative, epic and task are the plan ... ok
+test_the_kind_search_recognises_each_kind_name (test_kind_operations.GeneralCallers.test_the_kind_search_recognises_each_kind_name) ... ok
+test_hoist_runs_no_body_step_inline (test_kind_operations.HotfixBodyInterface.test_hoist_runs_no_body_step_inline) ... ok
+test_hoist_selects_it_with_the_contract_inputs (test_kind_operations.HotfixBodyInterface.test_hoist_selects_it_with_the_contract_inputs) ... ok
+test_operation_reads_its_fields_and_provides_the_body (test_kind_operations.HotfixBodyInterface.test_operation_reads_its_fields_and_provides_the_body) ... ok
+test_populate_body_is_linked_to_its_kind_operation (test_kind_operations.HotfixBodyInterface.test_populate_body_is_linked_to_its_kind_operation) ... ok
+test_callers_supply_the_contract_inputs (test_kind_operations.HotfixContracts.test_callers_supply_the_contract_inputs) ... ok
+test_delivery_verifies_syncs_and_saves (test_kind_operations.HotfixContracts.test_delivery_verifies_syncs_and_saves) ... ok
+test_dispatch_status_substitutes_the_general_operation (test_kind_operations.HotfixContracts.test_dispatch_status_substitutes_the_general_operation) ... ok
+test_merge_records_the_delivery_on_the_issue_alone (test_kind_operations.HotfixContracts.test_merge_records_the_delivery_on_the_issue_alone) ... ok
+test_no_general_file_runs_a_hotfix_step_inline (test_kind_operations.HotfixContracts.test_no_general_file_runs_a_hotfix_step_inline)
+The steps each operation owns live in the hot-fix artifact, not in the general files that select it. ... ok
+test_release_hold_refuses_a_live_unit_and_provides_the_board (test_kind_operations.HotfixContracts.test_release_hold_refuses_a_live_unit_and_provides_the_board) ... ok
+test_review_produces_the_general_review_and_provides_review_state (test_kind_operations.HotfixContracts.test_review_produces_the_general_review_and_provides_review_state) ... ok
+test_unit_dispatch_supplies_the_issue_and_board_evidence (test_kind_operations.HotfixContracts.test_unit_dispatch_supplies_the_issue_and_board_evidence) ... ok
+test_every_interface_name_is_linked_to_its_kind_operation (test_kind_operations.HotfixInterface.test_every_interface_name_is_linked_to_its_kind_operation) ... ok
+test_every_operation_ends_by_providing_its_result (test_kind_operations.HotfixInterface.test_every_operation_ends_by_providing_its_result) ... ok
+test_general_callers_select_the_operation_through_the_registration (test_kind_operations.HotfixInterface.test_general_callers_select_the_operation_through_the_registration)
+Each interface name a general file selects names the registration, and the registration ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.066s
+
+OK

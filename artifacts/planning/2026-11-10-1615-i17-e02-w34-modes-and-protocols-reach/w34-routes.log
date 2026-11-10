@@ -1,0 +1,111 @@
+Kind search at the head:
+  modes/deliver-mode.md: 0 kind names, 0 kind-artifact links
+  modes/hoist-mode.md: 0 kind names, 0 kind-artifact links
+  protocols/unit-dispatch.md: 0 kind names, 0 kind-artifact links
+  protocols/issue-delivery.md: 0 kind names, 0 kind-artifact links
+  protocols/task-merge.md: 0 kind names, 0 kind-artifact links
+  protocols/issue-closure.md: 0 kind names, 0 kind-artifact links
+  matches: 0
+Kind search at the base:
+  modes/deliver-mode.md: 9 kind names, 6 kind-artifact links
+    88: ###### Hot-Fix Hold
+    90: - For a hot-fix hold, Apply [Release Hot-fix Hold](../artifacts/hotfix.md#release-hot-fix-hold "ƒ") with its issue and the selected board, and retain 
+    149: Confirm the supplied reserved folder exists and the unit remains held for this session before changing its worktree: its rows' reservations for a unit
+    196: - A hot-fix unit's title carries its prefix, so its [delivering pull request](../artifacts/hotfix.md#delivering-pull-request) opens as a draft.
+    205: - A unit, including a hot-fix, fixes every debt item its validation finds, from running its tests, auditing the definitions it changed and reviewing i
+    209: - Continue to the review step for a hot-fix unit, and to the merge step otherwise.
+    211: #### 9. Review a Hot-Fix
+    213: - For a hot-fix unit, Apply [Review Hot-fix Before Merge](../artifacts/hotfix.md#review-hot-fix-before-merge "ƒ") for its draft [delivering pull reque
+    227: - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") for each unsaved issue that arose during delivery as a standalone issue wit
+    90: link ../artifacts/hotfix.md#release-hot-fix-hold
+    149: link ../artifacts/hotfix.md#delivery-unit
+    196: link ../artifacts/hotfix.md#delivering-pull-request
+    213: link ../artifacts/hotfix.md#review-hot-fix-before-merge
+    213: link ../artifacts/hotfix.md#delivering-pull-request
+    227: link ../artifacts/standalone-body.md#placement
+  modes/hoist-mode.md: 20 kind names, 11 kind-artifact links
+    3: Brings the chosen standalone issues into the agent-engineering structure, or leaves them open according to the user's decision.
+    27: - Identify an existing task, a new task, a new epic, a new initiative, a hot-fix, or Leave for the orphan and candidate destinations in [Placement Inp
+    28: - Offer a hot-fix only for an orphan that meets the hot-fix [Definition](../artifacts/hotfix-body.md#definition), with the theme board it joins and it
+    90: ###### Hot-Fix Destination
+    92: - Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") in [Repository](../artifacts/hotfix.md#repository) using the hot-fix 
+    94: - Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the labels hot-fix [Titles](../artifacts/hotfi
+    96: - Retain the [hot-fix number](../artifacts/hotfix.md#hot-fix-number) for rewriting and saving the issue's body, title and labels. After the rewrite, t
+    97: - Use the source issue as the destination with disposition Kept. The rewrite branch below supplies its hot-fix body and keeps the issue open.
+    101: - Use the source issue as the destination with disposition Leave. The rewrite branch below supplies its standalone body and keeps the issue open.
+    105: Retain [Placement Result](../artifacts/placement.md#placement-result) with the saved destination, identities of all affected bodies and confirmed disp
+    119: ###### Hot-Fix Body
+    121: - For a hot-fix, Apply [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body "ƒ") with its number, theme label, target and defect 
+    123: ###### Standalone Body
+    125: - For a standalone issue, Apply [Populate Standalone Body](../artifacts/standalone-body.md#populate-standalone-body "ƒ").
+    135: - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the validated body, title and labels, a hot-fix's being every label it
+    137: ##### 3. Settle Hot-fix Status
+    139: For a hot-fix, Apply [Settle Hot-fix Board Status](../artifacts/hotfix.md#settle-hot-fix-board-status "ƒ") with the confirmed theme board and the save
+    143: Retain [Saved Orphan](../artifacts/placement.md#saved-orphan) with the saved identity and a hot-fix’s settled board item.
+    199: The user has each chosen standalone issue joined to an initiative, epic or task, made a [hot-fix](../artifacts/hotfix-body.md), or left open.
+    201: A standalone issue an agent-engineering issue cites is placed, or taken into the issue that already carries that work.
+    28: link ../artifacts/hotfix-body.md#definition
+    28: link ../artifacts/hotfix-body.md#target
+    92: link ../artifacts/hotfix.md#repository
+    92: link ../artifacts/hotfix.md#hot-fix-identity
+    94: link ../artifacts/hotfix-body.md#titles
+    96: link ../artifacts/hotfix.md#hot-fix-number
+    121: link ../artifacts/hotfix-body.md#populate-hot-fix-body
+    125: link ../artifacts/standalone-body.md#populate-standalone-body
+    135: link ../artifacts/hotfix-body.md#titles
+    139: link ../artifacts/hotfix.md#settle-hot-fix-board-status
+    199: link ../artifacts/hotfix-body.md
+  protocols/unit-dispatch.md: 8 kind names, 2 kind-artifact links
+    24: - For a hot-fix, use the declared-file context its [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
+    42: #### Hot-Fix Unit
+    44: - For a hot-fix unit:
+    45: - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the hot-fix's current body.
+    47: ##### New Hot-Fix Unit
+    51: - Apply [Record Hot-fix Dispatch Status](../artifacts/hotfix.md#record-hot-fix-dispatch-status "ƒ") with them, and retain the confirmed status or disc
+    53: ##### Retained Hot-Fix Preparation
+    57: ##### Confirmed Hot-Fix Hold
+    24: link ../artifacts/hotfix.md#delivery-unit
+    51: link ../artifacts/hotfix.md#record-hot-fix-dispatch-status
+  protocols/issue-delivery.md: 3 kind names, 2 kind-artifact links
+    3: The task and epic bodies, or a hot-fix's body, brought to what one pull request's delivery establishes.
+    9: ### 1. Hot-Fix
+    11: - For a [hot-fix](../artifacts/hotfix.md), Apply [Record Hot-fix Delivery](../artifacts/hotfix.md#record-hot-fix-delivery "ƒ") for the selected hot-fi
+    11: link ../artifacts/hotfix.md
+    11: link ../artifacts/hotfix.md#record-hot-fix-delivery
+  protocols/task-merge.md: 5 kind names, 3 kind-artifact links
+    3: What the task, epic, board and initiative records, or a hot-fix's issue, become after one confirmed task merge.
+    9: ### 1. Record a Hot-Fix
+    11: - For the merge of a [hot-fix](../artifacts/hotfix.md), Apply [Record Hot-fix Merge](../artifacts/hotfix.md#record-hot-fix-merge "ƒ") with the merge r
+    12: - Follow [Issue Closure](issue-closure.md "ƒ") for the hot-fix issue when eligible.
+    13: - Apply [Settle Hot-fix Board Status](../artifacts/hotfix.md#settle-hot-fix-board-status "ƒ") with the supplied board and the hot-fix issue.
+    11: link ../artifacts/hotfix.md
+    11: link ../artifacts/hotfix.md#record-hot-fix-merge
+    13: link ../artifacts/hotfix.md#settle-hot-fix-board-status
+  protocols/issue-closure.md: 1 kind names, 0 kind-artifact links
+    21: - For a task or a hot-fix, retain the task delivery result its delivering pull request established.
+  matches: 70
+Routes selected through the registration:
+  modes/deliver-mode.md:90: Release Hold <- "with its issue and the selected board, and retain the board result or refusal it provides"
+    Hot-fix: -> artifacts/hotfix.md#Release Hot-fix Hold
+  protocols/unit-dispatch.md:51: Record Dispatch Status <- "with them, and retain the confirmed status or discrepancy it provides. The session starts only once it is conf"
+    Hot-fix: -> artifacts/hotfix.md#Record Hot-fix Dispatch Status
+  protocols/issue-delivery.md:11: Record Delivery <- "for the selected issue, its delivering pull request and the selected criterion ids in the project checkout"
+    Hot-fix: -> artifacts/hotfix.md#Record Hot-fix Delivery
+  protocols/task-merge.md:11: Record Merge <- "with the merge result and the complete issue-link snapshot"
+    Hot-fix: -> artifacts/hotfix.md#Record Hot-fix Merge
+  modes/hoist-mode.md:126: Settle Board Status <- "with the confirmed theme board and the saved issue"
+  protocols/task-merge.md:13: Settle Board Status <- "with the supplied board and the issue"
+    Hot-fix: -> artifacts/hotfix.md#Settle Hot-fix Board Status
+  modes/deliver-mode.md:227: Populate Body <- "then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body"
+  modes/hoist-mode.md:115: Populate Body <- "with the inputs it takes from them"
+    Initiative: -> artifacts/initiative-issue-body.md#Populate Initiative Issue Body
+    Epic: -> artifacts/epic-issue-body.md#Populate Epic Issue Body
+    Standalone issue: -> artifacts/standalone-body.md#Populate Standalone Body
+    Hot-fix: -> artifacts/hotfix-body.md#Populate Hot-fix Body
+  modes/deliver-mode.md:213: Review Before Merge <- "for its draft pull request"
+    Hot-fix: -> artifacts/hotfix.md#Review Hot-fix Before Merge
+Script registry selection on captured titles:
+  '[F00] Board: Status' -> hot-fix
+  '[I17:E02] Skill Separation' -> None
+  'Name: Subtitle' -> None
+Failures: none
