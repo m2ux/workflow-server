@@ -41,8 +41,8 @@ Joins problems: a task joining a row outside its epic, one that does not join it
 on the other, a joined task needing another through a task outside their unit, and a joined unit
 whose rows cover more than six criteria.
 Also printed: each candidate unit, the undelivered rows of one epic whose work items declare one
-file, with every file they share, that its rows do not join and no R= record line names exactly. An open candidate names
-both resolutions and each direct edge a join drops. A candidate is split by rule, and printed with
+file, with every file they share, that its rows do not join and no R= record line names exactly.
+An open candidate names both resolutions and each direct edge a join drops. A candidate is split by rule, and printed with
 its reason, where its rows cover more than six criteria or a path between two of them runs through
 a row outside it. An R= file that cannot be read is a problem.
 With I=, the initiative's Depends on cells are checked: each epic's cell names exactly the other
