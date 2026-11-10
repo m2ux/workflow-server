@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT.parent / 'scripts'))
 import check_skill_files as checker
+from test_kind_operations import selections
 
 
 def executable_scripts(paths):
@@ -35,8 +36,8 @@ def executable_scripts(paths):
 
 def registered_operations():
     """Each kind operation the entry point's registration selects, by artifact and anchor, with the
-    registration line selecting it. A kind's operation takes the interface name with the artifact's
-    name, less a closing Body, after its verb."""
+    registration line and each general line selecting it through the registration. A kind's operation
+    takes the interface name with the artifact's name, less a closing Body, after its verb."""
     path = ROOT / 'SKILL.md'
     lines = path.read_text().splitlines()
     selected = {}
@@ -46,9 +47,10 @@ def registered_operations():
             continue
         text, target, operations = match.groups()
         stem = re.sub(r' Body$', '', text)
-        for operation in operations.split(', '):
+        for operation in checker.LINK.sub(lambda link: link[0][1:link[0].index(']')], operations).split(', '):
             verb, _, rest = operation.partition(' ')
-            selected[(ROOT / target).resolve(), checker.anchor_of(f'{verb} {stem} {rest}')] = f'SKILL.md:{index + 1}'
+            key = (ROOT / target).resolve(), checker.anchor_of(f'{verb} {stem} {rest}')
+            selected[key] = [f'SKILL.md:{index + 1}'] + [site for site, _ in selections(operation)]
     return selected
 
 
@@ -76,9 +78,9 @@ class DocumentInterfaces(unittest.TestCase):
                 key = destination, checker.anchor_of(fragment)
                 if key in references:
                     references[key].append(f'{path.relative_to(ROOT)}:{index + 1}')
-        for key, site in registered_operations().items():
+        for key, sites in registered_operations().items():
             if key in references:
-                references[key].append(site)
+                references[key].extend(sites)
         self.assertTrue(references)
         for (path, operation), sites in references.items():
             with self.subTest(file=path.name, operation=operation):
@@ -177,6 +179,7 @@ class DocumentInterfaces(unittest.TestCase):
         cited, operations, protocols = set(), {}, set()
         for name in ('SKILL.md', 'guidelines.md'):
             cited |= set(checker.LINK.findall((ROOT / name).read_text()))
+        cited |= {f'{path.relative_to(ROOT)}#{anchor}' for path, anchor in registered_operations()}
         for folder in folders:
             for path in sorted((ROOT / folder).glob('*.md')):
                 cited |= set(checker.LINK.findall(path.read_text()))

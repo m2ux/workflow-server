@@ -30,7 +30,7 @@ Provide the populated [Output Body](#output-body) for publication.
 ### Target
 
 - The Overview names the target in one line of its own, `Target:` and the branch in a code span: ``Target: `workspace` ``.
-- The target is a long-lived branch its project declares, as [Branches](delivery-branches.md#branches) states, confirmed with the hot-fix's placement.
+- The target is a long-lived branch its project declares, as [Branches](delivery-branches.md#branches) states, confirmed with the hot-fix's placement: the declared long-lived branch the defect evidence places the defect on, or the repository's default branch where it is declared and the evidence names no other.
 
 ### Titles
 

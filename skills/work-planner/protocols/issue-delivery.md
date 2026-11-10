@@ -1,14 +1,14 @@
 # Issue Delivery
 
-The task and epic bodies, or a hot-fix's body, brought to what one pull request's delivery establishes.
+The task and epic bodies, or the body of an issue whose kind records its own delivery, brought to what one pull request's delivery establishes.
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ## Procedure
 
-### 1. Hot-Fix
+### 1. Kind Delivery
 
-- For a [hot-fix](../artifacts/hotfix.md), Apply [Record Hot-fix Delivery](../artifacts/hotfix.md#record-hot-fix-delivery "ƒ") for the selected hot-fix, its delivering pull request and the selected criterion ids in the project checkout.
+- For an issue whose [registered kind](../SKILL.md) supplies Record Delivery, Apply the Record Delivery operation that kind supplies for the selected issue, its delivering pull request and the selected criterion ids in the project checkout.
 - Provide the saved identity and findings to the caller.
 
 ### 2. Task Issues
