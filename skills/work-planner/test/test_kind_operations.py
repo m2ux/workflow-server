@@ -1,4 +1,4 @@
-"""Each kind operation the registration links is supplied under its registered name and called with its general contract."""
+"""Each kind operation the registration links is supplied under its registered name, and general files select it through the registration with its general contract."""
 import re
 import sys
 import unittest
@@ -13,7 +13,13 @@ ENTRY = ROOT / 'SKILL.md'
 CALL = re.compile(r'(?:Apply|Run) \[([^]]+)\]\(([^)\s]*)[^)]*"ƒ"\)')
 KIND = re.compile(r'^\s+- \[([^]]+)\]\((artifacts/[\w-]+\.md)\)\s+(.*)$')
 NAMED = re.compile(r'\[([^]]+)\]\(([^)\s]+)[^)]*\)')
+SELECT = re.compile(r'Apply the ([A-Z][\w-]*(?: [A-Z][\w-]*)*) operation\b')
 GENERAL = ('modes', 'protocols')
+DECLARED = ('modes/deliver-mode.md', 'modes/hoist-mode.md', 'protocols/unit-dispatch.md',
+            'protocols/issue-delivery.md', 'protocols/task-merge.md', 'protocols/issue-closure.md')
+HIERARCHY = ('Initiative', 'Epic', 'Task')
+KIND_NAMES = re.compile(r'\b(proposals?|[Ss]tandalone|[Hh]ot-?[Ff]ix(es)?)\b')
+ARTIFACT = re.compile(r'^\s+- \[([^]]+)\]\((artifacts/[\w-]+\.md)\)(?:\s+(.*))?$')
 
 
 def interface_names():
@@ -49,6 +55,44 @@ def operations(path):
             end = checker.heading_end(headings, start, 3, len(lines))
             found[title] = '\n'.join(lines[start + 1:end])
     return found
+
+
+def registration():
+    """Each kind the entry point registers, with its artifacts and the interface names each supplies."""
+    lines = ENTRY.read_text().splitlines()
+    kinds, kind = {}, None
+    for line in lines[:lines.index('## Modes')]:
+        lead = re.match(r'- \*\*([^*]+)\*\*  ', line)
+        if lead:
+            kind = kinds.setdefault(lead[1], [])
+        elif kind is not None and (match := ARTIFACT.match(line)):
+            supplied = [name for name in re.sub(r'\]\([^)]*\)', '', match[3] or '').replace('[', '').split(', ') if name]
+            kind.append((match[2], match[1], supplied))
+        elif line.startswith('A kind supplies'):
+            kind = None
+    return kinds
+
+
+def resolve(name, kind):
+    """The artifact and operation heading the registration selects for one interface name of one kind."""
+    for path, title, supplied in registration()[kind]:
+        if name in supplied:
+            stem = re.sub(r' Body$', '', title)
+            verb, _, rest = name.partition(' ')
+            return path, f'{verb} {stem} {rest}'
+    return None
+
+
+def selections(name, files=None):
+    """Each general line that selects the named interface operation through the registration."""
+    sites = []
+    paths = [ROOT / name_ for name_ in files] if files else [
+        path for folder in GENERAL for path in sorted((ROOT / folder).glob('*.md'))]
+    for path in paths:
+        for number, line in enumerate(path.read_text().splitlines(), 1):
+            if '](../SKILL.md)' in line and name in SELECT.findall(line):
+                sites.append((f'{path.parent.name}/{path.name}:{number}', line))
+    return sites
 
 
 def general_calls(anchor):
@@ -88,16 +132,16 @@ class HotfixInterface(unittest.TestCase):
                 last = section(body, '#### ' + body.split('#### ')[-1].splitlines()[0])
                 self.assertRegex(last, r'\bProvide\b|\bprovides\b')
 
-    def test_general_callers_select_the_operation_by_its_registered_name(self):
-        """Each interface name a general file selects reaches the kind operation, not the
-        steps the kind runs inside it."""
+    def test_general_callers_select_the_operation_through_the_registration(self):
+        """Each interface name a general file selects names the registration, and the registration
+        resolves it to the kind operation the hot-fix artifact supplies."""
         for name, target in self.links:
-            anchor = target.partition('#')[2]
             with self.subTest(name=name):
-                sites = general_calls(anchor)
-                self.assertTrue(sites, f'no general caller selects {name}')
-                for where, line in sites:
-                    self.assertIn(f'[{kind_operation(name, "Hot-fix")}]', line, where)
+                self.assertTrue(selections(name), f'no general caller selects {name}')
+                self.assertEqual(general_calls(target.partition('#')[2]), [])
+                path, operation = resolve(name, 'Hot-fix')
+                self.assertEqual(f'{path}#{checker.anchor_of(operation)}', target)
+                self.assertIn(operation, self.supplied)
 
 
 class HotfixContracts(unittest.TestCase):
@@ -143,8 +187,7 @@ class HotfixContracts(unittest.TestCase):
         """The steps each operation owns live in the hot-fix artifact, not in the general files that select it."""
         owned = ('#sync-hot-fix-issue', 'hotfix.md#hot-fix-identity', 'hotfix.md#board-evidence',
                  'hotfix.md#board-result', 'Verify Hot-Fix Readiness', 'Restore Hot-Fix Draft')
-        for name in ('modes/deliver-mode.md', 'protocols/unit-dispatch.md',
-                     'protocols/issue-delivery.md', 'protocols/task-merge.md'):
+        for name in DECLARED:
             text = (ROOT / name).read_text()
             for mark in owned:
                 with self.subTest(file=name, mark=mark):
@@ -152,22 +195,25 @@ class HotfixContracts(unittest.TestCase):
 
     def test_callers_supply_the_contract_inputs(self):
         expected = {
-            'release-hot-fix-hold': ('modes/deliver-mode.md', 'with its issue and the selected board'),
-            'record-hot-fix-dispatch-status': ('protocols/unit-dispatch.md', 'with them'),
-            'record-hot-fix-delivery': ('protocols/issue-delivery.md',
-                                        'its delivering pull request and the selected criterion ids'),
-            'record-hot-fix-merge': ('protocols/task-merge.md',
-                                     'with the merge result and the complete issue-link snapshot'),
-            'review-hot-fix-before-merge': ('modes/deliver-mode.md', 'for its draft [delivering pull request]'),
+            'Release Hold': [('modes/deliver-mode.md', 'with its issue and the selected board')],
+            'Record Dispatch Status': [('protocols/unit-dispatch.md', 'with them')],
+            'Record Delivery': [('protocols/issue-delivery.md',
+                                 'its delivering pull request and the selected criterion ids')],
+            'Record Merge': [('protocols/task-merge.md',
+                              'with the merge result and the complete issue-link snapshot')],
+            'Settle Board Status': [('modes/hoist-mode.md', 'with the confirmed theme board and the saved issue'),
+                                    ('protocols/task-merge.md', 'with the supplied board and the issue')],
+            'Review Before Merge': [('modes/deliver-mode.md', 'for its draft pull request')],
         }
-        for anchor, (where, inputs) in expected.items():
-            with self.subTest(operation=anchor):
-                sites = general_calls(anchor)
-                self.assertEqual([site.partition(':')[0] for site, _ in sites], [where])
-                self.assertIn(inputs, sites[0][1])
+        for name, callers in expected.items():
+            with self.subTest(operation=name):
+                sites = selections(name)
+                self.assertEqual([site.partition(':')[0] for site, _ in sites], [where for where, _ in callers])
+                for (_, line), (_, inputs) in zip(sites, callers):
+                    self.assertIn(inputs, line)
 
     def test_unit_dispatch_supplies_the_issue_and_board_evidence(self):
-        hold = section((ROOT / 'protocols' / 'unit-dispatch.md').read_text(), '##### New Hot-Fix Unit')
+        hold = section((ROOT / 'protocols' / 'unit-dispatch.md').read_text(), '##### New Issue Unit')
         self.assertIn('use that issue, board identity and refreshed board items', hold)
         self.assertIn('The session starts only once it is confirmed', hold)
 
@@ -194,10 +240,13 @@ class HotfixBodyInterface(unittest.TestCase):
                       section(body, '#### 2. Provide Populated Hot-fix Body'))
 
     def test_hoist_selects_it_with_the_contract_inputs(self):
-        sites = general_calls('populate-hot-fix-body')
-        self.assertEqual([site.partition(':')[0] for site, _ in sites], ['modes/hoist-mode.md'])
-        self.assertIn('[Populate Hot-fix Body]', sites[0][1])
-        self.assertIn('with its number, theme label, target and defect evidence', sites[0][1])
+        self.assertEqual(general_calls('populate-hot-fix-body'), [])
+        sites = selections('Populate Body', ['modes/hoist-mode.md'])
+        self.assertEqual(len(sites), 1)
+        self.assertIn("the destination's [registered kind](../SKILL.md) supplies, with the inputs it takes", sites[0][1])
+        rewrite = section((ROOT / 'modes' / 'hoist-mode.md').read_text(), '##### 1. Populate Selected Body')
+        self.assertIn('[Rewrite Inputs](../artifacts/placement.md#rewrite-inputs)', rewrite)
+        self.assertEqual(resolve('Populate Body', 'Hot-fix'), ('artifacts/hotfix-body.md', 'Populate Hot-fix Body'))
 
     def test_hoist_runs_no_body_step_inline(self):
         text = (ROOT / 'modes' / 'hoist-mode.md').read_text()
@@ -205,6 +254,76 @@ class HotfixBodyInterface(unittest.TestCase):
                      'hotfix-body.md#output-body', 'hotfix-body.md#fields'):
             with self.subTest(mark=mark):
                 self.assertNotIn(mark, text)
+
+
+class GeneralCallers(unittest.TestCase):
+    """Deliver Mode, Hoist Mode, Unit Dispatch, Issue Delivery, Task Merge and Issue Closure name no kind of work
+    outside the plan hierarchy, and reach each kind's operations through the registration."""
+
+    def kind_artifacts(self):
+        return {path for kind, artifacts in registration().items() if kind not in HIERARCHY
+                for path, _, _ in artifacts}
+
+    def test_the_kind_search_finds_no_kind_name_or_link(self):
+        """A capitalised Proposal names the body section, a literal; initiative, epic and task are the plan
+        hierarchy the general route delivers."""
+        kinds = self.kind_artifacts()
+        self.assertEqual(kinds, {'artifacts/proposal-body.md', 'artifacts/standalone-body.md',
+                                 'artifacts/hotfix.md', 'artifacts/hotfix-body.md'})
+        for name in DECLARED:
+            path = ROOT / name
+            lines, fenced, _ = checker.scan(path)
+            with self.subTest(file=name):
+                hits = [f'{number}: {line}' for number, line in enumerate(lines, 1) if KIND_NAMES.search(line)]
+                self.assertEqual(hits, [])
+                targets = {(path.parent / target.partition('#')[0]).resolve()
+                           for _, target in checker.targets(path, lines, fenced) if target.partition('#')[0]}
+                self.assertFalse(targets & {(ROOT / kind).resolve() for kind in kinds})
+
+    def test_the_kind_search_recognises_each_kind_name(self):
+        for line in ('For a hot-fix hold', 'Apply [Release Hot-fix Hold](x.md)', 'as a standalone issue',
+                     'Standalone Body', 'a proposal', 'Hot-Fix Unit'):
+            with self.subTest(line=line):
+                self.assertTrue(KIND_NAMES.search(line))
+        for line in ('Carry evidence into Problem and design into Proposal.', 'Add its design to Proposal.',
+                     'the epic and its task rows'):
+            with self.subTest(line=line):
+                self.assertFalse(KIND_NAMES.search(line))
+
+    def test_each_selection_names_a_registered_interface(self):
+        names = set(interface_names())
+        for name in DECLARED:
+            for number, line in enumerate((ROOT / name).read_text().splitlines(), 1):
+                if '](../SKILL.md)' not in line:
+                    continue
+                for selected in SELECT.findall(line):
+                    with self.subTest(site=f'{name}:{number}'):
+                        self.assertIn(selected, names)
+
+    def test_each_selected_operation_resolves_for_every_kind_supplying_it(self):
+        """Each interface the declared files select reaches, for every kind that registers it, an operation its
+        artifact supplies, and the general contract the registration links for it resolves."""
+        selected = {name for name in interface_names() if selections(name, DECLARED)}
+        self.assertEqual(selected, set(interface_names()))
+        for kind in registration():
+            for name in selected:
+                found = resolve(name, kind)
+                if found is None:
+                    continue
+                path, operation = found
+                with self.subTest(kind=kind, name=name):
+                    self.assertIn(operation, operations(ROOT / path))
+
+    def test_the_general_contracts_resolve(self):
+        text = ENTRY.read_text()
+        block = text.split('A kind supplies an interface operation', 1)[1].split('\n\n', 2)[1]
+        for name, target in re.findall(r'^- \*\*(.+?)\*\*\n  \[[^]]+\]\(([^)\s]+)', block, re.M):
+            file, _, anchor = target.partition('#')
+            with self.subTest(name=name):
+                self.assertTrue((ROOT / file).exists())
+                if anchor:
+                    titles = {checker.anchor_of(title) for _, _, title in checker.scan(ROOT / file)[2]}
+                    self.assertIn(anchor, titles)
 
 
 if __name__ == '__main__':
