@@ -193,7 +193,6 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 - Apply [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close "ƒ") for the repository, where the session holds no confirmed setting.
 - Supply that setting and the unit's task issue, where one exists, so the pull request opens linked to it.
-- A unit whose [registered kind](../SKILL.md) supplies Review Before Merge opens its pull request as a draft, in the shape that kind's artifact gives its delivering pull request.
 
 - For a unit of rows:
 
