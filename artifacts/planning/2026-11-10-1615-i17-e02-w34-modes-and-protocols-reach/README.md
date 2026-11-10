@@ -14,3 +14,8 @@ One consolidated separation row; it changes every file its work item declares.
 
 - [Epic](https://github.com/m2ux/workflow-server/issues/1615)
 - [Per-file inventory](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-09-1615-i17-e02-separation-component-rows)
+
+## Delivery Changes
+
+- **Folded work, applied.**  Hot-fix Body joins the Component line: its Target takes the target-confirmation rule Hoist Mode stated inline, so the rule keeps one home in the kind's artifact.
+- None held.
