@@ -63,3 +63,7 @@ git diff --check origin/i17/e02/workspace                         # checkout roo
 ## Limits
 
 board-queue.py and progress.py still name the hot-fix module; W33 moves them to the script registry. With one kind unit registered, the general wording selects the same items those scripts do.
+
+## Merge
+
+[#1685](https://github.com/m2ux/workflow-server/pull/1685) merged into `i17/e02/workspace` at `3aed043cbc68b8c14252937dd61389ce66587e7a` from head `f2159fa389925142c3360ac0eb3d4537780c453b`; the epic base had not moved since the task base. Epic #1615 links W35 to #1685 and ticks AC65; review #1659 carries T24 and R22.
