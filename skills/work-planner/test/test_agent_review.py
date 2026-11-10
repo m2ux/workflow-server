@@ -1,14 +1,18 @@
 """Current integration review evidence gates board and user handoff."""
+import ast
 import copy
 import json
 import sys
 import tempfile
+import types
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from fixtures import SCRIPTS, issue, pr, run
 sys.path.insert(0, str(SCRIPTS))
-from agent_review import check, epic_check
+import kinds  # noqa: E402
+from agent_review import check, epic_check  # noqa: E402
 
 
 def reviewed_pr(tag='07:E00'):
@@ -56,6 +60,36 @@ class HotFixReview(unittest.TestCase):
         self.assertIn('stale', check(pull, [{**record, 'head': 'c' * 40}]))
         self.assertIn('stale', check(pull, [{**record, 'base_ref': 'main'}]))
         self.assertIn('stale', check(pull, [{k: v for k, v in record.items() if k != 'base_ref'}]))
+
+
+class RegisteredKind(unittest.TestCase):
+    def test_a_registered_kind_is_selected_through_the_registry(self):
+        stand_in = types.ModuleType('stand_in')
+        stand_in.tag = lambda item: 'Z01' if (item.get('title') or '').startswith('[Z01]') else None
+        pull, record = hotfix_pr()
+        pull['title'] = '[Z01] Stand In'
+        record['findings'] = [{'description': 'Follow-up', 'severity': 'nonblocking', 'disposition': 'deferred',
+                               'ticket': 'https://github.com/o/r/issues/5'}]
+        with mock.patch.dict(sys.modules, {'stand_in': stand_in}), \
+                mock.patch.dict(kinds.KINDS, {'stand-in': 'stand_in'}):
+            self.assertEqual(check(pull, [record]), "unfixed finding on a stand-in's delivering pull request")
+            self.assertIsNone(check(pull, [{**record, 'base': 'c' * 40, 'findings': []}]))
+            self.assertIn('stale', check(pull, [{**record, 'base_ref': 'main', 'findings': []}]))
+        self.assertIn('stale', check(pull, [{**record, 'base': 'c' * 40, 'findings': []}]))
+
+    def test_it_imports_no_kind_module_and_names_no_kind(self):
+        source = (SCRIPTS / 'agent_review.py').read_text()
+        imported = set()
+        for node in ast.walk(ast.parse(source)):
+            if isinstance(node, ast.ImportFrom):
+                imported.add(node.module)
+            elif isinstance(node, ast.Import):
+                imported.update(alias.name for alias in node.names)
+        self.assertIn('kinds', imported)
+        self.assertFalse(imported & set(kinds.KINDS.values()))
+        for kind in kinds.KINDS:
+            self.assertNotIn(kind, source)
+        self.assertNotRegex(source, r'(?i)hot.?fix|\[F\d|F00')
 
 
 class AgentReview(unittest.TestCase):
