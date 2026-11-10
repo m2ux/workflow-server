@@ -1,6 +1,6 @@
 # Agent Review
 
-Published evidence of an agent's review of one integration diff, an epic's review pull request or a hot-fix's delivering pull request, and its acceptance evidence.
+Published evidence of an agent's review of one integration diff, an epic's review pull request or a [kind-tagged](#review-record) pull request, and its acceptance evidence.
 
 ## Operations
 
@@ -16,19 +16,19 @@ A review record for the exact integration revision.
 #### 2. Resolve Review Findings
 
 - Record findings with severity and disposition. A nonblocking deferred finding names its ticket.
-- For each excluded observation, Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") for a new arising issue with no agent-engineering prefix, following standalone [Placement](standalone-body.md#placement), then record the exclusion in the [Review Record](#review-record) `scope`, outside the findings collection.
+- For each excluded observation, Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") for a new arising issue with no agent-engineering prefix, placed as the artifact of its [registered kind](../SKILL.md) states, then record the exclusion in the [Review Record](#review-record) `scope`, outside the findings collection.
 - An observation with an unresolved classification, missing scope evidence or an unsaved arising issue remains a finding with its required disposition.
 
-- When a blocking finding or any hot-fix finding requires a fix:
+- When a blocking finding, or any finding on a kind-tagged pull request, requires a fix:
 - Fix every required finding on the reviewed branch.
 - Run appropriate regression checks.
 - Apply [Produce Agent Review](#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence, then provide its review record to the requester and stop.
 
-- Blocking findings, and every finding on a hot-fix's delivering pull request, must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff.
+- Blocking findings, and every finding on a kind-tagged pull request, must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff.
 
 #### 3. Write Revision Review Record
 
-Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the `base_ref` a hot-fix's record carries, the scope actually inspected, findings and validation results. An empty findings list states that the review found no in-scope defect.
+Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the `base_ref` a kind-tagged pull request's record carries, the scope actually inspected, findings and validation results. An empty findings list states that the review found no in-scope defect.
 
 #### 4. Provide Review Evidence
 
@@ -56,7 +56,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 Each record contains `pull_request` (the full GitHub URL), `head` and `base` (full commit SHAs), `url` (the published HTTPS record URL), `reviewer`, `reviewed_at`, `scope`, `criteria`, `validation` and `findings`. The scope describes the full integration diff, inspected callers and each excluded observation with its scope evidence and arising issue link; criteria and validation describe the evidence inspected and its results. The pull request body links the published record.
 
-Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. A record on a hot-fix's delivering pull request also carries `base_ref`, the name of its base branch. A record is current while it names the pull request's head and base SHAs. One on a hot-fix's delivering pull request is current while it names its head SHA and its base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. The last record for the same revision is authoritative.
+Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. A pull request is kind-tagged when its title opens with the tag of a [registered kind](../SKILL.md). A record on a kind-tagged pull request also carries `base_ref`, the name of its base branch. A record is current while it names the pull request's head and base SHAs. One on a kind-tagged pull request is current while it names its head SHA and its base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. The last record for the same revision is authoritative.
 
 ### Review Inputs
 
