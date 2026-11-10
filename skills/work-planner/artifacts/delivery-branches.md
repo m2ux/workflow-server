@@ -363,7 +363,7 @@ The detached checkout path for a reviewed pull request, named by its repository-
 A collection of task-branch, base-branch and worktree-path triples for the unit. Each task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`. The unit's pull request is opened from this branch into that base.
 
 - **Changed branches.**
-  A unit changes the long-lived branches its rows' work items name in their [Component](work-item.md#component) declarations. A unit of an epic with one base changes that base.
+  A unit changes every long-lived branch named by a file its rows' work items list in their [Component](work-item.md#component) declarations. A unit of an epic with one base changes that base.
 - **Unplanned rows.**
   A free row linking no work item is unplanned: its session writes the work item after dispatch. Its unit changes every epic base, and the session opens a pull request only from each branch its work changes.
 - **Several long-lived branches.**

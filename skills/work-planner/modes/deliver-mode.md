@@ -150,7 +150,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 3. Plan
 
-- Apply [Populate Work Item](../artifacts/work-item.md#populate-work-item "ƒ") for each task with its reserved file path, scope, design, component, criteria and test requirements from the confirmed delivery brief, so the component the plan was checked against is the one this file declares.
+- Apply [Populate Work Item](../artifacts/work-item.md#populate-work-item "ƒ") for each task with its reserved file path, scope, design, declared files, criteria and test requirements from the confirmed delivery brief, so the files the plan was checked against are the ones this file declares.
 
 - Add any further file the work needs, as [Layout](../artifacts/planning-record.md#layout) describes.
 
@@ -170,7 +170,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 - Deliver each task branch in the unit checkout its [Work Identity](../artifacts/delivery-brief.md#work-identity) names, with every test the work item names, as [Tables](../artifacts/issue-body.md#tables) state.
 
-- Group the unit's work items by the component each declares, and give each group to the sub-agent dispatch this session provides when the unit has more than one group and [actual free slots](../artifacts/dispatch-batch.md#session-inventory) permit it.
+- Group the unit's work items by the files they declare, work items sharing any file in one group, and give each group to the sub-agent dispatch this session provides when the unit has more than one group and [actual free slots](../artifacts/dispatch-batch.md#session-inventory) permit it.
 - Give each sub-agent the unit's worktree, its group's work items, and the criteria those work items cover.
 - A sub-agent writes the files its work items name, runs the tests they name, and commits nothing.
 - A plan change a sub-agent meets returns to this session, which holds the allowance the brief names.

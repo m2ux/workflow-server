@@ -165,6 +165,41 @@ class Survey(unittest.TestCase):
         self.assertNotIn('i07/e00/workflows', output)
         self.assertIn('available: 1', output)
 
+    def test_a_row_declaring_several_files_on_one_base_takes_that_base(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            engineering, ids = planned(root, ('W01', 'workspace:skills/plan.py, workspace:skills/test/test_plan.py'))
+            output = survey(staged((epic(943, (ids['W01'], 'Queue plan', '', '')), 'In Progress')),
+                            None, *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES)
+        self.assertIn('branch i07/e00/w01-queue-plan, base i07/e00/workspace, '
+                      'worktree .worktrees/i07/e00/w01-queue-plan\n', output)
+        self.assertNotIn('i07/e00/main', output)
+        self.assertIn('available: 1, held: 0, blocked: 0, unresolvable: 0, undeclared: 0', output)
+
+    def test_a_row_declaring_files_on_two_bases_routes_its_unit_to_both(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            engineering, ids = planned(root, ('W01', 'main:src/plan.ts, workspace:skills/plan.py'))
+            output = survey(staged((epic(943, (ids['W01'], 'Queue plan', '', '')), 'In Progress')),
+                            None, *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES)
+        self.assertIn(f'record {TODAY}-943-i07-e00-w01-queue-plan, '
+                      'branch i07/e00/w01-queue-plan-main, base i07/e00/main, '
+                      'worktree .worktrees/i07/e00/w01-queue-plan-main; '
+                      'branch i07/e00/w01-queue-plan-workspace, base i07/e00/workspace, '
+                      'worktree .worktrees/i07/e00/w01-queue-plan-workspace\n', output)
+        self.assertNotIn('i07/e00/workflows', output)
+
+    def test_a_row_with_one_file_off_the_epic_bases_is_undeclared(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            engineering, ids = planned(root, ('W01', 'workspace:skills/plan.py, docker:Dockerfile'))
+            output = survey(staged((epic(943, (ids['W01'], 'Queue plan', '', '')), 'In Progress')),
+                            None, *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES,
+                            code=1)
+        self.assertIn('undeclared I07:E00:W01: file docker:Dockerfile names docker, which has no epic base',
+                      output)
+        self.assertNotIn('  unit ', output)
+
     def test_a_unit_of_several_bases_declaring_none_is_undeclared(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -172,8 +207,8 @@ class Survey(unittest.TestCase):
             body = epic(943, (ids['W02'], 'Queue more', '', ''), (ids['W03'], 'Queue image', '', ''))
             output = survey(staged((body, 'In Progress')), None,
                             *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES, code=1)
-        self.assertIn('undeclared I07:E00:W02: component skills/plan.py names no long-lived branch', output)
-        self.assertIn('undeclared I07:E00:W03: component docker:Dockerfile names docker, which has no epic base',
+        self.assertIn('undeclared I07:E00:W02: file skills/plan.py names no long-lived branch', output)
+        self.assertIn('undeclared I07:E00:W03: file docker:Dockerfile names docker, which has no epic base',
                       output)
         self.assertNotIn('  unit ', output)
         self.assertIn('available: 0, held: 0, blocked: 0, unresolvable: 0, undeclared: 2', output)

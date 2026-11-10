@@ -173,7 +173,7 @@ The hot-fix unit record: its issue identity, board state, branch, target base, w
 
 - An open hot-fix Ready on the board is a delivery unit of its own, whatever any epic's state. Its issue is the unit's task issue; it has no row and no epic record.
 - Its Coverage is every criterion it carries. Its record folder takes its prefix and title name as a task id and Description.
-- Its component lies on its [target](hotfix-body.md#target), which its session's work item declares.
+- Each file its session's work item declares lies on its [target](hotfix-body.md#target).
 - **Running.**
   Any open pull request whose Development field links it, draft or not, makes it running: it is neither offered nor released, and an In Progress status it holds stays its hold. A linking pull request is enough to keep a second session off it, while only a [delivering pull request](#delivering-pull-request) is merged or recorded as its fix.
 - **Unrecorded.**

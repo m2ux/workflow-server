@@ -58,14 +58,14 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - It prints each open [candidate unit](#joins), one its rows do not join and no `R=` record line names exactly, with both resolutions, so neither is the cheaper answer, and each direct edge a join drops. An `R=` file it cannot read is a problem.
 - It prints each candidate split by rule with its reason, and asks no record line for it.
 - An entry that [cannot resolve](#edges) is a problem naming the entry as written, and the run exits nonzero. Its second clause says what this run could not find, which is the epics it was given.
-- It prints each pair of rows in different epics whose work items declare one component, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.
+- It prints each pair of rows in different epics whose work items share a declared file, with the files they share, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.
 - A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic's rows, so a body carrying the retired form is reported once rather than taking its initiative's gates down with it.
-- It reads a declared component without its link, a wrapping code span, a trailing full stop or a leading `./`, and reports a work item it cannot read.
-- It reports a work item declaring a directory: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.
+- It reads each declared file without its link, a wrapping code span, a trailing full stop or a leading `./`, and reports a work item it cannot read.
+- It reports a work item declaring a directory among its files: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.
 - It prints the proposed [Epic Priority](#epic-priority) of each epic, largest first.
 - Its supplied inputs are published body text or local drafts.
 
-- The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the components its rows declare. Epics sharing a number start together, so the number asserts they can run in parallel, and it holds a set only where both of these do.
+- The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the files its rows declare. Epics sharing a number start together, so the number asserts they can run in parallel, and it holds a set only where both of these do.
 
 - **Prerequisite depth establishes when an epic may start.**
   An epic with no prerequisite epic, one whose tasks are not yet written among them, carries the largest number, and each other epic takes one less than the smallest its prerequisites carry.
@@ -141,11 +141,11 @@ The collection of initiative-table epic dependency references. An initiative Dep
 
 ### Epic Priority
 
-A map from each supplied epic id to one positive integer priority. Equal priorities identify epics that may run in parallel under the derived dependency and component constraints.
+A map from each supplied epic id to one positive integer priority. Equal priorities identify epics that may run in parallel under the derived dependency and file-contention constraints.
 
 ### Joins
 
-The candidate joined units, each a set of task ids in one epic. The undelivered rows of one epic whose work items declare one [component](work-item.md#component) are a candidate unit: one pull request writes that file once, where separate ones each rebase on the last. Rows declaring different components need no accounting.
+The candidate joined units, each a set of task ids in one epic. The undelivered rows of one epic whose work items declare one [file](work-item.md#component) are a candidate unit, named once with every file its rows all declare: one pull request writes that file once, where separate ones each rebase on the last. Rows sharing no declared file need no accounting.
 
 - **A joined unit has one lane.**
   Joined rows must meet [Unit Consistency](lane.md#unit-consistency).
@@ -194,9 +194,9 @@ The absolute supplied checkout path holding the installed Work Planner scripts a
 
 ### Component Contention
 
-Two task rows in different epics whose work items declare one [component](work-item.md#component) contend. Concurrent epics are two bases and two pull requests, so one component written from both is a merge conflict.
+Two task rows in different epics whose work items share any declared [file](work-item.md#component) contend. Concurrent epics are two bases and two pull requests, so one file written from both is a merge conflict.
 
-- Rows of one epic are out of scope: they land on one base, in the order Depends on and [Joins](#joins) set, so one component written twice is a rebase on that base rather than a conflict between two of them. [Joins](#joins) proposes them as one unit.
+- Rows of one epic are out of scope: they land on one base, in the order Depends on and [Joins](#joins) set, so one file written twice is a rebase on that base rather than a conflict between two of them. [Joins](#joins) proposes them as one unit.
 - A contending pair is answered by the number that separates its epics, or by moving the rows into one epic.
 
 ### Unresolvable Entries
