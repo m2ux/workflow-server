@@ -1,0 +1,125 @@
+Kind search over the declared artifacts:
+  delivery-plan.md:3: The available units, held rows and hot-fixes, blocked work and merge candidates for one board.
+  delivery-plan.md:41: A unit is one task row or tasks that name each other in Joins, as [Work Breakdown](epic-issue-body.md#work-breakdown) defines. A unit of rows comes only from an
+  delivery-plan.md:43: ### Hot-fix Units
+  delivery-plan.md:45: A hot-fix is a unit as its [Delivery Unit](hotfix.md#delivery-unit) states, with the branch, base and worktree its [Branch](hotfix.md#branch) names.
+  delivery-plan.md:49: - A `unit` line names one session's tasks, its lane as `lane 2` or `unlaned`, Coverage and record folder, then a branch, base and worktree for each epic base it
+  delivery-plan.md:51: - An `undeclared` line names a row of a unit in an epic of several bases whose linked work item does not place each declared file on an epic base, and why: the 
+  delivery-plan.md:52: - A `hold` line names a row a session holds and the record it links, or a hot-fix its [Delivery Unit](hotfix.md#delivery-unit) holds.
+  delivery-plan.md:56: - A `merge` line names an open pull request, never a draft, whose test plan has passed and the base it targets: a task pull request into an epic base, or an ope
+  delivery-plan.md:57: - An `unrecorded` line names a hot-fix its [Delivery Unit](hotfix.md#delivery-unit) leaves unrecorded, and each merged delivering pull request.
+  delivery-plan.md:59: - An unresolved hot-fix of a repository other than the project checkout's names its target, which that checkout's [Branches](delivery-branches.md#branches) cann
+  delivery-plan.md:67: The optional JSON export holds exactly the available units in report order. Each entry has a repository-qualified `id`, its `record` folder and its complete `re
+  delivery-branches.md:372: - **Hot-fix.**
+  delivery-branches.md:373: A hot-fix works on the branch its [Branch](hotfix.md#branch) names.
+  delivery-brief.md:13: The brief names the epic or hot-fix issue URL, task ids, Descriptions, covered acceptance criteria and the theme board carrying that issue's item. It includes e
+  dispatch-batch.md:30: Check one selected unit immediately before execution and provide [Validated Unit](#validated-unit "●") to the requester, or [Failure](#failure "●") if the opera
+  dispatch-batch.md:48: One run records its board identity, scope selectors and requested lane in a JSON object. The scope is the selected board (`["*"]`), or a list of repository-qual
+  board-queue.md:3: The queue for one theme board: initiative priority sets, hot-fix status, status and assignee changes, pending decisions, waiting work, next epics, Ready units a
+  board-queue.md:28: - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix’s, which its [Board Status](hotfix.md#board-status)
+  board-queue.md:38: - Each hot-fix stands where its [Board Status](hotfix.md#board-status) places it.
+  board-queue.md:69: The queue contains calls for Status and assignee changes to initiatives, epics and hot-fixes. Status changes are between Backlog, Ready and In Progress, and a h
+  board-queue.md:102: The supplied complete initiative and hot-fix pull request records, one JSON object per nonempty line at the local file path. eg `prs.json`
+  pull-request.md:306: - A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens.
+  pull-request.md:501: Start a collection with all initiative- and hot-fix-prefixed pull requests from one repository and provide [Pull Request Records](#pull-request-records "●") to 
+  pull-request.md:508: --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' &#92;
+  pull-request.md:514: Append all initiative- and hot-fix-prefixed pull requests from one further repository and provide [Pull Request Records](#pull-request-records "●") to the reque
+  pull-request.md:521: --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' &#92;
+  pull-request.md:785: Delivery requires both the user's authorization for the selected target and the harness capability to execute its mutation. A task targets its [epic base](deliv
+  agent-review.md:3: Published evidence of an agent's review of one integration diff, an epic's review pull request or a hot-fix's delivering pull request, and its acceptance eviden
+  agent-review.md:19: - For each excluded observation, Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") for a new arising issue with no agent-engineering prefix, following
+  agent-review.md:22: - When a blocking finding or any hot-fix finding requires a fix:
+  agent-review.md:27: - Blocking findings, and every finding on a hot-fix's delivering pull request, must be fixed and reviewed at the recorded head. Every finding has a completed di
+  agent-review.md:31: Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the `base_ref` a hot-fix's record carries, the sc
+  agent-review.md:59: Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `e
+  standup-report.md:71: The report document's management paragraph, board link, initiative, Completed, In progress, Next, hot-fix and key sections.
+  standup-report.md:83: - Ready hot-fixes lead.
+  standup-report.md:86: - **Hot-fixes.**
+  standup-report.md:87: Each [hot-fix](hotfix-body.md) follows the epic groups of Completed, In progress or Next as its status places it, with its [delivering pull requests](hotfix.md#
+  standup-report.md:89: I Initiative, E Epic, W Work Item and F Hot-fix. Opening marks are ✅ done, 🔄 in progress (an initiative, epic or hot-fix open and not In Review, or a task issue
+  38 hits
+Field-boundary check:
+  delivery-branches.md Fields: The project's ordered long-lived branch names, declared in `config/branches` at its root, one name per line. A run reads the statement at the commit it evaluate
+  delivery-branches.md Fields: - An epic sync evaluates each of its epic bases, such as `origin/i07/e00/main` and `origin/i07/e00/workflows`. Declarations that disagree across those bases lea
+  delivery-branches.md Fields: - An epic sync reports each open or merged pull request off these routes as `target`: a task pull request into anything but one of its epic's bases, and an inte
+  delivery-branches.md Fields: 3 action clauses
+  delivery-brief.md Fields: The supplied session-procedure reference and invocation context, including its planning, publication, merge, debt and arising-issue obligations, with the confir
+  delivery-brief.md Fields: 1 action clauses
+Caller routes for moved clauses:
+  FAIL: Read Delivery Branches fetches its evaluated revision
+  ok: modes/deliver-mode.md reaches Read Delivery Branches
+  ok: modes/align-mode.md reaches Read Delivery Branches
+  ok: protocols/issue-closure.md reaches Read Delivery Branches
+  ok: Prepare Delivery Bases fetches the branch it evaluates
+  ok: Sync Epic reports disagreeing declarations
+  ok: Delivery Findings states the target finding an epic sync reports
+  ok: Unit Dispatch retains and resolves missing brief context
+  ok: Run Delivery Session provides missing brief context
+  FAIL: Missing Context holds a missing instruction or prerequisite
+Links in the declared artifacts:
+  584 links checked
+Registered kinds and the routes the general files select:
+  Proposal: general routes only
+  Initiative: general routes only
+  Epic: general routes only
+  Task: general routes only
+  Standalone issue: general routes only
+  ok: Hot-fix: kind unit names its branch
+  ok: Hot-fix: kind unit names its delivering-pull-request
+  ok: Hot-fix: Review Before Merge kind opens its delivering pull request as a draft
+  ok: Hot-fix: its artifact supplies Settle Board Status
+  FAIL: Board Queue reaches Membership
+  Hot-fix: kind unit (Delivery Unit, Branch, Delivering Pull Request); draft pull request, readied by Review Before Merge; board status through Settle Board Status
+Script registry against the registration:
+  ok: script kind hot-fix is a registered kind unit
+  ok: the delivery pull request fetch keeps a captured hot-fix title, [F04]
+  ok: an initiative title selects no kind
+  FAIL: both delivery fetches select every bracketed tag
+Failures:
+  delivery-plan.md:3 names a kind
+  delivery-plan.md:41 names a kind
+  delivery-plan.md:43 names a kind
+  delivery-plan.md:45 names a kind
+  delivery-plan.md:49 names a kind
+  delivery-plan.md:51 names a kind
+  delivery-plan.md:52 names a kind
+  delivery-plan.md:56 names a kind
+  delivery-plan.md:57 names a kind
+  delivery-plan.md:59 names a kind
+  delivery-plan.md:67 names a kind
+  delivery-branches.md:372 names a kind
+  delivery-branches.md:373 names a kind
+  delivery-brief.md:13 names a kind
+  dispatch-batch.md:30 names a kind
+  dispatch-batch.md:48 names a kind
+  board-queue.md:3 names a kind
+  board-queue.md:28 names a kind
+  board-queue.md:38 names a kind
+  board-queue.md:69 names a kind
+  board-queue.md:102 names a kind
+  pull-request.md:306 names a kind
+  pull-request.md:501 names a kind
+  pull-request.md:508 names a kind
+  pull-request.md:514 names a kind
+  pull-request.md:521 names a kind
+  pull-request.md:785 names a kind
+  agent-review.md:3 names a kind
+  agent-review.md:19 names a kind
+  agent-review.md:22 names a kind
+  agent-review.md:27 names a kind
+  agent-review.md:31 names a kind
+  agent-review.md:59 names a kind
+  standup-report.md:71 names a kind
+  standup-report.md:83 names a kind
+  standup-report.md:86 names a kind
+  standup-report.md:87 names a kind
+  standup-report.md:89 names a kind
+  delivery-branches.md Fields carry an action clause
+  delivery-branches.md Fields carry an action clause
+  delivery-branches.md Fields carry an action clause
+  delivery-brief.md Fields carry an action clause
+  Read Delivery Branches fetches its evaluated revision
+  Missing Context holds a missing instruction or prerequisite
+  Board Queue reaches Membership
+  both delivery fetches select every bracketed tag
+sbx: exit 1; writable: /tmp  (name more with SBX_EXTRA_ROOTS=dir1:dir2)

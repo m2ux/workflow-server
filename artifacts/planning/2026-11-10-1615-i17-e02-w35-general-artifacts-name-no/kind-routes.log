@@ -1,0 +1,36 @@
+Kind search over the declared artifacts:
+  0 hits
+Field-boundary check:
+  delivery-branches.md Fields: 0 action clauses
+  delivery-brief.md Fields: 0 action clauses
+Caller routes for moved clauses:
+  ok: Read Delivery Branches fetches its evaluated revision
+  ok: modes/deliver-mode.md reaches Read Delivery Branches
+  ok: modes/align-mode.md reaches Read Delivery Branches
+  ok: protocols/issue-closure.md reaches Read Delivery Branches
+  ok: Prepare Delivery Bases fetches the branch it evaluates
+  ok: Sync Epic reports disagreeing declarations
+  ok: Delivery Findings states the target finding an epic sync reports
+  ok: Unit Dispatch retains and resolves missing brief context
+  ok: Run Delivery Session provides missing brief context
+  ok: Missing Context holds a missing instruction or prerequisite
+Links in the declared artifacts:
+  594 links checked
+Registered kinds and the routes the general files select:
+  Proposal: general routes only
+  Initiative: general routes only
+  Epic: general routes only
+  Task: general routes only
+  Standalone issue: general routes only
+  ok: Hot-fix: kind unit names its branch
+  ok: Hot-fix: kind unit names its delivering-pull-request
+  ok: Hot-fix: Review Before Merge kind opens its delivering pull request as a draft
+  ok: Hot-fix: its artifact supplies Settle Board Status
+  ok: Board Queue reaches Membership
+  Hot-fix: kind unit (Delivery Unit, Branch, Delivering Pull Request); draft pull request, readied by Review Before Merge; board status through Settle Board Status
+Script registry against the registration:
+  ok: script kind hot-fix is a registered kind unit
+  ok: the delivery pull request fetch keeps a captured hot-fix title, [F04]
+  ok: an initiative title selects no kind
+  ok: both delivery fetches select every bracketed tag
+No failures
