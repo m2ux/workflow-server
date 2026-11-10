@@ -172,5 +172,40 @@ class HotfixContracts(unittest.TestCase):
         self.assertIn('The session starts only once it is confirmed', hold)
 
 
+class HotfixBodyInterface(unittest.TestCase):
+    """Hot-fix Body supplies the body population the registration names for it, and Hoist Mode selects it."""
+
+    def setUp(self):
+        self.path, self.links = registered('Hot-fix Body')
+        self.supplied = operations(ROOT / 'artifacts' / 'hotfix-body.md')
+
+    def test_populate_body_is_linked_to_its_kind_operation(self):
+        operation = kind_operation('Populate Body', 'Hot-fix')
+        self.assertEqual(self.path, 'artifacts/hotfix-body.md')
+        self.assertEqual(self.links, [('Populate Body', f'{self.path}#{checker.anchor_of(operation)}')])
+        self.assertEqual(list(self.supplied), [operation])
+
+    def test_operation_reads_its_fields_and_provides_the_body(self):
+        body = self.supplied['Populate Hot-fix Body']
+        for field in ('standalone-body.md#template', '#hot-fix-identity', '#defect-evidence', '#target'):
+            with self.subTest(field=field):
+                self.assertIn(f']({field})', body)
+        self.assertIn('Provide the populated [Output Body](#output-body) for publication.',
+                      section(body, '#### 2. Provide Populated Hot-fix Body'))
+
+    def test_hoist_selects_it_with_the_contract_inputs(self):
+        sites = general_calls('populate-hot-fix-body')
+        self.assertEqual([site.partition(':')[0] for site, _ in sites], ['modes/hoist-mode.md'])
+        self.assertIn('[Populate Hot-fix Body]', sites[0][1])
+        self.assertIn('with its number, theme label, target and defect evidence', sites[0][1])
+
+    def test_hoist_runs_no_body_step_inline(self):
+        text = (ROOT / 'modes' / 'hoist-mode.md').read_text()
+        for mark in ('hotfix-body.md#hot-fix-identity', 'hotfix-body.md#defect-evidence',
+                     'hotfix-body.md#output-body', 'hotfix-body.md#fields'):
+            with self.subTest(mark=mark):
+                self.assertNotIn(mark, text)
+
+
 if __name__ == '__main__':
     unittest.main()
