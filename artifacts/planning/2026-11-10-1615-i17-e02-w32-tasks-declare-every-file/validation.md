@@ -4,7 +4,7 @@
 
 - Unit: I17:E02:W32, AC62.
 - Task base: `abe6550e0` (origin/i17/e02/workspace after W21 #1682).
-- Task head: `82f702d440d5a7853d44e652adf28ec1720eb3e5`, branch `i17/e02/w32-tasks-declare-every-file`.
+- Task head: `d30faa3274437628aca14f9bd4377ac709c69c1a`, branch `i17/e02/w32-tasks-declare-every-file`.
 - Owner: `skills/work-planner/artifacts/work-item.md` (Component lists every file the task changes, separated by commas; the split-per-file rule is removed).
 - Readers: `scripts/deps.py` (candidate units and contention by any shared file), `scripts/deliver.py` (a unit changes every epic base its files name), and the prose readers Dependency Graph, Epic Issue Body, Delivery Plan, Delivery Branches, Delivery Brief, Dispatch Batch, Hot-fix, Sync Mode, Plan Mode, Deliver Mode and Unit Dispatch.
 
