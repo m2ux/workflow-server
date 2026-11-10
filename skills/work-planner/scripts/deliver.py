@@ -32,9 +32,9 @@ other in Joins are one unit, and a unit is one session's work.
 
 A unit's lane comes from the raw Lane cells of its epic task table, read by lane.read_lanes.
 --lane names one opaque decimal index and admits that lane and unlaned units. Without --lane,
-only unlaned units are offered. The filter preserves the admitted units' order. A hot-fix is
-unlaned. Malformed cells and joined units with different lanes produce invalid lines and exit 1;
-holds, blocked work and delivery evidence remain visible for every lane.
+only unlaned units are offered. The filter preserves the admitted units' order. A unit of a
+registered kind is unlaned. Malformed cells and joined units with different lanes produce invalid
+lines and exit 1; holds, blocked work and delivery evidence remain visible for every lane.
 
 Printed: a unit line for each admitted available unit, naming its lane or unlaned, the record folder
 its ids and Description give it, and a branch and worktree for each epic base it changes, suffixed with the base's long-lived name
@@ -45,11 +45,10 @@ reserved row; a blocked line for a free row whose dependencies are not delivered
 task is unavailable; an output line for each producer output a row naming another epic's row was
 read for, naming the output, the consumer commit and whether it is available there; a merge line for
 an open pull request, never a draft, that targets the epic base when its test plan has passed, or for an open
-pull request titled with an open hot-fix's [F00], whose Development field links that hot-fix, that
-targets the hot-fix's target when its test plan has passed and that target is one a unit line could
-name; and an unresolved line for
-an issue not given. A run that met an unresolvable entry, an undeclared row or hot-fix,
-or an invalid lane unit exits 1.
+pull request titled with the tag of an open issue of a registered kind that delivers that issue, as
+the kind's delivering_pulls reads it, when its test plan has passed and the issue's target is one a
+unit line could name; and an unresolved line for an issue not given. A run that met an unresolvable
+entry, an undeclared row or kind issue, or an invalid lane unit exits 1.
 
 The epic bases a unit changes are those whose long-lived branch its rows' work items name. A free
 row links its work-item file, which --engineering, the checkout holding the planning records, gives
@@ -58,15 +57,16 @@ to read; the file's declaration line names the long-lived branch and the path of
 A unit of an epic with one base works on that base. A free row linking no work item is unplanned:
 its session writes the work item after dispatch, so its unit works on every epic base.
 
-Each open hot-fix, titled [F00], is printed as hotfix.unit_state reads its Delivery Unit in
-artifacts/hotfix.md: a unit line, with every criterion it carries as coverage and the record folder
-and branch its prefix and title name give it; a hold line; or an unrecorded line naming its merged
-delivering pull requests. Its base is its target, the branch its Overview's Target: line names. A
-hot-fix naming no target, or a hot-fix of --project's repository, as its origin remote names it,
-whose target that repository's config/branches does not declare, is printed as an undeclared line
-naming why, whatever its state, and is offered as no unit and no merge. A hot-fix of another repository has a target
---project cannot check: it is printed as an unresolved line, offered once a run whose --project
-is a checkout of its repository finds its target declared, and does not fail the run.
+Each open issue of a kind the script registry, kinds.py, holds is printed as that kind's
+unit_state reads its delivery unit, as the kind's artifact states it: a unit line, with every
+criterion it carries as coverage and the record folder and branch its tag and title name give it;
+a hold line; or an unrecorded line naming its merged delivering pull requests. Its base is its
+target, the branch the kind's target reads from its body. An issue naming no target, or an issue of
+--project's repository, as its origin remote names it, whose target that repository's
+config/branches does not declare, is printed as an undeclared line naming why, whatever its state,
+and is offered as no unit and no merge. An issue of another repository has a target --project cannot
+check: it is printed as an unresolved line, offered once a run whose --project is a checkout of its
+repository finds its target declared, and does not fail the run.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs
@@ -93,18 +93,16 @@ from collections import Counter
 from datetime import date as day
 from pathlib import Path
 
-from board import Board, Outputs, epic_state, in_flight, units
+from board import Board, Outputs, epic_state, in_flight, tags, units
 from deps import read_components
 from lane import admits, check_unit, is_index, label as lane_label, read_lanes
-from statuses import (DISPATCH, Key, STATUSES, Changes, StatusField, board_items,
-                      key_of, label, pages, status_of)
+from kinds import interface, kind_of
+from statuses import DISPATCH, Key, STATUSES, Changes, StatusField, board_items, label, pages, status_of
 from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
                     row, row_id, split_sections, title_name)
-from hotfix import delivering_pulls, hotfix_tag, linking_pulls, target, unit_state
-from sync import (Unreadable, attach_links, long_lived_names, origin_repository, plan_rows,
+from sync import (Unreadable, attach_links, issue_key, long_lived_names, origin_repository, plan_rows,
                   pull_requests, table)
 
-PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_TITLE = re.compile(r'^\[I(\d\d):E(\d\d)\]')
 RECORD = re.compile(r'^(.*/artifacts/planning/)[^/]+/?$')
 CRITERION = re.compile(r'AC\d+')
@@ -113,11 +111,6 @@ FOLDER = re.compile(r'/(?:tree|blob)/[^/]+/(.+?)/?$')
 ON_BRANCH = re.compile(r'([^:/\s]+):\S')
 STARTED = ('Ready', 'In Progress')
 WORKTREES = '.worktrees'
-
-
-def tags(title: str) -> tuple[str, str, str] | None:
-    matched = PREFIX.match(title)
-    return (matched[1], matched[2] or '', matched[3] or '') if matched else None
 
 
 def is_epic(issue: dict) -> bool:
@@ -206,12 +199,12 @@ def branch_lines(branch: str, bases: list[str]) -> str:
                      for name, base, worktree in task_branches(branch, bases))
 
 
-def target_fault(key: Key, issue: dict, lived: tuple[str, ...], repository: str) -> tuple[str, str]:
-    """Why a hot-fix's target cannot be delivered to, as the line kind and its text, or ('', '') when
-    it can: undeclared when it names no target, or when --project, a checkout of its repository,
-    declares no such long-lived branch; unresolved when --project is a checkout of another
-    repository. With no --project the target goes unchecked."""
-    if not (base := target(issue)):
+def target_fault(key: Key, issue: dict, base: str, lived: tuple[str, ...], repository: str) -> tuple[str, str]:
+    """Why the target base its kind reads for the issue cannot be delivered to, as the line kind and
+    its text, or ('', '') when it can: undeclared when it names no target, or when --project, a
+    checkout of its repository, declares no such long-lived branch; unresolved when --project is a
+    checkout of another repository. With no --project the target goes unchecked."""
+    if not base:
         return 'undeclared', 'its Overview names no target in one Target: line'
     if not lived:
         return '', ''
@@ -223,27 +216,30 @@ def target_fault(key: Key, issue: dict, lived: tuple[str, ...], repository: str)
     return '', ''
 
 
-def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: str,
-                 lived: tuple[str, ...], repository: str,
-                 offers: list[dict] | None = None) -> tuple[list[str], int, int, int, int]:
-    """The unit, hold and unrecorded line of each open hot-fix, by the state hotfix.unit_state
-    reads, and the undeclared or unresolved line of each whose target target_fault refuses, whatever
-    its state, with the count of each. A refused target offers no unit."""
+def kind_units(issues: dict, status: dict, prs: list[dict], home: str, when: str,
+               lived: tuple[str, ...], repository: str,
+               offers: list[dict] | None = None) -> tuple[list[str], int, int, int, int]:
+    """The unit, hold and unrecorded line of each open issue of a registered kind, by the state its
+    kind's unit_state reads, and the undeclared or unresolved line of each whose target target_fault
+    refuses, whatever its state, with the count of each. A refused target offers no unit."""
     lines, available, undeclared, held, unrecorded = [], 0, 0, 0, 0
     for key in sorted(issues):
         issue = issues[key]
-        tag = hotfix_tag(issue)
-        if not tag or issue['state'] != 'open':
+        kind = kind_of(issue)
+        if not kind or issue['state'] != 'open':
             continue
+        operations = interface(kind)
+        tag = operations.tag(issue)
         where = f'{tag} {label(key, home)}'
-        linking = linking_pulls(prs, key)
-        delivering = delivering_pulls(linking, key, issue)
-        state = unit_state(issue, status.get(key), linking, delivering)
-        kind, why = target_fault(key, issue, lived, repository)
-        if kind == 'undeclared':
+        linking = operations.linking_pulls(prs, key)
+        delivering = operations.delivering_pulls(linking, key, issue)
+        state = operations.unit_state(issue, status.get(key), linking, delivering)
+        base = operations.target(issue)
+        fault, why = target_fault(key, issue, base, lived, repository)
+        if fault == 'undeclared':
             lines.append(f'  undeclared {where}: {why}')
             undeclared += 1
-        elif kind == 'unresolved':
+        elif fault == 'unresolved':
             lines.append(f'  unresolved: {where}: {why}')
         if state == 'unrecorded':
             numbers = ', '.join(f"#{p['number']}" for p in delivering if p.get('merged_at'))
@@ -254,9 +250,8 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: s
             lines.append(f'  hold {where}: In Progress')
             held += 1
             continue
-        if state != 'unit' or kind:
+        if state != 'unit' or fault:
             continue
-        base = target(issue)
         name = names(tag, title_name(issue['title']), key[1], when)
         coverage = ', '.join(dict.fromkeys(f'AC{found[1]}' for line in (issue.get('body') or '').splitlines()
                                            if (found := AC.match(line))))
@@ -283,24 +278,27 @@ def plan_passed(body: str) -> bool:
 
 
 def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...], repository: str) -> list[str]:
-    """Open pull requests, never a draft, whose test plan has passed: a task's into its epic base, and a hot-fix's
-    into its target, when target_fault finds nothing against that target."""
-    epics, hotfixes = {}, {}
+    """Open pull requests, never a draft, whose test plan has passed: a task's into its epic base, and
+    one titled with a registered kind's tag into the target of an open issue of that kind it delivers,
+    when target_fault finds nothing against that target."""
+    epics, kinded = {}, {}
     for key, issue in issues.items():
         parsed = tags(issue.get('title') or '')
         if parsed and parsed[1] and not parsed[2]:
             epics[(parsed[0], parsed[1])] = issue
-        if (tag := hotfix_tag(issue)) and issue['state'] == 'open':
-            hotfixes[key] = issue
+        if (kind := kind_of(issue)) and issue['state'] == 'open':
+            kinded.setdefault(kind, {})[key] = issue
     found = []
     for pull in pulls:
         if pull.get('draft') or pull.get('merged_at') or (pull.get('state') or 'open') != 'open':
             continue
         base = (pull.get('base') or {}).get('ref') or ''
-        if tag := hotfix_tag(pull):
-            if (any(delivering_pulls([pull], key, fixed) and not target_fault(key, fixed, names, repository)[0]
-                    for key, fixed in hotfixes.items()) and plan_passed(pull.get('body') or '')):
-                found.append((pull['number'], f"  merge #{pull['number']} {tag}: base {base}"))
+        if kind := kind_of(pull):
+            operations = interface(kind)
+            if (any(operations.delivering_pulls([pull], key, issue)
+                    and not target_fault(key, issue, operations.target(issue), names, repository)[0]
+                    for key, issue in kinded.get(kind, {}).items()) and plan_passed(pull.get('body') or '')):
+                found.append((pull['number'], f"  merge #{pull['number']} {operations.tag(pull)}: base {base}"))
             continue
         matched = PR_TITLE.match(pull.get('title') or '')
         if not matched:
@@ -324,13 +322,13 @@ def survey(args: argparse.Namespace) -> int:
     issues = {}
     for path in args.others:
         given = json.loads(Path(path).read_text())
-        issues[key_of(given)] = given
+        issues[issue_key(given)] = given
     status = {}
     for item in pages(args.items):
         content = item.get('content') or {}
         if item.get('content_type') != 'Issue' or not content.get('repository_url'):
             continue
-        key = key_of(content)
+        key = issue_key(content)
         issues[key] = content
         status[key] = status_of(item)
     home = Counter(key[0] for key in issues).most_common(1)[0][0] if issues else ''
@@ -425,7 +423,7 @@ def survey(args: argparse.Namespace) -> int:
             offers.append({'id': f'{key[0]}#I{initiative}:E{epic}:{ids}',
                            'record': name['folder'], 'report': report})
             available += 1
-    lines, found, unnamed, holding, unrecorded = hotfix_units(
+    lines, found, unnamed, holding, unrecorded = kind_units(
         issues, status, prs, home, when, lived, repository, offers)
     for line in lines:
         print(line)
@@ -543,7 +541,7 @@ def edit(args: argparse.Namespace) -> int:
         if not args.items:
             sys.exit('--reserve needs --items, the board items holding the epic Status')
         on_board = {key: status for key, _item, status, _content in board_items(args.items)}
-        standing = on_board.get(key_of(issue), 'not on the board')
+        standing = on_board.get(issue_key(issue), 'not on the board')
         if standing not in STARTED:
             sys.exit(f"#{issue['number']} [I{initiative}:E{epic}] is {standing or 'without a Status'}; "
                      'Work Units in artifacts/delivery-plan.md admits no unit of it')

@@ -2,6 +2,7 @@
 """
 import io
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -709,3 +710,75 @@ class EpicPriority(unittest.TestCase):
                           ('E01', epic_body(('W01', 'Consume', 'E00:W01')))])
         self.assertEqual(code, 0, text)
         self.assertIn('--- epic priority (epics sharing a number start together)\n2 E00\n1 E01', text)
+
+
+ARTIFACT = SCRIPTS.parent / 'artifacts' / 'dependency-graph.md'
+OUTCOME = re.compile(r'\b(exits?|reports?|prints?|refused|refuses|asked|asks)\b', re.IGNORECASE)
+
+
+def sections_of(text: str) -> dict[str, str]:
+    parts = re.split(r'^### (.+)$', text, flags=re.MULTILINE)
+    return dict(zip(parts[1::2], parts[2::2]))
+
+
+def anchors(path: Path) -> set[str]:
+    return {re.sub(r'[^a-z0-9 -]', '', m[1].lower()).replace(' ', '-')
+            for m in re.finditer(r'^#+ (.+)$', path.read_text(), re.MULTILINE)}
+
+
+class FieldBoundary(unittest.TestCase):
+    """Dependency Graph's Fields hold shapes and invariants; its operations and Guidance hold outcomes."""
+
+    def test_no_field_states_a_reporting_placement_or_exit_outcome(self):
+        text = ARTIFACT.read_text()
+        fields = text.split('\n## Fields\n')[1].split('\n## Guidance\n')[0]
+        for name, body in sections_of(fields).items():
+            with self.subTest(field=name):
+                self.assertIsNone(OUTCOME.search(body), body)
+                self.assertNotIn('where it stands', body)
+
+    def test_check_dependencies_states_each_outcome_the_fields_define(self):
+        details = sections_of(ARTIFACT.read_text())['Check Dependencies']
+        for outcome in ('both resolutions, so neither is the cheaper answer', 'each direct edge a join drops',
+                        'split by rule with its reason, and asks no record line',
+                        'is a problem naming the entry as written, and the run exits nonzero'):
+            with self.subTest(outcome=outcome):
+                self.assertIn(outcome, details)
+
+    def test_unresolvable_entries_name_each_reader_and_its_outcome(self):
+        guidance = sections_of(ARTIFACT.read_text())['Unresolvable Entries']
+        self.assertIn('names an [entry that cannot resolve](#edges) as written, keeps the row it gates where it '
+                      'stands rather than placing it as work still to come, and exits nonzero', guidance)
+        self.assertIn('(#unresolvable-entries)', sections_of(ARTIFACT.read_text())['Edges'])
+        for target in ('#check-dependencies', 'board-queue.md#compute-board-queue',
+                       'board-queue.md#unresolvable-dependencies', 'delivery-plan.md#compute-available-work',
+                       'delivery-plan.md#report-lines'):
+            with self.subTest(target=target):
+                self.assertIn(f'({target}', guidance)
+                file, anchor = target.split('#')
+                self.assertIn(anchor, anchors(ARTIFACT.parent / file if file else ARTIFACT))
+
+
+
+class InvalidReferences(unittest.TestCase):
+    """An entry that cannot resolve is named as written and fails the run, whatever made it unresolvable."""
+
+    def test_each_unresolvable_entry_is_named_and_the_run_exits_nonzero(self):
+        cases = {
+            'names no row': ('E09 (W04)', 'E01:W01: cannot resolve E09 (W04): it names no row and links no issue'),
+            'issue not given': ('[E09:W01](https://github.com/o/r/issues/9)',
+                                'E01:W01: cannot resolve E09:W01: no epic given carries that row'),
+            'missing row': ('E00:W07', 'E01:W01: cannot resolve E00:W07: no epic given carries that row'),
+        }
+        for name, (entry, line) in cases.items():
+            with self.subTest(case=name):
+                code, text = run([('E00', epic_body(('W01', 'Output', ''))),
+                                  ('E01', epic_body(('W01', 'Consume', entry)))])
+                self.assertEqual(code, 1, text)
+                self.assertIn(line, text)
+
+    def test_a_resolvable_entry_passes(self):
+        code, text = run([('E00', epic_body(('W01', 'Output', ''))),
+                          ('E01', epic_body(('W01', 'Consume', 'E00:W01')))])
+        self.assertEqual(code, 0, text)
+        self.assertNotIn('cannot resolve', text)

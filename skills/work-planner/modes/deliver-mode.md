@@ -87,14 +87,7 @@ The continuing coordinator for one authorized delivery scope.
 
 ###### Hot-Fix Hold
 
-- For a hot-fix hold:
-
-- Apply [Capture Issue Development](../artifacts/issue.md#capture-issue-development "ƒ") for [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity).
-- Refuse the release while its [Delivery Unit](../artifacts/hotfix.md#delivery-unit) is running or unrecorded, and provide the pull request that makes it so to the caller.
-
-- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with the board in [Board Evidence](../artifacts/hotfix.md#board-evidence), the hot-fix issue and Ready.
-
-- Retain [Board Result](../artifacts/hotfix.md#board-result) with the saved item and Status.
+- For a hot-fix hold, Apply [Release Hot-fix Hold](../artifacts/hotfix.md#release-hot-fix-hold "ƒ") with its issue and the selected board, and retain the board result or refusal it provides.
 
 ##### Survey Continuation
 
@@ -217,45 +210,9 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 9. Review a Hot-Fix
 
-- For a hot-fix unit, complete the review cycle its draft [delivering pull request](../artifacts/hotfix.md#delivering-pull-request) waits on.
-
-- Apply [Produce Agent Review](../artifacts/agent-review.md#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence.
-- Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") with its provided record, then Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") with that record.
-- Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") to link that published record from the pull request body.
-
-##### Verify Hot-Fix Readiness
-
-- Use the pull request and published review records.
-
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for its full metadata.
-- If metadata is unreadable or the pull request is closed, retain [Failure](../artifacts/pull-request.md#failure), report the unresolved current state and stop before repair or merge.
-
-- Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with that metadata and [Published Reviews](../artifacts/pull-request.md#published-reviews).
-- On a finding, continue directly to Restore Hot-Fix Draft below.
-
-- For a draft with passing evidence, Run [Mark Review Ready](../artifacts/pull-request.md#mark-review-ready "ƒ") with the node id its metadata names.
-- On a failed ready write, retain its failure and continue directly to Restore Hot-Fix Draft below.
-
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again with the same identity.
-- On an unreadable or closed result, retain the unresolved current-state failure and stop before repair or merge.
-- Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records.
-- On a finding or a draft readback, retain the changed revision or readiness failure and continue directly to Restore Hot-Fix Draft below.
-- Only a confirmed open, ready pull request with passing current review evidence provides [Review State](../artifacts/pull-request.md#review-state) and continues to the merge step.
-
-##### Restore Hot-Fix Draft
-
-- Retain every review or readiness finding.
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") with the same identity before selecting restoration.
-- If metadata is unreadable or the pull request is closed, provide the unresolved restoration discrepancy as [Failure](../artifacts/pull-request.md#failure) and stop before repair or merge.
-- For an open, ready pull request, Run [Mark Review Draft](../artifacts/pull-request.md#mark-review-draft "ƒ") with its identity.
-- After a selected restoration write, including a failed write, Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") with the same identity.
-- If the restoration write failed, metadata is unreadable, or the readback is closed or ready, provide the unresolved restoration discrepancy as [Failure](../artifacts/pull-request.md#failure) and stop before repair or merge. Report draft state only when the readback confirms it.
-- With a successful selected write and confirmed open draft, or a confirmed open draft requiring no write, continue to Repair Hot-Fix Findings below.
-
-##### Repair Hot-Fix Findings
-
-- For each provided finding, fix it on the task branch and repeat this step from Produce Agent Review, until review validation and ready-state readback provide no finding.
-- A finding the session cannot fix within its allowance stops it before the merge step. Retain the hold, the confirmed draft readback and each open finding in the session result.
+- For a hot-fix unit, Apply [Review Hot-fix Before Merge](../artifacts/hotfix.md#review-hot-fix-before-merge "ƒ") for its draft [delivering pull request](../artifacts/hotfix.md#delivering-pull-request).
+- Continue to the merge step only with the confirmed ready [Review State](../artifacts/pull-request.md#review-state) it provides.
+- On a failure, or a hold with open findings, report the unresolved state, the confirmed draft readback and each open finding in the session result, and stop before the merge step.
 
 #### 10. Merge
 
@@ -267,7 +224,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 11. Arising Issues
 
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") for each unsaved issue that arose during delivery as a standalone issue with no agent-engineering prefix, following [Standalone Issues](../artifacts/board.md#standalone-issues).
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") for each unsaved issue that arose during delivery as a standalone issue with no agent-engineering prefix, following standalone [Placement](../artifacts/standalone-body.md#placement).
 
 - Follow [Hoist Mode](hoist-mode.md "ƒ") in the project checkout with those new issue identities, each arising issue an agent review's exclusion saved, and the allowance the brief names, after the pull request is open and epic delivery is recorded.
 - Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with each placement it applied and each it held.

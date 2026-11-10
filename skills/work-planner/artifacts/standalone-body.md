@@ -15,7 +15,7 @@ One standalone issue body from its supplied scope.
 - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
 - All populated fields must meet [Fields](#fields).
 
-- The issue's placement must follow [Standalone Issues](board.md#standalone-issues).
+- The issue's placement must follow [Placement](#placement).
 
 #### 2. Provide Populated Standalone Body
 
@@ -75,3 +75,9 @@ The confirmed content and boundary decisions for this body.
 ### Output Body
 
 The supplied local destination for the complete body.
+
+## Guidance
+
+### Placement
+
+A standalone issue sits on no board.

@@ -8,8 +8,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 1. Record a Hot-Fix
 
-- For the merge of a [hot-fix](../artifacts/hotfix.md), recorded as its [Delivery Record](../artifacts/hotfix.md#delivery-record) states:
-- Follow [Issue Delivery](issue-delivery.md "ƒ") for the hot-fix, with the merge result and the complete issue-link snapshot as its evidence.
+- For the merge of a [hot-fix](../artifacts/hotfix.md), Apply [Record Hot-fix Merge](../artifacts/hotfix.md#record-hot-fix-merge "ƒ") with the merge result and the complete issue-link snapshot.
 - Follow [Issue Closure](issue-closure.md "ƒ") for the hot-fix issue when eligible.
 - Apply [Settle Hot-fix Board Status](../artifacts/hotfix.md#settle-hot-fix-board-status "ƒ") with the supplied board and the hot-fix issue.
 - Return to the caller.
