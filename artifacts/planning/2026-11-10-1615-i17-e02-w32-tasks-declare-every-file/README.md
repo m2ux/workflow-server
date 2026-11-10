@@ -8,6 +8,7 @@ A task row may change many files. This unit removes the one-file-per-task rule f
 | --- | --- |
 | [w32.md](w32.md) | Scope, implementation and observing validation for W32. |
 | [changes.md](changes.md) | The E02 restructure change list that created this row. |
+| [validation.md](validation.md) | Observing fixtures and full-check evidence for AC62, with its logs. |
 
 ## Links
 
