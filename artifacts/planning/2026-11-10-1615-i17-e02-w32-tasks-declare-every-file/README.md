@@ -13,3 +13,7 @@ A task row may change many files. This unit removes the one-file-per-task rule f
 ## Links
 
 - [Epic](https://github.com/m2ux/workflow-server/issues/1615)
+
+## Delivery Changes
+
+None applied; none held.
