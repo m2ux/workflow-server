@@ -85,9 +85,9 @@ The continuing coordinator for one authorized delivery scope.
 
 - For a task-row hold, Run [Release Row](../artifacts/epic-issue-body.md#release-row "ƒ") with the engineering worktree, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
 
-###### Hot-Fix Hold
+###### Issue Hold
 
-- For a hot-fix hold, Apply [Release Hot-fix Hold](../artifacts/hotfix.md#release-hot-fix-hold "ƒ") with its issue and the selected board, and retain the board result or refusal it provides.
+- For a hold on an issue whose [registered kind](../SKILL.md) supplies Release Hold, Apply the Release Hold operation that kind supplies with its issue and the selected board, and retain the board result or refusal it provides.
 
 ##### Survey Continuation
 
@@ -146,7 +146,7 @@ The authorized unit carried from its supplied brief through implementation and d
 
 #### 2. Confirm the Reservation
 
-Confirm the supplied reserved folder exists and the unit remains held for this session before changing its worktree: its rows' reservations for a unit of rows, or the hold a hot-fix's [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
+Confirm the supplied reserved folder exists and the unit remains held for this session before changing its worktree: its rows' reservations for a unit of rows, or, for a unit of one issue, the hold the artifact of the issue's [registered kind](../SKILL.md) defines.
 
 #### 3. Plan
 
@@ -193,7 +193,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 - Apply [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close "ƒ") for the repository, where the session holds no confirmed setting.
 - Supply that setting and the unit's task issue, where one exists, so the pull request opens linked to it.
-- A hot-fix unit's title carries its prefix, so its [delivering pull request](../artifacts/hotfix.md#delivering-pull-request) opens as a draft.
+- A unit whose [registered kind](../SKILL.md) supplies Review Before Merge opens its pull request as a draft, in the shape that kind's artifact gives its delivering pull request.
 
 - For a unit of rows:
 
@@ -202,15 +202,15 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 8. Fix the Debt
 
-- A unit, including a hot-fix, fixes every debt item its validation finds, from running its tests, auditing the definitions it changed and reviewing its pull request, on its task branch, so its open pull request carries each fix before it merges.
+- A unit of any kind fixes every debt item its validation finds, from running its tests, auditing the definitions it changed and reviewing its pull request, on its task branch, so its open pull request carries each fix before it merges.
 - Debt in code outside the unit's change is an issue of its own, arising from the delivery.
 
 - Carry each item outside the unit's change into the arising-issues step.
-- Continue to the review step for a hot-fix unit, and to the merge step otherwise.
+- Continue to the review step for a unit whose [registered kind](../SKILL.md) supplies Review Before Merge, and to the merge step otherwise.
 
-#### 9. Review a Hot-Fix
+#### 9. Review Before Merge
 
-- For a hot-fix unit, Apply [Review Hot-fix Before Merge](../artifacts/hotfix.md#review-hot-fix-before-merge "ƒ") for its draft [delivering pull request](../artifacts/hotfix.md#delivering-pull-request).
+- Apply the Review Before Merge operation the unit's [registered kind](../SKILL.md) supplies for its draft pull request.
 - Continue to the merge step only with the confirmed ready [Review State](../artifacts/pull-request.md#review-state) it provides.
 - On a failure, or a hold with open findings, report the unresolved state, the confirmed draft readback and each open finding in the session result, and stop before the merge step.
 
@@ -224,7 +224,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 11. Arising Issues
 
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") for each unsaved issue that arose during delivery as a standalone issue with no agent-engineering prefix, following standalone [Placement](../artifacts/standalone-body.md#placement).
+- For each unsaved issue that arose during delivery, Apply the Populate Body operation the [registered kind](../SKILL.md) for work outside any initiative supplies, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body.
 
 - Follow [Hoist Mode](hoist-mode.md "ƒ") in the project checkout with those new issue identities, each arising issue an agent review's exclusion saved, and the allowance the brief names, after the pull request is open and epic delivery is recorded.
 - Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with each placement it applied and each it held.
