@@ -2,6 +2,29 @@
 
 Populates one hot-fix issue body.
 
+## Operations
+
+### Populate Hot-fix Body
+
+One hot-fix issue body from its confirmed defect evidence.
+
+#### 1. Populate Hot-fix Template
+
+- Populate the standalone [Template](standalone-body.md#template) for [Hot-fix Identity](#hot-fix-identity) at the destination in [Output Body](#output-body).
+- The work must meet [Definition](#definition).
+- The title must meet the shared [Titles](issue-body.md#titles) conditions and the hot-fix [Titles](#titles).
+- Name the confirmed [Target](#target) in the Overview.
+- Populate the Problem and Proposal from [Defect Evidence](#defect-evidence), meeting [Problem and Proposal](issue-body.md#problem-and-proposal).
+- All populated fields must meet [Fields](#fields).
+
+- A hot-fix belongs to no initiative or epic, and names no Depends on or Joins.
+- It sits on its theme's board.
+- Its priority 10, which its [Titles](#titles) label carries, ranks it nowhere: the queue places it by its [Board Status](hotfix.md#board-status), outside the priority sets.
+
+#### 2. Provide Populated Hot-fix Body
+
+Provide the populated [Output Body](#output-body) for publication.
+
 ## Fields
 
 ### Target

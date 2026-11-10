@@ -120,7 +120,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | --- | --- |
 | `*/SKILL.md` | [test_modes](test_modes.py) (4) |
 | [README](README.md) | [test_readme](test_readme.py) (14) |
-| [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13), [test_kind_operations](test_kind_operations.py) (11) |
+| [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13), [test_kind_operations](test_kind_operations.py) (15) |
 | `artifacts/` | [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (13) |
 | [advance-mode](../modes/advance-mode.md) | [test_advance_decisions](test_advance_decisions.py) (14) |
 | [architecture-overview](../artifacts/architecture-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
@@ -128,8 +128,10 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [deliver-mode](../modes/deliver-mode.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12) |
-| [hotfix](../artifacts/hotfix.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_kind_operations](test_kind_operations.py) (11) |
-| [unit-dispatch](../protocols/unit-dispatch.md) | [test_kind_operations](test_kind_operations.py) (11) |
+| [hotfix](../artifacts/hotfix.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_kind_operations](test_kind_operations.py) (15) |
+| [unit-dispatch](../protocols/unit-dispatch.md) | [test_kind_operations](test_kind_operations.py) (15) |
+| [hotfix-body](../artifacts/hotfix-body.md) | [test_kind_operations](test_kind_operations.py) (15) |
+| [hoist-mode](../modes/hoist-mode.md) | [test_kind_operations](test_kind_operations.py) (15) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_worktrees](test_worktrees.py) (2) |
 | [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (8) |
 | [configuration](../configuration.md) | [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |

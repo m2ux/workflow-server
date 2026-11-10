@@ -118,20 +118,7 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 
 ###### Hot-Fix Body
 
-- For a hot-fix, populate its body as follows.
-
-- Populate the standalone [Template](../artifacts/standalone-body.md#template) for [Hot-fix Identity](../artifacts/hotfix-body.md#hot-fix-identity) at the destination in [Output Body](../artifacts/hotfix-body.md#output-body).
-- The work must meet [Definition](../artifacts/hotfix-body.md#definition).
-- The title must meet the shared [Titles](../artifacts/issue-body.md#titles) conditions and the hot-fix [Titles](../artifacts/hotfix-body.md#titles).
-- Name the confirmed [Target](../artifacts/hotfix-body.md#target) in the Overview.
-- Populate the Problem and Proposal from [Defect Evidence](../artifacts/hotfix-body.md#defect-evidence), meeting [Problem and Proposal](../artifacts/issue-body.md#problem-and-proposal).
-- All populated fields must meet [Fields](../artifacts/hotfix-body.md#fields).
-
-- Retain the populated [Output Body](../artifacts/hotfix-body.md#output-body) for publication.
-
-- A hot-fix belongs to no initiative or epic, and names no Depends on or Joins.
-- It sits on its theme's board.
-- Its priority 10, which its [Titles](../artifacts/hotfix-body.md#titles) label carries, ranks it nowhere: the queue places it by its [Board Status](../artifacts/hotfix.md#board-status), outside the priority sets.
+- For a hot-fix, Apply [Populate Hot-fix Body](../artifacts/hotfix-body.md#populate-hot-fix-body "ƒ") with its number, theme label, target and defect evidence.
 
 ###### Standalone Body
 
@@ -140,7 +127,6 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 ###### Common Body Content
 
 - Carry evidence into Problem and design into Proposal.
-- Pass a hot-fix its supplied number, theme label and target.
 
 ##### 2. Validate and Save Body
 
