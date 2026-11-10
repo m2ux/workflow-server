@@ -4,7 +4,7 @@
 
 - Unit: I17:E02:W34, AC64.
 - Task base: `f0139228e` (origin/i17/e02/workspace after W32 #1684), brought current with `3aed043cb` (W35 #1685).
-- Task head: `94842861aea97e8179943fb1f2af56cf44898ee1`, branch `i17/e02/w34-modes-and-protocols-reach`.
+- Task head: `fe6f67b4118278e0b7ac462bc19148818a0028e2`, branch `i17/e02/w34-modes-and-protocols-reach`.
 - Component: the six general callers, Hot-fix Body (which takes the target-confirmation rule Hoist Mode stated inline), and the tests and catalogue the checks need, as [w34.md](w34.md) declares.
 
 ## Plan
@@ -15,7 +15,7 @@ Each kind mention at the base and what replaces it. Initiative, epic and task re
 | --- | --- | --- |
 | deliver-mode.md | Hot-Fix Hold: Release Hot-fix Hold | Kind Unit Hold: the Release Hold operation the registered kind supplies |
 | deliver-mode.md | Confirm the Reservation: a hot-fix's Delivery Unit hold | The hold the artifact of a kind unit's registered kind defines |
-| deliver-mode.md | A hot-fix unit's pull request opens as a draft | A unit whose kind supplies Review Before Merge opens a draft, in the shape its artifact gives |
+| deliver-mode.md | A hot-fix unit's pull request opens as a draft | Removed: the create command Publish Pull Request runs opens a draft for a kind supplying Review Before Merge (W35) |
 | deliver-mode.md | Fix the Debt: "including a hot-fix"; review step for a hot-fix unit | A unit of any kind; the review step for a kind supplying Review Before Merge |
 | deliver-mode.md | 9. Review a Hot-Fix: Review Hot-fix Before Merge | 9. Review Before Merge: the operation the unit's registered kind supplies |
 | deliver-mode.md | Arising issues saved as standalone, following standalone Placement | The Populate Body operation of the registered kind for work outside any initiative, then Save Tracker Issue |

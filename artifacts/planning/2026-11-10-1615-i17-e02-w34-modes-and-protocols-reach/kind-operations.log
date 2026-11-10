@@ -24,6 +24,6 @@ test_general_callers_select_the_operation_through_the_registration (test_kind_op
 Each interface name a general file selects names the registration, and the registration ... ok
 
 ----------------------------------------------------------------------
-Ran 20 tests in 0.066s
+Ran 20 tests in 0.074s
 
 OK

@@ -96,13 +96,13 @@ Routes selected through the registration:
   modes/hoist-mode.md:126: Settle Board Status <- "with the confirmed theme board and the saved issue"
   protocols/task-merge.md:13: Settle Board Status <- "with the supplied board and the issue"
     Hot-fix: -> artifacts/hotfix.md#Settle Hot-fix Board Status
-  modes/deliver-mode.md:227: Populate Body <- "then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body"
+  modes/deliver-mode.md:226: Populate Body <- "then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body"
   modes/hoist-mode.md:115: Populate Body <- "with the inputs it takes from them"
     Initiative: -> artifacts/initiative-issue-body.md#Populate Initiative Issue Body
     Epic: -> artifacts/epic-issue-body.md#Populate Epic Issue Body
     Standalone issue: -> artifacts/standalone-body.md#Populate Standalone Body
     Hot-fix: -> artifacts/hotfix-body.md#Populate Hot-fix Body
-  modes/deliver-mode.md:213: Review Before Merge <- "for its draft pull request"
+  modes/deliver-mode.md:212: Review Before Merge <- "for its draft pull request"
     Hot-fix: -> artifacts/hotfix.md#Review Hot-fix Before Merge
 Script registry selection on captured titles:
   '[F00] Board: Status' -> hot-fix
