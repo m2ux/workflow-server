@@ -69,6 +69,6 @@ test_the_producer_epics_closure_alone_starts_no_row (test_deliver.Survey.test_th
 test_undelivered_dependency_blocks_the_row (test_deliver.Survey.test_undelivered_dependency_blocks_the_row) ... ok
 
 ----------------------------------------------------------------------
-Ran 69 tests in 5.227s
+Ran 69 tests in 5.228s
 
 OK

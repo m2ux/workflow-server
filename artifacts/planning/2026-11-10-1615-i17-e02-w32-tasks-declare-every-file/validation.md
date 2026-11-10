@@ -3,8 +3,8 @@
 ## Candidate
 
 - Unit: I17:E02:W32, AC62.
-- Task base: `abe6550e0` (origin/i17/e02/workspace after W21 #1682).
-- Task head: `d30faa3274437628aca14f9bd4377ac709c69c1a`, branch `i17/e02/w32-tasks-declare-every-file`.
+- Task base: `73231415f` (origin/i17/e02/workspace after W21 #1682 and W29 #1673).
+- Task head: `409d868be0aa225968fbebb7945278e47acc9bed`, branch `i17/e02/w32-tasks-declare-every-file`.
 - Owner: `skills/work-planner/artifacts/work-item.md` (Component lists every file the task changes, separated by commas; the split-per-file rule is removed).
 - Readers: `scripts/deps.py` (candidate units and contention by any shared file), `scripts/deliver.py` (a unit changes every epic base its files name), and the prose readers Dependency Graph, Epic Issue Body, Delivery Plan, Delivery Branches, Delivery Brief, Dispatch Batch, Hot-fix, Sync Mode, Plan Mode, Deliver Mode and Unit Dispatch.
 
@@ -28,7 +28,7 @@ The W32 work item itself declares seventeen files on one line; deps.py reads it 
 
 ## Full Checks
 
-- Planner: 1108 tests, one opt-in live-link skip, [planner.log](planner.log) (first line is the head it ran at; includes document/model and test-catalogue checks).
+- Planner: 1110 tests, one opt-in live-link skip, [planner.log](planner.log) (first line is the head it ran at; includes document/model and test-catalogue checks).
 - Shared: 280 pass, [shared.log](shared.log).
 - Skill checker: 59 files, zero findings, [skill-check.log](skill-check.log).
 - Whitespace: zero findings against origin/i17/e02/workspace, [whitespace.log](whitespace.log).
