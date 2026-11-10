@@ -4,12 +4,12 @@ Usage:
   python3 deps.py [I=bodies/initiative.md] E00=bodies/epic-00.md E01=bodies/epic-01.md
                   [E00:W01=records/e00/w01.md ...] [R=records/joins.md ...]
 
-An argument naming a row is that row's work item, a file whose declaration line names the one
-component its implementation extends:
-  **Component:** main:src/bundle/assembly.ts
-A declared component is read without its link, a wrapping code span, a trailing full stop or a
-leading ./, so two spellings of one path are one component. A value still carrying the template's
-{{…}} placeholder declares none. A component is one file: a value ending in /, carrying a glob, or
+An argument naming a row is that row's work item, a file whose declaration line names each file
+its implementation changes, separated by commas:
+  **Component:** main:src/bundle/assembly.ts, main:src/bundle/emit.ts
+Each declared file is read without its link, a wrapping code span, a trailing full stop or a
+leading ./, so two spellings of one path are one file. A value still carrying the template's
+{{…}} placeholder declares none. Each entry is one file: an entry ending in /, carrying a glob, or
 naming a directory under the working directory declares a directory, which is a problem.
 
 Each remaining file is an epic issue body holding the agent-engineering Work Breakdown table:
@@ -31,7 +31,7 @@ A dependency is one of:
 Markdown links are read by their text, so [E01:W02](https://…/issues/937) is E01:W02.
 
 Problems (exit status 1): a Task cell naming a malformed or a second, different task id,
-unknown references, a work item declaring no component or naming no row,
+unknown references, a work item declaring no file or naming no row,
 an unreadable work item, a task row naming an epic rather than the rows it consumes,
 a task depending on itself or a later task in its epic,
 an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
@@ -41,7 +41,7 @@ Joins problems: a task joining a row outside its epic, one that does not join it
 on the other, a joined task needing another through a task outside their unit, and a joined unit
 whose rows cover more than six criteria.
 Also printed: each candidate unit, the undelivered rows of one epic whose work items declare one
-component, that its rows do not join and no R= record line names exactly. An open candidate names
+file, with every file they share, that its rows do not join and no R= record line names exactly. An open candidate names
 both resolutions and each direct edge a join drops. A candidate is split by rule, and printed with
 its reason, where its rows cover more than six criteria or a path between two of them runs through
 a row outside it. An R= file that cannot be read is a problem.
@@ -49,8 +49,8 @@ With I=, the initiative's Depends on cells are checked: each epic's cell names e
 epics required in full by every task or joined unit, less transitive epic dependencies, and names no task.
 Another initiative's epic (I05:E00) or an issue (#750) may also be named.
 Advisory: task numbers that do not follow the order tasks can start.
-Also printed: each pair of rows in different epics whose work items declare one component, every
-row no component was read for, whether its work item was absent, unreadable or undeclared, so a
+Also printed: each pair of rows in different epics whose work items share a declared file, every
+row no file was read for, whether its work item was absent, unreadable or undeclared, so a
 partial contention report names what it passed over, each
 task's level (0 = can start now), the longest chains, and the proposed priority of each epic.
 Epics sharing a priority number start together, so prerequisite depth sets the number and
@@ -153,18 +153,19 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict[str, set[str]],
     return tasks, problems, expanded, criteria, delivered
 
 
-def normalise(component: str) -> str:
-    """One spelling of a declared component: the link text, without a wrapping code span, a
-    trailing full stop or a leading `./`, so two spellings of one path are one component."""
-    text = LINK.sub(r'\1', component).strip()
+def normalise(entry: str) -> str:
+    """One spelling of a declared file: the link text, without a wrapping code span, a trailing
+    full stop or a leading `./`, so two spellings of one path are one file."""
+    text = LINK.sub(r'\1', entry).strip()
     if text.endswith('.'):
         text = text[:-1].strip()
     text = text.strip('`').strip()
     return text[2:] if text.startswith('./') else text
 
 
-def read_components(items: dict[str, Path]) -> tuple[dict[str, str], list[str]]:
-    """The component each work item declares, keyed by its row, and the items declaring none."""
+def read_components(items: dict[str, Path]) -> tuple[dict[str, tuple[str, ...]], list[str]]:
+    """The files each work item's Component line declares, keyed by its row, and the items declaring
+    none or a directory."""
     components, problems = {}, []
     for key, path in items.items():
         try:
@@ -172,33 +173,37 @@ def read_components(items: dict[str, Path]) -> tuple[dict[str, str], list[str]]:
         except OSError as error:
             problems.append(f'{key}: work item {path} is unreadable ({error.strerror})')
             continue
-        declared = ''
-        for line in lines:
-            found = COMPONENT.match(line.strip())
-            if found:
-                declared = normalise(found[1])
-                break
-        if not declared or PLACEHOLDER.search(declared):
-            problems.append(f'{key}: work item declares no component')
-        elif is_directory(declared):
-            problems.append(f'{key}: work item declares directory {declared}; a component is one file')
+        value = next((found[1] for found in map(COMPONENT.match, map(str.strip, lines)) if found), '')
+        declared = tuple(dict.fromkeys(
+            entry for entry in map(normalise, LINK.sub(r'\1', value).split(',')) if entry))
+        directories = [entry for entry in declared if is_directory(entry)]
+        if not declared or PLACEHOLDER.search(value):
+            problems.append(f'{key}: work item declares no file')
+        elif directories:
+            problems.append(f'{key}: work item declares directory {", ".join(directories)}; '
+                            'each entry is one file')
         else:
             components[key] = declared
     return components, problems
 
 
-def is_directory(component: str) -> bool:
-    """Whether a declared component names a directory: its path ends in `/`, carries a glob, or is
-    a directory under the working directory, where the command runs."""
-    path = BRANCH.sub('', component, count=1)
+def is_directory(entry: str) -> bool:
+    """Whether a declared entry names a directory: its path ends in `/`, carries a glob, or is a
+    directory under the working directory, where the command runs."""
+    path = BRANCH.sub('', entry, count=1)
     return path.endswith('/') or '*' in path or Path(path or '.').is_dir()
 
 
-def contention(components: dict[str, str]) -> list[tuple[str, str]]:
-    """Pairs of rows in different epics declaring one component."""
+def common_files(components: dict[str, tuple[str, ...]], left: str, right: str) -> list[str]:
+    """The files two rows both declare, in the order the first declares them."""
+    return [entry for entry in components[left] if entry in components[right]]
+
+
+def contention(components: dict[str, tuple[str, ...]]) -> list[tuple[str, str]]:
+    """Pairs of rows in different epics sharing a declared file."""
     keys = sorted(components)
     return [(left, right) for i, left in enumerate(keys) for right in keys[i + 1:]
-            if left.split(':')[0] != right.split(':')[0] and components[left] == components[right]]
+            if left.split(':')[0] != right.split(':')[0] and common_files(components, left, right)]
 
 
 def recorded_units(paths: list[Path]) -> tuple[set[frozenset[str]], list[str]]:
@@ -253,24 +258,27 @@ def outside_path(rows: frozenset[str], ancestors) -> tuple[str, str, str] | None
     return None
 
 
-def candidate_units(tasks: dict, components: dict[str, str], criteria: dict[str, set[str]],
+def candidate_units(tasks: dict, components: dict[str, tuple[str, ...]], criteria: dict[str, set[str]],
                     delivered: set[str], ancestors,
                     recorded: set[frozenset[str]] = frozenset()) -> list[str]:
-    """Each candidate unit, the undelivered rows of one epic declaring one component, that its rows
-    do not join and no record line names exactly. An open candidate names both resolutions and
-    each direct edge a join drops; one the criterion bound or an outside path splits is split by
-    rule and says why."""
-    groups: dict[tuple[str, str], set[str]] = {}
-    for row, component in components.items():
+    """Each candidate unit, the undelivered rows of one epic declaring one file, printed once with
+    every file they all declare, that its rows do not join and no record line names exactly. An
+    open candidate names both resolutions and each direct edge a join drops; one the criterion
+    bound or an outside path splits is split by rule and says why."""
+    declaring: dict[tuple[str, str], set[str]] = {}
+    for row, declared in components.items():
         if row in tasks and row not in delivered:
-            groups.setdefault((row.split(':')[0], component), set()).add(row)
+            for entry in declared:
+                declaring.setdefault((row.split(':')[0], entry), set()).add(row)
+    groups: dict[frozenset[str], list[str]] = {}
+    for (_, entry), members in sorted(declaring.items()):
+        groups.setdefault(frozenset(members), []).append(entry)
     units = joined_units(tasks)
     lines = []
-    for (_, component), members in sorted(groups.items()):
-        rows = frozenset(members)
+    for rows, files in sorted(groups.items(), key=lambda group: (sorted(group[0]), group[1])):
         if len(rows) < 2 or rows in recorded or all(rows <= units[row] for row in rows):
             continue
-        head = f'{", ".join(sorted(rows))} extend {component}'
+        head = f'{", ".join(sorted(rows))} extend {", ".join(files)}'
         count = len(covered(rows, criteria))
         barred = outside_path(rows, ancestors)
         if count > UNIT_BOUND:
@@ -501,7 +509,7 @@ def main(argv: list[str]) -> int:
     print('\n'.join(problems) if problems else 'none')
     if cyclic or unsupported_joins:
         return 1
-    print('\n--- joins: candidate units, rows of one epic extending one component')
+    print('\n--- joins: candidate units, rows of one epic extending one file')
     print('\n'.join(joins) if joins else 'none')
 
     level: dict[str, int] = {}
@@ -524,11 +532,11 @@ def main(argv: list[str]) -> int:
         print(lv(n), n, '-', tasks[n][0][:70])
     pairs = contention(components)
     unchecked = sorted(key for key in tasks if key not in components)
-    print('\n--- component contention: rows of different epics extending one component')
-    print('\n'.join(f'{left} and {right} both extend {components[left]}'
-                    for left, right in pairs) or 'none')
+    print('\n--- component contention: rows of different epics extending one file')
+    print('\n'.join(f'{left} and {right} both extend {", ".join(common_files(components, left, right))}'
+                     for left, right in pairs) or 'none')
     if unchecked:
-        print('not checked, no component read:', ', '.join(unchecked))
+        print('not checked, no file read:', ', '.join(unchecked))
     print('\n--- epic priority (epics sharing a number start together)')
     proposed = epic_priority(tasks, tuple(epics),
                              {(left.split(':')[0], right.split(':')[0]) for left, right in pairs})

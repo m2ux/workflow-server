@@ -15,7 +15,7 @@ from fixtures import SCRIPTS, epic_body, initiative_body, lane_table, work_item
 
 sys.path.insert(0, str(SCRIPTS))
 from deps import (check_initiative, contention, epic_dependencies, epic_priority,  # noqa: E402
-                  is_directory, main, normalise)
+                  is_directory, main, normalise, read_components)
 
 
 def run(bodies: list[tuple[str, str]]) -> tuple[int, str]:
@@ -54,7 +54,7 @@ def breakdown(*rows: tuple[str, str, str, str, str]) -> str:
 
 def joins_section(text: str) -> list[str]:
     """The lines the joins section prints."""
-    section = text.split('--- joins: candidate units, rows of one epic extending one component\n')[1]
+    section = text.split('--- joins: candidate units, rows of one epic extending one file\n')[1]
     return section.split('\n\n')[0].splitlines()
 
 
@@ -89,7 +89,7 @@ class TaskLanes(unittest.TestCase):
         code, text = run([('E06', self.table(('W01', 'W02', '2'), ('W02', 'W01', '2')))])
         self.assertEqual(code, 0, text)
         self.assertIn('--- problems\nnone', text)
-        self.assertIn('not checked, no component read: E06:W01, E06:W02', text)
+        self.assertIn('not checked, no file read: E06:W01, E06:W02', text)
 
     def test_all_empty_joined_rows_pass(self):
         code, text = run([('E06', self.table(('W01', 'W02', ''), ('W02', 'W01', '')))])
@@ -142,7 +142,7 @@ class TaskLanes(unittest.TestCase):
                           ('E06:W01', work_item('a.py') + '**Lane:** 2\n'),
                           ('E06:W02', work_item('b.py') + '**Lane:** 3\n')])
         self.assertEqual(code, 0, text)
-        self.assertNotIn('not checked, no component read', text)
+        self.assertNotIn('not checked, no file read', text)
 
 
 class JoinedEpicScope(unittest.TestCase):
@@ -217,7 +217,7 @@ class JoinedEpicScope(unittest.TestCase):
 
 
 class CandidateUnits(unittest.TestCase):
-    """Rows of one epic declaring one component are proposed as one unit."""
+    """Rows of one epic declaring one file are proposed as one unit."""
 
     SPECIMEN = breakdown(('W01', 'AC1', '', '', ''), ('W02', 'AC2', 'W01', '', ''),
                          ('W03', 'AC3', '', '', ''), ('W04', 'AC4', '', '', ''),
@@ -225,7 +225,7 @@ class CandidateUnits(unittest.TestCase):
     COMPONENTS = {'W01': 'a.py', 'W02': 'a.py', 'W03': 'b.py', 'W04': 'b.py',
                   'W05': 'c.py', 'W06': 'd.py'}
 
-    def test_rows_declaring_one_component_are_a_candidate_with_the_edge_to_drop(self):
+    def test_rows_declaring_one_file_are_a_candidate_with_the_edge_to_drop(self):
         code, text = check(self.SPECIMEN, self.COMPONENTS)
         self.assertEqual(code, 0, text)
         self.assertEqual(joins_section(text), [
@@ -234,7 +234,7 @@ class CandidateUnits(unittest.TestCase):
             f'E06:W03, E06:W04 extend b.py: name each other in Joins {OPEN}',
         ])
 
-    def test_independent_rows_declaring_different_components_draw_no_finding(self):
+    def test_independent_rows_declaring_different_files_draw_no_finding(self):
         code, text = check(breakdown(('W05', 'AC5', '', '', ''), ('W06', 'AC6', '', '', '')),
                            {'W05': 'c.py', 'W06': 'd.py'})
         self.assertEqual(code, 0, text)
@@ -259,6 +259,25 @@ class CandidateUnits(unittest.TestCase):
         self.assertEqual(code, 0, text)
         self.assertEqual(joins_section(text), [
             'E06:W01, E06:W03 extend a.py: split by rule, E06:W03 needs E06:W02, which needs E06:W01'])
+
+    def test_rows_sharing_one_of_several_declared_files_are_a_candidate(self):
+        code, text = check(breakdown(('W01', 'AC1', '', '', ''), ('W02', 'AC2', '', '', ''),
+                                     ('W03', 'AC3', '', '', '')),
+                           {'W01': 'workspace:a.py, workspace:b.py', 'W02': 'workspace:b.py, workspace:c.py',
+                            'W03': 'workspace:d.py, workspace:a.py'})
+        self.assertEqual(code, 0, text)
+        self.assertEqual(joins_section(text), [
+            f'E06:W01, E06:W02 extend workspace:b.py: name each other in Joins {OPEN}',
+            f'E06:W01, E06:W03 extend workspace:a.py: name each other in Joins {OPEN}',
+        ])
+
+    def test_rows_sharing_several_files_are_one_candidate_naming_each(self):
+        code, text = check(breakdown(('W01', 'AC1', '', '', ''), ('W02', 'AC2', '', '', '')),
+                           {'W01': 'workspace:a.py, workspace:b.py, workspace:c.py',
+                            'W02': 'workspace:b.py, workspace:a.py'})
+        self.assertEqual(code, 0, text)
+        self.assertEqual(joins_section(text), [
+            f'E06:W01, E06:W02 extend workspace:a.py, workspace:b.py: name each other in Joins {OPEN}'])
 
     def test_a_joined_row_needing_another_through_a_row_outside_their_unit_is_a_problem(self):
         code, text = check(breakdown(('W01', 'AC1', '', 'W03', ''), ('W02', 'AC2', 'W01', '', ''),
@@ -315,7 +334,7 @@ class UnitAccounting(unittest.TestCase):
 
 
 class DirectoryComponents(unittest.TestCase):
-    """A component is one file, so a work item declaring a directory is a problem."""
+    """Each declared entry is one file, so a work item declaring a directory is a problem."""
 
     BODY = breakdown(('W01', 'AC1', '', '', ''), ('W02', 'AC2', '', '', ''))
 
@@ -323,8 +342,16 @@ class DirectoryComponents(unittest.TestCase):
         code, text = check(self.BODY, {'W01': 'workspace:skills/scripts/', 'W02': 'workspace:skills/a.py'})
         self.assertEqual(code, 1)
         self.assertIn('E06:W01: work item declares directory workspace:skills/scripts/; '
-                      'a component is one file', text)
-        self.assertIn('not checked, no component read: E06:W01', text)
+                      'each entry is one file', text)
+        self.assertIn('not checked, no file read: E06:W01', text)
+
+    def test_a_directory_among_several_files_is_a_problem(self):
+        code, text = check(self.BODY, {'W01': 'workspace:skills/a.py, workspace:skills/scripts/',
+                                       'W02': 'workspace:skills/a.py'})
+        self.assertEqual(code, 1)
+        self.assertIn('E06:W01: work item declares directory workspace:skills/scripts/; '
+                      'each entry is one file', text)
+        self.assertIn('not checked, no file read: E06:W01', text)
 
     def test_a_component_carrying_a_glob_is_a_problem(self):
         code, text = check(self.BODY, {'W01': 'workspace:skills/**', 'W02': 'workspace:skills/a.py'})
@@ -578,12 +605,17 @@ class InitiativeDependencies(unittest.TestCase):
 class ComponentContention(unittest.TestCase):
     BUNDLE = 'src/bundle/assembly.ts'
 
-    def test_rows_of_different_epics_extending_one_component_are_paired(self):
-        components = {'E08:W01': self.BUNDLE, 'E09:W01': self.BUNDLE, 'E09:W02': 'src/bundle/emit.ts'}
+    def test_rows_of_different_epics_extending_one_file_are_paired(self):
+        components = {'E08:W01': (self.BUNDLE,), 'E09:W01': (self.BUNDLE,), 'E09:W02': ('src/bundle/emit.ts',)}
+        self.assertEqual(contention(components), [('E08:W01', 'E09:W01')])
+
+    def test_rows_of_different_epics_sharing_one_of_several_files_are_paired(self):
+        components = {'E08:W01': ('src/a.ts', self.BUNDLE), 'E09:W01': (self.BUNDLE, 'src/b.ts'),
+                      'E09:W02': ('src/a.ts.bak', 'src/c.ts')}
         self.assertEqual(contention(components), [('E08:W01', 'E09:W01')])
 
     def test_rows_of_one_epic_do_not_contend(self):
-        components = {'E08:W01': self.BUNDLE, 'E08:W02': self.BUNDLE}
+        components = {'E08:W01': (self.BUNDLE,), 'E08:W02': (self.BUNDLE,)}
         self.assertEqual(contention(components), [])
 
     def test_the_contending_pair_is_printed(self):
@@ -602,17 +634,35 @@ class ComponentContention(unittest.TestCase):
         self.assertEqual(code, 0, text)
         self.assertIn('--- epic priority (epics sharing a number start together)\n2 E08\n1 E09', text)
 
-    def test_epics_declaring_different_components_share_a_number(self):
+    def test_a_pair_sharing_one_of_several_files_is_printed_and_separated(self):
+        code, text = run([('E08', epic_body(('W01', 'Extend assembly', ''))),
+                          ('E09', epic_body(('W01', 'Extend emit', ''))),
+                          ('E08:W01', work_item(f'src/a.ts, {self.BUNDLE}')),
+                          ('E09:W01', work_item(f'src/bundle/emit.ts, {self.BUNDLE}, src/c.ts'))])
+        self.assertEqual(code, 0, text)
+        self.assertIn('E08:W01 and E09:W01 both extend src/bundle/assembly.ts\n', text)
+        self.assertIn('--- epic priority (epics sharing a number start together)\n2 E08\n1 E09', text)
+
+    def test_epics_declaring_different_files_share_a_number(self):
         code, text = run([('E08', epic_body(('W01', 'Extend assembly', ''))),
                           ('E09', epic_body(('W01', 'Extend emit', ''))),
                           ('E08:W01', work_item(self.BUNDLE)),
                           ('E09:W01', work_item('src/bundle/emit.ts'))])
         self.assertEqual(code, 0, text)
-        self.assertIn('--- component contention: rows of different epics extending one component\nnone',
+        self.assertIn('--- component contention: rows of different epics extending one file\nnone',
                       text)
         self.assertIn('--- epic priority (epics sharing a number start together)\n1 E08\n1 E09', text)
 
-    def test_one_path_spelt_two_ways_is_one_component(self):
+    def test_each_listed_file_is_read_in_its_own_spelling(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'w01.md'
+            path.write_text('**Component:** [workspace:a.py](https://example.test/a), '
+                            '`./workspace:b.py`, workspace:a.py, workspace:c.py.\n')
+            components, problems = read_components({'E08:W01': path})
+        self.assertEqual(problems, [])
+        self.assertEqual(components, {'E08:W01': ('workspace:a.py', 'workspace:b.py', 'workspace:c.py')})
+
+    def test_one_path_spelt_two_ways_is_one_file(self):
         self.assertEqual(normalise('`src/a.ts`.'), 'src/a.ts')
         self.assertEqual(normalise('./src/a.ts'), 'src/a.ts')
         self.assertEqual(normalise('[src/a.ts](https://example.test/a)'), 'src/a.ts')
@@ -640,7 +690,7 @@ class ComponentContention(unittest.TestCase):
         code, text = run([('E08', epic_body(('W01', 'Extend assembly', ''), ('W02', 'Emit', 'W01'))),
                           ('E08:W01', work_item(self.BUNDLE))])
         self.assertEqual(code, 0, text)
-        self.assertIn('not checked, no component read: E08:W02', text)
+        self.assertIn('not checked, no file read: E08:W02', text)
 
     def test_a_complete_set_of_work_items_names_nothing_as_unchecked(self):
         code, text = run([('E08', epic_body(('W01', 'Extend assembly', ''))),
@@ -652,18 +702,19 @@ class ComponentContention(unittest.TestCase):
         code, text = run([('E08', epic_body(('W01', 'Extend assembly', ''))),
                           ('E08:W01', '## Overview\n\nWhat the task delivers.\n')])
         self.assertEqual(code, 1)
-        self.assertIn('E08:W01: work item declares no component', text)
-        self.assertIn('not checked, no component read: E08:W01', text)
+        self.assertIn('E08:W01: work item declares no file', text)
+        self.assertIn('not checked, no file read: E08:W01', text)
 
     def test_a_work_item_still_carrying_the_placeholder_declares_none(self):
-        placeholder = '**Component:** {{The one component this task implementation extends}}\n'
+        placeholder = ('**Component:** {{The long-lived branch and path of each file this task\'s '
+                       'implementation changes, separated by commas}}\n')
         code, text = run([('E08', epic_body(('W01', 'Extend assembly', ''))),
                           ('E09', epic_body(('W01', 'Extend assembly again', ''))),
                           ('E08:W01', placeholder), ('E09:W01', placeholder)])
         self.assertEqual(code, 1)
-        self.assertIn('E08:W01: work item declares no component', text)
-        self.assertIn('E09:W01: work item declares no component', text)
-        self.assertIn('--- component contention: rows of different epics extending one component\nnone',
+        self.assertIn('E08:W01: work item declares no file', text)
+        self.assertIn('E09:W01: work item declares no file', text)
+        self.assertIn('--- component contention: rows of different epics extending one file\nnone',
                       text)
         self.assertIn('--- epic priority (epics sharing a number start together)\n1 E08\n1 E09', text)
 

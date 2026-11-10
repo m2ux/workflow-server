@@ -40,7 +40,7 @@ Printed: a unit line for each admitted available unit, naming its lane or unlane
 its ids and Description give it, and a branch and worktree for each epic base it changes, suffixed with the base's long-lived name
 when there are several; an unresolvable line for a row gated on a dependency entry nothing can
 resolve, naming the entry; an undeclared line for a row of a unit in an epic of several bases whose
-linked work item names no long-lived branch with an epic base, naming why; a hold line for each
+linked work item declares no file, or a file naming no long-lived branch with an epic base, naming why; a hold line for each
 reserved row; a blocked line for a free row whose dependencies are not delivered or whose joined
 task is unavailable; an output line for each producer output a row naming another epic's row was
 read for, naming the output, the consumer commit and whether it is available there; a merge line for
@@ -52,8 +52,8 @@ entry, an undeclared row or kind issue, or an invalid lane unit exits 1.
 
 The epic bases a unit changes are those whose long-lived branch its rows' work items name. A free
 row links its work-item file, which --engineering, the checkout holding the planning records, gives
-to read; the file's declaration line names the long-lived branch and the path of its component:
-  **Component:** workspace:skills/work-planner/scripts/deliver.py
+to read; the file's declaration line names the long-lived branch and the path of each file it changes:
+  **Component:** workspace:skills/work-planner/scripts/deliver.py, main:src/index.ts
 A unit of an epic with one base works on that base. A free row linking no work item is unplanned:
 its session writes the work item after dispatch, so its unit works on every epic base.
 
@@ -152,8 +152,8 @@ def long_lived(base: str) -> str:
 
 
 def changed_bases(unit: list[str], detail: dict, bases: list[str], checkout: str) -> tuple[list[str], list[str]]:
-    """The epic bases a unit changes, as its rows' work items name their long-lived branches, and
-    each row naming none of the bases with why. A unit of an epic with one base, or none, changes those.
+    """The epic bases a unit changes, as its rows' work items name the long-lived branch of each
+    declared file, and each row declaring no file, or a file on none of the bases, with why. A unit of an epic with one base, or none, changes those.
     A row linking no work item is unplanned: its session writes the work item, so it changes every base."""
     if len(bases) <= 1:
         return bases, []
@@ -170,14 +170,15 @@ def changed_bases(unit: list[str], detail: dict, bases: list[str], checkout: str
             items[task] = Path(checkout) / path
     components, problems = read_components(items)
     missing += problems
-    for task, component in sorted(components.items()):
-        branch = ON_BRANCH.match(component)
-        if not branch:
-            missing.append(f'{task}: component {component} names no long-lived branch')
-        elif branch[1] not in named:
-            missing.append(f'{task}: component {component} names {branch[1]}, which has no epic base')
-        else:
-            changed.add(branch[1])
+    for task, declared in sorted(components.items()):
+        for entry in declared:
+            branch = ON_BRANCH.match(entry)
+            if not branch:
+                missing.append(f'{task}: file {entry} names no long-lived branch')
+            elif branch[1] not in named:
+                missing.append(f'{task}: file {entry} names {branch[1]}, which has no epic base')
+            else:
+                changed.add(branch[1])
     return ([] if missing else [base for base in bases if long_lived(base) in changed]), missing
 
 
