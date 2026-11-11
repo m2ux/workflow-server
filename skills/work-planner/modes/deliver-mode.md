@@ -87,7 +87,7 @@ The continuing coordinator for one authorized delivery scope.
 
 ###### Kind Unit Hold
 
-- For the hold of a [kind unit](../artifacts/delivery-plan.md#kind-units) whose [registered kind](../SKILL.md) supplies Release Hold, Apply the Release Hold operation that kind supplies with its issue and the selected board, and retain the board result or refusal it provides.
+- For the hold of a [kind unit](../artifacts/delivery-plan.md#kind-units), Apply [Release Hold](../artifacts/kind.md#release-hold "ƒ") with its issue and the selected board, and retain the [Kind Result](../artifacts/kind.md#kind-result) it provides.
 
 ##### Survey Continuation
 
@@ -239,11 +239,12 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 - Debt in code outside the unit's change is an issue of its own, arising from the delivery.
 
 - Carry each item outside the unit's change into [Arising Issues](#11-arising-issues).
-- Continue to [Review Before Merge](#9-review-before-merge) for a unit whose [registered kind](../SKILL.md) supplies Review Before Merge, and to [Merge](#10-merge) otherwise.
+- Continue to [Review Before Merge](#9-review-before-merge).
 
 #### 9. Review Before Merge
 
-- Apply the Review Before Merge operation the unit's [registered kind](../SKILL.md) supplies for its draft pull request.
+- Apply [Review Before Merge](../artifacts/kind.md#review-before-merge "ƒ") for the unit's pull request.
+- On the [Kind Result](../artifacts/kind.md#kind-result) `unsupplied`, continue to [Merge](#10-merge).
 - Continue to [Merge](#10-merge) only with the confirmed ready [Review State](../artifacts/pull-request.md#review-state) it provides.
 - On a failure, or a hold with open findings, report the unresolved state, the confirmed draft readback and each open finding in the session result, and stop before [Merge](#10-merge).
 
@@ -257,7 +258,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 11. Arising Issues
 
-- For each unsaved issue that arose during delivery, Apply the Populate Body operation the [registered kind](../SKILL.md) for work outside any initiative supplies, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body.
+- For each unsaved issue that arose during delivery, Apply [Populate Body](../artifacts/kind.md#populate-body "ƒ") for the [registered kind](../SKILL.md) for work outside any initiative, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body.
 
 - Follow [Hoist Mode](hoist-mode.md "ƒ") in the project checkout with those new issue identities, each arising issue an agent review's exclusion saved, and the allowance the brief names, after the pull request is open and epic delivery is recorded.
 - Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with each placement it applied and each it held.
