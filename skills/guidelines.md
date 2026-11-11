@@ -116,6 +116,8 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - A prerequisite citation pointing further down its own file is a defect, whatever its wording. A sequential reader meets it after the point it was meant to serve.
 - **Step references.**
   A reference to a procedure step that has its own heading is a link to that heading, named by its title: `continue at [Re-Run](#13-re-run)`, not `continue at step 13`.
+- **Entry point.**
+  SKILL.md is the compilation entry. A link to it from a file it reaches forms a cycle that pulls the entry into its own bundle, so no skill file links SKILL.md.
 - **Resolution.**
   Every link resolves to a file that exists, and every anchor to one heading in it: no two headings of a file share an anchor.
 

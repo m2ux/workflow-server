@@ -2848,3 +2848,35 @@ class InstalledWorkPlannerModel(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
+
+class EntryPointLinks(unittest.TestCase):
+    """SKILL.md is the compilation entry, so no other file of the skill links it; a plain mention is no link."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.write('SKILL.md', '# Specimen\n\nSee [guide](references/guide.md) and [Modes](#modes).\n\n## Modes\n\nOne.\n')
+
+    def write(self, name, text):
+        path = self.skill / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+        return path
+
+    def found(self):
+        files = sorted(self.skill.rglob('*.md'))
+        cited, called = checker.citations(files, {})
+        out = []
+        for path in files:
+            out += checker.check(path, self.root, {}, cited, called, {})
+        return [(str(Path(where).relative_to('specimen')), line, kind)
+                for where, line, kind, _ in out if kind == 'link to the entry point']
+
+    def test_a_link_to_the_entry_point_is_reported(self):
+        self.write('references/guide.md', '# Guide\n\nEach kind the [entry point](../SKILL.md#modes) lists.\n')
+        self.assertEqual(self.found(), [('references/guide.md', 3, 'link to the entry point')])
+
+    def test_a_plain_mention_and_the_entry_point_linking_itself_pass(self):
+        self.write('references/guide.md', '# Guide\n\nRevise changes SKILL.md and its `[entry](../SKILL.md)` specimen.\n')
+        self.assertEqual(self.found(), [])

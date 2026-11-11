@@ -107,6 +107,11 @@ module, which only the registry reaches. The kind's own files, the registry
 and the registration section name it freely, and a code span or fenced block
 holds a literal example rather than a reference.
 
+A skill's SKILL.md is its compilation entry. A link to it from a file it
+reaches forms a cycle that pulls the entry into its own bundle, so a link from
+any other markdown file of the skill to that SKILL.md is reported; a plain
+mention or a code span is no link.
+
 Sibling sections whose titles end in one word state one kind of thing, so
 they open in one mood, judged from the first words of each opening sentence.
 
@@ -215,6 +220,7 @@ KINDS = (
     'unwrapped shell invocation', 'duplicate command parameter prose', 'redundant command wrapper', 'repeated procedure title',
     'executable step in Fields', 'before-use cycle',
     'kind named in a general file', 'kind module imported outside the registry',
+    'link to the entry point',
 )
 # Review candidates point semantic review at a source without failing the
 # check, since no lexical signal settles whether a field derives or constrains.
@@ -802,6 +808,8 @@ def check(path, root, cache, cited, called, structures=None):
         return cache[target]
 
     callers = called.get(path, {})
+    skill = skill_of(path)
+    entry_point = (skill / 'SKILL.md').resolve() if skill else None
 
     previous = 0
     for index, level, title in headings:
@@ -852,6 +860,10 @@ def check(path, root, cache, cited, called, structures=None):
             report(index, 'unresolved link', target)
         elif fragment and destination.suffix == '.md' and anchor_of(fragment) not in anchors(destination):
             report(index, 'unresolved anchor', target)
+        # The entry point is the skill's compilation entry: a link to it from a
+        # file it reaches forms a cycle that pulls the entry into its own bundle.
+        if destination != path and destination == entry_point:
+            report(index, 'link to the entry point', target)
 
     for index, line in enumerate(lines):
         if specimens[index] or index in skip or RULE.match(line):
