@@ -59,7 +59,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For an automatic line, take its recommended decision and Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with that decision.
 - A held line, and an automatic one the recommendation leaves without an answer, is settled as [Held Change](../artifacts/plan-change.md#held-change) states, following the interview rules in the [guidelines](../guidelines.md#modes) where it reaches the user.
-- A held or unanswered decision leaves the queue pending until an answer is available.
+- A held or unanswered decision stops this step: provide the pending queue with the [change list](../artifacts/plan-change.md#change-list) and stop. Step 7 treats that queue as incomplete.
 
 - For `order`, the answer is the [parallel work map](../artifacts/board-queue.md#priority-sets): a positive integer on each listed initiative, or none left unordered.
 
@@ -80,7 +80,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Resolve any further missing evidence through step 5.
 
-- Repeat this step while a decision is pending.
+- Repeat this step while an answer leaves a further decision pending.
 - Continue to step 7 only when the refreshed queue meets [Completeness](../artifacts/board-queue.md#completeness).
 - Provide the [change list](../artifacts/plan-change.md#change-list) with the queue, so the caller reports each decision this mode made and each it held.
 

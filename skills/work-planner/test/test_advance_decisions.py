@@ -66,8 +66,14 @@ def walk(*, disposition='automatic', answer=1, save_ok=True, readback=SAVED, sou
     autonomy = next(line for line in body.splitlines() if 'Check Plan Change Autonomy' in line)
     events.append(CALL.search(autonomy)[1])
     if disposition == 'held' or answer == 'unanswered':
-        if '- A held or unanswered decision leaves the queue pending until an answer is available.' not in body:
+        held = next((line for line in body.splitlines() if line.startswith('- A held or unanswered decision')), None)
+        if held is None:
             raise AssertionError('unrecognized pending decision branch')
+        if 'stop' in held and '[change list]' in held:
+            return 'stopped', events, initial
+        repeat = next(line for line in body.splitlines() if line.startswith('- Repeat this step while'))
+        if 'a decision is pending' in repeat:
+            return 'loop', events, initial
         return 'pending', events, initial
     if disposition == 'automatic':
         automatic = next(line for line in body.splitlines() if line.startswith('- For an automatic line, take'))
@@ -123,14 +129,14 @@ class AdvanceDecisions(unittest.TestCase):
         self.assertEqual(events[-4:], ['Ensure Repository Labels', 'Save Tracker Issue',
                                       'Read Board State', 'Compute Board Queue'])
 
-    def test_held_decision_has_no_priority_or_status_write(self):
+    def test_held_decision_stops_with_the_change_list_and_no_write(self):
         outcome, events, _ = walk(disposition='held')
-        self.assertEqual(outcome, 'pending')
+        self.assertEqual(outcome, 'stopped')
         self.assertEqual(events, ['Compute Board Queue', 'Check Plan Change Autonomy'])
 
-    def test_automatic_decision_without_an_answer_stays_pending(self):
+    def test_automatic_decision_without_an_answer_stops(self):
         outcome, events, _ = walk(answer='unanswered')
-        self.assertEqual(outcome, 'pending')
+        self.assertEqual(outcome, 'stopped')
         self.assertNotIn('Save Tracker Issue', events)
 
     def test_failed_save_stops_before_queue_continuation(self):
