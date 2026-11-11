@@ -1,5 +1,6 @@
 """Work Kind holds one dispatching operation per interface operation, each resolving to the operation the item's registered
-kind supplies or to its general route, and general files reach a kind's operation only through it."""
+kind supplies or to its general route, general files reach a kind's operation only through it, and its Registration lists
+each kind's lifecycle artifact ahead of its body."""
 import re
 import sys
 import unittest
@@ -246,6 +247,21 @@ class Dispatch(unittest.TestCase):
                       section((ROOT / 'modes' / 'deliver-mode.md').read_text(), '#### 9. Review Before Merge'))
 
 
+class Registration(unittest.TestCase):
+    """Work Kind's Registration lists each kind's lifecycle artifact ahead of its body artifact."""
+
+    def test_proposal_is_registered_beside_proposal_body(self):
+        self.assertEqual([(path, title) for path, title, _ in registration()['Proposal']],
+                         [('artifacts/proposal.md', 'Proposal'), ('artifacts/proposal-body.md', 'Proposal Body')])
+
+    def test_each_lifecycle_artifact_precedes_its_body(self):
+        for kind, lifecycle, body in (('Proposal', 'Proposal', 'Proposal Body'),
+                                      ('Initiative', 'Initiative', 'Initiative Issue Body'),
+                                      ('Epic', 'Epic', 'Epic Issue Body')):
+            with self.subTest(kind=kind):
+                self.assertEqual([title for _, title, _ in registration()[kind]], [lifecycle, body])
+
+
 class HotfixInterface(unittest.TestCase):
     """Hot-fix supplies its registered interface operations under their names, reached only through Work Kind."""
 
@@ -410,7 +426,7 @@ class GeneralCallers(unittest.TestCase):
         """A capitalised Proposal names the body section, a literal; initiative, epic and task are the plan
         hierarchy the general route delivers."""
         kinds = self.kind_artifacts()
-        self.assertEqual(kinds, {'artifacts/proposal-body.md', 'artifacts/standalone-body.md',
+        self.assertEqual(kinds, {'artifacts/proposal.md', 'artifacts/proposal-body.md', 'artifacts/standalone-body.md',
                                  'artifacts/hotfix.md', 'artifacts/hotfix-body.md'})
         for name in DECLARED:
             path = ROOT / name

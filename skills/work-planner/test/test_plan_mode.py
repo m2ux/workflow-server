@@ -1,4 +1,5 @@
-"""Plan Mode keeps a plan in one home: its planning record on the engineering branch.
+"""Plan Mode keeps a plan in one home: its planning record on the engineering branch, and drafts from an Approved
+proposal.
 
 Every draft body and work item the mode writes lands in the record's folder,
 and the record reaches readers by a commit and push of the engineering branch.
@@ -130,6 +131,60 @@ class PublishedOnEngineering(unittest.TestCase):
                       "(git diff --cached --quiet || git commit -F '<message-file>') && "
                       "git fetch origin engineering && git rebase origin/engineering && git push",
                       section(text, '### Commit Planning Record'))
+
+
+class ApprovedBeforeDrafting(unittest.TestCase):
+    """The proposal Plan Mode raises through Propose Mode stands at Approved, with the user assigned, before any
+    initiative is drafted; Proposal Status alone states what Approved means and whom it assigns."""
+
+    def setUp(self):
+        self.plan = (ROOT / 'modes' / 'plan-mode.md').read_text()
+        self.propose = (ROOT / 'modes' / 'propose-mode.md').read_text()
+        self.status = '(../artifacts/proposal.md#proposal-status)'
+
+    def test_plan_requests_approved_from_propose_in_its_first_step(self):
+        take = section(self.plan, '### 1. Take the Proposal')
+        self.assertIn('- At [Approved]' + self.status + ", the proposal's issue body defines the problem scope.",
+                      take)
+        self.assertIn('- At any other [Proposal Status]' + self.status + ', or with no item on the board, the '
+                      'proposal blocks initiative drafting; report the Status read or the missing item.', take)
+        self.assertIn('- Follow [Propose Mode](propose-mode.md "ƒ") with the user\'s goal and '
+                      '[Requested Status](propose-mode.md#requested-status) Approved', take)
+        self.assertIn('placed at Approved; an unresolved proposal blocks initiative drafting', take)
+        steps = STEP.findall(self.plan)
+        self.assertLess(steps.index('Take the Proposal'), steps.index('Draft Each Initiative Body'))
+
+    def test_the_gate_reads_the_named_proposals_status_from_the_board(self):
+        take = section(self.plan, '### 1. Take the Proposal')
+        read = ('- Apply [Select Proposals Board](../artifacts/proposals-board.md#select-proposals-board "ƒ"), then '
+                'Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for that board, and read the '
+                'Status of the proposal\'s item.')
+        self.assertIn('- When the user names a proposal:\n\n' + read, take)
+        self.assertLess(take.index(read), take.index('- At [Approved]'))
+
+    def test_a_requested_status_places_the_proposal_without_asking(self):
+        confirm = section(self.propose, '### 6. Confirm Placement')
+        self.assertIn('- When the caller supplies a [Requested Status](#requested-status), continue to '
+                      '[Place](#7-place) without asking.', confirm)
+
+    def test_place_sets_the_requested_status_and_its_assignee(self):
+        place = section(self.propose, '### 7. Place')
+        self.assertIn('with that id and the [Requested Status](#requested-status), or, when none is supplied',
+                      place)
+        self.assertIn('- When [Proposal Status]' + self.status + ' assigns the placed status to the user, Run '
+                      '[Find User](../artifacts/board.md#find-user "ƒ")', place)
+        self.assertIn('Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with that login as '
+                      "the issue's [Assignee](../artifacts/issue.md#assignee).", place)
+
+    def test_requested_status_is_a_proposal_status(self):
+        field = section(self.propose, '### Requested Status')
+        self.assertIn('[Proposal Status]' + self.status, field)
+
+    def test_approved_assigns_the_user_in_proposal_status_alone(self):
+        status = section((ROOT / 'artifacts' / 'proposal.md').read_text(), '### Proposal Status')
+        self.assertIn('- **Approved.**\n  Qualified to become an initiative. The assignee is the user.', status)
+        for text in (self.plan, self.propose):
+            self.assertNotIn('The assignee is the user', text)
 
 
 if __name__ == '__main__':

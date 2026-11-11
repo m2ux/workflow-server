@@ -94,6 +94,7 @@ An issue type the [Registration](#registration) lists, with the artifacts holdin
 Each kind of work with what it is, then each artifact holding it, followed by the interface name of each operation that artifact supplies, linked to that operation. An artifact supplying none lists no name.
 
 - **Proposal**  States the problem and the goal, with no Work Breakdown.
+  - [Proposal](proposal.md)
   - [Proposal Body](proposal-body.md)  [Validate Body](proposal-body.md#validate-proposal-body "ƒ")
 - **Initiative**  States a goal and lists its epics.
   - [Initiative](initiative.md)

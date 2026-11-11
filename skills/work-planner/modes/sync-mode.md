@@ -239,7 +239,7 @@ Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with e
 
 ### 12. Sync the Board
 
-- Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") for the initiative's theme.
+- Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") for the initiative's theme, or Apply [Select Proposals Board](../artifacts/proposals-board.md#select-proposals-board "ƒ") when the board synced is the [proposals board](../artifacts/proposals-board.md).
 
 - When the board is absent:
 
@@ -251,7 +251,7 @@ Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with e
 
 ##### 1. Create Absent Proposals Board
 
-When [Selected Kind](../artifacts/board.md#selected-kind) is proposals and no open board under [Board Owner](../artifacts/board.md#board-owner) has the [proposals title](../configuration.md#proposals-board), Apply [Create Proposals Board](../artifacts/board.md#create-proposals-board "ƒ"). The copy source and the title must meet [Proposals](../artifacts/board.md#proposals).
+When the absent board is the [proposals board](../artifacts/proposals-board.md), Apply [Create Proposals Board](../artifacts/proposals-board.md#create-proposals-board "ƒ").
 
 ##### 2. Create Absent Theme Board
 

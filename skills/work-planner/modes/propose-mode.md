@@ -1,6 +1,6 @@
 # Propose Mode
 
-Scopes one problem: the friction, the evidence, and the boundary, and states the goal as clauses the user confirms. It raises one proposal on the proposals board.
+Scopes one problem: the friction, the evidence, and the boundary, and states the goal as clauses the user confirms. It raises one proposal on the [proposals board](../artifacts/proposals-board.md).
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
@@ -53,7 +53,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 6. Confirm Placement
 
-- Ask whether to add the issue to the proposals board.
+- When the caller supplies a [Requested Status](#requested-status), continue to [Place](#7-place) without asking.
+- Otherwise ask whether to add the issue to the [proposals board](../artifacts/proposals-board.md).
 
 - On acceptance, continue to [Place](#7-place).
 - On a decline, skip placement and continue to [Report](#8-report) with the issue URL.
@@ -61,16 +62,15 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 7. Place
 
-- Select proposals as [Board Selection](../artifacts/board.md#board-selection).
-
-- Run [Find Proposals Board](../artifacts/board.md#find-proposals-board "ƒ") under [Board Owner](../artifacts/board.md#board-owner) when [Board Selection](../artifacts/board.md#board-selection) names proposals, or Run [Find Theme Board](../artifacts/board.md#find-theme-board "ƒ") for its theme.
+- Apply [Select Proposals Board](../artifacts/proposals-board.md#select-proposals-board "ƒ") under [Board Owner](../artifacts/board.md#board-owner).
 
 - Retain the [Selected Board](../artifacts/board.md#selected-board) or an absent-board finding for the requester’s selection or creation path.
 
-- For an absent board, Apply [Create Proposals Board](../artifacts/board.md#create-proposals-board "ƒ").
+- For an absent board, Apply [Create Proposals Board](../artifacts/proposals-board.md#create-proposals-board "ƒ").
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the saved issue id.
-- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with that id and initial status Suggested.
-- Leave the issue unassigned.
+- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with that id and the [Requested Status](#requested-status), or, when none is supplied, the initial status a new proposal takes under [Proposal Status](../artifacts/proposal.md#proposal-status).
+- When [Proposal Status](../artifacts/proposal.md#proposal-status) assigns the placed status to the user, Run [Find User](../artifacts/board.md#find-user "ƒ") for the [Assignee Login](../artifacts/board.md#assignee-login), then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with that login as the issue's [Assignee](../artifacts/issue.md#assignee).
+- Otherwise leave the issue unassigned.
 
 ### 8. Report
 
@@ -83,4 +83,10 @@ Give the issue's URL, and the board's when the issue was placed.
 - **One proposal.**
   The user has that problem raised as one proposal.
 - **On the proposals board.**
-  When the user wants the proposal on the proposals board, it is there, raised, and unassigned.
+  When the user or the calling mode wants the proposal on the [proposals board](../artifacts/proposals-board.md), it is there, at the status the caller requested or the one a new proposal takes, with the assignee that status takes.
+
+## Fields
+
+### Requested Status
+
+The [Proposal Status](../artifacts/proposal.md#proposal-status) a calling mode supplies for the proposal's placement. It is absent when the user runs Propose directly. eg `Approved`
