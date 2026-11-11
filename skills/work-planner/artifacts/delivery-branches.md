@@ -264,6 +264,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 </pre></big>
 
 - The checkout must meet [Prepared Task Worktrees](#prepared-task-worktrees). A mismatch retains its files and branch and blocks reuse.
+- A relative worktree path resolves against the project checkout that created it.
 
 ### Add Task Worktree
 
