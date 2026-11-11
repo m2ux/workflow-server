@@ -7,6 +7,7 @@ Hoisted from [#1688](https://github.com/m2ux/workflow-server/issues/1688), [#168
 | File | Purpose |
 | --- | --- |
 | [w41.md](w41.md) | Files, scope, implementation and observing validation for W41. |
+| [validation.md](validation.md) | Observing tests, duplicate-pattern search, base controls and full checks at the task head. |
 
 ## Links
 
