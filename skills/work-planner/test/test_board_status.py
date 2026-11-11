@@ -331,9 +331,9 @@ class HotfixCaller(unittest.TestCase):
         self.assertIn('[Closure](board-status.md#closure)', guidance)
         self.assertNotIn('board-delivery.md', guidance)
 
-    def test_the_registered_settle_contract_is_the_board_status_change(self):
-        text = (ROOT / 'SKILL.md').read_text()
-        self.assertIn('- **Settle Board Status**\n  [Status Change](artifacts/board-status.md#status-change)', text)
+    def test_the_settle_interface_is_the_board_status_change(self):
+        body = operations(ROOT / 'artifacts' / 'work-kind.md')['Settle Board Status']
+        self.assertIn('[Status Change](board-status.md#status-change)', body)
 
     def test_every_board_status_target_resolves(self):
         anchors = {checker.anchor_of(title) for _, _, title in checker.scan(STATUS)[2]}

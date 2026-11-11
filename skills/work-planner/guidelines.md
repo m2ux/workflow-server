@@ -18,12 +18,12 @@ The skill is an object model in prose: an artifact owns state and callable capab
 - **Kind extension.**
   A new kind of work has its own artifact and script module. General artifacts, modes, protocols and scripts describe their family without naming or branching on individual kinds; adding a kind changes no general file.
 - **Interface operations.**
-  Where kinds differ, each kind supplies the same named operation and contract. General callers select that interface through the published kind registration.
+  Where kinds differ, each kind supplies the same named operation and contract. [Work Kind](artifacts/work-kind.md) is the interface's home: general callers Apply its operation, which selects the kind's operation through the published kind registration.
 
 ### Liskov Substitution
 
 - **Interchangeable contracts.**
-  Every kind's interface operation accepts the inputs and provides the output shape its general contract promises. A kind may constrain its own fields, but must not narrow accepted interface inputs or return less than that contract requires.
+  Every kind's interface operation accepts the inputs and provides the output shape the [Work Kind](artifacts/work-kind.md) operation it implements promises. A kind may constrain its own fields, but must not narrow accepted interface inputs or return less than that contract requires.
 
 ### Interface Segregation
 
@@ -37,9 +37,9 @@ The skill is an object model in prose: an artifact owns state and callable capab
 ### Dependency Inversion
 
 - **General dependencies.**
-  Modes and protocols depend on general operations. A kind implements and links to its general interface; a general file never links down to an individual kind.
+  Modes and protocols depend on general operations. A kind implements, in its own artifact, the interface operations [Work Kind](artifacts/work-kind.md) declares, and its registration links them; a general file never links down to an individual kind.
 - **Kind registration.**
-  The entry point lists kinds, and one script registry maps each kind to its module. Callers reach kinds through that registration rather than maintaining their own lists.
+  The [Registration](artifacts/work-kind.md#registration) in Work Kind lists each kind with what it is, the artifacts holding it and the operations each supplies, and one script registry maps each kind to its module. Callers reach kinds through Work Kind's operations and that registration, keeping no list of their own. A caller needing one kind takes it as an input or reads it from the item's kind in the registration.
 
 ### Encapsulation
 
@@ -279,9 +279,9 @@ Read this before adding or changing a reference, applying [SOLID](#solid).
 
 ## Entry Point
 
-Apply [SOLID](#solid) to the entry point and its published kind registration.
+Apply [SOLID](#solid) to the entry point.
 
-- **Opening.**  The bulleted list has one item for each issue type.
+- **Opening.**  The bulleted list names each issue type, and links Work Kind for the registration.
 - **Section order.**  The opening, Modes and Dependencies occupy the entry point.
 - **Issue bodies.**
   The skill's prose layout applies to its instructions. Issue bodies must follow [Issue Body](artifacts/issue-body.md#fields); pull request bodies must follow [Pull Request Body](artifacts/pull-request-body.md#fields).

@@ -93,7 +93,7 @@ Convert an unambiguous checked list and Test/Criteria table to the current plan 
 ### Titles
 
 - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
-- A pull request delivering an issue tagged by a [registered kind](../SKILL.md) takes the title that kind's artifact names for its delivering pull request.
+- A pull request delivering an issue tagged by a [registered kind](work-kind.md#registration) takes the title that kind's artifact names for its delivering pull request.
 - A pull request working on neither an epic nor such an issue takes `Name: Subtitle`, with no prefix, as a revision of the skill itself does.
 - The prefix is how an epic's pull requests are found, and each one, open or merged, is matched to the tasks it works on from its changes and the tasks' Descriptions.
 - The pull request that merges an epic base carries the same prefix. Its head is the epic base, which tells it from a task pull request.

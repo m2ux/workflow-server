@@ -1,4 +1,4 @@
-"""The script registry: each kind of work the entry point registers, mapped to the module that supplies it.
+"""The script registry: each kind of work the Registration in artifacts/work-kind.md lists, mapped to the module that supplies it.
 
 A kind of work is an issue whose title opens with the kind's tag, as its body artifact states. Each
 registered module supplies every operation of the Kind interface with the inputs and results stated

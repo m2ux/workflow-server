@@ -36,7 +36,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Register each draft body and provided work-item file in the planning record.
 - Resolve Open Questions before work starts.
 - Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "ƒ") across the drafts and the provided work-item files.
-- Provide each epic draft and its format results to the review step.
+- Provide each epic draft and its format results to [Review the Drafts](#5-review-the-drafts).
 
 ### 5. Review the Drafts
 

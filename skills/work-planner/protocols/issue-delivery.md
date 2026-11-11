@@ -8,8 +8,10 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 1. Kind Delivery
 
-- For an issue whose [registered kind](../SKILL.md) supplies Record Delivery, Apply the Record Delivery operation that kind supplies for the selected issue, its delivering pull request and the selected criterion ids in the project checkout.
+- Apply [Record Delivery](../artifacts/work-kind.md#record-delivery "ƒ") for the selected issue, its delivering pull request and the selected criterion ids in the project checkout.
+- On the [Work Kind Result](../artifacts/work-kind.md#work-kind-result) `unsupplied`, continue at [Task Issues](#2-task-issues).
 - Provide the saved identity and findings to the caller.
+- Return to the caller.
 
 ### 2. Task Issues
 
@@ -42,5 +44,5 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 #### Body Publication
 
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the retained epic body and each [task body](../artifacts/task-body.md#output-body) provided in step 2.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the retained epic body and each [task body](../artifacts/task-body.md#output-body) provided in [Task Issues](#2-task-issues).
 - Provide the saved identities and findings to the caller.

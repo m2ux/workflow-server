@@ -19,7 +19,7 @@ CONVERGED = 'automatic-order-converged-state'
 CALL = re.compile(r'(?:Apply|Run) \[([^]]+)\]\([^)]* "ƒ"\)')
 HELD = re.compile(r'- A held or unanswered decision(?P<allowance> under an allowance has no user to answer it)?'
                   r'(?::| stops this step:) provide the pending queue with the \[change list\]\([^)]+\) and stop\. '
-                  r'Step 7 treats that queue as incomplete\.'
+                  r'\[Write\]\(#7-write\) treats that queue as incomplete\.'
                   r'|- A held or unanswered decision leaves the queue (?P<waits>pending) until an answer is available\.')
 USER = ('- A held decision put to the user continues with the user\'s answer; '
         'one the user leaves unanswered stops this step as one under an allowance does.')
@@ -142,7 +142,7 @@ def walk(*, disposition='automatic', answer=1, save_ok=True, readback=SAVED, sou
         elif line.startswith('On an unavailable or disagreeing readback,'):
             if not confirmed:
                 return 'pending', events, result
-        elif line.startswith('Continue to step 7 only when'):
+        elif line.startswith('Continue to [Write](#7-write) only when'):
             return ('write' if complete(result) else 'pending'), events, result
         elif line and not line.startswith(('Resolve any further missing evidence', 'Repeat this step while')):
             raise AssertionError(f'unrecognized instruction {line}')

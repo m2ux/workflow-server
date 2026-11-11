@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT.parent / 'scripts'))
 import check_skill_files as checker
-from test_kind_operations import selections
+from test_kind_operations import KIND, registration, registration_lines, selections
 
 
 def executable_scripts(paths):
@@ -35,22 +35,21 @@ def executable_scripts(paths):
 
 
 def registered_operations():
-    """Each kind operation the entry point's registration selects, by artifact and anchor, with the
-    registration line and each general line selecting it through the registration. A kind's operation
-    takes the interface name with the artifact's name, less a closing Body, after its verb."""
-    path = ROOT / 'SKILL.md'
-    lines = path.read_text().splitlines()
+    """Each operation Work Kind's Registration reaches, by artifact and anchor, with its references.
+    A kind's operation is referenced by its registration line and each general line applying the Work Kind
+    operation that dispatches to it; a Work Kind operation, by each registration line naming its interface."""
+    numbers = registration_lines()
     selected = {}
-    for index, line in enumerate(lines[:lines.index('## Modes')]):
-        match = re.match(r'  - \[([^\]]+)\]\(([^)\s#]+)\)  (.+)$', line)
-        if not match:
-            continue
-        text, target, operations = match.groups()
-        stem = re.sub(r' Body$', '', text)
-        for operation in checker.LINK.sub(lambda link: link[0][1:link[0].index(']')], operations).split(', '):
-            verb, _, rest = operation.partition(' ')
-            key = (ROOT / target).resolve(), checker.anchor_of(f'{verb} {stem} {rest}')
-            selected[key] = [f'SKILL.md:{index + 1}'] + [site for site, _ in selections(operation)]
+    for artifacts in registration().values():
+        for path, title, links in artifacts:
+            number = next(number for number, line in numbers.items()
+                          if line.lstrip().startswith(f'- [{title}]({Path(path).name})'))
+            site = f'artifacts/work-kind.md:{number}'
+            for name, target in links:
+                file, _, anchor = target.partition('#')
+                selected.setdefault(((ROOT / file).resolve(), anchor), []).extend(
+                    [site] + [where for where, _ in selections(name)])
+                selected.setdefault((KIND.resolve(), checker.anchor_of(name)), []).append(site)
     return selected
 
 

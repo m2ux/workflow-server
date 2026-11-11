@@ -1,6 +1,6 @@
 # Hot-fix
 
-A hot-fix's board status, delivery unit and branch, delivering pull requests, hold and delivery record. Each operation fills the general contract the [kind registration](../SKILL.md) names for it.
+A hot-fix's board status, delivery unit and branch, delivering pull requests, hold and delivery record. Each operation fills the [Work Kind](work-kind.md) interface operation its [registration](work-kind.md#registration) names.
 
 ## Operations
 

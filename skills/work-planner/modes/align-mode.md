@@ -1,6 +1,6 @@
 # Align Mode
 
-Brings one or more existing issues of any [registered kind](../SKILL.md), and/or pull requests, into line with the plan they belong to and structurally aligns them with the guidelines they are held to.
+Brings one or more existing issues of any [registered kind](../artifacts/work-kind.md#registration), and/or pull requests, into line with the plan they belong to and structurally aligns them with the guidelines they are held to.
 
 Alignment checks conformity to work-planning rules; judgement of content fitness belongs to goal review.
 
@@ -25,8 +25,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 3. Validate the Bodies
 
-- Apply the validate operation the body artifact of the issue's [registered kind](../SKILL.md) supplies.
-- For a kind whose body artifact supplies none, Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body "ƒ") with the [kind conditions](../artifacts/issue-body.md#kind-conditions) that artifact's Fields state.
+- Apply [Validate Body](../artifacts/work-kind.md#validate-body "ƒ") for the issue's [registered kind](../artifacts/work-kind.md#registration).
 - Supply the fetched context and output files.
 
 #### Reference Visibility
@@ -41,7 +40,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Retain [Visibility Findings](../artifacts/issue-body.md#visibility-findings) identifying each private reference on a public issue and each unavailable visibility. A private destination has no public-reference restriction; deciding how to replace or remove a private reference belongs to the requester.
 
-- Carry the visibility findings to the content-decisions step.
+- Carry the visibility findings to [Resolve Content Decisions](#6-resolve-content-decisions).
 
 #### Validation Findings
 
@@ -71,14 +70,14 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For such a body outside any initiative:
 
-- Apply the Populate Body operation its [registered kind](../SKILL.md) supplies to the current body with the confirmed boundary, folding any Non-Goals into Proposal as a closing boundary and writing to that operation's output body.
+- Apply [Populate Body](../artifacts/work-kind.md#populate-body "ƒ") for the body's [registered kind](../artifacts/work-kind.md#registration) to the current body with the confirmed boundary, folding any Non-Goals into Proposal as a closing boundary and writing to that operation's output body.
 
 - Retain the revised output body for publication.
 
 #### Other Content Corrections
 
 - Apply [Revise Epic Rows](../artifacts/epic-issue-body.md#revise-epic-rows "ƒ") with confirmed task splits and Coverage corrections.
-- Replace an epic a task row names with the rows it consumes when correcting dependencies through the dependency step.
+- Replace an epic a task row names with the rows it consumes when correcting dependencies through [Check Dependencies](#8-check-dependencies).
 
 - For a wrong-kind body:
 
@@ -120,7 +119,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 9. Coverage
 
-- For a pull request explicitly selected for alignment, Apply [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan "ƒ"), Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with a converted body, and report its URL. When no initiative or epic is selected, continue at step 13, Re-run.
+- For a pull request explicitly selected for alignment, Apply [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan "ƒ"), Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with a converted body, and report its URL. When no initiative or epic is selected, continue at [Re-Run](#13-re-run).
 
 - For initiative or epic scope, Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence "ƒ") with the fetched initiative, epic and task issue JSON.
 - Continue with its provided records.
@@ -203,7 +202,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - After a published correction:
 
 - Fetch the changed bodies.
-- Repeat steps 3–12 for the affected issues with refreshed delivery evidence.
+- Repeat [Validate the Bodies](#3-validate-the-bodies) through [Review Pull Requests](#12-review-pull-requests) for the affected issues with refreshed delivery evidence.
 - Stop when the checks are clear or every remaining finding is one the user chose to keep. A finding from the criteria check is not one the user keeps. The alignment is not clear while a criterion that fails [Requirement Characteristics](../references/requirement-characteristics.md) remains.
 
 - With or without a correction:

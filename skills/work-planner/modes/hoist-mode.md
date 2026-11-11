@@ -24,7 +24,7 @@ Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every is
 
 - For each option, use the fetched evidence and planning-record references.
 
-- Identify an existing task, a new task, a new epic, a new initiative, an issue of another [registered kind](../SKILL.md) that [Placement Record](../artifacts/placement.md#placement-record) lists, or Leave for the orphan and candidate destinations in [Placement Inputs](../artifacts/placement.md#placement-inputs).
+- Identify an existing task, a new task, a new epic, a new initiative, an issue of another [registered kind](../artifacts/work-kind.md#registration) that [Placement Record](../artifacts/placement.md#placement-record) lists, or Leave for the orphan and candidate destinations in [Placement Inputs](../artifacts/placement.md#placement-inputs).
 - Offer such a kind only for an orphan that meets the definition its artifacts give, with the theme board it joins and each placement field its body artifact requires.
 
 - Populate the placement meeting [Fields](../artifacts/placement.md#fields) and [Disposition Conditions](../artifacts/placement.md#disposition-conditions).
@@ -89,16 +89,16 @@ Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every is
 
 ###### Registered Kind Destination
 
-- For an issue of another [registered kind](../SKILL.md) whose body artifact's Titles carry a numbered prefix, Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") in the source issue's repository using that prefix letter to select a number for the source issue.
+- For an issue of another [registered kind](../artifacts/work-kind.md#registration) whose body artifact's Titles carry a numbered prefix, Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") in the source issue's repository using that prefix letter to select a number for the source issue.
 
 - Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the labels those Titles name.
 
-- Retain the selected number for rewriting and saving the issue's body, title and labels. After the rewrite, the board status step below follows its [placement](../artifacts/placement.md#disposition-conditions).
+- Retain the selected number for rewriting and saving the issue's body, title and labels. After the rewrite, [Settle Board Status](#3-settle-board-status) follows its [placement](../artifacts/placement.md#disposition-conditions).
 - Use the source issue as the destination with the disposition [Disposition Conditions](../artifacts/placement.md#disposition-conditions) give that kind. The rewrite branch below supplies its body and keeps the issue open.
 
 ###### Leave
 
-- Use the source issue as the destination with disposition Leave. The rewrite branch below supplies the body of the [registered kind](../SKILL.md) for work outside any initiative and keeps the issue open.
+- Use the source issue as the destination with disposition Leave. The rewrite branch below supplies the body of the [registered kind](../artifacts/work-kind.md#registration) for work outside any initiative and keeps the issue open.
 
 ##### 2. Retain Saved Placement
 
@@ -112,7 +112,7 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 
 - Select the destination kind and evidence/design from [Rewrite Inputs](../artifacts/placement.md#rewrite-inputs).
 
-- Apply the Populate Body operation the destination's [registered kind](../SKILL.md) supplies, with the inputs it takes from them.
+- Apply [Populate Body](../artifacts/work-kind.md#populate-body "ƒ") for the destination's [registered kind](../artifacts/work-kind.md#registration), with the inputs it takes from them.
 - Carry evidence into Problem and design into Proposal.
 
 ##### 2. Validate and Save Body
@@ -123,7 +123,7 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 
 ##### 3. Settle Board Status
 
-For an issue whose [registered kind](../SKILL.md) supplies Settle Board Status, Apply the Settle Board Status operation that kind supplies with the confirmed theme board and the saved issue.
+Apply [Settle Board Status](../artifacts/work-kind.md#settle-board-status "ƒ") with the confirmed theme board and the saved issue.
 
 ##### 4. Retain Saved Identity
 
@@ -183,7 +183,7 @@ Prepare the comment file naming the taking epic and row, or the taking task issu
 ## Outcomes
 
 - **Each orphan placed.**
-  The user has each chosen orphan joined to an initiative, epic or task, made an issue of another [registered kind](../SKILL.md), or left open.
+  The user has each chosen orphan joined to an initiative, epic or task, made an issue of another [registered kind](../artifacts/work-kind.md#registration), or left open.
 - **Cited work included.**
   An orphan an agent-engineering issue cites is placed, or taken into the issue that already carries that work.
 - **The decision respected.**

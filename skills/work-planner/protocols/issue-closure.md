@@ -18,7 +18,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 3. Check Delivery Completion
 
-- For a task, or an issue whose [registered kind](../SKILL.md) supplies Record Merge, retain the task delivery result its delivering pull request established.
+- For a task, or an issue whose [registered kind](../artifacts/work-kind.md#registration) supplies Record Merge, retain the task delivery result its delivering pull request established.
 
 #### Epic Completion
 
@@ -33,7 +33,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Confirm from [Base Merges](../artifacts/epic.md#base-merges) that every base has merged into its corresponding long-lived branch. An unknown or incomplete base list, or missing merge evidence, leaves completion unconfirmed even when every task is delivered and every criterion is ticked.
 
-- Retain the completion result in [Delivery State](../artifacts/epic.md#delivery-state), identifying remaining blockers. Passing normal delivery checks supplies the evidence for the closure step; the tracker issue's current Development-link gate still governs the write.
+- Retain the completion result in [Delivery State](../artifacts/epic.md#delivery-state), identifying remaining blockers. Passing normal delivery checks supplies the evidence for [Close](#4-close); the tracker issue's current Development-link gate still governs the write.
 
 #### Initiative Completion
 
@@ -89,7 +89,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - If the operation returns an abandoned or incorrect link:
 - Obtain the user's decision on removing it.
 - On a decision to remove, Apply [Access Development Links](../artifacts/pull-request.md#access-development-links "ƒ") with the link's pull request and issue identities, the removal request, that decision and the confirmed repository setting.
-- Repeat from the issue step.
+- Repeat from [Issue](#1-issue).
 
 #### Closure Result
 

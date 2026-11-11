@@ -22,7 +22,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **SKILL.md.**  The skill's entry point, at the top of its folder.
 - **References.**
   - A mode file is named `<mode>-mode.md`. `references/` holds `guidelines.md` when the skill has rules of its own, and each guide the modes share.
-  - A skill may add directories of its own, one for its modes among them, and keep its guidelines beside SKILL.md. Its guidelines state what those files carry and the sections they take, and `structure.json` beside SKILL.md declares those sections to the shared check.
+  - A skill may add directories of its own, one for its modes among them, and keep its guidelines beside SKILL.md. Its guidelines state what those files carry and the sections they take, and `structure.json` beside SKILL.md declares those sections to the shared check. A skill registering kinds of work names, under its `registration` key, the section that lists them, as `<path>#<anchor>`.
   - Scripts and tests each have a folder of their own. Standalone templates use `templates/`.
 - **Shared.**
   `skills/` holds this file beside the `scripts/` and `test/` folders for checks that every skill runs. A check binding one skill lives in that skill's own folders.
@@ -114,6 +114,10 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   A citation asserting the reader must already hold a section earns its place only where that section is in another file, opened for its own reason. Name it: `Read [Audit Command Conventions](change-surface.md#audit-command-conventions) first.`
   - Within one file, position carries the requirement and the citation is dropped: conventions sit ahead of the procedures and commands they govern.
   - A prerequisite citation pointing further down its own file is a defect, whatever its wording. A sequential reader meets it after the point it was meant to serve.
+- **Step references.**
+  A reference to a procedure step that has its own heading is a link to that heading, named by its title: `continue at [Re-Run](#13-re-run)`, not `continue at step 13`.
+- **Entry point.**
+  SKILL.md is the compilation entry. A link to it from a file it reaches forms a cycle that pulls the entry into its own bundle, so no skill file links SKILL.md.
 - **Resolution.**
   Every link resolves to a file that exists, and every anchor to one heading in it: no two headings of a file share an anchor.
 

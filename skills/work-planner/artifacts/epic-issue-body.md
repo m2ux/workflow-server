@@ -94,14 +94,14 @@ The agreed disposition of criteria a delivered row left unmet.
 - Provide the criteria the user confirms already hold to the caller for verification and ticking. The delivered task retains them.
 - Record an unanswered decision as pending.
 - If no criteria need further work, provide the pending findings to the caller.
-- Continue to the draft step with only the criteria the user confirms need further work.
+- Continue to [Confirm Further Task](#2-confirm-further-task) with only the criteria the user confirms need further work.
 
 #### 2. Confirm Further Task
 
 - Draft a further task for the [Criterion Selection](#criterion-selection) requiring further work, starting from the delivered [Task Rows](#task-rows) and meeting [Work Breakdown](#work-breakdown).
 - Confirm the draft with the user.
 - On acceptance, Apply [Revise Epic Rows](#revise-epic-rows "ƒ") with the further row and the criteria it adopts from the delivered task's Coverage.
-- Provide an unanswered draft as pending without continuing to the reconcile step.
+- Provide an unanswered draft as pending without continuing to [Reconcile Revised Delivery](#3-reconcile-revised-delivery).
 
 #### 3. Reconcile Revised Delivery
 

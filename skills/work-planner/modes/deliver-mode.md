@@ -87,7 +87,7 @@ The continuing coordinator for one authorized delivery scope.
 
 ###### Kind Unit Hold
 
-- For the hold of a [kind unit](../artifacts/delivery-plan.md#kind-units) whose [registered kind](../SKILL.md) supplies Release Hold, Apply the Release Hold operation that kind supplies with its issue and the selected board, and retain the board result or refusal it provides.
+- For the hold of a [kind unit](../artifacts/delivery-plan.md#kind-units), Apply [Release Hold](../artifacts/work-kind.md#release-hold "ƒ") with its issue and the selected board, and retain the [Work Kind Result](../artifacts/work-kind.md#work-kind-result) it provides.
 
 ##### Survey Continuation
 
@@ -165,7 +165,7 @@ Retain it and continue with independent units.
 
 #### 3. Provide the Round
 
-Provide the updated session inventory, preparations and blockers to the calling refill step.
+Provide the updated session inventory, preparations and blockers to the caller.
 
 ### Run Delivery Session
 
@@ -180,7 +180,7 @@ The authorized unit carried from its supplied brief through implementation and d
 
 #### 2. Confirm the Reservation
 
-Confirm the supplied reserved folder exists and the unit remains held for this session before changing its worktree: its rows' reservations for a unit of rows, or, for a [kind unit](../artifacts/delivery-plan.md#kind-units), the hold the artifact of its [registered kind](../SKILL.md) defines.
+Confirm the supplied reserved folder exists and the unit remains held for this session before changing its worktree: its rows' reservations for a unit of rows, or, for a [kind unit](../artifacts/delivery-plan.md#kind-units), the hold the artifact of its [registered kind](../artifacts/work-kind.md#registration) defines.
 
 #### 3. Plan
 
@@ -238,14 +238,15 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 - A unit of any kind fixes every debt item its validation finds, from running its tests, auditing the definitions it changed and reviewing its pull request, on its task branch, so its open pull request carries each fix before it merges.
 - Debt in code outside the unit's change is an issue of its own, arising from the delivery.
 
-- Carry each item outside the unit's change into the arising-issues step.
-- Continue to the review step for a unit whose [registered kind](../SKILL.md) supplies Review Before Merge, and to the merge step otherwise.
+- Carry each item outside the unit's change into [Arising Issues](#11-arising-issues).
+- Continue to [Review Before Merge](#9-review-before-merge).
 
 #### 9. Review Before Merge
 
-- Apply the Review Before Merge operation the unit's [registered kind](../SKILL.md) supplies for its draft pull request.
-- Continue to the merge step only with the confirmed ready [Review State](../artifacts/pull-request.md#review-state) it provides.
-- On a failure, or a hold with open findings, report the unresolved state, the confirmed draft readback and each open finding in the session result, and stop before the merge step.
+- Apply [Review Before Merge](../artifacts/work-kind.md#review-before-merge "ƒ") for the unit's pull request.
+- On the [Work Kind Result](../artifacts/work-kind.md#work-kind-result) `unsupplied`, continue to [Merge](#10-merge).
+- Otherwise, continue to [Merge](#10-merge) only with the confirmed ready [Review State](../artifacts/pull-request.md#review-state) it provides.
+- On a failure, or a hold with open findings, report the unresolved state, the confirmed draft readback and each open finding in the session result, and stop before [Merge](#10-merge).
 
 #### 10. Merge
 
@@ -253,11 +254,11 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 - Apply [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests "ƒ") for the task pull request, with the project checkout and the unit checkout.
 - On a confirmed merge, Follow [Task Merge](../protocols/task-merge.md "ƒ") in the project checkout with that merge result, the unit's current task and epic evidence, and the board identity the brief names.
-- Resume the arising-issues step when recording returns; a merge or recording blocker remains explicit.
+- Resume [Arising Issues](#11-arising-issues) when recording returns; a merge or recording blocker remains explicit.
 
 #### 11. Arising Issues
 
-- For each unsaved issue that arose during delivery, Apply the Populate Body operation the [registered kind](../SKILL.md) for work outside any initiative supplies, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body.
+- For each unsaved issue that arose during delivery, Apply [Populate Body](../artifacts/work-kind.md#populate-body "ƒ") for the [registered kind](../artifacts/work-kind.md#registration) for work outside any initiative, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body.
 
 - Follow [Hoist Mode](hoist-mode.md "ƒ") in the project checkout with those new issue identities, each arising issue an agent review's exclusion saved, and the allowance the brief names, after the pull request is open and epic delivery is recorded.
 - Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with each placement it applied and each it held.
