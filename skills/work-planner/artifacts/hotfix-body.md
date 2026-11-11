@@ -19,7 +19,7 @@ One hot-fix issue body from its confirmed defect evidence.
 
 - A hot-fix belongs to no initiative or epic, and names no Depends on or Joins.
 - It sits on its theme's board.
-- Its priority 10, which its [Titles](#titles) label carries, ranks it nowhere: the queue places it by its [Board Status](hotfix.md#board-status), outside the priority sets.
+- Its priority 10, which its [Titles](#titles) label carries, ranks it nowhere: the queue places it by its [Board Status](hotfix.md#board-status), outside the [Priority Sets](work-priority.md#priority-sets).
 
 #### 2. Provide Populated Hot-fix Body
 
@@ -35,7 +35,7 @@ Provide the populated [Output Body](#output-body) for publication.
 ### Titles
 
 - The title is `[F00] Name: Subtitle`. The `[F00]` prefix is what makes an issue a hot-fix.
-- The labels are `type:hot-fix`, the `theme:*` label of the board it sits on, and the [priority label](board-queue.md#priority-sets) for priority 10.
+- The labels are `type:hot-fix`, the `theme:*` label of the board it sits on, and the [priority label](work-priority.md#priority-label) for priority 10.
 - `F` is the hot-fix number. Hot-fixes count from `00`.
 
 ### Sections

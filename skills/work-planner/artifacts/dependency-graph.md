@@ -35,7 +35,7 @@ The task graph and the row numbers it permits, checked and renumbered across the
 - Search prose for references the script cannot see.
 - After each edge or numbering change, Run [Check Dependencies](#check-dependencies "ƒ") with the refreshed initiative and epic bodies and every supplied work-item and split-unit record file. Repeat that operation until it reports no problem.
 - Record the printed longest chains and each printed contending pair in the planning record.
-- Provide [Graph Result](#graph-result) with the checked bodies, proposed [Epic Priority](#epic-priority) map and unresolved findings; do not publish a failed renumbering.
+- Provide [Graph Result](#graph-result) with the checked bodies, proposed [Epic Priority](work-priority.md#epic-priority) map and unresolved findings; do not publish a failed renumbering.
 
 ## Commands
 
@@ -62,7 +62,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic's rows, so a body carrying the retired form is reported once rather than taking its initiative's gates down with it.
 - It reads each declared file without its link, a wrapping code span, a trailing full stop or a leading `./`, and reports a work item it cannot read.
 - It reports a work item declaring a directory among its files: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.
-- It prints the proposed [Epic Priority](#epic-priority) of each epic, largest first.
+- It prints the proposed [Epic Priority](work-priority.md#epic-priority) of each epic, largest first.
 - Its supplied inputs are published body text or local drafts.
 
 - The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the files its rows declare. Epics sharing a number start together, so the number asserts they can run in parallel, and it holds a set only where both of these do.
@@ -135,13 +135,9 @@ The collection of producer-to-consumer task-row references. A task edge names th
 The collection of initiative-table epic dependency references. An initiative Depends on cell takes the epics it derives, as [Work Breakdown](initiative-issue-body.md#work-breakdown) states. It derives one only where every row of the dependent epic requires every row of the prerequisite, through the task edges alone: a task row names rows, so no cell can assert a whole epic that the rows do not already establish.
 
 - **The edge is the coarsest gate the plan has.**
-  It holds the dependent epic until the prerequisite closes, not until the row it consumes merges, and it drops the dependent a [priority](#epic-priority) number, so the board keeps it out of Ready while the prerequisite runs.
+  It holds the dependent epic until the prerequisite closes, not until the row it consumes merges, and it drops the dependent a [priority](work-priority.md#epic-priority) number, so the board keeps it out of Ready while the prerequisite runs.
 - **Its cost is why it is derived and never written.**
   A narrower dependency stays in the task graph, where it gates the row that consumes the output rather than the epic around it.
-
-### Epic Priority
-
-A map from each supplied epic id to one positive integer priority. Equal priorities identify epics that may run in parallel under the derived dependency and file-contention constraints.
 
 ### Joins
 
@@ -180,7 +176,7 @@ The supplied current complete pull request records, one JSON object per nonempty
 
 ### Graph Result
 
-The checked bodies, proposed epic-priority map and unresolved dependency, numbering, component or lane findings, including the printed chains and contending pairs.
+The checked bodies, proposed [Epic Priority](work-priority.md#epic-priority) map and unresolved dependency, numbering, component or lane findings, including the printed chains and contending pairs.
 
 ### Rewritten Bodies
 

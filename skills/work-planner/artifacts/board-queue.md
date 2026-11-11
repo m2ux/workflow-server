@@ -1,6 +1,6 @@
 # Board Queue
 
-The queue for one theme board: initiative priority sets, the status a kind's Settle Board Status settles, status and assignee changes, pending decisions, waiting work, next epics, Ready units and epics waiting on a priority.
+The queue for one theme board: the statuses [Priority Sets](work-priority.md#priority-sets) give initiatives and epics, the status a kind's Settle Board Status settles, status and assignee changes, pending decisions, waiting work, next epics, Ready units and epics waiting on a priority.
 
 ## Commands
 
@@ -28,8 +28,8 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - Refuse a Status change outside the queue's [write jurisdiction](board-status.md#write-jurisdiction), identifying the issue.
 - Distinguish pending decisions and missing evidence under [Completeness](#completeness). The requester supplies further evidence and confirmed decisions for another pass and applies the proposed changes.
 
-- The highest priority set is In Progress, all together. The next set is Ready, all together. Lower sets stay in Backlog. When the highest set leaves In Progress, the Ready set moves to In Progress.
-- An initiative in Backlog with no priority label stays there. An initiative in Ready with no priority label moves to Backlog, as [Backlog Cascade](#backlog-cascade) states.
+- The highest initiative [priority set](work-priority.md#priority-sets) is In Progress, all together. The next set is Ready, all together. Lower sets stay in Backlog. When the highest set leaves In Progress, the Ready set moves to In Progress.
+- An initiative in Backlog with no [priority label](work-priority.md#priority-label) stays there. An initiative in Ready with no priority label moves to Backlog, as [Backlog Cascade](#backlog-cascade) states.
 - An initiative In Progress with no priority label needs a decision: a positive integer keeps it In Progress; none sends it to Backlog once its epics' work has completed.
 - An initiative stays In Progress while an epic its Work Breakdown lists is [active](#epic-activity), [handed off](#epic-handoff) or In Review, even when a higher set has started, as [Item Status](board-status.md#item-status) holds it In Progress. The epic's integration pull request is not activity; the epic's In Review status is what holds the initiative while that pull request awaits its merge. The highest set moves to In Progress immediately. Once that work completes, a lower set moves to Ready if it is the next number, or Backlog if a number sits between it and the highest.
 - An initiative confirmed unplanned follows the same wait, then moves to Backlog as [Backlog Cascade](#backlog-cascade) states.
@@ -39,7 +39,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 - On an initiative Ready or In Progress, an [active](#epic-activity) epic is In Progress even with open questions. A delivered task row alone is not activity.
 - On that initiative, an inactive epic can start when every entry of its initiative row's Depends on cell is delivered, every prerequisite epic that row names is closed as completed, all of each prerequisite's bases have merged into their long-lived branches, and the epic's Open Questions section is empty.
-- Of the epics that can start, those carrying the highest priority number are next and Ready, all together. The highest counts the epics already In Progress, so an epic of a lower number waits while a higher one runs.
+- Of the epics that can start, those carrying the highest [Epic Priority](work-priority.md#epic-priority) number are next and Ready, all together. The highest counts the epics already In Progress, so an epic of a lower number waits while a higher one runs.
 - An epic with no priority label is never Ready, whatever its siblings' state, so one that can start stays in Backlog.
 - Any other Ready or In Progress epic of that initiative moves to Backlog.
 - An epic In Review or Done, or [handed off](#epic-handoff), remains in that state.
@@ -51,16 +51,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 ### Board Identity
 
 The theme board identity as `users/{owner}/projectsV2/{id}` or `orgs/{owner}/projectsV2/{id}`. eg `users/<owner>/projectsV2/9`
-
-### Priority Sets
-
-A parallel work map is a mapping from initiative identity to positive integer priority. Every initiative with the same number runs together as one set. One left unordered stays in Backlog.
-
-The epics of one initiative carry their own sets. Every epic with the same number starts together, and a number is compared only with its siblings'.
-
-A priority label is `priority:` and a positive integer. A larger number is higher, with no maximum. Two such labels on one issue count as the larger number.
-
-Execution order ranks available epic units by initiative priority, then by epic priority within each initiative. Equally ranked initiatives keep repository and issue order, as do equally ranked epics within one initiative; task order breaks remaining ties. An unranked initiative or sibling epic follows ranked items at its own level. An epic's parent is the initiative whose Work Breakdown links its issue, including across repositories; an epic without supplied parent evidence groups with its initiative prefix at unranked initiative priority. A [kind unit](delivery-plan.md#kind-units) sits outside these sets.
 
 ### Ready Units
 
@@ -74,7 +64,7 @@ The queue contains calls for Status and assignee changes to initiatives, epics a
 
 | Line | When It Is Printed | What It Names |
 | --- | --- | --- |
-| `order` | No open initiative has a priority label | The open initiatives, including any already In Progress, for a parallel work map |
+| `order` | No open initiative has a priority label | The open initiatives, including any already In Progress, for a [parallel work map](work-priority.md#priority-sets) |
 | `ask` | An initiative is In Progress and has no priority label | That initiative, for a positive integer or none |
 | `wait` | An initiative is held In Progress by an epic it lists that is active, handed off or In Review | That initiative, the open delivery pull requests, and each epic In Review, awaiting review or held by a session |
 | `reconcile` | An initiative would return to Backlog while an epic of it is active, handed off or In Review | That initiative and each such epic, for the user to finish or release |

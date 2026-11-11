@@ -81,7 +81,7 @@ The management paragraph is set off by blank lines, with the board's link beneat
 - **Next.**
   The five Ready items, each epic with its next task, and a count of the rest.
   - Ready items of an unaffiliated kind lead.
-  - They rank by the priority label of the initiative their epic belongs to, then by their epic's own.
+  - They rank by the [priority label](work-priority.md#priority-label) of the initiative their epic belongs to, then by their epic's own.
   - An epic is placed ahead of any listed epic naming it, so a supplier reads before the work drawing on it. An epic names another when a task row names one of its rows or the initiative row names it whole.
 - **Unaffiliated kinds.**
   Each board item of a [registered kind](../SKILL.md) outside every initiative follows the epic groups of Completed, In progress or Next as its status places it, with the delivering pull requests its kind's artifact states beneath. An initiative filter leaves such items out.
