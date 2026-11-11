@@ -2600,6 +2600,23 @@ class BeforeUseOrdering(unittest.TestCase):
         found = {(edge.target.name, edge.condition) for edge in checker.requirements(self.skill / 'a.md')}
         self.assertEqual(found, {('b.md', 'first'), ('c.md', 'first'), ('d.md', 'first')})
 
+    def test_first_ending_the_clause_is_a_requirement_whatever_follows(self):
+        self.write('a.md', '# A\n\nRead [B](b.md) first and then run it.\n\nRead [C](c.md) first — it holds the terms.\n\n'
+                   'Read [D](d.md) first,then continue.\n\nRead [E](e.md) first, so the terms are held.\n')
+        for name in ('b.md', 'c.md', 'd.md', 'e.md'):
+            self.write(name, f'# {name}\n\nThe value.\n')
+        found = {(edge.target.name, edge.condition) for edge in checker.requirements(self.skill / 'a.md')}
+        self.assertEqual(found, {('b.md', 'first'), ('c.md', 'first'), ('d.md', 'first'), ('e.md', 'first')})
+
+    def test_first_within_a_longer_word_is_no_requirement(self):
+        self.write('a.md', '# A\n\nRead [B](b.md) firsthand.\n\nRead [C](c.md) first-hand.\n')
+        self.assertEqual(checker.requirements(self.skill / 'a.md'), [])
+
+    def test_a_first_so_form_closes_a_cycle(self):
+        self.write('a.md', '# A\n\nRead [B](b.md) first, so its terms are held.\n')
+        self.write('b.md', '# B\n\nRead [A](a.md) first — it names the run.\n')
+        self.assertEqual(self.cycles(), [('specimen/a.md', 3, 'specimen/a.md:3 -> specimen/b.md:3 -> specimen/a.md')])
+
     def test_a_first_then_form_closes_a_cycle(self):
         self.write('a.md', '# A\n\nRead [B](b.md) first, then continue.\n')
         self.write('b.md', '# B\n\nRead [A](a.md) whole first; then continue.\n')
