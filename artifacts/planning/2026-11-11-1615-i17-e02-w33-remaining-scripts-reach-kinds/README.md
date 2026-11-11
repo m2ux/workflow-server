@@ -20,4 +20,5 @@ One consolidated separation row; it also brings workspace's #1645 into the epic 
 
 - **Folded work, applied.**  Board Queue joins the Component line: #1645's priority-set exclusion named hot-fixes, and the merge states it as a kind unit.
 - **Folded work, applied.**  The kind tests join the Component line: test_board_queue, test_progress, test_statuses, test_hotfix, test_kinds and test_documents, whose script-reach check counts the registry's import by name.
-- None held.
+- **Arising issue, applied.**  [#1688](https://github.com/m2ux/workflow-server/issues/1688) saved as a standalone issue: sync.py and board.py each define the title-tag and pull-request home patterns.
+- **Placement of #1688, held.**  Hoisting it into an initiative or epic is left to the coordinator's Hoist Mode run.

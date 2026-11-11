@@ -37,7 +37,7 @@ Board Queue's priority-set exclusion, which #1645 wrote as hot-fixes, names a [k
 
 - Kind search over board-queue.py, progress.py and statuses.py: 0 mentions at the head; 11 at the base.
 - Import search: only kinds.py reaches the hot-fix module, by name through `import_module`.
-- Duplicate search: `tags`, `issue_key`, `rank` and `untagged` each defined only in their home; the priority-label pattern only in priority.py. sync.py still compiles its own tag-prefix pattern beside board.py's; that is outside this change and is an arising issue.
+- Duplicate search: `tags`, `issue_key`, `rank` and `untagged` each defined only in their home; the priority-label pattern only in priority.py. sync.py still compiles its own tag-prefix pattern beside board.py's; that is outside this change and is arising issue [#1688](https://github.com/m2ux/workflow-server/issues/1688).
 - Hot-fix exports equal the Kind interface.
 
 ## Tests
