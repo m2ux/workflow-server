@@ -1,0 +1,366 @@
+FEFEE.EEFEEEEEEEE.EEEEFEEEEEEEEEE
+======================================================================
+ERROR: test_a_paraphrased_status_derivation_is_a_candidate (test_check_skill_files.FieldsBoundary.test_a_paraphrased_status_derivation_is_a_candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2381, in test_a_paraphrased_status_derivation_is_a_candidate
+    found = self.candidates(path)
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_another_subjects_multi_stage_derivation_is_a_candidate (test_check_skill_files.FieldsBoundary.test_another_subjects_multi_stage_derivation_is_a_candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2393, in test_another_subjects_multi_stage_derivation_is_a_candidate
+    found = self.candidates(path)
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_behavior_outside_fields_and_undeclared_models_take_no_candidate (test_check_skill_files.FieldsBoundary.test_behavior_outside_fields_and_undeclared_models_take_no_candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2432, in test_behavior_outside_fields_and_undeclared_models_take_no_candidate
+    self.assertEqual(self.candidates(self.artifact(STATUS_CHANGES, section='Guidance')), [])
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_fields_the_semantic_review_found_mixed_are_candidates (test_check_skill_files.FieldsBoundary.test_fields_the_semantic_review_found_mixed_are_candidates) (heading='Branches')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2404, in test_fields_the_semantic_review_found_mixed_are_candidates
+    found = self.candidates(path)
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_fields_the_semantic_review_found_mixed_are_candidates (test_check_skill_files.FieldsBoundary.test_fields_the_semantic_review_found_mixed_are_candidates) (heading='Required Criteria')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2404, in test_fields_the_semantic_review_found_mixed_are_candidates
+    found = self.candidates(path)
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_schemas_conditional_invariants_and_literal_examples_are_accepted (test_check_skill_files.FieldsBoundary.test_schemas_conditional_invariants_and_literal_examples_are_accepted) (control='enum')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2429, in test_schemas_conditional_invariants_and_literal_examples_are_accepted
+    self.assertEqual(self.candidates(self.artifact(body, heading='Control Field')), [])
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_schemas_conditional_invariants_and_literal_examples_are_accepted (test_check_skill_files.FieldsBoundary.test_schemas_conditional_invariants_and_literal_examples_are_accepted) (control='type')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2429, in test_schemas_conditional_invariants_and_literal_examples_are_accepted
+    self.assertEqual(self.candidates(self.artifact(body, heading='Control Field')), [])
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_schemas_conditional_invariants_and_literal_examples_are_accepted (test_check_skill_files.FieldsBoundary.test_schemas_conditional_invariants_and_literal_examples_are_accepted) (control='conditional invariant')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2429, in test_schemas_conditional_invariants_and_literal_examples_are_accepted
+    self.assertEqual(self.candidates(self.artifact(body, heading='Control Field')), [])
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_schemas_conditional_invariants_and_literal_examples_are_accepted (test_check_skill_files.FieldsBoundary.test_schemas_conditional_invariants_and_literal_examples_are_accepted) (control='result shape')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2429, in test_schemas_conditional_invariants_and_literal_examples_are_accepted
+    self.assertEqual(self.candidates(self.artifact(body, heading='Control Field')), [])
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_schemas_conditional_invariants_and_literal_examples_are_accepted (test_check_skill_files.FieldsBoundary.test_schemas_conditional_invariants_and_literal_examples_are_accepted) (control='retained value')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2429, in test_schemas_conditional_invariants_and_literal_examples_are_accepted
+    self.assertEqual(self.candidates(self.artifact(body, heading='Control Field')), [])
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_schemas_conditional_invariants_and_literal_examples_are_accepted (test_check_skill_files.FieldsBoundary.test_schemas_conditional_invariants_and_literal_examples_are_accepted) (control='schema table')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2429, in test_schemas_conditional_invariants_and_literal_examples_are_accepted
+    self.assertEqual(self.candidates(self.artifact(body, heading='Control Field')), [])
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_schemas_conditional_invariants_and_literal_examples_are_accepted (test_check_skill_files.FieldsBoundary.test_schemas_conditional_invariants_and_literal_examples_are_accepted) (control='fenced example')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2429, in test_schemas_conditional_invariants_and_literal_examples_are_accepted
+    self.assertEqual(self.candidates(self.artifact(body, heading='Control Field')), [])
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_schemas_conditional_invariants_and_literal_examples_are_accepted (test_check_skill_files.FieldsBoundary.test_schemas_conditional_invariants_and_literal_examples_are_accepted) (control='code span example')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2429, in test_schemas_conditional_invariants_and_literal_examples_are_accepted
+    self.assertEqual(self.candidates(self.artifact(body, heading='Control Field')), [])
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_the_actual_status_changes_field_is_a_candidate_with_located_evidence (test_check_skill_files.FieldsBoundary.test_the_actual_status_changes_field_is_a_candidate_with_located_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2357, in test_the_actual_status_changes_field_is_a_candidate_with_located_evidence
+    found = self.candidates(path)
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_the_candidate_follows_the_prose_not_the_heading (test_check_skill_files.FieldsBoundary.test_the_candidate_follows_the_prose_not_the_heading)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2372, in test_the_candidate_follows_the_prose_not_the_heading
+    self.assertEqual([title.split(' — ')[0] for *_, title in self.candidates(path)], ['Lifecycle Notes'])
+                                                             ~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2346, in candidates
+    return checker.fields_candidates(path, self.root, {})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'fields_candidates'
+
+======================================================================
+ERROR: test_a_bounded_read_leaves_a_siblings_requirement_out (test_check_skill_files.BeforeUseOrdering.test_a_bounded_read_leaves_a_siblings_requirement_out)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2565, in test_a_bounded_read_leaves_a_siblings_requirement_out
+    self.assertEqual(self.cycles(), [])
+                     ~~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2490, in cycles
+    return [(where, line, detail) for where, line, kind, detail in checker.before_use_findings(files, structures)
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'before_use_findings'
+
+======================================================================
+ERROR: test_a_cross_file_section_cycle_names_each_section (test_check_skill_files.BeforeUseOrdering.test_a_cross_file_section_cycle_names_each_section)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2507, in test_a_cross_file_section_cycle_names_each_section
+    self.assertEqual(self.cycles(), [(
+                     ~~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2490, in cycles
+    return [(where, line, detail) for where, line, kind, detail in checker.before_use_findings(files, structures)
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'before_use_findings'
+
+======================================================================
+ERROR: test_a_multi_document_cycle_has_a_closed_witness (test_check_skill_files.BeforeUseOrdering.test_a_multi_document_cycle_has_a_closed_witness)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2501, in test_a_multi_document_cycle_has_a_closed_witness
+    self.assertEqual(self.cycles(), [(
+                     ~~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2490, in cycles
+    return [(where, line, detail) for where, line, kind, detail in checker.before_use_findings(files, structures)
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'before_use_findings'
+
+======================================================================
+ERROR: test_a_self_requirement_is_a_cycle (test_check_skill_files.BeforeUseOrdering.test_a_self_requirement_is_a_cycle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2495, in test_a_self_requirement_is_a_cycle
+    self.assertEqual(self.cycles(), [('specimen/a.md', 5, 'specimen/a.md#one:5 -> specimen/a.md#one')])
+                     ~~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2490, in cycles
+    return [(where, line, detail) for where, line, kind, detail in checker.before_use_findings(files, structures)
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'before_use_findings'
+
+======================================================================
+ERROR: test_an_acyclic_diamond_and_a_conditional_requirement_are_valid (test_check_skill_files.BeforeUseOrdering.test_an_acyclic_diamond_and_a_conditional_requirement_are_valid)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2558, in test_an_acyclic_diamond_and_a_conditional_requirement_are_valid
+    self.assertEqual(self.cycles(), [])
+                     ~~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2490, in cycles
+    return [(where, line, detail) for where, line, kind, detail in checker.before_use_findings(files, structures)
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'before_use_findings'
+
+======================================================================
+ERROR: test_field_reference_cycles_and_execution_retries_impose_no_order (test_check_skill_files.BeforeUseOrdering.test_field_reference_cycles_and_execution_retries_impose_no_order)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2572, in test_field_reference_cycles_and_execution_retries_impose_no_order
+    self.assertEqual(self.cycles(), [])
+                     ~~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2490, in cycles
+    return [(where, line, detail) for where, line, kind, detail in checker.before_use_findings(files, structures)
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'before_use_findings'
+
+======================================================================
+ERROR: test_prerequisites_sections_and_declared_preambles_are_requirements (test_check_skill_files.BeforeUseOrdering.test_prerequisites_sections_and_declared_preambles_are_requirements)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2516, in test_prerequisites_sections_and_declared_preambles_are_requirements
+    conditions = {(edge.target.name, edge.condition) for edge in checker.requirements(mode, checker.contract(mode, {}))}
+                                                                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'requirements'
+
+======================================================================
+ERROR: test_specimen_requirements_create_no_edge (test_check_skill_files.BeforeUseOrdering.test_specimen_requirements_create_no_edge)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2579, in test_specimen_requirements_create_no_edge
+    self.assertEqual(self.cycles(), [])
+                     ~~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2490, in cycles
+    return [(where, line, detail) for where, line, kind, detail in checker.before_use_findings(files, structures)
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'before_use_findings'
+
+======================================================================
+ERROR: test_the_measured_artifact_cycle_is_one_closed_component (test_check_skill_files.BeforeUseOrdering.test_the_measured_artifact_cycle_is_one_closed_component)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2527, in test_the_measured_artifact_cycle_is_one_closed_component
+    graph = checker.before_use_graph(sorted(self.skill.rglob('*.md')), {})
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'before_use_graph'
+
+======================================================================
+ERROR: test_every_supported_entry_reaches_common_context_without_a_cycle (test_check_skill_files.InstalledWorkPlannerModel.test_every_supported_entry_reaches_common_context_without_a_cycle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2599, in setUp
+    self.graph = checker.before_use_graph(self.paths, {})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'before_use_graph'
+
+======================================================================
+ERROR: test_installed_fields_hold_no_execution (test_check_skill_files.InstalledWorkPlannerModel.test_installed_fields_hold_no_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2599, in setUp
+    self.graph = checker.before_use_graph(self.paths, {})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'before_use_graph'
+
+======================================================================
+ERROR: test_the_audited_requirements_are_the_graph (test_check_skill_files.InstalledWorkPlannerModel.test_the_audited_requirements_are_the_graph)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2599, in setUp
+    self.graph = checker.before_use_graph(self.paths, {})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'before_use_graph'
+
+======================================================================
+FAIL: test_a_candidate_is_printed_and_fails_nothing (test_check_skill_files.FieldsBoundary.test_a_candidate_is_printed_and_fails_nothing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2442, in test_a_candidate_is_printed_and_fails_nothing
+    self.assertIn('board-delivery.md:', output)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'board-delivery.md:' not found in '6 files checked, 0 findings\n'
+
+======================================================================
+FAIL: test_an_operation_call_under_fields_is_execution_and_a_definition_link_is_not (test_check_skill_files.FieldsBoundary.test_an_operation_call_under_fields_is_execution_and_a_definition_link_is_not)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2457, in test_an_operation_call_under_fields_is_execution_and_a_definition_link_is_not
+    self.assertEqual(details, ['call: Apply [Read Board](#read-board "ƒ")'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['call: Apply [Read Board](#read-board "ƒ")']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'call: Apply [Read Board](#read-board "ƒ")'
+
+- []
++ ['call: Apply [Read Board](#read-board "ƒ")']
+
+======================================================================
+FAIL: test_numbered_steps_and_headings_under_fields_are_execution (test_check_skill_files.FieldsBoundary.test_numbered_steps_and_headings_under_fields_are_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2450, in test_numbered_steps_and_headings_under_fields_are_execution
+    self.assertEqual(found, [(self.line_of(path, '1. Read the board.'), 'executable step in Fields'),
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             (self.line_of(path, '2. Write each change.'), 'executable step in Fields'),
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             (self.line_of(path, '#### 1. Apply Changes'), 'executable step in Fields')])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != [(23, 'executable step in Fields'), (24, '[58 chars]ds')]
+
+Second list contains 3 additional elements.
+First extra element 0:
+(23, 'executable step in Fields')
+
+- []
++ [(23, 'executable step in Fields'),
++  (24, 'executable step in Fields'),
++  (26, 'executable step in Fields')]
+
+======================================================================
+FAIL: test_a_cycle_fails_the_command (test_check_skill_files.BeforeUseOrdering.test_a_cycle_fails_the_command)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w37/base/skills/test/test_check_skill_files.py", line 2588, in test_a_cycle_fails_the_command
+    self.assertEqual(status, 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 0 != 1
+
+----------------------------------------------------------------------
+Ran 25 tests in 0.018s
+
+FAILED (failures=4, errors=27)
+sbx: exit 1; writable: /tmp  (name more with SBX_EXTRA_ROOTS=dir1:dir2)

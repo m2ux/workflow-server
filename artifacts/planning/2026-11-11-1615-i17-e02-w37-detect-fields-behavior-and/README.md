@@ -7,6 +7,7 @@ The shared checker's Fields-behavior and prerequisite diagnostics. The work item
 | File | Purpose |
 | --- | --- |
 | [w37.md](w37.md) | Files, scope, implementation and observing validation for W37. |
+| [validation.md](validation.md) | Observing tests, base control, calibration on the W02 ledger and full checks at the task head. |
 
 ## Links
 

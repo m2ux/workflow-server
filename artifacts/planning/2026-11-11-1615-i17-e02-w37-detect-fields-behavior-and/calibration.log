@@ -1,0 +1,26 @@
+candidate mixed artifacts/delivery-branches.md#branches
+    actor acquire | A run reads the statement at the commit it evaluates, in the repository its checkout locates;
+          acquire | The evaluated revision is fetched before it is read.
+          route | Declarations that disagree across those bases leave the names unevaluable, and each is reported with
+no candidate mixed artifacts/delivery-branches.md#epic-bases
+    actor route | An epic sync reports each open or merged pull request off these routes as X:
+no candidate mixed artifacts/delivery-brief.md#execution-instructions
+no candidate mixed artifacts/dependency-graph.md#edges
+          write | An edge another in the cell already implies is dropped, so a prerequisite chain is named by its last
+no candidate mixed artifacts/dependency-graph.md#joins
+          route | Both resolutions are stated where the candidate is reported.
+candidate mixed artifacts/epic-issue-body.md#required-criteria
+    actor acquire | The check reads each pull request's changed files as the tracker lists them.
+    actor acquire | The check reads the file at the commit its evaluated revision resolves to, in the repository its che
+    actor route | A missing or empty file at the evaluated commit, or an empty array, declares no required criterion, 
+    actor route | The check reports that and names the fault, and reports no epic as lacking a criterion.
+candidate status-changes board-delivery.md#status-changes @ fbce2c75
+          write | Every board item whose issue is closed any other way is removed, whether or not an initiative, epic 
+          transition,write | In Progress and In Review become Backlog, and one not yet on the board is added at Backlog.
+          acquire | An epic that has left that table is not read.
+          transition,write | Otherwise the initiative keeps the Status it holds, In Review becoming In Progress, and one not yet 
+    actor write | Delivery does not move an initiative or epic between Ready and Backlog.
+    actor route | Every jurisdiction refuses a task set In Review.
+    actor write | Dispatch writes are limited to In Progress for held tasks and epics, and In Review for completed epi
+    actor route | the shared DISPATCH jurisdiction refuses other statuses and removals.
+classification: [fields, candidates] {"invariant": [23, 0], "mixed": [6, 2], "shape": [489, 0], "status-changes": [1, 1]}
