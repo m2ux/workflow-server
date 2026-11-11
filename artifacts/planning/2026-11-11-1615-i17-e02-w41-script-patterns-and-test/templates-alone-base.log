@@ -1,0 +1,20 @@
+E
+======================================================================
+ERROR: test_templates (unittest.loader._FailedTest.test_templates)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_templates
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/unittest/loader.py", line 426, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/usr/lib/python3.14/unittest/loader.py", line 367, in _get_module_from_name
+    __import__(name)
+    ~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w41/base/skills/work-planner/test/test_templates.py", line 8, in <module>
+    from format import BODY_ARTIFACTS, Template, template_body
+ModuleNotFoundError: No module named 'format'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

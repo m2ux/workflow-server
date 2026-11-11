@@ -7,6 +7,7 @@ Hoisted from [#1676](https://github.com/m2ux/workflow-server/issues/1676).
 | File | Purpose |
 | --- | --- |
 | [w40.md](w40.md) | Files, scope, implementation and observing validation for W40. |
+| [validation.md](validation.md) | Rule owners, observing tests, unchanged hot-fix outcomes and full checks at the task head. |
 
 ## Links
 

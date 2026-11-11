@@ -1,0 +1,25 @@
+test_cell_by_column_name (test_shared.Cells.test_cell_by_column_name) ... ok
+test_missing_column_or_short_row_is_empty (test_shared.Cells.test_missing_column_or_short_row_is_empty) ... ok
+test_phrase_drops_the_criteria (test_shared.Cells.test_phrase_drops_the_criteria) ... ok
+test_status_of_reads_either_name_shape (test_shared.Cells.test_status_of_reads_either_name_shape) ... ok
+test_board_reaches_the_single_implementations_in_sync (test_shared.CompletionAndIdentity.test_board_reaches_the_single_implementations_in_sync) ... ok
+test_identity_is_repository_and_number (test_shared.CompletionAndIdentity.test_identity_is_repository_and_number) ... ok
+test_only_closed_as_completed_is_done (test_shared.CompletionAndIdentity.test_only_closed_as_completed_is_done) ... ok
+test_a_linked_issue_reads_as_linked (test_shared.LinksIssue.test_a_linked_issue_reads_as_linked) ... ok
+test_a_pull_request_the_file_omits_links_nothing (test_shared.LinksIssue.test_a_pull_request_the_file_omits_links_nothing) ... ok
+test_another_number_links_nothing (test_shared.LinksIssue.test_another_number_links_nothing) ... ok
+test_another_repositorys_issue_of_that_number_links_nothing (test_shared.LinksIssue.test_another_repositorys_issue_of_that_number_links_nothing) ... ok
+test_repository_names_match_in_any_case (test_shared.LinksIssue.test_repository_names_match_in_any_case) ... ok
+test_each_pattern_is_written_in_one_script (test_shared.SharedPatterns.test_each_pattern_is_written_in_one_script) ... ok
+test_every_script_matching_a_pattern_holds_its_definition (test_shared.SharedPatterns.test_every_script_matching_a_pattern_holds_its_definition) ... ok
+test_tag_parsing_and_pull_request_homes_import_the_definitions (test_shared.SharedPatterns.test_tag_parsing_and_pull_request_homes_import_the_definitions) ... ok
+test_a_hotfix_or_plain_title_has_no_tags (test_shared.TitleTags.test_a_hotfix_or_plain_title_has_no_tags) ... ok
+test_each_level_reads_its_numbers (test_shared.TitleTags.test_each_level_reads_its_numbers) ... ok
+test_only_an_initiative_tag_names_an_initiative (test_shared.TitleTags.test_only_an_initiative_tag_names_an_initiative) ... ok
+test_board_raises_unreadable (test_shared.UnreadableTable.test_board_raises_unreadable) ... ok
+test_sync_exits_with_the_message (test_shared.UnreadableTable.test_sync_exits_with_the_message) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.152s
+
+OK

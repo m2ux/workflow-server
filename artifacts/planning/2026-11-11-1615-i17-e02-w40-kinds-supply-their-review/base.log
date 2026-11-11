@@ -1,0 +1,90 @@
+................F.........EEEEE..........................
+======================================================================
+ERROR: test_the_hot_fix_kind_answers_an_item_of_any_kind_with_the_contracts_result_types (test_kinds.Substitution.test_the_hot_fix_kind_answers_an_item_of_any_kind_with_the_contracts_result_types) (title='[F04] Key Validation: Reject Bad Keys')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w40-kinds-supply-their-review/skills/work-planner/test/test_kinds.py", line 133, in test_the_hot_fix_kind_answers_an_item_of_any_kind_with_the_contracts_result_types
+    rule = kind.review(pr(951, item['title'] or 'Other', base='main'))
+           ^^^^^^^^^^^
+AttributeError: module 'hotfix' has no attribute 'review'
+
+======================================================================
+ERROR: test_the_hot_fix_kind_answers_an_item_of_any_kind_with_the_contracts_result_types (test_kinds.Substitution.test_the_hot_fix_kind_answers_an_item_of_any_kind_with_the_contracts_result_types) (title='[I07] Canon Walk')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w40-kinds-supply-their-review/skills/work-planner/test/test_kinds.py", line 133, in test_the_hot_fix_kind_answers_an_item_of_any_kind_with_the_contracts_result_types
+    rule = kind.review(pr(951, item['title'] or 'Other', base='main'))
+           ^^^^^^^^^^^
+AttributeError: module 'hotfix' has no attribute 'review'
+
+======================================================================
+ERROR: test_the_hot_fix_kind_answers_an_item_of_any_kind_with_the_contracts_result_types (test_kinds.Substitution.test_the_hot_fix_kind_answers_an_item_of_any_kind_with_the_contracts_result_types) (title='Standalone')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w40-kinds-supply-their-review/skills/work-planner/test/test_kinds.py", line 133, in test_the_hot_fix_kind_answers_an_item_of_any_kind_with_the_contracts_result_types
+    rule = kind.review(pr(951, item['title'] or 'Other', base='main'))
+           ^^^^^^^^^^^
+AttributeError: module 'hotfix' has no attribute 'review'
+
+======================================================================
+ERROR: test_the_hot_fix_kind_answers_an_item_of_any_kind_with_the_contracts_result_types (test_kinds.Substitution.test_the_hot_fix_kind_answers_an_item_of_any_kind_with_the_contracts_result_types) (title=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w40-kinds-supply-their-review/skills/work-planner/test/test_kinds.py", line 133, in test_the_hot_fix_kind_answers_an_item_of_any_kind_with_the_contracts_result_types
+    rule = kind.review(pr(951, item['title'] or 'Other', base='main'))
+           ^^^^^^^^^^^
+AttributeError: module 'hotfix' has no attribute 'review'
+
+======================================================================
+ERROR: test_the_hot_fix_module_shares_the_contracts_off_board_status_key_and_review (test_kinds.Substitution.test_the_hot_fix_module_shares_the_contracts_off_board_status_key_and_review)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w40-kinds-supply-their-review/skills/work-planner/test/test_kinds.py", line 116, in test_the_hot_fix_module_shares_the_contracts_off_board_status_key_and_review
+    self.assertIs(hotfix.Review, kinds.Review)
+                  ^^^^^^^^^^^^^
+AttributeError: module 'hotfix' has no attribute 'Review'
+
+======================================================================
+FAIL: test_each_kind_supplies_its_own_currency_and_finding_rule (test_agent_review.RegisteredKind.test_each_kind_supplies_its_own_currency_and_finding_rule)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w40-kinds-supply-their-review/skills/work-planner/test/test_agent_review.py", line 80, in test_each_kind_supplies_its_own_currency_and_finding_rule
+    self.assertEqual(check(pull, [{**record, 'findings': deferred}]), 'a stand-in defers nothing')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "unfixed finding on a stand-in's delivering pull request" != 'a stand-in defers nothing'
+- unfixed finding on a stand-in's delivering pull request
++ a stand-in defers nothing
+
+
+----------------------------------------------------------------------
+Ran 54 tests in 0.095s
+
+FAILED (failures=1, errors=5)
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w40-kinds-supply-their-review (name more with SBX_EXTRA_ROOTS=dir1:dir2)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/usr/lib/python3.14/unittest/__main__.py", line 18, in <module>
+    main(module=None)
+    ~~~~^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/unittest/main.py", line 103, in __init__
+    self.parseArgs(argv)
+    ~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/unittest/main.py", line 142, in parseArgs
+    self.createTests()
+    ~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/unittest/main.py", line 153, in createTests
+    self.test = self.testLoader.loadTestsFromNames(self.testNames,
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+                                                   self.module)
+                                                   ^^^^^^^^^^^^
+  File "/usr/lib/python3.14/unittest/loader.py", line 207, in loadTestsFromNames
+    suites = [self.loadTestsFromName(name, module) for name in names]
+              ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w40-kinds-supply-their-review/skills/work-planner/test/test_hotfix.py", line 19, in <module>
+    delivering_pulls, unit_state, review = KIND.delivering_pulls, KIND.unit_state, KIND.review
+                                                                                   ^^^^^^^^^^^
+AttributeError: module 'hotfix' has no attribute 'review'
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e02/w40-kinds-supply-their-review (name more with SBX_EXTRA_ROOTS=dir1:dir2)

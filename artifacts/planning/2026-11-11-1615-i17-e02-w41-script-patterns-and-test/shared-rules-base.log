@@ -1,0 +1,25 @@
+E
+======================================================================
+ERROR: test_shared (unittest.loader._FailedTest.test_shared)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_shared
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/unittest/loader.py", line 426, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/usr/lib/python3.14/unittest/loader.py", line 367, in _get_module_from_name
+    __import__(name)
+    ~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w41/base/skills/work-planner/test/test_shared.py", line 149, in <module>
+    class SharedPatterns(unittest.TestCase):
+    ...<19 lines>...
+                    self.assertIs(getattr(loaded(SCRIPTS / script), name), getattr(sync, name))
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w41/base/skills/work-planner/test/test_shared.py", line 150, in SharedPatterns
+    patterns = {'title tag': sync.PREFIX, 'pull-request home': sync.PULL_REF}
+                                                               ^^^^^^^^^^^^^
+AttributeError: module 'sync' has no attribute 'PULL_REF'. Did you mean: 'PULL_URL'?
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

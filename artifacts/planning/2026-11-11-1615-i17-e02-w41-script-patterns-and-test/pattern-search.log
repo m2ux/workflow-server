@@ -1,0 +1,12 @@
+== base 23ef4cf2b
+23ef4cf2b:skills/work-planner/scripts/board.py:87:PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+23ef4cf2b:skills/work-planner/scripts/board.py:88:PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
+23ef4cf2b:skills/work-planner/scripts/sync.py:103:PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+23ef4cf2b:skills/work-planner/scripts/sync.py:108:PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
+== head f48a6142e
+f48a6142e:skills/work-planner/scripts/sync.py:103:PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+f48a6142e:skills/work-planner/scripts/sync.py:108:PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
+== head importers
+f48a6142e:skills/work-planner/scripts/board-queue.py:40:from sync import PULL_REF, Unreadable, attach_links, issue_key, pull_requests
+f48a6142e:skills/work-planner/scripts/board.py:81:from sync import (PR_REF, PREFIX, TICKED, Unreadable, attach_links, git, issue_done, issue_key, links_issue,
+f48a6142e:skills/work-planner/scripts/progress.py:91:from sync import PR_REF, PREFIX, PULL_REF, PULL_URL, Unreadable, attach_links, issue_key, links_issue, pull_requests

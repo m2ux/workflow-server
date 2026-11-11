@@ -1,0 +1,11 @@
+test_a_shorter_or_different_fence_inside_a_template_is_content (test_templates.ArtifactTemplates.test_a_shorter_or_different_fence_inside_a_template_is_content) ... ok
+test_an_indented_closing_fence_keeps_character_and_length_requirements (test_templates.ArtifactTemplates.test_an_indented_closing_fence_keeps_character_and_length_requirements) ... ok
+test_every_issue_kind_reads_only_its_body_sections (test_templates.ArtifactTemplates.test_every_issue_kind_reads_only_its_body_sections) ... ok
+test_examples_outside_fields_template_are_ignored (test_templates.ArtifactTemplates.test_examples_outside_fields_template_are_ignored) ... ok
+test_final_indented_specimens_close_without_entering_the_template (test_templates.ArtifactTemplates.test_final_indented_specimens_close_without_entering_the_template) ... ok
+test_missing_unclosed_empty_and_ambiguous_templates_fail (test_templates.ArtifactTemplates.test_missing_unclosed_empty_and_ambiguous_templates_fail) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.003s
+
+OK
