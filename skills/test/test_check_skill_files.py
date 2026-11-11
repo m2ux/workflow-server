@@ -2565,6 +2565,19 @@ class BeforeUseOrdering(unittest.TestCase):
         conditions = {edge.condition for edge in checker.requirements(self.skill / 'a.md')}
         self.assertEqual(conditions, {'first', 'before releasing a hold'})
 
+    def test_first_then_colon_and_semicolon_forms_are_requirements(self):
+        self.write('a.md', '# A\n\nRead [B](b.md) first, then run it.\n\nRead [C](c.md) first: it holds the terms.\n\n'
+                   'Read [D](d.md) whole first; the rest follows.\n')
+        for name in ('b.md', 'c.md', 'd.md'):
+            self.write(name, f'# {name}\n\nThe value.\n')
+        found = {(edge.target.name, edge.condition) for edge in checker.requirements(self.skill / 'a.md')}
+        self.assertEqual(found, {('b.md', 'first'), ('c.md', 'first'), ('d.md', 'first')})
+
+    def test_a_first_then_form_closes_a_cycle(self):
+        self.write('a.md', '# A\n\nRead [B](b.md) first, then continue.\n')
+        self.write('b.md', '# B\n\nRead [A](a.md) whole first; then continue.\n')
+        self.assertEqual(self.cycles(), [('specimen/a.md', 3, 'specimen/a.md:3 -> specimen/b.md:3 -> specimen/a.md')])
+
     def test_a_bounded_read_leaves_a_siblings_requirement_out(self):
         self.write('a.md', '# A\n\n## One\n\nRead [Two](b.md#two) first.\n')
         self.write('b.md', '# B\n\n## Two\n\nThe value.\n\n## Three\n\nRead [One](a.md#one) first.\n')

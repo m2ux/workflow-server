@@ -1617,7 +1617,7 @@ def fields_candidates(path, root, structures=None):
 
 
 BEFORE_USE = re.compile(r'\bRead (?:the )?((?:\[[^\]]+\]\([^)]+\)(?:,\s*(?:and\s+)?|\s+and\s+)?)+)'
-                        r'(?:\s+whole)?\s+(first|before\s[^.]*)\.')
+                        r'(?:\s+whole)?\s+(first(?=\.|,\s+then\b|:|;)|before\s[^.]*(?=\.))')
 
 
 @dataclass(frozen=True)
