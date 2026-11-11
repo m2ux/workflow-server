@@ -220,6 +220,12 @@ class Next(unittest.TestCase):
                  self.ready(11, 1), self.ready(12, 2, labels=('priority: 5',))]
         self.assertEqual(refs(summary(items)), ['I01:E02', 'I01:E00', 'I01:E01'])
 
+    def test_equally_ranked_initiatives_keep_their_epics_grouped_in_issue_order(self):
+        items = [self.initiative(1, 1, ['priority: 3']), self.initiative(2, 2, ['priority: 3']),
+                 self.ready(10, 0, 1, labels=('priority: 1',)), self.ready(11, 1, 1, labels=('priority: 5',)),
+                 self.ready(12, 0, 2, labels=('priority: 9',))]
+        self.assertEqual(refs(summary(items)), ['I01:E01', 'I01:E00', 'I02:E00'])
+
     def test_an_epic_named_in_an_initiative_row_dependency_is_ranked_ahead(self):
         items = [self.initiative(1, 1, (), (f"[E01]({url('issues', 11)})", 'E02'),
                                  (f"[E02]({url('issues', 12)})", '')),

@@ -40,10 +40,10 @@ epic's repository.
   In progress  epics In Progress or In Review and task issues In Progress, each epic with its
                open pull requests that link none of its task issues In Progress, in review when
                ready for review or draft, or else, with no line under it, its next task.
-  Next         issues of a registered kind Ready first, then epics and task issues Ready, ranked by the priority label of their initiative, then
-               by their epic's own, each ranked as artifacts/work-priority.md ranks a priority label,
-               and then by reference, and an epic ahead of any listed epic naming it; the first five,
-               and a count of the rest. An epic names its next task.
+  Next         issues of a registered kind Ready first, then epics and task issues Ready, in the
+               Execution Order artifacts/work-priority.md states, an item with no epic grouping
+               with its initiative prefix, and then by reference, and an epic ahead of any listed
+               epic naming it; the first five, and a count of the rest. An epic names its next task.
 An epic's next task is its first undelivered task whose dependencies are delivered and whose linked
 task issue, if it has one, is on the board and not In Progress. A task is undelivered
 while every pull request its id links is open. A task issue that
@@ -429,16 +429,17 @@ def main() -> int:
         context.append(f"{mark(k)} *{reference(initiatives[k][0])} {title_name(title)}:* "
                        f"{subtitle(title)} — {issues[k]['html_url']}")
 
-    def ranked_by(k: Key) -> tuple[dict | None, dict | None]:
-        """The issues an item ranks by: its initiative's, then its epic's own."""
+    def ranked_by(k: Key) -> tuple[dict | None, dict | None, tuple]:
+        """The issues an item ranks by, its initiative's and its epic's own, and the repository and
+        issue order its initiative keeps among equally ranked initiatives."""
         if (ek := epic_for(k)) is None:
-            return None, None
+            return None, None, (k[0].lower(), f'initiative:{tagged[k][0]}')
         scope = scope_of_epic[ek]
         if (initiative := initiative_issue.get(scope)) is None:
             unresolved.append(f'I{scope[1]} in {scope[0]}: its initiative is not on the board; '
                               'give its issue with --initiatives')
-            return None, issues[ek]
-        return issues[initiative], issues[ek]
+            return None, issues[ek], (scope[0], f'initiative:{scope[1]}')
+        return issues[initiative], issues[ek], (initiative[0].lower(), f'issue:{initiative[1]:020d}')
 
     def named_by(k: Key) -> set[Key]:
         """The epics the item's epic names, as the board holds them."""
@@ -449,7 +450,8 @@ def main() -> int:
 
     def rank(entry: tuple[Key, str]) -> tuple:
         k = entry[0]
-        return execution_key(*ranked_by(k), (), (tagged[k], k[0].lower()))
+        initiative, epic, order = ranked_by(k)
+        return execution_key(initiative, epic, order, (tagged[k], k[0].lower()))
 
     ready = sorted((e for e in ready if e[0] not in named_next), key=rank)
     waiting = {k: named_by(k) & {listed for listed, _ in ready} for k, _ in ready}
