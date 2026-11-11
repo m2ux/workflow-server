@@ -2490,9 +2490,15 @@ class BeforeUseOrdering(unittest.TestCase):
         return [(where, line, detail) for where, line, kind, detail in checker.before_use_findings(files, structures)
                 if kind == 'before-use cycle']
 
-    def test_a_self_requirement_is_a_cycle(self):
-        self.write('a.md', '# A\n\n## One\n\nRead [One](#one) first.\n')
-        self.assertEqual(self.cycles(), [('specimen/a.md', 5, 'specimen/a.md#one:5 -> specimen/a.md#one')])
+    def test_a_same_file_anchor_requirement_is_no_edge(self):
+        self.write('a.md', '# A\n\nRead [Usage](#usage) first.\n\n## Usage\n\nThe usage.\n\n'
+                   '## One\n\nRead [One](a.md#one) first.\n')
+        self.assertEqual(self.cycles(), [])
+        self.assertEqual(checker.requirements(self.skill / 'a.md'), [])
+
+    def test_a_whole_file_self_requirement_is_a_cycle(self):
+        self.write('a.md', '# A\n\nRead [A](a.md) first.\n')
+        self.assertEqual(self.cycles(), [('specimen/a.md', 3, 'specimen/a.md:3 -> specimen/a.md')])
 
     def test_a_multi_document_cycle_has_a_closed_witness(self):
         self.write('a.md', '# A\n\nRead [B](b.md) first.\n')

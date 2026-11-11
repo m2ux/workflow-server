@@ -1632,10 +1632,12 @@ class Requirement:
 
 
 def requirements(path, entry=None):
-    """Each explicit before-use requirement a file states: a `Read ... first.`
+    """Each explicit before-use requirement a file states: a `Read ... first`
     or `Read ... before ...` sentence, a link of a Prerequisites section, and
     a declared preamble link to another file. An ordinary link, a field
-    reference and an execution call impose no order, and a specimen states none."""
+    reference and an execution call impose no order, and a specimen states none.
+    A section of the same file is no requirement: position orders it, and
+    a citation of one is a prerequisite citation inside one file."""
     lines, fenced, headings = scan(path)
     commands = scan_blocks(lines).html_lines
     intro = next((index for index, level, _ in headings if level == 2), len(lines))
@@ -1658,6 +1660,8 @@ def requirements(path, entry=None):
                 continue
             name, _, fragment = target.partition('#')
             destination = (path.parent / name).resolve() if name else path
+            if fragment and destination == path.resolve():
+                continue
             requirement = Requirement(path, index, destination, anchor_of(fragment) if fragment else '', condition)
             if requirement not in found:
                 found.append(requirement)
