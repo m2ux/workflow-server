@@ -1,6 +1,6 @@
 # F13 Test Results
 
-Branch `skill/test-plan-artifact` at ee986a13d, stacked on `skill/proposal-artifact` at 96f49ea10. Three commits: 1947cc09c adds the reader module, cbe3b36a5 adds the Test Plan artifact and retires the converter, and ee986a13d makes a tick linked to evidence the one passing rule.
+Branch `skill/test-plan-artifact` at 173a069da, stacked on `skill/proposal-artifact` at 19be51e10, merged in as 8c1ae75d6. Three commits: 1947cc09c adds the reader module, cbe3b36a5 adds the Test Plan artifact and retires the converter, and ee986a13d makes a tick linked to evidence the one passing rule. Review fixes ba85ac622 reads a section with a second table as unreadable, and 173a069da has Align check each task pull request from its own record. The scratch-copy mutations in T2 and the equivalence run in T4 were made at ee986a13d; the checks, suites and comparison were run again at 173a069da.
 
 ## T1. Skill-File Check over Work-Planner
 
@@ -12,7 +12,7 @@ Branch `skill/test-plan-artifact` at ee986a13d, stacked on `skill/proposal-artif
 
 ## T3. Reader Unit Test
 
-`test_testplan.py`, twelve tests over `testplan.py`: `rows` reads a current plan into Test, Description, Coverage and Pass cells, and gives None for an absent, repeated, renamed, fenced, mis-divided or ragged section and for a checked-list plan; `passed` holds when every check carries a tick linked to web evidence, and not for a bare tick, an empty, Partial, Fail or Not run result, a plan with no check or an unreadable plan; `claims` gives the named, observed and passed criteria, passing a criterion only when every observing check carries a tick linked to web evidence. Covers AC2.
+`test_testplan.py`, twelve tests over `testplan.py`: `rows` reads a current plan into Test, Description, Coverage and Pass cells, and gives None for an absent, repeated, renamed, fenced, mis-divided or ragged section, for a section holding a second table and for a checked-list plan; `passed` holds when every check carries a tick linked to web evidence, and not for a bare tick, an empty, Partial, Fail or Not run result, a plan with no check or an unreadable plan; `claims` gives the named, observed and passed criteria, passing a criterion only when every observing check carries a tick linked to web evidence. Covers AC2.
 
 ## T4. Reader Equivalence over Current Fixtures
 
@@ -24,11 +24,11 @@ Every body the deliver, sync, align, dispatch and testplan suites pass to the re
 
 ## T6. Section Comparison
 
-`check_skill_files.py --compare 96f49ea10 HEAD skills/work-planner`: 887 sections at the base, 890 at the head, 24 added, removed or differing. pull-request-body.md's Test Plan is removed, and its table, columns, evidence and completion rule stand as Test Plan's Plan Table, Plan Columns, Result Evidence and Passed Plan; Test Coverage's row-order sentence moves to Plan Table. Repair Test Plan and Convert Test Plan are removed; Pull Request Record and Workspace move unchanged to Test Plan, and Unresolved Evidence moves restated against Result Evidence. Template, Review Body, Test Coverage, delivery-plan's Report Lines, epic's Delivery Findings, pull-request's Merge Task Pull Requests and Readiness Evidence, deliver-mode's session, sync-mode's Report and the README tables differ by the link to Test Plan or the test counts; align-mode's Coverage runs Check Test Plan. Covers AC1 and AC3.
+`check_skill_files.py --compare 19be51e10 HEAD skills/work-planner`: 887 sections at the base, 890 at the head, 25 added, removed or differing. pull-request-body.md's Test Plan is removed, and its table, columns, evidence and completion rule stand as Test Plan's Plan Table, Plan Columns, Result Evidence and Passed Plan; Test Coverage's row-order sentence moves to Plan Table. Repair Test Plan and Convert Test Plan are removed; Workspace moves unchanged to Test Plan, Pull Request Record moves stating it holds one pull request alone in its file, and Unresolved Evidence moves restated against Result Evidence. Template, Review Body, Test Coverage, delivery-plan's Report Lines, epic's Delivery Findings, pull-request's Merge Task Pull Requests and Readiness Evidence, deliver-mode's session, sync-mode's Report and the README tables differ by the link to Test Plan or the test counts; align-mode's Coverage runs Check Test Plan on each task pull request's own record. Covers AC1 and AC3.
 
 ## T7. Planner Suite, Shared Suite and Whitespace
 
-The work-planner suite: 1276 tests, OK, 1 skipped. The shared suite (`skills/test`): 331 tests, OK. `git diff --check`: clean. Covers AC1, AC2 and AC3.
+At 173a069da, the work-planner suite: 1277 tests, OK, 1 skipped. The shared suite (`skills/test`): 331 tests, OK. `git diff --check 19be51e10 HEAD`: clean. Covers AC1, AC2 and AC3.
 
 ## T8. One Passing Rule
 

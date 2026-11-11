@@ -1,0 +1,34 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1705",
+    "head": "173a069daf22b1d16953814bf34840b585ff56c7",
+    "base": "2ba852ab575a08ae24e605b6410494b9e116e0bb",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1703-f13-test-plan-artifact/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-11",
+    "scope": "F13's own change: 19be51e10..173a069da (the merge base with origin/skill/proposal-artifact, F12's reviewed head, to the head), commits 1947cc09c, cbe3b36a5 and ee986a13d and the review fixes ba85ac622 and 173a069da, after merge 8c1ae75d6 brought in F12 at 19be51e10 (its one conflict, test/README.md counts, resolved to test_plan_mode 14 and test_documents 23). Read in full: artifacts/test-plan.md; scripts/testplan.py; the removed align.py plan path, sync.py plan_rows and plan_claims, and deliver.py plan_passed; pull-request-body.md Template, Review Body and Test Coverage; align-mode Coverage; deliver-mode Publish and Merge; test_testplan, test_align, test_deliver Survey, test_documents TestPlanHome and the test README. Callers inspected: deliver.ready_merges, sync.passed_criteria and sync.plan_agreement through testplan.rows, passed and claims; format.cited's callers; every skill file naming a test plan; no file in the repository names Repair Test Plan, Convert Test Plan, align.py plan or the removed pull-request-body.md anchors; delivery-evidence.md Read Delivery Evidence, whose Pull Request Records collection feeds Align's Check Test Plan.",
+    "criteria": "AC1: Test Plan's Fields alone define Plan Table, Plan Columns, Result Evidence and Passed Plan, and every work-planner file naming a test plan links it; TestPlanHome (3 tests), check_skill_files.py 64 files, 0 findings (T1, T2, T6). AC2: deliver.py and sync.py read the section through testplan.rows, passed and claims; test_testplan (12 tests), test_deliver (108), test_sync (187), and the equivalence run over 87 fixture bodies, differing only on bare ticks by the agreed design (T3, T4, T8). AC3: align.py takes only repositories and references, and Check Test Plan reports a checked-list plan unreadable; test_align (13) (T5).",
+    "validation": "At 173a069da: skills/work-planner suite 1277 tests OK (1 skipped); skills/test 331 tests OK; check_skill_files.py skills/work-planner 64 files, 0 findings; check_skill_files.py --compare 19be51e10 HEAD: 887 sections at the base, 890 at the head; git diff --check 19be51e10 HEAD clean.",
+    "findings": [
+      {
+        "description": "testplan.rows read every line opening with a pipe as one table, so a second table in the Test Plan section was read as rows, although Plan Table makes a section departing from its one table unreadable.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/ba85ac622fed7a0b7abd2bb13452eee28134dea6"
+      },
+      {
+        "description": "align-mode Coverage ran Check Test Plan, which reads one pull request record, with the Pull Request Records collection Read Delivery Evidence provides, naming no step that saves each task pull request's record on its own.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/173a069daf22b1d16953814bf34840b585ff56c7"
+      },
+      {
+        "description": "The pull request body named Task Merge among Test Plan's linking readers, where Merge Task Pull Requests links it, and placed F10 on i17/e02/workspace, which merged into workspace as 5e62cd146.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1705"
+      }
+    ]
+  }
+]
