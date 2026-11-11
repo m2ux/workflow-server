@@ -46,7 +46,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_dispatch](test_dispatch.py) | Continuous dispatch from real delivery surveys and observed worker events |
 | [test_format](test_format.py) | [format](../scripts/format.py) on standalone issues |
 | [test_hotfix_readiness](test_hotfix_readiness.py) | Hot-fix readiness routes restore and confirm draft before repair |
-| [test_hotfix](test_hotfix.py) | [hotfix](../scripts/hotfix.py): a hot-fix's identity, labels, target, board status, delivering pull requests and delivery unit state |
+| [test_hotfix](test_hotfix.py) | [hotfix](../scripts/hotfix.py): a hot-fix's identity, labels, target, board status, delivering pull requests and delivery unit state, each reached through the Kind interface the module supplies, which is all it exports |
 | [test_kinds](test_kinds.py) | The script registry, [kinds](../scripts/kinds.py), maps each kind of work to its module and selects an item's kind from its title, and each registered module supplies the Kind interface |
 | [test_lane](test_lane.py) | Lane's raw-cell, assignment, consistency and admission contracts |
 | [test_link_capture](test_link_capture.py) | The Development relation read from each end by [links-by-pull-request](../scripts/links-by-pull-request.py) and [links-by-issue](../scripts/links-by-issue.py), and the linked pull requests [linked-pull-requests](../scripts/linked-pull-requests.py) adds to a collection |
@@ -58,6 +58,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_shared](test_shared.py) | The helpers [progress](../scripts/progress.py) shares with [board](../scripts/board.py), [sync](../scripts/sync.py) and [format](../scripts/format.py), the title tags [board](../scripts/board.py) owns, and the completion and issue identity it reaches through [sync](../scripts/sync.py) |
 | [test_statuses](test_statuses.py) | The jurisdiction each mode's Status changes are held to, and the calls they render |
 | [test_sync](test_sync.py) | Done on a Work Breakdown row, ticked when the row is complete |
+| [test_task_worktree](test_task_worktree.py) | Retained preparations validate and preserve real Git task worktrees |
 | [test_templates](test_templates.py) | Body artifacts are the format checker's sole template source |
 
 ### Prose Tests
@@ -91,28 +92,30 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | --- | --- |
 | [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (18), [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_review_scope](test_review_scope.py) (14) |
 | [align](../scripts/align.py) | [test_align](test_align.py) (18) |
-| [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_deliver](test_deliver.py) (105), [test_shared](test_shared.py) (17) |
-| [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (14), [test_board_queue](test_board_queue.py) (75) |
+| [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (105), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (17) |
+| [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (14), [test_board_queue](test_board_queue.py) (78) |
 | [closure](../scripts/closure.py) | [test_closure](test_closure.py) (13), [test_command_contracts](test_command_contracts.py) (14) |
 | [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) (14) |
-| [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (105), [test_dispatch](test_dispatch.py) (22) |
+| [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (105), [test_dispatch](test_dispatch.py) (34) |
+| [delivery-branches](../scripts/delivery-branches.py) | [test_task_worktree](test_task_worktree.py) (8) |
 | [deps](../scripts/deps.py) | [test_deps](test_deps.py) (85) |
 | [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
-| [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (22) |
-| [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
-| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (21), [test_kinds](test_kinds.py) (9) |
-| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (18), [test_deliver](test_deliver.py) (105), [test_dispatch](test_dispatch.py) (22), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (21), [test_kinds](test_kinds.py) (9), [test_orphans](test_orphans.py) (5), [test_sync](test_sync.py) (187) |
-| [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (22), [test_lane](test_lane.py) (12) |
+| [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (34) |
+| [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
+| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (23), [test_kinds](test_kinds.py) (10) |
+| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (18), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (105), [test_dispatch](test_dispatch.py) (34), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (23), [test_kinds](test_kinds.py) (10), [test_orphans](test_orphans.py) (5), [test_progress](test_progress.py) (79), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
+| [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (34), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-pull-request](../scripts/links-by-pull-request.py) | [test_link_capture](test_link_capture.py) (22) |
 | [orphans](../scripts/orphans.py) | [test_orphans](test_orphans.py) (5) |
-| [progress](../scripts/progress.py) | [test_progress](test_progress.py) (76) |
+| [priority](../scripts/priority.py) | [test_board_queue](test_board_queue.py) (78), [test_progress](test_progress.py) (79) |
+| [progress](../scripts/progress.py) | [test_progress](test_progress.py) (79) |
 | [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32) |
 | [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |
-| [statuses](../scripts/statuses.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (17), [test_statuses](test_statuses.py) (21) |
-| [sync](../scripts/sync.py) | [test_align](test_align.py) (18), [test_deliver](test_deliver.py) (105), [test_link_capture](test_link_capture.py) (22), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (187) |
+| [statuses](../scripts/statuses.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (17), [test_statuses](test_statuses.py) (24) |
+| [sync](../scripts/sync.py) | [test_align](test_align.py) (18), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (105), [test_link_capture](test_link_capture.py) (22), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (17), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
 
 ### Documents
 

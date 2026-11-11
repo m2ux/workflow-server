@@ -3,33 +3,35 @@
 An issue whose title opens with [F00] is a hot-fix, and it carries the priority: 10 label. Its
 Overview names the long-lived branch it fixes in one Target: line. This module supplies the hot-fix
 kind to the script registry, kinds.py: each operation of its Kind interface, with the inputs and
-results that interface states, reads a hot-fix's tag, labels, body faults, target, board status,
-linking and delivering pull requests and the state of its delivery unit. hotfix_tag and is_hotfix are
-the names general scripts import directly.
+results that interface states, reads a hot-fix's tag and the letter it opens with, labels, body
+faults, target, board status, linking and delivering pull requests and the state of its delivery
+unit. The module defines no other public name, and only the registry imports it.
 """
 import re
 
 from kinds import OFF_BOARD, Key
 
-HOTFIX = re.compile(r'^\[(F\d\d)\]')
-PRIORITY = 'priority: 10'
-TARGET = re.compile(r'^Target: `([^`\s]+)`\s*$')
-ITEM = re.compile(r'^(?:[-*+]|\d+[.)])\s')
+_LETTER = 'F'
+_TAG = re.compile(rf'^\[({_LETTER}\d\d)\]')
+_PRIORITY = 'priority: 10'
+_TARGET = re.compile(r'^Target: `([^`\s]+)`\s*$')
+_ITEM = re.compile(r'^(?:[-*+]|\d+[.)])\s')
 
 
 def tag(item: dict) -> str | None:
     """The [F00] tag an issue's or pull request's title opens with, which makes an issue a hot-fix."""
-    matched = HOTFIX.match(item.get('title') or '')
+    matched = _TAG.match(item.get('title') or '')
     return matched[1] if matched else None
 
 
-def is_hotfix(issue: dict) -> bool:
-    return tag(issue) is not None
+def letter() -> str:
+    """F, the letter a hot-fix's tag opens with."""
+    return _LETTER
 
 
 def labels(issue: dict) -> list[str]:
     """The priority label for priority 10, which a hot-fix carries beside type:hot-fix and its theme."""
-    return [PRIORITY]
+    return [_PRIORITY]
 
 
 def faults(issue: dict) -> list[str]:
@@ -38,14 +40,14 @@ def faults(issue: dict) -> list[str]:
     these beside its own checks."""
     from format import split_sections  # format imports this module
     found = []
-    named = targets(issue)
+    named = _targets(issue)
     if len(named) != 1:
         found.append(f'{len(named) or "no"} Target: lines in the Overview; it names one target branch')
     _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
     if any(line.strip() for heading, lines in sections if heading == 'Open Questions' for line in lines):
         found.append('open questions remain')
     for heading, lines in sections:
-        if heading == 'Acceptance Criteria' and not any(ITEM.match(line) for line in lines):
+        if heading == 'Acceptance Criteria' and not any(_ITEM.match(line) for line in lines):
             found.append('no acceptance criterion')
     return found
 
@@ -63,17 +65,17 @@ def board_status(issue: dict, held: str | None, delivering: list[dict]) -> str |
     return 'In Progress' if pending or held in ('In Progress', 'In Review') else 'Ready'
 
 
-def targets(issue: dict) -> list[str]:
+def _targets(issue: dict) -> list[str]:
     """The branch each Target: line of the issue's Overview names, in order, outside fenced code."""
     from format import prose, split_sections  # format imports this module
     _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
     lines = prose(next((lines for heading, lines in sections if heading == 'Overview'), []))
-    return [found[1] for line in lines if (found := TARGET.match(line))]
+    return [found[1] for line in lines if (found := _TARGET.match(line))]
 
 
 def target(issue: dict) -> str:
     """The branch a hot-fix fixes, or '' unless its Overview names exactly one."""
-    named = targets(issue)
+    named = _targets(issue)
     return named[0] if len(named) == 1 else ''
 
 
@@ -119,6 +121,3 @@ def unit_state(issue: dict, held: str | None, linking: list[dict], delivering: l
     if any((p.get('state') or 'open') == 'open' and not p.get('merged_at') for p in linking):
         return 'running'
     return {'In Progress': 'hold', 'Ready': 'unit'}.get(held)
-
-
-hotfix_tag = tag
