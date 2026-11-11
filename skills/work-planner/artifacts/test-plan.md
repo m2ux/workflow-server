@@ -47,7 +47,7 @@ The test plan has passed when every row with a Test id carries ✓ as its result
 
 ### Pull Request Record
 
-The supplied current REST pull request JSON. eg `pr-950.json`
+One pull request's supplied current REST JSON record, alone in its file. eg `pr-950.json`
 
 ### Plan Finding
 

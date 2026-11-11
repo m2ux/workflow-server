@@ -123,7 +123,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For initiative or epic scope, Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence "ƒ") with the fetched initiative, epic and task issue JSON.
 - Continue with its provided records.
-- For each task pull request in those records, Run [Check Test Plan](../artifacts/test-plan.md#check-test-plan "ƒ") with its record and report each [Plan Finding](../artifacts/test-plan.md#plan-finding). An epic review carries no Test Plan, as [Review Body](../artifacts/pull-request-body.md#review-body) states.
+- For each task pull request in those records, Run [Check Test Plan](../artifacts/test-plan.md#check-test-plan "ƒ") with its own record, saved from the collection as one [Pull Request Record](../artifacts/test-plan.md#pull-request-record), and report each [Plan Finding](../artifacts/test-plan.md#plan-finding). An epic review carries no Test Plan, as [Review Body](../artifacts/pull-request-body.md#review-body) states.
 - An unreadable plan stays a finding until its pull request's Test Plan is written as [Plan Table](../artifacts/test-plan.md#plan-table) defines, from the checks the work ran.
 
 - For each epic being aligned, Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for the current epic in the project checkout with the fetched epic bases, retaining the confirmed task-to-pull-request matches:
