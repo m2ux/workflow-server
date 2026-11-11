@@ -70,7 +70,7 @@ Provide the saved identity and [Delivery Findings](#delivery-findings), whose cl
 
 ### Review Hot-fix Before Merge
 
-One hot-fix's draft [delivering pull request](#delivering-pull-request) taken through the review cycle it waits on, to a ready pull request or a held draft.
+One hot-fix's draft [delivering pull request](#delivering-pull-request) taken through the review cycle it waits on, under its [Review Rule](#review-rule), to a ready pull request or a held draft.
 
 #### 1. Review the Head
 
@@ -191,9 +191,13 @@ A repository-qualified reference to the hot-fix's delivering pull request.
 
 - A pull request delivers a hot-fix when its title opens with the hot-fix's prefix, `[F00] Purpose`, it lives in the hot-fix's repository, its base is the hot-fix's [target](hotfix-body.md#target), and its Development field links the hot-fix.
 - It is opened from the hot-fix's [branch](#branch), as a draft.
-- It is marked ready for review only once its review cycle is complete: its current [agent review](agent-review.md#review-record) leaves every finding fixed.
+- It is marked ready for review only once its review cycle is complete: its current [agent review](agent-review.md#review-record) meets the [Review Rule](#review-rule).
 - A reopened hot-fix still counts a delivering pull request merged before it reopened, since the issue records no reopen time.
 - A pull request into a branch the body named as its target before an edit stops counting, since the body names the current target.
+
+### Review Rule
+
+The kind review rule a hot-fix's [delivering pull request](#delivering-pull-request) takes under [Review Record](agent-review.md#review-record). Its record also carries `base_ref`, the name of its base branch, and is current while it names the head SHA and that base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. Every finding is fixed, blocking or not.
 
 ### Delivery Record
 
