@@ -101,10 +101,9 @@ from priority import rank
 from statuses import DISPATCH, Key, STATUSES, Changes, StatusField, board_items, label, pages, status_of
 from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
                     row, row_id, split_sections, title_name)
-from sync import (Unreadable, attach_links, issue_key, long_lived_names, origin_repository, plan_rows,
+from sync import (PR_REF, Unreadable, attach_links, issue_key, long_lived_names, origin_repository, plan_rows,
                   pull_requests, table)
 
-PR_TITLE = re.compile(r'^\[I(\d\d):E(\d\d)\]')
 RECORD = re.compile(r'^(.*/artifacts/planning/)[^/]+/?$')
 CRITERION = re.compile(r'AC\d+')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
@@ -301,7 +300,7 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...], reposi
                     for key, issue in kinded.get(kind, {}).items()) and plan_passed(pull.get('body') or '')):
                 found.append((pull['number'], f"  merge #{pull['number']} {operations.tag(pull)}: base {base}"))
             continue
-        matched = PR_TITLE.match(pull.get('title') or '')
+        matched = PR_REF.match(pull.get('title') or '')
         if not matched:
             continue
         initiative, epic = matched[1], matched[2]

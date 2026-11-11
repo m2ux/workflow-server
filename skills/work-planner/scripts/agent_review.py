@@ -11,6 +11,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from kinds import Review, interface, kind_of
+from sync import PR_REF
 
 
 def load_records(path):
@@ -107,7 +108,7 @@ def integration(pr, initiative, epic):
 
 def epic_check(epic, prs, records):
     """Require current evidence for every open integration pull request belonging to the epic."""
-    match = re.match(r'^\[I(\d\d):E(\d\d)\]', epic.get('title', ''))
+    match = PR_REF.match(epic.get('title', ''))
     if not match or re.match(r'^\[I\d\d:E\d\d:W', epic.get('title', '')):
         return 'a task does not stand In Review'
     home = epic.get('html_url', '').split('/issues/')[0]

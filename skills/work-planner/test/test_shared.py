@@ -1,6 +1,6 @@
 """The helpers progress.py shares with board.py, sync.py and format.py, the title tags board.py owns,
-the completion and issue identity it reaches through sync.py, and the title-tag and pull-request home
-patterns every script reaches through their one definition in sync.py.
+the completion and issue identity it reaches through sync.py, and the title-tag, pull-request home and
+epic pull-request title patterns every script reaches through their one definition in sync.py.
 """
 import ast
 import importlib.util
@@ -147,7 +147,7 @@ def loaded(path: Path):
 
 
 class SharedPatterns(unittest.TestCase):
-    patterns = {'title tag': sync.PREFIX, 'pull-request home': sync.PULL_REF}
+    patterns = {'title tag': sync.PREFIX, 'pull-request home': sync.PULL_REF, 'epic pull-request title': sync.PR_REF}
 
     def test_each_pattern_is_written_in_one_script(self):
         for name, pattern in self.patterns.items():
@@ -164,7 +164,8 @@ class SharedPatterns(unittest.TestCase):
 
     def test_tag_parsing_and_pull_request_homes_import_the_definitions(self):
         self.assertIs(board.PREFIX, sync.PREFIX)
-        for script, name in (('progress.py', 'PREFIX'), ('progress.py', 'PULL_REF'), ('board-queue.py', 'PULL_REF')):
+        for script, name in (('progress.py', 'PREFIX'), ('progress.py', 'PULL_REF'), ('board-queue.py', 'PULL_REF'),
+                             ('deliver.py', 'PR_REF'), ('renumber.py', 'PR_REF'), ('agent_review.py', 'PR_REF')):
             with self.subTest(script=script, name=name):
                 self.assertIs(getattr(loaded(SCRIPTS / script), name), getattr(sync, name))
 
