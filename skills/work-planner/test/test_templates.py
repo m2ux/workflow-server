@@ -1,11 +1,14 @@
 """Body artifacts are the format checker's sole template source."""
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
 from fixtures import SCRIPTS
-from format import BODY_ARTIFACTS, Template, template_body
+
+sys.path.insert(0, str(SCRIPTS))
+from format import BODY_ARTIFACTS, Template, template_body  # noqa: E402
 
 
 class ArtifactTemplates(unittest.TestCase):
