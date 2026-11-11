@@ -1,0 +1,21 @@
+== kind search, KIND_NAMES of test_kind_operations, outside the plan hierarchy
+-- 380110d19
+skills/work-planner/artifacts/board-delivery.md:
+199:Only an initiative, an epic or a hot-fix stands In Review. An open task issue is In Progress while a delivery pull request, draft or ready, links it, and Done once that pull request merges into the epic base and the issue closes as completed. Every jurisdiction refuses a task set In Review.
+skills/work-planner/artifacts/board-status.md:
+  (no hit or absent)
+skills/work-planner/scripts/board.py:
+44:Only an initiative, an epic or a hot-fix stands In Review. A task issue is In Progress while its pull request
+skills/work-planner/scripts/deliver.py:
+  (no hit or absent)
+-- HEAD
+skills/work-planner/artifacts/board-delivery.md:
+  (no hit or absent)
+skills/work-planner/artifacts/board-status.md:
+  (no hit or absent)
+skills/work-planner/scripts/board.py:
+  (no hit or absent)
+skills/work-planner/scripts/deliver.py:
+  (no hit or absent)
+== retired targets at HEAD
+  none

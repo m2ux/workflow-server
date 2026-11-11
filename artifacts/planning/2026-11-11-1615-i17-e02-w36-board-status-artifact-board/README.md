@@ -7,6 +7,7 @@ One task across the Board Status artifact and its two callers.
 | File | Purpose |
 | --- | --- |
 | [w36.md](w36.md) | Files, scope, implementation and observing validation for W36. |
+| [validation.md](validation.md) | Clause owners, observing tests, identical-outcome evidence and full checks at the task head. |
 
 ## Links
 

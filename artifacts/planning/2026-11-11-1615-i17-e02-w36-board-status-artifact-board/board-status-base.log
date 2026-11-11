@@ -1,0 +1,566 @@
+FFFFFFFFEEEEEEEEEEEEEEEFEFF...
+======================================================================
+ERROR: test_every_command_input_and_output_is_one_of_its_fields (test_board_status.BoardStatusArtifact.test_every_command_input_and_output_is_one_of_its_fields)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 263, in test_every_command_input_and_output_is_one_of_its_fields
+    fields = {checker.anchor_of(title) for title in sections(STATUS)['Fields']}
+                                                    ~~~~~~~~^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 33, in sections
+    lines, _, headings = checker.scan(path)
+                         ~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_it_names_no_kind (test_board_status.BoardStatusArtifact.test_it_names_no_kind)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 275, in test_it_names_no_kind
+    self.assertEqual(kind_mentions(STATUS), [])
+                     ~~~~~~~~~~~~~^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 55, in kind_mentions
+    lines, fenced, _ = checker.scan(path)
+                       ~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_its_commands_compute_delivery_and_dispatch_changes (test_board_status.BoardStatusArtifact.test_its_commands_compute_delivery_and_dispatch_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 255, in test_its_commands_compute_delivery_and_dispatch_changes
+    lines, _, headings = checker.scan(STATUS)
+                         ~~~~~~~~~~~~^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_its_guidance_holds_closure_item_status_and_write_jurisdiction (test_board_status.BoardStatusArtifact.test_its_guidance_holds_closure_item_status_and_write_jurisdiction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 271, in test_its_guidance_holds_closure_item_status_and_write_jurisdiction
+    self.assertEqual(sections(STATUS)['Guidance'], ['Closure', 'Item Status', 'Write Jurisdiction'])
+                     ~~~~~~~~^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 33, in sections
+    lines, _, headings = checker.scan(path)
+                         ~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_the_installed_model_reads_it_as_an_artifact_with_no_finding (test_board_status.BoardStatusArtifact.test_the_installed_model_reads_it_as_an_artifact_with_no_finding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 252, in test_the_installed_model_reads_it_as_an_artifact_with_no_finding
+    self.assertEqual(findings(STATUS), [])
+                     ~~~~~~~~^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 48, in findings
+    return checker.check(path, ROOT.parent, {}, cited, called, declared)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 747, in check
+    lines, fenced, headings = scan(path)
+                              ~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_the_scripts_its_commands_run_name_no_kind (test_board_status.BoardStatusArtifact.test_the_scripts_its_commands_run_name_no_kind)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 278, in test_the_scripts_its_commands_run_name_no_kind
+    run_here = re.findall(r'skills/work-planner/scripts/([\w-]+)\.py', STATUS.read_text())
+                                                                       ~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_a_complete_epic_without_current_review_stays_in_progress_and_blocks_its_handoff (test_board_status.DeliveryDecisions.test_a_complete_epic_without_current_review_stays_in_progress_and_blocks_its_handoff)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 123, in test_a_complete_epic_without_current_review_stays_in_progress_and_blocks_its_handoff
+    done = self.changes(epic, issue(3, '[I01:E99:W01] Elsewhere: Task'), prs=(merged,))
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 91, in changes
+    return self.execute('board-status.md', 'Compute Board Changes', {
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'initiative-json-file': self.snapshot('initiative.json', initiative),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        'assignee-login': 'me',
+        ^^^^^^^^^^^^^^^^^^^^^^^
+    })
+    ^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 74, in execute
+    script, argv = arguments(document, heading, values)
+                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_command_contracts.py", line 21, in arguments
+    lines, _, headings = checker.scan(path)
+                         ~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_a_reserved_row_puts_its_task_in_progress_and_a_work_item_link_does_not (test_board_status.DeliveryDecisions.test_a_reserved_row_puts_its_task_in_progress_and_a_work_item_link_does_not)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 129, in test_a_reserved_row_puts_its_task_in_progress_and_a_work_item_link_does_not
+    held = self.changes(self.epic(f'[W01]({RECORD})'), issue(3, '[I01:E00:W01] Go: Task'))
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 91, in changes
+    return self.execute('board-status.md', 'Compute Board Changes', {
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'initiative-json-file': self.snapshot('initiative.json', initiative),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        'assignee-login': 'me',
+        ^^^^^^^^^^^^^^^^^^^^^^^
+    })
+    ^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 74, in execute
+    script, argv = arguments(document, heading, values)
+                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_command_contracts.py", line 21, in arguments
+    lines, _, headings = checker.scan(path)
+                         ~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_a_task_gated_on_an_unresolvable_entry_keeps_its_status_and_fails_the_run (test_board_status.DeliveryDecisions.test_a_task_gated_on_an_unresolvable_entry_keeps_its_status_and_fails_the_run)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 143, in test_a_task_gated_on_an_unresolvable_entry_keeps_its_status_and_fails_the_run
+    done = self.changes(self.epic(depends='E05 (W04)'), issue(3, '[I01:E00:W01] Go: Task'),
+                        task_status='Ready')
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 91, in changes
+    return self.execute('board-status.md', 'Compute Board Changes', {
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'initiative-json-file': self.snapshot('initiative.json', initiative),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        'assignee-login': 'me',
+        ^^^^^^^^^^^^^^^^^^^^^^^
+    })
+    ^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 74, in execute
+    script, argv = arguments(document, heading, values)
+                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_command_contracts.py", line 21, in arguments
+    lines, _, headings = checker.scan(path)
+                         ~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_an_absent_item_is_added_and_takes_its_status_on_the_next_pass (test_board_status.DeliveryDecisions.test_an_absent_item_is_added_and_takes_its_status_on_the_next_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 136, in test_an_absent_item_is_added_and_takes_its_status_on_the_next_pass
+    first = self.changes(self.epic(f'[W01]({RECORD})'), task, on_board=False)
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 91, in changes
+    return self.execute('board-status.md', 'Compute Board Changes', {
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'initiative-json-file': self.snapshot('initiative.json', initiative),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        'assignee-login': 'me',
+        ^^^^^^^^^^^^^^^^^^^^^^^
+    })
+    ^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 74, in execute
+    script, argv = arguments(document, heading, values)
+                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_command_contracts.py", line 21, in arguments
+    lines, _, headings = checker.scan(path)
+                         ~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_closure_as_completed_is_done_and_any_other_closure_leaves_the_board (test_board_status.DeliveryDecisions.test_closure_as_completed_is_done_and_any_other_closure_leaves_the_board)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 113, in test_closure_as_completed_is_done_and_any_other_closure_leaves_the_board
+    done = self.changes(self.epic(f"[W01]({url('issues', 3)})"), task, prs=(merged,), held=(links(9, 3),),
+                        others=((dropped, 'Ready'),))
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 91, in changes
+    return self.execute('board-status.md', 'Compute Board Changes', {
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'initiative-json-file': self.snapshot('initiative.json', initiative),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        'assignee-login': 'me',
+        ^^^^^^^^^^^^^^^^^^^^^^^
+    })
+    ^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 74, in execute
+    script, argv = arguments(document, heading, values)
+                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_command_contracts.py", line 21, in arguments
+    lines, _, headings = checker.scan(path)
+                         ~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_a_held_task_and_its_epic_go_in_progress (test_board_status.DispatchDecisions.test_a_held_task_and_its_epic_go_in_progress)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 175, in test_a_held_task_and_its_epic_go_in_progress
+    done = self.dispatch([(self.complete(), 'Ready'), (issue(637, '[I07:E00:W01] Work: Task'), 'Ready')],
+                         progress='943,637')
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 159, in dispatch
+    return self.execute('board-status.md', 'Compute Dispatch Status', {
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'board-items-file': self.snapshot('items.json', rows),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        'review-records-file': self.snapshot('reviews.json', []),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    })
+    ^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 74, in execute
+    script, argv = arguments(document, heading, values)
+                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_command_contracts.py", line 21, in arguments
+    lines, _, headings = checker.scan(path)
+                         ~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_a_task_set_in_review_is_refused (test_board_status.DispatchDecisions.test_a_task_set_in_review_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 194, in test_a_task_set_in_review_is_refused
+    done = self.dispatch([(issue(637, '[I07:E00:W01] Work: Task'), 'In Progress')], review='637')
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 159, in dispatch
+    return self.execute('board-status.md', 'Compute Dispatch Status', {
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'board-items-file': self.snapshot('items.json', rows),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        'review-records-file': self.snapshot('reviews.json', []),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    })
+    ^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 74, in execute
+    script, argv = arguments(document, heading, values)
+                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_command_contracts.py", line 21, in arguments
+    lines, _, headings = checker.scan(path)
+                         ~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_an_issue_not_on_the_board_is_refused (test_board_status.DispatchDecisions.test_an_issue_not_on_the_board_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 188, in test_an_issue_not_on_the_board_is_refused
+    done = self.dispatch([(self.complete(), 'Ready')], progress='944')
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 159, in dispatch
+    return self.execute('board-status.md', 'Compute Dispatch Status', {
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'board-items-file': self.snapshot('items.json', rows),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        'review-records-file': self.snapshot('reviews.json', []),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    })
+    ^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 74, in execute
+    script, argv = arguments(document, heading, values)
+                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_command_contracts.py", line 21, in arguments
+    lines, _, headings = checker.scan(path)
+                         ~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_in_review_without_current_review_evidence_is_refused_with_no_call (test_board_status.DispatchDecisions.test_in_review_without_current_review_evidence_is_refused_with_no_call)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 182, in test_in_review_without_current_review_evidence_is_refused_with_no_call
+    done = self.dispatch([(self.complete(), 'In Progress')], review='943')
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 159, in dispatch
+    return self.execute('board-status.md', 'Compute Dispatch Status', {
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'board-items-file': self.snapshot('items.json', rows),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        'review-records-file': self.snapshot('reviews.json', []),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    })
+    ^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 74, in execute
+    script, argv = arguments(document, heading, values)
+                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_command_contracts.py", line 21, in arguments
+    lines, _, headings = checker.scan(path)
+                         ~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+ERROR: test_every_board_status_target_resolves (test_board_status.HotfixCaller.test_every_board_status_target_resolves)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 339, in test_every_board_status_target_resolves
+    anchors = {checker.anchor_of(title) for _, _, title in checker.scan(STATUS)[2]}
+                                                           ~~~~~~~~~~~~^^^^^^^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/scripts/check_skill_files.py", line 200, in scan
+    return parse(path.read_text())
+                 ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 788, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 772, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/artifacts/board-status.md'
+
+======================================================================
+FAIL: test_dispatch_and_review_statuses_come_from_board_status_and_are_read_back (test_board_status.BoardDeliveryCallers.test_dispatch_and_review_statuses_come_from_board_status_and_are_read_back)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 299, in test_dispatch_and_review_statuses_come_from_board_status_and_are_read_back
+    self.assertIn('Run [Compute Dispatch Status](board-status.md#compute-dispatch-status "ƒ")',
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  found['Record Dispatch Status'])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Run [Compute Dispatch Status](board-status.md#compute-dispatch-status "ƒ")' not found in '\nThe task and epic statuses owned by a delivery dispatch.\n\n#### 1. Compute Dispatch Calls\n\nRun [Compute Dispatch Status](#compute-dispatch-status "ƒ").\n\n#### 2. Apply and Confirm Calls\n\n- Run each provided call.\n- Apply [Read Board Configuration](board.md#read-board-configuration "ƒ") for each affected item to confirm the write.\n\n#### 3. Provide Saved Statuses\n\nProvide [Confirmed Statuses](#confirmed-statuses) with saved statuses or unresolved discrepancies.\n'
+
+======================================================================
+FAIL: test_it_holds_no_command_or_status_rule_of_its_own (test_board_status.BoardDeliveryCallers.test_it_holds_no_command_or_status_rule_of_its_own)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 293, in test_it_holds_no_command_or_status_rule_of_its_own
+    self.assertEqual(list(sections(DELIVERY)), ['Operations', 'Fields'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['Operations', 'Commands', 'Fields', 'Guidance'] != ['Operations', 'Fields']
+
+First differing element 1:
+'Commands'
+'Fields'
+
+First list contains 2 additional elements.
+First extra element 2:
+'Fields'
+
+- ['Operations', 'Commands', 'Fields', 'Guidance']
++ ['Operations', 'Fields']
+
+======================================================================
+FAIL: test_it_names_no_kind (test_board_status.BoardDeliveryCallers.test_it_names_no_kind)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 290, in test_it_names_no_kind
+    self.assertEqual(kind_mentions(DELIVERY), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['199: Only an initiative, an epic or a ho[253 chars]ew.'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'199: Only an initiative, an epic or a hot-fix stands In Review. An open task issue is In Progress while a delivery pull request, draft or ready, links it, and Done once that pull request merges into the epic base and the issue closes as completed. Every jurisdiction refuses a task set In Review.'
+
++ []
+- ['199: Only an initiative, an epic or a hot-fix stands In Review. An open task '
+-  'issue is In Progress while a delivery pull request, draft or ready, links '
+-  'it, and Done once that pull request merges into the epic base and the issue '
+-  'closes as completed. Every jurisdiction refuses a task set In Review.']
+
+======================================================================
+FAIL: test_no_document_reaches_a_retired_target (test_board_status.BoardDeliveryCallers.test_no_document_reaches_a_retired_target) (file='SKILL.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 316, in test_no_document_reaches_a_retired_target
+    self.assertIsNone(retired.search(path.read_text()))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <re.Match object; span=(2920, 2952), match='board-delivery.md#status-changes'> is not None
+
+======================================================================
+FAIL: test_no_document_reaches_a_retired_target (test_board_status.BoardDeliveryCallers.test_no_document_reaches_a_retired_target) (file='artifacts/board.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 316, in test_no_document_reaches_a_retired_target
+    self.assertIsNone(retired.search(path.read_text()))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <re.Match object; span=(13622, 13654), match='board-delivery.md#status-changes'> is not None
+
+======================================================================
+FAIL: test_no_document_reaches_a_retired_target (test_board_status.BoardDeliveryCallers.test_no_document_reaches_a_retired_target) (file='artifacts/hotfix.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 316, in test_no_document_reaches_a_retired_target
+    self.assertIsNone(retired.search(path.read_text()))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <re.Match object; span=(13131, 13163), match='board-delivery.md#status-changes'> is not None
+
+======================================================================
+FAIL: test_no_document_reaches_a_retired_target (test_board_status.BoardDeliveryCallers.test_no_document_reaches_a_retired_target) (file='modes/sync-mode.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 316, in test_no_document_reaches_a_retired_target
+    self.assertIsNone(retired.search(path.read_text()))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <re.Match object; span=(16272, 16311), match='board-delivery.md#compute-board-changes'> is not None
+
+======================================================================
+FAIL: test_sync_runs_compute_board_changes_from_board_status (test_board_status.BoardDeliveryCallers.test_sync_runs_compute_board_changes_from_board_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 309, in test_sync_runs_compute_board_changes_from_board_status
+    self.assertEqual(text.count('(../artifacts/board-status.md#compute-board-changes "ƒ")'), 3)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 3
+
+======================================================================
+FAIL: test_a_closed_hot_fix_takes_closure_from_board_status (test_board_status.HotfixCaller.test_a_closed_hot_fix_takes_closure_from_board_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 331, in test_a_closed_hot_fix_takes_closure_from_board_status
+    self.assertIn('[Closure](board-status.md#closure)', guidance)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '[Closure](board-status.md#closure)' not found in "### Board Status\n\n- An open hot-fix stands In Review while a [delivering pull request](#delivering-pull-request) of it is open and ready for review, and In Progress while one is an open draft.\n- Otherwise an open hot-fix is Ready, whatever any initiative's or epic's priority, and In Progress once it holds In Progress or In Review. It reaches the board as its [placement](placement.md#disposition-conditions) orders.\n- A closed hot-fix takes the status [Status Changes](board-delivery.md#status-changes) gives a closed issue.\n- No initiative or epic waits on a hot-fix, and a hot-fix waits on none."
+
+======================================================================
+FAIL: test_its_settlement_applies_the_board_status_change (test_board_status.HotfixCaller.test_its_settlement_applies_the_board_status_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 324, in test_its_settlement_applies_the_board_status_change
+    self.assertIn('[status change](board-status.md#status-change)', body)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '[status change](board-status.md#status-change)' not found in '\nOne hot-fix\'s board item set where [Board Status](#board-status) places it.\n\n#### 1. Read Current Issue\n\nApply [Read Tracker Issue](issue.md#read-tracker-issue "ƒ") for the current state of [Hot-fix Identity](#hot-fix-identity).\n\n#### 2. Read Current Board\n\nApply [Read Board State](board.md#read-board-state "ƒ") for the board in [Board Evidence](#board-evidence) to obtain the issue’s item and Status. A hot-fix with no item has no Status.\n\n#### 3. Apply Required Status\n\n- Apply the status [Board Status](#board-status) gives that state and Status:\n\n##### A Status\n\n- Apply [Place Issue on Board](board.md#place-issue-on-board "ƒ") with the supplied board, the hot-fix issue and that status, which adds the item where the board has none.\n\n##### Off the Board, With an Item\n\n- Run [Remove Board Item](board.md#remove-board-item "ƒ") with the supplied board owner and number and the item id Read Board State provided.\n\n##### Off the Board, With No Item\n\n- Change nothing; the hot-fix already stands off the board.\n\n#### 4. Provide Settled Board\n\nProvide [Board Result](#board-result) with the settled item, its removal, or the unchanged board.\n'
+
+======================================================================
+FAIL: test_the_registered_settle_contract_is_the_board_status_change (test_board_status.HotfixCaller.test_the_registered_settle_contract_is_the_board_status_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w36/base/skills/work-planner/test/test_board_status.py", line 336, in test_the_registered_settle_contract_is_the_board_status_change
+    self.assertIn('- **Settle Board Status**\n  [Status Change](artifacts/board-status.md#status-change)', text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '- **Settle Board Status**\n  [Status Change](artifacts/board-status.md#status-change)' not found in '---\nname: work-planner\ndescription: >-\n  Plans and maintains agent-engineering work on GitHub: proposals, initiatives, epics, tasks and theme boards. Use to propose work or scope a problem; plan or break down work; raise, restructure, align or renumber an initiative or epic; check issue format, criteria, dependencies or delivery; fold review findings into issues; sync completed work and close what is finished; advance a board, decide what moves to ready or what to pick up next; deliver board work or dispatch ready tasks; understand or explain a pull request, write its architecture overview or diagram its changes; hoist, triage or find a home for orphan issues; produce a standup or Slack status update; or revise the work-planner skill itself.\n---\n\n# Work Planner\n\nWork Planner plans work as GitHub issues and keeps the plan current until the work is delivered. The issues are the plan, and this list registers each kind of work with the artifacts holding it and the interface operations each supplies:\n\n- **Proposal**  States the problem and the goal, with no Work Breakdown.\n  - [Proposal Body](artifacts/proposal-body.md)\n- **Initiative**  States a goal and lists its epics.\n  - [Initiative](artifacts/initiative.md)\n  - [Initiative Issue Body](artifacts/initiative-issue-body.md)  Populate Body\n- **Epic**  Lists its tasks in a Work Breakdown table.\n  - [Epic](artifacts/epic.md)\n  - [Epic Issue Body](artifacts/epic-issue-body.md)  Populate Body\n- **Task**  One pull request\'s worth of work.\n  - [Task Body](artifacts/task-body.md)\n- **Standalone issue**  Work outside any initiative.\n  - [Standalone Body](artifacts/standalone-body.md)  Populate Body\n- **Hot-fix**  A fix to a long-lived branch beside all queued work.\n  - [Hot-fix](artifacts/hotfix.md)  [Release Hold](artifacts/hotfix.md#release-hot-fix-hold "ƒ"), [Record Dispatch Status](artifacts/hotfix.md#record-hot-fix-dispatch-status "ƒ"), [Record Delivery](artifacts/hotfix.md#record-hot-fix-delivery "ƒ"), [Record Merge](artifacts/hotfix.md#record-hot-fix-merge "ƒ"), [Settle Board Status](artifacts/hotfix.md#settle-hot-fix-board-status "ƒ"), [Review Before Merge](artifacts/hotfix.md#review-hot-fix-before-merge "ƒ")\n  - [Hot-fix Body](artifacts/hotfix-body.md)  [Populate Body](artifacts/hotfix-body.md#populate-hot-fix-body "ƒ")\n\nA kind supplies an interface operation where its rules depart from the general route. General files select the operation through this registration, and each kind\'s operation fills the general contract linked here:\n\n- **Release Hold**\n  [Requested Hold Release](modes/deliver-mode.md#requested-hold-release)\n- **Record Dispatch Status**\n  [Record Dispatch Status](artifacts/board-delivery.md#record-dispatch-status "ƒ")\n- **Record Delivery**\n  [Issue Delivery](protocols/issue-delivery.md "ƒ")\n- **Record Merge**\n  [Task Merge](protocols/task-merge.md "ƒ")\n- **Settle Board Status**\n  [Status Changes](artifacts/board-delivery.md#status-changes)\n- **Populate Body**\n  [Body](artifacts/issue-body.md#body)\n- **Review Before Merge**\n  [Produce Agent Review](artifacts/agent-review.md#produce-agent-review "ƒ")\n\nA kind\'s operation takes the interface name with the kind\'s name after its verb: Settle Hot-fix Board Status, Populate Standalone Body.\n\nEach theme\'s project board shows where its items stand. The [proposals board](configuration.md#proposals-board) holds proposals. A planning record holds what an initiative leaves out: the evidence, the decisions and each review.\n\nRead [Rules](rules.md) and [Conventions](conventions.md) before selecting a mode.\n\n## Modes\n\nSelect the mode as appropriate to fulfill the user request:\n\n- **[Propose](modes/propose-mode.md "ƒ")**\n  - Forward-looking, scoped to one problem\n  - Scoping a problem nothing is planned against yet\n  - Raising a proposal issue with optional board placement\n- **[Plan](modes/plan-mode.md "ƒ")**\n  - Forward-looking, scoped to one approved proposal\n  - Turning an approved proposal into initiatives\n  - Raising, breaking down and restructuring initiatives and epics\n  - Review passes of a plan against its goal, dependencies included\n  - Renumbering of epics and tasks\n  - Folding review findings into issues\n- **[Align](modes/align-mode.md "ƒ")**\n  - Backward-looking, scoped to one epic, initiative or board\n  - Checks of existing issues against their templates and the rules that bind them, with fixes\n  - Acceptance criteria checked for verifiability and against the sources the initiative marks\n  - Epic branch structure and task pull request bases brought to the delivery shape\n- **[Sync](modes/sync-mode.md "ƒ")**\n  - Backward-looking, scoped to one epic, initiative or board\n  - Delivery recorded against the issues that planned it\n  - Closure of complete task issues, epics and initiatives\n  - The theme board brought current with its issues\n- **[Advance](modes/advance-mode.md "ƒ")**\n  - Forward-looking, scoped to one board\n  - Placement of initiatives and epics as In Progress or as Ready, and of hot-fixes as their [Board Status](artifacts/hotfix.md#board-status) gives\n  - A parallel work map for initiatives with no priority\n- **[Deliver](modes/deliver-mode.md "ƒ")**\n  - Forward-looking, scoped to one board\n  - Delivery of a theme board\'s work, each unit planned, implemented and raised as a pull request\n  - Dispatch of one session per unit of work\n  - Merging task pull requests through the shared delivery procedure\n- **[Understand](modes/understand-mode.md "ƒ")**\n  - Backward-looking, scoped to one pull request\n  - An architecture overview of one pull request\n  - Structural and functional diagrams of its changes\n  - The order to read the diff in\n- **[Hoist](modes/hoist-mode.md "ƒ")**\n  - Forward-looking, scoped to a repository\'s orphan issues\n  - Discovery of orphan issues\n  - Placements for each in an existing or new initiative, epic or task, or as a hot-fix\n- **[Standup](modes/standup-mode.md "ƒ")**\n  - Backward-looking, scoped to one board\'s reporting window\n  - Standup summaries of a theme\'s board for a Slack channel\n- **[Revise](modes/revise-mode.md "ƒ")**\n  - Forward-looking, scoped to this skill\'s own files\n  - Changes to SKILL.md, its modes, artifacts, references and scripts\n\n## Dependencies\n\n- **GitHub CLI (`gh`).**\n- **Sandbox.** (`scripts/sbx`).\n- **Python 3.10 or later.**\n- **git.**\n- **GitNexus.**\n- **Sub-agents.**\n- **Epic-base merge permission.**\n  The agent harness grants the [Merge Permission](artifacts/pull-request.md#merge-permission) Deliver needs.\n'
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.221s
+
+FAILED (failures=11, errors=16)
+sbx: exit 1; writable: /tmp  (name more with SBX_EXTRA_ROOTS=dir1:dir2)
