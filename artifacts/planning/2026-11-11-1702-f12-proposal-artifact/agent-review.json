@@ -62,5 +62,18 @@
         "evidence": "https://github.com/m2ux/workflow-server/commit/0ce4a62dd55a0423262bdea4154db13a4b96a546"
       }
     ]
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1704",
+    "head": "39bb3ee0aa215fd64b03ab5e543489fe665b5f1c",
+    "base": "2ba852ab575a08ae24e605b6410494b9e116e0bb",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1702-f12-proposal-artifact/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-11",
+    "scope": "F12's own change: bf7c43fca..39bb3ee0a (the merge base with origin/skill/work-priority to the head): merge 0ce4a62dd and 39bb3ee0a, which gives the proposals board its own artifact. Read in full: artifacts/proposals-board.md (Select Proposals Board, Create Proposals Board, Find Proposals Board, Purpose); artifacts/proposal.md (Proposal Status); board.md Select Project Board and its Fields; work-kind.md Registration; SKILL.md opening; issue.md Add Issue Assignee and Assignee; plan-mode Take the Proposal; propose-mode Confirm Placement, Place, Outcomes and Requested Status; sync-mode Sync the Board and Missing Board; configuration.md Proposals Board; test_documents ProposalHome and ProposalsBoardHome, test_kind_operations Registration and GeneralCallers, test_plan_mode ApprovedBeforeDrafting, test_reading_routes standup exclusions and the test README. Callers inspected: every link to Select Project Board, Proposals Board's three sections, Proposal Status and Requested Status; no file links board.md#find-proposals-board, board.md#create-proposals-board, board.md#board-selection, board.md#selected-kind or proposal.md#proposals-board. board.md links neither Proposal nor Proposals Board and names no proposals board. Proposals Board is a board, not a kind's lifecycle or body artifact, so Work Kind's Registration does not list it. No file in the change links SKILL.md.",
+    "criteria": "AC1: Proposal Status alone defines Suggested, Considering, Approved, Held and Declined with their assignees, and every file naming a status beside a proposal links Proposal; ProposalHome (4 tests); Proposals Board alone holds Select, Create and Find Proposals Board, Board links neither artifact, and every file naming the proposals board links Proposals Board; ProposalsBoardHome (5 tests); check_skill_files.py 64 files, 0 findings (T1, T2, T3, T4). AC2: Work Kind's Registration lists Proposal then Proposal Body under the Proposal kind; Registration (2 tests) and GeneralCallers (T5).",
+    "validation": "At 39bb3ee0a: skills/work-planner suite 1271 tests OK (1 skipped); skills/test 336 tests OK; check_skill_files.py skills/work-planner 64 files, 0 findings; check_skill_files.py --compare bf7c43fca HEAD: 883 sections at the base, 886 at the head; git diff --check bf7c43fca HEAD clean. In a scratch copy, a proposals-board link in board.md and a Sync link to Create Proposals Board outside Proposals Board each fail ProposalsBoardHome.",
+    "findings": []
   }
 ]

@@ -2,6 +2,18 @@
 
 Agent reviews of [#1704](https://github.com/m2ux/workflow-server/pull/1704) against `workspace`. The [review record](agent-review.json) holds each review's scope, criteria and validation; the last is authoritative.
 
+## Review at 39bb3ee0a
+
+The reviewed change runs from the merge base bf7c43fca to the head. [39bb3ee0a](https://github.com/m2ux/workflow-server/commit/39bb3ee0aa215fd64b03ab5e543489fe665b5f1c) gives the proposals board its own artifact, as the user directed. The review found no defect.
+
+### Checked and Clear
+
+- **Proposals Board.** [Proposals Board](https://github.com/m2ux/workflow-server/blob/skill/proposal-artifact/skills/work-planner/artifacts/proposals-board.md) holds the board's Purpose, Select Proposals Board, Create Proposals Board and the Find Proposals Board command. It applies Board's Find Board Template, Copy Board Template and Link Board to Repository.
+- **Board.** board.md keeps what every board shares. Select Project Board selects a theme board. It links neither Proposal nor Proposals Board, and Board Selection and Selected Kind are gone with their only callers.
+- **Proposal.** Proposal holds Proposal Status, which links Proposals Board for where a proposal stands.
+- **Callers.** Propose's Confirm Placement and Place, Plan's board read, Sync's board step and Create Absent Proposals Board, and SKILL.md's opening link Proposals Board for the board and Proposal for statuses. No stale link to the moved anchors remains.
+- **Registration.** Proposals Board is a board, not a kind's lifecycle or body artifact, so Work Kind's Registration does not list it.
+
 ## Review at 0ce4a62dd
 
 The reviewed change runs from the merge base bf7c43fca, F11's head carrying F10's entry-point rule, to the head. Merge [0ce4a62dd](https://github.com/m2ux/workflow-server/commit/0ce4a62dd55a0423262bdea4154db13a4b96a546) brings F11 in and fixes both findings.
