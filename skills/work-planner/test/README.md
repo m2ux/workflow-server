@@ -76,7 +76,7 @@ These modules exercise the skill's instruction routes and document contracts.
 | [test_kind_operations](test_kind_operations.py) | [Work Kind](../artifacts/work-kind.md) holds one dispatching operation per interface operation, each resolving to the operation the item's registered kind supplies or to its general route, general files reach a kind's operation only through it, and the entry point lists each kind's lifecycle artifact ahead of its body |
 | [test_merge_outcomes](test_merge_outcomes.py) | Merge instructions bind verified heads and select terminal or bounded recovery routes |
 | [test_modes](test_modes.py) | Mode summaries in each skill's [SKILL](../SKILL.md) |
-| [test_plan_mode](test_plan_mode.py) | Plan Mode keeps a plan in one home: its planning record on the engineering branch |
+| [test_plan_mode](test_plan_mode.py) | Plan Mode keeps a plan in one home: its planning record on the engineering branch, and drafts from an Approved proposal |
 | [test_plan_publication](test_plan_publication.py) | Plan publication validates confirmed saved epic and parent identities |
 | [test_reading_routes](test_reading_routes.py) | Standup, Revise and Understand routes supply their per-entry context contracts on captured inputs, and a reading trace conforms when it retrieves that context before use |
 | [test_readme](test_readme.py) | The test folder's README names every module and every script, and its rows match what the folder holds |
@@ -143,12 +143,14 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [issue-delivery](../protocols/issue-delivery.md) | [test_kind_operations](test_kind_operations.py) (29) |
 | [task-merge](../protocols/task-merge.md) | [test_kind_operations](test_kind_operations.py) (29) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_unit_dispatch](test_unit_dispatch.py) (12), [test_worktrees](test_worktrees.py) (2) |
-| [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (8) |
+| [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (13) |
 | [configuration](../configuration.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20) |
 | [conventions](../conventions.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20), [test_reading_routes](test_reading_routes.py) (20), [test_unit_dispatch](test_unit_dispatch.py) (12) |
 | [guidelines](../guidelines.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20), [test_reading_routes](test_reading_routes.py) (20) |
 | `modes/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20) |
-| [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (8), [test_plan_publication](test_plan_publication.py) (14) |
+| [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (13), [test_plan_publication](test_plan_publication.py) (14) |
+| [propose-mode](../modes/propose-mode.md) | [test_plan_mode](test_plan_mode.py) (13) |
+| [proposal](../artifacts/proposal.md) | [test_plan_mode](test_plan_mode.py) (13) |
 | `protocols/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20) |
 | `references/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20) |
 | [rules](../rules.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20), [test_reading_routes](test_reading_routes.py) (20), [test_unit_dispatch](test_unit_dispatch.py) (12) |
