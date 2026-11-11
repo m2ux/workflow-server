@@ -133,7 +133,6 @@ class PublishedOnEngineering(unittest.TestCase):
                       section(text, '### Commit Planning Record'))
 
 
-
 class ApprovedBeforeDrafting(unittest.TestCase):
     """The proposal Plan Mode raises through Propose Mode stands at Approved, with the user assigned, before any
     initiative is drafted; Proposal Status alone states what Approved means and whom it assigns."""
@@ -146,6 +145,8 @@ class ApprovedBeforeDrafting(unittest.TestCase):
     def test_plan_requests_approved_from_propose_in_its_first_step(self):
         take = section(self.plan, '### 1. Take the Proposal')
         self.assertIn('- When the user names an [Approved]' + self.status + ' proposal', take)
+        self.assertIn('- A named proposal at any other [Proposal Status]' + self.status +
+                      ' blocks initiative drafting; report its status.', take)
         self.assertIn('- Follow [Propose Mode](propose-mode.md "ƒ") with the user\'s goal and '
                       '[Requested Status](propose-mode.md#requested-status) Approved', take)
         self.assertIn('placed at Approved; an unresolved proposal blocks initiative drafting', take)
