@@ -133,7 +133,6 @@ class PublishedOnEngineering(unittest.TestCase):
                       section(text, '### Commit Planning Record'))
 
 
-
 class ApprovedBeforeDrafting(unittest.TestCase):
     """The proposal Plan Mode raises through Propose Mode stands at Approved, with the user assigned, before any
     initiative is drafted; Proposal Status alone states what Approved means and whom it assigns."""
@@ -145,12 +144,24 @@ class ApprovedBeforeDrafting(unittest.TestCase):
 
     def test_plan_requests_approved_from_propose_in_its_first_step(self):
         take = section(self.plan, '### 1. Take the Proposal')
-        self.assertIn('- When the user names an [Approved]' + self.status + ' proposal', take)
+        self.assertIn('- At [Approved]' + self.status + ", the proposal's issue body defines the problem scope.",
+                      take)
+        self.assertIn('- At any other [Proposal Status]' + self.status + ', or with no item on the board, the '
+                      'proposal blocks initiative drafting; report the Status read or the missing item.', take)
         self.assertIn('- Follow [Propose Mode](propose-mode.md "ƒ") with the user\'s goal and '
                       '[Requested Status](propose-mode.md#requested-status) Approved', take)
         self.assertIn('placed at Approved; an unresolved proposal blocks initiative drafting', take)
         steps = STEP.findall(self.plan)
         self.assertLess(steps.index('Take the Proposal'), steps.index('Draft Each Initiative Body'))
+
+    def test_the_gate_reads_the_named_proposals_status_from_the_board(self):
+        take = section(self.plan, '### 1. Take the Proposal')
+        read = ('- Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") with proposals as its '
+                '[Board Selection](../artifacts/board.md#board-selection), then Apply [Read Board State]'
+                '(../artifacts/board.md#read-board-state "ƒ") for that board, and read the Status of the proposal\'s '
+                'item.')
+        self.assertIn('- When the user names a proposal:\n\n' + read, take)
+        self.assertLess(take.index(read), take.index('- At [Approved]'))
 
     def test_a_requested_status_places_the_proposal_without_asking(self):
         confirm = section(self.propose, '### 6. Confirm Placement')

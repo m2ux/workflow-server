@@ -245,7 +245,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 - Apply [Review Before Merge](../artifacts/work-kind.md#review-before-merge "ƒ") for the unit's pull request.
 - On the [Work Kind Result](../artifacts/work-kind.md#work-kind-result) `unsupplied`, continue to [Merge](#10-merge).
-- Continue to [Merge](#10-merge) only with the confirmed ready [Review State](../artifacts/pull-request.md#review-state) it provides.
+- Otherwise, continue to [Merge](#10-merge) only with the confirmed ready [Review State](../artifacts/pull-request.md#review-state) it provides.
 - On a failure, or a hold with open findings, report the unresolved state, the confirmed draft readback and each open finding in the session result, and stop before [Merge](#10-merge).
 
 #### 10. Merge
