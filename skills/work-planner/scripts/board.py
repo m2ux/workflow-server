@@ -78,14 +78,12 @@ from typing import NamedTuple
 
 from format import AC, LINK, TICK, cell, done_mark, hrefs, id_cell, reservation, row_id, split_sections
 from statuses import DELIVERY, STATUSES, Changes, Jurisdiction, Key, StatusField, board_items, label
-from sync import (PR_REF, TICKED, Unreadable, attach_links, git, issue_done, issue_key, links_issue,
+from sync import (PR_REF, PREFIX, TICKED, Unreadable, attach_links, git, issue_done, issue_key, links_issue,
                   pull_requests, table)
 
 TASK = re.compile(r'W\d\d')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
 WORK_ITEM = re.compile(r'/blob/[^/]+/(.+\.md)$')
-PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
-PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)$')
 RANGE = re.compile(r'^W(\d\d)[–-]W(\d\d)$')
 TASK_REF = re.compile(r'(?:^|:)(W\d\d)$')

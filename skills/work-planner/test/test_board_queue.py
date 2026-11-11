@@ -879,10 +879,10 @@ class SharedRules(unittest.TestCase):
     def test_tags_identity_and_priority_come_from_their_single_homes(self):
         module = board_queue()
         self.assertIs(module.tags, board.tags)
-        self.assertIs(module.PULL_REF, board.PULL_REF)
+        self.assertIs(module.PULL_REF, sync.PULL_REF)
         self.assertIs(module.issue_key, sync.issue_key)
         self.assertIs(module.rank, priority.rank)
-        for copy in ('PREFIX', 'PULL_HOME', 'key_of'):
+        for copy in ('PREFIX', 'key_of'):
             with self.subTest(copy=copy):
                 self.assertFalse(hasattr(module, copy))
 
