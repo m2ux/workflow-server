@@ -77,12 +77,15 @@ gitnexus analyze --index-only
 
 ### Merge Base
 
-Print the commit the pull request's change starts from and provide [Comparison Base](#comparison-base "●") to the requester.
+Fetch the base commit, print the commit the pull request's change starts from, and provide [Comparison Base](#comparison-base "●") to the requester.
+
+The review head's fetch brings only the head's history, so a base that moved on after the project checkout's last fetch is fetched here.
 
 Run in the [Review Checkout](#review-checkout "○").
 
 <big><pre>
-git merge-base '[**&lt;requested-revision&gt;**](#requested-revision "○")' '[**&lt;base-commit&gt;**](#base-commit "○")'
+git fetch origin '[**&lt;base-commit&gt;**](#base-commit "○")' && &#92;
+  git merge-base '[**&lt;requested-revision&gt;**](#requested-revision "○")' '[**&lt;base-commit&gt;**](#base-commit "○")'
 </pre></big>
 
 ### Change Surface
