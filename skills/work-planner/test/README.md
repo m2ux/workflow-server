@@ -46,7 +46,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_dispatch](test_dispatch.py) | Continuous dispatch from real delivery surveys and observed worker events |
 | [test_format](test_format.py) | [format](../scripts/format.py) on standalone issues |
 | [test_hotfix_readiness](test_hotfix_readiness.py) | Hot-fix readiness routes restore and confirm draft before repair |
-| [test_hotfix](test_hotfix.py) | [hotfix](../scripts/hotfix.py): a hot-fix's identity, labels, target, board status, delivering pull requests and delivery unit state, each reached through the Kind interface the module supplies, which is all it exports |
+| [test_hotfix](test_hotfix.py) | [hotfix](../scripts/hotfix.py): a hot-fix's identity, labels, target, board status, delivering pull requests, delivery unit state and agent review rule, each reached through the Kind interface the module supplies, which is all it exports |
 | [test_kinds](test_kinds.py) | The script registry, [kinds](../scripts/kinds.py), maps each kind of work to its module and selects an item's kind from its title, and each registered module supplies the Kind interface |
 | [test_lane](test_lane.py) | Lane's raw-cell, assignment, consistency and admission contracts |
 | [test_link_capture](test_link_capture.py) | The Development relation read from each end by [links-by-pull-request](../scripts/links-by-pull-request.py) and [links-by-issue](../scripts/links-by-issue.py), and the linked pull requests [linked-pull-requests](../scripts/linked-pull-requests.py) adds to a collection |
@@ -104,8 +104,8 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (34) |
 | [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (17), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
-| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (23), [test_kinds](test_kinds.py) (10) |
-| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (18), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (105), [test_dispatch](test_dispatch.py) (34), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (23), [test_kinds](test_kinds.py) (10), [test_orphans](test_orphans.py) (5), [test_progress](test_progress.py) (79), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
+| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (25), [test_kinds](test_kinds.py) (10) |
+| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (18), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (105), [test_dispatch](test_dispatch.py) (34), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (25), [test_kinds](test_kinds.py) (10), [test_orphans](test_orphans.py) (5), [test_progress](test_progress.py) (79), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
 | [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (34), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
