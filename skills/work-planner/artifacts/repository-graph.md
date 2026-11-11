@@ -20,7 +20,8 @@ Run [Index Status](#index-status "ƒ") in the [review checkout](#review-checkout
 
 #### 3. Measure Change Surface
 
-Run [Change Surface](#change-surface "ƒ") in the review checkout against the supplied base using `--base-ref`.
+- Run [Merge Base](#merge-base "ƒ") in the review checkout for the requested revision and the supplied [base commit](#base-commit).
+- Run [Change Surface](#change-surface "ƒ") in the review checkout against that comparison base.
 
 #### 4. Measure Changed Symbols
 
@@ -38,7 +39,7 @@ Inspect the staleness block on every response.
 
 - Discard that response’s measurements.
 - Run [Index Repository](#index-repository "ƒ") in the review checkout for the verified head, and confirm freshness.
-- Run [Change Surface](#change-surface "ƒ") again for any discarded surface using the same [base branch](#base-branch) in the review checkout.
+- Run [Change Surface](#change-surface "ƒ") again for any discarded surface against the same [comparison base](#comparison-base) in the review checkout.
 - Run [Symbol Context](#symbol-context "ƒ") again for each affected changed symbol in the review checkout.
 - Run [Flow Trace](#flow-trace "ƒ") again for each affected reported flow in the review checkout.
 
@@ -64,24 +65,37 @@ gitnexus status
 
 Index the repository and provide [Index State](#index-state "●") to the requester. An unindexed or behind repository needs indexing before any measurement.
 
+It writes the index alone and no AGENTS.md, CLAUDE.md or skill file, so the review checkout stays clean and a later run can reuse it.
+
 Compare the indexed commit with [Requested Revision](#requested-revision "○").
 
 Run in the [Review Checkout](#review-checkout "○").
 
 <big><pre>
-gitnexus analyze
+gitnexus analyze --index-only
 </pre></big>
 
-### Change Surface
+### Merge Base
 
-Report the symbols touched by the pull request's diff and their flows against the base branch, and provide [Changed Symbols](#changed-symbols "●") to the requester.
+Fetch the base commit, print the commit the pull request's change starts from, and provide [Comparison Base](#comparison-base "●") to the requester.
 
-Compare against the pull request’s base to isolate its change from the branch’s full history.
+The review head's fetch brings only the head's history, so a base that moved on after the project checkout's last fetch is fetched here.
 
 Run in the [Review Checkout](#review-checkout "○").
 
 <big><pre>
-gitnexus detect-changes --scope compare --base-ref '[**&lt;base-branch&gt;**](#base-branch "○")'
+git fetch origin '[**&lt;base-commit&gt;**](#base-commit "○")' && &#92;
+  git merge-base '[**&lt;requested-revision&gt;**](#requested-revision "○")' '[**&lt;base-commit&gt;**](#base-commit "○")'
+</pre></big>
+
+### Change Surface
+
+Report the symbols touched by the pull request's diff and their flows against its comparison base, and provide [Changed Symbols](#changed-symbols "●") to the requester.
+
+Run in the [Review Checkout](#review-checkout "○").
+
+<big><pre>
+gitnexus detect-changes --scope compare --base-ref '[**&lt;comparison-base&gt;**](#comparison-base "○")'
 </pre></big>
 
 ### Symbol Context
@@ -108,7 +122,7 @@ gitnexus query --query '[**&lt;flow-identity&gt;**](#flow-identity "○")' --lim
 
 ### Revision
 
-The graph identifies its worktree and indexed commit. Measurements describe the supplied pull request head and its difference from the supplied base branch.
+The graph identifies its worktree and indexed commit. Measurements describe the supplied pull request head and its difference from its [comparison base](#comparison-base).
 
 ### Freshness
 
@@ -116,7 +130,7 @@ Graph responses carry a JSON `staleness` block. A behind index is not current wi
 
 ### Changed Symbols
 
-The surface identifies symbols touched by the diff and the flows containing them. It compares with the supplied base branch, rather than the branch's whole history.
+The surface identifies symbols touched by the diff and the flows containing them. It compares with the comparison base, so it holds the pull request's own change alone, whether its base branch has since moved on or the pull request has merged.
 
 ### Symbol Relationships
 
@@ -134,9 +148,13 @@ The supplied checkout in which graph commands run.
 
 The verified head commit supplied for measurement.
 
-### Base Branch
+### Base Commit
 
-The supplied comparison base branch. eg `main`
+The pull request's base commit, `base.sha` in its [Pull Request Record](pull-request.md#pull-request-record). eg `1ec2a4745a6e`
+
+### Comparison Base
+
+The merge base of [Requested Revision](#requested-revision) and [Base Commit](#base-commit): the commit the pull request's change starts from. It stays fixed as the base branch moves on, through the pull request's own merge. eg `1ec2a4745a6e`
 
 ### Symbol Identity
 
