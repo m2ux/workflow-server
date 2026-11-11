@@ -1,6 +1,19 @@
 [
   {
     "pull_request": "https://github.com/m2ux/workflow-server/pull/1705",
+    "head": "5a9ccd2c1a320edf2abedb7848079a20ee961736",
+    "base": "2ba852ab575a08ae24e605b6410494b9e116e0bb",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1703-f13-test-plan-artifact/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-11",
+    "scope": "F13's own change: 39bb3ee0a..5a9ccd2c1 (the merge base with origin/skill/proposal-artifact, F12's ready head, to the head): commits 1947cc09c, cbe3b36a5 and ee986a13d, review fixes ba85ac622 and 173a069da, and merge 5a9ccd2c1, which brings in F12 at 39bb3ee0a with F10's entry-point rule, Work Kind's Registration and the Proposals Board artifact. Merge conflicts: test/README.md, resolved to F12's rows with Test Plan added to test_documents' subject and its count 28, and test_documents.py, resolved by keeping both TestPlanHome and ProposalsBoardHome under one module docstring. Read in full: artifacts/test-plan.md; scripts/testplan.py; the removed align.py plan path, sync.py plan_rows and plan_claims, and deliver.py plan_passed; pull-request-body.md Template, Review Body and Test Coverage; align-mode Coverage; deliver-mode Publish and Merge; delivery-plan Report Lines; epic Delivery Findings; pull-request Merge Task Pull Requests and Readiness Evidence; sync-mode Per-Issue Report; test_testplan, test_align, test_deliver Survey, test_documents TestPlanHome and the test README. Stack checks over test-plan.md, pull-request-body.md, align-mode.md, deliver-mode.md, delivery-plan.md, pull-request.md, epic.md, sync-mode.md, testplan.py, align.py, deliver.py and sync.py: none links SKILL.md; none links board.md#board-selection, #selected-kind, #find-proposals-board, #create-proposals-board or proposal.md#proposals-board (sync-mode's one Create Proposals Board link targets proposals-board.md); none links proposal.md, proposal-body.md, standalone-body.md, hotfix.md or hotfix-body.md, and test-plan.md and testplan.py name no kind. No file in the repository names Repair Test Plan, Convert Test Plan, align.py plan, plan_rows, plan_claims, plan_passed or the removed pull-request-body.md anchors; no import in the changed scripts and tests is unused.",
+    "criteria": "AC1: Test Plan's Fields alone define Plan Table, Plan Columns, Result Evidence and Passed Plan, and every work-planner file naming a test plan links it; TestPlanHome (3 tests), check_skill_files.py 65 files, 0 findings (T1, T2, T6). AC2: deliver.py and sync.py read the section through testplan.rows, passed and claims; test_testplan (12 tests), test_deliver (108), test_sync (187), and the equivalence run over 87 fixture bodies, differing only on bare ticks by the agreed design (T3, T4, T8). AC3: align.py takes only repositories and references, and Check Test Plan reports a checked-list plan unreadable; test_align (13) (T5).",
+    "validation": "At 5a9ccd2c1: skills/work-planner suite 1282 tests OK (1 skipped); skills/test 336 tests OK; check_skill_files.py skills/work-planner 65 files, 0 findings; check_skill_files.py --compare 39bb3ee0a HEAD: 886 sections at the base, 889 at the head; git diff --check 39bb3ee0a HEAD clean.",
+    "findings": []
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1705",
     "head": "173a069daf22b1d16953814bf34840b585ff56c7",
     "base": "2ba852ab575a08ae24e605b6410494b9e116e0bb",
     "base_ref": "workspace",
