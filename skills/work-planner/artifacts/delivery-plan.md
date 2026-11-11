@@ -42,7 +42,7 @@ A unit is one task row or tasks that name each other in Joins, as [Work Breakdow
 
 ### Kind Units
 
-An open issue of a [registered kind](../SKILL.md) whose artifact states a Delivery Unit is a unit of its own, held, running or unrecorded as that Delivery Unit states, with the branch, base and worktree that artifact's Branch names. Its target is the long-lived branch its body names, and its delivering pull requests are those its artifact states.
+An open issue of a [registered kind](work-kind.md#registration) whose artifact states a Delivery Unit is a unit of its own, held, running or unrecorded as that Delivery Unit states, with the branch, base and worktree that artifact's Branch names. Its target is the long-lived branch its body names, and its delivering pull requests are those its artifact states.
 
 ### Report Lines
 

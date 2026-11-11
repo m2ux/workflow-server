@@ -2672,18 +2672,20 @@ class KindSeparation(unittest.TestCase):
     """A general artifact, mode, protocol or script names no registered kind of work and imports no kind module;
     the kind's own files, the registry, the registration and literal examples do."""
 
-    REGISTRATION = ('---\nname: specimen\n---\n\n# Specimen\n\nThe kinds:\n\n'
-                    '- **Task**  One pull request.\n  - [Task Body](artifacts/task-body.md)\n'
+    REGISTRATION = ('# Work Kind\n\nThe interface every kind supplies.\n\n## Fields\n\n### Registration\n\n'
+                    '- **Task**  One pull request.\n  - [Task Body](task-body.md)\n'
                     '- **Hot-fix**  A fix beside queued work.\n'
-                    '  - [Hot-fix](artifacts/hotfix.md)  [Review Before Merge](artifacts/hotfix.md#review "ƒ")\n'
-                    '  - [Hot-fix Body](artifacts/hotfix-body.md)\n\n'
-                    'A general file selects a hot-fix through this registration.\n\n## Modes\n\n- A mode.\n')
+                    '  - [Hot-fix](hotfix.md)  [Review Before Merge](hotfix.md#review "ƒ")\n'
+                    '  - [Hot-fix Body](hotfix-body.md)\n\n'
+                    'A general file selects a hot-fix through this registration.\n\n### Result\n\nThe result.\n')
 
     def setUp(self):
         self.root = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.root)
         self.skill = self.root / 'specimen'
-        self.write('SKILL.md', self.REGISTRATION)
+        self.write('SKILL.md', '---\nname: specimen\n---\n\n# Specimen\n\nOne sentence.\n\n## Modes\n\n- A mode.\n')
+        self.write('structure.json', json.dumps({'registration': 'artifacts/work-kind.md#registration'}))
+        self.write('artifacts/work-kind.md', self.REGISTRATION)
         self.write('scripts/kinds.py', "KINDS = {'hot-fix': 'hotfix'}\n\n\ndef interface(kind):\n"
                    "    return import_module(KINDS[kind])\n")
         self.write('scripts/hotfix.py', '"""A hot-fix\'s operations."""\nfrom kinds import Review\n')
@@ -2752,6 +2754,20 @@ class KindSeparation(unittest.TestCase):
         self.write('scripts/kinds.py', "KINDS = {'hot-fix': 'hotfix', 'spike': 'spike'}\n")
         self.write('artifacts/hotfix.md', '# Hot-fix\n\nA hot-fix is no spike.\n')
         self.assertEqual(self.found(), [('artifacts/hotfix.md', 3, 'kind named in a general file')])
+
+    def test_the_registration_file_names_a_kind_outside_its_registration_only_as_a_fault(self):
+        self.write('artifacts/work-kind.md', self.REGISTRATION.replace('The result.', 'A hot-fix result.'))
+        self.assertEqual(self.found(), [('artifacts/work-kind.md', 19, 'kind named in a general file')])
+
+    def test_a_registration_naming_no_section_is_refused(self):
+        self.write('structure.json', json.dumps({'registration': 'artifacts/work-kind.md#absent'}))
+        with self.assertRaisesRegex(ValueError, 'names no section'):
+            checker.registered_kinds(self.skill)
+
+    def test_a_registration_that_is_no_section_path_is_refused(self):
+        self.write('structure.json', json.dumps({'registration': 'artifacts/work-kind.md'}))
+        with self.assertRaisesRegex(ValueError, 'registration must name a markdown section'):
+            checker.registered_kinds(self.skill)
 
     def test_a_skill_without_a_registry_registers_no_kind(self):
         (self.skill / 'scripts/kinds.py').unlink()
@@ -2831,3 +2847,36 @@ class InstalledWorkPlannerModel(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class EntryPointLinks(unittest.TestCase):
+    """SKILL.md is the compilation entry, so no other file of the skill links it; a plain mention is no link."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.write('SKILL.md', '# Specimen\n\nSee [guide](references/guide.md) and [Modes](#modes).\n\n## Modes\n\nOne.\n')
+
+    def write(self, name, text):
+        path = self.skill / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+        return path
+
+    def found(self):
+        files = sorted(self.skill.rglob('*.md'))
+        cited, called = checker.citations(files, {})
+        out = []
+        for path in files:
+            out += checker.check(path, self.root, {}, cited, called, {})
+        return [(str(Path(where).relative_to('specimen')), line, kind)
+                for where, line, kind, _ in out if kind == 'link to the entry point']
+
+    def test_a_link_to_the_entry_point_is_reported(self):
+        self.write('references/guide.md', '# Guide\n\nEach kind the [entry point](../SKILL.md#modes) lists.\n')
+        self.assertEqual(self.found(), [('references/guide.md', 3, 'link to the entry point')])
+
+    def test_a_plain_mention_and_the_entry_point_linking_itself_pass(self):
+        self.write('references/guide.md', '# Guide\n\nRevise changes SKILL.md and its `[entry](../SKILL.md)` specimen.\n')
+        self.assertEqual(self.found(), [])

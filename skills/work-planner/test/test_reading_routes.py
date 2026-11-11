@@ -32,7 +32,7 @@ CONTRACTS = {
             ('modes/standup-mode.md#6-report', 'artifacts/issue-body.md#repair-issue-format', 'unreadable'),
         ],
         'excluded': ('modes/hoist-mode.md', 'modes/deliver-mode.md', 'modes/plan-mode.md',
-                     'protocols/epic-integration.md', 'artifacts/board.md#create-proposals-board',
+                     'protocols/epic-integration.md', 'artifacts/proposals-board.md#create-proposals-board',
                      'artifacts/pull-request.md#merge-delivery-pull-request'),
     },
     'revise': {

@@ -1,16 +1,12 @@
 # Proposal
 
-A proposal's place on the proposals board and the status it holds there.
+A proposal's lifecycle: the status it holds on the [Proposals Board](proposals-board.md) and the assignee each status takes.
 
 ## Fields
 
-### Proposals Board
-
-The [configured board](../configuration.md#proposals-board) holds proposal issues, the incoming funnel for work that may become an initiative.
-
 ### Proposal Status
 
-A proposal's Status on the [Proposals Board](#proposals-board), with the assignee each status takes:
+A proposal's Status on the [Proposals Board](proposals-board.md), with the assignee each status takes:
 
 - **Suggested.**
   Raised, and nobody has taken it up. A new proposal lands here, with no assignee.

@@ -10,7 +10,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - When the user names a proposal:
 
-- Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") with proposals as its [Board Selection](../artifacts/board.md#board-selection), then Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for that board, and read the Status of the proposal's item.
+- Apply [Select Proposals Board](../artifacts/proposals-board.md#select-proposals-board "ƒ"), then Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for that board, and read the Status of the proposal's item.
 - At [Approved](../artifacts/proposal.md#proposal-status), the proposal's issue body defines the problem scope.
 - At any other [Proposal Status](../artifacts/proposal.md#proposal-status), or with no item on the board, the proposal blocks initiative drafting; report the Status read or the missing item.
 

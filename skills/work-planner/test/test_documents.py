@@ -1,5 +1,6 @@
-"""The installed prose API exposes complete inputs and directed reading paths, and Work Priority, Proposal and Test
-Plan each define what every other file reaching it links."""
+"""The installed prose API exposes complete inputs and directed reading paths, Work Priority, Proposal and Test Plan
+each define what every other file reaching it links, and Proposals Board alone selects and creates the proposals
+board."""
 import json
 import re
 import tempfile
@@ -11,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT.parent / 'scripts'))
 import check_skill_files as checker
-from test_kind_operations import KIND, registration, selections
+from test_kind_operations import KIND, registration, registration_lines, selections
 
 
 def executable_scripts(paths):
@@ -36,16 +37,16 @@ def executable_scripts(paths):
 
 
 def registered_operations():
-    """Each operation the entry point's registration reaches, by artifact and anchor, with its references.
+    """Each operation Work Kind's Registration reaches, by artifact and anchor, with its references.
     A kind's operation is referenced by its registration line and each general line applying the Work Kind
     operation that dispatches to it; a Work Kind operation, by each registration line naming its interface."""
-    lines = (ROOT / 'SKILL.md').read_text().splitlines()
-    numbers = {line: index + 1 for index, line in enumerate(lines[:lines.index('## Modes')])}
+    numbers = registration_lines()
     selected = {}
     for artifacts in registration().values():
         for path, title, links in artifacts:
-            line = next(line for line in numbers if line.lstrip().startswith(f'- [{title}]({path})'))
-            site = f'SKILL.md:{numbers[line]}'
+            number = next(number for number, line in numbers.items()
+                          if line.lstrip().startswith(f'- [{title}]({Path(path).name})'))
+            site = f'artifacts/work-kind.md:{number}'
             for name, target in links:
                 file, _, anchor = target.partition('#')
                 selected.setdefault(((ROOT / file).resolve(), anchor), []).extend(
@@ -404,14 +405,14 @@ class WorkPriorityHome(unittest.TestCase):
 
 PROPOSAL = ROOT / 'artifacts' / 'proposal.md'
 PROPOSAL_STATUSES = ('Suggested', 'Considering', 'Approved', 'Held', 'Declined')
-# A file reaches the proposal statuses when it names the proposals board, or a status on a line naming a proposal:
-# Held and Approved also name a held plan change and an approved merge.
+# A file reaches the proposal statuses when it names a status on a line naming a proposal: Held and Approved also
+# name a held plan change and an approved merge.
 PROPOSAL_STATUS = re.compile(r'\b(?:' + '|'.join(PROPOSAL_STATUSES) + r')\b')
 
 
 def reaches_proposal_status(line):
-    """Whether a line names the proposals board, or a proposal status beside a proposal."""
-    return 'proposals board' in line or bool(PROPOSAL_STATUS.search(line) and re.search(r'(?i)\bproposal', line))
+    """Whether a line names a proposal status beside a proposal."""
+    return bool(PROPOSAL_STATUS.search(line) and re.search(r'(?i)\bproposal', line))
 
 
 class ProposalHome(unittest.TestCase):
@@ -450,15 +451,14 @@ class ProposalHome(unittest.TestCase):
                       for _, target in checker.targets(path, lines, fenced)}
             with self.subTest(file=reaching[-1]):
                 self.assertIn(PROPOSAL.resolve(), linked)
-        self.assertLessEqual({'SKILL.md', 'artifacts/board.md', 'modes/propose-mode.md', 'modes/plan-mode.md'},
-                             set(reaching))
+        self.assertLessEqual({'modes/propose-mode.md', 'modes/plan-mode.md'}, set(reaching))
 
     def test_the_search_recognises_a_proposal_status_and_skips_other_uses(self):
-        for line in ('raises one proposal on the proposals board', 'names an [Approved](x.md) proposal',
-                     'A new proposal lands at Suggested'):
+        for line in ('names an [Approved](x.md) proposal', 'A new proposal lands at Suggested'):
             with self.subTest(line=line):
                 self.assertTrue(reaches_proposal_status(line))
-        for line in ('settled as [Held Change](x.md) states', '#### 2. Merge Approved Delivery'):
+        for line in ('settled as [Held Change](x.md) states', '#### 2. Merge Approved Delivery',
+                     'raises one proposal on the proposals board'):
             with self.subTest(line=line):
                 self.assertFalse(reaches_proposal_status(line))
 
@@ -515,3 +515,55 @@ class TestPlanHome(unittest.TestCase):
         self.assertLessEqual({'artifacts/pull-request-body.md', 'artifacts/pull-request.md', 'artifacts/delivery-plan.md',
                               'artifacts/epic.md', 'modes/deliver-mode.md', 'modes/align-mode.md',
                               'modes/sync-mode.md'}, set(reaching))
+
+
+PROPOSALS_BOARD = ROOT / 'artifacts' / 'proposals-board.md'
+BOARD_SECTIONS = ('Select Proposals Board', 'Create Proposals Board', 'Find Proposals Board')
+
+
+class ProposalsBoardHome(unittest.TestCase):
+    """Proposals Board alone selects, finds and creates the proposals board, and the shared Board artifact links
+    neither it nor Proposal."""
+
+    def test_proposals_board_holds_its_operations_and_command(self):
+        titles = {title for _, depth, title in checker.scan(PROPOSALS_BOARD)[2] if depth == 3}
+        self.assertLessEqual(set(BOARD_SECTIONS), titles)
+
+    def test_no_other_file_holds_them(self):
+        for path in sorted(ROOT.rglob('*.md')):
+            if 'test' in path.relative_to(ROOT).parts or path == PROPOSALS_BOARD:
+                continue
+            titles = {title for _, _, title in checker.scan(path)[2]}
+            with self.subTest(file=str(path.relative_to(ROOT))):
+                self.assertFalse(set(BOARD_SECTIONS) & titles)
+
+    def test_board_links_neither_proposals_board_nor_proposal(self):
+        board = ROOT / 'artifacts' / 'board.md'
+        lines, fenced, _ = checker.scan(board)
+        linked = {(board.parent / target.partition('#')[0]).resolve()
+                  for _, target in checker.targets(board, lines, fenced) if target.partition('#')[0]}
+        self.assertFalse({PROPOSALS_BOARD.resolve(), PROPOSAL.resolve()} & linked)
+        self.assertNotRegex(board.read_text(), r'\b[Pp]roposals\b')
+
+    def test_every_file_naming_the_proposals_board_links_it(self):
+        naming = []
+        for path in sorted(ROOT.rglob('*.md')):
+            if 'test' in path.relative_to(ROOT).parts or path == PROPOSALS_BOARD:
+                continue
+            lines, fenced, _ = checker.scan(path)
+            if not any('proposals board' in line for index, line in enumerate(lines) if not fenced[index]):
+                continue
+            naming.append(str(path.relative_to(ROOT)))
+            linked = {(path.parent / target.partition('#')[0]).resolve()
+                      for _, target in checker.targets(path, lines, fenced)}
+            with self.subTest(file=naming[-1]):
+                self.assertIn(PROPOSALS_BOARD.resolve(), linked)
+        self.assertLessEqual({'SKILL.md', 'modes/propose-mode.md', 'modes/sync-mode.md'}, set(naming))
+
+    def test_each_caller_reaches_the_board_operations_in_proposals_board(self):
+        for name, operation in (('modes/plan-mode.md', 'select-proposals-board'),
+                                ('modes/propose-mode.md', 'select-proposals-board'),
+                                ('modes/propose-mode.md', 'create-proposals-board'),
+                                ('modes/sync-mode.md', 'create-proposals-board')):
+            with self.subTest(file=name, operation=operation):
+                self.assertIn(f'(../artifacts/proposals-board.md#{operation} "ƒ")', (ROOT / name).read_text())

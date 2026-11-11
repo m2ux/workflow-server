@@ -1,5 +1,5 @@
 """Work Kind holds one dispatching operation per interface operation, each resolving to the operation the item's registered
-kind supplies or to its general route, general files reach a kind's operation only through it, and the entry point lists
+kind supplies or to its general route, general files reach a kind's operation only through it, and its Registration lists
 each kind's lifecycle artifact ahead of its body."""
 import re
 import sys
@@ -11,7 +11,6 @@ sys.path.insert(0, str(ROOT.parent / 'scripts'))
 import check_skill_files as checker
 from test_plan_mode import section
 
-ENTRY = ROOT / 'SKILL.md'
 KIND = ROOT / 'artifacts' / 'work-kind.md'
 CALL = re.compile(r'(?:Apply|Run) \[([^]]+)\]\(([^)\s]*)[^)]*"ƒ"\)')
 NAMED = re.compile(r'\[([^]]+)\]\(([^)\s]+)[^)]*\)')
@@ -22,7 +21,7 @@ DECLARED = ('modes/align-mode.md', 'modes/deliver-mode.md', 'modes/hoist-mode.md
             'protocols/issue-delivery.md', 'protocols/task-merge.md', 'protocols/issue-closure.md')
 HIERARCHY = ('Initiative', 'Epic', 'Task')
 KIND_NAMES = re.compile(r'\b(proposals?|[Ss]tandalone|[Hh]ot-?[Ff]ix(es)?)\b')
-ARTIFACT = re.compile(r'^\s+- \[([^]]+)\]\((artifacts/[\w-]+\.md)\)(?:\s+(.*))?$')
+ARTIFACT = re.compile(r'^\s+- \[([^]]+)\]\(([\w-]+\.md)\)(?:\s+(.*))?$')
 CODE = re.compile(r'`[^`]*`')
 
 
@@ -44,17 +43,25 @@ def interface_names():
     return list(operations(KIND))
 
 
+def registration_lines():
+    """Each line of Work Kind's Registration field, by its line number in the file."""
+    lines, _, headings = checker.scan(KIND)
+    start = next(index for index, level, title in headings if level == 3 and title == 'Registration')
+    end = checker.heading_end(headings, start, 3, len(lines))
+    return {number + 1: lines[number] for number in range(start + 1, end)}
+
+
 def registration():
-    """Each kind the entry point registers, with each artifact and the interface name and target of each operation
-    that artifact supplies."""
-    lines = ENTRY.read_text().splitlines()
+    """Each kind Work Kind's Registration lists, with each artifact and the interface name and target of each
+    operation that artifact supplies, as paths from the skill folder."""
     kinds, kind = {}, None
-    for line in lines[:lines.index('## Modes')]:
+    for line in registration_lines().values():
         lead = re.match(r'- \*\*([^*]+)\*\*  ', line)
         if lead:
             kind = kinds.setdefault(lead[1], [])
         elif kind is not None and (match := ARTIFACT.match(line)):
-            kind.append((match[2], match[1], NAMED.findall(match[3] or '')))
+            kind.append((f'artifacts/{match[2]}', match[1],
+                         [(name, f'artifacts/{target}') for name, target in NAMED.findall(match[3] or '')]))
         elif line and not line[0].isspace():
             kind = None
     return kinds
@@ -212,13 +219,15 @@ class Dispatch(unittest.TestCase):
                         verb, _, rest = name.partition(' ')
                         self.assertRegex(found[1], rf'^{verb} .+ {rest}$')
 
-    def test_it_names_no_kind_and_links_no_kind_artifact(self):
+    def test_only_its_registration_names_a_kind_or_links_a_kind_artifact(self):
         lines, fenced, _ = checker.scan(KIND)
+        held = {number - 1 for number in registration_lines()}
         self.assertEqual([line for index, line in enumerate(lines)
-                          if not fenced[index] and KIND_NAMES.search(CODE.sub('', line))], [])
+                          if not fenced[index] and index not in held and KIND_NAMES.search(CODE.sub('', line))], [])
         kinds = {(ROOT / path).resolve() for kind, artifacts in registration().items() for path, _, _ in artifacts}
         targets = {(KIND.parent / target.partition('#')[0]).resolve()
-                   for _, target in checker.targets(KIND, lines, fenced) if target.partition('#')[0]}
+                   for index, target in checker.targets(KIND, lines, fenced)
+                   if target.partition('#')[0] and index not in held}
         self.assertEqual(targets & kinds, set())
 
     def test_no_route_recurses_into_its_caller(self):
@@ -239,7 +248,7 @@ class Dispatch(unittest.TestCase):
 
 
 class Registration(unittest.TestCase):
-    """The entry point lists each kind's lifecycle artifact ahead of its body artifact."""
+    """Work Kind's Registration lists each kind's lifecycle artifact ahead of its body artifact."""
 
     def test_proposal_is_registered_beside_proposal_body(self):
         self.assertEqual([(path, title) for path, title, _ in registration()['Proposal']],
@@ -351,7 +360,7 @@ class HotfixContracts(unittest.TestCase):
                               ('modes/deliver-mode.md', 'for work outside any initiative'),
                               ('modes/hoist-mode.md', 'with the inputs it takes from them')],
             'Review Before Merge': [('modes/deliver-mode.md', "for the unit's pull request")],
-            'Validate Body': [('modes/align-mode.md', "for the issue's [registered kind](../SKILL.md)")],
+            'Validate Body': [('modes/align-mode.md', "for the issue's [registered kind](../artifacts/work-kind.md#registration)")],
         }
         self.assertEqual(set(expected), set(interface_names()))
         for name, callers in expected.items():
@@ -392,7 +401,7 @@ class HotfixBodyInterface(unittest.TestCase):
         self.assertEqual(general_calls('populate-hot-fix-body'), [])
         sites = selections('Populate Body', ['modes/hoist-mode.md'])
         self.assertEqual(len(sites), 1)
-        self.assertIn("for the destination's [registered kind](../SKILL.md), with the inputs it takes", sites[0][1])
+        self.assertIn("for the destination's [registered kind](../artifacts/work-kind.md#registration), with the inputs it takes", sites[0][1])
         rewrite = section((ROOT / 'modes' / 'hoist-mode.md').read_text(), '##### 1. Populate Selected Body')
         self.assertIn('[Rewrite Inputs](../artifacts/placement.md#rewrite-inputs)', rewrite)
         self.assertEqual(resolve('Populate Body', 'Hot-fix'), ('artifacts/hotfix-body.md', 'Populate Hot-fix Body'))

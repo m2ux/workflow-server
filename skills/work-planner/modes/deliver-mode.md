@@ -180,7 +180,7 @@ The authorized unit carried from its supplied brief through implementation and d
 
 #### 2. Confirm the Reservation
 
-Confirm the supplied reserved folder exists and the unit remains held for this session before changing its worktree: its rows' reservations for a unit of rows, or, for a [kind unit](../artifacts/delivery-plan.md#kind-units), the hold the artifact of its [registered kind](../SKILL.md) defines.
+Confirm the supplied reserved folder exists and the unit remains held for this session before changing its worktree: its rows' reservations for a unit of rows, or, for a [kind unit](../artifacts/delivery-plan.md#kind-units), the hold the artifact of its [registered kind](../artifacts/work-kind.md#registration) defines.
 
 #### 3. Plan
 
@@ -258,7 +258,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 11. Arising Issues
 
-- For each unsaved issue that arose during delivery, Apply [Populate Body](../artifacts/work-kind.md#populate-body "ƒ") for the [registered kind](../SKILL.md) for work outside any initiative, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body.
+- For each unsaved issue that arose during delivery, Apply [Populate Body](../artifacts/work-kind.md#populate-body "ƒ") for the [registered kind](../artifacts/work-kind.md#registration) for work outside any initiative, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body.
 
 - Follow [Hoist Mode](hoist-mode.md "ƒ") in the project checkout with those new issue identities, each arising issue an agent review's exclusion saved, and the allowance the brief names, after the pull request is open and epic delivery is recorded.
 - Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with each placement it applied and each it held.

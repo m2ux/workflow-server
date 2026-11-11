@@ -1,52 +1,24 @@
 # Board
 
-The theme or proposals board, its membership and each item's status.
+A project board, its membership and each item's status.
 
 ## Operations
 
 ### Select Project Board
 
-The theme or proposals board the request names.
+The theme board the request names.
 
 #### 1. Find Requested Board
 
-Run [Find Theme Board](#find-theme-board "ƒ") for the theme in [Board Selection](#board-selection) under [Board Owner](#board-owner), or Run [Find Proposals Board](#find-proposals-board "ƒ") when that selection names proposals. The selection must meet [Themes](#themes) or [Proposals Board](proposal.md#proposals-board).
+Run [Find Theme Board](#find-theme-board "ƒ") for the [Theme Name](#theme-name) under [Board Owner](#board-owner). The theme must meet [Themes](#themes).
 
 #### 2. Provide Missing Selection
 
-Provide a missing-selection result when neither a theme nor proposals is specified; the caller obtains that choice.
+Provide a missing-selection result when no theme is specified; the caller obtains that choice.
 
 #### 3. Provide Selected Board
 
 Provide the [selected board](#selected-board) number, or an absent-board result for the caller’s creation path. Work one board at a time.
-
-### Create Proposals Board
-
-A new proposals board linked to the supplied repository.
-
-#### 1. Find Proposals Template
-
-Run [Find Board Template](#find-board-template "ƒ") under [Board Owner](#board-owner) with the exact [proposals-template title](../configuration.md#proposals-board).
-
-#### 2. Select Template Source
-
-Use the provided number as the copy source.
-
-#### 3. Copy Proposals Template
-
-Run [Copy Board Template](#copy-board-template "ƒ") with that template number, the owner and the [proposals title](../configuration.md#proposals-board).
-
-#### 4. Retain New Board Number
-
-Retain the new board number. The copy must meet [Proposal Status](proposal.md#proposal-status).
-
-#### 5. Link Copied Board
-
-Run [Link Board to Repository](#link-board-to-repository "ƒ") with the owner, new board number and [repository](#repository).
-
-#### 6. Provide Linked Board
-
-Provide the [Copied Board](#copied-board) after linking succeeds.
 
 ### Place Issue on Board
 
@@ -137,16 +109,6 @@ Link one board to the supplied repository and provide [Link Result](#link-result
 
 <big><pre>
 gh project link [**&lt;board-number&gt;**](#board-coordinates "○") --owner [**&lt;owner&gt;**](#board-owner "○") --repo [**&lt;repo&gt;**](#repository "○")
-</pre></big>
-
-### Find Proposals Board
-
-Print the number of the open [proposals board](../configuration.md#proposals-board) and provide [Selected Board](#selected-board "●") to the requester.
-
-<big><pre>
-gh api &#92;
-  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2?per_page=100" &#92;
-  --jq '.&#91;&#93; | select(.closed | not) | select(.title == "Proposals") | .number'
 </pre></big>
 
 ### Add Issue to Board
@@ -252,10 +214,6 @@ A board's repositories are those its items' issues live in, read from each item'
 
 The supplied board owner.
 
-### Board Selection
-
-Either the supplied theme name or the proposals-board selection.
-
 ### Board Coordinates
 
 The supplied existing board owner and number. eg `owner: m2ux`, `board-number: 13`
@@ -267,10 +225,6 @@ The supplied repository name for the board link.
 ### Theme Provenance
 
 The supplied theme title and originating proposal record when applicable.
-
-### Selected Kind
-
-The supplied selected board kind, with its theme title and proposal record when applicable.
 
 ### Template Selection
 
@@ -360,4 +314,4 @@ An issue at Ready, In Progress, In Review or Done is assigned to the user; one i
 
 ### Membership
 
-Each [registered kind](../SKILL.md) of work reaches a board through its [interface operations](work-kind.md). A kind supplying Settle Board Status places, moves and removes its item through that operation, which reads and writes the board with this artifact's operations and commands. Every other item takes the Status [Board Status](board-status.md#item-status) gives it. A kind whose own artifact keeps its issues off every board has no item.
+Each [registered kind](work-kind.md#registration) of work reaches a board through its [interface operations](work-kind.md). A kind supplying Settle Board Status places, moves and removes its item through that operation, which reads and writes the board with this artifact's operations and commands. Every other item takes the Status [Board Status](board-status.md#item-status) gives it. A kind whose own artifact keeps its issues off every board has no item.

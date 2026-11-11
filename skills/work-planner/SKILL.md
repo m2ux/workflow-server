@@ -6,28 +6,18 @@ description: >-
 
 # Work Planner
 
-Work Planner plans work as GitHub issues and keeps the plan current until the work is delivered. The issues are the plan, and this list registers each kind of work with the artifacts holding it and the interface operations each supplies:
+Work Planner plans work as GitHub issues and keeps the plan current until the work is delivered. The issues are the plan, each of one kind of work:
 
-- **Proposal**  States the problem and the goal, with no Work Breakdown.
-  - [Proposal](artifacts/proposal.md)
-  - [Proposal Body](artifacts/proposal-body.md)  [Validate Body](artifacts/proposal-body.md#validate-proposal-body "ƒ")
-- **Initiative**  States a goal and lists its epics.
-  - [Initiative](artifacts/initiative.md)
-  - [Initiative Issue Body](artifacts/initiative-issue-body.md)  [Populate Body](artifacts/initiative-issue-body.md#populate-initiative-issue-body "ƒ"), [Validate Body](artifacts/initiative-issue-body.md#validate-initiative-body "ƒ")
-- **Epic**  Lists its tasks in a Work Breakdown table.
-  - [Epic](artifacts/epic.md)
-  - [Epic Issue Body](artifacts/epic-issue-body.md)  [Populate Body](artifacts/epic-issue-body.md#populate-epic-issue-body "ƒ"), [Validate Body](artifacts/epic-issue-body.md#validate-epic-body "ƒ")
-- **Task**  One pull request's worth of work.
-  - [Task Body](artifacts/task-body.md)
-- **Standalone issue**  Work outside any initiative.
-  - [Standalone Body](artifacts/standalone-body.md)  [Populate Body](artifacts/standalone-body.md#populate-standalone-body "ƒ")
-- **Hot-fix**  A fix to a long-lived branch beside all queued work.
-  - [Hot-fix](artifacts/hotfix.md)  [Release Hold](artifacts/hotfix.md#release-hot-fix-hold "ƒ"), [Record Dispatch Status](artifacts/hotfix.md#record-hot-fix-dispatch-status "ƒ"), [Record Delivery](artifacts/hotfix.md#record-hot-fix-delivery "ƒ"), [Record Merge](artifacts/hotfix.md#record-hot-fix-merge "ƒ"), [Settle Board Status](artifacts/hotfix.md#settle-hot-fix-board-status "ƒ"), [Review Before Merge](artifacts/hotfix.md#review-hot-fix-before-merge "ƒ")
-  - [Hot-fix Body](artifacts/hotfix-body.md)  [Populate Body](artifacts/hotfix-body.md#populate-hot-fix-body "ƒ")
+- Proposal
+- Initiative
+- Epic
+- Task
+- Standalone issue
+- Hot-fix
 
-[Work Kind](artifacts/work-kind.md) holds the interface each kind's operations implement.
+[Work Kind](artifacts/work-kind.md) registers each kind with what it is, the artifacts holding it and the interface operations each supplies.
 
-Each theme's project board shows where its items stand. The [proposals board](artifacts/proposal.md#proposals-board) holds proposals. A planning record holds what an initiative leaves out: the evidence, the decisions and each review.
+Each theme's project board shows where its items stand. The [proposals board](artifacts/proposals-board.md) holds proposals. A planning record holds what an initiative leaves out: the evidence, the decisions and each review.
 
 Read [Rules](rules.md) and [Conventions](conventions.md) before selecting a mode.
 

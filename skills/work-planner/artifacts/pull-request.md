@@ -303,7 +303,7 @@ gh api &#92;
 </pre></big>
 
 - Supply the [title](#title "○"), the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the [complete body file](#body-file "○").
-- A title opening with the tag of a [registered kind](../SKILL.md) supplying Review Before Merge, such as `[F00]`, adds `-F draft=true`; that operation marks the pull request ready.
+- A title opening with the tag of a [registered kind](work-kind.md#registration) supplying Review Before Merge, such as `[F00]`, adds `-F draft=true`; that operation marks the pull request ready.
 
 ### Open Epic Pull Request
 
@@ -498,7 +498,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Fetch Repository Delivery Pull Requests
 
-Start a collection with all pull requests from one repository whose title opens with a bracketed tag, as an initiative's id and each [registered kind](../SKILL.md)'s tag do, and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
+Start a collection with all pull requests from one repository whose title opens with a bracketed tag, as an initiative's id and each [registered kind](work-kind.md#registration)'s tag do, and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 Use [Collection Path](#collection-path "○") for the saved collection.
 
@@ -511,7 +511,7 @@ gh api &#92;
 
 ### Append Repository Delivery Pull Requests
 
-Append all pull requests from one further repository whose title opens with a bracketed tag, as an initiative's id and each [registered kind](../SKILL.md)'s tag do, and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
+Append all pull requests from one further repository whose title opens with a bracketed tag, as an initiative's id and each [registered kind](work-kind.md#registration)'s tag do, and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 Use [Collection Path](#collection-path "○") for the saved collection.
 
