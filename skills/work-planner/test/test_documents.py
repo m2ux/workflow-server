@@ -1,4 +1,5 @@
-"""The installed prose API exposes complete inputs and directed reading paths."""
+"""The installed prose API exposes complete inputs and directed reading paths, and Work Priority and Proposal each
+define what every other file reaching it links."""
 import json
 import re
 import tempfile
@@ -399,3 +400,64 @@ class WorkPriorityHome(unittest.TestCase):
                       for _, target in checker.targets(path, lines, fenced)}
             with self.subTest(file=str(path.relative_to(ROOT))):
                 self.assertIn(WORK_PRIORITY.resolve(), linked)
+
+
+PROPOSAL = ROOT / 'artifacts' / 'proposal.md'
+PROPOSAL_STATUSES = ('Suggested', 'Considering', 'Approved', 'Held', 'Declined')
+# A file reaches the proposal statuses when it names the proposals board, or a status on a line naming a proposal:
+# Held and Approved also name a held plan change and an approved merge.
+PROPOSAL_STATUS = re.compile(r'\b(?:' + '|'.join(PROPOSAL_STATUSES) + r')\b')
+
+
+def reaches_proposal_status(line):
+    """Whether a line names the proposals board, or a proposal status beside a proposal."""
+    return 'proposals board' in line or bool(PROPOSAL_STATUS.search(line) and re.search(r'(?i)\bproposal', line))
+
+
+class ProposalHome(unittest.TestCase):
+    """Proposal alone defines the proposal statuses and their assignee rules, and every other file reaching
+    them links it."""
+
+    def documents(self):
+        return sorted(path for path in ROOT.rglob('*.md')
+                      if 'test' not in path.relative_to(ROOT).parts and path != PROPOSAL)
+
+    def test_proposal_status_defines_each_status_and_its_assignee(self):
+        lines, _, headings = checker.scan(PROPOSAL)
+        start = next(i for i, depth, title in headings if depth == 3 and title == 'Proposal Status')
+        body = '\n'.join(lines[start + 1:checker.heading_end(headings, start, 3, len(lines))])
+        for status in PROPOSAL_STATUSES:
+            with self.subTest(status=status):
+                self.assertRegex(body, rf'- \*\*{status}\.\*\*\n  .*assignee')
+
+    def test_no_other_file_defines_a_status(self):
+        for path in self.documents():
+            text = path.read_text()
+            titles = {title for _, _, title in checker.scan(path)[2]}
+            with self.subTest(file=str(path.relative_to(ROOT))):
+                self.assertFalse({'Proposals', 'Proposal Status'} & titles)
+                for status in PROPOSAL_STATUSES:
+                    self.assertNotIn(f'**{status}.**', text)
+
+    def test_every_file_reaching_the_statuses_links_proposal(self):
+        reaching = []
+        for path in self.documents():
+            lines, fenced, _ = checker.scan(path)
+            if not any(reaches_proposal_status(line) for index, line in enumerate(lines) if not fenced[index]):
+                continue
+            reaching.append(str(path.relative_to(ROOT)))
+            linked = {(path.parent / target.partition('#')[0]).resolve()
+                      for _, target in checker.targets(path, lines, fenced)}
+            with self.subTest(file=reaching[-1]):
+                self.assertIn(PROPOSAL.resolve(), linked)
+        self.assertLessEqual({'SKILL.md', 'artifacts/board.md', 'modes/propose-mode.md', 'modes/plan-mode.md'},
+                             set(reaching))
+
+    def test_the_search_recognises_a_proposal_status_and_skips_other_uses(self):
+        for line in ('raises one proposal on the proposals board', 'names an [Approved](x.md) proposal',
+                     'A new proposal lands at Suggested'):
+            with self.subTest(line=line):
+                self.assertTrue(reaches_proposal_status(line))
+        for line in ('settled as [Held Change](x.md) states', '#### 2. Merge Approved Delivery'):
+            with self.subTest(line=line):
+                self.assertFalse(reaches_proposal_status(line))
