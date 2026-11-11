@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT.parent / 'scripts'))
 import check_skill_files as checker
-from test_kind_operations import KIND, registration, selections
+from test_kind_operations import KIND, registration, registration_lines, selections
 
 
 def executable_scripts(paths):
@@ -36,16 +36,16 @@ def executable_scripts(paths):
 
 
 def registered_operations():
-    """Each operation the entry point's registration reaches, by artifact and anchor, with its references.
+    """Each operation Work Kind's Registration reaches, by artifact and anchor, with its references.
     A kind's operation is referenced by its registration line and each general line applying the Work Kind
     operation that dispatches to it; a Work Kind operation, by each registration line naming its interface."""
-    lines = (ROOT / 'SKILL.md').read_text().splitlines()
-    numbers = {line: index + 1 for index, line in enumerate(lines[:lines.index('## Modes')])}
+    numbers = registration_lines()
     selected = {}
     for artifacts in registration().values():
         for path, title, links in artifacts:
-            line = next(line for line in numbers if line.lstrip().startswith(f'- [{title}]({path})'))
-            site = f'SKILL.md:{numbers[line]}'
+            number = next(number for number, line in numbers.items()
+                          if line.lstrip().startswith(f'- [{title}]({Path(path).name})'))
+            site = f'artifacts/work-kind.md:{number}'
             for name, target in links:
                 file, _, anchor = target.partition('#')
                 selected.setdefault(((ROOT / file).resolve(), anchor), []).extend(

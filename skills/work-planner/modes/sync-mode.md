@@ -273,7 +273,7 @@ When [Selected Kind](../artifacts/board.md#selected-kind) is proposals and no op
 - Retain the [Copied Board](../artifacts/board.md#copied-board) after linking succeeds.
 - Require the new theme's label and board before an initiative takes that theme.
 
-- The theme board must hold the theme's initiatives, epics, task issues and each issue its [registered kind](../SKILL.md) places on it.
+- The theme board must hold the theme's initiatives, epics, task issues and each issue its [registered kind](../artifacts/work-kind.md#registration) places on it.
 
 ##### 3. Retain Copied Board
 

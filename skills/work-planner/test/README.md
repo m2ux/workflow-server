@@ -73,9 +73,9 @@ These modules exercise the skill's instruction routes and document contracts.
 | [test_board_status](test_board_status.py) | Board Status owns the proposed board change and the commands computing it, and Board Delivery and Hot-fix reach them with the decisions they gave |
 | [test_checkouts](test_checkouts.py) | Checkout-sensitive commands consume linked input contracts |
 | [test_documents](test_documents.py) | The installed prose API exposes complete inputs and directed reading paths, and [Work Priority](../artifacts/work-priority.md) and [Proposal](../artifacts/proposal.md) each define what every other file reaching it links |
-| [test_kind_operations](test_kind_operations.py) | [Work Kind](../artifacts/work-kind.md) holds one dispatching operation per interface operation, each resolving to the operation the item's registered kind supplies or to its general route, general files reach a kind's operation only through it, and the entry point lists each kind's lifecycle artifact ahead of its body |
+| [test_kind_operations](test_kind_operations.py) | [Work Kind](../artifacts/work-kind.md) holds one dispatching operation per interface operation, each resolving to the operation the item's registered kind supplies or to its general route, general files reach a kind's operation only through it, and its Registration lists each kind's lifecycle artifact ahead of its body |
 | [test_merge_outcomes](test_merge_outcomes.py) | Merge instructions bind verified heads and select terminal or bounded recovery routes |
-| [test_modes](test_modes.py) | Mode summaries in each skill's [SKILL](../SKILL.md) |
+| [test_modes](test_modes.py) | Mode summaries in each skill's `SKILL.md` |
 | [test_plan_mode](test_plan_mode.py) | Plan Mode keeps a plan in one home: its planning record on the engineering branch, and drafts from an Approved proposal |
 | [test_plan_publication](test_plan_publication.py) | Plan publication validates confirmed saved epic and parent identities |
 | [test_reading_routes](test_reading_routes.py) | Standup, Revise and Understand routes supply their per-entry context contracts on captured inputs, and a reading trace conforms when it retrieves that context before use |
@@ -127,7 +127,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | --- | --- |
 | `*/SKILL.md` | [test_modes](test_modes.py) (4) |
 | [README](README.md) | [test_readme](test_readme.py) (14) |
-| [SKILL](../SKILL.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20), [test_kind_operations](test_kind_operations.py) (29), [test_reading_routes](test_reading_routes.py) (20) |
+| `SKILL.md` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20), [test_reading_routes](test_reading_routes.py) (20) |
 | `artifacts/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (20) |
 | [advance-mode](../modes/advance-mode.md) | [test_advance_decisions](test_advance_decisions.py) (18) |
 | [architecture-overview](../artifacts/architecture-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |

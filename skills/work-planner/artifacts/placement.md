@@ -43,12 +43,12 @@ An initiative row identifies its epic issue. A task issue has its delivery link 
 | New task | A row in an existing epic, with its criteria | Subsumed |
 | New epic | An epic in an existing initiative, with a task row carrying the work | Subsumed |
 | New initiative | An initiative | Kept or subsumed |
-| Registered kind | An issue of another [registered kind](../SKILL.md) on its theme board, meeting the definition its artifacts give | Kept |
+| Registered kind | An issue of another [registered kind](work-kind.md#registration) on its theme board, meeting the definition its artifacts give | Kept |
 | Leave | Work outside the initiative structure | Left open |
 
 ### Candidate Issues
 
-Candidates are open issues without an agent-engineering prefix, other than a proposal, an issue whose title carries the tag of a [registered kind](../SKILL.md), and a declared throwaway target: an issue carrying a `throwaway:*` label, a fixture a write check changes, which stays open and belongs in no initiative. Orphans have no incoming link from an open initiative, epic or task. Cited standalone issues have such a link in prose or References; their records include labels, citing issues and any linked planning folder. An investigation cited by an epic is a candidate, with disposition determined from supplied criteria.
+Candidates are open issues without an agent-engineering prefix, other than a proposal, an issue whose title carries the tag of a [registered kind](work-kind.md#registration), and a declared throwaway target: an issue carrying a `throwaway:*` label, a fixture a write check changes, which stays open and belongs in no initiative. Orphans have no incoming link from an open initiative, epic or task. Cited standalone issues have such a link in prose or References; their records include labels, citing issues and any linked planning folder. An investigation cited by an epic is a candidate, with disposition determined from supplied criteria.
 
 ### Destination Work
 
