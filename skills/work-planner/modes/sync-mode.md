@@ -297,9 +297,9 @@ Retain the [Copied Board](../artifacts/board.md#copied-board) after the selected
 
 ##### 2. Plan Delivery Changes
 
-- Run [Compute Board Changes](../artifacts/board-delivery.md#compute-board-changes "ƒ") to the captured evidence.
+- Run [Compute Board Changes](../artifacts/board-status.md#compute-board-changes "ƒ") to the captured evidence.
 - Fetch each unresolved issue.
-- Run [Compute Board Changes](../artifacts/board-delivery.md#compute-board-changes "ƒ") again, adding the fetched off-board issue records to the retained evidence.
+- Run [Compute Board Changes](../artifacts/board-status.md#compute-board-changes "ƒ") again, adding the fetched off-board issue records to the retained evidence.
 
 ##### 3. Apply and Confirm Calls
 
@@ -314,7 +314,7 @@ Retain the [Copied Board](../artifacts/board.md#copied-board) after the selected
 
 - Fetch the issues and items again.
 - Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes.
-- Run [Compute Board Changes](../artifacts/board-delivery.md#compute-board-changes "ƒ") to the refreshed evidence, retaining every resolved off-board issue record.
+- Run [Compute Board Changes](../artifacts/board-status.md#compute-board-changes "ƒ") to the refreshed evidence, retaining every resolved off-board issue record.
 - Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
 
 ##### 5. Retain Confirmed Board Statuses

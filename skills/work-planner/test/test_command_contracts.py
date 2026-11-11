@@ -78,7 +78,7 @@ class DocumentedCommandBehavior(unittest.TestCase):
         fields = [{'id': 7, 'name': 'Status', 'options': [
             {'name': name, 'id': number} for number, name in enumerate(
                 ('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'), 1)]}]
-        done = self.execute('board-delivery.md', 'Compute Dispatch Status', {
+        done = self.execute('board-status.md', 'Compute Dispatch Status', {
             'board-items-file': self.snapshot('items.json', [row]),
             'board-identity': 'users/o/projectsV2/9',
             'board-fields-file': self.snapshot('fields.json', fields),
