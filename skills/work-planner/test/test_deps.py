@@ -637,10 +637,10 @@ class ComponentContention(unittest.TestCase):
     def test_a_pair_sharing_one_of_several_files_is_printed_and_separated(self):
         code, text = run([('E08', epic_body(('W01', 'Extend assembly', ''))),
                           ('E09', epic_body(('W01', 'Extend emit', ''))),
-                          ('E08:W01', work_item(f'main:src/a.ts, main:{self.BUNDLE}')),
-                          ('E09:W01', work_item(f'main:src/bundle/emit.ts, main:{self.BUNDLE}, main:src/c.ts'))])
+                          ('E08:W01', work_item(f'src/a.ts, {self.BUNDLE}')),
+                          ('E09:W01', work_item(f'src/bundle/emit.ts, {self.BUNDLE}, src/c.ts'))])
         self.assertEqual(code, 0, text)
-        self.assertIn('E08:W01 and E09:W01 both extend main:src/bundle/assembly.ts\n', text)
+        self.assertIn('E08:W01 and E09:W01 both extend src/bundle/assembly.ts\n', text)
         self.assertIn('--- epic priority (epics sharing a number start together)\n2 E08\n1 E09', text)
 
     def test_epics_declaring_different_files_share_a_number(self):
@@ -670,6 +670,32 @@ class ComponentContention(unittest.TestCase):
             components, problems = read_components({'E08:W01': path})
         self.assertEqual(problems, [])
         self.assertEqual(components, {'E08:W01': ('main:src/bundle/assembly.ts', 'workspace:b.py', 'main:src/c.ts')})
+
+    def declares(self, line: str) -> tuple[str, ...]:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'w01.md'
+            path.write_text(f'**Component:** {line}\n')
+            components, problems = read_components({'E08:W01': path})
+        self.assertEqual(problems, [])
+        return components['E08:W01']
+
+    def test_prose_between_entries_leaves_no_punctuation_on_a_path(self):
+        self.assertEqual(self.declares('main:src/a.ts, which the emitter calls, main:src/b.ts'),
+                         ('main:src/a.ts', 'main:src/b.ts'))
+
+    def test_bare_paths_are_each_an_entry(self):
+        self.assertEqual(self.declares('src/a.ts, src/b.ts'), ('src/a.ts', 'src/b.ts'))
+        self.assertEqual(self.declares('README.md, src/a.ts'), ('README.md', 'src/a.ts'))
+
+    def test_semicolons_and_and_separate_entries(self):
+        self.assertEqual(self.declares('main:src/a.ts; main:src/b.ts and main:src/c.ts'),
+                         ('main:src/a.ts', 'main:src/b.ts', 'main:src/c.ts'))
+        self.assertEqual(self.declares('src/a.ts; src/b.ts and src/c.ts'),
+                         ('src/a.ts', 'src/b.ts', 'src/c.ts'))
+
+    def test_a_code_span_is_one_entry_whatever_it_holds(self):
+        self.assertEqual(self.declares('`main:src/my file.ts`, main:src/b.ts'),
+                         ('main:src/my file.ts', 'main:src/b.ts'))
 
     def test_one_path_spelt_two_ways_is_one_file(self):
         self.assertEqual(normalise('`src/a.ts`.'), 'src/a.ts')

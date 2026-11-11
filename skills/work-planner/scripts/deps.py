@@ -7,9 +7,11 @@ Usage:
 An argument naming a row is that row's work item, a file whose declaration line names each file
 its implementation changes, separated by commas:
   **Component:** main:src/bundle/assembly.ts, main:src/bundle/emit.ts
-Each declared file is read without its link, a wrapping code span, a trailing full stop or a
-leading ./, so two spellings of one path are one file. A value still carrying the template's
-{{…}} placeholder declares none. Each entry is one file: an entry ending in /, carrying a glob, or
+A code span is one entry; any other word is an entry when it names a branch:path, holds a / or
+a *, or ends in a file extension, and the prose, commas, semicolons and "and" between entries are
+not. Each declared file is read without its link, a wrapping code span, enclosing brackets,
+trailing punctuation or a leading ./, so two spellings of one path are one file. A value still
+carrying the template's {{…}} placeholder declares none. Each entry is one file: an entry ending in /, carrying a glob, or
 naming a directory under the working directory declares a directory, which is a problem.
 
 Each remaining file is an epic issue body holding the agent-engineering Work Breakdown table:
@@ -76,7 +78,8 @@ EXTERNAL = re.compile(r'#\d+|I\d\d:E\d\d(?::W\d\d)?')
 INITIATIVE_EPIC = re.compile(r'#\d+|I\d\d:E\d\d')
 CRITERION = re.compile(r'AC\d+')
 BRANCH = re.compile(r'^([^:/\s]+):(?=\S)')
-ENTRY = re.compile(r',\s*(?=`?(?:\./)?[^:/\s,`]+:\S)')
+TOKEN = re.compile(r'`[^`]*`|[^\s`]+')
+EXTENSION = re.compile(r'\w\.\w+$')
 MAX_CHAINS = 10
 UNIT_BOUND = 6
 
@@ -166,8 +169,7 @@ def normalise(entry: str) -> str:
 
 def read_components(items: dict[str, Path]) -> tuple[dict[str, tuple[str, ...]], list[str]]:
     """The files each work item's Component line declares, keyed by its row, and the items declaring
-    none or a directory. A comma followed by a `branch:path` entry separates two entries, and prose
-    after an entry's path is no part of it."""
+    none or a directory."""
     components, problems = {}, []
     for key, path in items.items():
         try:
@@ -176,8 +178,7 @@ def read_components(items: dict[str, Path]) -> tuple[dict[str, tuple[str, ...]],
             problems.append(f'{key}: work item {path} is unreadable ({error.strerror})')
             continue
         value = next((found[1] for found in map(COMPONENT.match, map(str.strip, lines)) if found), '')
-        paths = (part.split(maxsplit=1)[0] for part in ENTRY.split(LINK.sub(r'\1', value)) if part.strip())
-        declared = tuple(dict.fromkeys(entry for entry in map(normalise, paths) if entry))
+        declared = tuple(dict.fromkeys(entries(LINK.sub(r'\1', value))))
         directories = [entry for entry in declared if is_directory(entry)]
         if not declared or PLACEHOLDER.search(value):
             problems.append(f'{key}: work item declares no file')
@@ -187,6 +188,20 @@ def read_components(items: dict[str, Path]) -> tuple[dict[str, tuple[str, ...]],
         else:
             components[key] = declared
     return components, problems
+
+
+def entries(value: str) -> list[str]:
+    """The declared files in a Component value, in order. A code span is one entry whatever it
+    holds; any other word is an entry when it names a `branch:path`, holds a `/` or a `*`, or ends
+    in a file extension, once enclosing brackets, quotes and trailing punctuation are stripped. The
+    words between entries, and the commas, semicolons and `and` separating them, are prose."""
+    found = []
+    for token in TOKEN.findall(value):
+        word = token.strip('`').strip() if token.startswith('`') else token.lstrip('(["\'').rstrip('.,;:!?)]"\'')
+        entry = normalise(word)
+        if entry and (BRANCH.match(entry) or '/' in entry or '*' in entry or EXTENSION.search(entry)):
+            found.append(entry)
+    return found
 
 
 def is_directory(entry: str) -> bool:
