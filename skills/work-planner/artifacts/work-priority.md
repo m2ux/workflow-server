@@ -1,6 +1,6 @@
 # Work Priority
 
-The priority an issue carries, the sets initiatives and epics run in, and the execution order those give. [priority](../scripts/priority.py) implements the rank a label gives, the label a number names and the execution-order key.
+The priority an issue carries, the sets initiatives and epics run in, and the execution order those give. Its script, [priority](../scripts/priority.py), implements the rank a label gives, the label a number names and the execution-order key.
 
 ## Fields
 
