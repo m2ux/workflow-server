@@ -1,6 +1,6 @@
 # F11 Test Results
 
-Branch `skill/work-priority` at 564346688, stacked on `skill/link-step-references` at 7aa5040ab.
+Branch `skill/work-priority` at 803875069, stacked on `skill/link-step-references` at 7aa5040ab.
 
 ## T1. Skill-File Check over Work-Planner
 
@@ -20,12 +20,16 @@ Branch `skill/work-priority` at 564346688, stacked on `skill/link-step-reference
 
 ## T5. Ordering Equivalence
 
-`test_deliver.py` (107), `test_dispatch.py` (34) and `test_progress.py` (79) pass with no ordering expectation changed; their single-home tests assert `deliver.execution_key` and `progress.execution_key` are `priority.execution_key`. A scratch check compared the pre-change `ordered_epics` and Next sort keys with `execution_key` over 20,000 random boards: identical orders in every case. Covers AC2.
+`test_deliver.py` (107), `test_dispatch.py` (34) and `test_progress.py` (79) pass with no ordering expectation changed; their single-home tests assert `deliver.execution_key` and `progress.execution_key` are `priority.execution_key`. A scratch check compared the pre-change `ordered_epics` and Next sort keys with `execution_key` over 20,000 random boards: identical orders in every case. Covers AC2. T7 records the standup's move to Execution Order, which changes its order where equally ranked initiatives meet.
 
 ## T6. Hot-Fix Label
 
 `test_hotfix.py`, 26 tests: a hot-fix's labels equal `[priority.label(10)]`, and `hotfix._label` is `priority.label`. Covers AC3.
 
-## T7. Planner Suite, Shared Suite and Whitespace
+## T7. Standup Next in Execution Order
 
-The work-planner suite: 1253 tests, OK, 1 skipped. The shared suite (`skills/test`): 331 tests, OK. `git diff --check`: clean.
+`test_progress.py` (80) `test_equally_ranked_initiatives_keep_their_epics_grouped_in_issue_order`: two initiatives at priority 3 list I01:E01, I01:E00, then I02:E00, although I02:E00 carries the highest epic label. It fails on the progress.py of 564346688. progress.py passes Execution Order's initiative tie-break, as deliver.py does, and an item with no epic groups with its initiative prefix; no existing expectation changed. standup-report.md links Execution Order for its Next order. Covers AC2.
+
+## T8. Planner Suite, Shared Suite and Whitespace
+
+The work-planner suite: 1254 tests, OK, 1 skipped. The shared suite (`skills/test`): 331 tests, OK. `git diff --check`: clean.
