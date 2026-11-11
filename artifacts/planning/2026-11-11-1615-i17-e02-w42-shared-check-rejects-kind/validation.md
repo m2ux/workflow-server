@@ -50,6 +50,10 @@ python3 skills/scripts/check_skill_files.py skills/work-planner   # checkout roo
 git diff --check origin/i17/e02/workspace                         # checkout root
 ```
 
+## Merge
+
+[#1693](https://github.com/m2ux/workflow-server/pull/1693) merged into `i17/e02/workspace` at `e17c39f8b3e314448293bba523608a5bfc69077f` from head `7f8867d302548d59c898d1382ac5eadfcd09f214`, current with the epic base `96241be5b`. Epic #1615 links W42 to #1693 and ticks AC66 ([sync.log](sync.log)); review #1659 carries T31 and R29.
+
 ## Change List
 
 - Applied: the W42 work item declares six further files the change reaches (hotfix.md takes the Review Rule; placement.md, plan-change.md, pull-request-body.md, advance-mode.md and sync-mode.md held the 13 base findings). No row, criterion or dependency changed.
