@@ -1,16 +1,16 @@
 """Validate published agent review evidence against a current integration pull request.
 
-A blocking finding passes only once fixed, and on a pull request whose title opens with the tag of a
-kind of work kinds.py registers, every finding does. A record is current while it names the pull
-request's head and base SHAs; on such a pull request, while it names its head SHA and, as base_ref,
-its base branch."""
+A record is current while it names the pull request's head and base SHAs, and a blocking finding
+passes only once fixed. On a pull request whose title opens with the tag of a kind of work kinds.py
+registers, the kind's review rule decides which record fields hold a record current and adds its
+fault to each finding."""
 import argparse
 import json
 import re
 from pathlib import Path
 from urllib.parse import urlparse
 
-from kinds import kind_of
+from kinds import Review, interface, kind_of
 
 
 def load_records(path):
@@ -48,6 +48,14 @@ def linked_record(body, url):
     return False
 
 
+def review(pr):
+    """The review rule of the pull request's registered kind, or the general rule when it has none."""
+    kind = kind_of(pr)
+    if kind:
+        return interface(kind).review(pr)
+    return Review({'head': pr['head'].get('sha'), 'base': pr['base'].get('sha')}, lambda finding: '')
+
+
 def check(pr, records):
     """Return a finding unless one complete, published review matches both current tips."""
     identity = pr.get('html_url')
@@ -59,10 +67,8 @@ def check(pr, records):
     head, base = (pr.get('head') or {}).get('sha'), (pr.get('base') or {}).get('sha')
     if not all(isinstance(s, str) and re.fullmatch(r'[0-9a-f]{40}', s) for s in (head, base)):
         return 'missing current integration head or target SHA'
-    ref = (pr.get('base') or {}).get('ref')
-    kind = kind_of(pr)
-    current = [r for r in matching if r.get('head') == head
-               and (r.get('base_ref') == ref if kind else r.get('base') == base)]
+    rule = review(pr)
+    current = [r for r in matching if all(r.get(name) == value for name, value in rule.current.items())]
     if not current:
         return 'stale agent review: integration head or target changed'
     # The last record for this revision is authoritative, including a later blocking finding.
@@ -84,8 +90,8 @@ def check(pr, records):
             return 'invalid finding severity or disposition'
         if severity == 'blocking' and disposition != 'fixed':
             return 'unresolved blocking agent review finding'
-        if kind and disposition != 'fixed':
-            return f"unfixed finding on a {kind}'s delivering pull request"
+        if fault := rule.finding_fault(finding):
+            return fault
         if disposition == 'open':
             return 'agent review finding needs a disposition'
         if not web_url(finding.get('evidence' if disposition == 'fixed' else 'ticket')):
