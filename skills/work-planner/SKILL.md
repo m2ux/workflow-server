@@ -35,7 +35,7 @@ A kind supplies an interface operation where its rules depart from the general r
 - **Record Merge**
   [Task Merge](protocols/task-merge.md "ƒ")
 - **Settle Board Status**
-  [Status Changes](artifacts/board-delivery.md#status-changes)
+  [Status Change](artifacts/board-status.md#status-change)
 - **Populate Body**
   [Body](artifacts/issue-body.md#body)
 - **Review Before Merge**

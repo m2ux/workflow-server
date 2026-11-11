@@ -126,7 +126,7 @@ Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Board
 
 #### 3. Apply Required Status
 
-- Apply the status [Board Status](#board-status) gives that state and Status:
+- Apply the [status change](board-status.md#status-change) [Board Status](#board-status) gives that state and Status:
 
 ##### A Status
 
@@ -258,5 +258,5 @@ The supplied source or hot-fix issue's repository, number and URL.
 
 - An open hot-fix stands In Review while a [delivering pull request](#delivering-pull-request) of it is open and ready for review, and In Progress while one is an open draft.
 - Otherwise an open hot-fix is Ready, whatever any initiative's or epic's priority, and In Progress once it holds In Progress or In Review. It reaches the board as its [placement](placement.md#disposition-conditions) orders.
-- A closed hot-fix takes the status [Status Changes](board-delivery.md#status-changes) gives a closed issue.
+- A closed hot-fix takes the status [Closure](board-status.md#closure) gives a closed issue.
 - No initiative or epic waits on a hot-fix, and a hot-fix waits on none.
