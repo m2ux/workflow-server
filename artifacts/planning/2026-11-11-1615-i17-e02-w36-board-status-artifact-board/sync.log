@@ -1,0 +1,9 @@
+#1615 epic (open)
+  linked: W36 → #1689
+  ticked: AC6
+  ticked: AC7
+  ticked: AC8
+  done: W36
+  references: i17/e02/workspace (#1659) cites #1645, #1656, #1663, #1664, #1666, #1667, #1668, #1669, #1670, #1671, #1672, #1673, #1674, #1675, #1677, #1678, #1679, #1680, #1682, #1683, #1684, #1685, #1686, #1687; merged #1656, #1663, #1664, #1666, #1667, #1668, #1669, #1670, #1671, #1672, #1673, #1674, #1675, #1677, #1678, #1679, #1680, #1682, #1683, #1684, #1685, #1686, #1687, #1689
+  source: config/branches at 23ef4cf2b4f35fc9e59b194fd12058089f356cd2 in /home/mike1/projects/dev/workflow-server/.git
+  closable: no (undelivered W37, W38, W39, W40, W41, W42, unticked AC9, AC11, AC12, AC13, AC14, AC15, AC16, AC66, AC67, AC68, AC69, AC70)

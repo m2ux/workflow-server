@@ -56,3 +56,12 @@ git diff --check origin/i17/e02/workspace                         # checkout roo
 ```
 
 The base runs use a `git archive 380110d19 skills` export with test_board_status.py copied in; decisions-base.log runs its three decision classes with the command document set to board-delivery.md.
+
+## Merge
+
+[#1689](https://github.com/m2ux/workflow-server/pull/1689) merged into `i17/e02/workspace` at `23ef4cf2b4f35fc9e59b194fd12058089f356cd2` from head `3759e800c180f1ee187e178e1ef1954133fc7576`; the epic base had not moved since the task base. Epic #1615 links W36 to #1689 and ticks AC6, AC7 and AC8 ([sync.log](sync.log)), saved over a concurrent epic edit after a re-read; review #1659 carries T27 and R25.
+
+## Change List
+
+- Applied: the W36 work item declares eight further files the extraction changes (SKILL.md, board-queue.md, board.md, sync-mode.md, board.py, test_board_status.py, test_command_contracts.py, test/README.md). No row, criterion or dependency changed.
+- Held: none. Arising issues: none; board.py's kind mention was fixed on the branch.
