@@ -33,3 +33,12 @@ git diff --check origin/i17/e02/workspace                         # checkout roo
 ```
 
 The base runs use a `git archive 23ef4cf2b skills` export; shared-rules-base.log copies the head test_shared.py into it.
+
+## Merge
+
+[#1691](https://github.com/m2ux/workflow-server/pull/1691) merged into `i17/e02/workspace` at `ac804d44a1132ef2ebd45b95242da180e5d71bd2` from head `f48a6142ec66c9632e2c095e5d4667920535794b`; the epic base had not moved since the task base. Epic #1615 links W41 to #1691 and ticks AC69 and AC70 ([sync.log](sync.log)); review #1659 carries T28 and R26.
+
+## Change List
+
+- Applied: the W41 work item declares four further files the change reaches (progress.py, board-queue.py, test_board_queue.py, test/README.md). No row, criterion or dependency changed.
+- Held: none. Arising issues: none.

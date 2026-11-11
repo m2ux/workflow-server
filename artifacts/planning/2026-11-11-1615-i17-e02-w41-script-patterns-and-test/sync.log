@@ -1,0 +1,9 @@
+#1615 epic (open)
+  linked: W41 → #1691
+  in flight: #1690 [I17:E02] Kinds supply their agent review rule
+  ticked: AC69
+  ticked: AC70
+  done: W41
+  references: i17/e02/workspace (#1659) cites #1645, #1656, #1663, #1664, #1666, #1667, #1668, #1669, #1670, #1671, #1672, #1673, #1674, #1675, #1677, #1678, #1679, #1680, #1682, #1683, #1684, #1685, #1686, #1687, #1689; merged #1656, #1663, #1664, #1666, #1667, #1668, #1669, #1670, #1671, #1672, #1673, #1674, #1675, #1677, #1678, #1679, #1680, #1682, #1683, #1684, #1685, #1686, #1687, #1689, #1691
+  source: config/branches at ac804d44a1132ef2ebd45b95242da180e5d71bd2 in /home/mike1/projects/dev/workflow-server/.git
+  closable: no (undelivered W37, W38, W39, W40, W42, unticked AC9, AC11, AC12, AC13, AC14, AC15, AC16, AC66, AC67, AC68)
