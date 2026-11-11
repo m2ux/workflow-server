@@ -110,9 +110,10 @@ class Substitution(unittest.TestCase):
                              'workspace')
         self.assertIsNone(kind_of(issue(5, '[Z01] Stand In')))
 
-    def test_the_hot_fix_module_shares_the_contracts_off_board_status_and_key(self):
+    def test_the_hot_fix_module_shares_the_contracts_off_board_status_key_and_review(self):
         self.assertIs(hotfix.OFF_BOARD, OFF_BOARD)
         self.assertIs(hotfix.Key, kinds.Key)
+        self.assertIs(hotfix.Review, kinds.Review)
 
     def test_the_hot_fix_kind_answers_an_item_of_any_kind_with_the_contracts_result_types(self):
         kind = interface('hot-fix')
@@ -129,6 +130,10 @@ class Substitution(unittest.TestCase):
                 self.assertIn(kind.board_status(item, None, []), ('Ready', 'In Progress', 'In Review', 'Done',
                                                                   OFF_BOARD, None))
                 self.assertIn(kind.unit_state(item, 'Ready', [], []), ('unrecorded', 'running', 'hold', 'unit', None))
+                rule = kind.review(pr(951, item['title'] or 'Other', base='main'))
+                self.assertIsInstance(rule, kinds.Review)
+                self.assertIsInstance(rule.current, dict)
+                self.assertIsInstance(rule.finding_fault({'disposition': 'fixed'}), str)
 
 
 if __name__ == '__main__':

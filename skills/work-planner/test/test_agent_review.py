@@ -63,19 +63,29 @@ class HotFixReview(unittest.TestCase):
 
 
 class RegisteredKind(unittest.TestCase):
-    def test_a_registered_kind_is_selected_through_the_registry(self):
+    def test_each_kind_supplies_its_own_currency_and_finding_rule(self):
         stand_in = types.ModuleType('stand_in')
         stand_in.tag = lambda item: 'Z01' if (item.get('title') or '').startswith('[Z01]') else None
+        stand_in.review = lambda pull: kinds.Review(
+            {'head': pull['head']['sha']},
+            lambda finding: 'a stand-in defers nothing' if finding.get('disposition') == 'deferred' else '')
         pull, record = hotfix_pr()
         pull['title'] = '[Z01] Stand In'
-        record['findings'] = [{'description': 'Follow-up', 'severity': 'nonblocking', 'disposition': 'deferred',
-                               'ticket': 'https://github.com/o/r/issues/5'}]
+        deferred = [{'description': 'Follow-up', 'severity': 'nonblocking', 'disposition': 'deferred',
+                     'ticket': 'https://github.com/o/r/issues/5'}]
+        fixed = [{'description': 'Follow-up', 'severity': 'nonblocking', 'disposition': 'fixed',
+                  'evidence': 'https://github.com/o/r/commit/1'}]
         with mock.patch.dict(sys.modules, {'stand_in': stand_in}), \
                 mock.patch.dict(kinds.KINDS, {'stand-in': 'stand_in'}):
-            self.assertEqual(check(pull, [record]), "unfixed finding on a stand-in's delivering pull request")
-            self.assertIsNone(check(pull, [{**record, 'base': 'c' * 40, 'findings': []}]))
-            self.assertIn('stale', check(pull, [{**record, 'base_ref': 'main', 'findings': []}]))
-        self.assertIn('stale', check(pull, [{**record, 'base': 'c' * 40, 'findings': []}]))
+            self.assertEqual(check(pull, [{**record, 'findings': deferred}]), 'a stand-in defers nothing')
+            self.assertIsNone(check(pull, [{**record, 'findings': fixed}]))
+            self.assertIsNone(check(pull, [{**record, 'base': 'c' * 40, 'base_ref': 'main'}]))
+            self.assertIn('stale', check(pull, [{**record, 'head': 'c' * 40}]))
+            hot = {**pull, 'title': '[F04] Reject Bad Keys'}
+            self.assertIn('stale', check(hot, [{**record, 'base_ref': 'main'}]))
+            self.assertIn('unfixed finding', check(hot, [{**record, 'findings': deferred}]))
+        self.assertIsNone(check(pull, [{**record, 'findings': deferred}]))
+        self.assertIn('stale', check(pull, [{**record, 'base': 'c' * 40}]))
 
     def test_it_imports_no_kind_module_and_names_no_kind(self):
         source = (SCRIPTS / 'agent_review.py').read_text()

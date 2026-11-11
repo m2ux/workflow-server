@@ -1,5 +1,5 @@
-"""hotfix.py: a hot-fix's identity, labels, target, board status, delivering pull requests and delivery unit state,
-each reached through the Kind interface the module supplies, which is all it exports.
+"""hotfix.py: a hot-fix's identity, labels, target, board status, delivering pull requests, delivery unit state and agent
+review rule, each reached through the Kind interface the module supplies, which is all it exports.
 """
 import ast
 import inspect
@@ -16,7 +16,7 @@ from kinds import OFF_BOARD, Kind, interface  # noqa: E402
 KIND = interface('hot-fix')
 tag, letter, labels, faults, target = KIND.tag, KIND.letter, KIND.labels, KIND.faults, KIND.target
 board_status, linking_pulls, delivery_fault = KIND.board_status, KIND.linking_pulls, KIND.delivery_fault
-delivering_pulls, unit_state = KIND.delivering_pulls, KIND.unit_state
+delivering_pulls, unit_state, review = KIND.delivering_pulls, KIND.unit_state, KIND.review
 
 KEY = ('o/r', 4)
 MERGED = '2026-11-01T00:00:00Z'
@@ -165,6 +165,21 @@ class UnitState(unittest.TestCase):
         for held in ('Ready', 'In Progress'):
             with self.subTest(held=held):
                 self.assertEqual(unit_state(hotfix(), held, [draft], [draft]), 'running')
+
+
+class Review(unittest.TestCase):
+    def test_a_record_naming_the_head_and_base_branch_is_current(self):
+        pull = pr(951, '[F04] Fix', base='main', head='fix')
+        pull['head']['sha'] = 'a' * 40
+        self.assertEqual(review(pull).current, {'head': 'a' * 40, 'base_ref': 'main'})
+
+    def test_every_finding_is_fixed(self):
+        rule = review(pr(951, '[F04] Fix', base='main'))
+        self.assertEqual(rule.finding_fault({'disposition': 'fixed'}), '')
+        for disposition in ('open', 'deferred'):
+            with self.subTest(disposition=disposition):
+                self.assertEqual(rule.finding_fault({'disposition': disposition}),
+                                 "unfixed finding on a hot-fix's delivering pull request")
 
 
 class ThroughTheRegistry(unittest.TestCase):

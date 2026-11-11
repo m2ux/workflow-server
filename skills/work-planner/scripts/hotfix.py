@@ -4,12 +4,13 @@ An issue whose title opens with [F00] is a hot-fix, and it carries the priority:
 Overview names the long-lived branch it fixes in one Target: line. This module supplies the hot-fix
 kind to the script registry, kinds.py: each operation of its Kind interface, with the inputs and
 results that interface states, reads a hot-fix's tag and the letter it opens with, labels, body
-faults, target, board status, linking and delivering pull requests and the state of its delivery
-unit. The module defines no other public name, and only the registry imports it.
+faults, target, board status, linking and delivering pull requests, the state of its delivery unit
+and the agent review rule for its pull request. The module defines no other public name, and only
+the registry imports it.
 """
 import re
 
-from kinds import OFF_BOARD, Key
+from kinds import OFF_BOARD, Key, Review
 
 _LETTER = 'F'
 _TAG = re.compile(rf'^\[({_LETTER}\d\d)\]')
@@ -121,3 +122,16 @@ def unit_state(issue: dict, held: str | None, linking: list[dict], delivering: l
     if any((p.get('state') or 'open') == 'open' and not p.get('merged_at') for p in linking):
         return 'running'
     return {'In Progress': 'hold', 'Ready': 'unit'}.get(held)
+
+
+def review(pull: dict) -> Review:
+    """The agent review rule for a hot-fix's pull request: a record is current while it names the pull
+    request's head SHA and, as base_ref, its base branch, so a target moving on leaves the review
+    current and a retarget does not; every finding is fixed."""
+    current = {'head': (pull.get('head') or {}).get('sha'), 'base_ref': (pull.get('base') or {}).get('ref')}
+    return Review(current, _unfixed)
+
+
+def _unfixed(finding: dict) -> str:
+    """The fault of a hot-fix review finding left unfixed, or '' for a fixed one."""
+    return '' if finding.get('disposition') == 'fixed' else "unfixed finding on a hot-fix's delivering pull request"

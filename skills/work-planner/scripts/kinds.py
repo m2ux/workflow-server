@@ -5,13 +5,23 @@ registered module supplies every operation of the Kind interface with the inputs
 there. A general script selects an issue's or pull request's kind with kind_of and reaches the kind's
 logic through interface; it imports no kind module and keeps no list of kinds of its own.
 """
+from collections.abc import Callable
 from importlib import import_module
-from typing import Protocol
+from typing import NamedTuple, Protocol
 
 # The status board_status gives an item that leaves its theme board.
 OFF_BOARD = 'off the board'
 # An issue's repository, as owner/name, and its number.
 Key = tuple[str, int]
+
+
+class Review(NamedTuple):
+    """The agent review rule for one pull request."""
+
+    # Each review record field, and the value it holds while the record is current for the pull request.
+    current: dict[str, object]
+    # The fault in a finding that the general finding rule passes, or '' when none.
+    finding_fault: Callable[[dict], str]
 
 # Each kind of work, by the name a report gives it, mapped to the module in this folder that supplies it.
 KINDS = {'hot-fix': 'hotfix'}
@@ -54,6 +64,10 @@ class Kind(Protocol):
     def unit_state(self, issue: dict, held: str | None, linking: list[dict], delivering: list[dict]) -> str | None:
         """Where the issue's delivery unit stands, given its held Status and its linking and delivering pull
         requests: unrecorded, running, hold or unit, or None when the issue is no delivery unit."""
+
+    def review(self, pull: dict) -> Review:
+        """The agent review rule for a pull request of the kind: the record fields that hold it current,
+        and the fault the kind finds in a finding."""
 
 
 def interface(kind: str) -> Kind:
