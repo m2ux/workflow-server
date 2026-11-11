@@ -23,6 +23,14 @@ class Review(NamedTuple):
     # The fault in a finding that the general finding rule passes, or '' when none.
     finding_fault: Callable[[dict], str]
 
+
+class Tips(NamedTuple):
+    """A pull request's validated tips: its head and base SHAs and its base branch."""
+
+    head: str
+    base: str
+    base_ref: str
+
 # Each kind of work, by the name a report gives it, mapped to the module in this folder that supplies it.
 KINDS = {'hot-fix': 'hotfix'}
 
@@ -65,9 +73,9 @@ class Kind(Protocol):
         """Where the issue's delivery unit stands, given its held Status and its linking and delivering pull
         requests: unrecorded, running, hold or unit, or None when the issue is no delivery unit."""
 
-    def review(self, pull: dict) -> Review:
-        """The agent review rule for a pull request of the kind: the record fields that hold it current,
-        and the fault the kind finds in a finding."""
+    def review(self, tips: Tips) -> Review:
+        """The agent review rule for a pull request of the kind, given the tips agent_review validated: the
+        record fields that hold a record current, and the fault the kind finds in a finding."""
 
 
 def interface(kind: str) -> Kind:

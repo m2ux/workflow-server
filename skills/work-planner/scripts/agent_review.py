@@ -3,14 +3,15 @@
 A record is current while it names the pull request's head and base SHAs, and a blocking finding
 passes only once fixed. On a pull request whose title opens with the tag of a kind of work kinds.py
 registers, the kind's review rule decides which record fields hold a record current and adds its
-fault to each finding."""
+fault to each finding. Either rule reads the head and base SHAs and the base branch only once
+validated, so a pull request lacking any of them has no current record."""
 import argparse
 import json
 import re
 from pathlib import Path
 from urllib.parse import urlparse
 
-from kinds import Review, interface, kind_of
+from kinds import Review, Tips, interface, kind_of
 
 
 def load_records(path):
@@ -48,13 +49,13 @@ def linked_record(body, url):
     return False
 
 
-def review(pr, head, base):
-    """The review rule of the pull request's registered kind, or, when it has none, the general rule
-    holding a record current for the validated head and base SHAs."""
+def review(pr, tips):
+    """The review rule of the pull request's registered kind, given the validated tips, or, when it has
+    none, the general rule holding a record current for the validated head and base SHAs."""
     kind = kind_of(pr)
     if kind:
-        return interface(kind).review(pr)
-    return Review({'head': head, 'base': base}, lambda finding: '')
+        return interface(kind).review(tips)
+    return Review({'head': tips.head, 'base': tips.base}, lambda finding: '')
 
 
 def check(pr, records):
@@ -68,7 +69,10 @@ def check(pr, records):
     head, base = (pr.get('head') or {}).get('sha'), (pr.get('base') or {}).get('sha')
     if not all(isinstance(s, str) and re.fullmatch(r'[0-9a-f]{40}', s) for s in (head, base)):
         return 'missing current integration head or target SHA'
-    rule = review(pr, head, base)
+    base_ref = pr['base'].get('ref')
+    if not isinstance(base_ref, str) or not base_ref.strip():
+        return 'missing current integration target branch'
+    rule = review(pr, Tips(head, base, base_ref))
     current = [r for r in matching if all(r.get(name) == value for name, value in rule.current.items())]
     if not current:
         return 'stale agent review: integration head or target changed'

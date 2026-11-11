@@ -38,20 +38,36 @@ def hotfix_pr():
     return pull, record
 
 
-class OnceRead(dict):
-    """A tip whose sha reads once; a later read finds none."""
+class ValidatedTips(unittest.TestCase):
+    """Both the general rule and a kind's rule hold a record current against the tips check validated."""
 
-    def get(self, key, default=None):
-        if key == 'sha':
-            return self.pop('sha', default)
-        return super().get(key, default)
-
-
-class GeneralReview(unittest.TestCase):
-    def test_the_general_rule_compares_the_tips_check_validated(self):
+    def test_the_general_rule_holds_a_record_current_for_the_head_and_base_shas(self):
         pull, record = reviewed_pr()
-        pull['head'], pull['base'] = OnceRead(pull['head']), OnceRead(pull['base'])
         self.assertIsNone(check(pull, [record]))
+        self.assertIsNone(check(pull, [{**record, 'base_ref': 'elsewhere'}]))
+        self.assertIn('stale', check(pull, [{**record, 'head': 'c' * 40}]))
+        self.assertIn('stale', check(pull, [{**record, 'base': 'c' * 40}]))
+
+    def test_a_target_without_a_branch_is_refused_on_either_path(self):
+        for pull, record in (reviewed_pr(), hotfix_pr()):
+            with self.subTest(title=pull['title']):
+                del pull['base']['ref']
+                record.pop('base_ref', None)
+                self.assertEqual(check(pull, [record]), 'missing current integration target branch')
+                pull['base']['ref'] = ''
+                self.assertEqual(check(pull, [record]), 'missing current integration target branch')
+
+    def test_a_kind_rule_receives_the_validated_tips(self):
+        received = []
+        stand_in = types.ModuleType('stand_in')
+        stand_in.tag = lambda item: 'Z01' if (item.get('title') or '').startswith('[Z01]') else None
+        stand_in.review = lambda tips: received.append(tips) or kinds.Review({'head': tips.head}, lambda finding: '')
+        pull, record = reviewed_pr()
+        pull['title'] = '[Z01] Stand In'
+        with mock.patch.dict(sys.modules, {'stand_in': stand_in}), \
+                mock.patch.dict(kinds.KINDS, {'stand-in': 'stand_in'}):
+            self.assertIsNone(check(pull, [record]))
+        self.assertEqual(received, [kinds.Tips('a' * 40, 'b' * 40, 'workspace')])
 
 
 class HotFixReview(unittest.TestCase):
@@ -82,8 +98,8 @@ class RegisteredKind(unittest.TestCase):
     def test_each_kind_supplies_its_own_currency_and_finding_rule(self):
         stand_in = types.ModuleType('stand_in')
         stand_in.tag = lambda item: 'Z01' if (item.get('title') or '').startswith('[Z01]') else None
-        stand_in.review = lambda pull: kinds.Review(
-            {'head': pull['head']['sha']},
+        stand_in.review = lambda tips: kinds.Review(
+            {'head': tips.head},
             lambda finding: 'a stand-in defers nothing' if finding.get('disposition') == 'deferred' else '')
         pull, record = hotfix_pr()
         pull['title'] = '[Z01] Stand In'

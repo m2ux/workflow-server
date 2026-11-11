@@ -11,7 +11,7 @@ from fixtures import hotfix as hotfix_issue
 
 sys.path.insert(0, str(SCRIPTS))
 import hotfix as module  # noqa: E402
-from kinds import OFF_BOARD, Kind, interface  # noqa: E402
+from kinds import OFF_BOARD, Kind, Tips, interface  # noqa: E402
 
 KIND = interface('hot-fix')
 tag, letter, labels, faults, target = KIND.tag, KIND.letter, KIND.labels, KIND.faults, KIND.target
@@ -169,12 +169,10 @@ class UnitState(unittest.TestCase):
 
 class Review(unittest.TestCase):
     def test_a_record_naming_the_head_and_base_branch_is_current(self):
-        pull = pr(951, '[F04] Fix', base='main', head='fix')
-        pull['head']['sha'] = 'a' * 40
-        self.assertEqual(review(pull).current, {'head': 'a' * 40, 'base_ref': 'main'})
+        self.assertEqual(review(Tips('a' * 40, 'b' * 40, 'main')).current, {'head': 'a' * 40, 'base_ref': 'main'})
 
     def test_every_finding_is_fixed(self):
-        rule = review(pr(951, '[F04] Fix', base='main'))
+        rule = review(Tips('a' * 40, 'b' * 40, 'main'))
         self.assertEqual(rule.finding_fault({'disposition': 'fixed'}), '')
         for disposition in ('open', 'deferred'):
             with self.subTest(disposition=disposition):

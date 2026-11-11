@@ -10,7 +10,7 @@ the registry imports it.
 """
 import re
 
-from kinds import OFF_BOARD, Key, Review
+from kinds import OFF_BOARD, Key, Review, Tips
 
 _LETTER = 'F'
 _TAG = re.compile(rf'^\[({_LETTER}\d\d)\]')
@@ -124,12 +124,11 @@ def unit_state(issue: dict, held: str | None, linking: list[dict], delivering: l
     return {'In Progress': 'hold', 'Ready': 'unit'}.get(held)
 
 
-def review(pull: dict) -> Review:
+def review(tips: Tips) -> Review:
     """The agent review rule for a hot-fix's pull request: a record is current while it names the pull
     request's head SHA and, as base_ref, its base branch, so a target moving on leaves the review
     current and a retarget does not; every finding is fixed."""
-    current = {'head': (pull.get('head') or {}).get('sha'), 'base_ref': (pull.get('base') or {}).get('ref')}
-    return Review(current, _unfixed)
+    return Review({'head': tips.head, 'base_ref': tips.base_ref}, _unfixed)
 
 
 def _unfixed(finding: dict) -> str:

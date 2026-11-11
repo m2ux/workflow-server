@@ -130,7 +130,7 @@ class Substitution(unittest.TestCase):
                 self.assertIn(kind.board_status(item, None, []), ('Ready', 'In Progress', 'In Review', 'Done',
                                                                   OFF_BOARD, None))
                 self.assertIn(kind.unit_state(item, 'Ready', [], []), ('unrecorded', 'running', 'hold', 'unit', None))
-                rule = kind.review(pr(951, item['title'] or 'Other', base='main'))
+                rule = kind.review(kinds.Tips('a' * 40, 'b' * 40, 'main'))
                 self.assertIsInstance(rule, kinds.Review)
                 self.assertIsInstance(rule.current, dict)
                 self.assertIsInstance(rule.finding_fault({'disposition': 'fixed'}), str)
