@@ -58,3 +58,12 @@ python3 skills/scripts/check_skill_files.py skills/work-planner   # checkout roo
 git diff --check origin/i17/e02/workspace                         # checkout root
 python3 calibrate.py skills/scripts ../2026-11-06-1615-i17-e02-w02-audit-ownership-fields-and/fields-ledger.json status-changes-fbce2c75.txt   # this folder, skills/scripts at the head
 ```
+
+## Merge
+
+[#1692](https://github.com/m2ux/workflow-server/pull/1692) merged into `i17/e02/workspace` at `96241be5ba2c98e009cdfc4d1983d2e53393ea6d` from head `6fce88bdc343d55093d762daecc6557f1a7d5401`, current with the epic base after W40 and W41. Epic #1615 links W37 to #1692 and ticks AC9, AC11 and AC13 ([sync.log](sync.log)); review #1659 carries T30 and R28.
+
+## Change List
+
+- Applied: the W37 work item declares three further files the change reaches (test_check_skill_files.py, the prerequisites-756aaf9.json fixture, work-planner/rules.json). No row, criterion or dependency changed.
+- Held: none. Arising issues: none. The other skills' 68 findings predate this change and are outside its acceptance scope.
