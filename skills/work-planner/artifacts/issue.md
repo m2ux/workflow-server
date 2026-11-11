@@ -38,7 +38,7 @@ For a new issue, Run [Create Tracker Issue](#create-tracker-issue "ƒ") with the
 
 #### 4. Change Existing Fields
 
-For an existing issue, Run [Patch Issue Body](#patch-issue-body "ƒ"), Run [Retitle Tracker Issue](#retitle-tracker-issue "ƒ"), Run [Add Issue Labels](#add-issue-labels "ƒ") or Run [Remove Issue Label](#remove-issue-label "ƒ") for the fields being changed.
+For an existing issue, Run [Patch Issue Body](#patch-issue-body "ƒ"), Run [Retitle Tracker Issue](#retitle-tracker-issue "ƒ"), Run [Add Issue Labels](#add-issue-labels "ƒ"), Run [Remove Issue Label](#remove-issue-label "ƒ") or Run [Add Issue Assignee](#add-issue-assignee "ƒ") for the fields being changed.
 
 #### 5. Publish Required Comment
 
@@ -202,6 +202,19 @@ Run in the repository checkout.
 
 <big><pre>
 gh api --method DELETE 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/labels/[**&lt;label&gt;**](#label-names "○")' --jq '.&#91;&#93;.name'
+</pre></big>
+
+### Add Issue Assignee
+
+Assign a login to an issue and provide [Assignee](#assignee "●") to the requester.
+
+Run in the repository checkout.
+
+<big><pre>
+gh api &#92;
+  --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/assignees &#92;
+  -f 'assignees&#91;&#93;=[**&lt;login&gt;**](#assignee "○")' &#92;
+  --jq '.assignees&#91;&#93;.login'
 </pre></big>
 
 ### Fetch Issue Comments
@@ -445,7 +458,11 @@ Whether the supplied request needs the issue discussion.
 
 ### Issue Changes
 
-The supplied complete body file, title and labels for creation, or the selected body and metadata changes for an existing issue, with an optional comment file. eg `body.md`
+The supplied complete body file, title and labels for creation, or the selected body, metadata and assignee changes for an existing issue, with an optional comment file. eg `body.md`
+
+### Assignee
+
+The supplied login an existing issue is assigned to, and the issue's assignee logins once saved. eg `m2ux`
 
 ### Label Names
 

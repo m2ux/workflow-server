@@ -13,8 +13,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - When neither a proposal nor an existing initiative is named:
 
-- Follow [Propose Mode](propose-mode.md "ƒ") with the user's goal.
-- Resume this selection step with its published proposal; an unresolved proposal blocks initiative drafting.
+- Follow [Propose Mode](propose-mode.md "ƒ") with the user's goal and [Requested Status](propose-mode.md#requested-status) Approved; the user's confirmation of the goal approves the proposal.
+- Resume this selection step with its published proposal, placed at Approved; an unresolved proposal blocks initiative drafting.
 
 ### 2. Prepare the Planning Record
 
