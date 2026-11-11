@@ -113,6 +113,11 @@ class TitleTags(unittest.TestCase):
             with self.subTest(title=title):
                 self.assertFalse(is_initiative(issue(1, title)))
 
+    def test_the_queue_reaches_the_initiative_test_board_owns(self):
+        queue = loaded(SCRIPTS / 'board-queue.py')
+        self.assertIs(queue.is_initiative, board.is_initiative)
+        self.assertFalse(queue.is_initiative(issue(1, '[I01:W02] Malformed')))
+
 
 class CompletionAndIdentity(unittest.TestCase):
     def test_board_reaches_the_single_implementations_in_sync(self):

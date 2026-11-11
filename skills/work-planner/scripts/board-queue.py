@@ -30,7 +30,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from board import (READY_UNDER, Board, Resolution, criteria_met, delivers, epic_state,
+from board import (READY_UNDER, Board, Resolution, criteria_met, delivers, epic_state, is_initiative,
                    linked_issue, rows, tags, units)
 from lane import check_unit, label as lane_label, read_lanes
 from priority import rank
@@ -38,11 +38,6 @@ from format import cell, id_cell, row_id
 from kinds import OFF_BOARD, interface, kind_of
 from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, label
 from sync import PULL_REF, Unreadable, attach_links, issue_key, pull_requests
-
-
-def is_initiative(issue: dict) -> bool:
-    parsed = tags(issue['title'])
-    return bool(parsed) and not parsed[1]
 
 
 def pending(prs: list[dict], tag: str, epics: set[str], repos: set[str]) -> list[str]:
