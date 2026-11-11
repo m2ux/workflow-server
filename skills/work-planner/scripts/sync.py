@@ -105,7 +105,7 @@ PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
 TICKED = re.compile(r'^- \[[xX]\] ')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
 PULL_URL = re.compile(r'/pull/(\d+)$')
-PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
+PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 BELONGS = re.compile(r'\b(?:belongs? to|left to|owned by)\s+(W\d\d)\b', re.IGNORECASE)
 LONG_LIVED: tuple[str, ...] = ()
 
@@ -331,7 +331,7 @@ def epic_base(ref: str, initiative: str, epic: str | None = None) -> str | None:
 
 
 def pr_repo(pr: dict) -> str:
-    home = PULL_HOME.search(pr.get('html_url') or '')
+    home = PULL_REF.search(pr.get('html_url') or '')
     return home[1] if home else ''
 
 

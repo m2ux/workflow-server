@@ -83,12 +83,12 @@ from collections.abc import Callable
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 
-from board import Board, PREFIX, PULL_REF, Resolution, linked_issue, tags
+from board import Board, Resolution, linked_issue, tags
 from kinds import KINDS, interface, kind_of
 from statuses import Key, label, pages, status_of
 from format import LINK, cell, id_cell, phrase, title_name, untagged
 from priority import rank as priority_rank
-from sync import PR_REF, PULL_URL, Unreadable, attach_links, issue_key, links_issue, pull_requests
+from sync import PR_REF, PREFIX, PULL_REF, PULL_URL, Unreadable, attach_links, issue_key, links_issue, pull_requests
 
 SHOWN = 5
 DONE, WORKING, REVIEW, DRAFT, READY = '✅', '🔄', '👀', '📝', '▶️'
