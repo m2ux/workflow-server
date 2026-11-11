@@ -156,10 +156,9 @@ class ApprovedBeforeDrafting(unittest.TestCase):
 
     def test_the_gate_reads_the_named_proposals_status_from_the_board(self):
         take = section(self.plan, '### 1. Take the Proposal')
-        read = ('- Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") with proposals as its '
-                '[Board Selection](../artifacts/board.md#board-selection), then Apply [Read Board State]'
-                '(../artifacts/board.md#read-board-state "ƒ") for that board, and read the Status of the proposal\'s '
-                'item.')
+        read = ('- Apply [Select Proposals Board](../artifacts/proposals-board.md#select-proposals-board "ƒ"), then '
+                'Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for that board, and read the '
+                'Status of the proposal\'s item.')
         self.assertIn('- When the user names a proposal:\n\n' + read, take)
         self.assertLess(take.index(read), take.index('- At [Approved]'))
 
