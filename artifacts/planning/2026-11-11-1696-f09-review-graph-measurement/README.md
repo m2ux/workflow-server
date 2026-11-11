@@ -14,9 +14,12 @@ Indexing rewrote AGENTS.md and CLAUDE.md and added skill folders, so an indexed 
 | --- | --- |
 | [F09 work item](f09.md) | Component, scope, design and test rows for F09 |
 | [Test results](test-results.md) | The checks run for F09, the revision tested and each result |
+| [Agent review](agent-review.json) | The review record of pull request #1697 at its reviewed head |
+| [Change list](changes.md) | Each plan change the delivery session applied or held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Hot-fix | [F09](https://github.com/m2ux/workflow-server/issues/1696) |
+| Pull request | [#1697](https://github.com/m2ux/workflow-server/pull/1697) |

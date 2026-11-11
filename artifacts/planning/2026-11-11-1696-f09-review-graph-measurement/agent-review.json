@@ -1,0 +1,22 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1697",
+    "head": "82bbb074db766dbc05cd96460ae6e6221979e4f0",
+    "base": "bfb6e7ca9371d96b66628823c2c0ef55733d3c2e",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1696-f09-review-graph-measurement/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (delivery session agent review)",
+    "reviewed_at": "2026-11-11",
+    "scope": "Full diff workspace..f09-review-graph-measurement: artifacts/repository-graph.md (Measure Repository Change steps 3 and 6, Index Repository, the new Merge Base command, Change Surface, the Revision, Changed Symbols, Base Commit and Comparison Base fields) and protocols/change-overview.md (Prepare the Evidence inputs). Callers inspected: Understand mode and Epic Integration through Change Overview, the only callers of Measure Repository Change; Create Pull Request Worktree's reuse rule and Fetch Review Head; the Pull Request Record field that carries base.sha; GitNexus 1.6.12 analyze and detect-changes help.",
+    "criteria": "AC1: Index Repository as gitnexus analyze --index-only in a fresh detached worktree for #1692 left git status --porcelain --untracked-files=all empty, with the index current at 6fce88b (T1). AC2: Merge Base on #1692 gave 1ec2a4745a6e, and Change Surface against it reported the four files GitHub lists for #1692, where the base-branch form reported seventeen, most of them later commits on the moved base (T2).",
+    "validation": "skills/work-planner: 1024 tests OK (1 skipped); skills: 280 tests OK; check_skill_files.py work-planner: 59 files, 0 findings; all at 82bbb074d. Considered and rejected as outside the criteria or not breaking a realistic run: --index-only also skips community skills from --skills, which Understand never requests; the index directory .gitnexus carries its own .gitignore, so it reports only as ignored; the fetch writes FETCH_HEAD in the review worktree's own git directory, apart from the project checkout's FETCH_HEAD that Create Pull Request Worktree reads; a base commit made unreachable by a force-push fails the fetch and stops measurement with git's error, the same outcome any missing revision gives; Measure Repository Change is reached only through Change Overview, which holds the pull request snapshot, so every caller can supply base.sha.",
+    "findings": [
+      {
+        "description": "Merge Base ran git merge-base on the snapshot's base.sha with no fetch. Create Pull Request Worktree fetches only pull/N/head, so a base that moved after the project checkout's last fetch leaves base.sha absent locally and merge-base fails.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/82bbb074db766dbc05cd96460ae6e6221979e4f0"
+      }
+    ]
+  }
+]
