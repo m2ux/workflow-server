@@ -49,3 +49,12 @@ git diff --check origin/i17/e02/workspace                             # checkout
 ## Limits
 
 [agent-review.md](https://github.com/m2ux/workflow-server/blob/i17/e02/w40-kinds-supply-their-review/skills/work-planner/artifacts/agent-review.md) still states the hot-fix rule (`base_ref` currency, every finding fixed) for any kind-tagged pull request. Hot-fix is the only registered kind, so the statement holds; a second kind with its own rule would revise it.
+
+## Merge
+
+[#1690](https://github.com/m2ux/workflow-server/pull/1690) merged into `i17/e02/workspace` at `1ec2a4745a6e685d906dfd488775ffd939028b0b` from head `d483a2c932582a00ea5cfc8abd214c4b68d6bbdb`, current with W41's merge `ac804d44a`. Epic #1615 links W40 to #1690 and ticks AC67 and AC68 ([sync.log](sync.log)); review #1659 carries Review Kinds, T29 and R27.
+
+## Change List
+
+- Applied: the W40 work item declares one further file, test/README.md (catalogue description and counts). No row, criterion or dependency changed.
+- Held: none. Arising issues: none.
