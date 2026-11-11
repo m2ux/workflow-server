@@ -1,6 +1,6 @@
 # Work Kind
 
-A kind of work and the interface operations general files reach it through: each runs the operation the item's registered kind supplies, or the general route where the kind supplies none.
+Each kind of work, as its [Registration](#registration) lists it, and the interface operations general files reach it through: each runs the operation the item's registered kind supplies, or the general route where the kind supplies none.
 
 ## Operations
 
@@ -87,11 +87,27 @@ One issue body checked against its kind's template and conditions, providing [Fo
 
 ### Work Kind Definition
 
-An issue type the [entry point](../SKILL.md) registers, with the artifacts holding it. A kind supplies an interface operation where its rules depart from the general route. Each interface operation in [Operations](#operations) states the inputs every kind's operation for it accepts and the result it provides.
+An issue type the [Registration](#registration) lists, with the artifacts holding it. A kind supplies an interface operation where its rules depart from the general route. Each interface operation in [Operations](#operations) states the inputs every kind's operation for it accepts and the result it provides.
 
 ### Registration
 
-A kind's lines in the entry point: each artifact holding the kind, followed by the interface name of each operation that artifact supplies, linked to that operation. An artifact supplying none lists no name. eg `[Epic Issue Body](artifacts/epic-issue-body.md)  [Populate Body](artifacts/epic-issue-body.md#populate-epic-issue-body "ƒ")`
+Each kind of work with what it is, then each artifact holding it, followed by the interface name of each operation that artifact supplies, linked to that operation. An artifact supplying none lists no name.
+
+- **Proposal**  States the problem and the goal, with no Work Breakdown.
+  - [Proposal Body](proposal-body.md)  [Validate Body](proposal-body.md#validate-proposal-body "ƒ")
+- **Initiative**  States a goal and lists its epics.
+  - [Initiative](initiative.md)
+  - [Initiative Issue Body](initiative-issue-body.md)  [Populate Body](initiative-issue-body.md#populate-initiative-issue-body "ƒ"), [Validate Body](initiative-issue-body.md#validate-initiative-body "ƒ")
+- **Epic**  Lists its tasks in a Work Breakdown table.
+  - [Epic](epic.md)
+  - [Epic Issue Body](epic-issue-body.md)  [Populate Body](epic-issue-body.md#populate-epic-issue-body "ƒ"), [Validate Body](epic-issue-body.md#validate-epic-body "ƒ")
+- **Task**  One pull request's worth of work.
+  - [Task Body](task-body.md)
+- **Standalone issue**  Work outside any initiative.
+  - [Standalone Body](standalone-body.md)  [Populate Body](standalone-body.md#populate-standalone-body "ƒ")
+- **Hot-fix**  A fix to a long-lived branch beside all queued work.
+  - [Hot-fix](hotfix.md)  [Release Hold](hotfix.md#release-hot-fix-hold "ƒ"), [Record Dispatch Status](hotfix.md#record-hot-fix-dispatch-status "ƒ"), [Record Delivery](hotfix.md#record-hot-fix-delivery "ƒ"), [Record Merge](hotfix.md#record-hot-fix-merge "ƒ"), [Settle Board Status](hotfix.md#settle-hot-fix-board-status "ƒ"), [Review Before Merge](hotfix.md#review-hot-fix-before-merge "ƒ")
+  - [Hot-fix Body](hotfix-body.md)  [Populate Body](hotfix-body.md#populate-hot-fix-body "ƒ")
 
 ### Operation Names
 

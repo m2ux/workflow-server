@@ -24,7 +24,7 @@ Provide [Autonomy Result](#autonomy-result) as automatic where the supplied allo
 
 - A new initiative is outside every allowance. The work stays where it is, open and unplaced, until the user decides where it belongs.
 
-- A new issue of a [registered kind](../SKILL.md) that runs ahead of all queued work is outside every allowance. The work stays where it is until the user decides it is of that kind.
+- A new issue of a [registered kind](work-kind.md#registration) that runs ahead of all queued work is outside every allowance. The work stays where it is until the user decides it is of that kind.
 
 ### Record Plan Change
 

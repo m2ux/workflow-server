@@ -84,7 +84,7 @@ The management paragraph is set off by blank lines, with the board's link beneat
   - They rank by the priority label of the initiative their epic belongs to, then by their epic's own.
   - An epic is placed ahead of any listed epic naming it, so a supplier reads before the work drawing on it. An epic names another when a task row names one of its rows or the initiative row names it whole.
 - **Unaffiliated kinds.**
-  Each board item of a [registered kind](../SKILL.md) outside every initiative follows the epic groups of Completed, In progress or Next as its status places it, with the delivering pull requests its kind's artifact states beneath. An initiative filter leaves such items out.
+  Each board item of a [registered kind](work-kind.md#registration) outside every initiative follows the epic groups of Completed, In progress or Next as its status places it, with the delivering pull requests its kind's artifact states beneath. An initiative filter leaves such items out.
 - **Key.**
   I Initiative, E Epic, W Work Item and each unaffiliated kind's tag letter with its name, eg `F=Hot-fix`. Opening marks are ✅ done, 🔄 in progress (an initiative, epic or unaffiliated item open and not In Review, or a task issue In Progress), 👀 in review (an initiative, epic or unaffiliated item In Review, or a pull request ready for review), 📝 draft and ▶️ ready.
 
