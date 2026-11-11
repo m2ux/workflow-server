@@ -1,5 +1,5 @@
-"""The installed prose API exposes complete inputs and directed reading paths, and Work Priority and Proposal each
-define what every other file reaching it links."""
+"""The installed prose API exposes complete inputs and directed reading paths, and Work Priority, Proposal and Test
+Plan each define what every other file reaching it links."""
 import json
 import re
 import tempfile
@@ -461,3 +461,57 @@ class ProposalHome(unittest.TestCase):
         for line in ('settled as [Held Change](x.md) states', '#### 2. Merge Approved Delivery'):
             with self.subTest(line=line):
                 self.assertFalse(reaches_proposal_status(line))
+
+
+TEST_PLAN = ROOT / 'artifacts' / 'test-plan.md'
+# Each Test Plan rule, as the field defining it, with a statement only that definition makes.
+TEST_PLAN_DEFINITIONS = {
+    'Plan Table': 'with columns Test, Description, Coverage and Pass',
+    'Plan Columns': 'Pass is empty while a check awaits a result',
+    'Result Evidence': 'using the result as link text',
+    'Passed Plan': 'The test plan has passed when',
+}
+TEST_PLAN_TERM = re.compile(r'(?i)\btest[ -]plan\b')
+
+
+class TestPlanHome(unittest.TestCase):
+    """Test Plan alone defines the plan's table, its columns, its result evidence and when it has passed, and every
+    other file naming a test plan links it."""
+
+    def documents(self):
+        return sorted(path for path in ROOT.rglob('*.md')
+                      if 'test' not in path.relative_to(ROOT).parts and path != TEST_PLAN)
+
+    def test_test_plan_holds_each_definition_as_a_field(self):
+        lines, _, headings = checker.scan(TEST_PLAN)
+        fields = next(i for i, depth, title in headings if depth == 2 and title == 'Fields')
+        end = checker.heading_end(headings, fields, 2, len(lines))
+        for name, statement in TEST_PLAN_DEFINITIONS.items():
+            start = next((i for i, depth, title in headings if depth == 3 and title == name and fields < i < end), None)
+            with self.subTest(definition=name):
+                self.assertIsNotNone(start)
+                self.assertIn(statement, '\n'.join(lines[start + 1:checker.heading_end(headings, start, 3, end)]))
+
+    def test_no_other_file_heads_or_restates_a_definition(self):
+        for path in self.documents():
+            text = path.read_text()
+            titles = {title for _, _, title in checker.scan(path)[2]}
+            with self.subTest(file=str(path.relative_to(ROOT))):
+                self.assertFalse(({'Test Plan'} | set(TEST_PLAN_DEFINITIONS)) & titles)
+                for statement in TEST_PLAN_DEFINITIONS.values():
+                    self.assertNotIn(statement, text)
+
+    def test_every_file_naming_a_test_plan_links_test_plan(self):
+        reaching = []
+        for path in self.documents():
+            lines, fenced, _ = checker.scan(path)
+            if not any(TEST_PLAN_TERM.search(line) for index, line in enumerate(lines) if not fenced[index]):
+                continue
+            reaching.append(str(path.relative_to(ROOT)))
+            linked = {(path.parent / target.partition('#')[0]).resolve()
+                      for _, target in checker.targets(path, lines, fenced)}
+            with self.subTest(file=reaching[-1]):
+                self.assertIn(TEST_PLAN.resolve(), linked)
+        self.assertLessEqual({'artifacts/pull-request-body.md', 'artifacts/pull-request.md', 'artifacts/delivery-plan.md',
+                              'artifacts/epic.md', 'modes/deliver-mode.md', 'modes/align-mode.md',
+                              'modes/sync-mode.md'}, set(reaching))

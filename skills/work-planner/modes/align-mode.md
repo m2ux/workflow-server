@@ -119,12 +119,12 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 9. Coverage
 
-- For a pull request explicitly selected for alignment, Apply [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan "ƒ"), Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with a converted body, and report its URL. When no initiative or epic is selected, continue at [Re-Run](#13-re-run).
+- For a pull request explicitly selected for alignment, Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for it, then Run [Check Test Plan](../artifacts/test-plan.md#check-test-plan "ƒ") with its saved record and report each [Plan Finding](../artifacts/test-plan.md#plan-finding). When no initiative or epic is selected, continue at [Re-Run](#13-re-run).
 
 - For initiative or epic scope, Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence "ƒ") with the fetched initiative, epic and task issue JSON.
 - Continue with its provided records.
-- For each task pull request in those records, Apply [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan "ƒ"), then Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with each converted body. Report each converted pull request by URL and refresh its record before recording coverage.
-- An epic review carries no task test plan.
+- For each task pull request in those records, Run [Check Test Plan](../artifacts/test-plan.md#check-test-plan "ƒ") with its record and report each [Plan Finding](../artifacts/test-plan.md#plan-finding). An epic review carries no Test Plan, as [Review Body](../artifacts/pull-request-body.md#review-body) states.
+- An unreadable plan stays a finding until its pull request's Test Plan is written as [Plan Table](../artifacts/test-plan.md#plan-table) defines, from the checks the work ran.
 
 - For each epic being aligned, Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for the current epic in the project checkout with the fetched epic bases, retaining the confirmed task-to-pull-request matches:
 

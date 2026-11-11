@@ -193,7 +193,7 @@ Provide the saved [Pull Request Record](#pull-request-record) or [Failure](#fail
 
 ### Merge Task Pull Requests
 
-Merges each open task pull request whose test plan has passed.
+Merges each open task pull request whose [test plan has passed](test-plan.md#passed-plan).
 
 #### 1. Confirm Repository and Base
 
@@ -616,7 +616,7 @@ The supplied current protection and active rules of the target branch.
 
 ### Readiness Evidence
 
-Current passing test-plan and head evidence, reviews and target requirements; unresolved conditions remain explicit.
+Current [passed test plan](test-plan.md#passed-plan) and head evidence, reviews and target requirements; unresolved conditions remain explicit.
 
 ### Repository Prerequisite
 
