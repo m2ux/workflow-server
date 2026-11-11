@@ -39,7 +39,10 @@ def rows(body: str) -> list[Row] | None:
     lines = plans[0]
     if any(FENCE.match(line) for line in lines):
         return None
-    table = [line for line in lines if line.startswith('|')]
+    at = [index for index, line in enumerate(lines) if line.startswith('|')]
+    if not at or at[-1] - at[0] + 1 != len(at):
+        return None
+    table = [lines[index] for index in at]
     if len(table) < 2 or cells(table[0]) != COLUMNS:
         return None
     if len(cells(table[1])) != len(COLUMNS) or not all(DIVIDER.fullmatch(c) for c in cells(table[1])):

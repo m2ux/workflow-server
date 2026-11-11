@@ -44,6 +44,8 @@ class Rows(unittest.TestCase):
             'bad divider': current.replace('| --- | --- | --- | --- |', '| bogus |'),
             'short divider': current.replace('| --- | --- | --- | --- |', '| --- | --- | --- |'),
             'short row': current.replace('| T1 | Check | AC1 | |', '| T1 | AC1 |'),
+            'second table': current.replace('| T1 | Check | AC1 | |',
+                                            '| T1 | Check | AC1 | |\n\n| A | B | C | D |\n| --- | --- | --- | --- |'),
             'checked list': '## Test Plan\n\n- [x] **T1.** Check\n\n| Test | Criteria |\n| --- | --- |\n| T1 | AC1 |',
         }.items():
             with self.subTest(body=name):
