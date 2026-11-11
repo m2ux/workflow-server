@@ -95,26 +95,26 @@ sequenceDiagram
 
     Caller->>AR: main
     AR->>AR: check(pr, records)
-    AR->>AR: review(pr, head, base)
+    AR->>AR: review(pr, tips)
     AR->>K: kind_of(pr)
     K->>H: tag(pr)
     H-->>K: F00 or None
     AR->>K: interface(kind)
     K-->>AR: hotfix module
-    AR->>H: review(pr)
+    AR->>H: review(tips)
     H-->>AR: Review(current fields, finding rule)
 ```
 
 - **Selection.**
-  `kind_of` asks each registered module's `tag`; with no match the script applies the general rule (the head and base SHAs `check` validated are current, blocking findings fixed).
+  `check` validates the head and base SHAs and the base branch as `kinds.Tips`, and `kind_of` asks each registered module's `tag`; with no match the script applies the general rule (those head and base SHAs are current, blocking findings fixed).
 - **Kind rule.**
-  A hot-fix's review is current by head SHA and `base_ref`, and every finding must be fixed.
+  A hot-fix's review is current by the validated head SHA and `base_ref`, and every finding must be fixed.
 
 The same route runs from `deliver.py` (`main → place → statuses.place → owns → kind_of → interface`) and from `board-queue.py` (`main → decide → kinded → kind_of → interface`).
 
 ### Before-use scan
 
-The shared checker builds the explicit before-use graph across a skill's files and reports each cycle with a closed witness. A `Read … first` sentence (ending `.`, `:`, `;` or `, then`), a Prerequisites link or a declared preamble link is an edge; a link to a section of the same file is none, since position orders it.
+The shared checker builds the explicit before-use graph across a skill's files and reports each cycle with a closed witness. A `Read … first` sentence (with `first` ending the requirement clause as a whole word) or `Read … before …` sentence, a Prerequisites link or a declared preamble link is an edge; a link to a section of the same file is none only where that section's read already holds the requiring line.
 
 ```mermaid
 ---
@@ -141,7 +141,7 @@ sequenceDiagram
 - **General scripts.**
   Select kinds through `kinds.py`; title tags and issue identity come from `board.py` and `sync.py`, each pattern defined once in `sync.py`.
 - **deps.py and deliver.py.**
-  A work item's Component line lists every file its task changes as `branch:path` entries; a comma starts a new entry only before another `branch:path`, and prose after a path is dropped. Rows are grouped and paired by any shared file, and a unit is routed to every epic base its files name.
+  A work item's Component line lists every file its task changes as `branch:path` entries; each code span or path word is an entry, and the prose, commas, semicolons and `and` between entries are not. Rows are grouped and paired by any shared file, and a unit is routed to every epic base its files name.
 
 ### Prose
 
@@ -159,14 +159,14 @@ sequenceDiagram
 
 ## Reading Order
 
-1. **[kinds.py](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/scripts/kinds.py#L26-L81)** — the registry and interface every other change routes through.
-2. **[hotfix.py](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/scripts/hotfix.py)** — the one kind implementing that interface.
-3. **[SKILL.md](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/SKILL.md#L9-L44)** — the prose registration that mirrors the script registry.
-4. **[agent_review.py](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/scripts/agent_review.py#L52-L61)** — the smallest caller of the registry.
-5. **[deliver.py](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/scripts/deliver.py#L153-L280)** — base routing by declared files and kind units.
-6. **[deps.py](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/scripts/deps.py#L167-L263)** — multi-file declarations, contention and candidate units.
-7. **[board-status.md](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/artifacts/board-status.md)** — the extracted status contract.
-8. **[check_skill_files.py](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/scripts/check_skill_files.py#L1686-L1861)** — before-use and kind-name checks.
+1. **[kinds.py](https://github.com/m2ux/workflow-server/blob/2088c7a36cfbf3bf774405e67644e8522f8047a2/skills/work-planner/scripts/kinds.py#L27-L89)** — the registry and interface every other change routes through.
+2. **[hotfix.py](https://github.com/m2ux/workflow-server/blob/2088c7a36cfbf3bf774405e67644e8522f8047a2/skills/work-planner/scripts/hotfix.py)** — the one kind implementing that interface.
+3. **[SKILL.md](https://github.com/m2ux/workflow-server/blob/2088c7a36cfbf3bf774405e67644e8522f8047a2/skills/work-planner/SKILL.md#L9-L44)** — the prose registration that mirrors the script registry.
+4. **[agent_review.py](https://github.com/m2ux/workflow-server/blob/2088c7a36cfbf3bf774405e67644e8522f8047a2/skills/work-planner/scripts/agent_review.py#L52-L61)** — the smallest caller of the registry.
+5. **[deliver.py](https://github.com/m2ux/workflow-server/blob/2088c7a36cfbf3bf774405e67644e8522f8047a2/skills/work-planner/scripts/deliver.py#L153-L280)** — base routing by declared files and kind units.
+6. **[deps.py](https://github.com/m2ux/workflow-server/blob/2088c7a36cfbf3bf774405e67644e8522f8047a2/skills/work-planner/scripts/deps.py#L174-L299)** — multi-file declarations, contention and candidate units.
+7. **[board-status.md](https://github.com/m2ux/workflow-server/blob/2088c7a36cfbf3bf774405e67644e8522f8047a2/skills/work-planner/artifacts/board-status.md)** — the extracted status contract.
+8. **[check_skill_files.py](https://github.com/m2ux/workflow-server/blob/2088c7a36cfbf3bf774405e67644e8522f8047a2/skills/scripts/check_skill_files.py#L1686-L1861)** — before-use and kind-name checks.
 
 ## Risks and Watch Points
 

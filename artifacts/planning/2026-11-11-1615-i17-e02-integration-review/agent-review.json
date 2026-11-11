@@ -83,5 +83,66 @@
         "evidence": "https://github.com/m2ux/workflow-server/commit/ba2e193769648494e23fe954001845aabb4c50f9"
       }
     ]
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1659",
+    "head": "2088c7a36cfbf3bf774405e67644e8522f8047a2",
+    "base": "2ba852ab575a08ae24e605b6410494b9e116e0bb",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1615-i17-e02-integration-review/agent-review.json",
+    "reviewer": "Claude Opus 5.5 delta review (work-planner Epic Integration)",
+    "reviewed_at": "2026-11-11T07:39:53Z",
+    "scope": "Change surface of the review fixes only: git diff bdfb52b0..2088c7a3 (14 files) and the direct callers of each changed function: deps.read_components/entries with deps.main and deliver.changed_bases; check_skill_files.requirements and BEFORE_USE with before_use_graph; Advance step 6 with Held Change and the decision walker; agent_review.epic_check with board.py and deliver.py; agent_review.check/review with kinds.Kind.review and hotfix.review. Probes: the 108 distinct Component lines of the engineering planning records and every before-use edge of the skills corpora, compared between bdfb52b0 and the fixed head, plus the A-F scenarios. Pass 1 found R1-R3, corrected in c55646f4..2088c7a3; pass 2 over those commits found nothing. Record: delta-review.md in this folder. The rest of the integration diff was reviewed in the preceding records.",
+    "criteria": "All 43 acceptance criteria on #1615 remain ticked and every Work Breakdown row is delivered. The fixes add no criterion; each carries an observing test that failed before its fix and passes after it.",
+    "validation": "At head 2088c7a3: Work Planner suite 1230 tests OK (one opt-in skip); shared skills suite 328 tests OK; check_skill_files.py work-planner 60 files, 0 findings; git diff --check bdfb52b0..2088c7a3 clean. Epic base contains origin/workspace 2ba852ab.",
+    "findings": [
+      {
+        "description": "A: deps.py read_components kept a trailing comma on a path followed by prose, collapsed bare, semicolon- and \"and\"-separated entries and cut a spaced code span; each code span or path word is an entry and the prose between entries is not.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/fdd105f7ab89dae122cc5292e6e53f75fc5bfc6b"
+      },
+      {
+        "description": "B, G: check_skill_files.py requirements() skipped every same-file anchor link, removing real cross-section edges; only an edge whose target read span holds the requiring line is dropped, and a fragment-only destination resolves to path.resolve().",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/903a1e651407034f735f5603c199b658ee6ab39a"
+      },
+      {
+        "description": "C, H: advance-mode.md step 6 stopped on every held decision, so a decision put to the user never reached its answer; it stops only under an allowance, and the walker reads whole sentences and asserts no loop.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/64162e3dc8ab2bef96cbc23922083f97262c3a05"
+      },
+      {
+        "description": "D: agent_review.py epic_check matched the epic issue title with the epic pull-request title pattern, leaving its task-title test dead; it reads the title through board.tags.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/e2387cbdba545a848e7e99157991beaf6a340dcc"
+      },
+      {
+        "description": "E, H: hotfix.review read the pull request tips itself and an unvalidated base ref; check() validates the base branch and passes kinds.Tips to both rules, with a behavioural tips test.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/c55646f440c02b78e4e1785fa27edf2ebbcde606"
+      },
+      {
+        "description": "F: BEFORE_USE missed \"first and then\", \"first —\", \"first,then\" and \"first, so\"; first ends the requirement clause as a whole word.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/42b934c1dd3acc991a7634e2c4e6443b6d18900f"
+      },
+      {
+        "description": "Delta R1, R2: prose such as reads/writes, e.g. and 3:1 beside branch:path entries became Component files; a bare word holding a / is a path only where no entry names a branch, an abbreviation is no extension and a branch opens with a letter.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/0601d75afd6dfd1a9de0f7931ac3186b452bfa0a"
+      },
+      {
+        "description": "Delta R3: a held decision the user leaves unanswered had no route in Advance step 6; it stops the step as one held under an allowance does.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/2088c7a36cfbf3bf774405e67644e8522f8047a2"
+      }
+    ]
   }
 ]
