@@ -180,8 +180,8 @@ SCRIPT_SUFFIXES = ('.py', '.sh', '.js', '.mjs', '.ts')
 GRAPHQL = re.compile(r'\bapi\s+graphql\b|([\'"])graphql\1')
 REST_GAP = re.compile(r'^\s*(?:[-*+]\s+)?\*\*REST gap:\*\*')
 # A gh field flag that sends its value as text carrying an @path value, which
-# only -F reads as the file's content: -f or --raw-field, then key=@.
-TEXT_FILE_VALUE = re.compile(r'(?<![\w-])(?:-f|--raw-field)\s+[\'"]?[\w\[\]]+=@')
+# only -F reads as the file's content: -f or --raw-field, joined or spaced, then key=@.
+TEXT_FILE_VALUE = re.compile(r'(?<![\w-])(?:-f\s*|--raw-field[=\s]\s*)[\'"]?[\w\[\]-]+=@')
 # Projects (classic) in every form: its card and column types, each of its
 # mutations, its card and column connection fields, its REST routes rooted at
 # projects/ or under a repository, organization, user or the authenticated
