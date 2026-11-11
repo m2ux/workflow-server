@@ -1,0 +1,254 @@
+{
+ "standup-1": {
+  "route": "standup",
+  "calls": 13,
+  "returned_chars": 51050,
+  "truncated_calls": [],
+  "edits": [],
+  "first_use": 8,
+  "first_retrieved": {
+   "SKILL.md": 2,
+   "rules.md": null,
+   "conventions.md": null,
+   "modes/standup-mode.md": 5,
+   "artifacts/board.md#select-project-board": 7,
+   "artifacts/board.md#read-board-state": null,
+   "artifacts/pull-request.md#fetch-all-delivery-pull-requests": null,
+   "artifacts/pull-request.md#fetch-pull-request-issue-links": null,
+   "artifacts/standup-report.md#compose-standup-report": 6,
+   "artifacts/standup-report.md#summarise-progress": 6
+  },
+  "findings": [
+   [
+    "missing",
+    "rules.md"
+   ],
+   [
+    "missing",
+    "conventions.md"
+   ],
+   [
+    "missing",
+    "artifacts/board.md#read-board-state"
+   ],
+   [
+    "missing",
+    "artifacts/pull-request.md#fetch-all-delivery-pull-requests"
+   ],
+   [
+    "missing",
+    "artifacts/pull-request.md#fetch-pull-request-issue-links"
+   ]
+  ]
+ },
+ "standup-2": {
+  "route": "standup",
+  "calls": 12,
+  "returned_chars": 52833,
+  "truncated_calls": [],
+  "edits": [],
+  "first_use": 8,
+  "first_retrieved": {
+   "SKILL.md": 2,
+   "rules.md": 7,
+   "conventions.md": 7,
+   "modes/standup-mode.md": 5,
+   "artifacts/board.md#select-project-board": null,
+   "artifacts/board.md#read-board-state": null,
+   "artifacts/pull-request.md#fetch-all-delivery-pull-requests": null,
+   "artifacts/pull-request.md#fetch-pull-request-issue-links": null,
+   "artifacts/standup-report.md#compose-standup-report": 6,
+   "artifacts/standup-report.md#summarise-progress": 6
+  },
+  "findings": [
+   [
+    "missing",
+    "artifacts/board.md#select-project-board"
+   ],
+   [
+    "missing",
+    "artifacts/board.md#read-board-state"
+   ],
+   [
+    "missing",
+    "artifacts/pull-request.md#fetch-all-delivery-pull-requests"
+   ],
+   [
+    "missing",
+    "artifacts/pull-request.md#fetch-pull-request-issue-links"
+   ]
+  ]
+ },
+ "standup-3": {
+  "route": "standup",
+  "calls": 17,
+  "returned_chars": 61438,
+  "truncated_calls": [],
+  "edits": [],
+  "first_use": 9,
+  "first_retrieved": {
+   "SKILL.md": 2,
+   "rules.md": 6,
+   "conventions.md": 6,
+   "modes/standup-mode.md": 5,
+   "artifacts/board.md#select-project-board": 8,
+   "artifacts/board.md#read-board-state": 8,
+   "artifacts/pull-request.md#fetch-all-delivery-pull-requests": null,
+   "artifacts/pull-request.md#fetch-pull-request-issue-links": 8,
+   "artifacts/standup-report.md#compose-standup-report": 6,
+   "artifacts/standup-report.md#summarise-progress": 6
+  },
+  "findings": [
+   [
+    "missing",
+    "artifacts/pull-request.md#fetch-all-delivery-pull-requests"
+   ]
+  ]
+ },
+ "standup-4": {
+  "route": "standup",
+  "calls": 11,
+  "returned_chars": 61513,
+  "truncated_calls": [],
+  "edits": [],
+  "first_use": 6,
+  "first_retrieved": {
+   "SKILL.md": 2,
+   "rules.md": 3,
+   "conventions.md": 3,
+   "modes/standup-mode.md": 3,
+   "artifacts/board.md#select-project-board": 5,
+   "artifacts/board.md#read-board-state": 5,
+   "artifacts/pull-request.md#fetch-all-delivery-pull-requests": null,
+   "artifacts/pull-request.md#fetch-pull-request-issue-links": null,
+   "artifacts/standup-report.md#compose-standup-report": 3,
+   "artifacts/standup-report.md#summarise-progress": 3
+  },
+  "findings": [
+   [
+    "missing",
+    "artifacts/pull-request.md#fetch-all-delivery-pull-requests"
+   ],
+   [
+    "missing",
+    "artifacts/pull-request.md#fetch-pull-request-issue-links"
+   ],
+   [
+    "unrelated",
+    "artifacts/board.md#create-proposals-board"
+   ]
+  ]
+ },
+ "understand-1": {
+  "route": "understand",
+  "calls": 65,
+  "returned_chars": 285388,
+  "truncated_calls": [
+   9
+  ],
+  "edits": [],
+  "first_use": 12,
+  "first_retrieved": {
+   "SKILL.md": 2,
+   "rules.md": 6,
+   "conventions.md": 6,
+   "modes/understand-mode.md": 5,
+   "protocols/change-overview.md": 6,
+   "artifacts/pull-request.md#read-pull-request-state": 8,
+   "artifacts/delivery-branches.md#create-pull-request-worktree": 11,
+   "artifacts/repository-graph.md#measure-repository-change": 13,
+   "artifacts/repository-graph.md#index-status": 13,
+   "artifacts/repository-graph.md#change-surface": 13,
+   "artifacts/repository-graph.md#symbol-context": 13,
+   "artifacts/architecture-overview.md#diagrams": 21,
+   "artifacts/architecture-overview.md#template": 21,
+   "artifacts/architecture-overview.md#code-references": 21,
+   "artifacts/planning-record.md#populate-planning-record": 22
+  },
+  "findings": []
+ },
+ "understand-2": {
+  "route": "understand",
+  "calls": 67,
+  "returned_chars": 232819,
+  "truncated_calls": [
+   10
+  ],
+  "edits": [],
+  "first_use": 12,
+  "first_retrieved": {
+   "SKILL.md": 2,
+   "rules.md": 7,
+   "conventions.md": 7,
+   "modes/understand-mode.md": 5,
+   "protocols/change-overview.md": 6,
+   "artifacts/pull-request.md#read-pull-request-state": 9,
+   "artifacts/delivery-branches.md#create-pull-request-worktree": 9,
+   "artifacts/repository-graph.md#measure-repository-change": 13,
+   "artifacts/repository-graph.md#index-status": 13,
+   "artifacts/repository-graph.md#change-surface": 13,
+   "artifacts/repository-graph.md#symbol-context": 13,
+   "artifacts/architecture-overview.md#diagrams": 22,
+   "artifacts/architecture-overview.md#template": 22,
+   "artifacts/architecture-overview.md#code-references": 22,
+   "artifacts/planning-record.md#populate-planning-record": 23
+  },
+  "findings": []
+ },
+ "revise-1": {
+  "route": "revise",
+  "calls": 15,
+  "returned_chars": 92295,
+  "truncated_calls": [
+   6
+  ],
+  "edits": [
+   11
+  ],
+  "first_use": 10,
+  "first_retrieved": {
+   "SKILL.md": 3,
+   "rules.md": null,
+   "conventions.md": null,
+   "modes/revise-mode.md": 4,
+   "../guidelines.md": 7,
+   "guidelines.md": 7,
+   "modes/revise-mode.md#check-skill-files": 4
+  },
+  "findings": [
+   [
+    "missing",
+    "rules.md"
+   ],
+   [
+    "missing",
+    "conventions.md"
+   ]
+  ]
+ },
+ "revise-2": {
+  "route": "revise",
+  "calls": 23,
+  "returned_chars": 102980,
+  "truncated_calls": [
+   4
+  ],
+  "edits": [
+   15,
+   16,
+   17,
+   18
+  ],
+  "first_use": 3,
+  "first_retrieved": {
+   "SKILL.md": 2,
+   "rules.md": 3,
+   "conventions.md": 3,
+   "modes/revise-mode.md": 3,
+   "../guidelines.md": 5,
+   "guidelines.md": 5,
+   "modes/revise-mode.md#check-skill-files": 3
+  },
+  "findings": []
+ }
+}
