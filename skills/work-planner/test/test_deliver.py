@@ -826,7 +826,7 @@ class HotFixUnits(unittest.TestCase):
 
     def test_a_ready_hot_fix_naming_no_target_is_undeclared(self):
         out = survey(staged((hotfix(4, target=None), 'Ready')), code=1)
-        self.assertIn('  undeclared F04 #4: its Overview names no target in one Target: line', out)
+        self.assertIn('  undeclared F04 #4: it names no target\n', out)
         self.assertNotIn('  unit F04', out)
         self.assertIn('undeclared: 1', out)
 

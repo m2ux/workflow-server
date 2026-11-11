@@ -202,11 +202,11 @@ def branch_lines(branch: str, bases: list[str]) -> str:
 
 def target_fault(key: Key, issue: dict, base: str, lived: tuple[str, ...], repository: str) -> tuple[str, str]:
     """Why the target base its kind reads for the issue cannot be delivered to, as the line kind and
-    its text, or ('', '') when it can: undeclared when it names no target, or when --project, a
+    its text, or ('', '') when it can: undeclared when its kind's target names none, or when --project, a
     checkout of its repository, declares no such long-lived branch; unresolved when --project is a
     checkout of another repository. With no --project the target goes unchecked."""
     if not base:
-        return 'undeclared', 'its Overview names no target in one Target: line'
+        return 'undeclared', 'it names no target'
     if not lived:
         return '', ''
     if key[0].lower() != repository.lower():
