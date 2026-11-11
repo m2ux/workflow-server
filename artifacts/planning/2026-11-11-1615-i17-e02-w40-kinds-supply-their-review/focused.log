@@ -79,6 +79,6 @@ test_scope_notes_do_not_establish_current_review_identity (test_review_scope.Rev
 test_unrelated_path_capture_keeps_its_fault_and_the_changed_callers_result (test_review_scope.ReviewScope.test_unrelated_path_capture_keeps_its_fault_and_the_changed_callers_result) ... ok
 
 ----------------------------------------------------------------------
-Ran 79 tests in 0.093s
+Ran 79 tests in 0.103s
 
 OK

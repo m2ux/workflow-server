@@ -4,7 +4,7 @@
 
 - Unit: I17:E02:W40, AC67 and AC68.
 - Task base: `23ef4cf2b` (origin/i17/e02/workspace after W36 #1689).
-- Task head: `463c1a39890979bd720697ee49e9237ae0eeaf0b`, branch `i17/e02/w40-kinds-supply-their-review`.
+- Task head: `d483a2c932582a00ea5cfc8abd214c4b68d6bbdb`, branch `i17/e02/w40-kinds-supply-their-review`, current with `ac804d44a` (origin/i17/e02/workspace after W41 #1691); the change commits are `3724fabbd` and `463c1a398`, and the merge resolves the test catalogue against W41.
 - Component: `skills/work-planner/scripts/kinds.py`, `scripts/hotfix.py`, `scripts/agent_review.py`, `test/test_agent_review.py`, `test/test_kinds.py`, `test/test_hotfix.py`, `test/README.md`.
 
 ## Plan
@@ -31,7 +31,7 @@ Every hot-fix review fixture keeps its outcome: `HotFixReview` (3), [test_hotfix
 
 ## Full Checks
 
-- Planner: 1176 tests, one opt-in live-link skip, [planner.log](planner.log) (includes document/model and catalogue checks).
+- Planner: 1179 tests, one opt-in live-link skip, [planner.log](planner.log) (includes document/model and catalogue checks).
 - Shared: 280 pass, [shared.log](shared.log).
 - Skill checker: 60 files, zero findings, [skill-check.log](skill-check.log).
 - Whitespace: zero findings, [whitespace.log](whitespace.log).
