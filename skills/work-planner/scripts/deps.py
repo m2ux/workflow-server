@@ -7,12 +7,15 @@ Usage:
 An argument naming a row is that row's work item, a file whose declaration line names each file
 its implementation changes, separated by commas:
   **Component:** main:src/bundle/assembly.ts, main:src/bundle/emit.ts
-A code span is one entry; any other word is an entry when it names a branch:path, holds a / or
-a *, or ends in a file extension, and the prose, commas, semicolons and "and" between entries are
-not. Each declared file is read without its link, a wrapping code span, enclosing brackets,
-trailing punctuation or a leading ./, so two spellings of one path are one file. A value still
-carrying the template's {{…}} placeholder declares none. Each entry is one file: an entry ending in /, carrying a glob, or
-naming a directory under the working directory declares a directory, which is a problem.
+A code span is read whole and any other word without its brackets and trailing punctuation;
+each is an entry when it names a branch:path whose branch opens with a letter, or a bare path
+ending in /, carrying a * or ending in a file extension; a bare word holding a / is a path only
+where no entry names a branch. The prose, commas, semicolons and "and" between entries are not.
+Each declared file is read without its link, a wrapping code span, enclosing brackets, trailing
+punctuation or a leading ./, so two spellings of one path are one file. A value still carrying
+the template's {{…}} placeholder declares none. Each entry is one file: an entry ending in /,
+carrying a glob, or naming a directory under the working directory
+declares a directory, which is a problem.
 
 Each remaining file is an epic issue body holding the agent-engineering Work Breakdown table:
   | Task | Description | Coverage | Depends on | Joins | Lane | Done |
@@ -80,6 +83,7 @@ CRITERION = re.compile(r'AC\d+')
 BRANCH = re.compile(r'^([^:/\s]+):(?=\S)')
 TOKEN = re.compile(r'`[^`]*`|[^\s`]+')
 EXTENSION = re.compile(r'\w\.\w+$')
+ABBREVIATION = re.compile(r'(?:[A-Za-z]\.)+[A-Za-z]')
 MAX_CHAINS = 10
 UNIT_BOUND = 6
 
@@ -191,17 +195,35 @@ def read_components(items: dict[str, Path]) -> tuple[dict[str, tuple[str, ...]],
 
 
 def entries(value: str) -> list[str]:
-    """The declared files in a Component value, in order. A code span is one entry whatever it
-    holds; any other word is an entry when it names a `branch:path`, holds a `/` or a `*`, or ends
-    in a file extension, once enclosing brackets, quotes and trailing punctuation are stripped. The
-    words between entries, and the commas, semicolons and `and` separating them, are prose."""
-    found = []
+    """The declared files in a Component value, in order. A code span is read whole, spaces and
+    all, and any other word once enclosing brackets, quotes and trailing punctuation are stripped;
+    each is an entry when it names a file. The words between entries, and the commas, semicolons
+    and `and` separating them, are prose."""
+    words = []
     for token in TOKEN.findall(value):
         word = token.strip('`').strip() if token.startswith('`') else token.lstrip('(["\'').rstrip('.,;:!?)]"\'')
-        entry = normalise(word)
-        if entry and (BRANCH.match(entry) or '/' in entry or '*' in entry or EXTENSION.search(entry)):
-            found.append(entry)
-    return found
+        words.append(normalise(word))
+    branched = any(map(on_branch, words))
+    return [word for word in words if on_branch(word) or names_path(word, branched)]
+
+
+def on_branch(word: str) -> bool:
+    """Whether a word is a `branch:path` entry, its branch opening with a letter, so a ratio such as
+    `3:1` is none."""
+    branch = BRANCH.match(word)
+    return bool(branch) and branch[1][0].isalpha()
+
+
+def names_path(word: str, branched: bool) -> bool:
+    """Whether a bare word is a path entry: one ending in `/`, carrying a `*` or ending in a file
+    extension, other than an abbreviation such as `e.g.`. Any other word holding a `/` is a path in
+    a value declaring every entry bare, and prose such as `reads/writes` beside `branch:path`
+    entries."""
+    if not word or BRANCH.match(word):
+        return False
+    if word.endswith('/') or '*' in word or EXTENSION.search(word) and not ABBREVIATION.fullmatch(word):
+        return True
+    return '/' in word and not branched
 
 
 def is_directory(entry: str) -> bool:

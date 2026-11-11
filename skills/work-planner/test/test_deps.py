@@ -693,6 +693,14 @@ class ComponentContention(unittest.TestCase):
         self.assertEqual(self.declares('src/a.ts; src/b.ts and src/c.ts'),
                          ('src/a.ts', 'src/b.ts', 'src/c.ts'))
 
+    def test_prose_words_beside_entries_are_not_files(self):
+        self.assertEqual(self.declares('main:src/a.ts (reads/writes the cache, e.g. the emitter, at 3:1), '
+                                       'main:src/b.ts'), ('main:src/a.ts', 'main:src/b.ts'))
+        self.assertEqual(self.declares('`read_components` reads main:src/a.ts'), ('main:src/a.ts',))
+
+    def test_a_bare_value_declares_paths_without_an_extension(self):
+        self.assertEqual(self.declares('config/branches, src/a.ts'), ('config/branches', 'src/a.ts'))
+
     def test_a_code_span_is_one_entry_whatever_it_holds(self):
         self.assertEqual(self.declares('`main:src/my file.ts`, main:src/b.ts'),
                          ('main:src/my file.ts', 'main:src/b.ts'))

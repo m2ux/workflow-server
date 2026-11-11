@@ -101,7 +101,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) (14) |
 | [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (107), [test_dispatch](test_dispatch.py) (34), [test_shared](test_shared.py) (21) |
 | [delivery-branches](../scripts/delivery-branches.py) | [test_task_worktree](test_task_worktree.py) (9), [test_unit_dispatch](test_unit_dispatch.py) (12) |
-| [deps](../scripts/deps.py) | [test_deps](test_deps.py) (90) |
+| [deps](../scripts/deps.py) | [test_deps](test_deps.py) (92) |
 | [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (34), [test_unit_dispatch](test_unit_dispatch.py) (12) |
