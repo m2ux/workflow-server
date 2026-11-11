@@ -1,8 +1,26 @@
 # F12 Review Notes
 
-Agent review of [#1704](https://github.com/m2ux/workflow-server/pull/1704) at 19be51e10 against `workspace`. The reviewed change runs from the merge base 55c1ae77b, F11's reviewed head, to the head. The [review record](agent-review.json) holds the scope, criteria and validation.
+Agent reviews of [#1704](https://github.com/m2ux/workflow-server/pull/1704) against `workspace`. The [review record](agent-review.json) holds each review's scope, criteria and validation; the last is authoritative.
 
-## Findings
+## Review at 0ce4a62dd
+
+The reviewed change runs from the merge base bf7c43fca, F11's head carrying F10's entry-point rule, to the head. Merge [0ce4a62dd](https://github.com/m2ux/workflow-server/commit/0ce4a62dd55a0423262bdea4154db13a4b96a546) brings F11 in and fixes both findings.
+
+| # | Finding | Severity | Fix |
+| --- | --- | --- | --- |
+| 1 | SKILL.md registered the Proposal artifact, where F10 keeps only kind names. | nonblocking | [Registration](https://github.com/m2ux/workflow-server/blob/skill/proposal-artifact/skills/work-planner/artifacts/work-kind.md#registration) lists Proposal ahead of Proposal Body under the Proposal kind; SKILL.md lists the kind name. |
+| 2 | The Registration test's docstrings and README row named the entry point as the list. | nonblocking | They name Work Kind's Registration; the test reads that field. |
+
+### Checked and Clear
+
+- **Entry point.** No file in F12's change links SKILL.md. SKILL.md's proposals-board link points out to [Proposals Board](https://github.com/m2ux/workflow-server/blob/skill/proposal-artifact/skills/work-planner/artifacts/proposal.md#proposals-board).
+- **General files.** No declared general caller links Proposal. board.md links it from Select Project Board and Create Proposals Board, the board mechanics the issue's design names.
+
+## Review at 19be51e10
+
+The reviewed change ran from the merge base 55c1ae77b, F11's reviewed head, to 19be51e10.
+
+### Findings
 
 | # | Finding | Severity | Fix |
 | --- | --- | --- | --- |
@@ -13,7 +31,7 @@ Agent review of [#1704](https://github.com/m2ux/workflow-server/pull/1704) at 19
 
 Fixes 1 and 2 are in [9f9eac602](https://github.com/m2ux/workflow-server/commit/9f9eac6028ef7c1b6a85f2d573035db13f03c810), and fix 3 in [19be51e10](https://github.com/m2ux/workflow-server/commit/19be51e10255106de6d74588a57e17ac64b4401f).
 
-## Checked and Clear
+### Checked and Clear
 
 - **One home.** The five statuses and their assignees are defined only in Proposal Status; board.md, SKILL.md, Propose and Plan link Proposal, and no file links the retired `board.md#proposals`.
 - **Proposals board.** Proposal's Proposals Board links the configured title and copy source; Create Proposals Board still reads both from configuration, so Sync's dropped sentence restated it.

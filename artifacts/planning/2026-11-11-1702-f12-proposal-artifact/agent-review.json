@@ -36,5 +36,31 @@
         "evidence": "https://github.com/m2ux/workflow-server/commit/19be51e10255106de6d74588a57e17ac64b4401f"
       }
     ]
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1704",
+    "head": "0ce4a62dd55a0423262bdea4154db13a4b96a546",
+    "base": "2ba852ab575a08ae24e605b6410494b9e116e0bb",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1702-f12-proposal-artifact/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-11",
+    "scope": "F12's own change: bf7c43fca..0ce4a62dd (the merge base with origin/skill/work-priority, F11's head carrying F10's entry-point rule, to the head), after merge 0ce4a62dd brought in F11 at bf7c43fca. Read in full: artifacts/proposal.md; work-kind.md Registration; SKILL.md opening; board.md Select Project Board and Create Proposals Board; issue.md Save Tracker Issue, Add Issue Assignee, Issue Changes and Assignee; plan-mode Take the Proposal; propose-mode Confirm Placement, Place, Outcomes and Requested Status; sync-mode Create Absent Proposals Board; test_documents ProposalHome, test_kind_operations Registration and GeneralCallers, test_plan_mode ApprovedBeforeDrafting and the test README. Callers inspected: every link to Proposal, Proposal Status, Requested Status and Add Issue Assignee. No file in F12's change links SKILL.md; SKILL.md's proposals-board link points out to Proposal. General files: board.md links Proposal from Select Project Board and Create Proposals Board, the board mechanics the issue's agreed design names; no declared general caller (GeneralCallers) links proposal.md.",
+    "criteria": "AC1: Proposal Status alone defines Suggested, Considering, Approved, Held and Declined with their assignees; ProposalHome (4 tests) finds no other definition and a Proposal link in every file reaching the statuses; check_skill_files.py 63 files, 0 findings (T1, T2, T3, T4). AC2: Work Kind's Registration lists Proposal then Proposal Body under the Proposal kind; Registration (2 tests) and GeneralCallers (T5).",
+    "validation": "At 0ce4a62dd: skills/work-planner suite 1266 tests OK (1 skipped); skills/test 336 tests OK; check_skill_files.py skills/work-planner 63 files, 0 findings; check_skill_files.py --compare bf7c43fca HEAD: 883 sections at the base, 887 at the head; git diff --check bf7c43fca HEAD clean.",
+    "findings": [
+      {
+        "description": "SKILL.md registered the Proposal artifact under the Proposal kind, where F10 keeps only kind names and Work Kind's Registration holds each kind's artifacts.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/0ce4a62dd55a0423262bdea4154db13a4b96a546"
+      },
+      {
+        "description": "The Registration test's docstrings and its test README row said the entry point lists each kind's lifecycle artifact ahead of its body.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/0ce4a62dd55a0423262bdea4154db13a4b96a546"
+      }
+    ]
   }
 ]

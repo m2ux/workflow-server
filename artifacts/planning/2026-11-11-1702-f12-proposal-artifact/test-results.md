@@ -1,6 +1,6 @@
 # F12 Test Results
 
-Branch `skill/proposal-artifact` at 19be51e10, stacked on `skill/work-priority` at 55c1ae77b, merged in as 0c10f6b4a. The scratch-copy mutations in T2, T3 and T5 were run at 96f49ea10; the checks, suites and comparison were run again at 19be51e10.
+Branch `skill/proposal-artifact` at 0ce4a62dd, stacked on `skill/work-priority` at bf7c43fca, merged in as 0ce4a62dd. The scratch-copy mutations in T2 and T3 were run at 96f49ea10, and T5's at 0ce4a62dd; the checks, suites and comparison were run at 0ce4a62dd.
 
 ## T1. Skill-File Check over Work-Planner
 
@@ -16,12 +16,12 @@ Branch `skill/proposal-artifact` at 19be51e10, stacked on `skill/work-priority` 
 
 ## T4. Section Comparison
 
-`check_skill_files.py --compare 55c1ae77b HEAD skills/work-planner`: 883 sections at the base, 887 at the head. board.md's Proposals is removed, and its board purpose and five statuses stand unchanged as Proposal's Proposals Board and Proposal Status. Select Project Board, Create Proposals Board and Plan's Take the Proposal differ by the link to Proposal, and Take the Proposal by the Requested Status route and the board read gating a named proposal at Approved; Propose's Confirm Placement and Place gain the requested-status branch and assignment; Sync's Create Absent Proposals Board drops the sentence restating Create Proposals Board's configured copy source and title. Issue gains Add Issue Assignee and Assignee, run from Save Tracker Issue. Covers AC1.
+`check_skill_files.py --compare bf7c43fca HEAD skills/work-planner`: 883 sections at the base, 887 at the head. board.md's Proposals is removed, and its board purpose and five statuses stand unchanged as Proposal's Proposals Board and Proposal Status. Select Project Board, Create Proposals Board and Plan's Take the Proposal differ by the link to Proposal, and Take the Proposal by the Requested Status route and the board read gating a named proposal at Approved; Propose's Confirm Placement and Place gain the requested-status branch and assignment; Sync's Create Absent Proposals Board drops the sentence restating Create Proposals Board's configured copy source and title. Issue gains Add Issue Assignee and Assignee, run from Save Tracker Issue. Covers AC1.
 
 ## T5. Kind Registration Tests
 
-`test_kind_operations.py` (29) `Registration`: SKILL.md lists Proposal then Proposal Body under the Proposal kind, and each of Proposal, Initiative and Epic lists its lifecycle artifact ahead of its body. `GeneralCallers` counts Proposal among the kind artifacts the general callers do not link. Deleting the Proposal registration line in a scratch copy fails all three. Covers AC2.
+`test_kind_operations.py` (29) `Registration`: Work Kind's [Registration](https://github.com/m2ux/workflow-server/blob/skill/proposal-artifact/skills/work-planner/artifacts/work-kind.md#registration) lists Proposal then Proposal Body under the Proposal kind, and each of Proposal, Initiative and Epic lists its lifecycle artifact ahead of its body. `GeneralCallers` counts Proposal among the kind artifacts the general callers do not link. Deleting the Proposal registration line in a scratch copy fails all three. Covers AC2.
 
 ## T6. Planner Suite, Shared Suite and Whitespace
 
-The work-planner suite: 1266 tests, OK, 1 skipped. The shared suite (`skills/test`): 331 tests, OK. `git diff --check 55c1ae77b HEAD`: clean.
+The work-planner suite: 1266 tests, OK, 1 skipped. The shared suite (`skills/test`): 336 tests, OK. `git diff --check bf7c43fca HEAD`: clean.
