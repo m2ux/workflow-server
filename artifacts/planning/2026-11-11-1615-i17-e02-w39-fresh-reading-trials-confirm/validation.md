@@ -5,7 +5,7 @@
 - Unit: I17:E02:W39, AC12.
 - Task base: `96241be5b` (origin/i17/e02/workspace after W37 #1692).
 - Task head: `76da5ebd7`, branch `i17/e02/w39-fresh-reading-trials-confirm`.
-- Component: the three files [w39.md](w39.md) declares. The change adds tests and their captured selection inputs; no skill instruction changes, so the trials' pinned source `96241be5b` is the final separated source for every file they read.
+- Component: the three files [w39.md](w39.md) declares. The change adds tests and their captured selection inputs and changes no skill instruction. The trials ran on `96241be5b`; the branch was then brought current at `a390ea9fe` with W38 #1694 and W42 #1693, which change other skill prose, so a repeat trial runs on that head. Suites at `a390ea9fe`: Work Planner 1212 tests OK (1 skipped), shared OK, checker 0 findings.
 
 ## Observing Tests
 
