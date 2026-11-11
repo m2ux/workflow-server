@@ -53,12 +53,17 @@ def rows(body: str) -> list[Row] | None:
     return found
 
 
+def ticked(result: str) -> bool:
+    """Whether a Pass cell carries a tick linked to its web evidence."""
+    link = LINK.fullmatch(result)
+    return bool(link and done_mark(link[1]) == TICK and EVIDENCE.fullmatch(link[2]))
+
+
 def passed(body: str) -> bool:
-    """Whether the plan has passed: it has a check, and every check's result is a tick, plain or linked
-    to its evidence."""
-    checks = [link[1] if (link := LINK.fullmatch(r.result)) else r.result
-              for r in rows(body) or [] if r.test.strip()]
-    return bool(checks) and all(done_mark(mark) == TICK for mark in checks)
+    """Whether the plan has passed: it has a check, and every check's result is a tick linked to its
+    evidence."""
+    checks = [r.result for r in rows(body) or [] if r.test.strip()]
+    return bool(checks) and all(ticked(result) for result in checks)
 
 
 def claims(body: str) -> tuple[set[int], set[int], set[int]]:
@@ -70,8 +75,7 @@ def claims(body: str) -> tuple[set[int], set[int], set[int]]:
         named |= acs
         if r.test.strip():
             observed |= acs
-            link = LINK.fullmatch(r.result)
-            if not (link and done_mark(link[1]) == TICK and EVIDENCE.fullmatch(link[2])):
+            if not ticked(r.result):
                 incomplete |= acs
     return named, observed, observed - incomplete
 

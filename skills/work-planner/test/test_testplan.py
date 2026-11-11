@@ -51,15 +51,25 @@ class Rows(unittest.TestCase):
 
 
 class Passed(unittest.TestCase):
-    def test_every_check_ticked_plain_or_linked_has_passed(self):
-        for mark in ('✓', f'[✓]({EVIDENCE})'):
+    def test_every_check_ticked_and_linked_to_evidence_has_passed(self):
+        for mark in (f'[✓]({EVIDENCE})', '[✓](http://example.com/result)'):
             with self.subTest(mark=mark):
                 self.assertTrue(passed(plan(f'| T1 | Check | AC1 | {mark} |', '| | Unobserved | AC2 | |')))
 
     def test_any_other_result_leaves_the_plan_incomplete(self):
-        for mark in ('', 'Partial', 'Fail', 'Not run', '✓ Partial', f'[Partial]({EVIDENCE})'):
+        for mark in ('', '✓', '[✓]()', '[✓](#result)', '[✓](file:///tmp/result)', 'Partial', 'Fail', 'Not run',
+                     '✓ Partial', f'[Partial]({EVIDENCE})'):
             with self.subTest(mark=mark):
-                self.assertFalse(passed(plan('| T1 | Check | AC1 | ✓ |', f'| T2 | Check | AC2 | {mark} |')))
+                self.assertFalse(passed(plan(f'| T1 | Check | AC1 | [✓]({EVIDENCE}) |',
+                                             f'| T2 | Check | AC2 | {mark} |')))
+
+    def test_passed_and_claims_share_one_rule(self):
+        """A plan has passed exactly when every criterion its checks observe is claimed as passed."""
+        for marks in ((f'[✓]({EVIDENCE})',), ('✓',), (f'[✓]({EVIDENCE})', '✓'), (f'[✓]({EVIDENCE})', 'Fail')):
+            body = plan(*(f'| T{n} | Check | AC{n} | {mark} |' for n, mark in enumerate(marks, 1)))
+            with self.subTest(marks=marks):
+                _named, observed, ok = claims(body)
+                self.assertEqual(passed(body), observed == ok)
 
     def test_a_plan_with_no_check_or_no_plan_has_not_passed(self):
         for body in (plan(), plan('| | Unobserved | AC1 | |'), '', plan('| T1 | AC1 |')):

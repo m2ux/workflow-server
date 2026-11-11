@@ -43,7 +43,7 @@ The result evidence links that do not resolve as [Result Evidence](#result-evide
 
 ### Passed Plan
 
-The test plan has passed when every row with a Test id carries ✓ as its result. Partial, failed and unexecuted checks remain incomplete.
+The test plan has passed when every row with a Test id carries ✓ as its result, linked to its evidence as [Result Evidence](#result-evidence) states. A ✓ with no evidence link, and a partial, failed or unexecuted check, remain incomplete.
 
 ### Pull Request Record
 
