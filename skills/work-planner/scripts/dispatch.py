@@ -4,8 +4,10 @@ Usage:
   python3 dispatch.py batch --authorization run.json --plan available.json
       --sessions sessions.json --capacity 2 --board users/o/projectsV2/7 [--lane 2]
       [--preparations preparations.json]
+      [--blockers blockers.json]
   python3 dispatch.py start --batch batch.json --unit 'o/r#I07:E00:W01'
       --evidence start.json --sessions sessions.json --capacity 1
+      [--blockers blockers.json]
 
 The delivery survey supplies eligibility and order. Authorization, observed sessions and
 currently free harness slots constrain the batch. Start evidence identifies the published
@@ -68,8 +70,24 @@ def inventory(sessions: list[dict]) -> set[str]:
     return occupied
 
 
+def blockage(blockers: list[dict] | None) -> tuple[bool, set[str]]:
+    """Recorded run failures and rows blocked by unit failures."""
+    stop, rows = False, set()
+    for blocker in blockers or []:
+        if not blocker.get('reason'):
+            raise ValueError('a dispatch blocker needs its observed reason')
+        if blocker.get('scope') == 'run':
+            stop = True
+        elif blocker.get('scope') == 'unit':
+            rows.update(unit_members(blocker['id']))
+        else:
+            raise ValueError('a dispatch blocker must have run or unit scope')
+    return stop, rows
+
+
 def batch(authorization: dict, plan: list[dict], sessions: list[dict], capacity: int,
-          board: str, lane: str | None = None, preparations: list[dict] | None = None) -> dict:
+          board: str, lane: str | None = None, preparations: list[dict] | None = None,
+          blockers: list[dict] | None = None) -> dict:
     """An ordered batch bounded by one authorization and actual free worker capacity."""
     if capacity < 0:
         raise ValueError('capacity must be a nonnegative count of currently free harness slots')
@@ -84,13 +102,17 @@ def batch(authorization: dict, plan: list[dict], sessions: list[dict], capacity:
     if scope != ['*']:
         for selector in scope:
             members(selector)
-    occupied = inventory(sessions)
+    stop, blocked = blockage(blockers)
+    occupied = inventory(sessions) | blocked
+    if stop:
+        return {'action': 'stop', 'units': [], 'pending': 0}
     preparing = False
     for preparation in preparations or []:
-        occupied.update(unit_members(preparation['id']))
+        prepared_rows = unit_members(preparation['id'])
+        occupied.update(prepared_rows)
         if not preparation.get('record'):
             raise ValueError('a preparation needs its selected planning record')
-        preparing = preparing or within(preparation['id'], scope)
+        preparing = preparing or (not prepared_rows & blocked and within(preparation['id'], scope))
     selected = []
     pending = 0
     for unit in plan:
@@ -110,11 +132,14 @@ def batch(authorization: dict, plan: list[dict], sessions: list[dict], capacity:
 
 
 def check_start(selected: dict, identity: str, evidence: dict,
-                sessions: list[dict], capacity: int) -> dict:
+                sessions: list[dict], capacity: int, blockers: list[dict] | None = None) -> dict:
     """Confirm one selected unit's publication, reservation and current execution capacity."""
     unit = next((unit for unit in selected['units'] if unit['id'] == identity), None)
     if unit is None:
         raise ValueError('start must name a unit in the selected batch')
+    stop, blocked = blockage(blockers)
+    if stop or unit_members(identity) & blocked:
+        raise ValueError('start has an unresolved dispatch blocker')
     if capacity <= 0:
         raise ValueError('start needs a currently free harness slot')
     if unit_members(identity) & inventory(sessions):
@@ -150,15 +175,17 @@ def main() -> int:
     for command in (select, start):
         command.add_argument('--sessions', required=True)
         command.add_argument('--capacity', type=int, required=True)
+        command.add_argument('--blockers', help='observed run and unit dispatch blockers')
     args = parser.parse_args()
     try:
+        blockers = read(args.blockers) if args.blockers else None
         if args.command == 'batch':
             result = batch(read(args.authorization), read(args.plan), read(args.sessions),
                            args.capacity, args.board, args.lane,
-                           read(args.preparations) if args.preparations else None)
+                           read(args.preparations) if args.preparations else None, blockers)
         else:
             result = check_start(read(args.batch), args.unit, read(args.evidence),
-                                 read(args.sessions), args.capacity)
+                                 read(args.sessions), args.capacity, blockers)
     except (ValueError, KeyError, TypeError, OSError) as exc:
         parser.exit(1, f'dispatch: {exc}\n')
     print(json.dumps(result, indent=2))

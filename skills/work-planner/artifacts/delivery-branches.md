@@ -246,6 +246,21 @@ git push origin 'HEAD:refs/heads/[**&lt;task-branch&gt;**](#task-branch "○")'
 - Run in the [Unit Checkout](#unit-checkout "○").
 - Require [Successful Merge](#successful-merge "○") before executing the command.
 
+### Check Task Worktree
+
+Validate one retained task checkout without changing its files or branch and provide [Verified Task Worktree](#verified-task-worktree "●"), or [Failure](#failure "●") if validation fails.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/delivery-branches.py &#92;
+  --project '[**&lt;project-checkout&gt;**](#project-checkout "○")' &#92;
+  --worktree '[**&lt;unit-worktree&gt;**](#worktree-path "○")' &#92;
+  --branch '[**&lt;task-branch&gt;**](#task-branch "○")' &#92;
+  --head '[**&lt;preparation-head&gt;**](#preparation-head "○")'
+</pre></big>
+
+- The checkout must meet [Prepared Task Worktrees](#prepared-task-worktrees). A mismatch retains its files and branch and blocks reuse.
+
 ### Add Task Worktree
 
 Create a task branch and worktree at the fetched base and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -373,6 +388,18 @@ A collection of task-branch, base-branch and worktree-path triples for the unit.
   A hot-fix works on the branch its [Branch](hotfix.md#branch) names.
 
 Each worktree is named by its branch under the worktree directory of the repository's main working tree.
+
+### Prepared Task Worktrees
+
+A retained task worktree is registered to the project repository, on its recorded task branch and full preparation head, with no tracked or untracked changes.
+
+### Preparation Head
+
+The full commit recorded immediately after the task checkout is created.
+
+### Verified Task Worktree
+
+The validated repository registration, worktree path, task branch and preparation head, with clean tracked and untracked state.
 
 ### Epic Identity
 

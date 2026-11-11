@@ -55,6 +55,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_shared](test_shared.py) | The helpers [progress](../scripts/progress.py) shares with [board](../scripts/board.py), [sync](../scripts/sync.py) and [format](../scripts/format.py) |
 | [test_statuses](test_statuses.py) | The jurisdiction each mode's Status changes are held to, and the calls they render |
 | [test_sync](test_sync.py) | Done on a Work Breakdown row, ticked when the row is complete |
+| [test_task_worktree](test_task_worktree.py) | Retained preparations validate and preserve real Git task worktrees |
 | [test_templates](test_templates.py) | Body artifacts are the format checker's sole template source |
 
 ### Prose Tests
@@ -90,18 +91,20 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [board-queue](../scripts/board-queue.py) | [test_board_queue](test_board_queue.py) (75) |
 | [closure](../scripts/closure.py) | [test_closure](test_closure.py) (13), [test_command_contracts](test_command_contracts.py) (14) |
 | [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) (14) |
-| [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (96), [test_dispatch](test_dispatch.py) (19) |
+| [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (96), [test_dispatch](test_dispatch.py) (31) |
 | [deps](../scripts/deps.py) | [test_deps](test_deps.py) (74) |
+| [delivery-branches](../scripts/delivery-branches.py) | [test_task_worktree](test_task_worktree.py) (8) |
 | [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
-| [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (19) |
+| [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (31) |
 | [format](../scripts/format.py) | [test_format](test_format.py) (109), [test_shared](test_shared.py) (11), [test_sync](test_sync.py) (185), [test_templates](test_templates.py) (6) |
 | [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (16) |
-| [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (19), [test_lane](test_lane.py) (12) |
+| [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (31), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-pull-request](../scripts/links-by-pull-request.py) | [test_link_capture](test_link_capture.py) (22) |
 | [orphans](../scripts/orphans.py) | [test_orphans](test_orphans.py) (3) |
+| [priority](../scripts/priority.py) | |
 | [progress](../scripts/progress.py) | [test_progress](test_progress.py) (76) |
 | [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32) |
 | [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |

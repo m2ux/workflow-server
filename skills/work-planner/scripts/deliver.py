@@ -93,9 +93,10 @@ from collections import Counter
 from datetime import date as day
 from pathlib import Path
 
-from board import Board, Outputs, epic_state, in_flight, units
+from board import Board, Outputs, epic_state, in_flight, linked_issue, units
 from deps import read_components
 from lane import admits, check_unit, is_index, label as lane_label, read_lanes
+from priority import rank
 from statuses import (DISPATCH, Key, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
 from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
@@ -317,6 +318,33 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...], reposi
     return [line for _, line in sorted(found)]
 
 
+def ordered_epics(board: Board) -> list[tuple[str, int]]:
+    """Admitted-work ordering by initiative priority and each initiative's epic priorities."""
+    parents = {}
+    for parent, issue in sorted(board.issues.items()):
+        parsed = tags(issue.get('title') or '')
+        if not parsed or parsed[1:] != ('', ''):
+            continue
+        try:
+            header, listed = board.table(parent)
+        except Unreadable as error:
+            board.unresolved.append(str(error))
+            continue
+        for entry in listed.values():
+            child = linked_issue(id_cell(header, entry))
+            if child in board.issues:
+                parents.setdefault(child, parent)
+
+    def order(key):
+        parent = parents.get(key)
+        initiative = tags(board.issues[key]['title'])[0]
+        group = (parent[0], f'issue:{parent[1]:020d}') if parent else (key[0], f'initiative:{initiative}')
+        level = (rank(board.issues[parent]) or 0) if parent else 0
+        return -level, group, -(rank(board.issues[key]) or 0), key
+
+    return sorted((key for key, issue in board.issues.items() if is_epic(issue)), key=order)
+
+
 def survey(args: argparse.Namespace) -> int:
     offers = []
     if args.dispatch_plan:
@@ -354,7 +382,7 @@ def survey(args: argparse.Namespace) -> int:
 
     when = args.date or day.today().isoformat()
     available = held = waiting = unreadable = undeclared = invalid = 0
-    for key in sorted(issues):
+    for key in ordered_epics(board):
         issue = issues[key]
         if not is_epic(issue) or status.get(key) not in STARTED:
             continue

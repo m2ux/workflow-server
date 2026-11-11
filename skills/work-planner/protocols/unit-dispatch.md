@@ -9,13 +9,15 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 ### 1. Check Execution Prerequisites
 
 - Take the selected batch and unit, current board and delivery evidence, project and engineering checkouts, run allowance, supplied session procedure and any [preparation](../artifacts/dispatch-batch.md#preparations) this run retains for the unit.
-- Confirm the harness provides sub-agent dispatch and the [epic-base merge permission](../artifacts/pull-request.md#merge-permission); provide the absent capability before holding work.
+- An unsuccessful artifact operation stops this unit: provide it as a unit blocker, retaining any acquired hold.
+- Confirm the harness provides sub-agent dispatch and the [epic-base merge permission](../artifacts/pull-request.md#merge-permission); provide an absent capability as a [run blocker](../artifacts/dispatch-batch.md#blockers) before holding work, then stop this unit.
 
 #### Unit of Rows
 
 - For a unit of rows:
 - Confirm the epic carries every [Required Criteria](../artifacts/epic-issue-body.md#required-criteria) criterion its changes bring, with its declared delivering row.
 - Keep each such row a unit of its own, joined to no other row.
+- On an unmet criterion condition, provide a unit blocker and stop this unit.
 
 ### 2. Publish the Record
 
@@ -62,23 +64,23 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 #### Hold Result
 
-- Provide a competing hold or failed readback without starting a worker.
+- On a competing hold or failed readback, provide a unit blocker and stop this unit.
 
 ### 4. Prepare the Session
 
-#### Unit Checkouts
+#### New Unit Checkouts
 
-- For each selected branch, base and worktree in the project checkout:
-
+- For a new unit, prepare each selected branch, base and worktree in the project checkout:
 - Require [Prerequisite Evidence](../artifacts/delivery-branches.md#prerequisite-evidence) and names meeting [Task Branches](../artifacts/delivery-branches.md#task-branches).
+- Run [Fetch Remote Branch](../artifacts/delivery-branches.md#fetch-remote-branch "ƒ") in the project checkout with its base; stop on failure.
+- Run [Add Task Worktree](../artifacts/delivery-branches.md#add-task-worktree "ƒ") in the project checkout with the selected path, task branch and fetched base.
+- Run [Read Checkout Revision](../artifacts/delivery-branches.md#read-checkout-revision "ƒ") in the unit checkout for `HEAD` and retain its full preparation head with the worktree path, branch and base.
+- A unit changing several long-lived branches repeats this for each selected base.
 
-- Run [Fetch Remote Branch](../artifacts/delivery-branches.md#fetch-remote-branch "ƒ") in the [project checkout](../artifacts/delivery-branches.md#project-checkout) of the repository the work changes, passing the base; stop on failure.
+#### Retained Unit Checkouts
 
-- Run [Add Task Worktree](../artifacts/delivery-branches.md#add-task-worktree "ƒ") in the project checkout at [Worktree Path](../artifacts/delivery-branches.md#worktree-path) for the [task branch](../artifacts/delivery-branches.md#task-branch), rooted in the fetched [Base Branch](../artifacts/delivery-branches.md#base-branch).
-
-- Retain [Worktree Result](../artifacts/delivery-branches.md#worktree-result) with the worktree path, branch and base, or [Failure](../artifacts/delivery-branches.md#failure).
-
-- A unit that changes several long-lived branches runs this once for each epic base, with the branch and worktree [Task Branches](../artifacts/delivery-branches.md#task-branches) names for it.
+- For a retained preparation, Run [Check Task Worktree](../artifacts/delivery-branches.md#check-task-worktree "ƒ") for each recorded checkout with the project checkout, retained path, branch and full preparation head.
+- Require every verified result before preparing the brief. A mismatch stops this unit: provide a unit blocker and retain its checkout and hold.
 
 #### Delivery Brief
 
@@ -88,13 +90,13 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Each part must meet [Fields](../artifacts/delivery-brief.md#fields).
 
 - Retain the [brief path](../artifacts/delivery-brief.md#brief-path) and any [missing context](../artifacts/delivery-brief.md#missing-context). Resolve gaps before dispatch.
-- Provide a missing-context finding before execution, retaining the hold.
+- On missing context, provide a unit blocker, retain the hold and stop this unit before execution.
 
 ### 5. Start the Worker
 
-- Run [Check Dispatch Start](../artifacts/dispatch-batch.md#check-dispatch-start "ƒ") with the selected batch and unit, gathered start evidence, current observed sessions and actual free slots.
+- Run [Check Dispatch Start](../artifacts/dispatch-batch.md#check-dispatch-start "ƒ") with the selected batch and unit, gathered start evidence, current observed sessions, actual free slots and recorded blockers.
 - Provide a capacity-only wait with the unit's preparation for the coordinator to retain and resume.
 - Start the unit through this session's sub-agent dispatch only after validation succeeds.
 - Supply the complete brief and its unit and engineering checkouts to the worker.
 - Provide its observed session identity to the coordinator, which records it before selecting another batch.
-- Provide a failed start as a held unit with its record and error; a hold is released only through the caller's explicit release decision.
+- On another failed start, provide a unit blocker with its held record and observed error, then stop this unit.
