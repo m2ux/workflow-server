@@ -17,6 +17,13 @@ BEFORE = 'automatic-order-before-answer'
 SAVED = 'automatic-order-saved-priority'
 CONVERGED = 'automatic-order-converged-state'
 CALL = re.compile(r'(?:Apply|Run) \[([^]]+)\]\([^)]* "ƒ"\)')
+HELD = re.compile(r'- A held or unanswered decision(?P<allowance> under an allowance has no user to answer it)?'
+                  r'(?::| stops this step:) provide the pending queue with the \[change list\]\([^)]+\) and stop\. '
+                  r'Step 7 treats that queue as incomplete\.'
+                  r'|- A held or unanswered decision leaves the queue (?P<waits>pending) until an answer is available\.')
+USER = '- A held decision put to the user continues with the user\'s answer.'
+REPEAT = {'- Repeat this step while a decision is pending.': 'loop',
+          '- Repeat this step while an answer leaves a further decision pending.': 'pending'}
 
 
 def compute(snapshot, unplanned=()):
@@ -50,8 +57,38 @@ def ask_snapshot():
     return snapshot
 
 
+def settle(body, allowance):
+    """The outcome step 6's held-decision lines give a decision left without an answer, read as whole
+    sentences: 'stopped', 'loop' or 'pending' where a line governs it, or None where it reaches the
+    user's answer. A held line names the allowance it is scoped to or governs every held decision."""
+    lines = body.splitlines()
+    held = [line for line in lines if line.startswith('- A held or unanswered decision')]
+    if not held:
+        raise AssertionError('unrecognized pending decision branch')
+    for line in held:
+        match = HELD.fullmatch(line)
+        if not match:
+            raise AssertionError(f'unrecognized held decision line {line}')
+        if match['allowance'] and not allowance:
+            continue
+        if match['waits']:
+            repeat = [REPEAT[line] for line in lines if line in REPEAT]
+            if len(repeat) != 1:
+                raise AssertionError('no recognized repeat line')
+            return repeat[0]
+        return 'stopped'
+    if allowance:
+        raise AssertionError('no held line governs a decision under an allowance')
+    if USER not in lines:
+        raise AssertionError('no route for a decision put to the user')
+    return None
+
+
 def walk(*, disposition='automatic', answer=1, save_ok=True, readback=SAVED, source=None, initial=None):
     """Observe this route's bounded call grammar with injected persistence receipts.
+
+    disposition is 'automatic' (allowed under an allowance), 'held' (held under an allowance, with no
+    user to answer it) or 'user' (held with no allowance and put to the user, who answers).
 
     This adapter executes source-selected calls, not general Markdown or an agent.
     Queue computations use the installed program; saved/read board results are offline
@@ -66,15 +103,11 @@ def walk(*, disposition='automatic', answer=1, save_ok=True, readback=SAVED, sou
     autonomy = next(line for line in body.splitlines() if 'Check Plan Change Autonomy' in line)
     events.append(CALL.search(autonomy)[1])
     if disposition == 'held' or answer == 'unanswered':
-        held = next((line for line in body.splitlines() if line.startswith('- A held or unanswered decision')), None)
-        if held is None:
-            raise AssertionError('unrecognized pending decision branch')
-        if 'stop' in held and '[change list]' in held:
-            return 'stopped', events, initial
-        repeat = next(line for line in body.splitlines() if line.startswith('- Repeat this step while'))
-        if 'a decision is pending' in repeat:
-            return 'loop', events, initial
-        return 'pending', events, initial
+        return settle(body, allowance=True), events, initial
+    if disposition == 'user':
+        outcome = settle(body, allowance=False)
+        if outcome:
+            return outcome, events, initial
     if disposition == 'automatic':
         automatic = next(line for line in body.splitlines() if line.startswith('- For an automatic line, take'))
         events.append(CALL.search(automatic)[1])
@@ -138,6 +171,24 @@ class AdvanceDecisions(unittest.TestCase):
         outcome, events, _ = walk(answer='unanswered')
         self.assertEqual(outcome, 'stopped')
         self.assertNotIn('Save Tracker Issue', events)
+
+    def test_no_decision_repeats_the_step_without_an_answer(self):
+        for disposition, answer in (('automatic', 1), ('user', 1), ('held', 1), ('automatic', 'unanswered')):
+            outcome, _, _ = walk(disposition=disposition, answer=answer)
+            self.assertNotEqual(outcome, 'loop', disposition)
+
+    def test_a_held_line_governing_every_decision_stops_the_users_answer(self):
+        text = SOURCE.read_text()
+        line = next(line for line in text.splitlines() if line.startswith('- A held or unanswered decision'))
+        unscoped = text.replace(line, line.replace(' under an allowance has no user to answer it:', ' stops this step:'), 1)
+        self.assertEqual(walk(disposition='user', source=unscoped)[0], 'stopped')
+
+    def test_a_held_line_waiting_for_an_answer_under_an_allowance_loops(self):
+        text = SOURCE.read_text()
+        line = next(line for line in text.splitlines() if line.startswith('- A held or unanswered decision'))
+        repeat = next(line for line in text.splitlines() if line.startswith('- Repeat this step while'))
+        waiting = text.replace(line, '- A held or unanswered decision leaves the queue pending until an answer is available.', 1)
+        self.assertEqual(walk(disposition='held', source=waiting.replace(repeat, '- Repeat this step while a decision is pending.', 1))[0], 'loop')
 
     def test_failed_save_stops_before_queue_continuation(self):
         outcome, events, _ = walk(save_ok=False)
