@@ -3,8 +3,8 @@
 ## Candidate
 
 - Unit: I17:E02:W38, AC14, AC15, AC16.
-- Task base: `96241be5b` (origin/i17/e02/workspace after W37 #1692).
-- Task head: `691b8e4f5`, branch `i17/e02/w38-retained-preparations-select-verified`.
+- Task base: `96241be5b` (origin/i17/e02/workspace after W37 #1692), brought current with `e17c39f8b` (after W42 #1693).
+- Task head: `1e4753d08`, branch `i17/e02/w38-retained-preparations-select-verified`.
 - Component: the six files [w38.md](w38.md) declares.
 
 ## Reconciliation
@@ -27,7 +27,7 @@ Both modules with the base `delivery-branches.py`: 9 failures and 2 errors ([bas
 ## Full Checks
 
 - Planner: 1192 tests, one opt-in live-link skip ([planner.log](planner.log)), including the document, checkout, command-contract and README checks.
-- Shared: 305 pass ([shared.log](shared.log)), including the installed Work Planner model.
+- Shared: 319 pass ([shared.log](shared.log)), including the installed Work Planner model.
 - Skill checker: 60 files, zero findings ([skill-check.log](skill-check.log)).
 - Whitespace: zero findings; the log is empty ([whitespace.log](whitespace.log)).
 
@@ -40,3 +40,12 @@ python3 -m unittest discover -s skills/test                       # checkout roo
 python3 skills/scripts/check_skill_files.py skills/work-planner   # checkout root
 git diff --check origin/i17/e02/workspace                         # checkout root
 ```
+
+## Merge
+
+[#1694](https://github.com/m2ux/workflow-server/pull/1694) is open into `i17/e02/workspace` at head `1e4753d08faa6d2d9436fdfdcc5498b9d9fbce87`, current with the epic base after W42 #1693, with every check above passing at that head. The merge call at that head was refused by the session's permission classifier (Merge Without Review), so the pull request stays open for a permitted merge. Epic #1615 links W38 to #1694 ([sync.log](sync.log)); AC14–AC16 are ticked, and review #1659 updated, when the merge is recorded.
+
+## Change List
+
+- Applied: the W38 work item declares five further files the change reaches (delivery-branches.md, delivery-branches.py, test_task_worktree.py, test_unit_dispatch.py, test/README.md). No row, criterion or dependency changed. Unit Dispatch needed no change: its integrated route passes the observing checks.
+- Held: none. Arising issues: none; the relative-path defect sits in the unit's own component and is fixed on its branch.

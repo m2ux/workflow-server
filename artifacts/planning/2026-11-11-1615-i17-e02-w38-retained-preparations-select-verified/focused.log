@@ -21,6 +21,6 @@ test_tracked_changes_are_preserved (test_task_worktree.RetainedTaskWorktree.test
 test_untracked_changes_are_preserved (test_task_worktree.RetainedTaskWorktree.test_untracked_changes_are_preserved) ... ok
 
 ----------------------------------------------------------------------
-Ran 21 tests in 1.950s
+Ran 21 tests in 2.077s
 
 OK
