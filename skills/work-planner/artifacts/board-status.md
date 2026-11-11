@@ -141,7 +141,7 @@ A task gated on an [unresolvable dependency](board-queue.md#unresolvable-depende
 Each computation holds its changes to one jurisdiction and refuses a change outside it, naming the issue.
 
 - **Every jurisdiction.**
-  A task never stands In Review. In Review is held by an initiative, an epic, or an item whose [registered kind](../SKILL.md) supplies Settle Board Status, as that operation gives it.
+  A task never stands In Review. In Review is held by an initiative, an epic, or an item whose [registered kind](work-kind.md#registration) supplies Settle Board Status, as that operation gives it.
 - **Delivery.**
   Board changes computed from delivery evidence move no initiative or epic between Ready and Backlog.
 - **Queue.**
