@@ -200,8 +200,8 @@ def branch_lines(branch: str, bases: list[str]) -> str:
                      for name, base, worktree in task_branches(branch, bases))
 
 
-def target_fault(key: Key, issue: dict, base: str, lived: tuple[str, ...], repository: str) -> tuple[str, str]:
-    """Why the target base its kind reads for the issue cannot be delivered to, as the line kind and
+def target_fault(key: Key, base: str, lived: tuple[str, ...], repository: str) -> tuple[str, str]:
+    """Why the target base its kind reads for the issue at key cannot be delivered to, as the line kind and
     its text, or ('', '') when it can: undeclared when its kind's target names none, or when --project, a
     checkout of its repository, declares no such long-lived branch; unresolved when --project is a
     checkout of another repository. With no --project the target goes unchecked."""
@@ -236,7 +236,7 @@ def kind_units(issues: dict, status: dict, prs: list[dict], home: str, when: str
         delivering = operations.delivering_pulls(linking, key, issue)
         state = operations.unit_state(issue, status.get(key), linking, delivering)
         base = operations.target(issue)
-        fault, why = target_fault(key, issue, base, lived, repository)
+        fault, why = target_fault(key, base, lived, repository)
         if fault == 'undeclared':
             lines.append(f'  undeclared {where}: {why}')
             undeclared += 1
@@ -297,7 +297,7 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...], reposi
         if kind := kind_of(pull):
             operations = interface(kind)
             if (any(operations.delivering_pulls([pull], key, issue)
-                    and not target_fault(key, issue, operations.target(issue), names, repository)[0]
+                    and not target_fault(key, operations.target(issue), names, repository)[0]
                     for key, issue in kinded.get(kind, {}).items()) and plan_passed(pull.get('body') or '')):
                 found.append((pull['number'], f"  merge #{pull['number']} {operations.tag(pull)}: base {base}"))
             continue
