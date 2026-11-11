@@ -1,5 +1,5 @@
 """Decide which initiatives and epics on a theme board are Ready or In Progress, and where each
-hot-fix stands.
+issue of a registered kind stands.
 
 Usage:
   python3 board-queue.py --items items.json --prs prs.json --links links.json
@@ -20,37 +20,24 @@ and each unresolved issue reference. Ready units carry their task-table lane, re
 issue bodies through lane.read_lanes. Lane reports leave placement and assignee calls independent.
 It exits 1 for invalid lane assignments or where an unresolvable dependency stopped it placing a row.
 
-A hot-fix, titled [F00], stands where hotfix.board_status places it, outside every priority set;
-nothing waits on it and it waits on nothing.
+An issue of a kind kinds.py registers, selected by the tag its title opens with, stands where its
+kind's board_status places it, outside every priority set; nothing waits on it and it waits on
+nothing.
 """
 import argparse
 import json
-import re
 import sys
 from collections import Counter
 from pathlib import Path
 
-from board import (READY_UNDER, Board, Resolution, criteria_met, delivers, epic_state,
-                   linked_issue, rows, units)
+from board import (READY_UNDER, Board, Resolution, criteria_met, delivers, epic_state, is_initiative,
+                   linked_issue, rows, tags, units)
 from lane import check_unit, label as lane_label, read_lanes
 from priority import rank
 from format import cell, id_cell, row_id
-from hotfix import OFF_BOARD, board_status, delivering_pulls, is_hotfix
-from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, key_of, label
-from sync import Unreadable, attach_links, pull_requests
-
-PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
-PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
-
-
-def tags(title: str) -> tuple[str, str, str] | None:
-    matched = PREFIX.match(title)
-    return (matched[1], matched[2] or '', matched[3] or '') if matched else None
-
-
-def is_initiative(issue: dict) -> bool:
-    parsed = tags(issue['title'])
-    return bool(parsed) and not parsed[1]
+from kinds import OFF_BOARD, interface, kind_of
+from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, label
+from sync import PULL_REF, Unreadable, attach_links, issue_key, pull_requests
 
 
 def pending(prs: list[dict], tag: str, epics: set[str], repos: set[str]) -> list[str]:
@@ -60,7 +47,7 @@ def pending(prs: list[dict], tag: str, epics: set[str], repos: set[str]) -> list
     for pr in prs:
         if not any(delivers(pr, tag, epic) for epic in epics):
             continue
-        home = PULL_HOME.search(pr.get('html_url') or '')
+        home = PULL_REF.search(pr.get('html_url') or '')
         if home and home[1].lower() not in repos:
             continue
         found.append(pr.get('html_url') or pr['title'])
@@ -326,19 +313,21 @@ class Queue:
             if self.wanted.get(key, self.status.get(key)) in ('In Progress', 'Ready'):
                 self.shelve(key)
 
-    def hotfixes(self) -> None:
-        """Place each hot-fix on the board where hotfix.board_status puts it."""
+    def kinded(self) -> None:
+        """Place each issue of a registered kind on the board where its kind's board_status puts it."""
         for key, issue in self.issues.items():
-            if not is_hotfix(issue) or key not in self.status:
+            if (kind := kind_of(issue)) is None or key not in self.status:
                 continue
-            wanted = board_status(issue, self.status.get(key), delivering_pulls(self.prs, key, issue))
+            operations = interface(kind)
+            wanted = operations.board_status(issue, self.status.get(key),
+                                             operations.delivering_pulls(self.prs, key, issue))
             if wanted == OFF_BOARD:
                 self.removed.add(key)
             else:
                 self.place(key, wanted)
 
     def decide(self) -> None:
-        self.hotfixes()
+        self.kinded()
         open_initiatives = [key for key, issue in self.issues.items()
                             if is_initiative(issue) and issue['state'] == 'open' and key in self.status]
         for key in open_initiatives:
@@ -404,7 +393,7 @@ def main() -> int:
     issues = {}
     for path in args.others:
         given = json.loads(Path(path).read_text())
-        issues[key_of(given)] = given
+        issues[issue_key(given)] = given
     status, item_ids = {}, {}
     for key, item_id, held, content in board_items(args.items):
         issues[key] = content
@@ -421,7 +410,7 @@ def main() -> int:
     field = StatusField(args.fields, args.out, PLACED)
     changes = Changes(QUEUE, args.board, field, args.assignee, ' (the queue is current)')
     governed = [key for key, issue in issues.items()
-                if key in status and (is_initiative(issue) or is_hotfix(issue) or key in queue.parents)]
+                if key in status and (is_initiative(issue) or kind_of(issue) or key in queue.parents)]
     for key in sorted(governed):
         if key in queue.removed:
             changes.place(key, queue.line(key), issues[key], status.get(key), None, item_ids[key], home)

@@ -5,13 +5,17 @@ import re
 import subprocess
 import sys
 import tempfile
+import types
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from fixtures import SCRIPTS, hotfix_body, issue, pr, run
 
 sys.path.insert(0, str(SCRIPTS))
-from format import DECLARATION, DECLARED_FIELDS, DEPENDENCY, Required, Review, required_criteria  # noqa: E402
+import kinds  # noqa: E402
+from format import (DECLARATION, DECLARED_FIELDS, DEPENDENCY, Required, Review, required_criteria,  # noqa: E402
+                    title_name)
 
 
 def body(problem: str, proposal: str) -> str:
@@ -716,16 +720,33 @@ class DeclarationAtRevision(unittest.TestCase):
     def test_the_guide_requires_nothing_of_a_project_declaring_nothing(self):
         section = guide_section('Required Criteria')
         nothing = re.search(r'^- \*\*A project declaring nothing requires nothing\.\*\*\n(.*)$', section, re.MULTILINE)
-        unreadable = re.search(r'^- \*\*An unreadable statement is unevaluable\.\*\*\n(.*)$', section, re.MULTILINE)
+        malformed = re.search(r'^- \*\*A malformed statement is no declaration\.\*\*\n(.*)$', section, re.MULTILINE)
         self.assertIsNotNone(nothing)
-        self.assertIsNotNone(unreadable)
+        self.assertIsNotNone(malformed)
         for absent in ('missing', 'empty file', 'empty array'):
             with self.subTest(absent=absent):
                 self.assertIn(absent, nothing[1])
-                self.assertNotIn(absent, unreadable[1])
-        for fault in ('resolving to no commit', 'unreadable JSON', 'other than an array', 'lacking a field'):
+                self.assertNotIn(absent, malformed[1])
+        for fault in ('Unreadable JSON', 'other than an array', 'lacking a field'):
             with self.subTest(fault=fault):
-                self.assertIn(fault, unreadable[1])
+                self.assertIn(fault, malformed[1])
+
+    def test_the_field_states_the_declaration_and_validation_owns_its_outcomes(self):
+        field = guide_section('Required Criteria').replace(guide_example(), '')
+        for clause in ('the check', 'report', 'unevaluable', 'source', 'evaluated', 'resolving to no commit'):
+            with self.subTest(field_lacks=clause):
+                self.assertNotIn(clause, field.casefold())
+        text = GUIDE.read_text()
+        step = text.split('\n#### 4. Identify Required Criteria\n', 1)[1].split('\n#### ', 1)[0]
+        for clause in ('[Required Criteria](#required-criteria) declaration at the commit the [evaluated revision]',
+                       'name that path, commit and repository as the source',
+                       "changed files as the tracker lists them",
+                       'declares nothing brings no required-criteria finding',
+                       'resolving to no commit, or a [malformed statement](#required-criteria)',
+                       'unevaluable. Report that with the fault named, and report no epic as lacking a criterion',
+                       'changed files are not supplied leaves that criterion unevaluable'):
+            with self.subTest(step_holds=clause):
+                self.assertIn(clause, step)
 
     def test_the_criteria_and_their_source_come_from_the_resolved_commit(self):
         commit = commit_declaration(self.checkout, guide_example())
@@ -946,7 +967,7 @@ class HotFixes(unittest.TestCase):
     def test_the_label_without_the_prefix_is_a_finding_on_a_standalone_issue(self):
         r = self.check('Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon'))
         self.assertEqual(r.kind, 'issue')
-        self.assertIn('type:hot-fix on a title without an [F00] prefix: retitle it as a hot-fix, '
+        self.assertIn('type:hot-fix on a title without the hot-fix tag: retitle it as a hot-fix, '
                       'or remove the label', r.decide)
 
     def test_a_hot_fix_needs_a_theme(self):
@@ -974,6 +995,61 @@ class HotFixes(unittest.TestCase):
         self.assertEqual(r.decide, ['no theme:* label',
                                     'hot-fix: no Target: lines in the Overview; it names one target branch'])
 
+    def test_a_hot_fix_title_name_follows_its_tag(self):
+        r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon', 'priority: 10'))
+        self.assertEqual(title_name(r.issue['title']), 'Key Validation')
+
     def test_a_standalone_issue_needs_no_target(self):
         r = self.check('Key Validation: Reject Bad Keys', (), body('Gap.', 'Design.'))
         self.assertEqual(r.decide, [])
+
+
+class RegisteredKinds(unittest.TestCase):
+    """format.py reaches each kind of work the script registry holds through its interface, and names
+    none of them itself."""
+
+    def stand_in(self) -> types.ModuleType:
+        module = types.ModuleType('stand_in')
+        module.tag = lambda item: 'Z01' if (item.get('title') or '').startswith('[Z01]') else None
+        module.labels = lambda issue: ['severity: high']
+        module.faults = lambda issue: ['no stand-in field']
+        return module
+
+    def check(self, title: str, labels: tuple[str, ...], text: str | None = None) -> Review:
+        with mock.patch.dict(sys.modules, {'stand_in': self.stand_in()}), \
+                mock.patch.dict(kinds.KINDS, {'stand-in': 'stand_in'}):
+            r = Review(issue(1, title, labels=labels, body=text or body('Gap.', 'Design.')))
+            r.run()
+            self.assertEqual(title_name(title), 'Key Validation')
+        return r
+
+    def test_a_registered_kind_is_checked_through_its_interface(self):
+        r = self.check('[Z01] Key Validation: Reject Bad Keys', ('type:stand-in', 'theme:canon', 'severity: high'))
+        self.assertEqual(r.kind, 'stand-in')
+        self.assertEqual((r.apply, r.decide), ([], ['stand-in: no stand-in field']))
+
+    def test_its_interface_names_its_labels_and_their_scopes(self):
+        r = self.check('[Z01] Key Validation: Reject Bad Keys', ('theme:canon', 'severity: low'))
+        self.assertEqual(r.apply, ['labels: remove severity: low, add type:stand-in, add severity: high'])
+
+    def test_it_takes_the_standalone_template_with_a_theme(self):
+        text = body('Gap.', 'Design.') + '\n## Non-Goals\n\n- Nothing else.\n'
+        r = self.check('[Z01] Key Validation: Reject Bad Keys', ('type:stand-in', 'severity: high'), text)
+        self.assertEqual(r.decide, ['no theme:* label', 'Non-Goals: a stand-in states its boundary in the Proposal',
+                                    'stand-in: no stand-in field'])
+
+    def test_its_type_label_on_an_untagged_title_is_a_finding(self):
+        r = self.check('Key Validation: Reject Bad Keys', ('type:stand-in',))
+        self.assertEqual(r.kind, 'issue')
+        self.assertEqual(r.apply, [])
+        self.assertIn('type:stand-in on a title without the stand-in tag: retitle it as a stand-in, '
+                      'or remove the label', r.decide)
+
+    def test_the_script_names_no_kind_and_imports_no_kind_module(self):
+        source = (SCRIPTS / 'format.py').read_text()
+        self.assertIn('from kinds import KINDS, interface, kind_of', source)
+        for kind, module in kinds.KINDS.items():
+            with self.subTest(kind=kind):
+                self.assertNotIn(kind, source)
+                self.assertIsNone(re.search(rf'\b(?:import|from) {module}\b', source))
+                self.assertIsNone(re.search(rf'\b{module}\b', source, re.I))

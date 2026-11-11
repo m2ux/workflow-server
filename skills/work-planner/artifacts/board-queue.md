@@ -1,6 +1,6 @@
 # Board Queue
 
-The queue for one theme board: initiative priority sets, hot-fix status, status and assignee changes, pending decisions, waiting work, next epics, Ready units and epics waiting on a priority.
+The queue for one theme board: initiative priority sets, the status a kind's Settle Board Status settles, status and assignee changes, pending decisions, waiting work, next epics, Ready units and epics waiting on a priority.
 
 ## Commands
 
@@ -25,17 +25,17 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - Repeat `--unplanned` for each supplied [Unplanned Initiative](#unplanned-initiatives "○").
 
 - The computation reads [Read Lane Assignments](lane.md#read-lane-assignments "ƒ") and runs [Validate Lane Unit](lane.md#validate-lane-unit "ƒ") internally with each complete free unit derived after queue placement.
-- Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix’s, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
+- Refuse a Status change outside the queue's [write jurisdiction](board-status.md#write-jurisdiction), identifying the issue.
 - Distinguish pending decisions and missing evidence under [Completeness](#completeness). The requester supplies further evidence and confirmed decisions for another pass and applies the proposed changes.
 
 - The highest priority set is In Progress, all together. The next set is Ready, all together. Lower sets stay in Backlog. When the highest set leaves In Progress, the Ready set moves to In Progress.
 - An initiative in Backlog with no priority label stays there. An initiative in Ready with no priority label moves to Backlog, as [Backlog Cascade](#backlog-cascade) states.
 - An initiative In Progress with no priority label needs a decision: a positive integer keeps it In Progress; none sends it to Backlog once its epics' work has completed.
-- An initiative stays In Progress while an epic its Work Breakdown lists is [active](#epic-activity), [handed off](#epic-handoff) or In Review, even when a higher set has started, as Board Delivery holds it In Progress. The epic's integration pull request is not activity; the epic's In Review status is what holds the initiative while that pull request awaits its merge. The highest set moves to In Progress immediately. Once that work completes, a lower set moves to Ready if it is the next number, or Backlog if a number sits between it and the highest.
+- An initiative stays In Progress while an epic its Work Breakdown lists is [active](#epic-activity), [handed off](#epic-handoff) or In Review, even when a higher set has started, as [Item Status](board-status.md#item-status) holds it In Progress. The epic's integration pull request is not activity; the epic's In Review status is what holds the initiative while that pull request awaits its merge. The highest set moves to In Progress immediately. Once that work completes, a lower set moves to Ready if it is the next number, or Backlog if a number sits between it and the highest.
 - An initiative confirmed unplanned follows the same wait, then moves to Backlog as [Backlog Cascade](#backlog-cascade) states.
 - An initiative In Review or Done remains in that state.
 
-- Each hot-fix stands where its [Board Status](hotfix.md#board-status) places it.
+- An item whose [registered kind](../SKILL.md) supplies Settle Board Status stands where that operation places it, as [Membership](board.md#membership) states.
 
 - On an initiative Ready or In Progress, an [active](#epic-activity) epic is In Progress even with open questions. A delivered task row alone is not activity.
 - On that initiative, an inactive epic can start when every entry of its initiative row's Depends on cell is delivered, every prerequisite epic that row names is closed as completed, all of each prerequisite's bases have merged into their long-lived branches, and the epic's Open Questions section is empty.
@@ -60,7 +60,7 @@ The epics of one initiative carry their own sets. Every epic with the same numbe
 
 A priority label is `priority:` and a positive integer. A larger number is higher, with no maximum. Two such labels on one issue count as the larger number.
 
-Execution order ranks available epic units by initiative priority, then by epic priority within each initiative. Equally ranked initiatives keep repository and issue order, as do equally ranked epics within one initiative; task order breaks remaining ties. An unranked initiative or sibling epic follows ranked items at its own level. An epic's parent is the initiative whose Work Breakdown links its issue, including across repositories; an epic without supplied parent evidence groups with its initiative prefix at unranked initiative priority. Hot-fixes sit outside these sets.
+Execution order ranks available epic units by initiative priority, then by epic priority within each initiative. Equally ranked initiatives keep repository and issue order, as do equally ranked epics within one initiative; task order breaks remaining ties. An unranked initiative or sibling epic follows ranked items at its own level. An epic's parent is the initiative whose Work Breakdown links its issue, including across repositories; an epic without supplied parent evidence groups with its initiative prefix at unranked initiative priority. A [kind unit](delivery-plan.md#kind-units) sits outside these sets.
 
 ### Ready Units
 
@@ -68,7 +68,7 @@ A collection of units, each carrying initiative, epic and member task ids plus i
 
 ### Proposed Changes
 
-The queue contains calls for Status and assignee changes to initiatives, epics and hot-fixes. Status changes are between Backlog, Ready and In Progress, and a hot-fix's change as its [Board Status](hotfix.md#board-status) gives it. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.
+The queue contains calls for Status and assignee changes to initiatives, epics and items whose [registered kind](../SKILL.md) supplies Settle Board Status. Status changes are between Backlog, Ready and In Progress, and such an item's change as that operation gives it. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.
 
 ### Report Lines
 
@@ -101,7 +101,7 @@ The supplied current board items with Status and their complete issue records, a
 
 ### Pull Request Records
 
-The supplied complete initiative and hot-fix pull request records, one JSON object per nonempty line at the local file path. eg `prs.json`
+The supplied complete delivery pull request records, one JSON object per nonempty line at the local file path. eg `prs.json`
 
 ### Issue Link Snapshot
 
@@ -127,13 +127,13 @@ The absolute supplied checkout path holding the installed Work Planner scripts a
 
 ### Backlog Cascade
 
-An initiative that moves to Backlog takes its unstarted epics with it, and each loses its assignees, as [Assignees](board.md#assignees) states. Board Delivery moves each Ready task issue of a Backlog epic to Backlog, as [Task Eligibility](#task-eligibility) states.
+An initiative that moves to Backlog takes its unstarted epics with it, and each loses its assignees, as [Assignees](board.md#assignees) states. [Item Status](board-status.md#item-status) moves each Ready task issue of a Backlog epic to Backlog, as [Task Eligibility](#task-eligibility) states.
 
 An epic that is [active](#epic-activity), [handed off](#epic-handoff) or In Review is not released. The queue prints a `reconcile` line naming it, and the initiative and every one of its epics stay where they stand until the user finishes or releases that work.
 
 ### Epic Activity
 
-An open epic is active while it has task work under way, and Board Delivery reads it the same way:
+An open epic is active while it has task work under way, and [Item Status](board-status.md#item-status) reads it the same way:
 
 - a task row links a reserved planning folder, as [Task Delivery](epic-issue-body.md#task-delivery) defines, or
 - an open pull request whose title names the epic, `[Ixx:Eyy]`, is not the epic's integration pull request, whose head is the epic base `ixx/eyy/<branch>` and whose base is `<branch>`.
@@ -142,7 +142,7 @@ A delivered row, and the integration pull request, are not activity.
 
 ### Epic Handoff
 
-An open epic whose acceptance criteria are all ticked is handed off. Board Delivery places it In Review when its current agent review passes, and holds it In Progress while that review is missing or failing. The queue neither readies, parks nor releases it, and it holds its initiative In Progress as an epic In Review does.
+An open epic whose acceptance criteria are all ticked is handed off. [Item Status](board-status.md#item-status) places it In Review when its current agent review passes, and holds it In Progress while that review is missing or failing. The queue neither readies, parks nor releases it, and it holds its initiative In Progress as an epic In Review does.
 
 ### Task Eligibility
 

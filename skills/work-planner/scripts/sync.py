@@ -1,4 +1,4 @@
-"""Bring a task, a hot-fix, an epic or an initiative up to date with delivered work.
+"""Bring a task, an issue of a registered kind of work, an epic or an initiative up to date with delivered work.
 
 Usage:
   python3 sync.py issue-637.json --prs prs.json [--pr 950] [--tick AC1 --fix fixed-637.md]
@@ -38,9 +38,9 @@ Task issue ([I07:E00:W01]): --pr names the pull request that delivers it, open o
 names the task's epic. Its criteria are ready to verify while that pull request is open, since the
 evidence is what the pull request and its planning record carry. The task is delivered, and so
 closable, once that pull request has merged.
-Hot-fix issue ([F00]): read as a task issue whose --pr is the pull request of its repository that
-delivers it, as hotfix.delivering_pulls tests it against --links and the target the hot-fix's
-Target: line names; a --pr that does not deliver it is refused with the condition it fails.
+Issue of a registered kind, whose title opens with a tag kinds.py registers: read as a task issue
+whose --pr is the pull request of its repository that delivers it, as the kind's delivering_pulls tests
+it against --links; a --pr that does not deliver it is refused with the condition its delivery_fault names.
 Closed epics have their Work Breakdown normalized to the current columns before delivery is read;
 --fix holds the normalized body for publication. Ambiguous tables are refused. Linked merged pull
 requests with no prefix or a matching initiative/task prefix report the owning epic title to publish
@@ -98,15 +98,14 @@ from pathlib import Path
 from typing import NamedTuple
 
 from format import Review, Template, AC, LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections
-from hotfix import delivering_pulls, delivery_fault, hotfix_tag
+from kinds import interface, kind_of
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
-SINGLE = ('task', 'hot-fix')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
 TICKED = re.compile(r'^- \[[xX]\] ')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
 PULL_URL = re.compile(r'/pull/(\d+)$')
-PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
+PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 BELONGS = re.compile(r'\b(?:belongs? to|left to|owned by)\s+(W\d\d)\b', re.IGNORECASE)
 LONG_LIVED: tuple[str, ...] = ()
 
@@ -332,7 +331,7 @@ def epic_base(ref: str, initiative: str, epic: str | None = None) -> str | None:
 
 
 def pr_repo(pr: dict) -> str:
-    home = PULL_HOME.search(pr.get('html_url') or '')
+    home = PULL_REF.search(pr.get('html_url') or '')
     return home[1] if home else ''
 
 
@@ -1010,23 +1009,26 @@ def main() -> int:
 
     issue = json.loads(Path(args.issue).read_text())
     m = PREFIX.match(issue['title'])
-    hotfix = hotfix_tag(issue)
-    if not m and not hotfix:
-        sys.exit(f"title has no [Ixx], [Ixx:Eyy], [Ixx:Eyy:Wzz] or [F00] prefix: {issue['title']}")
-    if hotfix:
-        initiative, epic, task, kind = None, None, hotfix, 'hot-fix'
+    registered = kind_of(issue)
+    if not m and not registered:
+        sys.exit(f"title has no [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz] prefix or registered kind's tag: {issue['title']}")
+    work = interface(registered) if registered else None
+    if work:
+        initiative, epic, task, kind = None, None, work.tag(issue), registered
     else:
         initiative, epic, task = m[1], m[2], m[3] and f'W{m[3]}'
         kind = 'task' if task else 'epic' if epic else 'initiative'
+    # A task and an issue of a registered kind are each delivered by one pull request.
+    single = bool(work) or kind == 'task'
     if kind != 'initiative' and not args.prs:
         sys.exit(f'a {kind} needs --prs')
-    if kind in ('epic', 'hot-fix') and args.prs and not args.links:
+    if (work or kind == 'epic') and args.prs and not args.links:
         sys.exit('--prs needs --links, which holds the issue each pull request links')
     prs = pull_requests(args.prs) if args.prs else []
     if args.links:
         attach_links(prs, args.links)
-    if kind == 'hot-fix':
-        named = {p['number']: p for p in delivering_pulls(prs, issue_key(issue), issue)}
+    if work:
+        named = {p['number']: p for p in work.delivering_pulls(prs, issue_key(issue), issue)}
     else:
         named = for_epic(prs, initiative, epic) if epic else {}
     links: dict[str, list[int]] = {}
@@ -1050,13 +1052,13 @@ def main() -> int:
     verifiable: dict[str, bool] = {}
     citing: dict[int, list[str]] = {}
     rows = []
-    if kind in SINGLE:
+    if single:
         pr = named.get(args.pr) if args.pr else None
-        if args.pr and not pr and kind == 'hot-fix':
+        if args.pr and not pr and work:
             home = issue_key(issue)[0].lower()
             given = next((p for p in prs if p['number'] == args.pr and pr_repo(p).lower() == home), None)
             sys.exit(f'--pr {args.pr}: does not deliver {task}: '
-                     + (delivery_fault(given, issue_key(issue), issue) if given else f'it is not among --prs for {home}'))
+                     + (work.delivery_fault(given, issue_key(issue), issue) if given else f'it is not among --prs for {home}'))
         if args.pr and not pr:
             sys.exit(f'--pr {args.pr}: no pull request naming I{initiative}:E{epic}')
         merged = bool(pr and pr.get('merged_at'))
@@ -1093,10 +1095,10 @@ def main() -> int:
             ticked[int(a[1])] = bool(TICKED.match(line))
     # A task's evidence is its pull request, which is readable while that pull request is open; an
     # epic's and an initiative's is what their rows have delivered.
-    observable = verifiable if kind in SINGLE else delivered
+    observable = verifiable if single else delivered
     evidenced = passed_criteria(rows, header, {p['number']: p for p in prs}) if kind == 'epic' else set()
     for n, is_ticked in ticked.items():
-        rows_for = [task] if kind in SINGLE else citing.get(n, [])
+        rows_for = [task] if single else citing.get(n, [])
         done = bool(rows_for) and all(observable.get(t) for t in rows_for)
         if not is_ticked and done:
             ready.add(n)
@@ -1105,7 +1107,7 @@ def main() -> int:
         # A row this run was not given evidence for is unchecked, which shows no tick early.
         pending = [t for t in rows_for if t in observable and not observable[t]] if rows_for else ['no row cites it']
         if is_ticked and pending:
-            why = 'has no pull request' if kind in SINGLE else 'undelivered'
+            why = 'has no pull request' if single else 'undelivered'
             report['ticked early'].append(f"{tag}{n} ({', '.join(pending)} {why})")
 
     to_tick = {int(t.strip()[len(tag):]) for t in args.tick.split(',') if t.strip()}
@@ -1127,7 +1129,7 @@ def main() -> int:
         plan_agreement(rows, header, by_number, report)
 
     done_changed = False
-    if kind not in SINGLE and rows:
+    if not single and rows:
         done_changed = sync_done(rows, header, delivered, ticked, kind, report)
 
     open_rows = [t for t, d in delivered.items() if not d]
@@ -1155,7 +1157,7 @@ def main() -> int:
         report['unevaluable'].extend(unread)
         report['uncited'].extend(unlinked_reviews(prs, initiative, epic, issue_key(issue)))
         report['target'].extend(misrouted(prs, initiative, epic))
-    if kind not in SINGLE:
+    if not single:
         report['no epic'].extend(epicless(prs, initiative))
         report['retitle'].extend(line for line in task_titled(prs, initiative) if line not in report['retitle'])
     print(f"#{issue['number']} {kind} ({issue['state']})")
@@ -1169,7 +1171,7 @@ def main() -> int:
     print('  closable: ' + ('no (' + ', '.join(filter(None, reasons)) + ')' if any(reasons) else 'yes'))
 
     if args.fix:
-        rewrite = bool(report['linked']) and kind not in SINGLE or done_changed
+        rewrite = bool(report['linked']) and not single or done_changed
         if rewrite:
             lines[start + 2:end] = [row(r) for r in rows]
         Path(args.fix).write_text(join_sections(preamble, sections) if rewrite or report['ticked'] or report['normalized'] else body)

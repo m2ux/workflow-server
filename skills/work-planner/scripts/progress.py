@@ -40,7 +40,7 @@ epic's repository.
   In progress  epics In Progress or In Review and task issues In Progress, each epic with its
                open pull requests that link none of its task issues In Progress, in review when
                ready for review or draft, or else, with no line under it, its next task.
-  Next         hot-fixes Ready first, then epics and task issues Ready, ranked by the priority label of their initiative, then
+  Next         issues of a registered kind Ready first, then epics and task issues Ready, ranked by the priority label of their initiative, then
                by their epic's own (a larger number first; no label after every number) and then by
                reference, and an epic ahead of any listed epic naming it; the first five,
                and a count of the rest. An epic names its next task.
@@ -49,13 +49,14 @@ task issue, if it has one, is on the board and not In Progress. A task is undeli
 while every pull request its id links is open. A task issue that
 belongs to an epic which names its task as next is not listed again.
 
-A hot-fix ([F00]) belongs to no initiative and follows the epic groups of each section: under
-Completed when Done and closed in the window, with each delivering pull request merged in the
-window; under In progress when In Progress or In Review, with each open delivering pull request;
-under Next when Ready. Its delivering pull requests are those hotfix.delivering_pulls finds; a
-hot-fix shown under Completed or In progress whose Overview names no target in one Target: line has
-none, and is named on stderr.
---initiative leaves hot-fixes out.
+An issue of a kind kinds.py registers, selected by the tag its title opens with, belongs to no
+initiative and follows the epic groups of each section: under Completed when Done and closed in the
+window, with each delivering pull request merged in the window; under In progress when In Progress
+or In Review, with each open delivering pull request; under Next when Ready. Its delivering pull
+requests are those its kind's delivering_pulls finds; one shown under Completed or In progress whose
+kind's target names no branch has none, and is named on stderr. The key explains each registered
+kind's letter by the kind's name.
+--initiative leaves issues of a registered kind out.
 
 The window opens at the start of --since in local time, by default a week before today.
 --initiative limits the summary to the items working for one initiative; where its number names
@@ -82,19 +83,17 @@ from collections.abc import Callable
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 
-from board import Board, PREFIX, PULL_REF, Resolution, linked_issue
-from statuses import Key, key_of, label, pages, status_of
-from format import LINK, cell, id_cell, phrase, title_name
-from hotfix import HOTFIX, delivering_pulls, hotfix_tag, target
+from board import Board, Resolution, linked_issue, tags
+from kinds import KINDS, interface, kind_of
+from statuses import Key, label, pages, status_of
+from format import LINK, cell, id_cell, phrase, title_name, untagged
 from priority import rank as priority_rank
-from sync import PR_REF, PULL_URL, Unreadable, attach_links, links_issue, pull_requests
+from sync import PR_REF, PREFIX, PULL_REF, PULL_URL, Unreadable, attach_links, issue_key, links_issue, pull_requests
 
 SHOWN = 5
 DONE, WORKING, REVIEW, DRAFT, READY = '✅', '🔄', '👀', '📝', '▶️'
 MARK = {'In Progress': WORKING, 'In Review': REVIEW}
 ACTIVE = tuple(MARK)
-KEY = ['*Key*', 'I=Initiative, E=Epic, W=Work Item, F=Hot-fix',
-       f'{DONE} done · {WORKING} in progress · {REVIEW} in review · {DRAFT} draft · {READY} ready']
 BOARD_API = re.compile(r'api\.github\.com/(users|orgs)/([^/]+)/projectsV2/(\d+)')
 Scope = tuple[str, str]  # an initiative: its repository, lowercased, and its number
 
@@ -103,9 +102,12 @@ def week_before(today: date) -> date:
     return today - timedelta(days=7)
 
 
-def tags(title: str) -> tuple[str, str, str] | None:
-    m = PREFIX.match(title)
-    return (m[1], m[2] or '', m[3] or '') if m else None
+def key_lines() -> list[str]:
+    """The key to the reference letters, each registered kind's letter by its name, and the marks."""
+    letters = ['I=Initiative', 'E=Epic', 'W=Work Item',
+               *(f'{interface(kind).letter()}={kind.capitalize()}' for kind in KINDS)]
+    return ['*Key*', ', '.join(letters),
+            f'{DONE} done · {WORKING} in progress · {REVIEW} in review · {DRAFT} draft · {READY} ready']
 
 
 def reference(i: str, e: str = '', w: str = '') -> str:
@@ -123,7 +125,7 @@ def task_name(r: list[str], header: list[str]) -> str:
 
 
 def pr_title(pr: dict) -> str:
-    return HOTFIX.sub('', PR_REF.sub('', pr['title'])).strip()
+    return untagged(PR_REF.sub('', pr['title'])).strip()
 
 
 def board_link(items: list[dict]) -> str:
@@ -166,7 +168,7 @@ class Section:
         self.issues = issues
         self.mark = mark
         self.groups: dict[tuple[str, str, str, int], list[str]] = {}
-        self.hotfixes: list[str] = []
+        self.kinded: list[str] = []
 
     def group(self, g: tuple[str, str, str, int]) -> list[str]:
         return self.groups.setdefault(g, [])
@@ -178,7 +180,7 @@ class Section:
             head = f"*{reference(i, e)} {title_name(issue['title'])}*" if issue else f'*{repo} {reference(i, e)}*'
             out.append(f"{self.mark((repo, number))} {head}" + (f" — {issue['html_url']}" if issue else ''))
             out.extend(f'    {line}' for line in lines)
-        return out + self.hotfixes or ['• Nothing']
+        return out + self.kinded or ['• Nothing']
 
 
 def main() -> int:
@@ -205,12 +207,12 @@ def main() -> int:
              if i.get('content_type') == 'Issue' and (i.get('content') or {}).get('repository_url')]
     if items and not any(f.get('name') == 'Status' for i in items for f in i.get('fields', [])):
         sys.exit("the items carry no Status field; fetch them with fields=<the board's Status field id>")
-    issues = {key_of(i['content']): i['content'] for i in items}
-    status = {key_of(i['content']): status_of(i) for i in items}
+    issues = {issue_key(i['content']): i['content'] for i in items}
+    status = {issue_key(i['content']): status_of(i) for i in items}
     for path in args.initiatives:
         given = json.loads(Path(path).read_text())
         if (t := tags(given['title'])) and not t[1]:
-            issues.setdefault(key_of(given), given)
+            issues.setdefault(issue_key(given), given)
     prs = pull_requests(args.prs)
     attach_links(prs, args.links)
     unresolved: list[str] = []
@@ -396,24 +398,26 @@ def main() -> int:
                 named_next |= task[0]
             ready.append((ek, f'next {task[1]}' if task else ''))
 
-    hot_ready = []
-    hotfixes = {} if only else {k: tag for k, issue in issues.items() if (tag := hotfix_tag(issue))}
-    for k, tag in sorted(hotfixes.items()):
+    kinded_ready = []
+    kinded = {} if only else {k: kind for k, issue in issues.items() if (kind := kind_of(issue))}
+    for k, kind in sorted(kinded.items()):
+        operations = interface(kind)
+        tag = operations.tag(issues[k])
         head = f"*{tag} {title_name(issues[k]['title'])}* — {issues[k]['html_url']}"
-        delivering = delivering_pulls(list(by_url.values()), k, issues[k])
-        if (done(k) or status.get(k) in ACTIVE) and not target(issues[k]):
-            unresolved.append(f"{tag} {issues[k]['html_url']}: its Overview names no target in one Target: line, "
+        delivering = operations.delivering_pulls(list(by_url.values()), k, issues[k])
+        if (done(k) or status.get(k) in ACTIVE) and not operations.target(issues[k]):
+            unresolved.append(f"{tag} {issues[k]['html_url']}: it names no target, "
                               'so no pull request delivers it and none is shown')
         if done(k):
-            completed.hotfixes.append(f'{DONE} {head}')
-            completed.hotfixes.extend(f"    {DONE} {pr_title(p)} — {p['html_url']}"
-                                      for p in delivering if within(p.get('merged_at')))
+            completed.kinded.append(f'{DONE} {head}')
+            completed.kinded.extend(f"    {DONE} {pr_title(p)} — {p['html_url']}"
+                                    for p in delivering if within(p.get('merged_at')))
         elif status.get(k) in ACTIVE:
-            progress.hotfixes.append(f'{MARK[status[k]]} {head}')
-            progress.hotfixes.extend(f"    {DRAFT if p.get('draft') else REVIEW} {pr_title(p)} — {p['html_url']}"
-                                     for p in delivering if p.get('state') == 'open')
+            progress.kinded.append(f'{MARK[status[k]]} {head}')
+            progress.kinded.extend(f"    {DRAFT if p.get('draft') else REVIEW} {pr_title(p)} — {p['html_url']}"
+                                   for p in delivering if p.get('state') == 'open')
         elif status.get(k) == 'Ready':
-            hot_ready.append(f'{READY} {head}')
+            kinded_ready.append(f'{READY} {head}')
 
     context = []
     for scope in sorted(worked, key=lambda s: (s[1], s[0])):
@@ -461,7 +465,7 @@ def main() -> int:
         for held in waiting.values():
             held.discard(entry[0])
     ready = ordered
-    upcoming = hot_ready + [f"{READY} *{reference(*tagged[k])} {title_name(issues[k]['title'])}*"
+    upcoming = kinded_ready + [f"{READY} *{reference(*tagged[k])} {title_name(issues[k]['title'])}*"
                             + (f', {task}' if task else '') + f" — {issues[k]['html_url']}" for k, task in ready]
     if len(upcoming) > SHOWN:
         upcoming[SHOWN:] = [f'…and {len(upcoming) - SHOWN} more ready']
@@ -475,7 +479,7 @@ def main() -> int:
                      '', '*Completed*', *completed.render(),
                      '', '*In progress*', *progress.render(),
                      '', '*Next*', *(upcoming or ['• Nothing']),
-                     '', *KEY]))
+                     '', *key_lines()]))
     for note in dict.fromkeys(unresolved):
         print(f'unresolved: {note}', file=sys.stderr)
     return 0

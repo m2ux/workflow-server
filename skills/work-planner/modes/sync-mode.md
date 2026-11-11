@@ -101,7 +101,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 **Target.**
 
-- Confirm the base it names against its work item's [Component](../artifacts/work-item.md#component): the confirmed base is the epic base of the long-lived branch that Component names, whether the finding names that base, another, or one of several.
+- Confirm the base it names against its work item's [Component](../artifacts/work-item.md#component): the confirmed bases are the epic bases of the long-lived branches its declared files name, whether the finding names one of them, another base, or several.
 
 - A unit whose work items name several long-lived branches takes each task branch's base from the long-lived branch its last slug word names.
 
@@ -273,7 +273,7 @@ When [Selected Kind](../artifacts/board.md#selected-kind) is proposals and no op
 - Retain the [Copied Board](../artifacts/board.md#copied-board) after linking succeeds.
 - Require the new theme's label and board before an initiative takes that theme.
 
-- The theme board must hold the theme's initiatives, epics, task issues and hot-fixes.
+- The theme board must hold the theme's initiatives, epics, task issues and each issue its [registered kind](../SKILL.md) places on it.
 
 ##### 3. Retain Copied Board
 
@@ -297,9 +297,9 @@ Retain the [Copied Board](../artifacts/board.md#copied-board) after the selected
 
 ##### 2. Plan Delivery Changes
 
-- Run [Compute Board Changes](../artifacts/board-delivery.md#compute-board-changes "ƒ") to the captured evidence.
+- Run [Compute Board Changes](../artifacts/board-status.md#compute-board-changes "ƒ") to the captured evidence.
 - Fetch each unresolved issue.
-- Run [Compute Board Changes](../artifacts/board-delivery.md#compute-board-changes "ƒ") again, adding the fetched off-board issue records to the retained evidence.
+- Run [Compute Board Changes](../artifacts/board-status.md#compute-board-changes "ƒ") again, adding the fetched off-board issue records to the retained evidence.
 
 ##### 3. Apply and Confirm Calls
 
@@ -314,7 +314,7 @@ Retain the [Copied Board](../artifacts/board.md#copied-board) after the selected
 
 - Fetch the issues and items again.
 - Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes.
-- Run [Compute Board Changes](../artifacts/board-delivery.md#compute-board-changes "ƒ") to the refreshed evidence, retaining every resolved off-board issue record.
+- Run [Compute Board Changes](../artifacts/board-status.md#compute-board-changes "ƒ") to the refreshed evidence, retaining every resolved off-board issue record.
 - Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
 
 ##### 5. Retain Confirmed Board Statuses

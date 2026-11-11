@@ -138,15 +138,19 @@ Provide [Worktree Result](#worktree-result) with the selected detached worktree 
 
 The configured long-lived branches and existing epic bases.
 
-#### 1. Read Declared Branch Names
+#### 1. Fetch Evaluated Revision
+
+Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the branch the supplied [revision](#revision) names on origin, such as `i07/e00/main` for `origin/i07/e00/main`; stop on failure.
+
+#### 2. Read Declared Branch Names
 
 Run [List Long-Lived Branches](#list-long-lived-branches "ƒ") with the supplied [checkout](#project-checkout) and [revision](#revision). Absent, empty or unreadable configuration at that revision leaves branch names unevaluable, reported with its source.
 
-#### 2. List Current Epic Bases
+#### 3. List Current Epic Bases
 
 Run [List Epic Bases](#list-epic-bases "ƒ") in the project checkout for [Epic Identity](#epic-identity).
 
-#### 3. Provide Delivery Branches
+#### 4. Provide Delivery Branches
 
 Provide [Branch Names](#branch-names) and [Epic-Base Names](#epic-base-names), or [Failure](#failure) with any missing configuration.
 
@@ -260,6 +264,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 </pre></big>
 
 - The checkout must meet [Prepared Task Worktrees](#prepared-task-worktrees). A mismatch retains its files and branch and blocks reuse.
+- A relative worktree path resolves against the project checkout that created it.
 
 ### Add Task Worktree
 
@@ -344,9 +349,9 @@ git -C '[**&lt;checkout&gt;**](#checkout "○")' status --porcelain --branch
 
 ### Branches
 
-The project's ordered long-lived branch names, declared in `config/branches` at its root, one name per line. A run reads the statement at the commit it evaluates, in the repository its checkout locates; which worktree the checkout is, and what its working files hold, choose nothing. The evaluated revision is fetched before it is read.
+The project's ordered long-lived branch names, declared in `config/branches` at its root, one name per line. A run reads the statement at the fetched commit it evaluates, in the repository its checkout locates; which worktree the checkout is, and what its working files hold, choose nothing.
 
-- An epic sync evaluates each of its epic bases, such as `origin/i07/e00/main` and `origin/i07/e00/workflows`. Declarations that disagree across those bases leave the names unevaluable, and each is reported with its source.
+- An epic sync evaluates each of its epic bases, such as `origin/i07/e00/main` and `origin/i07/e00/workflows`. Declarations that disagree across those bases leave the names unevaluable.
 - A read of one epic's branches evaluates its epic base, such as `origin/i07/e00/main`.
 - Base preparation, before a base exists, evaluates the long-lived branch the base is cut from, such as `origin/main`.
 - A delivery survey evaluates the long-lived branch that states the project's branches, such as `origin/workspace`.
@@ -365,7 +370,6 @@ The epic's base-branch collection, one branch per changed long-lived branch.
 - eg `i07/e00/main` merges `main` and is checked out at `.worktrees/i07/e00/main`.
 - Every pull request delivering the epic's tasks targets that epic base.
 - A completed epic is delivered by merging each base into its long-lived branch. The epic stays open until every base has merged. Another epic still incomplete holds no base back unless it is a prerequisite.
-- An epic sync reports each open or merged pull request off these routes as `target`: a task pull request into anything but one of its epic's bases, and an integration pull request into anything but the long-lived branch its head names.
 
 ### Review Worktrees
 
@@ -378,14 +382,14 @@ The detached checkout path for a reviewed pull request, named by its repository-
 A collection of task-branch, base-branch and worktree-path triples for the unit. Each task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`. The unit's pull request is opened from this branch into that base.
 
 - **Changed branches.**
-  A unit changes the long-lived branches its rows' work items name in their [Component](work-item.md#component) declarations. A unit of an epic with one base changes that base.
+  A unit changes every long-lived branch named by a file its rows' work items list in their [Component](work-item.md#component) declarations. A unit of an epic with one base changes that base.
 - **Unplanned rows.**
   A free row linking no work item is unplanned: its session writes the work item after dispatch. Its unit changes every epic base, and the session opens a pull request only from each branch its work changes.
 - **Several long-lived branches.**
   A unit whose rows name more than one long-lived branch takes one task branch per epic base it changes, cut from that base, since the bases share no history. Each is the unit's branch with the base's long-lived branch as its last slug word, and opens its own pull request into its own base.
 - eg `i01/e02/w04-write-defaults-main` from `i01/e02/main` and `i01/e02/w04-write-defaults-workflows` from `i01/e02/workflows` for a unit changing `main` and `workflows`.
-- **Hot-fix.**
-  A hot-fix works on the branch its [Branch](hotfix.md#branch) names.
+- **Kind units.**
+  A [kind unit](delivery-plan.md#kind-units) works on the branch its kind's artifact's Branch names.
 
 Each worktree is named by its branch under the worktree directory of the repository's main working tree.
 

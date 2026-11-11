@@ -1,15 +1,20 @@
 """Continuous dispatch from real delivery surveys and observed worker events."""
+import ast
 import json
+import re
 import sys
 import tempfile
+import types
 import unittest
 from pathlib import Path
+from unittest import mock
 
-from fixtures import hotfix, run, url
+from fixtures import SCRIPTS, hotfix, run, url
 from test_board_queue import epic as ranked_epic, initiative, queue_run
 from test_deliver import epic, staged
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+import kinds  # noqa: E402
 from dispatch import batch, check_start
 from lane import assign_lanes
 
@@ -240,6 +245,43 @@ class Refill(unittest.TestCase):
         for identity in ['o/r#I07', 'o/r#I07:E00']:
             with self.subTest(identity=identity), self.assertRaisesRegex(ValueError, 'dispatch unit'):
                 batch(AUTH, [offered(identity)], [], 1, BOARD)
+
+
+class Kinds(unittest.TestCase):
+    def test_a_registered_kinds_item_dispatches_through_the_registry(self):
+        stand_in = types.ModuleType('stand_in')
+        stand_in.tag = lambda item: 'Z01' if (item.get('title') or '').startswith('[Z01]') else None
+        plan = [offered('o/r#Z01')]
+        scope = {**AUTH, 'scope': ['o/r#Z01']}
+        with self.assertRaisesRegex(ValueError, 'invalid dispatch identity'):
+            batch(scope, plan, [], 1, BOARD)
+        with mock.patch.dict(sys.modules, {'stand_in': stand_in}), \
+                mock.patch.dict(kinds.KINDS, {'stand-in': 'stand_in'}):
+            self.assertEqual(batch(scope, plan, [], 1, BOARD)['units'], plan)
+            busy = [worker('o/r#Z01')]
+            self.assertEqual(batch(scope, plan, busy, 1, BOARD)['units'], [])
+            with self.assertRaisesRegex(ValueError, 'duplicate'):
+                check_start({'units': plan}, 'o/r#Z01', evidence(plan[0]), busy, 1)
+
+    def test_an_unregistered_tag_is_no_dispatch_identity(self):
+        for identity in ['o/r#F02x', 'o/r#Z01', 'o/r#[F02]', 'o/r#W01']:
+            with self.subTest(identity=identity), self.assertRaisesRegex(ValueError, 'invalid dispatch identity'):
+                batch(AUTH, [offered(identity)], [], 1, BOARD)
+
+    def test_dispatch_names_no_kind_and_imports_only_the_registry_lookup(self):
+        source = (SCRIPTS / 'dispatch.py').read_text()
+        names = {kind for kind in kinds.KINDS} | set(kinds.KINDS.values())
+        for name in names | {'hot-fix', 'hotfix', 'hot fix'}:
+            with self.subTest(name=name):
+                self.assertNotIn(name, source.lower())
+        self.assertIsNone(re.search(r'F\\d\\d|\\bF\d\d\b', source))
+        imported = {(node.module, alias.name) for node in ast.walk(ast.parse(source))
+                    if isinstance(node, ast.ImportFrom) for alias in node.names}
+        self.assertEqual({entry for entry in imported if entry[0] == 'kinds'}, {('kinds', 'kind_of')})
+        modules = set(kinds.KINDS.values())
+        self.assertFalse({module for module, _ in imported} & modules)
+        self.assertFalse({alias.name for node in ast.walk(ast.parse(source)) if isinstance(node, ast.Import)
+                          for alias in node.names} & modules)
 
 
 class DispatchPriority(unittest.TestCase):

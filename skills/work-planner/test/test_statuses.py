@@ -3,13 +3,19 @@
 import json
 import sys
 import tempfile
+import types
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from fixtures import SCRIPTS, issue
 
 sys.path.insert(0, str(SCRIPTS))
+import kinds  # noqa: E402
+import statuses  # noqa: E402
+import sync  # noqa: E402
 from statuses import DELIVERY, DISPATCH, PLACED, QUEUE, Changes, Jurisdiction, StatusField  # noqa: E402
+from test_kinds import kind_mentions  # noqa: E402
 
 HOME = 'o/r'
 BOARD = 'users/o/projectsV2/9'
@@ -182,6 +188,35 @@ class Rendering(unittest.TestCase):
             lacking = StatusField(str(path), str(Path(tmp, 'out')), PLACED)
         self.assertEqual(lacking.settle('In Review'), 'In Progress')
         self.assertEqual(lacking.settle('Done'), 'Done')
+
+
+class KindRegistry(unittest.TestCase):
+    def test_statuses_names_no_kind_and_imports_only_the_registry_lookup(self):
+        self.assertEqual(kind_mentions((SCRIPTS / 'statuses.py').read_text()), [])
+        self.assertIs(statuses.kind_of, kinds.kind_of)
+
+    def test_a_stand_in_kinds_issue_stands_in_review_and_done_through_the_registry(self):
+        stand_in = types.ModuleType('stand_in')
+        stand_in.tag = lambda item: 'Z01' if (item.get('title') or '').startswith('[Z01]') else None
+        awaiting = issue(6, '[Z01] Stand In: Work')
+        completed = issue(7, '[Z01] Stand In: Work', 'closed')
+        with tempfile.TemporaryDirectory() as tmp:
+            for item, wanted in ((awaiting, 'In Review'), (completed, 'Done')):
+                with self.subTest(wanted=wanted), self.assertRaises(Jurisdiction):
+                    place(changes(tmp, QUEUE), item, 'In Progress', wanted)
+            with mock.patch.dict(sys.modules, {'stand_in': stand_in}), \
+                    mock.patch.dict(kinds.KINDS, {'stand-in': 'stand_in'}):
+                plan = changes(tmp, QUEUE)
+                place(plan, awaiting, 'In Progress', 'In Review')
+                place(plan, completed, 'In Progress', 'Done')
+        self.assertEqual([line.split(': ')[2] for line in plan.lines if line.startswith('  set ')],
+                         ['In Progress → In Review', 'In Progress → Done'])
+
+
+class SharedRules(unittest.TestCase):
+    def test_issue_identity_is_syncs(self):
+        self.assertIs(statuses.issue_key, sync.issue_key)
+        self.assertFalse(hasattr(statuses, 'key_of'))
 
 
 if __name__ == '__main__':

@@ -1,14 +1,18 @@
 """Current integration review evidence gates board and user handoff."""
+import ast
 import copy
 import json
 import sys
 import tempfile
+import types
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from fixtures import SCRIPTS, issue, pr, run
 sys.path.insert(0, str(SCRIPTS))
-from agent_review import check, epic_check
+import kinds  # noqa: E402
+from agent_review import check, epic_check  # noqa: E402
 
 
 def reviewed_pr(tag='07:E00'):
@@ -34,6 +38,38 @@ def hotfix_pr():
     return pull, record
 
 
+class ValidatedTips(unittest.TestCase):
+    """Both the general rule and a kind's rule hold a record current against the tips check validated."""
+
+    def test_the_general_rule_holds_a_record_current_for_the_head_and_base_shas(self):
+        pull, record = reviewed_pr()
+        self.assertIsNone(check(pull, [record]))
+        self.assertIsNone(check(pull, [{**record, 'base_ref': 'elsewhere'}]))
+        self.assertIn('stale', check(pull, [{**record, 'head': 'c' * 40}]))
+        self.assertIn('stale', check(pull, [{**record, 'base': 'c' * 40}]))
+
+    def test_a_target_without_a_branch_is_refused_on_either_path(self):
+        for pull, record in (reviewed_pr(), hotfix_pr()):
+            with self.subTest(title=pull['title']):
+                del pull['base']['ref']
+                record.pop('base_ref', None)
+                self.assertEqual(check(pull, [record]), 'missing current integration target branch')
+                pull['base']['ref'] = ''
+                self.assertEqual(check(pull, [record]), 'missing current integration target branch')
+
+    def test_a_kind_rule_receives_the_validated_tips(self):
+        received = []
+        stand_in = types.ModuleType('stand_in')
+        stand_in.tag = lambda item: 'Z01' if (item.get('title') or '').startswith('[Z01]') else None
+        stand_in.review = lambda tips: received.append(tips) or kinds.Review({'head': tips.head}, lambda finding: '')
+        pull, record = reviewed_pr()
+        pull['title'] = '[Z01] Stand In'
+        with mock.patch.dict(sys.modules, {'stand_in': stand_in}), \
+                mock.patch.dict(kinds.KINDS, {'stand-in': 'stand_in'}):
+            self.assertIsNone(check(pull, [record]))
+        self.assertEqual(received, [kinds.Tips('a' * 40, 'b' * 40, 'workspace')])
+
+
 class HotFixReview(unittest.TestCase):
     def test_a_record_written_from_the_pull_request_as_produce_says_passes(self):
         pull, published = hotfix_pr()
@@ -56,6 +92,46 @@ class HotFixReview(unittest.TestCase):
         self.assertIn('stale', check(pull, [{**record, 'head': 'c' * 40}]))
         self.assertIn('stale', check(pull, [{**record, 'base_ref': 'main'}]))
         self.assertIn('stale', check(pull, [{k: v for k, v in record.items() if k != 'base_ref'}]))
+
+
+class RegisteredKind(unittest.TestCase):
+    def test_each_kind_supplies_its_own_currency_and_finding_rule(self):
+        stand_in = types.ModuleType('stand_in')
+        stand_in.tag = lambda item: 'Z01' if (item.get('title') or '').startswith('[Z01]') else None
+        stand_in.review = lambda tips: kinds.Review(
+            {'head': tips.head},
+            lambda finding: 'a stand-in defers nothing' if finding.get('disposition') == 'deferred' else '')
+        pull, record = hotfix_pr()
+        pull['title'] = '[Z01] Stand In'
+        deferred = [{'description': 'Follow-up', 'severity': 'nonblocking', 'disposition': 'deferred',
+                     'ticket': 'https://github.com/o/r/issues/5'}]
+        fixed = [{'description': 'Follow-up', 'severity': 'nonblocking', 'disposition': 'fixed',
+                  'evidence': 'https://github.com/o/r/commit/1'}]
+        with mock.patch.dict(sys.modules, {'stand_in': stand_in}), \
+                mock.patch.dict(kinds.KINDS, {'stand-in': 'stand_in'}):
+            self.assertEqual(check(pull, [{**record, 'findings': deferred}]), 'a stand-in defers nothing')
+            self.assertIsNone(check(pull, [{**record, 'findings': fixed}]))
+            self.assertIsNone(check(pull, [{**record, 'base': 'c' * 40, 'base_ref': 'main'}]))
+            self.assertIn('stale', check(pull, [{**record, 'head': 'c' * 40}]))
+            hot = {**pull, 'title': '[F04] Reject Bad Keys'}
+            self.assertIn('stale', check(hot, [{**record, 'base_ref': 'main'}]))
+            self.assertIn('unfixed finding', check(hot, [{**record, 'findings': deferred}]))
+        self.assertIsNone(check(pull, [{**record, 'findings': deferred}]))
+        self.assertIn('stale', check(pull, [{**record, 'base': 'c' * 40}]))
+
+    def test_it_imports_no_kind_module_and_names_no_kind(self):
+        source = (SCRIPTS / 'agent_review.py').read_text()
+        imported = set()
+        for node in ast.walk(ast.parse(source)):
+            if isinstance(node, ast.ImportFrom):
+                imported.add(node.module)
+            elif isinstance(node, ast.Import):
+                imported.update(alias.name for alias in node.names)
+        self.assertIn('kinds', imported)
+        self.assertFalse(imported & set(kinds.KINDS.values()))
+        for kind in kinds.KINDS:
+            self.assertNotIn(kind, source)
+        self.assertNotRegex(source, r'(?i)hot.?fix|\[F\d|F00')
 
 
 class AgentReview(unittest.TestCase):
@@ -126,6 +202,14 @@ class AgentReview(unittest.TestCase):
         second['base']['ref'] = 'main'
         second['head']['ref'] = 'i07/e00/main'
         self.assertIn('missing', epic_check(epic, [self.pr, second], [self.record]))
+
+    def test_only_an_epic_title_stands_in_review_as_board_tags_reads_it(self):
+        for title in ('[I07:E00:W01] Task', '[I07] Initiative', 'Untagged', '[F04] Fix'):
+            with self.subTest(title=title):
+                self.assertEqual(epic_check(issue(943, title), [self.pr], [self.record]),
+                                 'a task does not stand In Review')
+        with mock.patch('board.tags', return_value=('07', '00', '')):
+            self.assertIsNone(epic_check(issue(943, 'Read through the title-tag owner'), [self.pr], [self.record]))
 
     def test_wrong_repository_or_task_pr_cannot_supply_review(self):
         epic = issue(943, '[I07:E00] Epic')

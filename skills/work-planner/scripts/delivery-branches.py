@@ -3,6 +3,8 @@
 Usage:
   python3 delivery-branches.py --project PROJECT --worktree WORKTREE
       --branch TASK_BRANCH --head PREPARED_HEAD
+
+A relative WORKTREE resolves against PROJECT, the checkout that created it.
 """
 import argparse
 import json
@@ -22,7 +24,8 @@ def git(checkout: Path, *args: str) -> str:
 
 def validate(project: Path, worktree: Path, branch: str, head: str) -> dict:
     """A registered, clean task checkout at its recorded branch and full revision."""
-    project, worktree = project.resolve(), worktree.resolve()
+    project = project.resolve()
+    worktree = (project / worktree).resolve()
     if not re.fullmatch(r'(?:[0-9a-f]{40}|[0-9a-f]{64})', head, re.IGNORECASE):
         raise ValueError('preparation head must be a full commit SHA')
     records = []

@@ -12,7 +12,7 @@ One task's local implementation plan.
 
 - Write the [Template](#template) from [Task Context](#task-context) at the destination in [Work Item File](#work-item-file).
 - Its name and content must meet [Identity](#identity) and [Sections](#sections).
-- The supplied component must meet [Component](#component).
+- The supplied files must meet [Component](#component).
 - The test row must meet [Test Coverage](pull-request-body.md#test-coverage), using the supplied criteria without copying them into the file.
 
 #### 2. Provide Populated Work Item
@@ -24,7 +24,7 @@ Provide [Work Item File](#work-item-file) with its path for registration in the 
 ### Template
 
 ````markdown
-**Component:** {{The long-lived branch and path of the one component this task's implementation extends}}
+**Component:** {{The long-lived branch and path of each file this task's implementation changes, separated by commas}}
 
 ## Overview
 
@@ -55,23 +55,22 @@ One file per task, named for its id in lowercase, such as `w01.md`: the name the
 
 ### Component
 
-One declaration line ahead of the first heading, naming the single component the Implementation part extends as `<long-lived branch>:<path>`: the [long-lived branch](delivery-branches.md#branches) that holds it and the path to it there, such as `workspace:skills/work-planner/scripts/deliver.py`.
+One declaration line ahead of the first heading, listing each file the Implementation part changes as `<long-lived branch>:<path>`, separated by commas: the [long-lived branch](delivery-branches.md#branches) that holds it and the path to it there, such as `workspace:skills/work-planner/scripts/deliver.py, workspace:skills/work-planner/test/test_deliver.py`.
 
-- A task that creates the component names the path it creates.
-- The long-lived branch decides which of an epic's bases the task's unit changes, as [Task Branches](delivery-branches.md#task-branches) states.
-- A task whose implementation extends more than one component is split into a task for each.
-- A component is one file, never a directory, since the dependency check groups an epic's rows into candidate units by it.
+- A task that creates a file names the path it creates.
+- The long-lived branches decide which of an epic's bases the task's unit changes, as [Task Branches](delivery-branches.md#task-branches) states.
+- Each entry is one file, never a directory, since the dependency check groups an epic's rows into candidate units, and pairs rows of different epics as contending, by any file they share.
 
 ### Sections
 
-- Component names the component the Implementation part extends, meeting [Component](#component).
+- Component lists each file the Implementation part changes, meeting [Component](#component).
 - Overview states what the task delivers and why.
 - Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal); the Proposal starts with the scene.
 - Work Breakdown decomposes the work into parts, such as analysis, plan, implementation, review and test. Its columns are Part and Description. The test row names the checks required by the work.
 
 ### Task Context
 
-The supplied task id and scope, epic context, design, component, criteria and test requirements.
+The supplied task id and scope, epic context, design, declared files, criteria and test requirements.
 
 ### Work Item File
 

@@ -1,6 +1,6 @@
 # Advance Mode
 
-Decides which initiatives, epics and hot-fixes on a theme board are underway and which are next, from current recorded delivery.
+Decides which initiatives, epics and issues of other [registered kinds](../SKILL.md) on a theme board are underway and which are next, from current recorded delivery.
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
@@ -59,7 +59,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For an automatic line, take its recommended decision and Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with that decision.
 - A held line, and an automatic one the recommendation leaves without an answer, is settled as [Held Change](../artifacts/plan-change.md#held-change) states, following the interview rules in the [guidelines](../guidelines.md#modes) where it reaches the user.
-- A line this mode records rather than asks leaves the queue pending, which the write step reads as incomplete.
+- A held or unanswered decision under an allowance has no user to answer it: provide the pending queue with the [change list](../artifacts/plan-change.md#change-list) and stop. Step 7 treats that queue as incomplete.
+- A held decision put to the user continues with the user's answer; one the user leaves unanswered stops this step as one under an allowance does.
 
 - For `order`, the answer is the [parallel work map](../artifacts/board-queue.md#priority-sets): a positive integer on each listed initiative, or none left unordered.
 
@@ -68,16 +69,20 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - The answer is a positive integer or none.
 - Record the initiative's identity as confirmed unplanned when the answer is none.
 
-- After an answer:
+- After an answer, including an allowed automatic answer:
 
 - Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the priority label each confirmed number names, for every repository holding one of those initiatives.
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with each initiative identity and its confirmed priority-label addition.
+- On a failed save, provide the failure with the pending queue and stop this continuation.
 - Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") again.
+- Check that the refreshed board items confirm every saved priority-label addition.
+- On an unavailable or disagreeing readback, provide the discrepancy with the pending queue and stop this continuation.
 - Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board using refreshed board items and the retained pull request and issue-link snapshots, retaining resolved issue files and confirmed unplanned initiative identities.
 
 - Resolve any further missing evidence through step 5.
 
-- Repeat this step while a decision is pending. An unanswered question leaves the queue pending.
+- Repeat this step while an answer leaves a further decision pending.
+- Continue to step 7 only when the refreshed queue meets [Completeness](../artifacts/board-queue.md#completeness).
 - Provide the [change list](../artifacts/plan-change.md#change-list) with the queue, so the caller reports each decision this mode made and each it held.
 
 ### 7. Write

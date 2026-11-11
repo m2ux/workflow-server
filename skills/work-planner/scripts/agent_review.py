@@ -1,16 +1,17 @@
 """Validate published agent review evidence against a current integration pull request.
 
-A blocking finding passes only once fixed, and on a hot-fix's delivering pull request, titled
-[F00], every finding does. A record is current while it names the pull request's head and base
-SHAs; on a hot-fix's delivering pull request, while it names its head SHA and, as base_ref, its base
-branch."""
+A record is current while it names the pull request's head and base SHAs, and a blocking finding
+passes only once fixed. On a pull request whose title opens with the tag of a kind of work kinds.py
+registers, the kind's review rule decides which record fields hold a record current and adds its
+fault to each finding. Either rule reads the head and base SHAs and the base branch only once
+validated, so a pull request lacking any of them has no current record."""
 import argparse
 import json
 import re
 from pathlib import Path
 from urllib.parse import urlparse
 
-from hotfix import hotfix_tag
+from kinds import Review, Tips, interface, kind_of
 
 
 def load_records(path):
@@ -48,6 +49,15 @@ def linked_record(body, url):
     return False
 
 
+def review(pr, tips):
+    """The review rule of the pull request's registered kind, given the validated tips, or, when it has
+    none, the general rule holding a record current for the validated head and base SHAs."""
+    kind = kind_of(pr)
+    if kind:
+        return interface(kind).review(tips)
+    return Review({'head': tips.head, 'base': tips.base}, lambda finding: '')
+
+
 def check(pr, records):
     """Return a finding unless one complete, published review matches both current tips."""
     identity = pr.get('html_url')
@@ -59,9 +69,11 @@ def check(pr, records):
     head, base = (pr.get('head') or {}).get('sha'), (pr.get('base') or {}).get('sha')
     if not all(isinstance(s, str) and re.fullmatch(r'[0-9a-f]{40}', s) for s in (head, base)):
         return 'missing current integration head or target SHA'
-    ref = (pr.get('base') or {}).get('ref')
-    current = [r for r in matching if r.get('head') == head
-               and (r.get('base_ref') == ref if hotfix_tag(pr) else r.get('base') == base)]
+    base_ref = pr['base'].get('ref')
+    if not isinstance(base_ref, str) or not base_ref.strip():
+        return 'missing current integration target branch'
+    rule = review(pr, Tips(head, base, base_ref))
+    current = [r for r in matching if all(r.get(name) == value for name, value in rule.current.items())]
     if not current:
         return 'stale agent review: integration head or target changed'
     # The last record for this revision is authoritative, including a later blocking finding.
@@ -83,8 +95,8 @@ def check(pr, records):
             return 'invalid finding severity or disposition'
         if severity == 'blocking' and disposition != 'fixed':
             return 'unresolved blocking agent review finding'
-        if hotfix_tag(pr) and disposition != 'fixed':
-            return "unfixed finding on a hot-fix's delivering pull request"
+        if fault := rule.finding_fault(finding):
+            return fault
         if disposition == 'open':
             return 'agent review finding needs a disposition'
         if not web_url(finding.get('evidence' if disposition == 'fixed' else 'ticket')):
@@ -99,14 +111,18 @@ def integration(pr, initiative, epic):
 
 
 def epic_check(epic, prs, records):
-    """Require current evidence for every open integration pull request belonging to the epic."""
-    match = re.match(r'^\[I(\d\d):E(\d\d)\]', epic.get('title', ''))
-    if not match or re.match(r'^\[I\d\d:E\d\d:W', epic.get('title', '')):
+    """Require current evidence for every open integration pull request belonging to the epic, whose
+    title tag board.tags reads."""
+    # board imports this module, so its title-tag reader is reached at call time.
+    from board import tags
+    tagged = tags(epic.get('title') or '')
+    if not tagged or not tagged[1] or tagged[2]:
         return 'a task does not stand In Review'
+    initiative, number, _ = tagged
     home = epic.get('html_url', '').split('/issues/')[0]
     reviews = [p for p in prs if p.get('state') == 'open'
                and p.get('html_url', '').startswith(home + '/pull/')
-               and integration(p, match[1], match[2])]
+               and integration(p, initiative, number)]
     if not reviews:
         return 'missing open epic integration pull request'
     for pr in reviews:

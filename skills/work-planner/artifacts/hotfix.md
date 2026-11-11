@@ -1,8 +1,116 @@
 # Hot-fix
 
-A hot-fix's board status, delivery unit and branch, delivering pull requests, hold and delivery record.
+A hot-fix's board status, delivery unit and branch, delivering pull requests, hold and delivery record. Each operation fills the general contract the [kind registration](../SKILL.md) names for it.
 
 ## Operations
+
+### Release Hot-fix Hold
+
+One held hot-fix returned to Ready on a requested hold release.
+
+#### 1. Capture Development
+
+Apply [Capture Issue Development](issue.md#capture-issue-development "ƒ") for [Hot-fix Identity](#hot-fix-identity).
+
+#### 2. Refuse a Live Unit
+
+Refuse the release while its [Delivery Unit](#delivery-unit) is running or unrecorded, and provide the pull request that makes it so.
+
+#### 3. Return to Ready
+
+Apply [Place Issue on Board](board.md#place-issue-on-board "ƒ") with the board in [Board Evidence](#board-evidence), the hot-fix issue and Ready.
+
+#### 4. Provide Released Board
+
+Provide [Board Result](#board-result) with the saved item and Status.
+
+### Record Hot-fix Dispatch Status
+
+One dispatched hot-fix held In Progress.
+
+#### 1. Hold In Progress
+
+Apply [Record Dispatch Status](board-delivery.md#record-dispatch-status "ƒ") with [Hot-fix Identity](#hot-fix-identity) for In Progress and the supplied [Board Evidence](#board-evidence). That status is the hold [Delivery Unit](#delivery-unit) defines.
+
+#### 2. Provide Held Board
+
+Provide [Board Result](#board-result) with the [Confirmed Statuses](board-delivery.md#confirmed-statuses) it provides: the confirmed status or discrepancy.
+
+### Record Hot-fix Delivery
+
+One hot-fix issue brought to what its delivering pull request establishes, as its [Delivery Record](#delivery-record) states.
+
+#### 1. Verify Criteria
+
+Apply [Verify Selected Criteria](acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
+
+#### 2. Sync the Issue
+
+Run [Sync Hot-fix Issue](#sync-hot-fix-issue "ƒ") for the selected hot-fix and delivering pull request with the provided verified criterion ids.
+
+#### 3. Save the Issue
+
+Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") with the provided body.
+
+#### 4. Provide Delivery Record
+
+Provide the saved identity and [Delivery Findings](#delivery-findings).
+
+### Record Hot-fix Merge
+
+One merged delivering pull request recorded on its hot-fix's issue alone, as its [Delivery Record](#delivery-record) states.
+
+#### 1. Record the Delivery
+
+Apply [Record Hot-fix Delivery](#record-hot-fix-delivery "ƒ") for the hot-fix, with the merge result and the complete issue-link snapshot as its evidence.
+
+#### 2. Provide Merge Record
+
+Provide the saved identity and [Delivery Findings](#delivery-findings), whose closable result selects the issue's closure. The merge records nothing on an epic or initiative.
+
+### Review Hot-fix Before Merge
+
+One hot-fix's draft [delivering pull request](#delivering-pull-request) taken through the review cycle it waits on, under its [Review Rule](#review-rule), to a ready pull request or a held draft.
+
+#### 1. Review the Head
+
+- Apply [Produce Agent Review](agent-review.md#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence.
+- Apply [Populate Planning Record](planning-record.md#populate-planning-record "ƒ") with its provided record, then Apply [Publish Planning Record](planning-record.md#publish-planning-record "ƒ") with that record.
+- Apply [Publish Pull Request](pull-request.md#publish-pull-request "ƒ") to link that published record from the pull request body.
+
+#### 2. Verify Readiness
+
+- Use the pull request and published review records.
+
+- Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") for its full metadata.
+- If metadata is unreadable or the pull request is closed, provide [Failure](pull-request.md#failure) with the unresolved current state and stop before repair.
+
+- Run [Validate Agent Review](agent-review.md#validate-agent-review "ƒ") with that metadata and [Published Reviews](pull-request.md#published-reviews).
+- On a finding, continue directly to Restore Draft below.
+
+- For a draft with passing evidence, Run [Mark Review Ready](pull-request.md#mark-review-ready "ƒ") with the node id its metadata names.
+- On a failed ready write, retain its failure and continue directly to Restore Draft below.
+
+- Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") again with the same identity.
+- On an unreadable or closed result, provide the unresolved current-state failure and stop before repair.
+- Run [Validate Agent Review](agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records.
+- On a finding or a draft readback, retain the changed revision or readiness failure and continue directly to Restore Draft below.
+- Only a confirmed open, ready pull request with passing current review evidence provides [Review State](pull-request.md#review-state), with its published review record, ready for merge.
+
+#### 3. Restore Draft
+
+- Retain every review or readiness finding.
+- Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") with the same identity before selecting restoration.
+- If metadata is unreadable or the pull request is closed, provide the unresolved restoration discrepancy as [Failure](pull-request.md#failure) and stop before repair.
+- For an open, ready pull request, Run [Mark Review Draft](pull-request.md#mark-review-draft "ƒ") with its identity.
+- After a selected restoration write, including a failed write, Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") with the same identity.
+- If the restoration write failed, metadata is unreadable, or the readback is closed or ready, provide the unresolved restoration discrepancy as [Failure](pull-request.md#failure) and stop before repair. Report draft state only when the readback confirms it.
+- With a successful selected write and confirmed open draft, or a confirmed open draft requiring no write, continue to Repair Findings below.
+
+#### 4. Repair Findings
+
+- For each retained finding, fix it on the task branch and repeat this operation from Review the Head, until review validation and ready-state readback provide no finding.
+- A finding unfixable within the session's allowance stops the operation. Provide the hold, the confirmed draft readback and each open finding.
 
 ### Settle Hot-fix Board Status
 
@@ -18,7 +126,7 @@ Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Board
 
 #### 3. Apply Required Status
 
-- Apply the status [Board Status](#board-status) gives that state and Status:
+- Apply the [status change](board-status.md#status-change) [Board Status](#board-status) gives that state and Status:
 
 ##### A Status
 
@@ -65,7 +173,7 @@ The hot-fix unit record: its issue identity, board state, branch, target base, w
 
 - An open hot-fix Ready on the board is a delivery unit of its own, whatever any epic's state. Its issue is the unit's task issue; it has no row and no epic record.
 - Its Coverage is every criterion it carries. Its record folder takes its prefix and title name as a task id and Description.
-- Its component lies on its [target](hotfix-body.md#target), which its session's work item declares.
+- Each file its session's work item declares lies on its [target](hotfix-body.md#target).
 - **Running.**
   Any open pull request whose Development field links it, draft or not, makes it running: it is neither offered nor released, and an In Progress status it holds stays its hold. A linking pull request is enough to keep a second session off it, while only a [delivering pull request](#delivering-pull-request) is merged or recorded as its fix.
 - **Unrecorded.**
@@ -83,9 +191,13 @@ A repository-qualified reference to the hot-fix's delivering pull request.
 
 - A pull request delivers a hot-fix when its title opens with the hot-fix's prefix, `[F00] Purpose`, it lives in the hot-fix's repository, its base is the hot-fix's [target](hotfix-body.md#target), and its Development field links the hot-fix.
 - It is opened from the hot-fix's [branch](#branch), as a draft.
-- It is marked ready for review only once its review cycle is complete: its current [agent review](agent-review.md#review-record) leaves every finding fixed.
+- It is marked ready for review only once its review cycle is complete: its current [agent review](agent-review.md#review-record) meets the [Review Rule](#review-rule).
 - A reopened hot-fix still counts a delivering pull request merged before it reopened, since the issue records no reopen time.
 - A pull request into a branch the body named as its target before an edit stops counting, since the body names the current target.
+
+### Review Rule
+
+The kind review rule a hot-fix's [delivering pull request](#delivering-pull-request) takes under [Review Record](agent-review.md#review-record). Its record also carries `base_ref`, the name of its base branch, and is current while it names the head SHA and that base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. Every finding is fixed, blocking or not.
 
 ### Delivery Record
 
@@ -150,5 +262,5 @@ The supplied source or hot-fix issue's repository, number and URL.
 
 - An open hot-fix stands In Review while a [delivering pull request](#delivering-pull-request) of it is open and ready for review, and In Progress while one is an open draft.
 - Otherwise an open hot-fix is Ready, whatever any initiative's or epic's priority, and In Progress once it holds In Progress or In Review. It reaches the board as its [placement](placement.md#disposition-conditions) orders.
-- A closed hot-fix takes the status [Status Changes](board-delivery.md#status-changes) gives a closed issue.
+- A closed hot-fix takes the status [Closure](board-status.md#closure) gives a closed issue.
 - No initiative or epic waits on a hot-fix, and a hot-fix waits on none.

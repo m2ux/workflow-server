@@ -1,6 +1,6 @@
 # Hoist Mode
 
-Brings the chosen standalone issues into the agent-engineering structure, or leaves them open according to the user's decision.
+Brings the chosen orphan issues into the agent-engineering structure, or leaves them open according to the user's decision.
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
@@ -24,8 +24,8 @@ Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every is
 
 - For each option, use the fetched evidence and planning-record references.
 
-- Identify an existing task, a new task, a new epic, a new initiative, a hot-fix, or Leave for the orphan and candidate destinations in [Placement Inputs](../artifacts/placement.md#placement-inputs).
-- Offer a hot-fix only for an orphan that meets the hot-fix [Definition](../artifacts/hotfix-body.md#definition), with the theme board it joins and its [target](../artifacts/hotfix-body.md#target): the declared long-lived branch the orphan's evidence places the defect on, the repository's default branch where it is declared and the evidence names no other.
+- Identify an existing task, a new task, a new epic, a new initiative, an issue of another [registered kind](../SKILL.md) that [Placement Record](../artifacts/placement.md#placement-record) lists, or Leave for the orphan and candidate destinations in [Placement Inputs](../artifacts/placement.md#placement-inputs).
+- Offer such a kind only for an orphan that meets the definition its artifacts give, with the theme board it joins and each placement field its body artifact requires.
 
 - Populate the placement meeting [Fields](../artifacts/placement.md#fields) and [Disposition Conditions](../artifacts/placement.md#disposition-conditions).
 
@@ -87,22 +87,22 @@ Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every is
 - Apply [Populate Initiative Issue Body](../artifacts/initiative-issue-body.md#populate-initiative-issue-body "ƒ") from the orphan's scoped problem and confirmed goal.
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated initiative body.
 
-###### Hot-Fix Destination
+###### Registered Kind Destination
 
-- Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") in [Repository](../artifacts/hotfix.md#repository) using the hot-fix prefix letter to select a number for the source issue identified by [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity).
+- For an issue of another [registered kind](../SKILL.md) whose body artifact's Titles carry a numbered prefix, Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") in the source issue's repository using that prefix letter to select a number for the source issue.
 
-- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the labels hot-fix [Titles](../artifacts/hotfix-body.md#titles) name.
+- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the labels those Titles name.
 
-- Retain the [hot-fix number](../artifacts/hotfix.md#hot-fix-number) for rewriting and saving the issue's body, title and labels. After the rewrite, the hot-fix status step below follows its [placement](../artifacts/placement.md#disposition-conditions).
-- Use the source issue as the destination with disposition Kept. The rewrite branch below supplies its hot-fix body and keeps the issue open.
+- Retain the selected number for rewriting and saving the issue's body, title and labels. After the rewrite, the board status step below follows its [placement](../artifacts/placement.md#disposition-conditions).
+- Use the source issue as the destination with the disposition [Disposition Conditions](../artifacts/placement.md#disposition-conditions) give that kind. The rewrite branch below supplies its body and keeps the issue open.
 
 ###### Leave
 
-- Use the source issue as the destination with disposition Leave. The rewrite branch below supplies its standalone body and keeps the issue open.
+- Use the source issue as the destination with disposition Leave. The rewrite branch below supplies the body of the [registered kind](../SKILL.md) for work outside any initiative and keeps the issue open.
 
 ##### 2. Retain Saved Placement
 
-Retain [Placement Result](../artifacts/placement.md#placement-result) with the saved destination, identities of all affected bodies and confirmed disposition, including the destination initiative, epic and new row id for a new task or new epic, and the number for a hot-fix. Use the saved destination in exactly one disposition below.
+Retain [Placement Result](../artifacts/placement.md#placement-result) with the saved destination, identities of all affected bodies and confirmed disposition, including the destination initiative, epic and new row id for a new task or new epic, and the number selected for a registered kind destination. Use the saved destination in exactly one disposition below.
 
 #### Kept or Left Issue
 
@@ -112,49 +112,22 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 
 - Select the destination kind and evidence/design from [Rewrite Inputs](../artifacts/placement.md#rewrite-inputs).
 
-###### Initiative Body
-
-- For an initiative, Apply [Populate Initiative Issue Body](../artifacts/initiative-issue-body.md#populate-initiative-issue-body "ƒ").
-
-###### Hot-Fix Body
-
-- For a hot-fix, populate its body as follows.
-
-- Populate the standalone [Template](../artifacts/standalone-body.md#template) for [Hot-fix Identity](../artifacts/hotfix-body.md#hot-fix-identity) at the destination in [Output Body](../artifacts/hotfix-body.md#output-body).
-- The work must meet [Definition](../artifacts/hotfix-body.md#definition).
-- The title must meet the shared [Titles](../artifacts/issue-body.md#titles) conditions and the hot-fix [Titles](../artifacts/hotfix-body.md#titles).
-- Name the confirmed [Target](../artifacts/hotfix-body.md#target) in the Overview.
-- Populate the Problem and Proposal from [Defect Evidence](../artifacts/hotfix-body.md#defect-evidence), meeting [Problem and Proposal](../artifacts/issue-body.md#problem-and-proposal).
-- All populated fields must meet [Fields](../artifacts/hotfix-body.md#fields).
-
-- Retain the populated [Output Body](../artifacts/hotfix-body.md#output-body) for publication.
-
-- A hot-fix belongs to no initiative or epic, and names no Depends on or Joins.
-- It sits on its theme's board.
-- Its priority 10, which its [Titles](../artifacts/hotfix-body.md#titles) label carries, ranks it nowhere: the queue places it by its [Board Status](../artifacts/hotfix.md#board-status), outside the priority sets.
-
-###### Standalone Body
-
-- For a standalone issue, Apply [Populate Standalone Body](../artifacts/standalone-body.md#populate-standalone-body "ƒ").
-
-###### Common Body Content
-
+- Apply the Populate Body operation the destination's [registered kind](../SKILL.md) supplies, with the inputs it takes from them.
 - Carry evidence into Problem and design into Proposal.
-- Pass a hot-fix its supplied number, theme label and target.
 
 ##### 2. Validate and Save Body
 
 - Apply [Check Round of Edits](../artifacts/issue-body.md#check-round-of-edits "ƒ") with the populated body and selected kind conditions before publishing.
 - Resolve findings.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the validated body, title and labels, a hot-fix's being every label its [Titles](../artifacts/hotfix-body.md#titles) name.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the validated body, title and labels, the labels being every label its kind's body artifact Titles name.
 
-##### 3. Settle Hot-fix Status
+##### 3. Settle Board Status
 
-For a hot-fix, Apply [Settle Hot-fix Board Status](../artifacts/hotfix.md#settle-hot-fix-board-status "ƒ") with the confirmed theme board and the saved issue.
+For an issue whose [registered kind](../SKILL.md) supplies Settle Board Status, Apply the Settle Board Status operation that kind supplies with the confirmed theme board and the saved issue.
 
 ##### 4. Retain Saved Identity
 
-Retain [Saved Orphan](../artifacts/placement.md#saved-orphan) with the saved identity and a hot-fix’s settled board item.
+Retain [Saved Orphan](../artifacts/placement.md#saved-orphan) with the saved identity and any settled board item.
 
 #### Transferred Work
 
@@ -210,8 +183,8 @@ Prepare the comment file naming the taking epic and row, or the taking task issu
 ## Outcomes
 
 - **Each orphan placed.**
-  The user has each chosen standalone issue joined to an initiative, epic or task, made a [hot-fix](../artifacts/hotfix-body.md), or left open.
+  The user has each chosen orphan joined to an initiative, epic or task, made an issue of another [registered kind](../SKILL.md), or left open.
 - **Cited work included.**
-  A standalone issue an agent-engineering issue cites is placed, or taken into the issue that already carries that work.
+  An orphan an agent-engineering issue cites is placed, or taken into the issue that already carries that work.
 - **The decision respected.**
   An orphan moves on the user's word, or on the allowance its caller supplied, and work needing a decision outside that allowance stays where it is.

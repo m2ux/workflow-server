@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT.parent / 'scripts'))
 import check_skill_files as checker
+from test_kind_operations import selections
 
 
 def executable_scripts(paths):
@@ -31,6 +32,26 @@ def executable_scripts(paths):
                 for line in lines[first:last + 1]:
                     run.update(re.findall(r'skills/work-planner/scripts/([\w-]+)\.py', line))
     return run
+
+
+def registered_operations():
+    """Each kind operation the entry point's registration selects, by artifact and anchor, with the
+    registration line and each general line selecting it through the registration. A kind's operation
+    takes the interface name with the artifact's name, less a closing Body, after its verb."""
+    path = ROOT / 'SKILL.md'
+    lines = path.read_text().splitlines()
+    selected = {}
+    for index, line in enumerate(lines[:lines.index('## Modes')]):
+        match = re.match(r'  - \[([^\]]+)\]\(([^)\s#]+)\)  (.+)$', line)
+        if not match:
+            continue
+        text, target, operations = match.groups()
+        stem = re.sub(r' Body$', '', text)
+        for operation in checker.LINK.sub(lambda link: link[0][1:link[0].index(']')], operations).split(', '):
+            verb, _, rest = operation.partition(' ')
+            key = (ROOT / target).resolve(), checker.anchor_of(f'{verb} {stem} {rest}')
+            selected[key] = [f'SKILL.md:{index + 1}'] + [site for site, _ in selections(operation)]
+    return selected
 
 
 class DocumentInterfaces(unittest.TestCase):
@@ -57,6 +78,9 @@ class DocumentInterfaces(unittest.TestCase):
                 key = destination, checker.anchor_of(fragment)
                 if key in references:
                     references[key].append(f'{path.relative_to(ROOT)}:{index + 1}')
+        for key, sites in registered_operations().items():
+            if key in references:
+                references[key].extend(sites)
         self.assertTrue(references)
         for (path, operation), sites in references.items():
             with self.subTest(file=path.name, operation=operation):
@@ -155,6 +179,7 @@ class DocumentInterfaces(unittest.TestCase):
         cited, operations, protocols = set(), {}, set()
         for name in ('SKILL.md', 'guidelines.md'):
             cited |= set(checker.LINK.findall((ROOT / name).read_text()))
+        cited |= {f'{path.relative_to(ROOT)}#{anchor}' for path, anchor in registered_operations()}
         for folder in folders:
             for path in sorted((ROOT / folder).glob('*.md')):
                 cited |= set(checker.LINK.findall(path.read_text()))
@@ -177,7 +202,8 @@ class DocumentInterfaces(unittest.TestCase):
 
     def test_every_script_is_run_by_a_cited_command(self):
         """Scripts are invoked by cited executable sections or imported by
-        scripts invoked there. Literal specimens supply no executable reach."""
+        scripts invoked there, a script importing through import_module each
+        script it names as a string. Literal specimens supply no executable reach."""
         paths = sorted(ROOT.rglob('*.md'))
         run = executable_scripts(paths)
         self.assertTrue(run, "installed declarations expose no script invocation")
@@ -187,6 +213,9 @@ class DocumentInterfaces(unittest.TestCase):
             imported = {name for name, text in scripts.items() if any(
                 re.search(rf'^(?:import|from) {re.escape(name)}\b', scripts[user], re.MULTILINE)
                 for user in run if user in scripts)}
+            imported |= {name for name in scripts for user in run if user in scripts
+                         and 'import_module' in scripts[user]
+                         and re.search(rf"""['"]{re.escape(name)}['"]""", scripts[user])}
             grown = not imported <= run
             run |= imported
         for name in sorted(scripts):

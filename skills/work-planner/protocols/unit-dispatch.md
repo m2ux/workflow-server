@@ -21,9 +21,9 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 2. Publish the Record
 
-- For a new unit of rows, read each component from the work-item file its free row links, before reservation replaces that link.
-- For a retained preparation, use its captured components and selected record, confirming this run owns that preparation.
-- For a hot-fix, use the component context its [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
+- For a new unit of rows, read the declared files from the work-item file each free row links, before reservation replaces that link.
+- For a retained preparation, use its captured declared files and selected record, confirming this run owns that preparation.
+- For a [kind unit](../artifacts/delivery-plan.md#kind-units), use the declared-file context the artifact of its [registered kind](../SKILL.md) defines.
 - Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") for the selected record folder.
 - Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") for that folder.
 - Retain its confirmed remote publication as the unit's [Start Evidence](../artifacts/dispatch-batch.md#start-evidence).
@@ -41,24 +41,22 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status "ƒ") for its task issues, where present, and its epic, requesting In Progress.
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the epic and confirm every selected row holds this record.
 
-#### Hot-Fix Unit
+#### Kind Unit
 
-- For a hot-fix unit:
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the hot-fix's current body.
+- For a [kind unit](../artifacts/delivery-plan.md#kind-units):
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the issue's current body.
 
-##### New Hot-Fix Unit
+##### New Kind Unit
 
 - For a new unit, use that issue, board identity and refreshed board items.
 
-- Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status "ƒ") with [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity) for In Progress and the supplied [Board Evidence](../artifacts/hotfix.md#board-evidence). That status is the hold [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
+- Apply the Record Dispatch Status operation the issue's [registered kind](../SKILL.md) supplies with them, and retain the confirmed status or discrepancy it provides. The session starts only once it is confirmed.
 
-- Retain [Board Result](../artifacts/hotfix.md#board-result) with the confirmed status or discrepancy. The session starts only once it is confirmed.
-
-##### Retained Hot-Fix Preparation
+##### Retained Kind Unit Preparation
 
 - For a retained preparation, require its current board hold to remain confirmed.
 
-##### Confirmed Hot-Fix Hold
+##### Confirmed Kind Unit Hold
 
 - Retain the confirmed hold for this record.
 
@@ -84,7 +82,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 #### Delivery Brief
 
-- Use the selected unit, confirmed preparation and captured component context.
+- Use the selected unit, confirmed preparation and captured declared-file context.
 
 - Write the [Work Identity](../artifacts/delivery-brief.md#work-identity) and [Planning Record](../artifacts/delivery-brief.md#planning-record) context, [Validation Scope](../artifacts/delivery-brief.md#validation-scope), [Change Autonomy](../artifacts/delivery-brief.md#change-autonomy) and [Execution Instructions](../artifacts/delivery-brief.md#execution-instructions) into the prompt file at [Output Path](../artifacts/delivery-brief.md#output-path) or where [Location](../artifacts/delivery-brief.md#location) puts it.
 - Each part must meet [Fields](../artifacts/delivery-brief.md#fields).

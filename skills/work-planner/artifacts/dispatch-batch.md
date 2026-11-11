@@ -28,7 +28,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Check Dispatch Start
 
-Check one selected unit immediately before execution and provide [Validated Unit](#validated-unit "●") to the requester, or [Failure](#failure "●") if the operation fails. The start names one selected unit, has a currently free harness slot and overlaps no held or running session. Its supplied evidence names that unit, the planning record confirmed on the remote engineering branch, and the record associated with its confirmed hold. For rows, that association is read from every live row reservation; for a hot-fix it is the run's record for the unit whose board hold was confirmed. The evidence is gathered in that order before execution; any missing, mismatched or unverified evidence blocks the start.
+Check one selected unit immediately before execution and provide [Validated Unit](#validated-unit "●") to the requester, or [Failure](#failure "●") if the operation fails. The start names one selected unit, has a currently free harness slot and overlaps no held or running session. Its supplied evidence names that unit, the planning record confirmed on the remote engineering branch, and the record associated with its confirmed hold. For rows, that association is read from every live row reservation; for a [kind unit](delivery-plan.md#kind-units) it is the run's record for the unit whose Delivery Unit hold was confirmed. The evidence is gathered in that order before execution; any missing, mismatched or unverified evidence blocks the start.
 
 Exit 0 returns the selected unit; exit 1 names the blocking condition. Supply `--blockers '<blockers-file>'` for current [Blockers](#blockers "○").
 
@@ -46,7 +46,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Authorization
 
-One run records its board identity, scope selectors and requested lane in a JSON object. The scope is the selected board (`["*"]`), or a list of repository-qualified initiative, epic, task or hot-fix identities, such as `o/r#I07`, `o/r#I07:E00`, `o/r#I07:E00:W01` or `o/r#F02`. Every row of a joined unit must fall within that scope. An explicit joined selector, `o/r#I07:E00:W01+W02`, authorizes both rows. The requested lane must meet [Index](lane.md#index), represented as `null` when none is requested. eg `{"board": "users/o/projectsV2/7", "scope": ["o/r#I07"], "lane": null}`
+One run records its board identity, scope selectors and requested lane in a JSON object. The scope is the selected board (`["*"]`), or a list of repository-qualified initiative, epic or task identities or [kind unit](delivery-plan.md#kind-units) tags, such as `o/r#I07`, `o/r#I07:E00`, `o/r#I07:E00:W01` or `o/r#F02`. Every row of a joined unit must fall within that scope. An explicit joined selector, `o/r#I07:E00:W01+W02`, authorizes both rows. The requested lane must meet [Index](lane.md#index), represented as `null` when none is requested. eg `{"board": "users/o/projectsV2/7", "scope": ["o/r#I07"], "lane": null}`
 
 ### Survey Evidence
 
@@ -68,7 +68,7 @@ eg `[{"scope": "unit", "id": "o/r#I07:E00:W01", "reason": "Required criterion ha
 
 ### Preparations
 
-A preparation is this run's selected unit with its published record, captured component context, confirmed hold, [prepared task worktrees](delivery-branches.md#prepared-task-worktrees) and complete brief, awaiting an execution slot. It retains the selected batch for start validation and creates no worker session. The coordinator owns its continuation and supplies it for another call with current queue and hold evidence. Only preparations still admitted by the current queue contribute to capacity waiting; another run's held record supplies none.
+A preparation is this run's selected unit with its published record, captured declared-file context, confirmed hold, [prepared task worktrees](delivery-branches.md#prepared-task-worktrees) and complete brief, awaiting an execution slot. It retains the selected batch for start validation and creates no worker session. The coordinator owns its continuation and supplies it for another call with current queue and hold evidence. Only preparations still admitted by the current queue contribute to capacity waiting; another run's held record supplies none.
 
 ### Survey Board
 

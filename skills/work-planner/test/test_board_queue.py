@@ -1,12 +1,25 @@
 """The queue board-queue.py sets on a theme board.
 """
+import importlib.util
+import io
 import json
 import re
+import sys
 import tempfile
+import types
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
+from unittest import mock
 
-from fixtures import epic_body, hotfix, initiative_body, issue, item, pr, run, url
+from fixtures import SCRIPTS, epic_body, hotfix, initiative_body, issue, item, pr, run, url
+
+sys.path.insert(0, str(SCRIPTS))
+import board  # noqa: E402
+import kinds  # noqa: E402
+import priority  # noqa: E402
+import sync  # noqa: E402
+from test_kinds import kind_mentions  # noqa: E402
 
 
 RECORD = 'https://github.com/o/r/tree/engineering/artifacts/planning/2026-11-01-2-i01-e00-w01-go/'
@@ -47,23 +60,45 @@ def delivering(number: int, fixed: int, draft: bool = False) -> dict:
     return record
 
 
+def queue_arguments(root: Path, items: list[dict], prs: list[dict] | None = None,
+                    unplanned: tuple[str, ...] = (), fields: list[dict] = FIELDS) -> list[str]:
+    """The queue's input files, written under root, and the arguments naming them."""
+    items_path, prs_path, fields_path = root / 'items.json', root / 'prs.json', root / 'fields.json'
+    links_path = root / 'links.json'
+    items_path.write_text(json.dumps(items))
+    prs_path.write_text(''.join(json.dumps(row) + '\n' for row in prs or []))
+    links_path.write_text(json.dumps([{'repo': 'o/r', 'number': row['number'],
+                                       'closingIssuesReferences': row['closingIssuesReferences']}
+                                      for row in prs or [] if row.get('closingIssuesReferences')]))
+    fields_path.write_text(json.dumps(fields))
+    extra = [arg for spec in unplanned for arg in ('--unplanned', spec)]
+    return ['--items', str(items_path), '--prs', str(prs_path), '--links', str(links_path),
+            '--board', 'users/o/projectsV2/9', '--fields', str(fields_path),
+            '--out', str(root / 'out'), '--assignee', 'me', *extra]
+
+
 def queue_run(items: list[dict], prs: list[dict] | None = None, unplanned: tuple[str, ...] = (),
               fields: list[dict] = FIELDS):
     """The complete queue run, for a test reading its exit status as well as its output."""
     with tempfile.TemporaryDirectory() as tmp:
-        root = Path(tmp)
-        items_path, prs_path, fields_path = root / 'items.json', root / 'prs.json', root / 'fields.json'
-        links_path = root / 'links.json'
-        items_path.write_text(json.dumps(items))
-        prs_path.write_text(''.join(json.dumps(row) + '\n' for row in prs or []))
-        links_path.write_text(json.dumps([{'repo': 'o/r', 'number': row['number'],
-                                           'closingIssuesReferences': row['closingIssuesReferences']}
-                                          for row in prs or [] if row.get('closingIssuesReferences')]))
-        fields_path.write_text(json.dumps(fields))
-        extra = [arg for spec in unplanned for arg in ('--unplanned', spec)]
-        return run('board-queue.py', '--items', str(items_path), '--prs', str(prs_path), '--links', str(links_path),
-                   '--board', 'users/o/projectsV2/9', '--fields', str(fields_path),
-                   '--out', str(root / 'out'), '--assignee', 'me', *extra)
+        return run('board-queue.py', *queue_arguments(Path(tmp), items, prs, unplanned, fields))
+
+
+def board_queue() -> types.ModuleType:
+    """board-queue.py loaded as a module, for a run beside a kind registered in this process."""
+    spec = importlib.util.spec_from_file_location('board_queue', SCRIPTS / 'board-queue.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def queue_here(items: list[dict]) -> str:
+    """The queue's printed output from a run in this process."""
+    module, printed = board_queue(), io.StringIO()
+    with tempfile.TemporaryDirectory() as tmp, redirect_stdout(printed), \
+            mock.patch.object(sys, 'argv', ['board-queue.py', *queue_arguments(Path(tmp), items)]):
+        module.main()
+    return printed.getvalue()
 
 
 def queue(items: list[dict], prs: list[dict] | None = None, unplanned: tuple[str, ...] = (),
@@ -818,6 +853,38 @@ class HotFixes(unittest.TestCase):
                            (hotfix(4), 'In Progress')))
         self.assertIn('Epic 3: Work: Backlog → Ready', out)
         self.assertNotIn('wait', out)
+
+
+class KindRegistry(unittest.TestCase):
+    def test_board_queue_names_no_kind_and_imports_only_the_registry(self):
+        self.assertEqual(kind_mentions((SCRIPTS / 'board-queue.py').read_text()), [])
+
+    def test_a_stand_in_kind_is_placed_where_its_board_status_puts_it(self):
+        stand_in = types.ModuleType('stand_in')
+        stand_in.tag = lambda item: 'Z01' if (item.get('title') or '').startswith('[Z01]') else None
+        stand_in.delivering_pulls = lambda prs, key, found: []
+        stand_in.board_status = lambda found, held, delivering: (
+            'Ready' if found['state'] == 'open' else kinds.OFF_BOARD)
+        dropped = issue(7, '[Z01] Gone: Work', 'closed')
+        items = staged((issue(6, '[Z01] Stand In: Work'), 'Backlog'), (dropped, 'Ready'))
+        self.assertNotIn('[Z01]', queue_here(items))
+        with mock.patch.dict(sys.modules, {'stand_in': stand_in}), \
+                mock.patch.dict(kinds.KINDS, {'stand-in': 'stand_in'}):
+            out = queue_here(staged((issue(6, '[Z01] Stand In: Work'), 'Backlog'), (dropped, 'Ready')))
+        self.assertIn('#6 [Z01] Stand In: Work: Backlog → Ready', out)
+        self.assertIn('remove #7 [Z01] Gone: Work (closed, not completed)', out)
+
+
+class SharedRules(unittest.TestCase):
+    def test_tags_identity_and_priority_come_from_their_single_homes(self):
+        module = board_queue()
+        self.assertIs(module.tags, board.tags)
+        self.assertIs(module.PULL_REF, sync.PULL_REF)
+        self.assertIs(module.issue_key, sync.issue_key)
+        self.assertIs(module.rank, priority.rank)
+        for copy in ('PREFIX', 'key_of'):
+            with self.subTest(copy=copy):
+                self.assertFalse(hasattr(module, copy))
 
 
 if __name__ == '__main__':

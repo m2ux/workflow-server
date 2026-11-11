@@ -1,5 +1,8 @@
-"""hotfix.py: a hot-fix's identity, target, board status, delivering pull requests and delivery unit state.
+"""hotfix.py: a hot-fix's identity, labels, target, board status, delivering pull requests, delivery unit state and agent
+review rule, each reached through the Kind interface the module supplies, which is all it exports.
 """
+import ast
+import inspect
 import sys
 import unittest
 
@@ -7,8 +10,13 @@ from fixtures import SCRIPTS, hotfix_body, issue, pr
 from fixtures import hotfix as hotfix_issue
 
 sys.path.insert(0, str(SCRIPTS))
-from hotfix import (OFF_BOARD, board_status, delivering_pulls, delivery_fault, hotfix_tag, is_hotfix,  # noqa: E402
-                    linking_pulls, target, targets, unit_state)
+import hotfix as module  # noqa: E402
+from kinds import OFF_BOARD, Kind, Tips, interface  # noqa: E402
+
+KIND = interface('hot-fix')
+tag, letter, labels, faults, target = KIND.tag, KIND.letter, KIND.labels, KIND.faults, KIND.target
+board_status, linking_pulls, delivery_fault = KIND.board_status, KIND.linking_pulls, KIND.delivery_fault
+delivering_pulls, unit_state, review = KIND.delivering_pulls, KIND.unit_state, KIND.review
 
 KEY = ('o/r', 4)
 MERGED = '2026-11-01T00:00:00Z'
@@ -28,32 +36,52 @@ def linked(record: dict, *numbers: int) -> dict:
 
 class Identity(unittest.TestCase):
     def test_the_prefix_alone_makes_a_hot_fix(self):
-        self.assertEqual(hotfix_tag(hotfix()), 'F04')
-        self.assertFalse(is_hotfix(issue(5, 'Key Validation: Reject Bad Keys', labels=('type:hot-fix',))))
-        self.assertFalse(is_hotfix(issue(6, '[I07] Canon Walk: Definitions Checked')))
+        self.assertEqual(tag(hotfix()), 'F04')
+        self.assertIsNone(tag(issue(5, 'Key Validation: Reject Bad Keys', labels=('type:hot-fix',))))
+        self.assertIsNone(tag(issue(6, '[I07] Canon Walk: Definitions Checked')))
+
+    def test_its_tags_open_with_its_letter(self):
+        self.assertEqual(letter(), 'F')
+        self.assertTrue(tag(hotfix()).startswith(letter()))
+
+
+class Exports(unittest.TestCase):
+    def test_the_module_defines_only_its_kind_interface(self):
+        tree = ast.parse(inspect.getsource(module))
+        defined = {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
+        defined |= {target.id for node in tree.body if isinstance(node, ast.Assign)
+                    for target in node.targets if isinstance(target, ast.Name)}
+        public = {name for name in defined if not name.startswith('_')}
+        interface_names = {name for name, member in vars(Kind).items()
+                           if inspect.isfunction(member) and not name.startswith('_')}
+        self.assertEqual(public, interface_names)
+
+
+class Labels(unittest.TestCase):
+    def test_a_hot_fix_carries_priority_ten_beside_its_type_and_theme(self):
+        self.assertEqual(labels(hotfix()), ['priority: 10'])
 
 
 class Target(unittest.TestCase):
     def test_the_overview_names_the_target_in_one_line(self):
         self.assertEqual(target(hotfix(aim='workspace')), 'workspace')
-        self.assertEqual(targets(hotfix(aim='workspace')), ['workspace'])
+        self.assertEqual(faults(hotfix(aim='workspace')), [])
 
     def test_no_line_or_several_name_no_target(self):
         self.assertEqual(target(hotfix(aim=None)), '')
         twice = hotfix()
         twice['body'] = twice['body'].replace('Target: `main`', 'Target: `main`\n\nTarget: `workspace`')
-        self.assertEqual(targets(twice), ['main', 'workspace'])
+        self.assertIn('2 Target: lines in the Overview; it names one target branch', faults(twice))
         self.assertEqual(target(twice), '')
 
     def test_a_tilde_fence_hides_its_target_line_and_its_headings(self):
         fenced = hotfix()
         fenced['body'] = fenced['body'].replace('Target: `main`', 'Target: `main`\n\n~~~\n## Problem\nTarget: `workspace`\n~~~')
-        self.assertEqual(targets(fenced), ['main'])
+        self.assertEqual(target(fenced), 'main')
 
     def test_a_target_line_in_fenced_code_names_nothing(self):
         fenced = hotfix()
         fenced['body'] = fenced['body'].replace('Target: `main`', 'Target: `main`\n\n```\nTarget: `workspace`\n```')
-        self.assertEqual(targets(fenced), ['main'])
         self.assertEqual(target(fenced), 'main')
 
     def test_a_target_line_outside_the_overview_names_nothing(self):
@@ -137,6 +165,50 @@ class UnitState(unittest.TestCase):
         for held in ('Ready', 'In Progress'):
             with self.subTest(held=held):
                 self.assertEqual(unit_state(hotfix(), held, [draft], [draft]), 'running')
+
+
+class Review(unittest.TestCase):
+    def test_a_record_naming_the_head_and_base_branch_is_current(self):
+        self.assertEqual(review(Tips('a' * 40, 'b' * 40, 'main')).current, {'head': 'a' * 40, 'base_ref': 'main'})
+
+    def test_every_finding_is_fixed(self):
+        rule = review(Tips('a' * 40, 'b' * 40, 'main'))
+        self.assertEqual(rule.finding_fault({'disposition': 'fixed'}), '')
+        for disposition in ('open', 'deferred'):
+            with self.subTest(disposition=disposition):
+                self.assertEqual(rule.finding_fault({'disposition': disposition}),
+                                 "unfixed finding on a hot-fix's delivering pull request")
+
+
+class ThroughTheRegistry(unittest.TestCase):
+    """Each operation of the Kind interface, reached as a general script reaches it."""
+
+    def setUp(self):
+        self.kind = interface('hot-fix')
+
+    def test_identity_target_and_faults(self):
+        self.assertEqual(self.kind.tag(hotfix()), 'F04')
+        self.assertIsNone(self.kind.tag(issue(6, '[I07] Canon Walk: Definitions Checked')))
+        self.assertEqual(self.kind.target(hotfix(aim='workspace')), 'workspace')
+        self.assertEqual(self.kind.target(hotfix(aim=None)), '')
+        self.assertEqual(self.kind.faults(hotfix()), [])
+        self.assertEqual(self.kind.faults(hotfix(aim=None)),
+                         ['no Target: lines in the Overview; it names one target branch'])
+
+    def test_board_status(self):
+        self.assertEqual(self.kind.board_status(hotfix(), None, [pr(951, '[F04] Fix', base='main')]), 'In Review')
+        self.assertEqual(self.kind.board_status(hotfix('closed', 'not_planned'), 'Ready', []), OFF_BOARD)
+
+    def test_linking_and_delivering_pull_requests(self):
+        pulls = [linked(pr(951, '[F04] Fix', base='main'), 4), linked(pr(952, '[F04] Fix', base='workspace'), 4)]
+        self.assertEqual([p['number'] for p in self.kind.linking_pulls(pulls, KEY)], [951, 952])
+        self.assertEqual([p['number'] for p in self.kind.delivering_pulls(pulls, KEY, hotfix())], [951])
+        self.assertEqual(self.kind.delivery_fault(pulls[1], KEY, hotfix()), 'its base is workspace, not the target main')
+
+    def test_unit_state(self):
+        merged = [pr(951, '[F04] Fix', MERGED, base='main')]
+        self.assertEqual(self.kind.unit_state(hotfix(), 'Ready', merged, merged), 'unrecorded')
+        self.assertEqual(self.kind.unit_state(hotfix(), 'Ready', [], []), 'unit')
 
 
 if __name__ == '__main__':

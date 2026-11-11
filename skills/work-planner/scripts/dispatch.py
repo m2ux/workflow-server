@@ -20,21 +20,31 @@ import re
 import sys
 from pathlib import Path
 
+from kinds import kind_of
 from lane import is_index
 
-IDENTITY = re.compile(r'[^/#\s]+/[^/#\s]+#(?:I\d\d(?::E\d\d(?::W\d\d(?:\+W\d\d)*)?)?|F\d\d)')
+# A repository-qualified tag: owner/name#tag.
+IDENTITY = re.compile(r'([^/#\s]+/[^/#\s]+)#([^/#\s\[\]]+)')
+# An agent-engineering tag: an initiative, an epic, or one or more joined task rows.
+ROWS = re.compile(r'I\d\d(?::E\d\d(?::W\d\d(?:\+W\d\d)*)?)?')
 STATES = {'preparing', 'running', 'review', 'blocked', 'completed'}
 
 
 def members(identity: str) -> set[str]:
     """Repository-qualified rows of one selector or joined unit."""
-    if not isinstance(identity, str) or not IDENTITY.fullmatch(identity):
+    matched = IDENTITY.fullmatch(identity) if isinstance(identity, str) else None
+    if not matched or not (ROWS.fullmatch(matched[2]) or registered(matched[2])):
         raise ValueError(f'invalid dispatch identity: {identity}')
-    repo, tag = identity.split('#')
+    repo, tag = matched[1].lower(), matched[2]
     prefix, _, tasks = tag.rpartition(':')
     if tasks.startswith('W'):
-        return {f'{repo.lower()}#{prefix}:{task}' for task in tasks.split('+')}
-    return {f'{repo.lower()}#{tag}'}
+        return {f'{repo}#{prefix}:{task}' for task in tasks.split('+')}
+    return {f'{repo}#{tag}'}
+
+
+def registered(tag: str) -> bool:
+    """Whether a title opening with the tag is an item of a kind the script registry holds."""
+    return kind_of({'title': f'[{tag}]'}) is not None
 
 
 def within(identity: str, scope: list[str]) -> bool:
@@ -47,10 +57,10 @@ def within(identity: str, scope: list[str]) -> bool:
 
 
 def unit_members(identity: str) -> set[str]:
-    """A worker or admitted offer names concrete task rows or one hot-fix."""
+    """A worker or admitted offer names concrete task rows or one item of a registered kind."""
     rows = members(identity)
-    if any('#I' in row and ':W' not in row for row in rows):
-        raise ValueError('a dispatch unit must name task rows or a hot-fix')
+    if any(ROWS.fullmatch(row.split('#')[1]) and ':W' not in row for row in rows):
+        raise ValueError('a dispatch unit must name task rows or one item of a registered kind')
     return rows
 
 

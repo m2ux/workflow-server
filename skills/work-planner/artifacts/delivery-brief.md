@@ -10,11 +10,11 @@ The brief's local working-file path, outside every repository it names because t
 
 ### Work Identity
 
-The brief names the epic or hot-fix issue URL, task ids, Descriptions, covered acceptance criteria and the theme board carrying that issue's item. It includes each task branch, with the base it is cut from and the unit checkout where the session works on it, and the project checkout the session merges through.
+The brief names the URL of the issue the unit delivers, its rows' epic or the issue of a [kind unit](delivery-plan.md#kind-units), task ids, Descriptions, covered acceptance criteria and the theme board carrying that issue's item. It includes each task branch, with the base it is cut from and the unit checkout where the session works on it, and the project checkout the session merges through.
 
 ### Planning Record
 
-The brief names the reserved planning folder and engineering worktree. Each task has one work-item file in that folder, registered in its README, and the brief carries the component the caller read from the file the plan was checked against, which is the one this file declares. Its row retains the folder link while reserved.
+The brief names the reserved planning folder and engineering worktree. Each task has one work-item file in that folder, registered in its README, and the brief carries the declared files the caller read from the file the plan was checked against, which are the ones this file declares. Its row retains the folder link while reserved.
 
 ### Validation Scope
 
@@ -26,7 +26,7 @@ The brief names the supplied [allowance](plan-change.md#allowance): the plan cha
 
 ### Execution Instructions
 
-The supplied session-procedure reference and invocation context, including its planning, publication, merge, debt and arising-issue obligations, with the confirmed decisions and evidence needed to execute it. A missing instruction or prerequisite is a finding provided to the caller.
+The supplied session-procedure reference and invocation context, including its planning, publication, merge, debt and arising-issue obligations, with the confirmed decisions and evidence needed to execute it.
 
 ### Output Path
 
@@ -38,4 +38,4 @@ The completed working prompt file path.
 
 ### Missing Context
 
-Any required context missing from the supplied brief inputs.
+Any required context, instruction or prerequisite missing from the supplied brief inputs.

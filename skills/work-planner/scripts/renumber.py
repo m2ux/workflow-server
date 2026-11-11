@@ -36,8 +36,9 @@ import re
 import sys
 from pathlib import Path
 
+from sync import PR_REF
+
 EPIC_REF = re.compile(r'\bE(\d\d)\b')
-PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
 DELIVERED_ROW = re.compile(r'^\| (?:\[[ xX]\] \| )?\[W(\d\d)\]\([^)]*/(?:pull|commit)/', re.MULTILINE)
 TASK_REF = re.compile(r'\bE(\d\d)([ :])W(\d\d)\b')
 BARE_TASK = re.compile(r'(?<!E\d\d )(?<!E\d\d:)(?<!\) )\bW(\d\d)\b')

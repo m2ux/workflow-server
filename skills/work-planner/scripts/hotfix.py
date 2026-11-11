@@ -1,46 +1,56 @@
 """A hot-fix's identity and lifecycle, as artifacts/hotfix-body.md and artifacts/hotfix.md state them.
 
 An issue whose title opens with [F00] is a hot-fix, and it carries the priority: 10 label. Its
-Overview names the long-lived branch it fixes in one Target: line. Its target, its board status,
-the pull requests that deliver it and the state of its delivery unit are read here, and the scripts
-that place, survey, record, check or report a hot-fix call these functions.
+Overview names the long-lived branch it fixes in one Target: line. This module supplies the hot-fix
+kind to the script registry, kinds.py: each operation of its Kind interface, with the inputs and
+results that interface states, reads a hot-fix's tag and the letter it opens with, labels, body
+faults, target, board status, linking and delivering pull requests, the state of its delivery unit
+and the agent review rule for its pull request. The module defines no other public name, and only
+the registry imports it.
 """
 import re
 
-HOTFIX = re.compile(r'^\[(F\d\d)\]')
-PRIORITY = 'priority: 10'
-OFF_BOARD = 'off the board'
-TARGET = re.compile(r'^Target: `([^`\s]+)`\s*$')
-ITEM = re.compile(r'^(?:[-*+]|\d+[.)])\s')
-Key = tuple[str, int]
+from kinds import OFF_BOARD, Key, Review, Tips
+
+_LETTER = 'F'
+_TAG = re.compile(rf'^\[({_LETTER}\d\d)\]')
+_PRIORITY = 'priority: 10'
+_TARGET = re.compile(r'^Target: `([^`\s]+)`\s*$')
+_ITEM = re.compile(r'^(?:[-*+]|\d+[.)])\s')
 
 
-def hotfix_tag(item: dict) -> str | None:
+def tag(item: dict) -> str | None:
     """The [F00] tag an issue's or pull request's title opens with, which makes an issue a hot-fix."""
-    matched = HOTFIX.match(item.get('title') or '')
+    matched = _TAG.match(item.get('title') or '')
     return matched[1] if matched else None
 
 
-def is_hotfix(issue: dict) -> bool:
-    return hotfix_tag(issue) is not None
+def letter() -> str:
+    """F, the letter a hot-fix's tag opens with."""
+    return _LETTER
 
 
-def hotfix_faults(issue: dict) -> list[str]:
+def labels(issue: dict) -> list[str]:
+    """The priority label for priority 10, which a hot-fix carries beside type:hot-fix and its theme."""
+    return [_PRIORITY]
+
+
+def faults(issue: dict) -> list[str]:
     """The conditions of a hot-fix body that no other kind carries, each the issue fails: one Target:
     line, no open question, and an Acceptance Criteria section holding a criterion. format.py reports
     these beside its own checks."""
     from format import split_sections  # format imports this module
-    faults = []
-    named = targets(issue)
+    found = []
+    named = _targets(issue)
     if len(named) != 1:
-        faults.append(f'{len(named) or "no"} Target: lines in the Overview; it names one target branch')
+        found.append(f'{len(named) or "no"} Target: lines in the Overview; it names one target branch')
     _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
     if any(line.strip() for heading, lines in sections if heading == 'Open Questions' for line in lines):
-        faults.append('open questions remain')
+        found.append('open questions remain')
     for heading, lines in sections:
-        if heading == 'Acceptance Criteria' and not any(ITEM.match(line) for line in lines):
-            faults.append('no acceptance criterion')
-    return faults
+        if heading == 'Acceptance Criteria' and not any(_ITEM.match(line) for line in lines):
+            found.append('no acceptance criterion')
+    return found
 
 
 def board_status(issue: dict, held: str | None, delivering: list[dict]) -> str | None:
@@ -56,17 +66,17 @@ def board_status(issue: dict, held: str | None, delivering: list[dict]) -> str |
     return 'In Progress' if pending or held in ('In Progress', 'In Review') else 'Ready'
 
 
-def targets(issue: dict) -> list[str]:
+def _targets(issue: dict) -> list[str]:
     """The branch each Target: line of the issue's Overview names, in order, outside fenced code."""
     from format import prose, split_sections  # format imports this module
     _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
     lines = prose(next((lines for heading, lines in sections if heading == 'Overview'), []))
-    return [found[1] for line in lines if (found := TARGET.match(line))]
+    return [found[1] for line in lines if (found := _TARGET.match(line))]
 
 
 def target(issue: dict) -> str:
     """The branch a hot-fix fixes, or '' unless its Overview names exactly one."""
-    named = targets(issue)
+    named = _targets(issue)
     return named[0] if len(named) == 1 else ''
 
 
@@ -81,10 +91,10 @@ def delivery_fault(pull: dict, key: Key, issue: dict) -> str:
     hot-fix's tag, it lives in the hot-fix's repository, its base is the hot-fix's target, and its
     Development field links the hot-fix."""
     from sync import links_issue, pr_repo  # sync imports format, which imports this module
-    tag, branch = hotfix_tag(issue), target(issue)
+    fixed, branch = tag(issue), target(issue)
     base = (pull.get('base') or {}).get('ref') or ''
-    if hotfix_tag(pull) != tag:
-        return f'its title does not open with [{tag}]'
+    if tag(pull) != fixed:
+        return f'its title does not open with [{fixed}]'
     if pr_repo(pull).lower() != key[0].lower():
         return f'it lives in {pr_repo(pull)}, not {key[0]}'
     if not branch:
@@ -113,3 +123,14 @@ def unit_state(issue: dict, held: str | None, linking: list[dict], delivering: l
         return 'running'
     return {'In Progress': 'hold', 'Ready': 'unit'}.get(held)
 
+
+def review(tips: Tips) -> Review:
+    """The agent review rule for a hot-fix's pull request: a record is current while it names the pull
+    request's head SHA and, as base_ref, its base branch, so a target moving on leaves the review
+    current and a retarget does not; every finding is fixed."""
+    return Review({'head': tips.head, 'base_ref': tips.base_ref}, _unfixed)
+
+
+def _unfixed(finding: dict) -> str:
+    """The fault of a hot-fix review finding left unfixed, or '' for a fixed one."""
+    return '' if finding.get('disposition') == 'fixed' else "unfixed finding on a hot-fix's delivering pull request"

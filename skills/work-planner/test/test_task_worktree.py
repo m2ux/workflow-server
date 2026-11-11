@@ -82,3 +82,10 @@ class RetainedTaskWorktree(unittest.TestCase):
         checked = self.check(head='HEAD')
         self.assertEqual(checked.returncode, 1)
         self.assertIn('full commit SHA', checked.stderr)
+
+    def test_a_relative_worktree_resolves_against_the_project(self):
+        relative = '.worktrees/i07/e00/w02 work'
+        git(self.project, 'worktree', 'add', relative, '-b', 'i07/e00/w02-work', self.head)
+        checked = self.check(worktree=relative, branch='i07/e00/w02-work')
+        self.assertEqual(checked.returncode, 0, checked.stderr)
+        self.assertEqual(json.loads(checked.stdout)['worktree'], str(self.project.resolve() / relative))
