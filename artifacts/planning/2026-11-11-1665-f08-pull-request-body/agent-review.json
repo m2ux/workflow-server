@@ -1,0 +1,73 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1706",
+    "head": "4d25f17420826a2ec86155578565655723194fa7",
+    "base": "9d020bc9bfcfd8e08e21f9e8ebeccedb56ac0611",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1665-f08-pull-request-body/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-11",
+    "scope": "The whole branch against workspace: 9d020bc9b..4d25f1742, commits 8e5d0adb1 and d07d6e55a, review fixes b1c78b53b and c17efa133, and 4d25f1742, which rejoins the hot-fix module docstring's closing sentence and changes nothing else since c17efa133. Read in full: artifacts/pull-request-body.md (Validate Pull Request Body, Check Pull Request Body, Body File, Body Findings, Workspace, Review Body, Template); scripts/pull_request_body.py; the issue_fields operation in scripts/kinds.py and scripts/hotfix.py; format.py's artifact_template and Template; pull-request.md Publish Pull Request; deliver-mode Open the Pull Request; conventions.md and guidelines.md Bodies; check_skill_files.py TEXT_FILE_VALUE and interfaces; work-planner rules.json; test_pull_request_body, test_kinds, test_check_skill_files and the test README. Callers inspected: every Apply of Publish Pull Request (deliver-mode, review-pull-request, change-overview, hotfix Review Hot-fix Before Merge, and the retarget and retitle callers in align, plan and sync modes, which change no body); Open Epic Pull Request's review body under --review. No skill file links SKILL.md, and no general file names a registered kind: pull_request_body.py reaches the hot-fix's Target: line only through kinds.interface(kind).issue_fields.",
+    "criteria": "AC1: a body carrying a Target: line in any form or section, a Problem section, or no or an unreadable Test Plan fails Validate Pull Request Body, each finding naming its section; test_pull_request_body (14 tests) and this pull request's own body checked clean (T1, T2). AC2: conventions.md Bodies states that gh api -F reads an @path value as the file and -f sends text (T3). AC3: check_skill_files.py reports a command block sending an @path value under -f or --raw-field, mapped under operations/bodies; test_check_skill_files (4 tests for the kind) and the check over skills/work-planner, 65 files, 0 findings (T4, T5).",
+    "validation": "At 4d25f1742: skills/work-planner suite 1296 tests OK (1 skipped); skills/test 340 tests OK; check_skill_files.py skills/work-planner 65 files, 0 findings; git diff --check 9d020bc9b HEAD clean.",
+    "findings": []
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1706",
+    "head": "c17efa1332484fa77c059dcf1886a5a0541cafce",
+    "base": "9d020bc9bfcfd8e08e21f9e8ebeccedb56ac0611",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1665-f08-pull-request-body/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-11",
+    "scope": "The whole branch against workspace, 9d020bc9b..c17efa133, with attention to the review fixes d07d6e55a..c17efa133: the issue_fields Kind operation in kinds.py and hotfix.py, the --review section set, Validate step 2, the widened flag pattern and the conventions ordering. Edge cases re-run: a Target: line under Changes, two in the Overview, and one without backticks.",
+    "criteria": "AC1, AC2 and AC3 as at d07d6e55a, with the Target: line reported in any form and section and an epic review held to its References.",
+    "validation": "At c17efa133: skills/work-planner suite 1296 tests OK (1 skipped); skills/test 340 tests OK; check_skill_files.py skills/work-planner 65 files, 0 findings; git diff --check clean.",
+    "findings": [
+      {
+        "description": "The hot-fix module docstring reflow left its closing sentence split, 'the registry imports it.' on a line of its own.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/4d25f17420826a2ec86155578565655723194fa7"
+      }
+    ]
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1706",
+    "head": "d07d6e55aadcb6bd52f55203a8b82d6446899b43",
+    "base": "9d020bc9bfcfd8e08e21f9e8ebeccedb56ac0611",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1665-f08-pull-request-body/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-11",
+    "scope": "The whole branch against workspace, 9d020bc9b..d07d6e55a: commits 8e5d0adb1 and d07d6e55a, with the touched files, their callers, and an edge-case probe of both checks.",
+    "criteria": "AC1: Validate Pull Request Body reports a Target: line, a Problem section and a missing Test Plan, naming the section (test_pull_request_body). AC2: conventions.md states the flag distinction. AC3: check_skill_files.py reports -f body=@ in fenced and HTML blocks.",
+    "validation": "At d07d6e55a: check_skill_files.py skills/work-planner 65 files, 0 findings; test_pull_request_body, test_documents and test_readme OK; test_check_skill_files 339 tests OK.",
+    "findings": [
+      {
+        "description": "The Target: line check asked the kind's target operation, which reads only one well-formed line in the Overview, so a Target: line under another section, two lines, or one without backticks published clean.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b1c78b53bc9b3826d7ece433c7a0441cca0cf784"
+      },
+      {
+        "description": "An epic review body without References passed, although Review Body holds Overview, Changes and References.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b1c78b53bc9b3826d7ece433c7a0441cca0cf784"
+      },
+      {
+        "description": "Validate Pull Request Body's step 2 restated that a body with a finding is corrected before publishing, the gate Publish Pull Request enforces.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b1c78b53bc9b3826d7ece433c7a0441cca0cf784"
+      },
+      {
+        "description": "The text-flag pattern missed --raw-field=body=@, -fbody=@ and hyphenated keys, and the new conventions bullet separated the Bodies rule from its example.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/c17efa1332484fa77c059dcf1886a5a0541cafce"
+      }
+    ]
+  }
+]
