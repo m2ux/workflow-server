@@ -2498,11 +2498,30 @@ class BeforeUseOrdering(unittest.TestCase):
         return [(where, line, detail) for where, line, kind, detail in checker.before_use_findings(files, structures)
                 if kind == 'before-use cycle']
 
-    def test_a_same_file_anchor_requirement_is_no_edge(self):
+    def test_a_requirement_inside_its_own_read_span_is_no_edge(self):
         self.write('a.md', '# A\n\nRead [Usage](#usage) first.\n\n## Usage\n\nThe usage.\n\n'
                    '## One\n\nRead [One](a.md#one) first.\n')
         self.assertEqual(self.cycles(), [])
         self.assertEqual(checker.requirements(self.skill / 'a.md'), [])
+
+    def test_a_same_file_section_requirement_is_an_edge(self):
+        self.write('a.md', '# A\n\n## One\n\nRead [B](b.md) first.\n\n## Two\n\nRead [One](#one) first.\n')
+        self.write('b.md', '# B\n\nRead [Two](a.md#two) first.\n')
+        self.assertEqual(self.cycles(), [(
+            'specimen/a.md', 5, 'specimen/a.md#one:5 -> specimen/b.md:3 -> specimen/a.md#two:9 -> specimen/a.md#one')])
+
+    def test_a_relative_or_linked_caller_path_reads_the_same_requirements(self):
+        self.write('a.md', '# A\n\n## One\n\nRead [One](#one) first.\n\n## Two\n\nRead [One](#one) first.\n')
+        linked = self.root / 'linked'
+        linked.symlink_to(self.skill)
+        here = Path.cwd()
+        os.chdir(self.root)
+        try:
+            for caller in (Path('specimen/a.md'), linked / 'a.md'):
+                self.assertEqual([(edge.line, edge.target, edge.anchor) for edge in checker.requirements(caller)],
+                                 [(8, (self.skill / 'a.md').resolve(), 'one')])
+        finally:
+            os.chdir(here)
 
     def test_a_whole_file_self_requirement_is_a_cycle(self):
         self.write('a.md', '# A\n\nRead [A](a.md) first.\n')

@@ -1636,8 +1636,8 @@ def requirements(path, entry=None):
     or `Read ... before ...` sentence, a link of a Prerequisites section, and
     a declared preamble link to another file. An ordinary link, a field
     reference and an execution call impose no order, and a specimen states none.
-    A section of the same file is no requirement: position orders it, and
-    a citation of one is a prerequisite citation inside one file."""
+    A requirement on a section of the same file whose read span holds the
+    requiring line is no requirement: that read already holds it."""
     lines, fenced, headings = scan(path)
     commands = scan_blocks(lines).html_lines
     intro = next((index for index, level, _ in headings if level == 2), len(lines))
@@ -1659,8 +1659,8 @@ def requirements(path, entry=None):
             if '://' in target or target.startswith('mailto:') or PLACEHOLDER.search(target):
                 continue
             name, _, fragment = target.partition('#')
-            destination = (path.parent / name).resolve() if name else path
-            if fragment and destination == path.resolve():
+            destination = (path.parent / name).resolve() if name else path.resolve()
+            if fragment and destination == path.resolve() and index in read_span(path, anchor_of(fragment)):
                 continue
             requirement = Requirement(path, index, destination, anchor_of(fragment) if fragment else '', condition)
             if requirement not in found:
