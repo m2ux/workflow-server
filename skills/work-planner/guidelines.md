@@ -37,7 +37,7 @@ The skill is an object model in prose: an artifact owns state and callable capab
 ### Dependency Inversion
 
 - **General dependencies.**
-  Modes and protocols depend on general operations. A kind implements its interface operations in [Work Kind](artifacts/work-kind.md) and links to that interface; a general file never links down to an individual kind.
+  Modes and protocols depend on general operations. A kind implements, in its own artifact, the interface operations [Work Kind](artifacts/work-kind.md) declares, and its registration links them; a general file never links down to an individual kind.
 - **Kind registration.**
   The entry point lists kinds with the operations each supplies, and one script registry maps each kind to its module. Callers reach kinds through [Work Kind](artifacts/work-kind.md) and that registration, keeping no list of their own.
 

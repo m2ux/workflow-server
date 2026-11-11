@@ -117,7 +117,7 @@ def walk(tracker, text=None):
                 review = section(caller, '#### 9. Review Before Merge')
                 assert 'Apply [Review Before Merge](../artifacts/work-kind.md#review-before-merge "ƒ")' in review
                 assert resolve('Review Before Merge', 'Hot-fix')[1] == 'Review Hot-fix Before Merge'
-                assert 'Continue to [Merge](#10-merge) only with the confirmed ready [Review State]' in review
+                assert 'Otherwise, continue to [Merge](#10-merge) only with the confirmed ready [Review State]' in review
                 assert 'Merge Task Pull Requests' in CALL.findall(section(caller, '#### 10. Merge'))
                 tracker.events.append('Merge Task Pull Requests')
                 return 'merge', tracker.events
