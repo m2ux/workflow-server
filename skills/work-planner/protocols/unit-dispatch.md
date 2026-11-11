@@ -50,7 +50,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For a new unit, use that issue, board identity and refreshed board items.
 
-- Apply [Record Dispatch Status](../artifacts/kind.md#record-dispatch-status "ƒ") with them, requesting In Progress, and retain the confirmed status or discrepancy it provides. The session starts only once it is confirmed.
+- Apply [Record Dispatch Status](../artifacts/work-kind.md#record-dispatch-status "ƒ") with them, requesting In Progress, and retain the confirmed status or discrepancy it provides. The session starts only once it is confirmed.
 
 ##### Retained Kind Unit Preparation
 

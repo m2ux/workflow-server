@@ -24,7 +24,7 @@ Work Planner plans work as GitHub issues and keeps the plan current until the wo
   - [Hot-fix](artifacts/hotfix.md)  [Release Hold](artifacts/hotfix.md#release-hot-fix-hold "ƒ"), [Record Dispatch Status](artifacts/hotfix.md#record-hot-fix-dispatch-status "ƒ"), [Record Delivery](artifacts/hotfix.md#record-hot-fix-delivery "ƒ"), [Record Merge](artifacts/hotfix.md#record-hot-fix-merge "ƒ"), [Settle Board Status](artifacts/hotfix.md#settle-hot-fix-board-status "ƒ"), [Review Before Merge](artifacts/hotfix.md#review-hot-fix-before-merge "ƒ")
   - [Hot-fix Body](artifacts/hotfix-body.md)  [Populate Body](artifacts/hotfix-body.md#populate-hot-fix-body "ƒ")
 
-[Kind](artifacts/kind.md) holds the interface each kind's operations implement.
+[Work Kind](artifacts/work-kind.md) holds the interface each kind's operations implement.
 
 Each theme's project board shows where its items stand. The [proposals board](configuration.md#proposals-board) holds proposals. A planning record holds what an initiative leaves out: the evidence, the decisions and each review.
 

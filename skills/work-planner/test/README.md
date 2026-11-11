@@ -72,7 +72,7 @@ These modules exercise the skill's instruction routes and document contracts.
 | [test_board_status](test_board_status.py) | Board Status owns the proposed board change and the commands computing it, and Board Delivery and Hot-fix reach them with the decisions they gave |
 | [test_checkouts](test_checkouts.py) | Checkout-sensitive commands consume linked input contracts |
 | [test_documents](test_documents.py) | The installed prose API exposes complete inputs and directed reading paths |
-| [test_kind_operations](test_kind_operations.py) | [Kind](../artifacts/kind.md) holds one dispatching operation per interface operation, each resolving to the operation the item's registered kind supplies or to its general route, and general files reach a kind's operation only through it |
+| [test_kind_operations](test_kind_operations.py) | [Work Kind](../artifacts/work-kind.md) holds one dispatching operation per interface operation, each resolving to the operation the item's registered kind supplies or to its general route, and general files reach a kind's operation only through it |
 | [test_merge_outcomes](test_merge_outcomes.py) | Merge instructions bind verified heads and select terminal or bounded recovery routes |
 | [test_modes](test_modes.py) | Mode summaries in each skill's [SKILL](../SKILL.md) |
 | [test_plan_mode](test_plan_mode.py) | Plan Mode keeps a plan in one home: its planning record on the engineering branch |
@@ -138,7 +138,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [unit-dispatch](../protocols/unit-dispatch.md) | [test_kind_operations](test_kind_operations.py) (27), [test_unit_dispatch](test_unit_dispatch.py) (12) |
 | [hotfix-body](../artifacts/hotfix-body.md) | [test_kind_operations](test_kind_operations.py) (27) |
 | [hoist-mode](../modes/hoist-mode.md) | [test_kind_operations](test_kind_operations.py) (27) |
-| [kind](../artifacts/kind.md) | [test_kind_operations](test_kind_operations.py) (27) |
+| [work-kind](../artifacts/work-kind.md) | [test_kind_operations](test_kind_operations.py) (27) |
 | [issue-delivery](../protocols/issue-delivery.md) | [test_kind_operations](test_kind_operations.py) (27) |
 | [task-merge](../protocols/task-merge.md) | [test_kind_operations](test_kind_operations.py) (27) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_unit_dispatch](test_unit_dispatch.py) (12), [test_worktrees](test_worktrees.py) (2) |

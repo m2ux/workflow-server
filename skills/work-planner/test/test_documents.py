@@ -36,8 +36,8 @@ def executable_scripts(paths):
 
 def registered_operations():
     """Each operation the entry point's registration reaches, by artifact and anchor, with its references.
-    A kind's operation is referenced by its registration line and each general line applying the Kind
-    operation that dispatches to it; a Kind operation, by each registration line naming its interface."""
+    A kind's operation is referenced by its registration line and each general line applying the Work Kind
+    operation that dispatches to it; a Work Kind operation, by each registration line naming its interface."""
     lines = (ROOT / 'SKILL.md').read_text().splitlines()
     numbers = {line: index + 1 for index, line in enumerate(lines[:lines.index('## Modes')])}
     selected = {}

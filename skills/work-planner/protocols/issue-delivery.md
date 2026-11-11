@@ -8,8 +8,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 1. Kind Delivery
 
-- Apply [Record Delivery](../artifacts/kind.md#record-delivery "ƒ") for the selected issue, its delivering pull request and the selected criterion ids in the project checkout.
-- On the [Kind Result](../artifacts/kind.md#kind-result) `unsupplied`, continue at [Task Issues](#2-task-issues).
+- Apply [Record Delivery](../artifacts/work-kind.md#record-delivery "ƒ") for the selected issue, its delivering pull request and the selected criterion ids in the project checkout.
+- On the [Work Kind Result](../artifacts/work-kind.md#work-kind-result) `unsupplied`, continue at [Task Issues](#2-task-issues).
 - Provide the saved identity and findings to the caller.
 - Return to the caller.
 

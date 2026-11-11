@@ -332,7 +332,7 @@ class HotfixCaller(unittest.TestCase):
         self.assertNotIn('board-delivery.md', guidance)
 
     def test_the_settle_interface_is_the_board_status_change(self):
-        body = operations(ROOT / 'artifacts' / 'kind.md')['Settle Board Status']
+        body = operations(ROOT / 'artifacts' / 'work-kind.md')['Settle Board Status']
         self.assertIn('[Status Change](board-status.md#status-change)', body)
 
     def test_every_board_status_target_resolves(self):

@@ -25,7 +25,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 3. Validate the Bodies
 
-- Apply [Validate Body](../artifacts/kind.md#validate-body "ƒ") for the issue's [registered kind](../SKILL.md).
+- Apply [Validate Body](../artifacts/work-kind.md#validate-body "ƒ") for the issue's [registered kind](../SKILL.md).
 - Supply the fetched context and output files.
 
 #### Reference Visibility
@@ -70,7 +70,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For such a body outside any initiative:
 
-- Apply [Populate Body](../artifacts/kind.md#populate-body "ƒ") for the body's [registered kind](../SKILL.md) to the current body with the confirmed boundary, folding any Non-Goals into Proposal as a closing boundary and writing to that operation's output body.
+- Apply [Populate Body](../artifacts/work-kind.md#populate-body "ƒ") for the body's [registered kind](../SKILL.md) to the current body with the confirmed boundary, folding any Non-Goals into Proposal as a closing boundary and writing to that operation's output body.
 
 - Retain the revised output body for publication.
 

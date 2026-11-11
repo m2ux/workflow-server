@@ -87,7 +87,7 @@ The continuing coordinator for one authorized delivery scope.
 
 ###### Kind Unit Hold
 
-- For the hold of a [kind unit](../artifacts/delivery-plan.md#kind-units), Apply [Release Hold](../artifacts/kind.md#release-hold "ƒ") with its issue and the selected board, and retain the [Kind Result](../artifacts/kind.md#kind-result) it provides.
+- For the hold of a [kind unit](../artifacts/delivery-plan.md#kind-units), Apply [Release Hold](../artifacts/work-kind.md#release-hold "ƒ") with its issue and the selected board, and retain the [Work Kind Result](../artifacts/work-kind.md#work-kind-result) it provides.
 
 ##### Survey Continuation
 
@@ -243,8 +243,8 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 9. Review Before Merge
 
-- Apply [Review Before Merge](../artifacts/kind.md#review-before-merge "ƒ") for the unit's pull request.
-- On the [Kind Result](../artifacts/kind.md#kind-result) `unsupplied`, continue to [Merge](#10-merge).
+- Apply [Review Before Merge](../artifacts/work-kind.md#review-before-merge "ƒ") for the unit's pull request.
+- On the [Work Kind Result](../artifacts/work-kind.md#work-kind-result) `unsupplied`, continue to [Merge](#10-merge).
 - Continue to [Merge](#10-merge) only with the confirmed ready [Review State](../artifacts/pull-request.md#review-state) it provides.
 - On a failure, or a hold with open findings, report the unresolved state, the confirmed draft readback and each open finding in the session result, and stop before [Merge](#10-merge).
 
@@ -258,7 +258,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 11. Arising Issues
 
-- For each unsaved issue that arose during delivery, Apply [Populate Body](../artifacts/kind.md#populate-body "ƒ") for the [registered kind](../SKILL.md) for work outside any initiative, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body.
+- For each unsaved issue that arose during delivery, Apply [Populate Body](../artifacts/work-kind.md#populate-body "ƒ") for the [registered kind](../SKILL.md) for work outside any initiative, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body.
 
 - Follow [Hoist Mode](hoist-mode.md "ƒ") in the project checkout with those new issue identities, each arising issue an agent review's exclusion saved, and the allowance the brief names, after the pull request is open and epic delivery is recorded.
 - Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with each placement it applied and each it held.

@@ -18,12 +18,12 @@ The skill is an object model in prose: an artifact owns state and callable capab
 - **Kind extension.**
   A new kind of work has its own artifact and script module. General artifacts, modes, protocols and scripts describe their family without naming or branching on individual kinds; adding a kind changes no general file.
 - **Interface operations.**
-  Where kinds differ, each kind supplies the same named operation and contract. [Kind](artifacts/kind.md) is the interface's home: general callers Apply its operation, which selects the kind's operation through the published kind registration.
+  Where kinds differ, each kind supplies the same named operation and contract. [Work Kind](artifacts/work-kind.md) is the interface's home: general callers Apply its operation, which selects the kind's operation through the published kind registration.
 
 ### Liskov Substitution
 
 - **Interchangeable contracts.**
-  Every kind's interface operation accepts the inputs and provides the output shape the [Kind](artifacts/kind.md) operation it implements promises. A kind may constrain its own fields, but must not narrow accepted interface inputs or return less than that contract requires.
+  Every kind's interface operation accepts the inputs and provides the output shape the [Work Kind](artifacts/work-kind.md) operation it implements promises. A kind may constrain its own fields, but must not narrow accepted interface inputs or return less than that contract requires.
 
 ### Interface Segregation
 
@@ -37,9 +37,9 @@ The skill is an object model in prose: an artifact owns state and callable capab
 ### Dependency Inversion
 
 - **General dependencies.**
-  Modes and protocols depend on general operations. A kind implements its interface operations in [Kind](artifacts/kind.md) and links to that interface; a general file never links down to an individual kind.
+  Modes and protocols depend on general operations. A kind implements its interface operations in [Work Kind](artifacts/work-kind.md) and links to that interface; a general file never links down to an individual kind.
 - **Kind registration.**
-  The entry point lists kinds with the operations each supplies, and one script registry maps each kind to its module. Callers reach kinds through [Kind](artifacts/kind.md) and that registration, keeping no list of their own.
+  The entry point lists kinds with the operations each supplies, and one script registry maps each kind to its module. Callers reach kinds through [Work Kind](artifacts/work-kind.md) and that registration, keeping no list of their own.
 
 ### Encapsulation
 

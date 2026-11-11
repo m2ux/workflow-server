@@ -115,7 +115,7 @@ def walk(tracker, text=None):
                 # The operation provides Review State; its caller's next step owns the merge call.
                 caller = CALLER.read_text()
                 review = section(caller, '#### 9. Review Before Merge')
-                assert 'Apply [Review Before Merge](../artifacts/kind.md#review-before-merge "ƒ")' in review
+                assert 'Apply [Review Before Merge](../artifacts/work-kind.md#review-before-merge "ƒ")' in review
                 assert resolve('Review Before Merge', 'Hot-fix')[1] == 'Review Hot-fix Before Merge'
                 assert 'Continue to [Merge](#10-merge) only with the confirmed ready [Review State]' in review
                 assert 'Merge Task Pull Requests' in CALL.findall(section(caller, '#### 10. Merge'))

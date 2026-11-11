@@ -1,4 +1,4 @@
-"""Kind holds one dispatching operation per interface operation, each resolving to the operation the item's registered
+"""Work Kind holds one dispatching operation per interface operation, each resolving to the operation the item's registered
 kind supplies or to its general route, and general files reach a kind's operation only through it."""
 import re
 import sys
@@ -11,10 +11,10 @@ import check_skill_files as checker
 from test_plan_mode import section
 
 ENTRY = ROOT / 'SKILL.md'
-KIND = ROOT / 'artifacts' / 'kind.md'
+KIND = ROOT / 'artifacts' / 'work-kind.md'
 CALL = re.compile(r'(?:Apply|Run) \[([^]]+)\]\(([^)\s]*)[^)]*"ƒ"\)')
 NAMED = re.compile(r'\[([^]]+)\]\(([^)\s]+)[^)]*\)')
-DISPATCH = re.compile(r'Apply \[([^]]+)\]\(\.\./artifacts/kind\.md#([a-z0-9-]+) "ƒ"\)')
+DISPATCH = re.compile(r'Apply \[([^]]+)\]\(\.\./artifacts/work-kind\.md#([a-z0-9-]+) "ƒ"\)')
 RETIRED = re.compile(r'operation (?:the|that) [^.]*\bsupplies\b|the validate operation')
 GENERAL = ('modes', 'protocols')
 DECLARED = ('modes/align-mode.md', 'modes/deliver-mode.md', 'modes/hoist-mode.md', 'protocols/unit-dispatch.md',
@@ -39,7 +39,7 @@ def operations(path):
 
 
 def interface_names():
-    """The interface operations Kind holds, in order."""
+    """The interface operations Work Kind holds, in order."""
     return list(operations(KIND))
 
 
@@ -82,7 +82,7 @@ def resolve(name, kind):
 
 
 def general_route(name):
-    """What Kind's operation does when the kind supplies none: the operation it applies, `unsupplied`, or
+    """What Work Kind's operation does when the kind supplies none: the operation it applies, `unsupplied`, or
     `template` for the body population it performs itself."""
     body = operations(KIND)[name]
     line = next(line for line in body.splitlines() if line.startswith('- When it lists none'))
@@ -92,12 +92,12 @@ def general_route(name):
 
 
 def dispatch(name, kind):
-    """The operation Kind's operation reaches for one kind: the kind's own, or the general route."""
+    """The operation Work Kind's operation reaches for one kind: the kind's own, or the general route."""
     return resolve(name, kind) or general_route(name)
 
 
 def implementations(anchor):
-    """Each kind operation, by resolved artifact and anchor, that Kind's operation of this anchor dispatches to."""
+    """Each kind operation, by resolved artifact and anchor, that Work Kind's operation of this anchor dispatches to."""
     names = {checker.anchor_of(name): name for name in interface_names()}
     found = []
     for artifacts in registration().values():
@@ -116,7 +116,7 @@ def kind_operation(name, kind):
 
 
 def selections(name, files=None):
-    """Each general line that applies the named interface operation of Kind."""
+    """Each general line that applies the named interface operation of Work Kind."""
     anchor = checker.anchor_of(name)
     sites = []
     paths = [ROOT / name_ for name_ in files] if files else [
@@ -141,7 +141,7 @@ def general_calls(anchor):
 
 
 class Dispatch(unittest.TestCase):
-    """Each operation of Kind runs the kind's operation the registration links, or its general route."""
+    """Each operation of Work Kind runs the kind's operation the registration links, or its general route."""
 
     def setUp(self):
         self.held = operations(KIND)
@@ -159,10 +159,10 @@ class Dispatch(unittest.TestCase):
             with self.subTest(operation=name):
                 steps = re.findall(r'^#### \d+\. (.+)$', body, re.M)
                 self.assertEqual(len(steps), 1)
-                self.assertIn(f'- When the [Registration](#registration) of the [Item Kind](#item-kind) lists a '
+                self.assertIn(f'- When the [Registration](#registration) of the [Item Work Kind](#item-work-kind) lists a '
                               f'{name} operation, Apply that operation with the [Operation Inputs](#operation-inputs)',
                               body)
-                self.assertIn('[Kind Result](#kind-result)', body)
+                self.assertIn('[Work Kind Result](#work-kind-result)', body)
                 self.assertEqual(sum(line.startswith('- When it lists none') for line in body.splitlines()), 1)
 
     def test_each_general_route(self):
@@ -226,19 +226,19 @@ class Dispatch(unittest.TestCase):
         for name in ('Record Delivery', 'Record Merge'):
             with self.subTest(operation=name):
                 self.assertEqual(general_route(name), 'unsupplied')
-        self.assertIn('- On the [Kind Result](../artifacts/kind.md#kind-result) `unsupplied`, continue at '
+        self.assertIn('- On the [Work Kind Result](../artifacts/work-kind.md#work-kind-result) `unsupplied`, continue at '
                       '[Task Issues](#2-task-issues).',
                       section((ROOT / 'protocols' / 'issue-delivery.md').read_text(), '### 1. Kind Delivery'))
-        self.assertIn('- On the [Kind Result](../artifacts/kind.md#kind-result) `unsupplied`, continue at '
+        self.assertIn('- On the [Work Kind Result](../artifacts/work-kind.md#work-kind-result) `unsupplied`, continue at '
                       '[Read and Record](#2-read-and-record).',
                       section((ROOT / 'protocols' / 'task-merge.md').read_text(), '### 1. Kind Merge'))
-        self.assertIn('- On the [Kind Result](../artifacts/kind.md#kind-result) `unsupplied`, continue to '
+        self.assertIn('- On the [Work Kind Result](../artifacts/work-kind.md#work-kind-result) `unsupplied`, continue to '
                       '[Merge](#10-merge).',
                       section((ROOT / 'modes' / 'deliver-mode.md').read_text(), '#### 9. Review Before Merge'))
 
 
 class HotfixInterface(unittest.TestCase):
-    """Hot-fix supplies its registered interface operations under their names, reached only through Kind."""
+    """Hot-fix supplies its registered interface operations under their names, reached only through Work Kind."""
 
     def setUp(self):
         self.path, self.links = registered('Hot-fix')
@@ -315,7 +315,7 @@ class HotfixContracts(unittest.TestCase):
         """The steps each operation owns live in the hot-fix artifact, not in the general files that reach it."""
         owned = ('#sync-hot-fix-issue', 'hotfix.md#hot-fix-identity', 'hotfix.md#board-evidence',
                  'hotfix.md#board-result', 'Verify Hot-Fix Readiness', 'Restore Hot-Fix Draft')
-        for name in (*DECLARED, 'artifacts/kind.md'):
+        for name in (*DECLARED, 'artifacts/work-kind.md'):
             text = (ROOT / name).read_text()
             for mark in owned:
                 with self.subTest(file=name, mark=mark):
@@ -391,7 +391,7 @@ class HotfixBodyInterface(unittest.TestCase):
 
 class GeneralCallers(unittest.TestCase):
     """The general callers of the interface name no kind of work outside the plan hierarchy, and reach each kind's
-    operations through Kind."""
+    operations through Work Kind."""
 
     def kind_artifacts(self):
         return {path for kind, artifacts in registration().items() if kind not in HIERARCHY
@@ -439,7 +439,7 @@ class GeneralCallers(unittest.TestCase):
                 self.assertTrue(selections(name, DECLARED))
 
     def test_no_caller_selects_a_kind_operation_in_prose(self):
-        """Kind alone states how an interface operation reaches a kind's; every other file applies it."""
+        """Work Kind alone states how an interface operation reaches a kind's; every other file applies it."""
         for folder in (*GENERAL, 'artifacts'):
             for path in sorted(path for path in (ROOT / folder).glob('*.md') if path != KIND):
                 for number, line in enumerate(path.read_text().splitlines(), 1):

@@ -8,10 +8,10 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 1. Kind Merge
 
-- Apply [Record Merge](../artifacts/kind.md#record-merge "ƒ") for the issue the merge delivers, with the merge result and the complete issue-link snapshot.
-- On the [Kind Result](../artifacts/kind.md#kind-result) `unsupplied`, continue at [Read and Record](#2-read-and-record).
+- Apply [Record Merge](../artifacts/work-kind.md#record-merge "ƒ") for the issue the merge delivers, with the merge result and the complete issue-link snapshot.
+- On the [Work Kind Result](../artifacts/work-kind.md#work-kind-result) `unsupplied`, continue at [Read and Record](#2-read-and-record).
 - Follow [Issue Closure](issue-closure.md "ƒ") for that issue when eligible.
-- Apply [Settle Board Status](../artifacts/kind.md#settle-board-status "ƒ") with the supplied board and the issue.
+- Apply [Settle Board Status](../artifacts/work-kind.md#settle-board-status "ƒ") with the supplied board and the issue.
 - Return to the caller.
 
 ### 2. Read and Record

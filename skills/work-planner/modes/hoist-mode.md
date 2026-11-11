@@ -112,7 +112,7 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 
 - Select the destination kind and evidence/design from [Rewrite Inputs](../artifacts/placement.md#rewrite-inputs).
 
-- Apply [Populate Body](../artifacts/kind.md#populate-body "ƒ") for the destination's [registered kind](../SKILL.md), with the inputs it takes from them.
+- Apply [Populate Body](../artifacts/work-kind.md#populate-body "ƒ") for the destination's [registered kind](../SKILL.md), with the inputs it takes from them.
 - Carry evidence into Problem and design into Proposal.
 
 ##### 2. Validate and Save Body
@@ -123,7 +123,7 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 
 ##### 3. Settle Board Status
 
-Apply [Settle Board Status](../artifacts/kind.md#settle-board-status "ƒ") with the confirmed theme board and the saved issue.
+Apply [Settle Board Status](../artifacts/work-kind.md#settle-board-status "ƒ") with the confirmed theme board and the saved issue.
 
 ##### 4. Retain Saved Identity
 
