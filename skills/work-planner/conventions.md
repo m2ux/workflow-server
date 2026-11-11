@@ -13,6 +13,7 @@
   - `review`  A pull request's detached review worktree.
 - **Bodies.**
   - Bodies and long comments always go through a file (`-F body=@file`), never inline, which avoids quoting.
+  - `gh api -F` reads an `@path` value as that file's content, and `-f` sends the value as text: `-f body=@file` publishes the path itself. A value supplied from a file takes `-F`; one supplied as text takes `-f`.
   - **Example.**  workflow-server's dynamic-shell restrictions deny a body inlined in the command.
   - A plan's draft bodies are files of its [planning record](artifacts/planning-record.md#layout). Keep every other body file in a working directory outside the repository.
 - **Scripts.**

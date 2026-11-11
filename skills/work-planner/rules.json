@@ -45,7 +45,7 @@
   "operations/parameter-placeholders": ["invocation argument contract", "unescaped HTML in invocation", "review"],
   "operations/concrete-examples": ["review"],
   "operations/local-scripts": ["review"],
-  "operations/bodies": ["review"],
+  "operations/bodies": ["file value sent as text", "review"],
   "modes/orchestration": ["review"],
   "modes/one-goal": ["review"],
   "modes/outcomes": ["review"],
