@@ -1,0 +1,26 @@
+test_a_capacity_wait_resumes_into_exactly_one_start (test_unit_dispatch.CapacityWait.test_a_capacity_wait_resumes_into_exactly_one_start) ... ok
+test_a_competing_session_or_changed_hold_rejects_the_resume (test_unit_dispatch.CapacityWait.test_a_competing_session_or_changed_hold_rejects_the_resume) ... ok
+test_the_protocol_orders_record_hold_checkouts_and_start (test_unit_dispatch.CapacityWait.test_the_protocol_orders_record_hold_checkouts_and_start) ... ok
+test_a_new_unit_is_created_once_and_reused_without_change (test_unit_dispatch.Creation.test_a_new_unit_is_created_once_and_reused_without_change) ... ok
+test_one_mismatched_base_blocks_the_whole_unit (test_unit_dispatch.Creation.test_one_mismatched_base_blocks_the_whole_unit) ... ok
+test_each_mismatch_blocks_reuse_without_change (test_unit_dispatch.Mismatch.test_each_mismatch_blocks_reuse_without_change) ... ok
+test_start_context_is_produced_before_its_use (test_unit_dispatch.Prerequisites.test_start_context_is_produced_before_its_use) ... ok
+test_unit_dispatch_reaches_rules_and_conventions_without_a_cycle (test_unit_dispatch.Prerequisites.test_unit_dispatch_reaches_rules_and_conventions_without_a_cycle) ... ok
+test_a_new_unit_selects_creation_and_records_its_full_head (test_unit_dispatch.Route.test_a_new_unit_selects_creation_and_records_its_full_head) ... ok
+test_a_retained_preparation_selects_only_validation (test_unit_dispatch.Route.test_a_retained_preparation_selects_only_validation) ... ok
+test_one_validation_implementation_serves_the_route (test_unit_dispatch.Route.test_one_validation_implementation_serves_the_route) ... ok
+test_only_a_capacity_wait_retains_a_start_for_resumption (test_unit_dispatch.Route.test_only_a_capacity_wait_retains_a_start_for_resumption) ... ok
+test_a_branch_mismatch_preserves_the_checkout (test_task_worktree.RetainedTaskWorktree.test_a_branch_mismatch_preserves_the_checkout) ... ok
+test_a_foreign_repository_is_rejected (test_task_worktree.RetainedTaskWorktree.test_a_foreign_repository_is_rejected) ... ok
+test_a_full_recorded_revision_is_required (test_task_worktree.RetainedTaskWorktree.test_a_full_recorded_revision_is_required) ... ok
+test_a_prepared_worktree_is_reused_after_capacity_returns (test_task_worktree.RetainedTaskWorktree.test_a_prepared_worktree_is_reused_after_capacity_returns) ... ok
+test_a_relative_worktree_resolves_against_the_project (test_task_worktree.RetainedTaskWorktree.test_a_relative_worktree_resolves_against_the_project) ... ok
+test_a_revision_mismatch_preserves_the_commit (test_task_worktree.RetainedTaskWorktree.test_a_revision_mismatch_preserves_the_commit) ... ok
+test_detached_head_is_rejected (test_task_worktree.RetainedTaskWorktree.test_detached_head_is_rejected) ... ok
+test_tracked_changes_are_preserved (test_task_worktree.RetainedTaskWorktree.test_tracked_changes_are_preserved) ... ok
+test_untracked_changes_are_preserved (test_task_worktree.RetainedTaskWorktree.test_untracked_changes_are_preserved) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 1.950s
+
+OK
