@@ -51,7 +51,7 @@ flowchart LR
     style HotfixDoc fill:#c8e6c9,stroke:#2e7d32
 ```
 
-The edges from the general scripts to `kinds.py` and from `kinds.py` to `hotfix.py` are the measured import graph: ten general scripts import `kinds.py`, and only the registry imports the hot-fix module.
+The edges from the general scripts to `kinds.py` and from `kinds.py` to `hotfix.py` are the measured import graph: nine general scripts and `hotfix.py` import `kinds.py`, and only the registry imports the hot-fix module.
 
 ### Kind registration
 
@@ -73,7 +73,7 @@ The edges from the general scripts to `kinds.py` and from `kinds.py` to `hotfix.
 ### Shared checker
 
 - **check_skill_files.py.**
-  Adds three checks: a numbered step or operation call under Fields, a cycle of explicit before-use requirements, and a kind named or kind module imported in a general file.
+  Adds three checks: a numbered step or operation call under Fields, a cycle of explicit before-use requirements between files, and a kind named or kind module imported in a general file.
 
 ## Behaviour
 
@@ -95,7 +95,7 @@ sequenceDiagram
 
     Caller->>AR: main
     AR->>AR: check(pr, records)
-    AR->>AR: review(pr)
+    AR->>AR: review(pr, head, base)
     AR->>K: kind_of(pr)
     K->>H: tag(pr)
     H-->>K: F00 or None
@@ -106,7 +106,7 @@ sequenceDiagram
 ```
 
 - **Selection.**
-  `kind_of` asks each registered module's `tag`; with no match the script applies the general rule (head and base SHAs current, blocking findings fixed).
+  `kind_of` asks each registered module's `tag`; with no match the script applies the general rule (the head and base SHAs `check` validated are current, blocking findings fixed).
 - **Kind rule.**
   A hot-fix's review is current by head SHA and `base_ref`, and every finding must be fixed.
 
@@ -114,7 +114,7 @@ The same route runs from `deliver.py` (`main → place → statuses.place → ow
 
 ### Before-use scan
 
-The shared checker builds the explicit before-use graph across a skill's files and reports each cycle with a closed witness.
+The shared checker builds the explicit before-use graph across a skill's files and reports each cycle with a closed witness. A `Read … first` sentence (ending `.`, `:`, `;` or `, then`), a Prerequisites link or a declared preamble link is an edge; a link to a section of the same file is none, since position orders it.
 
 ```mermaid
 ---
@@ -141,7 +141,7 @@ sequenceDiagram
 - **General scripts.**
   Select kinds through `kinds.py`; title tags and issue identity come from `board.py` and `sync.py`, each pattern defined once in `sync.py`.
 - **deps.py and deliver.py.**
-  A work item's Component line lists every file its task changes; rows are grouped and paired by any shared file, and a unit is routed to every epic base its files name.
+  A work item's Component line lists every file its task changes as `branch:path` entries; a comma starts a new entry only before another `branch:path`, and prose after a path is dropped. Rows are grouped and paired by any shared file, and a unit is routed to every epic base its files name.
 
 ### Prose
 
@@ -159,14 +159,14 @@ sequenceDiagram
 
 ## Reading Order
 
-1. **[kinds.py](https://github.com/m2ux/workflow-server/blob/bd5ccafc5cd52779e11494d2bfc1fa51a7dfa194/skills/work-planner/scripts/kinds.py#L26-L81)** — the registry and interface every other change routes through.
-2. **[hotfix.py](https://github.com/m2ux/workflow-server/blob/bd5ccafc5cd52779e11494d2bfc1fa51a7dfa194/skills/work-planner/scripts/hotfix.py)** — the one kind implementing that interface.
-3. **[SKILL.md](https://github.com/m2ux/workflow-server/blob/bd5ccafc5cd52779e11494d2bfc1fa51a7dfa194/skills/work-planner/SKILL.md#L9-L44)** — the prose registration that mirrors the script registry.
-4. **[agent_review.py](https://github.com/m2ux/workflow-server/blob/bd5ccafc5cd52779e11494d2bfc1fa51a7dfa194/skills/work-planner/scripts/agent_review.py#L51-L59)** — the smallest caller of the registry.
-5. **[deliver.py](https://github.com/m2ux/workflow-server/blob/bd5ccafc5cd52779e11494d2bfc1fa51a7dfa194/skills/work-planner/scripts/deliver.py#L155-L282)** — base routing by declared files and kind units.
-6. **[deps.py](https://github.com/m2ux/workflow-server/blob/bd5ccafc5cd52779e11494d2bfc1fa51a7dfa194/skills/work-planner/scripts/deps.py#L166-L261)** — multi-file declarations, contention and candidate units.
-7. **[board-status.md](https://github.com/m2ux/workflow-server/blob/bd5ccafc5cd52779e11494d2bfc1fa51a7dfa194/skills/work-planner/artifacts/board-status.md)** — the extracted status contract.
-8. **[check_skill_files.py](https://github.com/m2ux/workflow-server/blob/bd5ccafc5cd52779e11494d2bfc1fa51a7dfa194/skills/scripts/check_skill_files.py#L1682-L1857)** — before-use and kind-name checks.
+1. **[kinds.py](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/scripts/kinds.py#L26-L81)** — the registry and interface every other change routes through.
+2. **[hotfix.py](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/scripts/hotfix.py)** — the one kind implementing that interface.
+3. **[SKILL.md](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/SKILL.md#L9-L44)** — the prose registration that mirrors the script registry.
+4. **[agent_review.py](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/scripts/agent_review.py#L52-L61)** — the smallest caller of the registry.
+5. **[deliver.py](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/scripts/deliver.py#L153-L280)** — base routing by declared files and kind units.
+6. **[deps.py](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/scripts/deps.py#L167-L263)** — multi-file declarations, contention and candidate units.
+7. **[board-status.md](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/work-planner/artifacts/board-status.md)** — the extracted status contract.
+8. **[check_skill_files.py](https://github.com/m2ux/workflow-server/blob/bdfb52b011320fba6658d653421281faefb4c607/skills/scripts/check_skill_files.py#L1686-L1861)** — before-use and kind-name checks.
 
 ## Risks and Watch Points
 

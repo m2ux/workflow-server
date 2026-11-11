@@ -1,6 +1,6 @@
 
   GitNexus Detect Changes (1.6.12)
-Changes: 81 files, 917 symbols
+Changes: 82 files, 936 symbols
 Affected processes: 114
 Risk level: critical
 
@@ -20,7 +20,7 @@ Changed symbols:
   Variable PASSIVE → skills/scripts/check_skill_files.py
   Variable TRANSITION → skills/scripts/check_skill_files.py
   Variable LINK_TEXT → skills/scripts/check_skill_files.py
-... and 902 more
+... and 921 more
 
 Affected execution flows:
   • Main → Interface (8 steps) — changed: kind_of, interface, unit_members, registered, members

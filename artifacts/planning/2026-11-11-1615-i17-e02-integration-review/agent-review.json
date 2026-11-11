@@ -10,5 +10,78 @@
     "criteria": "All 43 epic criteria (AC1-AC72 as listed on #1615) are ticked, and every one of the 32 Work Breakdown rows (W01-W42) is delivered: 30 task pull requests merged into i17/e02/workspace and W02 delivered as engineering commit 40d65b77. Sync Epic reports no unmatched, conflict, ready-to-verify or ticked-early finding. Per-criterion verification evidence is in the review PR Test Plan T1-T33, each linked to its task's validation record.",
     "validation": "At head bd5ccafc in a detached review worktree: Work Planner suite 1212 tests OK (one opt-in skip); shared skills suite 319 tests OK; check_skill_files.py work-planner 60 files, 0 findings. Epic base contains origin/workspace (bfb6e7ca), so Update Epic Base made no change. Target workspace: no branch protection (404), ruleset requires one approving review and no status checks; head has 0 check runs and 0 statuses.",
     "findings": []
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1659",
+    "head": "bdfb52b011320fba6658d653421281faefb4c607",
+    "base": "2ba852ab575a08ae24e605b6410494b9e116e0bb",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1615-i17-e02-integration-review/agent-review.json",
+    "reviewer": "Claude Opus 5.5 integration review (work-planner Epic Integration)",
+    "reviewed_at": "2026-11-11T06:56:41Z",
+    "scope": "Integration diff origin/workspace 2ba852ab..bdfb52b0 (82 files, 6115 insertions, 901 deletions; merge base 2ba852ab after merging workspace F09 into the epic base). The full diff was reviewed at bd5ccafc in the preceding record; the final review of #1659 raised ten findings, each fixed in bd5ccafc..843d452f and reviewed line by line here with its callers: advance-mode.md step 6; check_skill_files.py fields_steps, BEFORE_USE and requirements; deps.py BRANCH, ENTRY and read_components with deliver.py changed_bases; deliver.py target_fault and its kind_units and ready_merges callers; board-queue.py is_initiative; sync.PR_REF reached from deliver.py, renumber.py and agent_review.py; agent_review.py review and check. GitNexus at bdfb52b (index-only, up to date): agent_review.review is called only by check; nine general scripts and hotfix.py import kinds.py and only kinds.py reaches hotfix.py. Stale-text search for the retired names and wording (ON_BRANCH, PR_TITLE, the hot-fix Target: reason in deliver.py, the pending-until-answered Advance line) finds none outside hotfix.py's own body rules.",
+    "criteria": "All 43 acceptance criteria on #1615 are ticked and every Work Breakdown row is delivered (30 task pull requests merged into i17/e02/workspace and W02 as engineering commit 40d65b77). The fixes add no criterion; each carries an observing test that failed before its fix and passes after it.",
+    "validation": "At head bdfb52b0: Work Planner suite 1217 tests OK (one opt-in skip); shared skills suite 323 tests OK; check_skill_files.py work-planner 60 files, 0 findings; git diff --check clean against origin/workspace. Epic base contains origin/workspace 2ba852ab.",
+    "findings": [
+      {
+        "description": "advance-mode.md step 6: a held or unanswered decision under an allowance repeated the step forever; it now stops and returns the pending queue with the change list.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/aedd4515f508f460dc9dd5f4be1e06965dadc72b"
+      },
+      {
+        "description": "check_skill_files.py requirements(): an anchor-only same-file link made a self before-use edge and a false cycle; same-file section links are excluded (the prerequisite-citation-inside-one-file finding covers them).",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/9e979601d1d92eae71860fe8d163d2301524449b"
+      },
+      {
+        "description": "deps.py read_components: splitting on every comma turned prose into bogus files; entries split only before a branch:path entry and trailing prose is dropped; deliver.py reads the branch with deps.BRANCH.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/a1857d4ec3021a1892b0c5bfe999318e909baff2"
+      },
+      {
+        "description": "deliver.py target_fault hard-coded the hot-fix reason; it reports the kind-neutral \"it names no target\", as progress.py does.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/c4468680e21832feca0be6dd6b2e2fade457f417"
+      },
+      {
+        "description": "board-queue.py kept its own is_initiative, diverging from board.is_initiative on \"[I01:W02]\"; it imports board's.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/d84cdf05c6742fdf8359769a9ea515b6161b211e"
+      },
+      {
+        "description": "deliver.py PR_TITLE duplicated sync.PR_REF (as did renumber.py and agent_review.py); all import it and test_shared holds the single definition.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/4a6539a0a7bfb9635307b911f9863b27095500ae"
+      },
+      {
+        "description": "deliver.py target_fault carried an unused issue parameter; removed with its call sites.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/3be03d5514e52f0523a95f2518061c15d244d179"
+      },
+      {
+        "description": "check_skill_files.py BEFORE_USE missed the \"first, then\", \"first:\" and \"whole first;\" forms; matched, with fixtures.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/7f808022b74b627116b82e7d5f052b6a8e306e2c"
+      },
+      {
+        "description": "agent_review.py general review rule re-read pr head/base unguarded; it takes the head and base check() validated.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/843d452f1b2f32d6e0d11cab34ccdbd31259767e"
+      },
+      {
+        "description": "check_skill_files.py fields_steps compiled declared call verbs unescaped; they are re.escape-d.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/ba2e193769648494e23fe954001845aabb4c50f9"
+      }
+    ]
   }
 ]
