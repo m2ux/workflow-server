@@ -143,14 +143,14 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [issue-delivery](../protocols/issue-delivery.md) | [test_kind_operations](test_kind_operations.py) (29) |
 | [task-merge](../protocols/task-merge.md) | [test_kind_operations](test_kind_operations.py) (29) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_unit_dispatch](test_unit_dispatch.py) (12), [test_worktrees](test_worktrees.py) (2) |
-| [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (13) |
+| [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (14) |
 | [configuration](../configuration.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20) |
 | [conventions](../conventions.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20), [test_reading_routes](test_reading_routes.py) (20), [test_unit_dispatch](test_unit_dispatch.py) (12) |
 | [guidelines](../guidelines.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20), [test_reading_routes](test_reading_routes.py) (20) |
 | `modes/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20) |
-| [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (13), [test_plan_publication](test_plan_publication.py) (14) |
-| [propose-mode](../modes/propose-mode.md) | [test_plan_mode](test_plan_mode.py) (13) |
-| [proposal](../artifacts/proposal.md) | [test_plan_mode](test_plan_mode.py) (13) |
+| [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (14), [test_plan_publication](test_plan_publication.py) (14) |
+| [propose-mode](../modes/propose-mode.md) | [test_plan_mode](test_plan_mode.py) (14) |
+| [proposal](../artifacts/proposal.md) | [test_plan_mode](test_plan_mode.py) (14) |
 | `protocols/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20) |
 | `references/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20) |
 | [rules](../rules.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (20), [test_reading_routes](test_reading_routes.py) (20), [test_unit_dispatch](test_unit_dispatch.py) (12) |

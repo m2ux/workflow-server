@@ -8,8 +8,12 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 1. Take the Proposal
 
-- When the user names an [Approved](../artifacts/proposal.md#proposal-status) proposal, its associated issue body defines the problem scope.
-- A named proposal at any other [Proposal Status](../artifacts/proposal.md#proposal-status) blocks initiative drafting; report its status.
+- When the user names a proposal:
+
+- Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") with proposals as its [Board Selection](../artifacts/board.md#board-selection), then Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for that board, and read the Status of the proposal's item.
+- At [Approved](../artifacts/proposal.md#proposal-status), the proposal's issue body defines the problem scope.
+- At any other [Proposal Status](../artifacts/proposal.md#proposal-status), or with no item on the board, the proposal blocks initiative drafting; report the Status read or the missing item.
+
 - When the user names an initiative that already exists, Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for its body. That body defines the problem scope, and no proposal is raised for work it already carries.
 
 - When neither a proposal nor an existing initiative is named:
