@@ -25,7 +25,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format "ƒ") for the selected issue against its kind’s template and field conditions.
 - When it returns, fetch the saved body again.
-- Validate that saved body before continuing to the fetch step.
+- Validate that saved body before continuing to [Fetch](#2-fetch).
 - Provide a remaining format failure as a blocker.
 
 ### 2. Fetch
@@ -66,13 +66,13 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 6. Sync Each Epic
 
-- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ"), linking every match from the match step, open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at. Linking a pull request replaces the planning-record link on that task.
+- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ"), linking every match from [Match Pull Requests to Tasks](#4-match-pull-requests-to-tasks), open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at. Linking a pull request replaces the planning-record link on that task.
 
 - Handle the provided delivery findings:
 
 **Normalized.**
 
-- The patch step publishes the corrected table.
+- [Patch](#9-patch) publishes the corrected table.
 
 **Retitle.**
 
@@ -84,11 +84,11 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 **Unmatched.**
 
-- Match them as in the match step.
+- Match them as in [Match Pull Requests to Tasks](#4-match-pull-requests-to-tasks).
 
 **In flight.**
 
-- Match them as in the match step.
+- Match them as in [Match Pull Requests to Tasks](#4-match-pull-requests-to-tasks).
 
 **Draft.**
 
@@ -97,7 +97,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 **Unmerged.**
 
-- The close step opens or merges that pull request.
+- [Close](#10-close) opens or merges that pull request.
 
 **Target.**
 
@@ -119,7 +119,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 **No epic.**
 
-- Give it the epic it works on as the unnamed-deliveries step does, once the user confirms which.
+- Give it the epic it works on as [Unnamed Deliveries](#3-unnamed-deliveries) does, once the user confirms which.
 
 **Uncited.**
 
@@ -128,7 +128,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 **Note.**
 
-- Link the pull request as in the match step.
+- Link the pull request as in [Match Pull Requests to Tasks](#4-match-pull-requests-to-tasks).
 
 **Unplaced.**
 
@@ -146,17 +146,17 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 **Open questions.**
 
-- Return to the select step for this epic.
+- Return to [Select](#1-select) for this epic.
 - Resolve the questions there.
 - Fetch the saved body, then Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the same epic bases.
 
 **Ready to verify.**
 
-- The verify step settles them.
+- [Verify](#7-verify) settles them.
 
 **Unmet.**
 
-- The verify step settles the unticked criteria, planning a gap task for any that need further work.
+- [Verify](#7-verify) settles the unticked criteria, planning a gap task for any that need further work.
 
 **Ticked early.**
 
@@ -187,7 +187,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
 
-- Retain the provided verified criterion ids and evidence for the tick step.
+- Retain the provided verified criterion ids and evidence for [Tick](#8-tick).
 
 - For an unresolved epic criterion requiring further work:
 
@@ -323,10 +323,10 @@ Retain [Confirmed Statuses](../artifacts/board-delivery.md#confirmed-statuses) a
 
 ### 13. Explain Each Change Entering Review
 
-- For each epic newly confirmed In Review by the board step:
+- For each epic newly confirmed In Review by [Sync the Board](#12-sync-the-board):
 
 - Follow [Understand Mode](understand-mode.md "ƒ") with each epic review pull request, one run per base.
-- Complete each overview before continuing; an initiative has no overview of its own. An issue already In Review when the sync began keeps the overview it has: the pull request it explains is the one already reviewed. A reviewer meets the overview on the pull request it explains. The run that integrates an epic base owns that epic's overview; this step writes one only where the board step confirms an epic In Review that integration did not already explain.
+- Complete each overview before continuing; an initiative has no overview of its own. An issue already In Review when the sync began keeps the overview it has: the pull request it explains is the one already reviewed. A reviewer meets the overview on the pull request it explains. The run that integrates an epic base owns that epic's overview; this step writes one only where [Sync the Board](#12-sync-the-board) confirms an epic In Review that integration did not already explain.
 
 ### 14. Report
 

@@ -41,7 +41,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Retain [Visibility Findings](../artifacts/issue-body.md#visibility-findings) identifying each private reference on a public issue and each unavailable visibility. A private destination has no public-reference restriction; deciding how to replace or remove a private reference belongs to the requester.
 
-- Carry the visibility findings to the content-decisions step.
+- Carry the visibility findings to [Resolve Content Decisions](#6-resolve-content-decisions).
 
 #### Validation Findings
 
@@ -78,7 +78,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 #### Other Content Corrections
 
 - Apply [Revise Epic Rows](../artifacts/epic-issue-body.md#revise-epic-rows "ƒ") with confirmed task splits and Coverage corrections.
-- Replace an epic a task row names with the rows it consumes when correcting dependencies through the dependency step.
+- Replace an epic a task row names with the rows it consumes when correcting dependencies through [Check Dependencies](#8-check-dependencies).
 
 - For a wrong-kind body:
 
@@ -120,7 +120,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 9. Coverage
 
-- For a pull request explicitly selected for alignment, Apply [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan "ƒ"), Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with a converted body, and report its URL. When no initiative or epic is selected, continue at step 13, Re-run.
+- For a pull request explicitly selected for alignment, Apply [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan "ƒ"), Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with a converted body, and report its URL. When no initiative or epic is selected, continue at [Re-Run](#13-re-run).
 
 - For initiative or epic scope, Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence "ƒ") with the fetched initiative, epic and task issue JSON.
 - Continue with its provided records.
@@ -203,7 +203,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - After a published correction:
 
 - Fetch the changed bodies.
-- Repeat steps 3–12 for the affected issues with refreshed delivery evidence.
+- Repeat [Validate the Bodies](#3-validate-the-bodies) through [Review Pull Requests](#12-review-pull-requests) for the affected issues with refreshed delivery evidence.
 - Stop when the checks are clear or every remaining finding is one the user chose to keep. A finding from the criteria check is not one the user keeps. The alignment is not clear while a criterion that fails [Requirement Characteristics](../references/requirement-characteristics.md) remains.
 
 - With or without a correction:

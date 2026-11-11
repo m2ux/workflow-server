@@ -197,7 +197,7 @@ Merges each open task pull request whose test plan has passed.
 
 #### 1. Confirm Repository and Base
 
-Apply [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close "ƒ") for the repository, and confirm the task [Identity](#identity) targets [Base Branch](#base-branch), as [Task Branches](delivery-branches.md#task-branches) names it. An epic base carries no review requirement of its own; carry any applicable target review requirement into the merge step.
+Apply [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close "ƒ") for the repository, and confirm the task [Identity](#identity) targets [Base Branch](#base-branch), as [Task Branches](delivery-branches.md#task-branches) names it. An epic base carries no review requirement of its own; carry any applicable target review requirement into [Merge Verified Task Pull](#2-merge-verified-task-pull).
 
 #### 2. Merge Verified Task Pull
 

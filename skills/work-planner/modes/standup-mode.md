@@ -11,7 +11,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") for the requested board, each requested board when the scope is all, or the theme board of the named initiative.
 
 - Retain the selected window and initiative filter.
-- Complete steps 2–6 separately for each selected board.
+- Complete [Bring Delivery Current](#2-bring-delivery-current) through [Report](#6-report) separately for each selected board.
 
 ### 2. Bring Delivery Current
 
@@ -28,7 +28,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For initiatives with known delivery changes or unknown freshness, Follow [Sync Mode](sync-mode.md "ƒ") for the affected initiatives on that board.
 
-- Resume the fetch step after their delivery results are saved.
+- Resume [Fetch](#3-fetch) after their delivery results are saved.
 - Report a blocker that prevents a current summary.
 - Retain it as a gap if presenting a partial report.
 
@@ -61,7 +61,7 @@ Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-re
 - For an epic the preceding Compose Standup Report call returns with an unreadable Work Breakdown:
 
 - Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format "ƒ") for that epic against its [template and field conditions](../artifacts/epic-issue-body.md#fields).
-- If it confirms a saved correction, repeat steps 3–6 with refreshed records, retaining the selected board, window and initiative filter.
+- If it confirms a saved correction, repeat [Fetch](#3-fetch) through [Report](#6-report) with refreshed records, retaining the selected board, window and initiative filter.
 - If it reports a blocker or no correction, provide the unresolved finding without repeating the same repair.
 
 ## Outcomes

@@ -165,7 +165,7 @@ Retain it and continue with independent units.
 
 #### 3. Provide the Round
 
-Provide the updated session inventory, preparations and blockers to the calling refill step.
+Provide the updated session inventory, preparations and blockers to the caller.
 
 ### Run Delivery Session
 
@@ -238,14 +238,14 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 - A unit of any kind fixes every debt item its validation finds, from running its tests, auditing the definitions it changed and reviewing its pull request, on its task branch, so its open pull request carries each fix before it merges.
 - Debt in code outside the unit's change is an issue of its own, arising from the delivery.
 
-- Carry each item outside the unit's change into the arising-issues step.
-- Continue to the review step for a unit whose [registered kind](../SKILL.md) supplies Review Before Merge, and to the merge step otherwise.
+- Carry each item outside the unit's change into [Arising Issues](#11-arising-issues).
+- Continue to [Review Before Merge](#9-review-before-merge) for a unit whose [registered kind](../SKILL.md) supplies Review Before Merge, and to [Merge](#10-merge) otherwise.
 
 #### 9. Review Before Merge
 
 - Apply the Review Before Merge operation the unit's [registered kind](../SKILL.md) supplies for its draft pull request.
-- Continue to the merge step only with the confirmed ready [Review State](../artifacts/pull-request.md#review-state) it provides.
-- On a failure, or a hold with open findings, report the unresolved state, the confirmed draft readback and each open finding in the session result, and stop before the merge step.
+- Continue to [Merge](#10-merge) only with the confirmed ready [Review State](../artifacts/pull-request.md#review-state) it provides.
+- On a failure, or a hold with open findings, report the unresolved state, the confirmed draft readback and each open finding in the session result, and stop before [Merge](#10-merge).
 
 #### 10. Merge
 
@@ -253,7 +253,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 - Apply [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests "ƒ") for the task pull request, with the project checkout and the unit checkout.
 - On a confirmed merge, Follow [Task Merge](../protocols/task-merge.md "ƒ") in the project checkout with that merge result, the unit's current task and epic evidence, and the board identity the brief names.
-- Resume the arising-issues step when recording returns; a merge or recording blocker remains explicit.
+- Resume [Arising Issues](#11-arising-issues) when recording returns; a merge or recording blocker remains explicit.
 
 #### 11. Arising Issues
 

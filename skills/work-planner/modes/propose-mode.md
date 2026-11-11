@@ -55,8 +55,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Ask whether to add the issue to the proposals board.
 
-- On acceptance, continue to the place step.
-- On a decline, skip placement and continue to the report step with the issue URL.
+- On acceptance, continue to [Place](#7-place).
+- On a decline, skip placement and continue to [Report](#8-report) with the issue URL.
 - Wait for an unanswered decision.
 
 ### 7. Place

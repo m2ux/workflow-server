@@ -10,14 +10,14 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") with the requested theme or board identity.
 
-- Use the provided owner and board number for the sync and fetch steps.
+- Use the provided owner and board number for [Sync](#2-sync) and [Fetch](#3-fetch).
 - Resolve a pending theme selection before continuing.
 
 ### 2. Sync
 
 - Follow [Sync Mode](sync-mode.md "ƒ") for each open initiative on the selected board, with the allowance the caller supplied.
 
-- Wait for its saved delivery results before the fetch step.
+- Wait for its saved delivery results before [Fetch](#3-fetch).
 - Provide any blocker that prevents current delivery from being established.
 
 ### 3. Fetch
@@ -59,7 +59,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For an automatic line, take its recommended decision and Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with that decision.
 - A held line, and an automatic one the recommendation leaves without an answer, is settled as [Held Change](../artifacts/plan-change.md#held-change) states, following the interview rules in the [guidelines](../guidelines.md#modes) where it reaches the user.
-- A held or unanswered decision under an allowance has no user to answer it: provide the pending queue with the [change list](../artifacts/plan-change.md#change-list) and stop. Step 7 treats that queue as incomplete.
+- A held or unanswered decision under an allowance has no user to answer it: provide the pending queue with the [change list](../artifacts/plan-change.md#change-list) and stop. [Write](#7-write) treats that queue as incomplete.
 - A held decision put to the user continues with the user's answer; one the user leaves unanswered stops this step as one under an allowance does.
 
 - For `order`, the answer is the [parallel work map](../artifacts/board-queue.md#priority-sets): a positive integer on each listed initiative, or none left unordered.
@@ -79,10 +79,10 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - On an unavailable or disagreeing readback, provide the discrepancy with the pending queue and stop this continuation.
 - Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board using refreshed board items and the retained pull request and issue-link snapshots, retaining resolved issue files and confirmed unplanned initiative identities.
 
-- Resolve any further missing evidence through step 5.
+- Resolve any further missing evidence through [Resolve Missing Evidence](#5-resolve-missing-evidence).
 
 - Repeat this step while an answer leaves a further decision pending.
-- Continue to step 7 only when the refreshed queue meets [Completeness](../artifacts/board-queue.md#completeness).
+- Continue to [Write](#7-write) only when the refreshed queue meets [Completeness](../artifacts/board-queue.md#completeness).
 - Provide the [change list](../artifacts/plan-change.md#change-list) with the queue, so the caller reports each decision this mode made and each it held.
 
 ### 7. Write
@@ -91,7 +91,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") again.
 - Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board using refreshed board items and the retained pull request and issue-link snapshots, retaining resolved issue files and confirmed unplanned initiative identities.
-- Resolve new missing evidence or decisions through steps 5 and 6.
+- Resolve new missing evidence or decisions through [Resolve Missing Evidence](#5-resolve-missing-evidence) and [Resolve Queue Decisions](#6-resolve-queue-decisions).
 - Repeat this step until the refreshed queue is complete and contains no further call.
 
 ### 8. Report

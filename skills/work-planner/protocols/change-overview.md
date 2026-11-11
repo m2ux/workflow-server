@@ -39,7 +39,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Locate any existing overview record for this pull request number before creating a record.
 - Reuse its folder identity when one exists; otherwise choose a planning-folder identity whose reference is the pull request number and whose slug comes from its title.
 - Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") to prepare that folder.
-- Take the graph [measurements](../artifacts/architecture-overview.md#measurements) from the evidence step and check the proposed diagrams.
+- Take the graph [measurements](../artifacts/architecture-overview.md#measurements) from [Prepare the Evidence](#1-prepare-the-evidence) and check the proposed diagrams.
 - The diagrams must meet [Diagrams](../artifacts/architecture-overview.md#diagrams).
 
 - Populate the overview from the [Template](../artifacts/architecture-overview.md#template) at the destination in [Overview File](../artifacts/architecture-overview.md#overview-file).
