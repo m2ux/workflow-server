@@ -19,6 +19,7 @@ sys.path.insert(0, str(SCRIPTS))
 import board  # noqa: E402
 import deliver  # noqa: E402
 import kinds  # noqa: E402
+import priority  # noqa: E402
 import sync  # noqa: E402
 
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
@@ -1192,9 +1193,10 @@ class KindRegistry(unittest.TestCase):
 
 
 class SharedRules(unittest.TestCase):
-    def test_deliver_reaches_tag_parsing_and_identity_through_their_single_homes(self):
+    def test_deliver_reaches_tag_parsing_identity_and_execution_order_through_their_single_homes(self):
         self.assertIs(deliver.tags, board.tags)
         self.assertIs(deliver.issue_key, sync.issue_key)
+        self.assertIs(deliver.execution_key, priority.execution_key)
         for copy in ('key_of', 'PREFIX'):
             with self.subTest(copy=copy):
                 self.assertFalse(hasattr(deliver, copy))

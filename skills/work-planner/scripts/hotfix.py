@@ -11,10 +11,11 @@ the registry imports it.
 import re
 
 from kinds import OFF_BOARD, Key, Review, Tips
+from priority import label as _label
 
 _LETTER = 'F'
 _TAG = re.compile(rf'^\[({_LETTER}\d\d)\]')
-_PRIORITY = 'priority: 10'
+_PRIORITY = 10
 _TARGET = re.compile(r'^Target: `([^`\s]+)`\s*$')
 _ITEM = re.compile(r'^(?:[-*+]|\d+[.)])\s')
 
@@ -32,7 +33,7 @@ def letter() -> str:
 
 def labels(issue: dict) -> list[str]:
     """The priority label for priority 10, which a hot-fix carries beside type:hot-fix and its theme."""
-    return [_PRIORITY]
+    return [_label(_PRIORITY)]
 
 
 def faults(issue: dict) -> list[str]:

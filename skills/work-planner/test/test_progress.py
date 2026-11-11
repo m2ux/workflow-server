@@ -620,7 +620,7 @@ class SharedRules(unittest.TestCase):
     def test_tags_identity_priority_and_untagging_come_from_their_single_homes(self):
         self.assertIs(summarised.tags, board.tags)
         self.assertIs(summarised.issue_key, sync.issue_key)
-        self.assertIs(summarised.priority_rank, priority.rank)
+        self.assertIs(summarised.execution_key, priority.execution_key)
         self.assertIs(summarised.untagged, format.untagged)
         for copy in ('key_of', 'HOTFIX', 'KEY'):
             with self.subTest(copy=copy):

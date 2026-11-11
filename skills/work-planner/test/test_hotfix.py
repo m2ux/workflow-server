@@ -12,6 +12,7 @@ from fixtures import hotfix as hotfix_issue
 sys.path.insert(0, str(SCRIPTS))
 import hotfix as module  # noqa: E402
 from kinds import OFF_BOARD, Kind, Tips, interface  # noqa: E402
+from priority import label as priority_label  # noqa: E402
 
 KIND = interface('hot-fix')
 tag, letter, labels, faults, target = KIND.tag, KIND.letter, KIND.labels, KIND.faults, KIND.target
@@ -60,6 +61,10 @@ class Exports(unittest.TestCase):
 class Labels(unittest.TestCase):
     def test_a_hot_fix_carries_priority_ten_beside_its_type_and_theme(self):
         self.assertEqual(labels(hotfix()), ['priority: 10'])
+
+    def test_its_priority_label_is_the_one_work_priority_builds_for_ten(self):
+        self.assertEqual(labels(hotfix()), [priority_label(10)])
+        self.assertIs(vars(module)['_label'], priority_label)
 
 
 class Target(unittest.TestCase):

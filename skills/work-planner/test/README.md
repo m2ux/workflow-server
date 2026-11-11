@@ -51,6 +51,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_lane](test_lane.py) | Lane's raw-cell, assignment, consistency and admission contracts |
 | [test_link_capture](test_link_capture.py) | The Development relation read from each end by [links-by-pull-request](../scripts/links-by-pull-request.py) and [links-by-issue](../scripts/links-by-issue.py), and the linked pull requests [linked-pull-requests](../scripts/linked-pull-requests.py) adds to a collection |
 | [test_orphans](test_orphans.py) | [orphans](../scripts/orphans.py) keeps a proposal out of the hoist candidates and out of the initiative list, a declared throwaway out of both candidate groups, and an issue of each registered kind of work out of both, reaching the kind through the script registry |
+| [test_priority](test_priority.py) | [priority](../scripts/priority.py): the rank a priority label gives, the label a number names, and the execution-order key, as Work Priority states them |
 | [test_progress](test_progress.py) | [progress](../scripts/progress.py): one test per rule its docstring states |
 | [test_renumber](test_renumber.py) | [renumber](../scripts/renumber.py) rewrites an initiative's epic numbers, or one epic's task numbers, across issue bodies |
 | [test_revision_check](test_revision_check.py) | An instrument runs at the commit a branch or tag resolves to, and the run leaves no checkout |
@@ -106,14 +107,14 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (34), [test_unit_dispatch](test_unit_dispatch.py) (12) |
 | [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (21), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
-| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (25), [test_kinds](test_kinds.py) (10) |
-| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (22), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_dispatch](test_dispatch.py) (34), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (25), [test_kinds](test_kinds.py) (10), [test_orphans](test_orphans.py) (5), [test_progress](test_progress.py) (79), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
+| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (26), [test_kinds](test_kinds.py) (10) |
+| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (22), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_dispatch](test_dispatch.py) (34), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (26), [test_kinds](test_kinds.py) (10), [test_orphans](test_orphans.py) (5), [test_progress](test_progress.py) (79), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
 | [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (34), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-pull-request](../scripts/links-by-pull-request.py) | [test_link_capture](test_link_capture.py) (22) |
 | [orphans](../scripts/orphans.py) | [test_orphans](test_orphans.py) (5) |
-| [priority](../scripts/priority.py) | [test_board_queue](test_board_queue.py) (78), [test_progress](test_progress.py) (79) |
+| [priority](../scripts/priority.py) | [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_hotfix](test_hotfix.py) (26), [test_priority](test_priority.py) (12), [test_progress](test_progress.py) (79) |
 | [progress](../scripts/progress.py) | [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (21) |
 | [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32), [test_shared](test_shared.py) (21) |
 | [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |
