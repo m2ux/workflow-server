@@ -25,7 +25,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - Repeat `--unplanned` for each supplied [Unplanned Initiative](#unplanned-initiatives "○").
 
 - The computation reads [Read Lane Assignments](lane.md#read-lane-assignments "ƒ") and runs [Validate Lane Unit](lane.md#validate-lane-unit "ƒ") internally with each complete free unit derived after queue placement.
-- Refuse a Status change outside the queue jurisdiction of [Write Jurisdiction](board-status.md#write-jurisdiction), identifying the issue.
+- Refuse a Status change outside the queue's [write jurisdiction](board-status.md#write-jurisdiction), identifying the issue.
 - Distinguish pending decisions and missing evidence under [Completeness](#completeness). The requester supplies further evidence and confirmed decisions for another pass and applies the proposed changes.
 
 - The highest priority set is In Progress, all together. The next set is Ready, all together. Lower sets stay in Backlog. When the highest set leaves In Progress, the Ready set moves to In Progress.
