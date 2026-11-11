@@ -42,8 +42,18 @@ class TaskBody(unittest.TestCase):
 
     def test_a_target_line_is_reported_in_its_section(self):
         lines = TASK[:3] + ['Target: `workspace`', ''] + TASK[3:]
-        self.assertEqual(findings(body(lines)),
-                         ['Overview: hot-fix target line, an issue field the template does not carry'])
+        self.assertEqual(findings(body(lines)), ['Overview: hot-fix issue field the template does not carry'])
+
+    def test_a_target_line_in_any_form_or_section_is_reported_once_per_section(self):
+        changes = TASK.index('## Changes') + 2
+        lines = (TASK[:3] + ['Target: workspace', '', 'target: `main`', ''] + TASK[3:changes]
+                 + ['Target: `workspace`', ''] + TASK[changes:])
+        self.assertEqual(findings(body(lines)), ['Overview: hot-fix issue field the template does not carry',
+                                                 'Changes: hot-fix issue field the template does not carry'])
+
+    def test_a_fenced_target_line_is_a_specimen(self):
+        lines = TASK[:3] + ['```text', 'Target: `workspace`', '```', ''] + TASK[3:]
+        self.assertEqual(findings(body(lines)), [])
 
     def test_an_issue_only_section_is_reported_by_name(self):
         lines = TASK[:4] + ['## Problem', '', '- **Broken.**', '  Evidence.', ''] + TASK[4:]
@@ -68,7 +78,8 @@ class TaskBody(unittest.TestCase):
 class ReviewBody(unittest.TestCase):
     def test_an_epic_review_holds_overview_changes_and_references(self):
         self.assertEqual(findings(body(REVIEW), review=True), [])
-        self.assertEqual(findings(body(without(REVIEW, '## References')), review=True), [])
+        self.assertEqual(findings(body(without(REVIEW, '## References')), review=True),
+                         ['required section missing: References'])
 
     def test_an_epic_review_carries_no_test_plan(self):
         lines = REVIEW[:11] + PLAN + REVIEW[11:]

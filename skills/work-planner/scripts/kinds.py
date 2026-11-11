@@ -73,6 +73,10 @@ class Kind(Protocol):
         """Where the issue's delivery unit stands, given its held Status and its linking and delivering pull
         requests: unrecorded, running, hold or unit, or None when the issue is no delivery unit."""
 
+    def issue_fields(self, body: str) -> list[str]:
+        """The heading of each section of a pull request body holding a line of a field only the kind's issue
+        carries, in body order, each once; empty when none does."""
+
     def review(self, tips: Tips) -> Review:
         """The agent review rule for a pull request of the kind, given the tips agent_review validated: the
         record fields that hold a record current, and the fault the kind finds in a finding."""

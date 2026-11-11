@@ -6,10 +6,9 @@ Usage: pull_request_body.py body.md [--review]
 The body holds the template's sections, each once and in template order, every section the template
 does not mark optional among them, and no other: no text before the first section and no section the
 template does not carry. A task body's Test Plan is readable as testplan.py reads it. An epic review
-holds Overview, Changes and References, with References optional as the Template marks it. No body
-names a target line any registered kind's issue carries, as that kind's interface reads it. Each
-finding prints on its own line, naming its section, the one holding a target line among them; any
-finding exits 1.
+holds Overview, Changes and References, each required. No section holds a line of a field only a
+registered kind's issue carries, as that kind's interface reads it. Each finding prints on its own
+line, naming its section; any finding exits 1.
 """
 import argparse
 from pathlib import Path
@@ -29,7 +28,7 @@ def findings(body: str, review: bool = False) -> list[str]:
     body = (body or '').replace('\r\n', '\n')
     template = Template(artifact=ARTIFACT)
     headings = [h for h in template.headings if h in REVIEW] if review else template.headings
-    optional = template.optional & set(headings)
+    optional = set() if review else template.optional
     preamble, sections = split_sections(body)
     names = [heading for heading, _ in sections]
     found = ['text before the first section'] if '\n'.join(preamble).strip() else []
@@ -41,11 +40,8 @@ def findings(body: str, review: bool = False) -> list[str]:
               if h != expected][:1]
     if not review and TEST_PLAN in names and rows(body) is None:
         found.append(f'{TEST_PLAN}: unreadable test plan')
-    for kind in KINDS:
-        target = interface(kind).target
-        if target({'body': body}):
-            where = next((h for h, lines in sections if target({'body': '\n'.join([f'## {h}', *lines])})), 'body')
-            found.append(f'{where}: {kind} target line, an issue field the template does not carry')
+    found += [f'{heading}: {kind} issue field the template does not carry'
+              for kind in KINDS for heading in interface(kind).issue_fields(body)]
     return found
 
 

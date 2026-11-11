@@ -14,7 +14,7 @@ Run [Check Pull Request Body](#check-pull-request-body "ƒ") for the [Body File]
 
 #### 2. Provide Body Findings
 
-Provide the [Body Findings](#body-findings). A body with a finding is corrected before it is published.
+Provide the [Body Findings](#body-findings).
 
 ### Populate Review Body
 
@@ -127,7 +127,7 @@ The complete body a caller supplies for validation, alone in its file. eg `body.
 
 ### Body Findings
 
-Each way the body departs from its template, each naming its section: a required section missing, an extra section, a repeated or misplaced section, text before the first section, an unreadable [Test Plan](test-plan.md#plan-table), or a target line a [registered kind](work-kind.md#registration)'s issue carries. Nothing when it departs in none. eg `body.md: extra section: Problem`
+Each way the body departs from its template, each naming its section: a required section missing, an extra section, a repeated or misplaced section, text before the first section, an unreadable [Test Plan](test-plan.md#plan-table), or a line of a field only a [registered kind](work-kind.md#registration)'s issue carries. Nothing when it departs in none. eg `body.md: extra section: Problem`
 
 ### Workspace
 

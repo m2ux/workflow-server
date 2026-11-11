@@ -118,7 +118,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [orphans](../scripts/orphans.py) | [test_orphans](test_orphans.py) (5) |
 | [priority](../scripts/priority.py) | [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (108), [test_hotfix](test_hotfix.py) (26), [test_priority](test_priority.py) (12), [test_progress](test_progress.py) (80) |
 | [progress](../scripts/progress.py) | [test_progress](test_progress.py) (80), [test_shared](test_shared.py) (21) |
-| [pull_request_body](../scripts/pull_request_body.py) | [test_pull_request_body](test_pull_request_body.py) (12) |
+| [pull_request_body](../scripts/pull_request_body.py) | [test_pull_request_body](test_pull_request_body.py) (14) |
 | [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32), [test_shared](test_shared.py) (21) |
 | [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |
 | [statuses](../scripts/statuses.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (21), [test_statuses](test_statuses.py) (24) |
