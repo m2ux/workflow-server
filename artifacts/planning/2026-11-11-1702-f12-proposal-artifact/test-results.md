@@ -1,6 +1,6 @@
 # F12 Test Results
 
-Branch `skill/proposal-artifact` at 96f49ea10, stacked on `skill/work-priority` at 564346688 and merged with it at 803875069.
+Branch `skill/proposal-artifact` at 9f9eac602, stacked on `skill/work-priority` at 55c1ae77b, merged in as 0c10f6b4a. The scratch-copy mutations in T2, T3 and T5 were run at 96f49ea10; the checks, suites and comparison were run again at 9f9eac602.
 
 ## T1. Skill-File Check over Work-Planner
 
@@ -12,11 +12,11 @@ Branch `skill/proposal-artifact` at 96f49ea10, stacked on `skill/work-priority` 
 
 ## T3. Plan's Propose Route Ends at Approved
 
-`test_plan_mode.py` `ApprovedBeforeDrafting`, five tests: Plan's Take the Proposal, ahead of Draft Each Initiative Body, keeps the Approved gate and follows Propose mode with Requested Status Approved; Propose's Confirm Placement places a requested status without asking; Place sets the Requested Status and, where Proposal Status assigns it to the user, assigns the user through Save Tracker Issue; Requested Status is a Proposal Status; and only Proposal Status says Approved's assignee is the user. In a scratch copy, dropping the Requested Status from Plan, or the no-ask branch from Propose, fails the matching test. Covers AC1.
+`test_plan_mode.py` `ApprovedBeforeDrafting`, five tests: Plan's Take the Proposal, ahead of Draft Each Initiative Body, keeps the Approved gate, blocks drafting on a named proposal at any other status, and follows Propose mode with Requested Status Approved; Propose's Confirm Placement places a requested status without asking; Place sets the Requested Status and, where Proposal Status assigns it to the user, assigns the user through Save Tracker Issue; Requested Status is a Proposal Status; and only Proposal Status says Approved's assignee is the user. In a scratch copy, dropping the Requested Status from Plan, or the no-ask branch from Propose, fails the matching test. Covers AC1.
 
 ## T4. Section Comparison
 
-`check_skill_files.py --compare 564346688 HEAD skills/work-planner`: 883 sections at the base, 887 at the head. board.md's Proposals is removed, and its board purpose and five statuses stand unchanged as Proposal's Proposals Board and Proposal Status. Select Project Board, Create Proposals Board and Plan's Take the Proposal differ by the link to Proposal, and Take the Proposal by the Requested Status route; Propose's Confirm Placement and Place gain the requested-status branch and assignment; Sync's Create Absent Proposals Board drops the sentence restating Create Proposals Board's configured copy source and title. Issue gains Add Issue Assignee and Assignee, run from Save Tracker Issue. standup-report.md's Sections and the README's Scripts differ by the merged F11 change. Covers AC1.
+`check_skill_files.py --compare 55c1ae77b HEAD skills/work-planner`: 883 sections at the base, 887 at the head. board.md's Proposals is removed, and its board purpose and five statuses stand unchanged as Proposal's Proposals Board and Proposal Status. Select Project Board, Create Proposals Board and Plan's Take the Proposal differ by the link to Proposal, and Take the Proposal by the Requested Status route and the block on a proposal short of Approved; Propose's Confirm Placement and Place gain the requested-status branch and assignment; Sync's Create Absent Proposals Board drops the sentence restating Create Proposals Board's configured copy source and title. Issue gains Add Issue Assignee and Assignee, run from Save Tracker Issue. Covers AC1.
 
 ## T5. Kind Registration Tests
 
@@ -24,4 +24,4 @@ Branch `skill/proposal-artifact` at 96f49ea10, stacked on `skill/work-priority` 
 
 ## T6. Planner Suite, Shared Suite and Whitespace
 
-The work-planner suite: 1265 tests, OK, 1 skipped. The shared suite (`skills/test`): 331 tests, OK. `git diff --check 564346688 HEAD`: clean.
+The work-planner suite: 1265 tests, OK, 1 skipped. The shared suite (`skills/test`): 331 tests, OK. `git diff --check 55c1ae77b HEAD`: clean.

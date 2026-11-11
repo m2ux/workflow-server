@@ -1,0 +1,34 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1704",
+    "head": "9f9eac6028ef7c1b6a85f2d573035db13f03c810",
+    "base": "2ba852ab575a08ae24e605b6410494b9e116e0bb",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1702-f12-proposal-artifact/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-11",
+    "scope": "F12's own change: 55c1ae77b..9f9eac602 (the merge base with origin/skill/work-priority, F11's reviewed head, to the head), commits 6f2cc654c, 23d640a1f, 38f8ed8f7, 1dd33acfc, 96f49ea10 and the review fix 9f9eac602, after merge 0c10f6b4a brought in F11 at 55c1ae77b. Read in full: artifacts/proposal.md; SKILL.md's Proposal registration; board.md's Select Project Board, Create Proposals Board, Find User, Assignee Login and Assignees; issue.md's Save Tracker Issue, Add Issue Assignee, Fetch Tracker Issue, Issue Changes and Assignee; plan-mode Take the Proposal; propose-mode Confirm Placement, Place, Outcomes and Requested Status; sync-mode Create Absent Proposals Board; configuration.md Proposals Board; test_documents ProposalHome, test_kind_operations Registration and GeneralCallers, test_plan_mode ApprovedBeforeDrafting and the test README. Callers inspected: every link to Proposal, Proposal Status, Requested Status and Add Issue Assignee; no file under skills/ still links board.md#proposals; Save Tracker Issue's Compare Saved Fields reads the assignees from the full issue JSON Fetch Tracker Issue saves.",
+    "criteria": "AC1: Proposal Status alone defines Suggested, Considering, Approved, Held and Declined with their assignees; ProposalHome (4 tests) finds no other definition and a Proposal link in every file reaching the statuses; check_skill_files.py 63 files, 0 findings (T1, T2, T3, T4). AC2: SKILL.md lists Proposal then Proposal Body under the Proposal kind; Registration (2 tests) and GeneralCallers (T5).",
+    "validation": "At 9f9eac602: skills/work-planner suite 1265 tests OK (1 skipped); skills/test 331 tests OK; check_skill_files.py skills/work-planner 63 files, 0 findings; check_skill_files.py --compare 55c1ae77b HEAD: 883 sections at the base, 887 at the head; git diff --check clean.",
+    "findings": [
+      {
+        "description": "plan-mode.md Take the Proposal routed only an Approved named proposal and an unnamed one; a named proposal at another status had no route.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/9f9eac6028ef7c1b6a85f2d573035db13f03c810"
+      },
+      {
+        "description": "test_plan_mode.py separated ApprovedBeforeDrafting from the class above by three blank lines.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/9f9eac6028ef7c1b6a85f2d573035db13f03c810"
+      },
+      {
+        "description": "The pull request body named i17/e02/workspace beneath F10, which merged into workspace as 5e62cd146.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1704"
+      }
+    ]
+  }
+]
