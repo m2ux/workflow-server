@@ -1,0 +1,36 @@
+
+  GitNexus Detect Changes (1.6.12)
+Changes: 81 files, 917 symbols
+Affected processes: 114
+Risk level: critical
+
+Changed symbols:
+  Variable KINDS → skills/scripts/check_skill_files.py
+  Variable CANDIDATES → skills/scripts/check_skill_files.py
+  Variable OPERATIONS → skills/scripts/check_skill_files.py
+  Function check → skills/scripts/check_skill_files.py
+  Function contract_sections → skills/scripts/check_skill_files.py
+  Function fields_steps → skills/scripts/check_skill_files.py
+  Variable BEHAVIORS → skills/scripts/check_skill_files.py
+  Variable BEHAVIOR_FAMILY → skills/scripts/check_skill_files.py
+  Variable ACTORS → skills/scripts/check_skill_files.py
+  Variable AGENTIVE → skills/scripts/check_skill_files.py
+  Variable BARE → skills/scripts/check_skill_files.py
+  Variable PARTICIPLES → skills/scripts/check_skill_files.py
+  Variable PASSIVE → skills/scripts/check_skill_files.py
+  Variable TRANSITION → skills/scripts/check_skill_files.py
+  Variable LINK_TEXT → skills/scripts/check_skill_files.py
+... and 902 more
+
+Affected execution flows:
+  • Main → Interface (8 steps) — changed: kind_of, interface, unit_members, registered, members
+  • Main → Tag (8 steps) — changed: kind_of, unit_members, registered, members, tag
+  • Fields_steps → Validate_structure_entry (7 steps) — changed: fields_steps
+  • Main → Anchor_of (7 steps) — changed: main
+  • Main → Cells (7 steps) — changed: check_body, run_standalone_kind, run
+  • Main → Done_mark (7 steps) — changed: check_body, run_standalone_kind, run
+  • Before_use_findings → Scan_blocks (6 steps) — changed: before_use_findings, before_use_graph, read_span
+  • Main → Heading_end (6 steps) — changed: main
+  • Epic_state → Label (6 steps) — changed: epic_prerequisites_met, issue_delivered
+  • Epic_state → Issue_done (6 steps) — changed: epic_prerequisites_met, issue_delivered
+... and 104 more

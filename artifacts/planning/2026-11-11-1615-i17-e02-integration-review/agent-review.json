@@ -1,0 +1,14 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1659",
+    "head": "bd5ccafc5cd52779e11494d2bfc1fa51a7dfa194",
+    "base": "bfb6e7ca9371d96b66628823c2c0ef55733d3c2e",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1615-i17-e02-integration-review/agent-review.json",
+    "reviewer": "Claude Opus 5.5 integration review (work-planner Epic Integration)",
+    "reviewed_at": "2026-11-11T05:39:15Z",
+    "scope": "Full 81-file integration diff origin/workspace bfb6e7ca..bd5ccafc (6015 insertions, 885 deletions), read script by script: kinds.py registry and Kind interface; hotfix.py interface and private helpers; agent_review.py review rule selection and finding order; deliver.py kind_units, ready_merges, target_fault and multi-file changed_bases; deps.py read_components, contention and candidate_units grouping; dispatch.py identity and registered-kind parsing; statuses.py QUEUE jurisdiction; progress.py key and kind lines; board-queue.py kinded; orphans.py exclusion; import graph (GitNexus at bd5ccaf: ten general scripts import kinds.py, only kinds.py reaches hotfix.py at runtime). Stale-name search for hotfix_tag, is_hotfix, key_of, PULL_HOME, hotfix_units and old imports across skills/ finds only negative tests. Prose artifacts and modes checked through the installed skill checker rather than line-by-line semantic reading.",
+    "criteria": "All 43 epic criteria (AC1-AC72 as listed on #1615) are ticked, and every one of the 32 Work Breakdown rows (W01-W42) is delivered: 30 task pull requests merged into i17/e02/workspace and W02 delivered as engineering commit 40d65b77. Sync Epic reports no unmatched, conflict, ready-to-verify or ticked-early finding. Per-criterion verification evidence is in the review PR Test Plan T1-T33, each linked to its task's validation record.",
+    "validation": "At head bd5ccafc in a detached review worktree: Work Planner suite 1212 tests OK (one opt-in skip); shared skills suite 319 tests OK; check_skill_files.py work-planner 60 files, 0 findings. Epic base contains origin/workspace (bfb6e7ca), so Update Epic Base made no change. Target workspace: no branch protection (404), ruleset requires one approving review and no status checks; head has 0 check runs and 0 statuses.",
+    "findings": []
+  }
+]
