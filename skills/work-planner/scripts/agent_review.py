@@ -11,7 +11,6 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from kinds import Review, interface, kind_of
-from sync import PR_REF
 
 
 def load_records(path):
@@ -108,14 +107,18 @@ def integration(pr, initiative, epic):
 
 
 def epic_check(epic, prs, records):
-    """Require current evidence for every open integration pull request belonging to the epic."""
-    match = PR_REF.match(epic.get('title', ''))
-    if not match or re.match(r'^\[I\d\d:E\d\d:W', epic.get('title', '')):
+    """Require current evidence for every open integration pull request belonging to the epic, whose
+    title tag board.tags reads."""
+    # board imports this module, so its title-tag reader is reached at call time.
+    from board import tags
+    tagged = tags(epic.get('title') or '')
+    if not tagged or not tagged[1] or tagged[2]:
         return 'a task does not stand In Review'
+    initiative, number, _ = tagged
     home = epic.get('html_url', '').split('/issues/')[0]
     reviews = [p for p in prs if p.get('state') == 'open'
                and p.get('html_url', '').startswith(home + '/pull/')
-               and integration(p, match[1], match[2])]
+               and integration(p, initiative, number)]
     if not reviews:
         return 'missing open epic integration pull request'
     for pr in reviews:

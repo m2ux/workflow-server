@@ -170,7 +170,7 @@ class SharedPatterns(unittest.TestCase):
     def test_tag_parsing_and_pull_request_homes_import_the_definitions(self):
         self.assertIs(board.PREFIX, sync.PREFIX)
         for script, name in (('progress.py', 'PREFIX'), ('progress.py', 'PULL_REF'), ('board-queue.py', 'PULL_REF'),
-                             ('deliver.py', 'PR_REF'), ('renumber.py', 'PR_REF'), ('agent_review.py', 'PR_REF')):
+                             ('deliver.py', 'PR_REF'), ('renumber.py', 'PR_REF')):
             with self.subTest(script=script, name=name):
                 self.assertIs(getattr(loaded(SCRIPTS / script), name), getattr(sync, name))
 

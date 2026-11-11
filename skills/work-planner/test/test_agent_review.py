@@ -187,6 +187,14 @@ class AgentReview(unittest.TestCase):
         second['head']['ref'] = 'i07/e00/main'
         self.assertIn('missing', epic_check(epic, [self.pr, second], [self.record]))
 
+    def test_only_an_epic_title_stands_in_review_as_board_tags_reads_it(self):
+        for title in ('[I07:E00:W01] Task', '[I07] Initiative', 'Untagged', '[F04] Fix'):
+            with self.subTest(title=title):
+                self.assertEqual(epic_check(issue(943, title), [self.pr], [self.record]),
+                                 'a task does not stand In Review')
+        with mock.patch('board.tags', return_value=('07', '00', '')):
+            self.assertIsNone(epic_check(issue(943, 'Read through the title-tag owner'), [self.pr], [self.record]))
+
     def test_wrong_repository_or_task_pr_cannot_supply_review(self):
         epic = issue(943, '[I07:E00] Epic')
         self.pr['head']['ref'] = 'i07/e00/w01-task'
