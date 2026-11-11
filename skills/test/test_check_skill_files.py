@@ -170,6 +170,22 @@ class SkillFileChecks(unittest.TestCase):
         self.write('references/guide.md', '# Guide\n\n## Terms\n\nA sentence.\n')
         self.assertEqual(self.findings(), [])
 
+    def test_a_numbered_step_reference_with_a_heading_is_reported(self):
+        self.write('references/guide.md', '# Guide\n\n## Procedure\n\n### 1. Fetch\n\nOne.\n\n'
+                                          '### 2. Report\n\nRepeat step 1 for each board.\n')
+        self.assertIn('unlinked step reference', self.kinds())
+
+    def test_a_named_step_reference_with_a_heading_is_reported(self):
+        self.write('references/guide.md', '# Guide\n\n## Procedure\n\n### 1. Arising Issues\n\nOne.\n\n'
+                                          '### 2. Report\n\nResume the arising-issues step.\n')
+        self.assertIn('unlinked step reference', self.kinds())
+
+    def test_a_linked_or_headless_step_reference_is_allowed(self):
+        self.write('references/guide.md', '# Guide\n\n## Procedure\n\n### 1. Fetch\n\nOne.\n\n'
+                                          '### 2. Report\n\nRepeat [Fetch](#1-fetch), then the next step, '
+                                          'then step 3.\n')
+        self.assertNotIn('unlinked step reference', self.kinds())
+
     def test_a_selection_link_may_point_anywhere_in_its_file(self):
         self.write('references/guide.md', '# Guide\n\n## Route\n\nUse [Spec](#spec) for the run.\n\n'
                                           '## Spec\n\nA sentence.\n')

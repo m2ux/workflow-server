@@ -144,6 +144,9 @@ ROLE_TITLES = {'○': 'input', '●': 'output', 'ƒ': 'operation'}
 CODE_SPAN = re.compile(r'`[^`]*`')
 PLACEHOLDER = re.compile(r'\{\{.*\}\}|\{[a-z_]+\}|^[.…\s]*$')
 PREREQUISITE = re.compile(r'Read ((?:\[[^\]]+\]\([^)]+\)(?:,\s*)?)+) first\.')
+STEP_HEADING = re.compile(r'^(\d+)\.\s+(.*)$')
+STEP_NUMBER = re.compile(r'\b[Ss]teps? (\d+)')
+STEP_NAME = re.compile(r'\b[Tt]he (?:[\w-]+ ){0,3}?([\w-]+) steps?\b')
 ORDERED = re.compile(r'^\s{0,3}\d+[.)]\s')
 BULLET = re.compile(r'^(\s*)-(\s*)(.*)$')
 BOLD_LEAD = re.compile(r'^\s*-\s+\*\*')
@@ -195,7 +198,7 @@ KINDS = (
     'section outside the set', 'sections out of order', 'section missing',
     'unresolved link', 'unresolved anchor',
     'empty bullet', 'bullet without a space', 'bullet holding a code fence', 'bullet holding a bullet',
-    'inline bold lead too wide', 'prerequisite citation inside one file',
+    'inline bold lead too wide', 'prerequisite citation inside one file', 'unlinked step reference',
     'prose over eight lines', 'trailing blank line',
     'parallel section in another mood', 'heading without content', 'heading without a blank line above',
     'command spelled out in a mode', 'retired term', 'convention in both guides',
@@ -872,6 +875,9 @@ def check(path, root, cache, cited, called, structures=None):
                 if destination == path:
                     report(index, 'prerequisite citation inside one file', target)
 
+    for index, reference in unlinked_steps(lines, specimens, headings, skip):
+        report(index, 'unlinked step reference', reference)
+
     # Bounded prose: the prose lines of one run, lists and tables excluded
     # because each is one structure and is not split to meet the limit. Each
     # paragraph is one line, so the blank line between two continues the run.
@@ -929,6 +935,27 @@ def check(path, root, cache, cited, called, structures=None):
     for index, detail in fields_steps(path, lines, fenced, headings, entry):
         report(index, 'executable step in Fields', detail)
     return found
+
+
+def unlinked_steps(lines, specimens, headings, skip):
+    """Step references outside a link whose step has a numbered heading in
+    the file: a number that heads a step, or a name whose last word is in a
+    step title. A reference to a step without a heading names nothing to link."""
+    numbers, words = set(), set()
+    for _, _, title in headings:
+        if match := STEP_HEADING.match(title):
+            numbers.add(match.group(1))
+            words.update(match.group(2).lower().replace('-', ' ').split())
+    for index, line in enumerate(lines):
+        if specimens[index] or index in skip or HEADING.match(line):
+            continue
+        text = LINK.sub('', CODE_SPAN.sub('', line))
+        for match in STEP_NUMBER.finditer(text):
+            if match.group(1) in numbers:
+                yield index, match.group(0)
+        for match in STEP_NAME.finditer(text):
+            if set(match.group(1).lower().split('-')) <= words:
+                yield index, match.group(0)
 
 
 def finding(path, root, index, kind, detail=''):
