@@ -65,7 +65,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - It prints the proposed [Epic Priority](work-priority.md#epic-priority) of each epic, largest first.
 - Its supplied inputs are published body text or local drafts.
 
-- The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the files its rows declare. Epics sharing a number start together, so the number asserts they can run in parallel, and it holds a set only where both of these do.
+- The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the files its rows declare. Epics sharing a number form one of the [Priority Sets](work-priority.md#priority-sets), so the number asserts they can run in parallel, and it holds a set only where both of these do.
 
 - **Prerequisite depth establishes when an epic may start.**
   An epic with no prerequisite epic, one whose tasks are not yet written among them, carries the largest number, and each other epic takes one less than the smallest its prerequisites carry.
