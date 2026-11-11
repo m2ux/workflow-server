@@ -1,0 +1,22 @@
+## Kind search
+head board-queue.py: 0 kind mentions []
+head progress.py: 0 kind mentions []
+head statuses.py: 0 kind mentions []
+base board-queue.py: 4 kind mentions ['[F00]', 'hot-fix', 'hotfix']
+base progress.py: 4 kind mentions ['[F00]', 'hot-fix', 'hotfix']
+base statuses.py: 3 kind mentions ['hot-fix', 'hotfix']
+head total 0, base total 11
+
+## Import search
+kinds.py: ['hotfix'] (by name, import_module)
+
+## Duplicate search
+board.py: compiles the tag prefix pattern
+priority.py: compiles the priority label pattern
+sync.py: compiles the tag prefix pattern
+homes: tags in board.py, issue_key in sync.py, rank in priority.py, untagged in format.py
+
+## Hot-fix exports
+public: ['board_status', 'delivering_pulls', 'delivery_fault', 'faults', 'labels', 'letter', 'linking_pulls', 'tag', 'target', 'unit_state']
+interface: ['board_status', 'delivering_pulls', 'delivery_fault', 'faults', 'labels', 'letter', 'linking_pulls', 'tag', 'target', 'unit_state']
+match
