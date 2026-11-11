@@ -33,24 +33,14 @@ from pathlib import Path
 from board import (READY_UNDER, Board, Resolution, criteria_met, delivers, epic_state,
                    linked_issue, rows, units)
 from lane import check_unit, label as lane_label, read_lanes
+from priority import rank
 from format import cell, id_cell, row_id
 from hotfix import OFF_BOARD, board_status, delivering_pulls, is_hotfix
 from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, key_of, label
 from sync import Unreadable, attach_links, pull_requests
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
-RANK = re.compile(r'^priority: ([1-9]\d*)$')
 PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
-
-
-def label_names(issue: dict) -> set[str]:
-    return {item['name'] for item in issue.get('labels') or []}
-
-
-def rank(issue: dict) -> int | None:
-    """The issue's priority. A larger number is higher. Two labels count as the larger."""
-    found = [int(matched.group(1)) for name in label_names(issue) if (matched := RANK.fullmatch(name))]
-    return max(found) if found else None
 
 
 def tags(title: str) -> tuple[str, str, str] | None:

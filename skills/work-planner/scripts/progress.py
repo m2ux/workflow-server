@@ -86,9 +86,9 @@ from board import Board, PREFIX, PULL_REF, Resolution, linked_issue
 from statuses import Key, key_of, label, pages, status_of
 from format import LINK, cell, id_cell, phrase, title_name
 from hotfix import HOTFIX, delivering_pulls, hotfix_tag, target
+from priority import rank as priority_rank
 from sync import PR_REF, PULL_URL, Unreadable, attach_links, links_issue, pull_requests
 
-PRIORITY = re.compile(r'^priority: ([1-9]\d*)$')
 SHOWN = 5
 DONE, WORKING, REVIEW, DRAFT, READY = '✅', '🔄', '👀', '📝', '▶️'
 MARK = {'In Progress': WORKING, 'In Review': REVIEW}
@@ -426,11 +426,7 @@ def main() -> int:
                        f"{subtitle(title)} — {issues[k]['html_url']}")
 
     def level(k: Key) -> int:
-        """An issue's priority label. A larger number is higher, and no label ranks below every
-        number."""
-        found = [int(matched.group(1)) for l in issues[k].get('labels', [])
-                 if (matched := PRIORITY.fullmatch(l['name']))]
-        return max(found) if found else 0
+        return priority_rank(issues[k]) or 0
 
     def priority(k: Key) -> tuple[int, int]:
         """The priority an item ranks by: its initiative's, then its epic's own."""
