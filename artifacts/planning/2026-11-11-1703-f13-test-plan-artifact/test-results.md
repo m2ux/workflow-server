@@ -1,6 +1,6 @@
 # F13 Test Results
 
-Branch `skill/test-plan-artifact` at cbe3b36a5, stacked on `skill/proposal-artifact` at 96f49ea10. Two commits: 1947cc09c adds the reader module, cbe3b36a5 adds the Test Plan artifact and retires the converter.
+Branch `skill/test-plan-artifact` at ee986a13d, stacked on `skill/proposal-artifact` at 96f49ea10. Three commits: 1947cc09c adds the reader module, cbe3b36a5 adds the Test Plan artifact and retires the converter, and ee986a13d makes a tick linked to evidence the one passing rule.
 
 ## T1. Skill-File Check over Work-Planner
 
@@ -12,11 +12,11 @@ Branch `skill/test-plan-artifact` at cbe3b36a5, stacked on `skill/proposal-artif
 
 ## T3. Reader Unit Test
 
-`test_testplan.py`, eleven tests over `testplan.py`: `rows` reads a current plan into Test, Description, Coverage and Pass cells, and gives None for an absent, repeated, renamed, fenced, mis-divided or ragged section and for a checked-list plan; `passed` holds when every check carries a tick, plain or linked, and not for an empty, Partial, Fail or Not run result, a plan with no check or an unreadable plan; `claims` gives the named, observed and passed criteria, passing a criterion only when every observing check carries a tick linked to web evidence. Covers AC2.
+`test_testplan.py`, twelve tests over `testplan.py`: `rows` reads a current plan into Test, Description, Coverage and Pass cells, and gives None for an absent, repeated, renamed, fenced, mis-divided or ragged section and for a checked-list plan; `passed` holds when every check carries a tick linked to web evidence, and not for a bare tick, an empty, Partial, Fail or Not run result, a plan with no check or an unreadable plan; `claims` gives the named, observed and passed criteria, passing a criterion only when every observing check carries a tick linked to web evidence. Covers AC2.
 
 ## T4. Reader Equivalence over Current Fixtures
 
-Every body the deliver, sync, align, dispatch and testplan suites pass to the reader was logged from an instrumented scratch copy: 87 distinct bodies, 65 readable and 22 unreadable. For each, the base revision's `sync.plan_rows`, `sync.plan_claims` and `deliver.plan_passed` were compared with `testplan.rows` (Test, Coverage and Pass cells), `testplan.claims` and `testplan.passed`: 0 differ, 26 bodies passed under both. The deliver suite (107), sync suite (187) and align suite (13) pass against the shared reader. Covers AC2.
+Every body the deliver, sync, align, dispatch and testplan suites pass to the reader was logged from an instrumented scratch copy: 87 distinct bodies, 65 readable and 22 unreadable. For each, the base revision's `sync.plan_rows`, `sync.plan_claims` and `deliver.plan_passed` were compared with `testplan.rows` (Test, Coverage and Pass cells), `testplan.claims` and `testplan.passed`. `rows` and `claims` agree on all 87. `passed` differs on 17, each a plan the base passed on a tick with no evidence link (a bare `✓`, `[x]` or `[X]`), which [One Passing Rule](#t8-one-passing-rule) leaves incomplete by design; it agrees on every other body. The deliver suite (108), sync suite (187) and align suite (13) pass against the shared reader. Covers AC2.
 
 ## T5. Align Reports a Checked-List Plan
 
@@ -28,4 +28,8 @@ Every body the deliver, sync, align, dispatch and testplan suites pass to the re
 
 ## T7. Planner Suite, Shared Suite and Whitespace
 
-The work-planner suite: 1274 tests, OK, 1 skipped. The shared suite (`skills/test`): 331 tests, OK. `git diff --check`: clean. Covers AC1, AC2 and AC3.
+The work-planner suite: 1276 tests, OK, 1 skipped. The shared suite (`skills/test`): 331 tests, OK. `git diff --check`: clean. Covers AC1, AC2 and AC3.
+
+## T8. One Passing Rule
+
+`testplan.ticked` is the one rule, a tick linked to web evidence, and `passed` and `claims` both call it; Passed Plan in test-plan.md states it and links Result Evidence. `test_testplan.py` shows `passed` refuses a bare tick and empty, fragment or file evidence, and that a plan has passed exactly when every criterion its checks observe is claimed as passed. `test_deliver.py`'s plan fixture carries a linked tick, and `test_a_bare_tick_has_not_passed_and_yields_no_merge` shows a bare-tick plan gives `merge: 0` and no merge line. Covers AC2.
