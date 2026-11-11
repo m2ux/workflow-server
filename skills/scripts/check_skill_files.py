@@ -1498,7 +1498,7 @@ def fields_steps(path, lines, fenced, headings, entry):
     left to the checks that own it."""
     commands = scan_blocks(lines).html_lines
     verbs = sorted({'Run', *((entry or {}).get('calls') or {}).values()})
-    call = re.compile(r'\b(' + '|'.join(verbs) + r')\s+$')
+    call = re.compile(r'\b(' + '|'.join(map(re.escape, verbs)) + r')\s+$')
     for start, end in contract_sections(lines, headings, entry):
         for index in range(start + 1, end):
             if fenced[index] or index in commands:

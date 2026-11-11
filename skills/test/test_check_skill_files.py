@@ -2458,6 +2458,14 @@ class FieldsBoundary(unittest.TestCase):
         path = self.artifact('The board as [Read Board](#read-board "ƒ") provides it.')
         self.assertNotIn('executable step in Fields', {kind for _, kind, _ in self.kinds(path)})
 
+    def test_declared_call_verbs_match_literally(self):
+        entry = {'contracts': 'Fields', 'calls': {'artifacts': 'App.y'}}
+        path = self.artifact('Appxy [Read Board](#read-board "ƒ") before saving.')
+        self.assertEqual(list(checker.fields_steps(path, *checker.scan(path), entry)), [])
+        path = self.artifact('App.y [Read Board](#read-board "ƒ") before saving.')
+        self.assertEqual([detail for _, detail in checker.fields_steps(path, *checker.scan(path), entry)],
+                         ['call: App.y [Read Board](#read-board "ƒ")'])
+
     def test_command_invocations_under_fields_keep_their_own_kinds(self):
         path = self.artifact('<big><pre>\ngh issue view 1\n</pre></big>')
         self.assertIn('invocation outside command specification', {kind for _, kind, _ in self.kinds(path)})
