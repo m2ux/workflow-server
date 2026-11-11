@@ -1,10 +1,10 @@
 # F11 Test Results
 
-Branch `skill/work-priority` at 803875069, stacked on `skill/link-step-references` at 7aa5040ab.
+Branch `skill/work-priority` at 55c1ae77b, stacked on `skill/link-step-references` at e42cecbcb, merged in as a06d0b036. T2 and T3 were first run at 803875069 against 7aa5040ab; T1, T2 and T8 were run again at 55c1ae77b.
 
 ## T1. Skill-File Check over Work-Planner
 
-`scripts/sbx python3 skills/scripts/check_skill_files.py skills/work-planner`: 62 files checked, 0 findings. Every link to Work Priority's four anchors resolves, and no link reaches the retired `board-queue.md#priority-sets` or `dependency-graph.md#epic-priority`. Covers AC1.
+`scripts/sbx python3 skills/scripts/check_skill_files.py skills/work-planner`: 62 files checked, 0 findings at 55c1ae77b. Every link to Work Priority's four anchors resolves, and no link reaches the retired `board-queue.md#priority-sets` or `dependency-graph.md#epic-priority`. Covers AC1.
 
 ## T2. Work Priority Home Document Test
 
@@ -32,4 +32,4 @@ Branch `skill/work-priority` at 803875069, stacked on `skill/link-step-reference
 
 ## T8. Planner Suite, Shared Suite and Whitespace
 
-The work-planner suite: 1254 tests, OK, 1 skipped. The shared suite (`skills/test`): 331 tests, OK. `git diff --check`: clean.
+At 55c1ae77b, the work-planner suite: 1254 tests, OK, 1 skipped. The shared suite (`skills/test`): 331 tests, OK. `git diff --check`: clean.

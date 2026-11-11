@@ -1,0 +1,28 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1701",
+    "head": "55c1ae77b2895c0b2f84921751e25c37604fe8f0",
+    "base": "2ba852ab575a08ae24e605b6410494b9e116e0bb",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1700-f11-work-priority/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-11",
+    "scope": "F11's own change: e42cecbcb..55c1ae77b (the merge base with origin/skill/link-step-references, F10's reviewed head, to the head), commits 1cf12eff9, 564346688, 803875069 and the review fix 55c1ae77b, after merge a06d0b036 brought in F10 at e42cecbcb. Read in full: artifacts/work-priority.md; the board-queue, dependency-graph, delivery-plan, hotfix-body, hotfix, lane, plan-change and standup-report artifacts; advance and plan modes; scripts/priority.py, deliver.py ordered_epics, progress.py ranked_by and rank, hotfix.py labels; test_priority.py, test_documents.py WorkPriorityHome, and the test_deliver, test_hotfix and test_progress changes with the test README. Callers inspected: deliver.py survey and dispatch export through ordered_epics; progress.py Next through rank, including the unresolved-initiative and no-epic paths and their lower-cased repository keys; board-queue.py through priority.rank; every remaining mention of priority labels, priority sets, the parallel work map, Epic Priority and Execution Order across skills/work-planner.",
+    "criteria": "AC1: Work Priority holds the four Fields; WorkPriorityHome (3 tests) finds no other heading or restatement and a Work Priority link in every file naming one; check_skill_files.py 62 files, 0 findings (T1, T2, T3). AC2: deliver.py and progress.py sort by priority.execution_key, asserted by both single-home tests; test_priority.py 12 tests; the survey order is unchanged (T4, T5). The standup's Next list follows Execution Order's initiative tie-break, so equally ranked initiatives keep their epics grouped (T7); that one ordering differs from the pre-change standup, as the pull request body's Changes state, beside AC2's wording of unchanged orders. AC3: hotfix.labels returns [priority.label(10)] and hotfix._label is priority.label (T6).",
+    "validation": "At 55c1ae77b: skills/work-planner suite 1254 tests OK (1 skipped); skills/test 331 tests OK; check_skill_files.py skills/work-planner 62 files, 0 findings; git diff --check clean. Considered and not a defect: progress.py keys an unresolved initiative's group as initiative:<tag> and a board initiative's as issue:<number>, so within one repository at unranked initiative priority the unresolved group sorts first; deliver.py keys them the same way, and Execution Order places both at unranked initiative priority without ordering them.",
+    "findings": [
+      {
+        "description": "dependency-graph.md Check Dependencies restated a Priority Sets rule ('Epics sharing a number start together') where Work Priority owns it.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/55c1ae77b2895c0b2f84921751e25c37604fe8f0"
+      },
+      {
+        "description": "work-priority.md's opening sentence began with the lower-case link text [priority], reading as a sentence without a subject.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/55c1ae77b2895c0b2f84921751e25c37604fe8f0"
+      }
+    ]
+  }
+]
