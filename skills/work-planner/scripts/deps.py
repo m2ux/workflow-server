@@ -75,7 +75,8 @@ PLACEHOLDER = re.compile(r'\{\{.*\}\}')
 EXTERNAL = re.compile(r'#\d+|I\d\d:E\d\d(?::W\d\d)?')
 INITIATIVE_EPIC = re.compile(r'#\d+|I\d\d:E\d\d')
 CRITERION = re.compile(r'AC\d+')
-BRANCH = re.compile(r'^[^:/]+:')
+BRANCH = re.compile(r'^([^:/\s]+):(?=\S)')
+ENTRY = re.compile(r',\s*(?=`?(?:\./)?[^:/\s,`]+:\S)')
 MAX_CHAINS = 10
 UNIT_BOUND = 6
 
@@ -165,7 +166,8 @@ def normalise(entry: str) -> str:
 
 def read_components(items: dict[str, Path]) -> tuple[dict[str, tuple[str, ...]], list[str]]:
     """The files each work item's Component line declares, keyed by its row, and the items declaring
-    none or a directory."""
+    none or a directory. A comma followed by a `branch:path` entry separates two entries, and prose
+    after an entry's path is no part of it."""
     components, problems = {}, []
     for key, path in items.items():
         try:
@@ -174,8 +176,8 @@ def read_components(items: dict[str, Path]) -> tuple[dict[str, tuple[str, ...]],
             problems.append(f'{key}: work item {path} is unreadable ({error.strerror})')
             continue
         value = next((found[1] for found in map(COMPONENT.match, map(str.strip, lines)) if found), '')
-        declared = tuple(dict.fromkeys(
-            entry for entry in map(normalise, LINK.sub(r'\1', value).split(',')) if entry))
+        paths = (part.split(maxsplit=1)[0] for part in ENTRY.split(LINK.sub(r'\1', value)) if part.strip())
+        declared = tuple(dict.fromkeys(entry for entry in map(normalise, paths) if entry))
         directories = [entry for entry in declared if is_directory(entry)]
         if not declared or PLACEHOLDER.search(value):
             problems.append(f'{key}: work item declares no file')

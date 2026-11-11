@@ -637,10 +637,10 @@ class ComponentContention(unittest.TestCase):
     def test_a_pair_sharing_one_of_several_files_is_printed_and_separated(self):
         code, text = run([('E08', epic_body(('W01', 'Extend assembly', ''))),
                           ('E09', epic_body(('W01', 'Extend emit', ''))),
-                          ('E08:W01', work_item(f'src/a.ts, {self.BUNDLE}')),
-                          ('E09:W01', work_item(f'src/bundle/emit.ts, {self.BUNDLE}, src/c.ts'))])
+                          ('E08:W01', work_item(f'main:src/a.ts, main:{self.BUNDLE}')),
+                          ('E09:W01', work_item(f'main:src/bundle/emit.ts, main:{self.BUNDLE}, main:src/c.ts'))])
         self.assertEqual(code, 0, text)
-        self.assertIn('E08:W01 and E09:W01 both extend src/bundle/assembly.ts\n', text)
+        self.assertIn('E08:W01 and E09:W01 both extend main:src/bundle/assembly.ts\n', text)
         self.assertIn('--- epic priority (epics sharing a number start together)\n2 E08\n1 E09', text)
 
     def test_epics_declaring_different_files_share_a_number(self):
@@ -661,6 +661,15 @@ class ComponentContention(unittest.TestCase):
             components, problems = read_components({'E08:W01': path})
         self.assertEqual(problems, [])
         self.assertEqual(components, {'E08:W01': ('workspace:a.py', 'workspace:b.py', 'workspace:c.py')})
+
+    def test_prose_beside_a_path_is_not_a_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'w01.md'
+            path.write_text('**Component:** main:src/bundle/assembly.ts (assembly, emit step), '
+                            '`workspace:b.py` holds the emitter, main:src/c.ts.\n')
+            components, problems = read_components({'E08:W01': path})
+        self.assertEqual(problems, [])
+        self.assertEqual(components, {'E08:W01': ('main:src/bundle/assembly.ts', 'workspace:b.py', 'main:src/c.ts')})
 
     def test_one_path_spelt_two_ways_is_one_file(self):
         self.assertEqual(normalise('`src/a.ts`.'), 'src/a.ts')

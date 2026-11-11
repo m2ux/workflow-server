@@ -94,7 +94,7 @@ from datetime import date as day
 from pathlib import Path
 
 from board import Board, Outputs, epic_state, in_flight, linked_issue, tags, units
-from deps import read_components
+from deps import BRANCH, read_components
 from lane import admits, check_unit, is_index, label as lane_label, read_lanes
 from kinds import interface, kind_of
 from priority import rank
@@ -109,7 +109,6 @@ RECORD = re.compile(r'^(.*/artifacts/planning/)[^/]+/?$')
 CRITERION = re.compile(r'AC\d+')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
 FOLDER = re.compile(r'/(?:tree|blob)/[^/]+/(.+?)/?$')
-ON_BRANCH = re.compile(r'([^:/\s]+):\S')
 STARTED = ('Ready', 'In Progress')
 WORKTREES = '.worktrees'
 
@@ -173,7 +172,7 @@ def changed_bases(unit: list[str], detail: dict, bases: list[str], checkout: str
     missing += problems
     for task, declared in sorted(components.items()):
         for entry in declared:
-            branch = ON_BRANCH.match(entry)
+            branch = BRANCH.match(entry)
             if not branch:
                 missing.append(f'{task}: file {entry} names no long-lived branch')
             elif branch[1] not in named:
