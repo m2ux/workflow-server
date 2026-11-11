@@ -1,6 +1,6 @@
 # Propose Mode
 
-Scopes one problem: the friction, the evidence, and the boundary, and states the goal as clauses the user confirms. It raises one proposal on the proposals board.
+Scopes one problem: the friction, the evidence, and the boundary, and states the goal as clauses the user confirms. It raises one proposal on the [proposals board](../artifacts/proposal.md#proposals-board).
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
@@ -69,7 +69,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For an absent board, Apply [Create Proposals Board](../artifacts/board.md#create-proposals-board "ƒ").
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the saved issue id.
-- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with that id and initial status Suggested.
+- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with that id and the initial status a new proposal takes under [Proposal Status](../artifacts/proposal.md#proposal-status).
 - Leave the issue unassigned.
 
 ### 8. Report
@@ -83,4 +83,4 @@ Give the issue's URL, and the board's when the issue was placed.
 - **One proposal.**
   The user has that problem raised as one proposal.
 - **On the proposals board.**
-  When the user wants the proposal on the proposals board, it is there, raised, and unassigned.
+  When the user wants the proposal on the [proposals board](../artifacts/proposal.md#proposals-board), it is there, at the status a new proposal takes.

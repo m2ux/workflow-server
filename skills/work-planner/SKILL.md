@@ -9,6 +9,7 @@ description: >-
 Work Planner plans work as GitHub issues and keeps the plan current until the work is delivered. The issues are the plan, and this list registers each kind of work with the artifacts holding it and the interface operations each supplies:
 
 - **Proposal**  States the problem and the goal, with no Work Breakdown.
+  - [Proposal](artifacts/proposal.md)
   - [Proposal Body](artifacts/proposal-body.md)  [Validate Body](artifacts/proposal-body.md#validate-proposal-body "ƒ")
 - **Initiative**  States a goal and lists its epics.
   - [Initiative](artifacts/initiative.md)
@@ -26,7 +27,7 @@ Work Planner plans work as GitHub issues and keeps the plan current until the wo
 
 [Work Kind](artifacts/work-kind.md) holds the interface each kind's operations implement.
 
-Each theme's project board shows where its items stand. The [proposals board](configuration.md#proposals-board) holds proposals. A planning record holds what an initiative leaves out: the evidence, the decisions and each review.
+Each theme's project board shows where its items stand. The [proposals board](artifacts/proposal.md#proposals-board) holds proposals. A planning record holds what an initiative leaves out: the evidence, the decisions and each review.
 
 Read [Rules](rules.md) and [Conventions](conventions.md) before selecting a mode.
 

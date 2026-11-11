@@ -8,7 +8,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 1. Take the Proposal
 
-- When the user names a proposal, its associated issue body defines the problem scope.
+- When the user names an [Approved](../artifacts/proposal.md#proposal-status) proposal, its associated issue body defines the problem scope.
 - When the user names an initiative that already exists, Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for its body. That body defines the problem scope, and no proposal is raised for work it already carries.
 
 - When neither a proposal nor an existing initiative is named:

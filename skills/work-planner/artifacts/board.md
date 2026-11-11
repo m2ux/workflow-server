@@ -10,7 +10,7 @@ The theme or proposals board the request names.
 
 #### 1. Find Requested Board
 
-Run [Find Theme Board](#find-theme-board "ƒ") for the theme in [Board Selection](#board-selection) under [Board Owner](#board-owner), or Run [Find Proposals Board](#find-proposals-board "ƒ") when that selection names proposals. The selection must meet [Themes](#themes) or [Proposals](#proposals).
+Run [Find Theme Board](#find-theme-board "ƒ") for the theme in [Board Selection](#board-selection) under [Board Owner](#board-owner), or Run [Find Proposals Board](#find-proposals-board "ƒ") when that selection names proposals. The selection must meet [Themes](#themes) or [Proposals Board](proposal.md#proposals-board).
 
 #### 2. Provide Missing Selection
 
@@ -38,7 +38,7 @@ Run [Copy Board Template](#copy-board-template "ƒ") with that template number, 
 
 #### 4. Retain New Board Number
 
-Retain the new board number. The copy must meet [Proposals](#proposals).
+Retain the new board number. The copy must meet [Proposal Status](proposal.md#proposal-status).
 
 #### 5. Link Copied Board
 
@@ -357,20 +357,6 @@ The supplied theme name, excluding any originating proposal designator. eg `Cano
 ### Assignees
 
 An issue at Ready, In Progress, In Review or Done is assigned to the user; one in Backlog has no assignee. An assignee is set on the issue, not on the board item, so the call that changes one acts on the issue.
-
-### Proposals
-
-- The [configured board](../configuration.md#proposals-board) holds proposal issues, the incoming funnel for work that may become an initiative.
-- **Suggested.**
-  Raised, and nobody has taken it up. A new proposal lands here, with no assignee.
-- **Considering.**
-  Someone is weighing the goal, the evidence and the criteria. That person is the assignee.
-- **Approved.**
-  Qualified to become an initiative. The assignee is the user.
-- **Held.**
-  Not now. It stays on the board, with no assignee.
-- **Declined.**
-  It will not become an initiative. It has no assignee.
 
 ### Membership
 
