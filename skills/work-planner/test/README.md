@@ -93,7 +93,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 
 | Script | Exercised by |
 | --- | --- |
-| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (18), [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_review_scope](test_review_scope.py) (14), [test_shared](test_shared.py) (21) |
+| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (19), [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_review_scope](test_review_scope.py) (14), [test_shared](test_shared.py) (21) |
 | [align](../scripts/align.py) | [test_align](test_align.py) (18) |
 | [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (21) |
 | [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (14), [test_board_queue](test_board_queue.py) (78), [test_shared](test_shared.py) (21) |
@@ -107,7 +107,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (34), [test_unit_dispatch](test_unit_dispatch.py) (12) |
 | [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (21), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
 | [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (25), [test_kinds](test_kinds.py) (10) |
-| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (18), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_dispatch](test_dispatch.py) (34), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (25), [test_kinds](test_kinds.py) (10), [test_orphans](test_orphans.py) (5), [test_progress](test_progress.py) (79), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
+| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (19), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_dispatch](test_dispatch.py) (34), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (25), [test_kinds](test_kinds.py) (10), [test_orphans](test_orphans.py) (5), [test_progress](test_progress.py) (79), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
 | [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (34), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |

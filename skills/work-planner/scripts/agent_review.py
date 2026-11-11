@@ -49,12 +49,13 @@ def linked_record(body, url):
     return False
 
 
-def review(pr):
-    """The review rule of the pull request's registered kind, or the general rule when it has none."""
+def review(pr, head, base):
+    """The review rule of the pull request's registered kind, or, when it has none, the general rule
+    holding a record current for the validated head and base SHAs."""
     kind = kind_of(pr)
     if kind:
         return interface(kind).review(pr)
-    return Review({'head': pr['head'].get('sha'), 'base': pr['base'].get('sha')}, lambda finding: '')
+    return Review({'head': head, 'base': base}, lambda finding: '')
 
 
 def check(pr, records):
@@ -68,7 +69,7 @@ def check(pr, records):
     head, base = (pr.get('head') or {}).get('sha'), (pr.get('base') or {}).get('sha')
     if not all(isinstance(s, str) and re.fullmatch(r'[0-9a-f]{40}', s) for s in (head, base)):
         return 'missing current integration head or target SHA'
-    rule = review(pr)
+    rule = review(pr, head, base)
     current = [r for r in matching if all(r.get(name) == value for name, value in rule.current.items())]
     if not current:
         return 'stale agent review: integration head or target changed'

@@ -38,6 +38,22 @@ def hotfix_pr():
     return pull, record
 
 
+class OnceRead(dict):
+    """A tip whose sha reads once; a later read finds none."""
+
+    def get(self, key, default=None):
+        if key == 'sha':
+            return self.pop('sha', default)
+        return super().get(key, default)
+
+
+class GeneralReview(unittest.TestCase):
+    def test_the_general_rule_compares_the_tips_check_validated(self):
+        pull, record = reviewed_pr()
+        pull['head'], pull['base'] = OnceRead(pull['head']), OnceRead(pull['base'])
+        self.assertIsNone(check(pull, [record]))
+
+
 class HotFixReview(unittest.TestCase):
     def test_a_record_written_from_the_pull_request_as_produce_says_passes(self):
         pull, published = hotfix_pr()
