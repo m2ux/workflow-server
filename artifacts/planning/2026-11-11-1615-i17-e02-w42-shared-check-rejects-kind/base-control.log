@@ -1,0 +1,160 @@
+EEEEEEFEEEEEE..E.
+======================================================================
+ERROR: test_a_general_artifact_mode_and_protocol_naming_a_kind_fail (test_check_skill_files.KindSeparation.test_a_general_artifact_mode_and_protocol_naming_a_kind_fail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2637, in test_a_general_artifact_mode_and_protocol_naming_a_kind_fail
+    self.assertEqual(self.found(), [('artifacts/board.md', 5, 'kind named in a general file'),
+                     ~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2623, in found
+    for where, line, kind, _ in checker.kind_findings(self.skill, self.root)]
+                                ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'kind_findings'
+
+======================================================================
+ERROR: test_a_general_link_down_to_a_kind_file_fails (test_check_skill_files.KindSeparation.test_a_general_link_down_to_a_kind_file_fails)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2644, in test_a_general_link_down_to_a_kind_file_fails
+    self.assertEqual(self.found(), [('artifacts/pull-request.md', 3, 'kind named in a general file')])
+                     ~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2623, in found
+    for where, line, kind, _ in checker.kind_findings(self.skill, self.root)]
+                                ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'kind_findings'
+
+======================================================================
+ERROR: test_a_general_script_importing_a_kind_module_fails (test_check_skill_files.KindSeparation.test_a_general_script_importing_a_kind_module_fails)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2653, in test_a_general_script_importing_a_kind_module_fails
+    self.assertEqual(self.found(), [('scripts/sync.py', 2, 'kind module imported outside the registry'),
+                     ~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2623, in found
+    for where, line, kind, _ in checker.kind_findings(self.skill, self.root)]
+                                ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'kind_findings'
+
+======================================================================
+ERROR: test_a_general_script_naming_a_kind_fails (test_check_skill_files.KindSeparation.test_a_general_script_naming_a_kind_fails)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2648, in test_a_general_script_naming_a_kind_fails
+    self.assertEqual(self.found(), [('scripts/board.py', 2, 'kind named in a general file')])
+                     ~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2623, in found
+    for where, line, kind, _ in checker.kind_findings(self.skill, self.root)]
+                                ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'kind_findings'
+
+======================================================================
+ERROR: test_a_general_script_reaching_kinds_through_the_registry_passes (test_check_skill_files.KindSeparation.test_a_general_script_reaching_kinds_through_the_registry_passes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2659, in test_a_general_script_reaching_kinds_through_the_registry_passes
+    self.assertEqual(self.found(), [])
+                     ~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2623, in found
+    for where, line, kind, _ in checker.kind_findings(self.skill, self.root)]
+                                ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'kind_findings'
+
+======================================================================
+ERROR: test_a_kind_file_names_its_own_kind_only (test_check_skill_files.KindSeparation.test_a_kind_file_names_its_own_kind_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2675, in test_a_kind_file_names_its_own_kind_only
+    self.assertEqual(self.found(), [('artifacts/hotfix.md', 3, 'kind named in a general file')])
+                     ~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2623, in found
+    for where, line, kind, _ in checker.kind_findings(self.skill, self.root)]
+                                ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'kind_findings'
+
+======================================================================
+ERROR: test_a_registry_that_is_no_literal_dict_is_refused (test_check_skill_files.KindSeparation.test_a_registry_that_is_no_literal_dict_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2686, in test_a_registry_that_is_no_literal_dict_is_refused
+    checker.registered_kinds(self.skill)
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'registered_kinds'
+
+======================================================================
+ERROR: test_a_skill_without_a_registry_registers_no_kind (test_check_skill_files.KindSeparation.test_a_skill_without_a_registry_registers_no_kind)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2680, in test_a_skill_without_a_registry_registers_no_kind
+    self.assertEqual(checker.registered_kinds(self.skill), [])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'registered_kinds'
+
+======================================================================
+ERROR: test_a_word_containing_a_kind_name_and_a_file_outside_the_general_folders_pass (test_check_skill_files.KindSeparation.test_a_word_containing_a_kind_name_and_a_file_outside_the_general_folders_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2670, in test_a_word_containing_a_kind_name_and_a_file_outside_the_general_folders_pass
+    self.assertEqual(self.found(), [])
+                     ~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2623, in found
+    for where, line, kind, _ in checker.kind_findings(self.skill, self.root)]
+                                ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'kind_findings'
+
+======================================================================
+ERROR: test_kind_files_the_registry_and_the_registration_pass (test_check_skill_files.KindSeparation.test_kind_files_the_registry_and_the_registration_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2631, in test_kind_files_the_registry_and_the_registration_pass
+    self.assertEqual(self.found(), [])
+                     ~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2623, in found
+    for where, line, kind, _ in checker.kind_findings(self.skill, self.root)]
+                                ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'kind_findings'
+
+======================================================================
+ERROR: test_literal_examples_pass (test_check_skill_files.KindSeparation.test_literal_examples_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2664, in test_literal_examples_pass
+    self.assertEqual(self.found(), [])
+                     ~~~~~~~~~~^^
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2623, in found
+    for where, line, kind, _ in checker.kind_findings(self.skill, self.root)]
+                                ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'kind_findings'
+
+======================================================================
+ERROR: test_the_registry_and_registration_give_each_kind_its_files (test_check_skill_files.KindSeparation.test_the_registry_and_registration_give_each_kind_its_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2626, in test_the_registry_and_registration_give_each_kind_its_files
+    kinds = checker.registered_kinds(self.skill)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'registered_kinds'
+
+======================================================================
+ERROR: test_installed_general_files_name_no_registered_kind (test_check_skill_files.InstalledWorkPlannerModel.test_installed_general_files_name_no_registered_kind)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2746, in test_installed_general_files_name_no_registered_kind
+    kinds = checker.registered_kinds(self.SKILL)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'check_skill_files' has no attribute 'registered_kinds'
+
+======================================================================
+FAIL: test_a_kind_named_in_a_general_file_fails_the_command (test_check_skill_files.KindSeparation.test_a_kind_named_in_a_general_file_fails_the_command)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1002/-home-mike1-projects-dev-md-composer/13f9c3d7-1bdd-40e2-b7b0-924d181ef387/scratchpad/run/w42/base/skills/test/test_check_skill_files.py", line 2694, in test_a_kind_named_in_a_general_file_fails_the_command
+    self.assertIn('specimen/modes/advance-mode.md:3: kind named in a general file — hot-fixes names hot-fix',
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  printed.getvalue())
+                  ^^^^^^^^^^^^^^^^^^^
+AssertionError: 'specimen/modes/advance-mode.md:3: kind named in a general file — hot-fixes names hot-fix' not found in 'specimen/SKILL.md:12: unresolved anchor — artifacts/hotfix.md#review\n5 files checked, 1 findings\n'
+
+----------------------------------------------------------------------
+Ran 17 tests in 3.200s
+
+FAILED (failures=1, errors=13)

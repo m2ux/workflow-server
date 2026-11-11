@@ -1,0 +1,22 @@
+test_a_general_artifact_mode_and_protocol_naming_a_kind_fail (test_check_skill_files.KindSeparation.test_a_general_artifact_mode_and_protocol_naming_a_kind_fail) ... ok
+test_a_general_link_down_to_a_kind_file_fails (test_check_skill_files.KindSeparation.test_a_general_link_down_to_a_kind_file_fails) ... ok
+test_a_general_script_importing_a_kind_module_fails (test_check_skill_files.KindSeparation.test_a_general_script_importing_a_kind_module_fails) ... ok
+test_a_general_script_naming_a_kind_fails (test_check_skill_files.KindSeparation.test_a_general_script_naming_a_kind_fails) ... ok
+test_a_general_script_reaching_kinds_through_the_registry_passes (test_check_skill_files.KindSeparation.test_a_general_script_reaching_kinds_through_the_registry_passes) ... ok
+test_a_kind_file_names_its_own_kind_only (test_check_skill_files.KindSeparation.test_a_kind_file_names_its_own_kind_only) ... ok
+test_a_kind_named_in_a_general_file_fails_the_command (test_check_skill_files.KindSeparation.test_a_kind_named_in_a_general_file_fails_the_command) ... ok
+test_a_registry_that_is_no_literal_dict_is_refused (test_check_skill_files.KindSeparation.test_a_registry_that_is_no_literal_dict_is_refused) ... ok
+test_a_skill_without_a_registry_registers_no_kind (test_check_skill_files.KindSeparation.test_a_skill_without_a_registry_registers_no_kind) ... ok
+test_a_word_containing_a_kind_name_and_a_file_outside_the_general_folders_pass (test_check_skill_files.KindSeparation.test_a_word_containing_a_kind_name_and_a_file_outside_the_general_folders_pass) ... ok
+test_kind_files_the_registry_and_the_registration_pass (test_check_skill_files.KindSeparation.test_kind_files_the_registry_and_the_registration_pass) ... ok
+test_literal_examples_pass (test_check_skill_files.KindSeparation.test_literal_examples_pass) ... ok
+test_the_registry_and_registration_give_each_kind_its_files (test_check_skill_files.KindSeparation.test_the_registry_and_registration_give_each_kind_its_files) ... ok
+test_every_supported_entry_reaches_common_context_without_a_cycle (test_check_skill_files.InstalledWorkPlannerModel.test_every_supported_entry_reaches_common_context_without_a_cycle) ... ok
+test_installed_fields_hold_no_execution (test_check_skill_files.InstalledWorkPlannerModel.test_installed_fields_hold_no_execution) ... ok
+test_installed_general_files_name_no_registered_kind (test_check_skill_files.InstalledWorkPlannerModel.test_installed_general_files_name_no_registered_kind) ... ok
+test_the_audited_requirements_are_the_graph (test_check_skill_files.InstalledWorkPlannerModel.test_the_audited_requirements_are_the_graph) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 3.339s
+
+OK

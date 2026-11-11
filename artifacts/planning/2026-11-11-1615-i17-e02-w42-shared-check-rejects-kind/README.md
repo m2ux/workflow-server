@@ -5,6 +5,7 @@
 | File | Purpose |
 | --- | --- |
 | [w42.md](w42.md) | Files, scope, implementation and observing validation for W42. |
+| [validation.md](validation.md) | Observing tests, base control, analysis of base findings and full checks at the task head. |
 
 ## Links
 
