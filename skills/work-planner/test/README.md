@@ -96,7 +96,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (22), [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_review_scope](test_review_scope.py) (14) |
 | [align](../scripts/align.py) | [test_align](test_align.py) (18) |
 | [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (21) |
-| [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (17), [test_board_queue](test_board_queue.py) (78), [test_shared](test_shared.py) (21) |
+| [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (18), [test_board_queue](test_board_queue.py) (78), [test_shared](test_shared.py) (21) |
 | [closure](../scripts/closure.py) | [test_closure](test_closure.py) (13), [test_command_contracts](test_command_contracts.py) (14) |
 | [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) (14) |
 | [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (107), [test_dispatch](test_dispatch.py) (34), [test_shared](test_shared.py) (21) |
@@ -128,7 +128,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [README](README.md) | [test_readme](test_readme.py) (14) |
 | [SKILL](../SKILL.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13), [test_kind_operations](test_kind_operations.py) (20), [test_reading_routes](test_reading_routes.py) (20) |
 | `artifacts/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (13) |
-| [advance-mode](../modes/advance-mode.md) | [test_advance_decisions](test_advance_decisions.py) (17) |
+| [advance-mode](../modes/advance-mode.md) | [test_advance_decisions](test_advance_decisions.py) (18) |
 | [architecture-overview](../artifacts/architecture-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
 | [change-overview](../protocols/change-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
 | [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |

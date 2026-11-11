@@ -21,7 +21,8 @@ HELD = re.compile(r'- A held or unanswered decision(?P<allowance> under an allow
                   r'(?::| stops this step:) provide the pending queue with the \[change list\]\([^)]+\) and stop\. '
                   r'Step 7 treats that queue as incomplete\.'
                   r'|- A held or unanswered decision leaves the queue (?P<waits>pending) until an answer is available\.')
-USER = '- A held decision put to the user continues with the user\'s answer.'
+USER = ('- A held decision put to the user continues with the user\'s answer; '
+        'one the user leaves unanswered stops this step as one under an allowance does.')
 REPEAT = {'- Repeat this step while a decision is pending.': 'loop',
           '- Repeat this step while an answer leaves a further decision pending.': 'pending'}
 
@@ -57,10 +58,10 @@ def ask_snapshot():
     return snapshot
 
 
-def settle(body, allowance):
-    """The outcome step 6's held-decision lines give a decision left without an answer, read as whole
-    sentences: 'stopped', 'loop' or 'pending' where a line governs it, or None where it reaches the
-    user's answer. A held line names the allowance it is scoped to or governs every held decision."""
+def settle(body, allowance, answered=True):
+    """The outcome step 6's held-decision lines give a held decision, read as whole sentences:
+    'stopped', 'loop' or 'pending' where a line governs it, or None where it reaches the user's
+    answer. A held line names the allowance it is scoped to or governs every held decision."""
     lines = body.splitlines()
     held = [line for line in lines if line.startswith('- A held or unanswered decision')]
     if not held:
@@ -81,7 +82,7 @@ def settle(body, allowance):
         raise AssertionError('no held line governs a decision under an allowance')
     if USER not in lines:
         raise AssertionError('no route for a decision put to the user')
-    return None
+    return None if answered else 'stopped'
 
 
 def walk(*, disposition='automatic', answer=1, save_ok=True, readback=SAVED, source=None, initial=None):
@@ -102,12 +103,12 @@ def walk(*, disposition='automatic', answer=1, save_ok=True, readback=SAVED, sou
         raise AssertionError('scenario has no pending initial decision')
     autonomy = next(line for line in body.splitlines() if 'Check Plan Change Autonomy' in line)
     events.append(CALL.search(autonomy)[1])
-    if disposition == 'held' or answer == 'unanswered':
-        return settle(body, allowance=True), events, initial
     if disposition == 'user':
-        outcome = settle(body, allowance=False)
+        outcome = settle(body, allowance=False, answered=answer != 'unanswered')
         if outcome:
             return outcome, events, initial
+    elif disposition == 'held' or answer == 'unanswered':
+        return settle(body, allowance=True), events, initial
     if disposition == 'automatic':
         automatic = next(line for line in body.splitlines() if line.startswith('- For an automatic line, take'))
         events.append(CALL.search(automatic)[1])
@@ -173,7 +174,8 @@ class AdvanceDecisions(unittest.TestCase):
         self.assertNotIn('Save Tracker Issue', events)
 
     def test_no_decision_repeats_the_step_without_an_answer(self):
-        for disposition, answer in (('automatic', 1), ('user', 1), ('held', 1), ('automatic', 'unanswered')):
+        for disposition, answer in (('automatic', 1), ('user', 1), ('held', 1), ('automatic', 'unanswered'),
+                                    ('user', 'unanswered')):
             outcome, _, _ = walk(disposition=disposition, answer=answer)
             self.assertNotEqual(outcome, 'loop', disposition)
 
@@ -189,6 +191,11 @@ class AdvanceDecisions(unittest.TestCase):
         repeat = next(line for line in text.splitlines() if line.startswith('- Repeat this step while'))
         waiting = text.replace(line, '- A held or unanswered decision leaves the queue pending until an answer is available.', 1)
         self.assertEqual(walk(disposition='held', source=waiting.replace(repeat, '- Repeat this step while a decision is pending.', 1))[0], 'loop')
+
+    def test_a_decision_the_user_leaves_unanswered_stops(self):
+        outcome, events, _ = walk(disposition='user', answer='unanswered')
+        self.assertEqual(outcome, 'stopped')
+        self.assertEqual(events, ['Compute Board Queue', 'Check Plan Change Autonomy'])
 
     def test_failed_save_stops_before_queue_continuation(self):
         outcome, events, _ = walk(save_ok=False)
