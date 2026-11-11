@@ -351,7 +351,7 @@ Retain [Confirmed Statuses](../artifacts/board-delivery.md#confirmed-statuses) a
 
 #### Per-Issue Report
 
-- Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, test plan disagreements, what was closed, each board and assignee change, and each overview written. What the report names about criteria is [Coverage Reports](../artifacts/issue-body.md#coverage-reports).
+- Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, [test plan](../artifacts/test-plan.md) disagreements, what was closed, each board and assignee change, and each overview written. What the report names about criteria is [Coverage Reports](../artifacts/issue-body.md#coverage-reports).
 
 ## Outcomes
 

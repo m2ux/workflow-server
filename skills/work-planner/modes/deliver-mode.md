@@ -219,9 +219,9 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 - Populate the [Template](../artifacts/pull-request-body.md#template) from [Change Evidence](../artifacts/pull-request-body.md#change-evidence), retaining applicable content in [Current Body](../artifacts/pull-request-body.md#current-body) and writing to [Output Body](../artifacts/pull-request-body.md#output-body). For an epic review, Apply [Populate Review Body](../artifacts/pull-request-body.md#populate-review-body "ƒ").
 - All populated fields must meet [Fields](../artifacts/pull-request-body.md#fields).
 
-- Verify each result link against [Test Plan](../artifacts/pull-request-body.md#test-plan) before publishing the body.
+- Verify each result link against [Result Evidence](../artifacts/test-plan.md#result-evidence) before publishing the body.
 
-- Retain the [complete body file](../artifacts/pull-request-body.md#output-body) and any [unresolved evidence](../artifacts/pull-request-body.md#unresolved-evidence) links for publication.
+- Retain the [complete body file](../artifacts/pull-request-body.md#output-body) and any [unresolved evidence](../artifacts/test-plan.md#unresolved-evidence) links for publication.
 
 - Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with the provided body to open the unit's pull request from each task branch its work changes into its base. The title, the base, the Test Plan, and the issue links must meet [Titles](../artifacts/pull-request-body.md#titles), [Branches](../artifacts/delivery-branches.md#branches), [Test Coverage](../artifacts/pull-request-body.md#test-coverage), and [Issue Links](../artifacts/pull-request.md#issue-links).
 
@@ -250,7 +250,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 10. Merge
 
-- Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with check results, following [Test Plan](../artifacts/pull-request-body.md#test-plan).
+- Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with check results, following [Test Plan](../artifacts/test-plan.md).
 
 - Apply [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests "ƒ") for the task pull request, with the project checkout and the unit checkout.
 - On a confirmed merge, Follow [Task Merge](../protocols/task-merge.md "ƒ") in the project checkout with that merge result, the unit's current task and epic evidence, and the board identity the brief names.

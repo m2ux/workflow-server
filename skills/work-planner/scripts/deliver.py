@@ -98,10 +98,11 @@ from deps import BRANCH, read_components
 from lane import admits, check_unit, is_index, label as lane_label, read_lanes
 from kinds import interface, kind_of
 from priority import execution_key
+import testplan
 from statuses import DISPATCH, Key, STATUSES, Changes, StatusField, board_items, label, pages, status_of
-from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
+from format import (AC, cell, hrefs, id_cell, join_sections, reservation,
                     row, row_id, split_sections, title_name)
-from sync import (PR_REF, Unreadable, attach_links, issue_key, long_lived_names, origin_repository, plan_rows,
+from sync import (PR_REF, Unreadable, attach_links, issue_key, long_lived_names, origin_repository,
                   pull_requests, table)
 
 RECORD = re.compile(r'^(.*/artifacts/planning/)[^/]+/?$')
@@ -264,19 +265,6 @@ def kind_units(issues: dict, status: dict, prs: list[dict], home: str, when: str
     return lines, available, undeclared, held, unrecorded
 
 
-def plan_passed(body: str) -> bool:
-    """Whether every check's Pass result is a tick, plain or linked to its evidence."""
-    rows = plan_rows(body)
-    if not rows:
-        return False
-    checks = []
-    for test, _coverage, mark in rows:
-        if test.strip():
-            link = LINK.fullmatch(mark)
-            checks.append(link[1] if link else mark)
-    return bool(checks) and all(done_mark(mark) == TICK for mark in checks)
-
-
 def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...], repository: str) -> list[str]:
     """Open pull requests, never a draft, whose test plan has passed: a task's into its epic base, and
     one titled with a registered kind's tag into the target of an open issue of that kind it delivers,
@@ -297,7 +285,7 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...], reposi
             operations = interface(kind)
             if (any(operations.delivering_pulls([pull], key, issue)
                     and not target_fault(key, operations.target(issue), names, repository)[0]
-                    for key, issue in kinded.get(kind, {}).items()) and plan_passed(pull.get('body') or '')):
+                    for key, issue in kinded.get(kind, {}).items()) and testplan.passed(pull.get('body') or '')):
                 found.append((pull['number'], f"  merge #{pull['number']} {operations.tag(pull)}: base {base}"))
             continue
         matched = PR_REF.match(pull.get('title') or '')
@@ -309,7 +297,7 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...], reposi
         segment = re.fullmatch(rf'i{initiative}/e{epic}/([^/]+)', base)
         if not segment or (names and segment[1] not in names):
             continue
-        if not plan_passed(pull.get('body') or ''):
+        if not testplan.passed(pull.get('body') or ''):
             continue
         found.append((pull['number'], f"  merge #{pull['number']} I{initiative}:E{epic}: base {base}"))
     return [line for _, line in sorted(found)]

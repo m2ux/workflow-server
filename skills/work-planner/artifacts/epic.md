@@ -98,7 +98,7 @@ The epic is identified by its repository and issue number. Its state contains ta
 | Open questions | The epic's Open Questions section remains. |
 | Ready to verify | An unticked criterion whose delivering rows are all delivered and whose linked passed checks do not settle it. |
 | Ticked early | A criterion ticked while a delivering row is not delivered. |
-| Disagreement | A linked pull request's test plan against the Coverage of the rows it delivers. |
+| Disagreement | A linked pull request's [test plan](test-plan.md) against the Coverage of the rows it delivers. |
 | Target | An open or merged pull request naming the epic off its delivery routes: a task pull request into anything but one of the epic's bases, or an integration pull request into anything but the long-lived branch its head names. Each names the base it belongs in: for a task pull request, the epic base of the long-lived branch its task branch's last slug word names where another of the epic's pull requests comes from a branch of the same stem ending in another long-lived branch, as a unit changing several takes one task branch per base; else of the one its target names; else each epic base as one of them. |
 | No epic | A pull request whose title opens with the initiative's id, `[I07`, and names neither an epic as `[I07:E00]` nor a task as `[I07:E00:W01]`: a bare `[I07]`, or an epic id in any other form, such as `[I07:E1]`. Nothing reads it as delivery. |
 | Source | The configuration path, commit and repository of each `config/branches` statement the long-lived branch names were read from. |
@@ -107,7 +107,7 @@ The epic is identified by its repository and issue number. Its state contains ta
 
 An unmet row links a merged pull request while a covered criterion remains unticked. A linked pull request naming another epic is a conflict and delivers its linked task once merged. A missing linked pull request leaves the supplied evidence incomplete.
 
-A coverage disagreement identifies the pull request and row, a criterion absent from either the test plan or row Coverage, an empty Test cell, or prose assigning the criterion to another task. Recording links, verified criteria and Done continues despite that finding.
+A coverage disagreement identifies the pull request and row, a criterion absent from either the [test plan](test-plan.md#plan-columns) or row Coverage, an empty Test cell, or prose assigning the criterion to another task. Recording links, verified criteria and Done continues despite that finding.
 
 ### Epic Record
 

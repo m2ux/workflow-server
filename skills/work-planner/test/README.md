@@ -5,7 +5,7 @@ Work Planner plans work as GitHub issues and keeps that plan true until the work
 ## What Is Under Test
 
 - **The scripts.**
-  Twenty-four programs read those issue bodies, board items and pull request records, and report what a run should change. Most modules here hold one script to the rules its own docstring states.
+  Twenty-seven programs read those issue bodies, board items and pull request records, and report what a run should change. Most modules here hold one script to the rules its own docstring states.
 - **The prose.**
   Modes, protocols and artifacts are instructions an agent follows. The modules check their shape: resolving links, contextual command contracts, selected checkout inputs, planning-record publication, worktree placement and this catalogue.
 - **Neither against a live tracker.**
@@ -34,7 +34,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | --- | --- |
 | [test_advance_decisions](test_advance_decisions.py) | Advance answers select saved readback and refreshed queue evidence before writing |
 | [test_agent_review](test_agent_review.py) | Current integration review evidence gates board and user handoff |
-| [test_align](test_align.py) | Alignment repairs, unreadable evidence and reference visibility fixtures |
+| [test_align](test_align.py) | Alignment reports an unreadable test plan, a checked list among them, and reference visibility fixtures |
 | [test_board](test_board.py) | The assignees [board](../scripts/board.py) gives an issue for its Status, and an initiative's Status once its criteria are ticked |
 | [test_board_queue](test_board_queue.py) | The queue [board-queue](../scripts/board-queue.py) sets on a theme board |
 | [test_closure](test_closure.py) | The closure gate passes on the issue and its Development links, the evidence GitHub exposes |
@@ -61,6 +61,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_sync](test_sync.py) | Done on a Work Breakdown row, ticked when the row is complete |
 | [test_task_worktree](test_task_worktree.py) | Retained preparations validate and preserve real Git task worktrees |
 | [test_templates](test_templates.py) | Body artifacts are the format checker's sole template source |
+| [test_testplan](test_testplan.py) | [testplan](../scripts/testplan.py): the rows of a Test Plan section, whether the plan has passed, and the criteria it claims, as Test Plan states them |
 | [test_unit_dispatch](test_unit_dispatch.py) | [Unit Dispatch](../protocols/unit-dispatch.md) creates a new unit's checkouts once, reuses a retained preparation only once each checkout verifies, and resumes a capacity wait into one checked start |
 
 ### Prose Tests
@@ -72,7 +73,7 @@ These modules exercise the skill's instruction routes and document contracts.
 | [test_architecture_diagrams](test_architecture_diagrams.py) | Architecture diagrams preserve measured topology and the consumer's owning contract |
 | [test_board_status](test_board_status.py) | Board Status owns the proposed board change and the commands computing it, and Board Delivery and Hot-fix reach them with the decisions they gave |
 | [test_checkouts](test_checkouts.py) | Checkout-sensitive commands consume linked input contracts |
-| [test_documents](test_documents.py) | The installed prose API exposes complete inputs and directed reading paths, [Work Priority](../artifacts/work-priority.md) and [Proposal](../artifacts/proposal.md) each define what every other file reaching it links, and [Proposals Board](../artifacts/proposals-board.md) alone selects and creates the proposals board |
+| [test_documents](test_documents.py) | The installed prose API exposes complete inputs and directed reading paths, [Work Priority](../artifacts/work-priority.md), [Proposal](../artifacts/proposal.md) and [Test Plan](../artifacts/test-plan.md) each define what every other file reaching it links, and [Proposals Board](../artifacts/proposals-board.md) alone selects and creates the proposals board |
 | [test_kind_operations](test_kind_operations.py) | [Work Kind](../artifacts/work-kind.md) holds one dispatching operation per interface operation, each resolving to the operation the item's registered kind supplies or to its general route, general files reach a kind's operation only through it, and its Registration lists each kind's lifecycle artifact ahead of its body |
 | [test_merge_outcomes](test_merge_outcomes.py) | Merge instructions bind verified heads and select terminal or bounded recovery routes |
 | [test_modes](test_modes.py) | Mode summaries in each skill's `SKILL.md` |
@@ -95,12 +96,12 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | Script | Exercised by |
 | --- | --- |
 | [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (22), [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_review_scope](test_review_scope.py) (14) |
-| [align](../scripts/align.py) | [test_align](test_align.py) (18) |
-| [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_progress](test_progress.py) (80), [test_shared](test_shared.py) (21) |
+| [align](../scripts/align.py) | [test_align](test_align.py) (13) |
+| [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (108), [test_progress](test_progress.py) (80), [test_shared](test_shared.py) (21) |
 | [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (18), [test_board_queue](test_board_queue.py) (78), [test_shared](test_shared.py) (21) |
 | [closure](../scripts/closure.py) | [test_closure](test_closure.py) (13), [test_command_contracts](test_command_contracts.py) (14) |
 | [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) (14) |
-| [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (107), [test_dispatch](test_dispatch.py) (34), [test_shared](test_shared.py) (21) |
+| [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (108), [test_dispatch](test_dispatch.py) (34), [test_shared](test_shared.py) (21) |
 | [delivery-branches](../scripts/delivery-branches.py) | [test_task_worktree](test_task_worktree.py) (9), [test_unit_dispatch](test_unit_dispatch.py) (12) |
 | [deps](../scripts/deps.py) | [test_deps](test_deps.py) (92) |
 | [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
@@ -108,18 +109,19 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (34), [test_unit_dispatch](test_unit_dispatch.py) (12) |
 | [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_progress](test_progress.py) (80), [test_shared](test_shared.py) (21), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
 | [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (26), [test_kinds](test_kinds.py) (10) |
-| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (22), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_dispatch](test_dispatch.py) (34), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (26), [test_kinds](test_kinds.py) (10), [test_orphans](test_orphans.py) (5), [test_progress](test_progress.py) (80), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
+| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (22), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (108), [test_dispatch](test_dispatch.py) (34), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (26), [test_kinds](test_kinds.py) (10), [test_orphans](test_orphans.py) (5), [test_progress](test_progress.py) (80), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
 | [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (34), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-pull-request](../scripts/links-by-pull-request.py) | [test_link_capture](test_link_capture.py) (22) |
 | [orphans](../scripts/orphans.py) | [test_orphans](test_orphans.py) (5) |
-| [priority](../scripts/priority.py) | [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_hotfix](test_hotfix.py) (26), [test_priority](test_priority.py) (12), [test_progress](test_progress.py) (80) |
+| [priority](../scripts/priority.py) | [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (108), [test_hotfix](test_hotfix.py) (26), [test_priority](test_priority.py) (12), [test_progress](test_progress.py) (80) |
 | [progress](../scripts/progress.py) | [test_progress](test_progress.py) (80), [test_shared](test_shared.py) (21) |
 | [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32), [test_shared](test_shared.py) (21) |
 | [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |
 | [statuses](../scripts/statuses.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (21), [test_statuses](test_statuses.py) (24) |
-| [sync](../scripts/sync.py) | [test_align](test_align.py) (18), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_link_capture](test_link_capture.py) (22), [test_progress](test_progress.py) (80), [test_shared](test_shared.py) (21), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
+| [sync](../scripts/sync.py) | [test_align](test_align.py) (13), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (108), [test_link_capture](test_link_capture.py) (22), [test_progress](test_progress.py) (80), [test_shared](test_shared.py) (21), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
+| [testplan](../scripts/testplan.py) | [test_align](test_align.py) (13), [test_testplan](test_testplan.py) (12) |
 
 ### Documents
 
@@ -127,8 +129,8 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | --- | --- |
 | `*/SKILL.md` | [test_modes](test_modes.py) (4) |
 | [README](README.md) | [test_readme](test_readme.py) (14) |
-| `SKILL.md` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (25), [test_reading_routes](test_reading_routes.py) (20) |
-| `artifacts/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (25) |
+| `SKILL.md` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (28), [test_reading_routes](test_reading_routes.py) (20) |
+| `artifacts/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (28) |
 | [advance-mode](../modes/advance-mode.md) | [test_advance_decisions](test_advance_decisions.py) (18) |
 | [architecture-overview](../artifacts/architecture-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
 | [change-overview](../protocols/change-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
@@ -144,16 +146,16 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [task-merge](../protocols/task-merge.md) | [test_kind_operations](test_kind_operations.py) (29) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_unit_dispatch](test_unit_dispatch.py) (12), [test_worktrees](test_worktrees.py) (2) |
 | [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (14) |
-| [configuration](../configuration.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (25) |
-| [conventions](../conventions.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (25), [test_reading_routes](test_reading_routes.py) (20), [test_unit_dispatch](test_unit_dispatch.py) (12) |
-| [guidelines](../guidelines.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (25), [test_reading_routes](test_reading_routes.py) (20) |
-| `modes/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (25) |
+| [configuration](../configuration.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (28) |
+| [conventions](../conventions.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (28), [test_reading_routes](test_reading_routes.py) (20), [test_unit_dispatch](test_unit_dispatch.py) (12) |
+| [guidelines](../guidelines.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (28), [test_reading_routes](test_reading_routes.py) (20) |
+| `modes/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (28) |
 | [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (14), [test_plan_publication](test_plan_publication.py) (14) |
 | [propose-mode](../modes/propose-mode.md) | [test_plan_mode](test_plan_mode.py) (14) |
 | [proposal](../artifacts/proposal.md) | [test_plan_mode](test_plan_mode.py) (14) |
-| `protocols/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (25) |
-| `references/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (25) |
-| [rules](../rules.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (25), [test_reading_routes](test_reading_routes.py) (20), [test_unit_dispatch](test_unit_dispatch.py) (12) |
+| `protocols/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (28) |
+| `references/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (28) |
+| [rules](../rules.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (28), [test_reading_routes](test_reading_routes.py) (20), [test_unit_dispatch](test_unit_dispatch.py) (12) |
 
 A count beside a module measures that module, not the subject it appears against. The 34 tests of [test_dispatch](test_dispatch.py) do not all touch [deliver](../scripts/deliver.py), so a row's numbers are not a total.
 

@@ -24,9 +24,10 @@ import sync  # noqa: E402
 
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
 TODAY = '2026-10-06'
+EVIDENCE = f'{RECORDS}/2026-10-06-943-checks/results.md#t1'
 PLAN = ('## Test Plan\n\n'
         '| Test | Description | Coverage | Pass |\n| --- | --- | --- | --- |\n'
-        '| T1 | The check holds. | AC1 | ✓ |\n')
+        f'| T1 | The check holds. | AC1 | [✓]({EVIDENCE}) |\n')
 
 
 def epic_body(*rows: tuple[str, str, str, str]) -> str:
@@ -425,20 +426,27 @@ class Survey(unittest.TestCase):
         record = epic(943, ('W01', 'Queue plan', '', ''))
         record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.**')
         output = survey(staged((record, 'In Progress')),
-                        [pr(950, '[I07:E00] Queue plan', body=PLAN.replace('✓', ''),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN.replace(f'[✓]({EVIDENCE})', ''),
                             base='i07/e00/main')])
         self.assertNotIn('merge #', output)
         self.assertIn('merge: 0', output)
 
     def test_a_linked_pass_result_allows_the_merge(self):
-        evidence = f'{RECORDS}/2026-10-06-943-checks/results.md#t1'
         output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress'),
                                (task(637), 'In Progress')),
-                        [pr(950, '[I07:E00] Queue plan', body=PLAN.replace('✓', f'[✓]({evidence})'),
-                            base='i07/e00/main')],
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')],
                         held=(links(950, 637),))
         self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
         self.assertIn('merge: 1', output)
+
+    def test_a_bare_tick_has_not_passed_and_yields_no_merge(self):
+        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress'),
+                               (task(637), 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN.replace(f'[✓]({EVIDENCE})', '✓'),
+                            base='i07/e00/main')],
+                        held=(links(950, 637),))
+        self.assertNotIn('merge #', output)
+        self.assertIn('merge: 0', output)
 
     def test_an_incomplete_linked_result_withholds_the_merge(self):
         evidence = f'{RECORDS}/2026-10-06-943-checks/results.md#t2'

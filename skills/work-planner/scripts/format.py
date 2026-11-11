@@ -300,6 +300,11 @@ def phrase(text: str) -> str:
     return text.split(' →', 1)[0].strip()
 
 
+def cited(text: str) -> list[int]:
+    """The acceptance criteria a Coverage cell names."""
+    return [int(n) for n in re.findall(r'\bAC(\d+)', text)]
+
+
 def done_mark(value: str) -> str | None:
     """The Done cell as the table writes it: empty, or a tick. None when the cell is something else."""
     if value in ('', TICK):

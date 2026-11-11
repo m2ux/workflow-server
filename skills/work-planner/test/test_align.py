@@ -1,4 +1,4 @@
-"""Alignment repairs, unreadable evidence and reference visibility fixtures."""
+"""Alignment reports an unreadable test plan, a checked list among them, and reference visibility fixtures."""
 import json
 import sys
 import tempfile
@@ -8,10 +8,10 @@ from pathlib import Path
 from fixtures import run
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
-from align import check_references, repair_plan, reference_repositories
-from sync import plan_rows, plan_agreement
+from align import check_references, reference_repositories
+from sync import plan_agreement
 
-LEGACY = """## Overview
+CHECKED_LIST = """## Overview
 
 Keep this wording.
 
@@ -33,62 +33,6 @@ Keep this reference.
 CURRENT = '## Test Plan\n\n| Test | Description | Coverage | Pass |\n| --- | --- | --- | --- |\n| T1 | Check | AC1 | |\n'
 
 
-class PlanRepair(unittest.TestCase):
-    def test_conversion_preserves_descriptions_coverage_result_and_surroundings(self):
-        body, changed, findings = repair_plan(LEGACY)
-        self.assertTrue(changed)
-        self.assertEqual(findings, [])
-        self.assertIn('Keep this wording.', body)
-        self.assertIn('Keep this reference.', body)
-        self.assertEqual(plan_rows(body), [('T1', 'AC1, AC2', '[✓](https://github.com/o/r/blob/engineering/test.md#first)'), ('T2', 'AC3', ''), ('', 'AC4', '')])
-        self.assertIn('Second check', body)
-        self.assertNotIn('- [x]', body)
-
-    def test_current_plan_is_byte_preserved(self):
-        self.assertEqual(repair_plan(CURRENT), (CURRENT, False, []))
-
-    def test_fenced_current_table_is_unreadable(self):
-        for fence in ('```markdown', '~~~markdown'):
-            body = CURRENT.replace('## Test Plan', '## Test Plan\n\n' + fence) + '\n' + fence[:3]
-            repaired, changed, findings = repair_plan(body)
-            self.assertEqual(repaired, body)
-            self.assertFalse(changed)
-            self.assertTrue(findings)
-            self.assertIsNone(plan_rows(body))
-
-    def test_conversion_is_idempotent(self):
-        body, _, _ = repair_plan(LEGACY)
-        self.assertEqual(repair_plan(body), (body, False, []))
-
-    def test_checked_entry_without_evidence_remains_pending(self):
-        body, changed, findings = repair_plan(LEGACY.replace(' [✓](https://github.com/o/r/blob/engineering/test.md#first)', ''))
-        self.assertTrue(changed)
-        self.assertEqual(plan_rows(body)[0][2], '')
-        self.assertIn('lacks linked evidence', findings[0])
-
-    def test_unchecked_link_does_not_become_passed(self):
-        body, _, _ = repair_plan(LEGACY.replace('- [x]', '- [ ]'))
-        self.assertEqual(plan_rows(body)[0][2], '')
-
-    def test_ambiguous_or_incomplete_plans_are_unchanged(self):
-        examples = [LEGACY.replace('| T2 |', '| T3 |'), LEGACY.replace('**T2.**', '**T1.**'), LEGACY.replace('| T2 | AC3 |', '| T2 | AC3 | extra |'), LEGACY.replace('## References', 'Unexpected prose.\n\n## References'), LEGACY + '\n## Test Plan\n']
-        for original in examples:
-            with self.subTest(original=original):
-                body, changed, findings = repair_plan(original)
-                self.assertEqual(body, original)
-                self.assertFalse(changed)
-                self.assertTrue(findings)
-
-    def test_command_names_converted_pull_request(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            source, output = Path(tmp)/'pr.json', Path(tmp)/'body.md'
-            source.write_text(json.dumps({'number': 950, 'html_url': 'https://github.com/o/r/pull/950', 'body': LEGACY}))
-            result = run('align.py', 'plan', str(source), '--fix', str(output))
-            self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn('https://github.com/o/r/pull/950: converted test plan', result.stdout)
-            self.assertIsNotNone(plan_rows(output.read_text()))
-
-
 class UnreadablePlan(unittest.TestCase):
     def report(self, body):
         report = {'disagreement': []}
@@ -96,12 +40,34 @@ class UnreadablePlan(unittest.TestCase):
         return report['disagreement']
 
     def test_malformed_plans_are_not_reported_as_missing_observations(self):
-        for body in ['', LEGACY, CURRENT.replace('| --- | --- | --- | --- |', '| bogus |'), CURRENT.replace('| T1 | Check | AC1 | |', '| T1 | AC1 |'), CURRENT.replace('Coverage', 'Criteria')]:
+        for body in ['', CHECKED_LIST, CURRENT.replace('| --- | --- | --- | --- |', '| bogus |'), CURRENT.replace('| T1 | Check | AC1 | |', '| T1 | AC1 |'), CURRENT.replace('Coverage', 'Criteria')]:
             with self.subTest(body=body):
                 self.assertEqual(self.report(body), ['#950: unreadable test plan'])
 
     def test_unobserved_criterion_is_a_distinct_finding(self):
         self.assertEqual(self.report(CURRENT.replace('| T1 |', '| |')), ['#950 W01: AC1 covered and no test observes it'])
+
+    def check(self, body):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / 'pr.json'
+            source.write_text(json.dumps({'number': 950, 'html_url': 'https://github.com/o/r/pull/950', 'body': body}))
+            return run('testplan.py', str(source))
+
+    def test_a_checked_list_plan_is_reported_unreadable(self):
+        result = self.check(CHECKED_LIST)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(result.stdout, 'https://github.com/o/r/pull/950: unreadable test plan\n')
+        self.assertEqual(self.report(CHECKED_LIST), ['#950: unreadable test plan'])
+
+    def test_the_check_leaves_a_current_plan_clear(self):
+        result = self.check(CURRENT)
+        self.assertEqual((result.returncode, result.stdout), (0, ''), result.stderr)
+
+    def test_a_fenced_current_table_is_unreadable(self):
+        for fence in ('```markdown', '~~~markdown'):
+            with self.subTest(fence=fence):
+                body = CURRENT.replace('## Test Plan', '## Test Plan\n\n' + fence) + '\n' + fence[:3]
+                self.assertEqual(self.check(body).returncode, 1)
 
 
 class Visibility(unittest.TestCase):

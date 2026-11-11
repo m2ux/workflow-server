@@ -24,42 +24,11 @@ The current change carried by one epic base.
 
 Provide the complete [updated body](#output-body) file to the caller.
 
-### Repair Test Plan
-
-One task pull request's test plan aligned to its current table.
-
-#### 1. Convert Current Plan
-
-Run [Convert Test Plan](#convert-test-plan "ƒ") to [Pull Request Record](#pull-request-record), writing to [Output Body](#output-body).
-
-#### 2. Inspect Preserved Coverage
-
-Inspect the diff. A checked list and Test/Criteria table convert only when their ids agree and every line is accounted for; descriptions and coverage are preserved.
-
-#### 3. Verify Retained Evidence
-
-Verify retained result links against [Test Plan](#test-plan). A checked entry without linked result evidence remains pending; restore its Pass result only from verified published evidence.
-
-#### 4. Provide Plan Findings
-
-Provide [Output Body](#output-body), the converted pull request identity and [Unresolved Evidence](#unresolved-evidence). The requester publishes and names each conversion. An unreadable plan remains a finding until repaired from its actual checks and coverage.
-
-## Commands
-
-### Convert Test Plan
-
-Convert an unambiguous checked list and Test/Criteria table to the current plan table and provide [Output Body](#output-body "●") and [Unresolved Evidence](#unresolved-evidence "●") to the requester.
-
-<big><pre>
-[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/align.py plan '[**&lt;pull-request-json-file&gt;**](#pull-request-record "○")' --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
-</pre></big>
-
-- Input is a current REST [pull request record](#pull-request-record "○"); output is the complete body. Existing current tables are unchanged.
-- A conversion prints the pull request identity. Exit 1 means an unreadable plan or missing linked result evidence; inspect the body and findings before publishing.
-
 ## Fields
 
 ### Template
+
+The Test Plan section holds the table [Test Plan](test-plan.md) defines.
 
 ````markdown
 ## Overview
@@ -79,7 +48,7 @@ Convert an unambiguous checked list and Test/Criteria table to the current plan 
 
 | Test | Description | Coverage | Pass |
 | --- | --- | --- | --- |
-| T1 | {{Check name, per [Test Plan](#test-plan).}} | {{Observed criteria, if any.}} | [{{Result}}]({{Planning document URL#test-section}}) |
+| T1 | {{Check name, per [Plan Columns](test-plan.md#plan-columns).}} | {{Observed criteria, if any.}} | [{{Result}}]({{Planning document URL#test-section}}) |
 
 ## Open Questions
 
@@ -108,26 +77,7 @@ The epic review document, containing Overview, Changes and References sections.
 - A Changes bullet states what the base does and carries no count of the corpus, such as how many specifications or files it holds. A count belongs in the unit's planning record, with the revision that produced it.
 - Each file a Changes bullet names in a code span stands at the base's head. A code name, such as `board.Outputs`, names no file.
 - References cites each task pull request merged into that base.
-- It carries no Test Plan, since it delivers no task of its own, and no statement about what the epic has yet to deliver. The epic's Work Breakdown is where delivery state is read.
-
-### Test Plan
-
-A task pull request carries a Test Plan.
-
-- **Table.**
-  The pull request's Test Plan section contains only one table, with columns Test, Description, Coverage and Pass, in that order.
-- **Columns.**
-  - Test names the id.
-  - Description briefly names the check.
-  - Coverage names the criteria the check observes, `AC1, AC3`, and is empty when the check observes none.
-  - A row whose Test cell is empty names a criterion no check observes, and its Pass cell is empty.
-  - Pass is empty while a check awaits a result. A recorded result uses ✓ when the check ran and held, or an accurate label such as Partial, Fail or Not run.
-- **Evidence.**
-  - Test procedures, tested revisions, observations, limitations and supporting evidence belong in the work's published planning document.
-  - Each recorded result in Pass links to its relevant section in that document, using the result as link text: `[✓](URL#check)` or `[Partial](URL#check)`.
-  - Each evidence link is accessible to the pull request's readers and resolves to the intended section.
-- **Completion.**
-  The test plan has passed when every row with a Test id carries ✓ as its result. Partial, failed and unexecuted checks remain incomplete.
+- It carries no [Test Plan](test-plan.md), since it delivers no task of its own, and no statement about what the epic has yet to deliver. The epic's Work Breakdown is where delivery state is read.
 
 ### Change Evidence
 
@@ -137,10 +87,6 @@ The supplied current change summary and delivery scope, with validation evidence
 
 The optional existing complete pull request body.
 
-### Pull Request Record
-
-The supplied current REST pull request JSON. eg `pr-950.json`
-
 ### Overview URL
 
 The published architecture overview URL on the engineering branch.
@@ -149,19 +95,11 @@ The published architecture overview URL on the engineering branch.
 
 The supplied local destination for the complete body. eg `fixed-950.md`
 
-### Unresolved Evidence
-
-The unresolved evidence links and test-plan findings, with the identities and missing evidence of unsupported results.
-
-### Workspace
-
-The absolute checkout holding the installed Work Planner scripts and sandbox helper.
-
 ## Guidance
 
 ### Test Coverage
 
-- Every criterion a unit's Coverage names has an observing test in its work item and pull request. A criterion no test can observe remains in the [coverage report](issue-body.md#coverage-reports) and in a test-plan row with an empty Test cell.
+- Every criterion a unit's Coverage names has an observing test in its work item and pull request. A criterion no test can observe remains in the [coverage report](issue-body.md#coverage-reports) and in a [Test Plan](test-plan.md#plan-columns) row with an empty Test cell.
 - The criterion selects the test kind: a unit test for one component, an integration test for a seam between components, and an end-to-end or system test for running-system behaviour. That evidence must meet [Coverage Reports](issue-body.md#coverage-reports).
 - An instrument that does not exist yet is work the task carries, as the verified rule defines. Use the project's own system test where it can observe the criterion.
-- One row per check, in execution order, followed by any unobserved criteria. Every criterion in the unit's Coverage appears in at least one row.
+- Every criterion in the unit's Coverage appears in at least one [Test Plan](test-plan.md#plan-table) row.
