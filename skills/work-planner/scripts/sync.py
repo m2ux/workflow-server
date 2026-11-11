@@ -97,8 +97,9 @@ import sys
 from pathlib import Path
 from typing import NamedTuple
 
-from format import Review, Template, AC, LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections
+from format import Review, Template, AC, LINK, TICK, cell, cells, cited, id_cell, join_sections, row, row_id, split_sections
 from kinds import interface, kind_of
+import testplan
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
@@ -628,53 +629,6 @@ def unlinked_reviews(prs: list[dict], initiative: str, epic: str, key: tuple[str
     return lines
 
 
-def cited(text: str) -> list[int]:
-    """The acceptance criteria an Coverage cell names."""
-    return [int(n) for n in re.findall(r'\bAC(\d+)', text)]
-
-
-def plan_rows(body: str) -> list[tuple[str, str, str]] | None:
-    """Rows of the Test Plan table as (Test, Coverage, Pass). None when that table is absent."""
-    _, sections = split_sections((body or '').replace('\r\n', '\n'))
-    plans = [item for heading, item in sections if heading == 'Test Plan']
-    if len(plans) != 1:
-        return None
-    lines = plans[0]
-    if any(re.match(r' {0,3}(`{3,}|~{3,})', line) for line in lines):
-        return None
-    table = [line for line in lines if line.startswith('|')]
-    if len(table) < 2:
-        return None
-    header = cells(table[0])
-    if header != ['Test', 'Description', 'Coverage', 'Pass']:
-        return None
-    if len(cells(table[1])) != len(header) or not all(
-            re.fullmatch(r':?-{3,}:?', c) for c in cells(table[1])):
-        return None
-    found = []
-    for line in table[2:]:
-        parsed = cells(line)
-        if len(parsed) != len(header):
-            return None
-        found.append((cell(header, parsed, 'Test'), cell(header, parsed, 'Coverage'), cell(header, parsed, 'Pass')))
-    return found
-
-
-def plan_claims(body: str) -> tuple[set[int], set[int], set[int]]:
-    """Named, observed and passed criteria; every observing check must pass."""
-    named, observed, incomplete = set(), set(), set()
-    for test, coverage, mark in plan_rows(body) or []:
-        acs = set(cited(coverage))
-        named |= acs
-        if test.strip():
-            observed |= acs
-            link = LINK.fullmatch(mark)
-            if not (link and done_mark(link[1]) == TICK
-                    and re.fullmatch(r'https?://[^/\s?#]+(?:[/?#][^\s]*)?', link[2])):
-                incomplete |= acs
-    return named, observed, observed - incomplete
-
-
 def passed_criteria(rows, header, by_number) -> set[int]:
     """Criteria supported by every covering task's linked delivery observations.
 
@@ -691,10 +645,10 @@ def passed_criteria(rows, header, by_number) -> set[int]:
             if not pull:
                 continue
             pr = by_number.get(int(pull[1]))
-            if not pr or plan_rows(pr.get('body') or '') is None:
+            if not pr or testplan.rows(pr.get('body') or '') is None:
                 incomplete |= scope
                 continue
-            _named, checks, passed = plan_claims(pr.get('body') or '')
+            _named, checks, passed = testplan.claims(pr.get('body') or '')
             observed |= checks & scope
             incomplete |= scope & (checks - passed if pr.get('merged_at') else checks)
         supported |= observed
@@ -756,10 +710,10 @@ def plan_agreement(rows, header, by_number, report):
         pr = by_number.get(number)
         if not pr:
             continue
-        if plan_rows(pr.get('body') or '') is None:
+        if testplan.rows(pr.get('body') or '') is None:
             report['disagreement'].append(f'#{number}: unreadable test plan')
             continue
-        named, observed, _passed = plan_claims(pr.get('body') or '')
+        named, observed, _passed = testplan.claims(pr.get('body') or '')
         union = set().union(*(coverage[task] for task in tasks))
         label = ', '.join(tasks)
         verb = 'does' if len(tasks) == 1 else 'do'

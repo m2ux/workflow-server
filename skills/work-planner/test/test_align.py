@@ -9,7 +9,8 @@ from fixtures import run
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
 from align import check_references, repair_plan, reference_repositories
-from sync import plan_rows, plan_agreement
+from sync import plan_agreement
+from testplan import rows
 
 LEGACY = """## Overview
 
@@ -40,7 +41,7 @@ class PlanRepair(unittest.TestCase):
         self.assertEqual(findings, [])
         self.assertIn('Keep this wording.', body)
         self.assertIn('Keep this reference.', body)
-        self.assertEqual(plan_rows(body), [('T1', 'AC1, AC2', '[✓](https://github.com/o/r/blob/engineering/test.md#first)'), ('T2', 'AC3', ''), ('', 'AC4', '')])
+        self.assertEqual(rows(body), [('T1', 'First check [✓](https://github.com/o/r/blob/engineering/test.md#first)', 'AC1, AC2', '[✓](https://github.com/o/r/blob/engineering/test.md#first)'), ('T2', 'Second check', 'AC3', ''), ('', '', 'AC4', '')])
         self.assertIn('Second check', body)
         self.assertNotIn('- [x]', body)
 
@@ -54,7 +55,7 @@ class PlanRepair(unittest.TestCase):
             self.assertEqual(repaired, body)
             self.assertFalse(changed)
             self.assertTrue(findings)
-            self.assertIsNone(plan_rows(body))
+            self.assertIsNone(rows(body))
 
     def test_conversion_is_idempotent(self):
         body, _, _ = repair_plan(LEGACY)
@@ -63,12 +64,12 @@ class PlanRepair(unittest.TestCase):
     def test_checked_entry_without_evidence_remains_pending(self):
         body, changed, findings = repair_plan(LEGACY.replace(' [✓](https://github.com/o/r/blob/engineering/test.md#first)', ''))
         self.assertTrue(changed)
-        self.assertEqual(plan_rows(body)[0][2], '')
+        self.assertEqual(rows(body)[0].result, '')
         self.assertIn('lacks linked evidence', findings[0])
 
     def test_unchecked_link_does_not_become_passed(self):
         body, _, _ = repair_plan(LEGACY.replace('- [x]', '- [ ]'))
-        self.assertEqual(plan_rows(body)[0][2], '')
+        self.assertEqual(rows(body)[0].result, '')
 
     def test_ambiguous_or_incomplete_plans_are_unchanged(self):
         examples = [LEGACY.replace('| T2 |', '| T3 |'), LEGACY.replace('**T2.**', '**T1.**'), LEGACY.replace('| T2 | AC3 |', '| T2 | AC3 | extra |'), LEGACY.replace('## References', 'Unexpected prose.\n\n## References'), LEGACY + '\n## Test Plan\n']
@@ -86,7 +87,7 @@ class PlanRepair(unittest.TestCase):
             result = run('align.py', 'plan', str(source), '--fix', str(output))
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn('https://github.com/o/r/pull/950: converted test plan', result.stdout)
-            self.assertIsNotNone(plan_rows(output.read_text()))
+            self.assertIsNotNone(rows(output.read_text()))
 
 
 class UnreadablePlan(unittest.TestCase):

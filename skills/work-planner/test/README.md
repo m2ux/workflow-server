@@ -5,7 +5,7 @@ Work Planner plans work as GitHub issues and keeps that plan true until the work
 ## What Is Under Test
 
 - **The scripts.**
-  Twenty-four programs read those issue bodies, board items and pull request records, and report what a run should change. Most modules here hold one script to the rules its own docstring states.
+  Twenty-seven programs read those issue bodies, board items and pull request records, and report what a run should change. Most modules here hold one script to the rules its own docstring states.
 - **The prose.**
   Modes, protocols and artifacts are instructions an agent follows. The modules check their shape: resolving links, contextual command contracts, selected checkout inputs, planning-record publication, worktree placement and this catalogue.
 - **Neither against a live tracker.**
@@ -61,6 +61,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_sync](test_sync.py) | Done on a Work Breakdown row, ticked when the row is complete |
 | [test_task_worktree](test_task_worktree.py) | Retained preparations validate and preserve real Git task worktrees |
 | [test_templates](test_templates.py) | Body artifacts are the format checker's sole template source |
+| [test_testplan](test_testplan.py) | [testplan](../scripts/testplan.py): the rows of a Test Plan section, whether the plan has passed, and the criteria it claims, as Test Plan states them |
 | [test_unit_dispatch](test_unit_dispatch.py) | [Unit Dispatch](../protocols/unit-dispatch.md) creates a new unit's checkouts once, reuses a retained preparation only once each checkout verifies, and resumes a capacity wait into one checked start |
 
 ### Prose Tests
@@ -120,6 +121,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |
 | [statuses](../scripts/statuses.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (21), [test_statuses](test_statuses.py) (24) |
 | [sync](../scripts/sync.py) | [test_align](test_align.py) (18), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_link_capture](test_link_capture.py) (22), [test_progress](test_progress.py) (80), [test_shared](test_shared.py) (21), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
+| [testplan](../scripts/testplan.py) | [test_align](test_align.py) (18), [test_testplan](test_testplan.py) (11) |
 
 ### Documents
 

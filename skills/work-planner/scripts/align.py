@@ -15,7 +15,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from format import cells, join_sections, row, split_sections
-from sync import plan_rows
+import testplan
 
 CHECK = re.compile(r'^- \[([ xX])\] \*\*(T\d+)\.\*\* (.+)$')
 RESULT = re.compile(r'\[(✓|Pass|Passed)\]\((https?://[^\s)]+)\)', re.I)
@@ -24,7 +24,7 @@ URL = re.compile(r'https://github\.com/([^/\s)<>]+)/([^/\s)#?<>]+)', re.I)
 
 def repair_plan(body):
     """Return a converted body and findings; ambiguity leaves the body intact."""
-    if plan_rows(body) is not None:
+    if testplan.rows(body) is not None:
         return body, False, []
     preamble, sections = split_sections(body.replace('\r\n', '\n'))
     plans = [lines for heading, lines in sections if heading == 'Test Plan']
