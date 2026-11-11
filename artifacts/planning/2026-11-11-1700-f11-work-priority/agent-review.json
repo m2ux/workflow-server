@@ -24,5 +24,18 @@
         "evidence": "https://github.com/m2ux/workflow-server/commit/55c1ae77b2895c0b2f84921751e25c37604fe8f0"
       }
     ]
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1701",
+    "head": "bf7c43fca05c7430cc88c0be6d33563091962946",
+    "base": "2ba852ab575a08ae24e605b6410494b9e116e0bb",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1700-f11-work-priority/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-11",
+    "scope": "F11's own change after merge bf7c43fca brought in F10 at 25866131e (Register kinds of work in Work Kind; Report a link to the entry point; Name the registration key in the shared Files rule): 25866131e..bf7c43fca, the merge base with origin/skill/link-step-references to the head, 21 files. The merge conflicted only in test/README.md's SKILL.md row; it takes F10's form (a code span, no link to the entry point, test_kind_operations no longer listed there) with F11's test_documents count of 16. Read in full against F10's Entry point rule (skills/guidelines.md) and Registration (artifacts/work-kind.md#registration): artifacts/work-priority.md; the board-queue, delivery-plan, dependency-graph, hotfix-body, hotfix, lane, plan-change and standup-report changes; advance and plan modes; scripts/priority.py, deliver.py ordered_epics, progress.py ranked_by and rank, hotfix.py labels; test_priority.py, test_documents.py WorkPriorityHome and the test README. Checked: no F11 file links SKILL.md; the only SKILL.md mentions in skills/work-planner are code spans, test paths and structure.json's key; F11's general files (work-priority.md, board-queue.md, dependency-graph.md, delivery-plan.md, lane.md, plan-change.md, standup-report.md, priority.py, deliver.py, progress.py) name no concrete kind, reaching kinds only through Registration (standup-report.md) or the general kind-unit field (delivery-plan.md#kind-units); hotfix-body.md, hotfix.md and hotfix.py are the hot-fix kind's own files, and hotfix.py imports the general priority module, not the reverse. WorkPriorityHome exempts SKILL.md, whose mode list names the parallel work map unlinked, consistent with the entry-point rule.",
+    "criteria": "AC1: Work Priority holds Priority Label, Priority Sets, Epic Priority and Execution Order as Fields; WorkPriorityHome (3 tests) passes; check_skill_files.py reports 62 files, 0 findings, including no link to the entry point (T1, T2, T3). AC2: deliver.py and progress.py order by priority.execution_key; test_priority.py 12 tests, test_deliver 107, test_progress 80 pass; the standup's Next list follows Execution Order's initiative tie-break (T4, T5, T7). AC3: hotfix.labels returns [priority.label(10)] (T6).",
+    "validation": "At bf7c43fca: skills/work-planner suite 1254 tests OK (1 skipped); skills/test 336 tests OK; check_skill_files.py skills/work-planner 62 files, 0 findings; git diff --check 25866131e..bf7c43fca clean.",
+    "findings": []
   }
 ]
