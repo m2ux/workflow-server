@@ -202,7 +202,8 @@ class DocumentInterfaces(unittest.TestCase):
 
     def test_every_script_is_run_by_a_cited_command(self):
         """Scripts are invoked by cited executable sections or imported by
-        scripts invoked there. Literal specimens supply no executable reach."""
+        scripts invoked there, a script importing through import_module each
+        script it names as a string. Literal specimens supply no executable reach."""
         paths = sorted(ROOT.rglob('*.md'))
         run = executable_scripts(paths)
         self.assertTrue(run, "installed declarations expose no script invocation")
@@ -212,6 +213,9 @@ class DocumentInterfaces(unittest.TestCase):
             imported = {name for name, text in scripts.items() if any(
                 re.search(rf'^(?:import|from) {re.escape(name)}\b', scripts[user], re.MULTILINE)
                 for user in run if user in scripts)}
+            imported |= {name for name in scripts for user in run if user in scripts
+                         and 'import_module' in scripts[user]
+                         and re.search(rf"""['"]{re.escape(name)}['"]""", scripts[user])}
             grown = not imported <= run
             run |= imported
         for name in sorted(scripts):
