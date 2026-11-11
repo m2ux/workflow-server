@@ -97,7 +97,7 @@ from board import Board, Outputs, epic_state, in_flight, linked_issue, tags, uni
 from deps import BRANCH, read_components
 from lane import admits, check_unit, is_index, label as lane_label, read_lanes
 from kinds import interface, kind_of
-from priority import rank
+from priority import execution_key
 from statuses import DISPATCH, Key, STATUSES, Changes, StatusField, board_items, label, pages, status_of
 from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
                     row, row_id, split_sections, title_name)
@@ -316,7 +316,7 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...], reposi
 
 
 def ordered_epics(board: Board) -> list[tuple[str, int]]:
-    """Admitted-work ordering by initiative priority and each initiative's epic priorities."""
+    """The board's epics in Execution Order, as artifacts/work-priority.md states it."""
     parents = {}
     for parent, issue in sorted(board.issues.items()):
         parsed = tags(issue.get('title') or '')
@@ -336,8 +336,7 @@ def ordered_epics(board: Board) -> list[tuple[str, int]]:
         parent = parents.get(key)
         initiative = tags(board.issues[key]['title'])[0]
         group = (parent[0], f'issue:{parent[1]:020d}') if parent else (key[0], f'initiative:{initiative}')
-        level = (rank(board.issues[parent]) or 0) if parent else 0
-        return -level, group, -(rank(board.issues[key]) or 0), key
+        return execution_key(board.issues[parent] if parent else None, board.issues[key], group, key)
 
     return sorted((key for key, issue in board.issues.items() if is_epic(issue)), key=order)
 

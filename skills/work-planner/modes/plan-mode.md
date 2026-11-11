@@ -60,10 +60,10 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 6. Publish
 
-- Put the proposed [Epic Priority](../artifacts/dependency-graph.md#epic-priority) map for the reviewed epics to the user as an [Interview](../guidelines.md#modes), the proposal the recommended answer.
+- Put the proposed [Epic Priority](../artifacts/work-priority.md#epic-priority) map for the reviewed epics to the user as an [Interview](../guidelines.md#modes), the proposal the recommended answer.
 
 - Take the positive integer the user confirms for each epic.
-- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the required definitions, the priority label each confirmed number names among them, before saving the issues.
+- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the required definitions, the [priority label](../artifacts/work-priority.md#priority-label) each confirmed number names among them, before saving the issues.
 
 #### Parent Identity
 
@@ -110,7 +110,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Whenever tasks, edges or a work item's declared files change, Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "ƒ") again.
 
-- Put the proposed Epic Priority map to the user again where the edges or the contention moved an epic's number.
+- Put the proposed [Epic Priority](../artifacts/work-priority.md#epic-priority) map to the user again where the edges or the contention moved an epic's number.
 - Save each confirmed change as that epic's priority label.
 
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with affected bodies, matching titles to current numbers and Coverage to current criteria.

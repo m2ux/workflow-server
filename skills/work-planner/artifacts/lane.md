@@ -113,4 +113,4 @@ Every member of a unit carries the same index, or every member is unlaned. Missi
 
 ### Admission
 
-A request naming an index admits free units with that index and unlaned units. A request naming none admits only unlaned units. Malformed or inconsistent assignments admit no unit. Availability and priority are supplied by the caller; lane admission applies to free units and leaves other findings visible. A unit without task rows is unlaned.
+A request naming an index admits free units with that index and unlaned units. A request naming none admits only unlaned units. Malformed or inconsistent assignments admit no unit. Availability and [priority](work-priority.md#execution-order) are supplied by the caller; lane admission applies to free units and leaves other findings visible. A unit without task rows is unlaned.

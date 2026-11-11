@@ -62,7 +62,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - A held or unanswered decision under an allowance has no user to answer it: provide the pending queue with the [change list](../artifacts/plan-change.md#change-list) and stop. [Write](#7-write) treats that queue as incomplete.
 - A held decision put to the user continues with the user's answer; one the user leaves unanswered stops this step as one under an allowance does.
 
-- For `order`, the answer is the [parallel work map](../artifacts/board-queue.md#priority-sets): a positive integer on each listed initiative, or none left unordered.
+- For `order`, the answer is the [parallel work map](../artifacts/work-priority.md#priority-sets): a positive integer on each listed initiative, or none left unordered.
 
 - For `ask`:
 
@@ -71,7 +71,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - After an answer, including an allowed automatic answer:
 
-- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the priority label each confirmed number names, for every repository holding one of those initiatives.
+- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the [priority label](../artifacts/work-priority.md#priority-label) each confirmed number names, for every repository holding one of those initiatives.
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with each initiative identity and its confirmed priority-label addition.
 - On a failed save, provide the failure with the pending queue and stop this continuation.
 - Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") again.

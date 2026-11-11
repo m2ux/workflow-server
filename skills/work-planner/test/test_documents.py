@@ -343,3 +343,59 @@ class EpicDeliveryCallers(unittest.TestCase):
                 f'{verb} [Sync Epic](x.md) with the saved epic.'))
         self.assertIsNotNone(SYNC_EPIC_CALL.search(
             'Run [Sync Epic](x.md) with the saved epic bases.'))
+
+
+WORK_PRIORITY = ROOT / 'artifacts' / 'work-priority.md'
+# Each Work Priority field, with a statement only its definition makes.
+PRIORITY_DEFINITIONS = {
+    'Priority Label': 'count as the larger number',
+    'Priority Sets': 'A parallel work map is',
+    'Epic Priority': 'Equal priorities identify epics',
+    'Execution Order': 'Equally ranked initiatives',
+}
+# The defined name Execution Order, in its capitals: in lower case the phrase also names the order
+# of a body's checks or of its Depends on cells.
+PRIORITY_TERMS = re.compile(r'(?i:priority labels?|parallel work map|priority sets?\b|epic priority)|Execution Order')
+
+
+class WorkPriorityHome(unittest.TestCase):
+    """Work Priority alone defines Priority Label, Priority Sets, Epic Priority and Execution Order,
+    and every other file naming one links it."""
+
+    def documents(self):
+        return sorted(path for path in ROOT.rglob('*.md')
+                      if 'test' not in path.relative_to(ROOT).parts and path != WORK_PRIORITY)
+
+    def test_work_priority_holds_each_definition_as_a_field(self):
+        lines, _, headings = checker.scan(WORK_PRIORITY)
+        fields = next(i for i, depth, title in headings if depth == 2 and title == 'Fields')
+        end = checker.heading_end(headings, fields, 2, len(lines))
+        held = {title for i, depth, title in headings if depth == 3 and fields < i < end}
+        self.assertLessEqual(set(PRIORITY_DEFINITIONS), held)
+        text = WORK_PRIORITY.read_text()
+        for name, statement in PRIORITY_DEFINITIONS.items():
+            with self.subTest(definition=name):
+                self.assertIn(statement, text)
+
+    def test_no_other_file_heads_or_restates_a_definition(self):
+        for path in self.documents():
+            text = path.read_text()
+            titles = {title for _, _, title in checker.scan(path)[2]}
+            for name, statement in PRIORITY_DEFINITIONS.items():
+                with self.subTest(file=str(path.relative_to(ROOT)), definition=name):
+                    self.assertNotIn(name, titles)
+                    self.assertNotIn(statement, text)
+
+    def test_every_file_naming_a_definition_links_work_priority(self):
+        """The entry point's mode list names requests, and its links reach modes, so it is the one
+        file that names a definition unlinked."""
+        for path in self.documents():
+            if path == ROOT / 'SKILL.md':
+                continue
+            lines, fenced, _ = checker.scan(path)
+            if not any(PRIORITY_TERMS.search(line) for index, line in enumerate(lines) if index not in fenced):
+                continue
+            linked = {(path.parent / target.partition('#')[0]).resolve()
+                      for _, target in checker.targets(path, lines, fenced)}
+            with self.subTest(file=str(path.relative_to(ROOT))):
+                self.assertIn(WORK_PRIORITY.resolve(), linked)

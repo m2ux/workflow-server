@@ -51,6 +51,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_lane](test_lane.py) | Lane's raw-cell, assignment, consistency and admission contracts |
 | [test_link_capture](test_link_capture.py) | The Development relation read from each end by [links-by-pull-request](../scripts/links-by-pull-request.py) and [links-by-issue](../scripts/links-by-issue.py), and the linked pull requests [linked-pull-requests](../scripts/linked-pull-requests.py) adds to a collection |
 | [test_orphans](test_orphans.py) | [orphans](../scripts/orphans.py) keeps a proposal out of the hoist candidates and out of the initiative list, a declared throwaway out of both candidate groups, and an issue of each registered kind of work out of both, reaching the kind through the script registry |
+| [test_priority](test_priority.py) | [priority](../scripts/priority.py): the rank a priority label gives, the label a number names, and the execution-order key, as Work Priority states them |
 | [test_progress](test_progress.py) | [progress](../scripts/progress.py): one test per rule its docstring states |
 | [test_renumber](test_renumber.py) | [renumber](../scripts/renumber.py) rewrites an initiative's epic numbers, or one epic's task numbers, across issue bodies |
 | [test_revision_check](test_revision_check.py) | An instrument runs at the commit a branch or tag resolves to, and the run leaves no checkout |
@@ -95,7 +96,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | --- | --- |
 | [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (22), [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_review_scope](test_review_scope.py) (14) |
 | [align](../scripts/align.py) | [test_align](test_align.py) (18) |
-| [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (21) |
+| [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_progress](test_progress.py) (80), [test_shared](test_shared.py) (21) |
 | [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (18), [test_board_queue](test_board_queue.py) (78), [test_shared](test_shared.py) (21) |
 | [closure](../scripts/closure.py) | [test_closure](test_closure.py) (13), [test_command_contracts](test_command_contracts.py) (14) |
 | [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) (14) |
@@ -105,20 +106,20 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (34), [test_unit_dispatch](test_unit_dispatch.py) (12) |
-| [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (21), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
-| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (25), [test_kinds](test_kinds.py) (10) |
-| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (22), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_dispatch](test_dispatch.py) (34), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (25), [test_kinds](test_kinds.py) (10), [test_orphans](test_orphans.py) (5), [test_progress](test_progress.py) (79), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
+| [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_progress](test_progress.py) (80), [test_shared](test_shared.py) (21), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
+| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (26), [test_kinds](test_kinds.py) (10) |
+| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (22), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_dispatch](test_dispatch.py) (34), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (26), [test_kinds](test_kinds.py) (10), [test_orphans](test_orphans.py) (5), [test_progress](test_progress.py) (80), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
 | [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (34), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-pull-request](../scripts/links-by-pull-request.py) | [test_link_capture](test_link_capture.py) (22) |
 | [orphans](../scripts/orphans.py) | [test_orphans](test_orphans.py) (5) |
-| [priority](../scripts/priority.py) | [test_board_queue](test_board_queue.py) (78), [test_progress](test_progress.py) (79) |
-| [progress](../scripts/progress.py) | [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (21) |
+| [priority](../scripts/priority.py) | [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_hotfix](test_hotfix.py) (26), [test_priority](test_priority.py) (12), [test_progress](test_progress.py) (80) |
+| [progress](../scripts/progress.py) | [test_progress](test_progress.py) (80), [test_shared](test_shared.py) (21) |
 | [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32), [test_shared](test_shared.py) (21) |
 | [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |
 | [statuses](../scripts/statuses.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (21), [test_statuses](test_statuses.py) (24) |
-| [sync](../scripts/sync.py) | [test_align](test_align.py) (18), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_link_capture](test_link_capture.py) (22), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (21), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
+| [sync](../scripts/sync.py) | [test_align](test_align.py) (18), [test_board_queue](test_board_queue.py) (78), [test_deliver](test_deliver.py) (107), [test_link_capture](test_link_capture.py) (22), [test_progress](test_progress.py) (80), [test_shared](test_shared.py) (21), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
 
 ### Documents
 
@@ -126,8 +127,8 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | --- | --- |
 | `*/SKILL.md` | [test_modes](test_modes.py) (4) |
 | [README](README.md) | [test_readme](test_readme.py) (14) |
-| `SKILL.md` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13), [test_reading_routes](test_reading_routes.py) (20) |
-| `artifacts/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (13) |
+| `SKILL.md` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (16), [test_reading_routes](test_reading_routes.py) (20) |
+| `artifacts/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (16) |
 | [advance-mode](../modes/advance-mode.md) | [test_advance_decisions](test_advance_decisions.py) (18) |
 | [architecture-overview](../artifacts/architecture-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
 | [change-overview](../protocols/change-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
@@ -143,14 +144,14 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [task-merge](../protocols/task-merge.md) | [test_kind_operations](test_kind_operations.py) (27) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_unit_dispatch](test_unit_dispatch.py) (12), [test_worktrees](test_worktrees.py) (2) |
 | [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (8) |
-| [configuration](../configuration.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
-| [conventions](../conventions.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13), [test_reading_routes](test_reading_routes.py) (20), [test_unit_dispatch](test_unit_dispatch.py) (12) |
-| [guidelines](../guidelines.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13), [test_reading_routes](test_reading_routes.py) (20) |
-| `modes/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
+| [configuration](../configuration.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (16) |
+| [conventions](../conventions.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (16), [test_reading_routes](test_reading_routes.py) (20), [test_unit_dispatch](test_unit_dispatch.py) (12) |
+| [guidelines](../guidelines.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (16), [test_reading_routes](test_reading_routes.py) (20) |
+| `modes/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (16) |
 | [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (8), [test_plan_publication](test_plan_publication.py) (14) |
-| `protocols/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
-| `references/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13) |
-| [rules](../rules.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (13), [test_reading_routes](test_reading_routes.py) (20), [test_unit_dispatch](test_unit_dispatch.py) (12) |
+| `protocols/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (16) |
+| `references/` | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (16) |
+| [rules](../rules.md) | [test_board_status](test_board_status.py) (27), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (16), [test_reading_routes](test_reading_routes.py) (20), [test_unit_dispatch](test_unit_dispatch.py) (12) |
 
 A count beside a module measures that module, not the subject it appears against. The 22 tests of [test_dispatch](test_dispatch.py) do not all touch [deliver](../scripts/deliver.py), so a row's numbers are not a total.
 
