@@ -1,6 +1,6 @@
 # F10 Test Results
 
-Branch `skill/link-step-references` at 7aa5040ab, stacked on `i17/e02/workspace` at 2088c7a36.
+Branch `skill/link-step-references` at e42cecbcb, against `workspace` from the merge base 2088c7a36.
 
 ## T1. Skill-File Check over Work-Planner
 

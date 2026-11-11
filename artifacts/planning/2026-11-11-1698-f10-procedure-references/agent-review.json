@@ -1,0 +1,28 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1699",
+    "head": "e42cecbcb253bf372a4cd2a3ca58a337dbfa5510",
+    "base": "2ba852ab575a08ae24e605b6410494b9e116e0bb",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1698-f10-procedure-references/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-11",
+    "scope": "F10's own change: 2088c7a36..e42cecbcb (the merge base with origin/workspace, where E02 merged as 5e62cd146, to the head), six commits from b0b217f52. Read in full: skills/guidelines.md Step References rule, skills/rules.json, check_skill_files.py unlinked_steps and its STEP_NUMBER and STEP_NAME patterns, the three shared unit tests, artifacts/work-kind.md (eight dispatching operations and its Fields), SKILL.md registration, work-planner guidelines SOLID rules, and every caller the diff rewrites: advance, align, deliver, hoist, plan, propose, standup and sync modes; change-overview, issue-closure, issue-delivery, task-merge and unit-dispatch protocols; board, epic-issue-body, hotfix and pull-request artifacts; the planner tests and test README. Callers inspected: each Work Kind operation's unsupplied route against its caller (Kind Unit Hold, Deliver step 9, Issue Delivery step 1, Task Merge step 1, Hoist Settle Board Status, Unit Dispatch Record Dispatch Status), delivery-plan Kind Units, and the checker run over workflow-canon, gitnexus and server-in-the-loop, which reports no unlinked step reference in any of them.",
+    "criteria": "AC1: check_skill_files.py over skills/work-planner: 61 files, 0 findings at e42cecbcb (T1). AC2: shared suite holds a numbered and a named step reference reported and a linked or headless one allowed; 331 tests OK (T2). AC3: test_kind_operations.py resolves each interface operation for every registered kind to its operation or general route, and finds no prose selection outside Work Kind; planner suite OK (T3).",
+    "validation": "At e42cecbcb: skills/work-planner suite 1237 tests OK (1 skipped); skills/test 331 tests OK; check_skill_files.py skills/work-planner 61 files, 0 findings; git diff --check clean. Considered and not a defect: STEP_NUMBER and STEP_NAME match against every numbered heading in the file, so a reference to another file's step that shares a number would be reported; no such reference exists in any skill, and linking it is the remedy the rule asks for.",
+    "findings": [
+      {
+        "description": "guidelines.md Dependency Inversion said a kind implements its interface operations in Work Kind. Work Kind declares and dispatches them; each kind implements them in its own artifact, which the registration links.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/e42cecbcb253bf372a4cd2a3ca58a337dbfa5510"
+      },
+      {
+        "description": "Deliver mode step 9 continued to Merge on an unsupplied result, then said to continue to Merge only with a confirmed ready Review State, so the two bullets contradicted each other for a kind supplying no review.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/e42cecbcb253bf372a4cd2a3ca58a337dbfa5510"
+      }
+    ]
+  }
+]
