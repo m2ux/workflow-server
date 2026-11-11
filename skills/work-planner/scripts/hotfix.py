@@ -6,8 +6,7 @@ kind to the script registry, kinds.py: each operation of its Kind interface, wit
 results that interface states, reads a hot-fix's tag and the letter it opens with, labels, body
 faults, target, the pull request body sections carrying a Target: line, board status, linking and
 delivering pull requests, the state of its delivery unit and the agent review rule for its pull
-request. The module defines no other public name, and only
-the registry imports it.
+request. The module defines no other public name, and only the registry imports it.
 """
 import re
 
