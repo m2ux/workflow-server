@@ -118,6 +118,11 @@ Ranked most harmful first. Items covered by F14 are listed under [Settled: Work 
 8. **#1691 guard tests** (criterion 3). Optional.
    - **Fix.** Drop the two AST scan tests that block a second copy of the shared patterns.
 
+## Delivery
+
+- **F14.** The [settled Work Kind revert](#settled-work-kind), against `workspace`.
+- **F15.** Remediation items 1–8, as one hot-fix against `workspace`. It is raised once F14 merges, because item 6 depends on it.
+
 ## Coupling
 
 - **Items 1, 2, 3 (#1694) and 4 land together.** `test_reading_routes.py` and `test_unit_dispatch.py:365` call the before-use check, and rules.json and `guidelines.md` name it. The Fields-candidate removal goes with `solid/boundary-review`.
