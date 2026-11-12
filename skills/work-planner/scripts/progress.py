@@ -54,8 +54,7 @@ initiative and follows the epic groups of each section: under Completed when Don
 window, with each delivering pull request merged in the window; under In progress when In Progress
 or In Review, with each open delivering pull request; under Next when Ready. Its delivering pull
 requests are those its kind's delivering_pulls finds; one shown under Completed or In progress whose
-kind's target names no branch has none, and is named on stderr. The key explains each registered
-kind's letter by the kind's name.
+kind's target names no branch has none, and is named on stderr. The key names F as a hot-fix.
 --initiative leaves issues of a registered kind out.
 
 The window opens at the start of --since in local time, by default a week before today.
@@ -84,7 +83,7 @@ from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 
 from board import Board, Resolution, linked_issue, tags
-from kinds import KINDS, interface, kind_of
+from kinds import interface, kind_of
 from statuses import Key, label, pages, status_of
 from format import LINK, cell, id_cell, phrase, title_name, untagged
 from priority import execution_key
@@ -103,10 +102,8 @@ def week_before(today: date) -> date:
 
 
 def key_lines() -> list[str]:
-    """The key to the reference letters, each registered kind's letter by its name, and the marks."""
-    letters = ['I=Initiative', 'E=Epic', 'W=Work Item',
-               *(f'{interface(kind).letter()}={kind.capitalize()}' for kind in KINDS)]
-    return ['*Key*', ', '.join(letters),
+    """The key to the reference letters and the marks."""
+    return ['*Key*', 'I=Initiative, E=Epic, W=Work Item, F=Hot-fix',
             f'{DONE} done · {WORKING} in progress · {REVIEW} in review · {DRAFT} draft · {READY} ready']
 
 

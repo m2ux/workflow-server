@@ -32,7 +32,7 @@ The skill is an object model in prose: an artifact owns state and callable capab
 - **Required context.**
   Common context serves every entry it governs; context for a selected capability or branch is linked at its point of use through the smallest complete section. A union of cross-file links establishes no requirement by itself.
 - **Before-use ordering.**
-  The required-before-use graph contains only explicit prerequisite edges, each naming its entry condition, required content and reason. It must be acyclic for every supported entry path. Ordinary field references and intentional execution retries impose no prerequisite ordering. A selected link bounds the read; only an explicit execution call runs a linked procedure. Reuse complete context already received at the same revision.
+  Only an explicit prerequisite orders what a reader holds before use, and no prerequisite chain returns to its start. An ordinary link, a field reference or an execution retry orders nothing.
 
 ### Dependency Inversion
 
@@ -54,15 +54,6 @@ The skill is an object model in prose: an artifact owns state and callable capab
   Fields define values, types, permitted states and invariants. Conditional constraints and schema examples are valid field content.
 - **Callable transformations.**
   Derivation, state or membership selection, evidence gathering, execution, refusals, retries and continuation belong in callable operations, with invocations in named Commands specifications. Declarative prose that derives a caller's action from evidence is behavior under this boundary.
-- **Boundary review.**
-  For an ownership audit, classify every Fields section in the audited scope by its supplied evidence, produced result, owning subject and disposition. Candidate diagnostics identify the source and possible owner; semantic review distinguishes a transformation from an invariant. A conditional word alone establishes no violation.
-
-### Policy Review
-
-- **Matched contexts.**
-  Compare policy statements against identical inputs and entry conditions, recording pinned source, current prose, observed outcomes and the owning contract. Different contexts may legitimately produce different outcomes. Record competing interpretations and obtain confirmation before a policy-changing fix.
-- **Evidence controls.**
-  Use actual captured data and observable decisions to distinguish policy outcomes. Retain valid enums, conditional invariants, result shapes, literal examples, ordinary definition cycles and bounded retries as controls. Keywords or copied instruction strings alone establish neither a breach nor a passing behavior.
 
 ## Titles
 

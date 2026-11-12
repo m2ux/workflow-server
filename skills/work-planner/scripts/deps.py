@@ -7,15 +7,11 @@ Usage:
 An argument naming a row is that row's work item, a file whose declaration line names each file
 its implementation changes, separated by commas:
   **Component:** main:src/bundle/assembly.ts, main:src/bundle/emit.ts
-A code span is read whole and any other word without its brackets and trailing punctuation;
-each is an entry when it names a branch:path whose branch opens with a letter, or a bare path
-ending in /, carrying a * or ending in a file extension; a bare word holding a / is a path only
-where no entry names a branch. The prose, commas, semicolons and "and" between entries are not.
-Each declared file is read without its link, a wrapping code span, enclosing brackets, trailing
-punctuation or a leading ./, so two spellings of one path are one file. A value still carrying
-the template's {{…}} placeholder declares none. Each entry is one file: an entry ending in /,
-carrying a glob, or naming a directory under the working directory
-declares a directory, which is a problem.
+Each entry is a branch:path holding no whitespace, whose branch opens with a letter, and any other
+entry is a problem. Each declared file is read without its link, a wrapping code span or a
+trailing full stop, so two spellings of one path are one file. A value still carrying the template's
+{{…}} placeholder declares none. Each entry is one file: an entry ending in /, carrying a glob, or
+naming a directory under the working directory declares a directory, which is a problem.
 
 Each remaining file is an epic issue body holding the agent-engineering Work Breakdown table:
   | Task | Description | Coverage | Depends on | Joins | Lane | Done |
@@ -36,7 +32,7 @@ A dependency is one of:
 Markdown links are read by their text, so [E01:W02](https://…/issues/937) is E01:W02.
 
 Problems (exit status 1): a Task cell naming a malformed or a second, different task id,
-unknown references, a work item declaring no file or naming no row,
+unknown references, a work item declaring no file, an entry that is no branch:path or naming no row,
 an unreadable work item, a task row naming an epic rather than the rows it consumes,
 a task depending on itself or a later task in its epic,
 an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
@@ -81,9 +77,6 @@ EXTERNAL = re.compile(r'#\d+|I\d\d:E\d\d(?::W\d\d)?')
 INITIATIVE_EPIC = re.compile(r'#\d+|I\d\d:E\d\d')
 CRITERION = re.compile(r'AC\d+')
 BRANCH = re.compile(r'^([^:/\s]+):(?=\S)')
-TOKEN = re.compile(r'`[^`]*`|[^\s`]+')
-EXTENSION = re.compile(r'\w\.\w+$')
-ABBREVIATION = re.compile(r'(?:[A-Za-z]\.)+[A-Za-z]')
 MAX_CHAINS = 10
 UNIT_BOUND = 6
 
@@ -162,18 +155,17 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict[str, set[str]],
 
 
 def normalise(entry: str) -> str:
-    """One spelling of a declared file: the link text, without a wrapping code span, a trailing
-    full stop or a leading `./`, so two spellings of one path are one file."""
+    """One spelling of a declared file: the link text, without a wrapping code span or a trailing
+    full stop, so two spellings of one path are one file."""
     text = LINK.sub(r'\1', entry).strip()
     if text.endswith('.'):
         text = text[:-1].strip()
-    text = text.strip('`').strip()
-    return text[2:] if text.startswith('./') else text
+    return text.strip('`').strip()
 
 
 def read_components(items: dict[str, Path]) -> tuple[dict[str, tuple[str, ...]], list[str]]:
     """The files each work item's Component line declares, keyed by its row, and the items declaring
-    none or a directory."""
+    none, an entry that is no branch:path, or a directory."""
     components, problems = {}, []
     for key, path in items.items():
         try:
@@ -182,10 +174,14 @@ def read_components(items: dict[str, Path]) -> tuple[dict[str, tuple[str, ...]],
             problems.append(f'{key}: work item {path} is unreadable ({error.strerror})')
             continue
         value = next((found[1] for found in map(COMPONENT.match, map(str.strip, lines)) if found), '')
-        declared = tuple(dict.fromkeys(entries(LINK.sub(r'\1', value))))
+        declared = tuple(dict.fromkeys(
+            entry for entry in map(normalise, LINK.sub(r'\1', value).split(',')) if entry))
+        unbranched = [entry for entry in declared if not on_branch(entry)]
         directories = [entry for entry in declared if is_directory(entry)]
         if not declared or PLACEHOLDER.search(value):
             problems.append(f'{key}: work item declares no file')
+        elif unbranched:
+            problems += [f'{key}: file {entry} is no branch:path entry' for entry in unbranched]
         elif directories:
             problems.append(f'{key}: work item declares directory {", ".join(directories)}; '
                             'each entry is one file')
@@ -194,36 +190,11 @@ def read_components(items: dict[str, Path]) -> tuple[dict[str, tuple[str, ...]],
     return components, problems
 
 
-def entries(value: str) -> list[str]:
-    """The declared files in a Component value, in order. A code span is read whole, spaces and
-    all, and any other word once enclosing brackets, quotes and trailing punctuation are stripped;
-    each is an entry when it names a file. The words between entries, and the commas, semicolons
-    and `and` separating them, are prose."""
-    words = []
-    for token in TOKEN.findall(value):
-        word = token.strip('`').strip() if token.startswith('`') else token.lstrip('(["\'').rstrip('.,;:!?)]"\'')
-        words.append(normalise(word))
-    branched = any(map(on_branch, words))
-    return [word for word in words if on_branch(word) or names_path(word, branched)]
-
-
 def on_branch(word: str) -> bool:
-    """Whether a word is a `branch:path` entry, its branch opening with a letter, so a ratio such as
-    `3:1` is none."""
+    """Whether a word is a `branch:path` entry holding no whitespace, its branch opening with a letter,
+    so a ratio such as `3:1` or a path followed by prose is none."""
     branch = BRANCH.match(word)
-    return bool(branch) and branch[1][0].isalpha()
-
-
-def names_path(word: str, branched: bool) -> bool:
-    """Whether a bare word is a path entry: one ending in `/`, carrying a `*` or ending in a file
-    extension, other than an abbreviation such as `e.g.`. Any other word holding a `/` is a path in
-    a value declaring every entry bare, and prose such as `reads/writes` beside `branch:path`
-    entries."""
-    if not word or BRANCH.match(word):
-        return False
-    if word.endswith('/') or '*' in word or EXTENSION.search(word) and not ABBREVIATION.fullmatch(word):
-        return True
-    return '/' in word and not branched
+    return bool(branch) and branch[1][0].isalpha() and not any(char.isspace() for char in word)
 
 
 def is_directory(entry: str) -> bool:

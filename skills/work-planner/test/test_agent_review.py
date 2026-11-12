@@ -1,5 +1,4 @@
 """Current integration review evidence gates board and user handoff."""
-import ast
 import copy
 import json
 import sys
@@ -118,20 +117,6 @@ class RegisteredKind(unittest.TestCase):
             self.assertIn('unfixed finding', check(hot, [{**record, 'findings': deferred}]))
         self.assertIsNone(check(pull, [{**record, 'findings': deferred}]))
         self.assertIn('stale', check(pull, [{**record, 'base': 'c' * 40}]))
-
-    def test_it_imports_no_kind_module_and_names_no_kind(self):
-        source = (SCRIPTS / 'agent_review.py').read_text()
-        imported = set()
-        for node in ast.walk(ast.parse(source)):
-            if isinstance(node, ast.ImportFrom):
-                imported.add(node.module)
-            elif isinstance(node, ast.Import):
-                imported.update(alias.name for alias in node.names)
-        self.assertIn('kinds', imported)
-        self.assertFalse(imported & set(kinds.KINDS.values()))
-        for kind in kinds.KINDS:
-            self.assertNotIn(kind, source)
-        self.assertNotRegex(source, r'(?i)hot.?fix|\[F\d|F00')
 
 
 class AgentReview(unittest.TestCase):

@@ -70,22 +70,8 @@ link naming the next operation. A selection link points wherever its target
 sits; a prerequisite citation names a section the reader must already hold,
 so its target belongs in another file.
 
-Before-use ordering is a third relation, of explicit requirements alone: a
-`Read ... first.` or `Read ... before ...` sentence, a link of a
-Prerequisites section, and a declared preamble link to another file. Reading
-a whole file takes every requirement it states; reading a heading takes its
-section's and the file introduction's. The graph those reads reach is
-acyclic, and a cycle is reported once with a closed witness naming the line
-holding each requirement. An ordinary link, a field reference and an
-execution call, retried or not, impose no order.
-
 A declared contract section holds values. A numbered step, a numbered
 heading or a call verb on an operation link in it executes, and is reported.
-Prose deriving a caller's action from evidence is behavior too, but no
-lexical test separates it from a conditional invariant, so a field whose
-prose has an actor or an instruction perform a behavior, across two kinds of
-behavior, is listed as a review candidate with its clauses and possible
-owner. A candidate fails nothing; semantic review decides it.
 
 The skill-wide checks read what a skill declares rather than guessing from
 its prose. A mode reaches command specifications by their names; HTML command
@@ -96,11 +82,6 @@ states one convention twice. A specification sending GraphQL states its REST
 gap, and Projects (classic) is reported wherever it stands. Each labelled
 rule of a guide names, in the `rules.json` beside it, the finding kinds or
 the review that decide it, and the kinds are those this check registers.
-
-A skill whose `scripts/kinds.py` maps each kind of work to its module in a
-literal `KINDS` dict registers those kinds, and a general script reaches a
-kind's module only through that registry, so a script importing a kind
-module is reported.
 
 A skill's SKILL.md is its compilation entry. A link to it from a file it
 reaches forms a cycle that pulls the entry into its own bundle, so a link from
@@ -124,7 +105,6 @@ not read.
 """
 
 import argparse
-import ast
 import difflib
 import html
 import json
@@ -213,14 +193,10 @@ KINDS = (
     'command contract links', 'operation link role', 'fenced invocation in HTML model', 'malformed HTML invocation',
     'invocation outside command specification', 'invocation argument contract', 'unescaped HTML in invocation', 'operation call verb',
     'unwrapped shell invocation', 'duplicate command parameter prose', 'redundant command wrapper', 'repeated procedure title',
-    'executable step in Fields', 'before-use cycle',
-    'kind module imported outside the registry',
+    'executable step in Fields',
     'link to the entry point',
 )
-# Review candidates point semantic review at a source without failing the
-# check, since no lexical signal settles whether a field derives or constrains.
-CANDIDATES = ('Fields behavior candidate',)
-OPERATIONS = KINDS + CANDIDATES + ('review',)
+OPERATIONS = KINDS + ('review',)
 
 
 def anchor_of(text):
@@ -1559,324 +1535,6 @@ def fields_steps(path, lines, fenced, headings, entry):
                     yield index, f'call: {verb[1]} {match[0]}'
 
 
-# The behavior a field's prose can describe, by the stage of a transformation
-# it performs: acquiring evidence, writing state, or reporting and routing.
-BEHAVIORS = {
-    'acquire': ('read', 'reads', 'fetch', 'fetches', 'fetched', 'query', 'queries', 'queried',
-                'gather', 'gathers', 'gathered', 'collect', 'collects', 'collected', 'retrieve',
-                'retrieves', 'retrieved', 'load', 'loads', 'loaded', 'inspect', 'inspects', 'inspected',
-                'scan', 'scans', 'scanned'),
-    'write': ('add', 'adds', 'added', 'remove', 'removes', 'removed', 'delete', 'deletes', 'deleted',
-              'drop', 'drops', 'dropped', 'set', 'sets', 'write', 'writes', 'written', 'save', 'saves',
-              'saved', 'move', 'moves', 'moved', 'create', 'creates', 'created', 'update', 'updates',
-              'updated', 'assign', 'assigns', 'assigned', 'mark', 'marks', 'marked', 'record', 'records',
-              'recorded', 'apply', 'applies', 'applied', 'place', 'places', 'placed', 'clear', 'clears',
-              'cleared'),
-    'route': ('report', 'reports', 'reported', 'refuse', 'refuses', 'refused', 'reject', 'rejects',
-              'rejected', 'exit', 'exits', 'exited', 'warn', 'warns', 'warned', 'print', 'prints',
-              'printed', 'emit', 'emits', 'emitted', 'stop', 'stops', 'stopped', 'halt', 'halts',
-              'halted', 'abort', 'aborts', 'aborted', 'retry', 'retries', 'retried', 'resume',
-              'resumes', 'resumed', 'skip', 'skips', 'skipped'),
-}
-BEHAVIOR_FAMILY = {word: family for family, words in BEHAVIORS.items() for word in words}
-# Who performs a behavior: a process or participant, never the value itself.
-ACTORS = ('run', 'caller', 'check', 'checker', 'delivery', 'dispatch', 'sync', 'script', 'tool',
-          'session', 'mode', 'command', 'operation', 'jurisdiction', 'reader', 'agent', 'procedure',
-          'survey', 'planner', 'writer', 'reviewer', 'coordinator', 'worker')
-# A singular actor before a bare verb form is a compound noun, such as a
-# command exit status or a delivery record, so it performs nothing.
-AGENTIVE = re.compile(r'(?<![\w-])(?:' + '|'.join(ACTORS) + r')(s?)'
-                      r'(\s+(?:also|then|never|only|first|still|does not|do not|must|may|can|cannot|will|should))?'
-                      r'\s+(' + '|'.join(sorted(BEHAVIOR_FAMILY, key=len, reverse=True)) + r')(?![\w-])', re.I)
-BARE = {word for word in BEHAVIOR_FAMILY if not word.endswith(('s', 'ed', 'en'))}
-PARTICIPLES = {word for word in BEHAVIOR_FAMILY if word.endswith(('ed', 'en')) or word in ('read', 'set')}
-PASSIVE = re.compile(r'(?<![\w-])(?:is|are|was|were|be|been|being)(?:\s+(?:then|also|never|only|first|not|still))?'
-                     r'\s+(' + '|'.join(sorted(PARTICIPLES, key=len, reverse=True)) + r')(?![\w-])', re.I)
-# A state change a sentence derives: retaining a value states no change, and a
-# bare form after an article or infinitive marker names one rather than making it.
-TRANSITION = re.compile(r'(?<![\w-])(?<!\bto )(becom(?:e|es|ing)|became|revert(?:s|ed)|(?:falls|fell) back'
-                        r'|return(?:s|ed) to|mov(?:es|ed) to|switch(?:es|ed) to)(?![\w-])', re.I)
-LINK_TEXT = re.compile(r'\[([^\]]*)\]\(' + LINK_DESTINATION + r'\)')
-LIST_MARK = re.compile(r'^\s*(?:[-*+]|\d+[.)])\s+')
-
-
-def behavior_clauses(lines, fenced, commands, start, end):
-    """Each sentence of a field's prose describing behavior, with its line, its
-    families and whether an actor or an instruction performs it. Tables state a
-    schema and specimens state no behavior, so neither is read."""
-    for index in range(start + 1, end):
-        line = lines[index]
-        if fenced[index] or index in commands or not line.strip() or line.lstrip().startswith(('|', '#', '<')):
-            continue
-        text = LINK_TEXT.sub(lambda match: match[1], CODE_SPAN.sub('X', line))
-        text = LIST_MARK.sub('', text).replace('**', '')
-        for sentence in re.split(r'(?<=[.;:!?])\s+', text.strip()):
-            families, agentive = set(), False
-            for match in AGENTIVE.finditer(sentence):
-                if not match[1] and not match[2] and match[3].lower() in BARE:
-                    continue
-                families.add(BEHAVIOR_FAMILY[match[3].lower()])
-                agentive = True
-            first = sentence.split(' ', 1)[0]
-            if first[:1].isupper() and first.lower() in BEHAVIOR_FAMILY and not first.endswith(('s', 'ed', 'en')):
-                families.add(BEHAVIOR_FAMILY[first.lower()])
-                agentive = True
-            families.update(BEHAVIOR_FAMILY[match[1].lower()] for match in PASSIVE.finditer(sentence))
-            if TRANSITION.search(sentence):
-                families.add('transition')
-            if families:
-                yield index, sentence, agentive, families
-
-
-def fields_candidates(path, root, structures=None):
-    """Fields behavior candidates: a field whose prose has an actor or an
-    instruction perform a behavior, and spans two kinds of behavior, gathering,
-    deciding a transition, writing or routing, reads as a transformation. A
-    conditional constraint names no actor performing anything, and no lexical
-    test settles the rest, so each candidate carries its clauses as evidence for
-    semantic review and its file's operations as the possible owner."""
-    entry = contract(path, {} if structures is None else structures)
-    if not (entry or {}).get('contracts'):
-        return []
-    lines, fenced, headings = scan(path)
-    commands = scan_blocks(lines).html_lines
-    found = []
-    for start, end in contract_sections(lines, headings, entry):
-        for index, level, title in headings:
-            if not (start < index < end and level == 3):
-                continue
-            clauses = list(behavior_clauses(lines, fenced, commands, index,
-                                            heading_end(headings, index, level, end)))
-            families = set().union(*(clause[3] for clause in clauses)) if clauses else set()
-            if not any(clause[2] for clause in clauses) or len(families) < 2:
-                continue
-            evidence = '; '.join(f'line {line + 1} {", ".join(sorted(kinds))}: "{sentence[:80]}"'
-                                 for line, sentence, _, kinds in clauses)
-            owner = f'{named(path, root)} {entry.get("procedures", "Operations")}'
-            found.append((str(named(path, root)), index + 1, CANDIDATES[0],
-                          f'{title.strip()} — {evidence}; possible owner: {owner}'))
-    return found
-
-
-BEFORE_USE = re.compile(r'\bRead (?:the )?((?:\[[^\]]+\]\([^)]+\)(?:,\s*(?:and\s+)?|\s+and\s+)?)+)'
-                        r'(?:\s+whole)?\s+(first\b(?!-)|before\s[^.]*(?=\.))')
-
-
-@dataclass(frozen=True)
-class Requirement:
-    """One explicit before-use edge: the reader holds the target before using
-    the section holding the source line."""
-    source: Path
-    line: int
-    target: Path
-    anchor: str
-    condition: str
-
-
-def requirements(path, entry=None):
-    """Each explicit before-use requirement a file states: a `Read ... first`
-    or `Read ... before ...` sentence, a link of a Prerequisites section, and
-    a declared preamble link to another file. An ordinary link, a field
-    reference and an execution call impose no order, and a specimen states none.
-    A requirement on a section of the same file whose read span holds the
-    requiring line is no requirement: that read already holds it."""
-    lines, fenced, headings = scan(path)
-    commands = scan_blocks(lines).html_lines
-    intro = next((index for index, level, _ in headings if level == 2), len(lines))
-    listed = set()
-    for start, level, title in headings:
-        if level == 2 and title.strip() == 'Prerequisites':
-            listed.update(range(start + 1, heading_end(headings, start, level, len(lines))))
-    preamble = [target for target in (entry or {}).get('preamble', ()) if not target.startswith('#')]
-    found = []
-    for index, line in enumerate(lines):
-        if fenced[index] or index in commands:
-            continue
-        text = CODE_SPAN.sub('', line)
-        held = [(target, 'Prerequisites') for target in LINK.findall(text)] if index in listed else []
-        held += [(target, match[2]) for match in BEFORE_USE.finditer(text) for target in LINK.findall(match[1])]
-        if index < intro:
-            held += [(target, 'procedure preamble') for target in LINK.findall(text) if target in preamble]
-        for target, condition in held:
-            if '://' in target or target.startswith('mailto:') or PLACEHOLDER.search(target):
-                continue
-            name, _, fragment = target.partition('#')
-            destination = (path.parent / name).resolve() if name else path.resolve()
-            if fragment and destination == path.resolve() and index in read_span(path, anchor_of(fragment)):
-                continue
-            requirement = Requirement(path, index, destination, anchor_of(fragment) if fragment else '', condition)
-            if requirement not in found:
-                found.append(requirement)
-    return found
-
-
-def read_span(path, anchor):
-    """The lines a read of one node takes: a whole file, or a heading's section
-    with the file's introduction. An unresolved node takes nothing."""
-    if not path.is_file() or path.suffix != '.md':
-        return set()
-    lines, _, headings = scan(path)
-    if not anchor:
-        return set(range(len(lines)))
-    intro = next((index for index, level, _ in headings if level == 2), len(lines))
-    for start, level, title in headings:
-        if anchor_of(title) == anchor:
-            return set(range(intro)) | set(range(start, heading_end(headings, start, level, len(lines))))
-    return set()
-
-
-def before_use_graph(paths, structures=None):
-    """The before-use graph reachable from each whole file: each node, a file
-    and anchor, with the requirements its read takes. A heading read takes its
-    own section's requirements and its file introduction's, so a bounded read
-    of one section leaves its siblings' requirements out."""
-    structures = {} if structures is None else structures
-    stated = {}
-    graph = {}
-    pending = [(path, '') for path in paths]
-    while pending:
-        node = pending.pop()
-        if node in graph:
-            continue
-        path, anchor = node
-        if path not in stated:
-            stated[path] = (requirements(path, contract(path, structures))
-                            if path.is_file() and path.suffix == '.md' else [])
-        span = read_span(path, anchor)
-        graph[node] = [edge for edge in stated[path] if edge.line in span]
-        pending += [(edge.target, edge.anchor) for edge in graph[node]]
-    return graph
-
-
-def before_use_cycles(graph):
-    """One closed witness for each strongly connected set of nodes holding a
-    cycle: the requirements from its first node back to it, shortest first."""
-    index, low, stack, on, components = {}, {}, [], set(), []
-
-    def connect(node):
-        index[node] = low[node] = len(index)
-        stack.append(node)
-        on.add(node)
-        for edge in graph.get(node, ()):
-            target = (edge.target, edge.anchor)
-            if target not in index:
-                connect(target)
-                low[node] = min(low[node], low[target])
-            elif target in on:
-                low[node] = min(low[node], index[target])
-        if low[node] == index[node]:
-            component = set()
-            while True:
-                member = stack.pop()
-                on.discard(member)
-                component.add(member)
-                if member == node:
-                    break
-            components.append(component)
-
-    for node in sorted(graph, key=lambda item: (str(item[0]), item[1])):
-        if node not in index:
-            connect(node)
-    witnesses = []
-    for component in components:
-        start = min(component, key=lambda item: (str(item[0]), item[1]))
-        paths = {start: []}
-        queue = [start]
-        while queue:
-            node = queue.pop(0)
-            for edge in graph.get(node, ()):
-                target = (edge.target, edge.anchor)
-                if target == start:
-                    witnesses.append([*paths[node], (node, edge)])
-                    queue = []
-                    break
-                if target in component and target not in paths:
-                    paths[target] = [*paths[node], (node, edge)]
-                    queue.append(target)
-    return sorted(witnesses, key=lambda steps: (str(steps[0][1].source), steps[0][1].line))
-
-
-def before_use_findings(files, structures=None):
-    """A before-use cycle for each closed witness, at its first requirement's
-    line, naming every node and the line holding the requirement leaving it."""
-    roots = dict(files)
-    graph = before_use_graph([path for path, _ in files], structures)
-    found = []
-    for steps in before_use_cycles(graph):
-        first = steps[0][1]
-        root = roots.get(first.source, first.source.parent)
-
-        def label(node):
-            return str(named(node[0], root)) + (f'#{node[1]}' if node[1] else '')
-        witness = ' -> '.join(f'{label(node)}:{edge.line + 1}' for node, edge in steps)
-        found.append(finding(first.source, root, first.line, 'before-use cycle',
-                             f'{witness} -> {label(steps[0][0])}'))
-    return found
-
-
-REGISTRY = Path('scripts/kinds.py')
-
-
-def kind_modules(skill):
-    """The module of each kind of work a skill's registry maps in its literal
-    `KINDS` dict. A skill without a registry registers none; a registry that is
-    no literal dict of names is refused."""
-    registry = skill / REGISTRY
-    if not registry.is_file():
-        return set()
-    try:
-        kinds = next((ast.literal_eval(node.value) for node in ast.parse(registry.read_text()).body
-                      if isinstance(node, ast.Assign)
-                      and any(isinstance(target, ast.Name) and target.id == 'KINDS' for target in node.targets)),
-                     None)
-    except (SyntaxError, ValueError) as error:
-        raise ValueError(f'{registry}: {error}') from error
-    if not isinstance(kinds, dict) or not all(isinstance(key, str) and isinstance(value, str)
-                                              for key, value in kinds.items()):
-        raise ValueError(f'{registry}: maps no kind of work to its module in a literal KINDS dict')
-    return set(kinds.values())
-
-
-def kind_imports(path, modules):
-    """Each line of a Python script importing one of the modules, by an import
-    statement or by `import_module` with the module's name."""
-    try:
-        tree = ast.parse(path.read_text())
-    except SyntaxError:
-        return {}
-    found = {}
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Import):
-            names = [alias.name for alias in node.names]
-        elif isinstance(node, ast.ImportFrom):
-            names = [node.module or '']
-        elif (isinstance(node, ast.Call) and getattr(node.func, 'id', getattr(node.func, 'attr', '')) == 'import_module'
-              and node.args and isinstance(node.args[0], ast.Constant)):
-            names = [str(node.args[0].value)]
-        else:
-            continue
-        for name in names:
-            if name.split('.')[0] in modules:
-                found.setdefault(node.lineno - 1, name)
-    return found
-
-
-def kind_findings(skill, root):
-    """Kind check: a script imports no kind module, which only the registry
-    reaches. A kind's own module and the registry are exempt."""
-    modules = kind_modules(skill)
-    if not modules:
-        return []
-    exempt = {(skill / REGISTRY).resolve(), *((skill / 'scripts' / f'{module}.py').resolve() for module in modules)}
-    found = []
-    for path in sorted((skill / 'scripts').rglob('*.py')) if (skill / 'scripts').is_dir() else []:
-        if path.resolve() in exempt or 'fixtures' in path.relative_to(skill).parts:
-            continue
-        for index, name in sorted(kind_imports(path, modules).items()):
-            found.append(finding(path, root, index, 'kind module imported outside the registry', name))
-    return found
-
-
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('roots', nargs='+', help='skill folders to check')
@@ -1925,19 +1583,14 @@ def main(argv=None):
             findings += interfaces(path, root, declared)
         for guide, root in guides.items():
             findings += undecided_rules(guide, root)
-        findings += before_use_findings(files, declared)
-        for root in roots:
-            findings += kind_findings(root, root.parent)
-        candidates = [candidate for path, root in files for candidate in fields_candidates(path, root, declared)]
     except ValueError as error:
         print(f'unreadable declaration — {error}')
         return 1
 
     if not options.quiet:
-        for where, line, kind, detail in findings + candidates:
+        for where, line, kind, detail in findings:
             print(f'{where}:{line}: {kind}' + (f' — {detail}' if detail else ''))
-    print(f'{len(files)} files checked, {len(findings)} findings'
-          + (f', {len(candidates)} review candidates' if candidates else ''))
+    print(f'{len(files)} files checked, {len(findings)} findings')
     return 1 if findings else 0
 
 

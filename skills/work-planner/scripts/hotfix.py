@@ -3,18 +3,17 @@
 An issue whose title opens with [F00] is a hot-fix, and it carries the priority: 10 label. Its
 Overview names the long-lived branch it fixes in one Target: line. This module supplies the hot-fix
 kind to the script registry, kinds.py: each operation of its Kind interface, with the inputs and
-results that interface states, reads a hot-fix's tag and the letter it opens with, labels, body
-faults, target, the pull request body sections carrying a Target: line, board status, linking and
-delivering pull requests, the state of its delivery unit and the agent review rule for its pull
-request. The module defines no other public name, and only the registry imports it.
+results that interface states, reads a hot-fix's tag, labels, body faults, target, the pull request
+body sections carrying a Target: line, board status, linking and delivering pull requests, the
+state of its delivery unit and the agent review rule for its pull request. The module defines no
+other public name, and only the registry imports it.
 """
 import re
 
 from kinds import OFF_BOARD, Key, Review, Tips
 from priority import label as _label
 
-_LETTER = 'F'
-_TAG = re.compile(rf'^\[({_LETTER}\d\d)\]')
+_TAG = re.compile(r'^\[(F\d\d)\]')
 _PRIORITY = 10
 _TARGET = re.compile(r'^Target: `([^`\s]+)`\s*$')
 _ITEM = re.compile(r'^(?:[-*+]|\d+[.)])\s')
@@ -25,11 +24,6 @@ def tag(item: dict) -> str | None:
     """The [F00] tag an issue's or pull request's title opens with, which makes an issue a hot-fix."""
     matched = _TAG.match(item.get('title') or '')
     return matched[1] if matched else None
-
-
-def letter() -> str:
-    """F, the letter a hot-fix's tag opens with."""
-    return _LETTER
 
 
 def labels(issue: dict) -> list[str]:

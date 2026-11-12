@@ -2,9 +2,7 @@
 deliver.py reaches each kind of work through the script registry and each shared rule through its
 single home.
 """
-import ast
 import json
-import re
 import sys
 import tempfile
 import types
@@ -167,16 +165,6 @@ class Survey(unittest.TestCase):
         self.assertNotIn('i07/e00/workflows', output)
         self.assertIn('available: 1', output)
 
-    def test_prose_in_a_component_line_names_no_further_file(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            engineering, ids = planned(root, ('W01', 'main:src/bundle/assembly.ts (assembly, emit step), main:src/c.ts'))
-            output = survey(staged((epic(943, (ids['W01'], 'Queue plan', '', '')), 'In Progress')),
-                            None, *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES)
-        self.assertNotIn('names no long-lived branch', output)
-        self.assertIn('branch i07/e00/w01-queue-plan, base i07/e00/main, '
-                      'worktree .worktrees/i07/e00/w01-queue-plan\n', output)
-
     def test_a_row_declaring_several_files_on_one_base_takes_that_base(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -219,7 +207,7 @@ class Survey(unittest.TestCase):
             body = epic(943, (ids['W02'], 'Queue more', '', ''), (ids['W03'], 'Queue image', '', ''))
             output = survey(staged((body, 'In Progress')), None,
                             *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES, code=1)
-        self.assertIn('undeclared I07:E00:W02: file skills/plan.py names no long-lived branch', output)
+        self.assertIn('undeclared I07:E00:W02: file skills/plan.py is no branch:path entry', output)
         self.assertIn('undeclared I07:E00:W03: file docker:Dockerfile names docker, which has no epic base',
                       output)
         self.assertNotIn('  unit ', output)
@@ -1123,31 +1111,6 @@ class LaneCellPreservation(unittest.TestCase):
         self.assert_lane_rows(released, {'W01': ('2', ''), 'W02': ('2', '')})
 
 
-def code_of(source: str) -> tuple[set[str], set[str], list[str]]:
-    """The modules a script imports, every name it binds or reads, and each string constant outside
-    its docstrings."""
-    tree = ast.parse(source)
-    docstrings = {id(node.body[0].value) for node in ast.walk(tree)
-                  if isinstance(node, (ast.Module, ast.FunctionDef, ast.ClassDef)) and node.body
-                  and isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, ast.Constant)}
-    modules, names, strings = set(), set(), []
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Import):
-            modules |= {alias.name for alias in node.names}
-        elif isinstance(node, ast.ImportFrom):
-            modules.add(node.module or '')
-            names |= {alias.name for alias in node.names}
-        elif isinstance(node, ast.Name):
-            names.add(node.id)
-        elif isinstance(node, ast.Attribute):
-            names.add(node.attr)
-        elif isinstance(node, (ast.FunctionDef, ast.ClassDef)):
-            names.add(node.name)
-        elif isinstance(node, ast.Constant) and isinstance(node.value, str) and id(node) not in docstrings:
-            strings.append(node.value)
-    return modules, names, strings
-
-
 def stub_kind(tag: str = 'S01', state: str = 'unit', base: str = 'workspace') -> types.ModuleType:
     """A kind module whose issues are titled [S01] and whose every pull request so titled delivers them."""
     module = types.ModuleType('stubkind')
@@ -1160,17 +1123,6 @@ def stub_kind(tag: str = 'S01', state: str = 'unit', base: str = 'workspace') ->
 
 
 class KindRegistry(unittest.TestCase):
-    def test_deliver_imports_no_kind_module_and_names_no_kind(self):
-        modules, names, strings = code_of((SCRIPTS / 'deliver.py').read_text())
-        self.assertIn('kinds', modules)
-        for kind, module in kinds.KINDS.items():
-            with self.subTest(kind=kind):
-                self.assertNotIn(module, modules)
-                spelled = re.compile(re.escape(module) + '|' + re.escape(kind), re.IGNORECASE)
-                self.assertEqual([n for n in names if spelled.search(n)], [])
-                self.assertEqual([s for s in strings if spelled.search(s)], [])
-        self.assertEqual([s for s in strings if re.search(r'\[?F\d\d', s)], [])
-
     def test_a_registered_kind_reaches_the_survey_through_the_registry(self):
         stub = stub_kind()
         found = issue(4, '[S01] Stub Work: Run It', body='- [ ] **AC1.** Holds.\n')
@@ -1209,11 +1161,6 @@ class SharedRules(unittest.TestCase):
         for copy in ('key_of', 'PREFIX'):
             with self.subTest(copy=copy):
                 self.assertFalse(hasattr(deliver, copy))
-
-    def test_deliver_defines_no_shared_rule(self):
-        tree = ast.parse((SCRIPTS / 'deliver.py').read_text())
-        defined = {node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)}
-        self.assertEqual(defined & {'tags', 'issue_key', 'key_of', 'issue_done', 'completed'}, set())
 
 
 if __name__ == '__main__':

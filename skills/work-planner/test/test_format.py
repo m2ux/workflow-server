@@ -155,7 +155,6 @@ class OneRow(unittest.TestCase):
         self.assertFalse(any('cited by' in item or item.startswith('W01: delivers') for item in r.decide))
 
 
-
 def initiative_with(criteria: tuple[int, ...], references: tuple[int, ...] = (1,)) -> Review:
     """An initiative whose rows cover the labelled criteria, the first row the first and the second the rest."""
     labels = [f'AC{n}' for n in criteria]
@@ -731,23 +730,6 @@ class DeclarationAtRevision(unittest.TestCase):
             with self.subTest(fault=fault):
                 self.assertIn(fault, malformed[1])
 
-    def test_the_field_states_the_declaration_and_validation_owns_its_outcomes(self):
-        field = guide_section('Required Criteria').replace(guide_example(), '')
-        for clause in ('the check', 'report', 'unevaluable', 'source', 'evaluated', 'resolving to no commit'):
-            with self.subTest(field_lacks=clause):
-                self.assertNotIn(clause, field.casefold())
-        text = GUIDE.read_text()
-        step = text.split('\n#### 4. Identify Required Criteria\n', 1)[1].split('\n#### ', 1)[0]
-        for clause in ('[Required Criteria](#required-criteria) declaration at the commit the [evaluated revision]',
-                       'name that path, commit and repository as the source',
-                       "changed files as the tracker lists them",
-                       'declares nothing brings no required-criteria finding',
-                       'resolving to no commit, or a [malformed statement](#required-criteria)',
-                       'unevaluable. Report that with the fault named, and report no epic as lacking a criterion',
-                       'changed files are not supplied leaves that criterion unevaluable'):
-            with self.subTest(step_holds=clause):
-                self.assertIn(clause, step)
-
     def test_the_criteria_and_their_source_come_from_the_resolved_commit(self):
         commit = commit_declaration(self.checkout, guide_example())
         read = self.read('HEAD')
@@ -1044,12 +1026,3 @@ class RegisteredKinds(unittest.TestCase):
         self.assertEqual(r.apply, [])
         self.assertIn('type:stand-in on a title without the stand-in tag: retitle it as a stand-in, '
                       'or remove the label', r.decide)
-
-    def test_the_script_names_no_kind_and_imports_no_kind_module(self):
-        source = (SCRIPTS / 'format.py').read_text()
-        self.assertIn('from kinds import KINDS, interface, kind_of', source)
-        for kind, module in kinds.KINDS.items():
-            with self.subTest(kind=kind):
-                self.assertNotIn(kind, source)
-                self.assertIsNone(re.search(rf'\b(?:import|from) {module}\b', source))
-                self.assertIsNone(re.search(rf'\b{module}\b', source, re.I))

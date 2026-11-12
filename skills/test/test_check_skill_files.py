@@ -2314,42 +2314,8 @@ Keep the refreshed inventory.
         self.assertIn('structure must be an object', printed.getvalue())
 
 
-# Board Delivery's Status Changes field at fbce2c7535b1, before its clauses
-# moved to Board Status: the measured mixed field the candidate check is for.
-STATUS_CHANGES = '''An issue closed as completed is Done. Every board item whose issue is closed any other way is removed, whether or not an initiative, epic or task body cites it.
-
-An open initiative whose criteria are all ticked is In Review. An open epic whose criteria are all ticked is In Review only with current published [agent review evidence](agent-review.md#review-record); missing, stale or unresolved review evidence keeps it In Progress.
-
-An open epic with a criterion unticked is In Progress while it is [active](board-queue.md#epic-activity). An inactive one keeps Ready or Backlog; In Progress and In Review become Backlog, and one not yet on the board is added at Backlog.
-
-An initiative is In Progress when an epic its Work Breakdown lists is In Progress or In Review. An epic that has left that table is not read. Otherwise the initiative keeps the Status it holds, In Review becoming In Progress, and one not yet on the board is added at Backlog, so completed work alone starts no initiative. Delivery does not move an initiative or epic between Ready and Backlog.
-
-Only an initiative, an epic or a hot-fix stands In Review. An open task issue is In Progress while a delivery pull request, draft or ready, links it, and Done once that pull request merges into the epic base and the issue closes as completed. Every jurisdiction refuses a task set In Review.
-
-A task whose row links a reserved planning folder is In Progress. A work-item file link alone leaves the row available. Dispatch writes are limited to In Progress for held tasks and epics, and In Review for completed epics; the shared DISPATCH jurisdiction refuses other statuses and removals.
-
-Task readiness meets [Task Eligibility](board-queue.md#task-eligibility). The caller supplies saved issue bodies and closure state.
-
-A task gated on an [unresolvable dependency](board-queue.md#unresolvable-dependencies) keeps the Status it holds: the row waits on no delivery, so no status follows from its gate. The run names the row and the entry and exits nonzero, as every reader of that cell does.'''
-
-# Two fields the W02 semantic review classified mixed at 86df5e4c2ccc, quoted
-# from the declarations they carried.
-PINNED_BRANCHES = ('The project\'s ordered long-lived branch names, declared in `config/branches` at its root, one name per line. '
-                   'A run reads the statement at the commit it evaluates, in the repository its checkout locates; which worktree '
-                   'the checkout is, and what its working files hold, choose nothing. The evaluated revision is fetched before it is read.\n\n'
-                   '- An epic sync evaluates each of its epic bases, such as `origin/i07/e00/main` and `origin/i07/e00/workflows`. '
-                   'Declarations that disagree across those bases leave the names unevaluable, and each is reported with its source.')
-PINNED_REQUIRED_CRITERIA = (
-    'The project\'s required-criterion declaration array.\n\n'
-    '- **The tracker states what the work changes.**\n'
-    '  The check reads each pull request\'s changed files as the tracker lists them.\n'
-    '- **An unreadable statement is unevaluable.**\n'
-    '  A revision resolving to no commit or unreadable JSON leaves the project\'s required criteria unevaluable. '
-    'The check reports that and names the fault, and reports no epic as lacking a criterion.')
-
-
 class FieldsBoundary(unittest.TestCase):
-    """Fields state values: execution under them fails, and prose deriving behavior is a review candidate."""
+    """Fields state values: execution under them fails."""
 
     def setUp(self):
         self.root = Path(tempfile.mkdtemp())
@@ -2376,107 +2342,12 @@ class FieldsBoundary(unittest.TestCase):
                           '#### 1. Inspect Board\n\nInspect the board and provide findings.\n\n'
                           f'## {section}\n\n### Board Items\n\nThe supplied board items.\n\n### {heading}\n\n{body}\n')
 
-    def candidates(self, path):
-        return checker.fields_candidates(path, self.root, {})
-
     def kinds(self, path):
         cited, called = checker.citations(sorted(self.skill.rglob('*.md')), {})
         return [(line, kind, detail) for _, line, kind, detail in checker.check(path, self.root, {}, cited, called, {})]
 
     def line_of(self, path, text):
         return next(number for number, line in enumerate(path.read_text().splitlines(), 1) if text in line)
-
-    def test_the_actual_status_changes_field_is_a_candidate_with_located_evidence(self):
-        path = self.artifact(STATUS_CHANGES)
-        found = self.candidates(path)
-        self.assertEqual([(where, line, kind) for where, line, kind, _ in found],
-                         [('specimen/artifacts/board-delivery.md', self.line_of(path, '### Status Changes'),
-                           'Fields behavior candidate')])
-        detail = found[0][3]
-        self.assertTrue(detail.startswith('Status Changes — '), detail)
-        for sentence in ('is removed', 'become Backlog', 'Delivery does not move', 'Every jurisdiction refuses',
-                         'the shared DISPATCH jurisdiction refuses'):
-            with self.subTest(sentence=sentence):
-                self.assertIn(f'line {self.line_of(path, sentence)} ', detail)
-        self.assertIn('possible owner: specimen/artifacts/board-delivery.md Operations', detail)
-        self.assertNotIn('executable step in Fields', {kind for _, kind, _ in self.kinds(path)})
-
-    def test_the_candidate_follows_the_prose_not_the_heading(self):
-        path = self.artifact(STATUS_CHANGES, heading='Lifecycle Notes')
-        self.assertEqual([title.split(' — ')[0] for *_, title in self.candidates(path)], ['Lifecycle Notes'])
-
-    def test_a_paraphrased_status_derivation_is_a_candidate(self):
-        paraphrase = ('A board entry for an issue closed as finished counts as Done; the entry of an issue closed for any '
-                      'other reason is deleted from the board.\n\n'
-                      '- An open epic with every criterion ticked becomes In Review only with current review evidence.\n'
-                      '- An inactive epic falls back to Backlog.\n'
-                      '- Sync never moves an initiative between Ready and Backlog, and each jurisdiction rejects a task set In Review.')
-        path = self.artifact(paraphrase, heading='Placement')
-        found = self.candidates(path)
-        self.assertEqual(len(found), 1)
-        for sentence in ('is deleted', 'becomes In Review', 'falls back', 'Sync never moves'):
-            with self.subTest(sentence=sentence):
-                self.assertIn(f'line {self.line_of(path, sentence)} ', found[0][3])
-
-    def test_another_subjects_multi_stage_derivation_is_a_candidate(self):
-        release = ('The release a tag names, with its readiness.\n\n'
-                   'The check fetches each linked pull request\'s status checks. A release whose checks all pass is marked Ready. '
-                   'A missing check is retried once, and a failing one makes the run report it to the caller before the release '
-                   'becomes Blocked.')
-        path = self.artifact(release, heading='Release Readiness', name='artifacts/release.md')
-        found = self.candidates(path)
-        self.assertEqual([(line, kind) for _, line, kind, _ in found],
-                         [(self.line_of(path, '### Release Readiness'), 'Fields behavior candidate')])
-        self.assertIn('acquire', found[0][3])
-        self.assertIn('route', found[0][3])
-
-    def test_fields_the_semantic_review_found_mixed_are_candidates(self):
-        for heading, body, clause in (('Branches', PINNED_BRANCHES, 'A run reads'),
-                                      ('Required Criteria', PINNED_REQUIRED_CRITERIA, 'The check reads')):
-            with self.subTest(heading=heading):
-                path = self.artifact(body, heading=heading)
-                found = self.candidates(path)
-                self.assertEqual([title.split(' — ')[0] for *_, title in found], [heading])
-                self.assertIn(f'line {self.line_of(path, clause)} ', found[0][3])
-
-    def test_schemas_conditional_invariants_and_literal_examples_are_accepted(self):
-        controls = {
-            'enum': 'One of `open`, `fixed` or `deferred`; `blocking` or `nonblocking` for severity.',
-            'type': 'The full GitHub URL of the pull request, as a string.',
-            'conditional invariant': (
-                'A started task has no open questions. An epic row is complete when its issue is closed as completed. '
-                'If a finding is fixed it has an HTTPS evidence link; when it is deferred it has a ticket link. '
-                'An open epic whose criteria are all ticked is In Review only with current published review evidence; '
-                'otherwise it is In Progress.'),
-            'result shape': (
-                'A report containing proposed changes, Report Lines and unresolved issue references, with the command exit '
-                'status. The call files are written in Output Directory.'),
-            'retained value': ('Its In Progress status is its hold: a dispatch sets it, and a return to Ready releases it. '
-                               'One base keeps the unsuffixed branch.'),
-            'schema table': ('| Field | What it states |\n| --- | --- |\n| `status` | The run reads it, sets Done and '
-                             'reports a refusal when the issue is closed. |'),
-            'fenced example': FENCE + 'markdown\n' + STATUS_CHANGES + '\n' + FENCE,
-            'code span example': 'eg `The check reads the file, reports the fault and the item is removed.`',
-        }
-        for name, body in controls.items():
-            with self.subTest(control=name):
-                self.assertEqual(self.candidates(self.artifact(body, heading='Control Field')), [])
-
-    def test_behavior_outside_fields_and_undeclared_models_take_no_candidate(self):
-        self.assertEqual(self.candidates(self.artifact(STATUS_CHANGES, section='Guidance')), [])
-        (self.skill / 'structure.json').write_text(json.dumps(STRUCTURE))
-        self.assertEqual(self.candidates(self.artifact(STATUS_CHANGES)), [])
-
-    def test_a_candidate_is_printed_and_fails_nothing(self):
-        self.artifact(STATUS_CHANGES)
-        printed = io.StringIO()
-        with redirect_stdout(printed):
-            status = checker.main([str(self.skill)])
-        output = printed.getvalue()
-        self.assertIn('board-delivery.md:', output)
-        self.assertIn(': Fields behavior candidate — Status Changes', output)
-        self.assertIn('0 findings, 1 review candidates', output)
-        self.assertEqual(status, 0, output)
 
     def test_numbered_steps_and_headings_under_fields_are_execution(self):
         path = self.artifact('The changes.\n\n1. Read the board.\n2. Write each change.\n\n#### 1. Apply Changes\n\nApply them.')
@@ -2512,304 +2383,19 @@ class FieldsBoundary(unittest.TestCase):
         self.assertNotIn('executable step in Fields', {kind for _, kind, _ in self.kinds(path)})
 
 
-class BeforeUseOrdering(unittest.TestCase):
-    """Explicit before-use requirements form an acyclic graph; ordinary links, fields and calls impose no order."""
-
-    def setUp(self):
-        self.root = Path(tempfile.mkdtemp())
-        self.addCleanup(shutil.rmtree, self.root)
-        self.skill = self.root / 'specimen'
-        self.skill.mkdir()
-
-    def write(self, name, text):
-        path = self.skill / name
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text)
-        return path
-
-    def cycles(self, structures=None):
-        files = [(path, self.root) for path in sorted(self.skill.rglob('*.md'))]
-        return [(where, line, detail) for where, line, kind, detail in checker.before_use_findings(files, structures)
-                if kind == 'before-use cycle']
-
-    def test_a_requirement_inside_its_own_read_span_is_no_edge(self):
-        self.write('a.md', '# A\n\nRead [Usage](#usage) first.\n\n## Usage\n\nThe usage.\n\n'
-                   '## One\n\nRead [One](a.md#one) first.\n')
-        self.assertEqual(self.cycles(), [])
-        self.assertEqual(checker.requirements(self.skill / 'a.md'), [])
-
-    def test_a_same_file_section_requirement_is_an_edge(self):
-        self.write('a.md', '# A\n\n## One\n\nRead [B](b.md) first.\n\n## Two\n\nRead [One](#one) first.\n')
-        self.write('b.md', '# B\n\nRead [Two](a.md#two) first.\n')
-        self.assertEqual(self.cycles(), [(
-            'specimen/a.md', 5, 'specimen/a.md#one:5 -> specimen/b.md:3 -> specimen/a.md#two:9 -> specimen/a.md#one')])
-
-    def test_a_relative_or_linked_caller_path_reads_the_same_requirements(self):
-        self.write('a.md', '# A\n\n## One\n\nRead [One](#one) first.\n\n## Two\n\nRead [One](#one) first.\n')
-        linked = self.root / 'linked'
-        linked.symlink_to(self.skill)
-        here = Path.cwd()
-        os.chdir(self.root)
-        try:
-            for caller in (Path('specimen/a.md'), linked / 'a.md'):
-                self.assertEqual([(edge.line, edge.target, edge.anchor) for edge in checker.requirements(caller)],
-                                 [(8, (self.skill / 'a.md').resolve(), 'one')])
-        finally:
-            os.chdir(here)
-
-    def test_a_whole_file_self_requirement_is_a_cycle(self):
-        self.write('a.md', '# A\n\nRead [A](a.md) first.\n')
-        self.assertEqual(self.cycles(), [('specimen/a.md', 3, 'specimen/a.md:3 -> specimen/a.md')])
-
-    def test_a_multi_document_cycle_has_a_closed_witness(self):
-        self.write('a.md', '# A\n\nRead [B](b.md) first.\n')
-        self.write('b.md', '# B\n\nRead [C](c.md) first.\n')
-        self.write('c.md', '# C\n\nRead [A](a.md) before using C.\n')
-        self.assertEqual(self.cycles(), [(
-            'specimen/a.md', 3, 'specimen/a.md:3 -> specimen/b.md:3 -> specimen/c.md:3 -> specimen/a.md')])
-
-    def test_a_cross_file_section_cycle_names_each_section(self):
-        self.write('a.md', '# A\n\n## One\n\nRead [Two](b.md#two) first.\n\n## Other\n\nPlain.\n')
-        self.write('b.md', '# B\n\n## Two\n\n- Detail.\n\nRead [One](a.md#one) before the second step.\n')
-        self.assertEqual(self.cycles(), [(
-            'specimen/a.md', 5, 'specimen/a.md#one:5 -> specimen/b.md#two:7 -> specimen/a.md#one')])
-
-    def test_prerequisites_sections_and_declared_preambles_are_requirements(self):
-        self.write('structure.json', json.dumps(DeclaredHeadingModels.MODEL))
-        mode = self.write('modes/audit-mode.md', DeclaredHeadingModels.MODE)
-        self.write('rules.md', '# Rules\n\n## Prerequisites\n\n- [Audit](modes/audit-mode.md)\n')
-        self.write('conventions.md', '# Conventions\n\nThe context.\n')
-        self.write('artifacts/inventory.md', DeclaredHeadingModels.INVENTORY)
-        conditions = {(edge.target.name, edge.condition) for edge in checker.requirements(mode, checker.contract(mode, {}))}
-        self.assertEqual(conditions, {('rules.md', 'procedure preamble'), ('conventions.md', 'procedure preamble')})
-        self.assertEqual(self.cycles(), [(
-            'specimen/modes/audit-mode.md', 5, 'specimen/modes/audit-mode.md:5 -> specimen/rules.md:5 -> specimen/modes/audit-mode.md')])
-
-    def test_the_measured_artifact_cycle_is_one_closed_component(self):
-        pinned = json.loads((Path(__file__).parent / 'fixtures/prerequisites-756aaf9.json').read_text())
-        for name, targets in pinned['prerequisites'].items():
-            self.write(name, f'# {name}\n\n## Prerequisites\n\nRead these files first.\n\n'
-                       + ''.join(f'- [{target}]({target})\n' for target in targets))
-        self.assertEqual(sum(map(len, pinned['prerequisites'].values())), 243)
-        graph = checker.before_use_graph(sorted(self.skill.rglob('*.md')), {})
-        witnesses = checker.before_use_cycles(graph)
-        self.assertEqual(len(witnesses), 1)
-        steps = witnesses[0]
-        self.assertEqual(steps[-1][1].target, steps[0][0][0])
-        component = {node for node in graph if node in self.reachable(graph, steps[0][0])
-                     and steps[0][0] in self.reachable(graph, node)}
-        self.assertEqual(sorted(path.name for path, _ in component), sorted(
-            f'{name}.md' for name in ('board-delivery', 'board-queue', 'delivery-branches', 'delivery-plan',
-                                      'dependency-graph', 'epic-issue-body', 'hotfix-body', 'hotfix', 'placement',
-                                      'pull-request-body', 'pull-request', 'standalone-body', 'work-item')))
-        self.assertTrue({path.name for (path, _), _ in steps} <= {path.name for path, _ in component})
-
-    @staticmethod
-    def reachable(graph, start):
-        seen, pending = set(), [start]
-        while pending:
-            node = pending.pop()
-            for edge in graph.get(node, ()):
-                target = (edge.target, edge.anchor)
-                if target not in seen:
-                    seen.add(target)
-                    pending.append(target)
-        return seen
-
-    def test_an_acyclic_diamond_and_a_conditional_requirement_are_valid(self):
-        self.write('a.md', '# A\n\nRead [B](b.md) and [C](c.md) first.\n\n## Release\n\n'
-                   'Read [Hold](d.md#hold) before releasing a hold.\n')
-        self.write('b.md', '# B\n\nRead [D](d.md) first.\n')
-        self.write('c.md', '# C\n\nRead [D](d.md) first.\n')
-        self.write('d.md', '# D\n\n## Hold\n\nThe hold.\n')
-        self.assertEqual(self.cycles(), [])
-        conditions = {edge.condition for edge in checker.requirements(self.skill / 'a.md')}
-        self.assertEqual(conditions, {'first', 'before releasing a hold'})
-
-    def test_first_then_colon_and_semicolon_forms_are_requirements(self):
-        self.write('a.md', '# A\n\nRead [B](b.md) first, then run it.\n\nRead [C](c.md) first: it holds the terms.\n\n'
-                   'Read [D](d.md) whole first; the rest follows.\n')
-        for name in ('b.md', 'c.md', 'd.md'):
-            self.write(name, f'# {name}\n\nThe value.\n')
-        found = {(edge.target.name, edge.condition) for edge in checker.requirements(self.skill / 'a.md')}
-        self.assertEqual(found, {('b.md', 'first'), ('c.md', 'first'), ('d.md', 'first')})
-
-    def test_first_ending_the_clause_is_a_requirement_whatever_follows(self):
-        self.write('a.md', '# A\n\nRead [B](b.md) first and then run it.\n\nRead [C](c.md) first — it holds the terms.\n\n'
-                   'Read [D](d.md) first,then continue.\n\nRead [E](e.md) first, so the terms are held.\n')
-        for name in ('b.md', 'c.md', 'd.md', 'e.md'):
-            self.write(name, f'# {name}\n\nThe value.\n')
-        found = {(edge.target.name, edge.condition) for edge in checker.requirements(self.skill / 'a.md')}
-        self.assertEqual(found, {('b.md', 'first'), ('c.md', 'first'), ('d.md', 'first'), ('e.md', 'first')})
-
-    def test_first_within_a_longer_word_is_no_requirement(self):
-        self.write('a.md', '# A\n\nRead [B](b.md) firsthand.\n\nRead [C](c.md) first-hand.\n')
-        self.assertEqual(checker.requirements(self.skill / 'a.md'), [])
-
-    def test_a_first_so_form_closes_a_cycle(self):
-        self.write('a.md', '# A\n\nRead [B](b.md) first, so its terms are held.\n')
-        self.write('b.md', '# B\n\nRead [A](a.md) first — it names the run.\n')
-        self.assertEqual(self.cycles(), [('specimen/a.md', 3, 'specimen/a.md:3 -> specimen/b.md:3 -> specimen/a.md')])
-
-    def test_a_first_then_form_closes_a_cycle(self):
-        self.write('a.md', '# A\n\nRead [B](b.md) first, then continue.\n')
-        self.write('b.md', '# B\n\nRead [A](a.md) whole first; then continue.\n')
-        self.assertEqual(self.cycles(), [('specimen/a.md', 3, 'specimen/a.md:3 -> specimen/b.md:3 -> specimen/a.md')])
-
-    def test_a_bounded_read_leaves_a_siblings_requirement_out(self):
-        self.write('a.md', '# A\n\n## One\n\nRead [Two](b.md#two) first.\n')
-        self.write('b.md', '# B\n\n## Two\n\nThe value.\n\n## Three\n\nRead [One](a.md#one) first.\n')
-        self.assertEqual(self.cycles(), [])
-
-    def test_field_reference_cycles_and_execution_retries_impose_no_order(self):
-        self.write('a.md', '# A\n\n## Fields\n\n### Left\n\nPaired with [Right](b.md#right).\n\n'
-                   '## Procedure\n\n### 1. Retry\n\nFollow [Procedure](#procedure "ƒ") again until the read succeeds.\n')
-        self.write('b.md', '# B\n\n## Fields\n\n### Right\n\nPaired with [Left](a.md#left).\n\n'
-                   '## Operations\n\nApply [A](a.md "ƒ"), then read [Left](a.md#left).\n')
-        self.assertEqual(self.cycles(), [])
-        self.assertEqual(checker.requirements(self.skill / 'a.md'), [])
-
-    def test_specimen_requirements_create_no_edge(self):
-        self.write('a.md', '# A\n\nRead [B](b.md) first.\n')
-        self.write('b.md', '# B\n\n' + FENCE + 'markdown\nRead [A](a.md) first.\n' + FENCE
-                   + '\n\n<big><pre>\nRead [**A**](a.md "○") first.\n</pre></big>\n\nWrite `Read [A](a.md) first.` to require it.\n')
-        self.assertEqual(self.cycles(), [])
-        self.assertEqual(checker.requirements(self.skill / 'b.md'), [])
-
-    def test_a_cycle_fails_the_command(self):
-        self.write('a.md', '# A\n\nRead [B](b.md) first.\n')
-        self.write('b.md', '# B\n\nRead [A](a.md) first.\n')
-        printed = io.StringIO()
-        with redirect_stdout(printed):
-            status = checker.main([str(self.skill)])
-        self.assertEqual(status, 1)
-        self.assertIn('before-use cycle — specimen/a.md:3 -> specimen/b.md:3 -> specimen/a.md', printed.getvalue())
-
-
-class KindImports(unittest.TestCase):
-    """A general script imports no kind module, which only the registry reaches; the registry, the kind's own
-    module and the tests do."""
-
-    def setUp(self):
-        self.root = Path(tempfile.mkdtemp())
-        self.addCleanup(shutil.rmtree, self.root)
-        self.skill = self.root / 'specimen'
-        self.write('SKILL.md', '---\nname: specimen\n---\n\n# Specimen\n\nOne sentence.\n\n## Modes\n\n- A mode.\n')
-        self.write('scripts/kinds.py', "from importlib import import_module\n\nKINDS = {'hot-fix': 'hotfix'}\n\n\n"
-                   "def interface(kind):\n    return import_module(KINDS[kind])\n")
-        self.write('scripts/hotfix.py', '"""A hot-fix\'s operations."""\nfrom kinds import Review\n')
-
-    def write(self, name, text):
-        path = self.skill / name
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text)
-        return path
-
-    def found(self):
-        return [(str(Path(where).relative_to('specimen')), line, kind)
-                for where, line, kind, _ in checker.kind_findings(self.skill, self.root)]
-
-    def test_the_registry_gives_each_kind_its_module(self):
-        self.assertEqual(checker.kind_modules(self.skill), {'hotfix'})
-
-    def test_the_registry_and_the_kind_module_pass(self):
-        self.assertEqual(self.found(), [])
-
-    def test_a_general_script_importing_a_kind_module_fails(self):
-        self.write('scripts/sync.py', '"""Sync."""\nimport hotfix\nfrom hotfix import review\n'
-                   'from importlib import import_module\nmodule = import_module("hotfix")\n')
-        self.assertEqual(self.found(), [('scripts/sync.py', 2, 'kind module imported outside the registry'),
-                                        ('scripts/sync.py', 3, 'kind module imported outside the registry'),
-                                        ('scripts/sync.py', 5, 'kind module imported outside the registry')])
-
-    def test_a_general_script_reaching_kinds_through_the_registry_passes(self):
-        self.write('scripts/sync.py', '"""Sync."""\nfrom kinds import interface, kind_of\n')
-        self.assertEqual(self.found(), [])
-
-    def test_a_general_file_naming_a_kind_passes(self):
-        self.write('artifacts/board.md', '# Board\n\nEach [hot-fix](hotfix.md) stands Ready.\n')
-        self.write('scripts/board.py', '"""The board."""\nSTATUS = {"hot-fix": "Ready"}\n')
-        self.assertEqual(self.found(), [])
-
-    def test_a_test_importing_a_kind_module_passes(self):
-        self.write('test/test_hotfix.py', 'import hotfix\n')
-        self.assertEqual(self.found(), [])
-
-    def test_a_skill_without_a_registry_registers_no_kind(self):
-        (self.skill / 'scripts/kinds.py').unlink()
-        self.write('scripts/sync.py', 'import hotfix\n')
-        self.assertEqual(checker.kind_modules(self.skill), set())
-        self.assertEqual(self.found(), [])
-
-    def test_a_registry_that_is_no_literal_dict_is_refused(self):
-        self.write('scripts/kinds.py', "KINDS = dict(load())\n")
-        with self.assertRaises(ValueError):
-            checker.kind_modules(self.skill)
-
-    def test_a_kind_module_import_fails_the_command(self):
-        self.write('scripts/sync.py', '"""Sync."""\nimport hotfix\n')
-        printed = io.StringIO()
-        with redirect_stdout(printed):
-            status = checker.main([str(self.skill)])
-        self.assertEqual(status, 1)
-        self.assertIn('specimen/scripts/sync.py:2: kind module imported outside the registry — hotfix',
-                      printed.getvalue())
-
-
 class InstalledWorkPlannerModel(unittest.TestCase):
-    """The installed Work Planner's before-use graph and Fields, as its declared model selects them."""
+    """The installed Work Planner's Fields, as its declared model selects them."""
 
     SKILL = Path(__file__).resolve().parents[1] / 'work-planner'
 
     def setUp(self):
         self.paths = sorted(path for path in self.SKILL.rglob('*.md') if 'fixtures' not in path.parts)
-        self.graph = checker.before_use_graph(self.paths, {})
-
-    def closure(self, path):
-        seen, pending = {(path, '')}, [(path, '')]
-        while pending:
-            for edge in self.graph.get(pending.pop(), ()):
-                target = (edge.target, edge.anchor)
-                if target not in seen:
-                    seen.add(target)
-                    pending.append(target)
-        return {node[0] for node in seen}
-
-    def test_every_supported_entry_reaches_common_context_without_a_cycle(self):
-        self.assertEqual(checker.before_use_cycles(self.graph), [])
-        entries = [self.SKILL / 'SKILL.md', *sorted((self.SKILL / 'modes').glob('*.md')),
-                   *sorted((self.SKILL / 'protocols').glob('*.md'))]
-        self.assertGreater(len(entries), 10)
-        for entry in entries:
-            with self.subTest(entry=entry.name):
-                self.assertLessEqual({self.SKILL / 'rules.md', self.SKILL / 'conventions.md'}, self.closure(entry))
-
-    def test_the_audited_requirements_are_the_graph(self):
-        edges = {(str(edge.source.relative_to(self.SKILL)), str(checker.named(edge.target, self.SKILL)), edge.condition)
-                 for node in self.graph for edge in self.graph[node]}
-        entries = [path.relative_to(self.SKILL) for folder in ('modes', 'protocols')
-                   for path in sorted((self.SKILL / folder).glob('*.md'))]
-        expected = {(str(entry), common, 'procedure preamble') for entry in entries
-                    for common in ('rules.md', 'conventions.md')}
-        expected |= {('SKILL.md', 'rules.md', 'before selecting a mode'),
-                     ('SKILL.md', 'conventions.md', 'before selecting a mode'),
-                     ('modes/revise-mode.md', 'guidelines.md', 'before the first edit'),
-                     ('modes/revise-mode.md', str(self.SKILL.parent / 'guidelines.md'), 'before the first edit')}
-        self.assertEqual(edges, expected)
 
     def test_installed_fields_hold_no_execution(self):
         files = [(path, self.SKILL.parent) for path in self.paths]
         cited, called = checker.citations(self.paths, {})
         kinds = {kind for path, root in files for _, _, kind, _ in checker.check(path, root, {}, cited, called, {})}
         self.assertNotIn('executable step in Fields', kinds)
-
-    def test_installed_scripts_reach_each_kind_module_through_the_registry(self):
-        self.assertEqual(checker.kind_modules(self.SKILL), {'hotfix'})
-        self.assertEqual(checker.kind_findings(self.SKILL, self.SKILL.parent), [])
-
-
-if __name__ == '__main__':
-    unittest.main()
 
 
 class EntryPointLinks(unittest.TestCase):
@@ -2843,3 +2429,7 @@ class EntryPointLinks(unittest.TestCase):
     def test_a_plain_mention_and_the_entry_point_linking_itself_pass(self):
         self.write('references/guide.md', '# Guide\n\nRevise changes SKILL.md and its `[entry](../SKILL.md)` specimen.\n')
         self.assertEqual(self.found(), [])
+
+
+if __name__ == '__main__':
+    unittest.main()

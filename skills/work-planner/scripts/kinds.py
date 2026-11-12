@@ -42,9 +42,6 @@ class Kind(Protocol):
     def tag(self, item: dict) -> str | None:
         """The kind's tag an issue's or pull request's title opens with, or None when it opens with none."""
 
-    def letter(self) -> str:
-        """The letter the kind's tags open with, which a report's key explains by the kind's name."""
-
     def labels(self, issue: dict) -> list[str]:
         """The labels the issue carries beside type:<kind> and its theme:* label. Each excludes any other
         label of its scope, the text up to its first colon."""

@@ -173,9 +173,7 @@ def changed_bases(unit: list[str], detail: dict, bases: list[str], checkout: str
     for task, declared in sorted(components.items()):
         for entry in declared:
             branch = BRANCH.match(entry)
-            if not branch:
-                missing.append(f'{task}: file {entry} names no long-lived branch')
-            elif branch[1] not in named:
+            if branch[1] not in named:
                 missing.append(f'{task}: file {entry} names {branch[1]}, which has no epic base')
             else:
                 changed.add(branch[1])

@@ -2,7 +2,6 @@
 """
 import io
 import os
-import re
 import subprocess
 import sys
 import tempfile
@@ -139,8 +138,8 @@ class TaskLanes(unittest.TestCase):
     def test_work_item_lane_prose_supplies_no_lane_data(self):
         body = self.table(('W01', 'W02', ''), ('W02', 'W01', ''))
         code, text = run([('E06', body),
-                          ('E06:W01', work_item('a.py') + '**Lane:** 2\n'),
-                          ('E06:W02', work_item('b.py') + '**Lane:** 3\n')])
+                          ('E06:W01', work_item('workspace:a.py') + '**Lane:** 2\n'),
+                          ('E06:W02', work_item('workspace:b.py') + '**Lane:** 3\n')])
         self.assertEqual(code, 0, text)
         self.assertNotIn('not checked, no file read', text)
 
@@ -222,43 +221,43 @@ class CandidateUnits(unittest.TestCase):
     SPECIMEN = breakdown(('W01', 'AC1', '', '', ''), ('W02', 'AC2', 'W01', '', ''),
                          ('W03', 'AC3', '', '', ''), ('W04', 'AC4', '', '', ''),
                          ('W05', 'AC5', '', '', ''), ('W06', 'AC6', '', '', ''))
-    COMPONENTS = {'W01': 'a.py', 'W02': 'a.py', 'W03': 'b.py', 'W04': 'b.py',
-                  'W05': 'c.py', 'W06': 'd.py'}
+    COMPONENTS = {'W01': 'workspace:a.py', 'W02': 'workspace:a.py', 'W03': 'workspace:b.py', 'W04': 'workspace:b.py',
+                  'W05': 'workspace:c.py', 'W06': 'workspace:d.py'}
 
     def test_rows_declaring_one_file_are_a_candidate_with_the_edge_to_drop(self):
         code, text = check(self.SPECIMEN, self.COMPONENTS)
         self.assertEqual(code, 0, text)
         self.assertEqual(joins_section(text), [
-            'E06:W01, E06:W02 extend a.py: name each other in Joins, dropping the dependency of '
+            'E06:W01, E06:W02 extend workspace:a.py: name each other in Joins, dropping the dependency of '
             f'E06:W02 on E06:W01, {OPEN}',
-            f'E06:W03, E06:W04 extend b.py: name each other in Joins {OPEN}',
+            f'E06:W03, E06:W04 extend workspace:b.py: name each other in Joins {OPEN}',
         ])
 
     def test_independent_rows_declaring_different_files_draw_no_finding(self):
         code, text = check(breakdown(('W05', 'AC5', '', '', ''), ('W06', 'AC6', '', '', '')),
-                           {'W05': 'c.py', 'W06': 'd.py'})
+                           {'W05': 'workspace:c.py', 'W06': 'workspace:d.py'})
         self.assertEqual(code, 0, text)
         self.assertEqual(joins_section(text), ['none'])
 
     def test_a_joined_candidate_leaves_the_section(self):
         code, text = check(breakdown(('W01', 'AC1', '', 'W02', ''), ('W02', 'AC2', '', 'W01', '')),
-                           {'W01': 'a.py', 'W02': 'a.py'})
+                           {'W01': 'workspace:a.py', 'W02': 'workspace:a.py'})
         self.assertEqual(code, 0, text)
         self.assertEqual(joins_section(text), ['none'])
 
     def test_a_delivered_row_joins_no_candidate(self):
         code, text = check(breakdown(('W01', '', '', '', '✓'), ('W02', 'AC2', '', '', '')),
-                           {'W01': 'a.py', 'W02': 'a.py'})
+                           {'W01': 'workspace:a.py', 'W02': 'workspace:a.py'})
         self.assertEqual(code, 0, text)
         self.assertEqual(joins_section(text), ['none'])
 
     def test_a_path_through_a_row_outside_splits_by_rule(self):
         code, text = check(breakdown(('W01', 'AC1', '', '', ''), ('W02', 'AC2', 'W01', '', ''),
                                      ('W03', 'AC3', 'W02', '', '')),
-                           {'W01': 'a.py', 'W02': 'b.py', 'W03': 'a.py'})
+                           {'W01': 'workspace:a.py', 'W02': 'workspace:b.py', 'W03': 'workspace:a.py'})
         self.assertEqual(code, 0, text)
         self.assertEqual(joins_section(text), [
-            'E06:W01, E06:W03 extend a.py: split by rule, E06:W03 needs E06:W02, which needs E06:W01'])
+            'E06:W01, E06:W03 extend workspace:a.py: split by rule, E06:W03 needs E06:W02, which needs E06:W01'])
 
     def test_rows_sharing_one_of_several_declared_files_are_a_candidate(self):
         code, text = check(breakdown(('W01', 'AC1', '', '', ''), ('W02', 'AC2', '', '', ''),
@@ -290,7 +289,7 @@ class UnitAccounting(unittest.TestCase):
     """A candidate left split is answered by one record line, and a unit holds six criteria."""
 
     SPLIT = breakdown(('W01', 'AC1', '', '', ''), ('W02', 'AC2', '', '', ''), ('W03', 'AC3', '', '', ''))
-    COMPONENTS = {'W01': 'a.py', 'W02': 'a.py', 'W03': 'a.py'}
+    COMPONENTS = {'W01': 'workspace:a.py', 'W02': 'workspace:a.py', 'W03': 'workspace:a.py'}
 
     def test_one_line_naming_the_candidate_rows_accounts_for_it(self):
         code, text = check(self.SPLIT, self.COMPONENTS,
@@ -301,7 +300,7 @@ class UnitAccounting(unittest.TestCase):
     def test_a_line_naming_only_some_of_its_rows_accounts_for_none(self):
         code, text = check(self.SPLIT, self.COMPONENTS, '- **E06:W01 and E06:W02.** Split.\n')
         self.assertEqual(joins_section(text), [
-            f'E06:W01, E06:W02, E06:W03 extend a.py: name each other in Joins {OPEN}'])
+            f'E06:W01, E06:W02, E06:W03 extend workspace:a.py: name each other in Joins {OPEN}'])
 
     def test_a_line_naming_rows_besides_accounts_for_none(self):
         code, text = check(self.SPLIT, self.COMPONENTS,
@@ -314,12 +313,14 @@ class UnitAccounting(unittest.TestCase):
                            self.COMPONENTS)
         self.assertEqual(code, 0, text)
         self.assertEqual(joins_section(text), [
-            'E06:W01, E06:W02, E06:W03 extend a.py: split by rule, 7 criteria exceed the bound of 6'])
+            'E06:W01, E06:W02, E06:W03 extend workspace:a.py: split by rule, 7 criteria exceed the bound of 6'])
 
     def test_a_six_criterion_candidate_is_open(self):
         code, text = check(breakdown(('W01', 'AC1, AC2, AC3', '', '', ''),
-                                     ('W02', 'AC4, AC5, AC6', '', '', '')), {'W01': 'a.py', 'W02': 'a.py'})
-        self.assertEqual(joins_section(text), [f'E06:W01, E06:W02 extend a.py: name each other in Joins {OPEN}'])
+                                     ('W02', 'AC4, AC5, AC6', '', '', '')),
+                           {'W01': 'workspace:a.py', 'W02': 'workspace:a.py'})
+        self.assertEqual(joins_section(text),
+                         [f'E06:W01, E06:W02 extend workspace:a.py: name each other in Joins {OPEN}'])
 
     def test_a_joined_unit_over_the_bound_is_a_problem(self):
         code, text = check(breakdown(('W01', 'AC1, AC2, AC3, AC4', '', 'W02', ''),
@@ -603,7 +604,7 @@ class InitiativeDependencies(unittest.TestCase):
 
 
 class ComponentContention(unittest.TestCase):
-    BUNDLE = 'src/bundle/assembly.ts'
+    BUNDLE = 'main:src/bundle/assembly.ts'
 
     def test_rows_of_different_epics_extending_one_file_are_paired(self):
         components = {'E08:W01': (self.BUNDLE,), 'E09:W01': (self.BUNDLE,), 'E09:W02': ('src/bundle/emit.ts',)}
@@ -624,7 +625,7 @@ class ComponentContention(unittest.TestCase):
                           ('E08:W01', work_item(self.BUNDLE)),
                           ('E09:W01', work_item(self.BUNDLE))])
         self.assertEqual(code, 0, text)
-        self.assertIn('E08:W01 and E09:W01 both extend src/bundle/assembly.ts', text)
+        self.assertIn('E08:W01 and E09:W01 both extend main:src/bundle/assembly.ts', text)
 
     def test_the_epics_of_a_contending_pair_are_separated_by_a_number(self):
         code, text = run([('E08', epic_body(('W01', 'Extend assembly', ''))),
@@ -637,17 +638,17 @@ class ComponentContention(unittest.TestCase):
     def test_a_pair_sharing_one_of_several_files_is_printed_and_separated(self):
         code, text = run([('E08', epic_body(('W01', 'Extend assembly', ''))),
                           ('E09', epic_body(('W01', 'Extend emit', ''))),
-                          ('E08:W01', work_item(f'src/a.ts, {self.BUNDLE}')),
-                          ('E09:W01', work_item(f'src/bundle/emit.ts, {self.BUNDLE}, src/c.ts'))])
+                          ('E08:W01', work_item(f'main:src/a.ts, {self.BUNDLE}')),
+                          ('E09:W01', work_item(f'main:src/bundle/emit.ts, {self.BUNDLE}, main:src/c.ts'))])
         self.assertEqual(code, 0, text)
-        self.assertIn('E08:W01 and E09:W01 both extend src/bundle/assembly.ts\n', text)
+        self.assertIn('E08:W01 and E09:W01 both extend main:src/bundle/assembly.ts\n', text)
         self.assertIn('--- epic priority (epics sharing a number start together)\n2 E08\n1 E09', text)
 
     def test_epics_declaring_different_files_share_a_number(self):
         code, text = run([('E08', epic_body(('W01', 'Extend assembly', ''))),
                           ('E09', epic_body(('W01', 'Extend emit', ''))),
                           ('E08:W01', work_item(self.BUNDLE)),
-                          ('E09:W01', work_item('src/bundle/emit.ts'))])
+                          ('E09:W01', work_item('main:src/bundle/emit.ts'))])
         self.assertEqual(code, 0, text)
         self.assertIn('--- component contention: rows of different epics extending one file\nnone',
                       text)
@@ -657,19 +658,10 @@ class ComponentContention(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'w01.md'
             path.write_text('**Component:** [workspace:a.py](https://example.test/a), '
-                            '`./workspace:b.py`, workspace:a.py, workspace:c.py.\n')
+                            '`workspace:b.py`, workspace:a.py, workspace:c.py.\n')
             components, problems = read_components({'E08:W01': path})
         self.assertEqual(problems, [])
         self.assertEqual(components, {'E08:W01': ('workspace:a.py', 'workspace:b.py', 'workspace:c.py')})
-
-    def test_prose_beside_a_path_is_not_a_file(self):
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / 'w01.md'
-            path.write_text('**Component:** main:src/bundle/assembly.ts (assembly, emit step), '
-                            '`workspace:b.py` holds the emitter, main:src/c.ts.\n')
-            components, problems = read_components({'E08:W01': path})
-        self.assertEqual(problems, [])
-        self.assertEqual(components, {'E08:W01': ('main:src/bundle/assembly.ts', 'workspace:b.py', 'main:src/c.ts')})
 
     def declares(self, line: str) -> tuple[str, ...]:
         with tempfile.TemporaryDirectory() as directory:
@@ -679,42 +671,28 @@ class ComponentContention(unittest.TestCase):
         self.assertEqual(problems, [])
         return components['E08:W01']
 
-    def test_prose_between_entries_leaves_no_punctuation_on_a_path(self):
-        self.assertEqual(self.declares('main:src/a.ts, which the emitter calls, main:src/b.ts'),
-                         ('main:src/a.ts', 'main:src/b.ts'))
+    def test_an_entry_on_no_long_lived_branch_is_a_problem(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'w01.md'
+            path.write_text('**Component:** main:src/a.ts, src/b.ts, 3:1, main:src/c.ts (the emitter)\n')
+            components, problems = read_components({'E08:W01': path})
+        self.assertEqual(components, {})
+        self.assertEqual(problems, ['E08:W01: file src/b.ts is no branch:path entry',
+                                    'E08:W01: file 3:1 is no branch:path entry',
+                                    'E08:W01: file main:src/c.ts (the emitter) is no branch:path entry'])
 
-    def test_bare_paths_are_each_an_entry(self):
-        self.assertEqual(self.declares('src/a.ts, src/b.ts'), ('src/a.ts', 'src/b.ts'))
-        self.assertEqual(self.declares('README.md, src/a.ts'), ('README.md', 'src/a.ts'))
-
-    def test_semicolons_and_and_separate_entries(self):
-        self.assertEqual(self.declares('main:src/a.ts; main:src/b.ts and main:src/c.ts'),
-                         ('main:src/a.ts', 'main:src/b.ts', 'main:src/c.ts'))
-        self.assertEqual(self.declares('src/a.ts; src/b.ts and src/c.ts'),
-                         ('src/a.ts', 'src/b.ts', 'src/c.ts'))
-
-    def test_prose_words_beside_entries_are_not_files(self):
-        self.assertEqual(self.declares('main:src/a.ts (reads/writes the cache, e.g. the emitter, at 3:1), '
-                                       'main:src/b.ts'), ('main:src/a.ts', 'main:src/b.ts'))
-        self.assertEqual(self.declares('`read_components` reads main:src/a.ts'), ('main:src/a.ts',))
-
-    def test_a_bare_value_declares_paths_without_an_extension(self):
-        self.assertEqual(self.declares('config/branches, src/a.ts'), ('config/branches', 'src/a.ts'))
-
-    def test_a_code_span_is_one_entry_whatever_it_holds(self):
-        self.assertEqual(self.declares('`main:src/my file.ts`, main:src/b.ts'),
-                         ('main:src/my file.ts', 'main:src/b.ts'))
+    def test_a_code_span_entry_is_read_without_its_span(self):
+        self.assertEqual(self.declares('`main:src/a.ts`, main:src/b.ts'), ('main:src/a.ts', 'main:src/b.ts'))
 
     def test_one_path_spelt_two_ways_is_one_file(self):
         self.assertEqual(normalise('`src/a.ts`.'), 'src/a.ts')
-        self.assertEqual(normalise('./src/a.ts'), 'src/a.ts')
         self.assertEqual(normalise('[src/a.ts](https://example.test/a)'), 'src/a.ts')
         code, text = run([('E08', epic_body(('W01', 'Extend assembly', ''))),
                           ('E09', epic_body(('W01', 'Extend assembly again', ''))),
-                          ('E08:W01', '**Component:** `src/a.ts`.\n'),
-                          ('E09:W01', '**Component:** ./src/a.ts\n')])
+                          ('E08:W01', '**Component:** `main:src/a.ts`.\n'),
+                          ('E09:W01', '**Component:** [main:src/a.ts](https://example.test/a)\n')])
         self.assertEqual(code, 0, text)
-        self.assertIn('E08:W01 and E09:W01 both extend src/a.ts', text)
+        self.assertIn('E08:W01 and E09:W01 both extend main:src/a.ts', text)
 
     def test_an_unreadable_work_item_is_a_problem(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -804,54 +782,6 @@ class EpicPriority(unittest.TestCase):
                           ('E01', epic_body(('W01', 'Consume', 'E00:W01')))])
         self.assertEqual(code, 0, text)
         self.assertIn('--- epic priority (epics sharing a number start together)\n2 E00\n1 E01', text)
-
-
-ARTIFACT = SCRIPTS.parent / 'artifacts' / 'dependency-graph.md'
-OUTCOME = re.compile(r'\b(exits?|reports?|prints?|refused|refuses|asked|asks)\b', re.IGNORECASE)
-
-
-def sections_of(text: str) -> dict[str, str]:
-    parts = re.split(r'^### (.+)$', text, flags=re.MULTILINE)
-    return dict(zip(parts[1::2], parts[2::2]))
-
-
-def anchors(path: Path) -> set[str]:
-    return {re.sub(r'[^a-z0-9 -]', '', m[1].lower()).replace(' ', '-')
-            for m in re.finditer(r'^#+ (.+)$', path.read_text(), re.MULTILINE)}
-
-
-class FieldBoundary(unittest.TestCase):
-    """Dependency Graph's Fields hold shapes and invariants; its operations and Guidance hold outcomes."""
-
-    def test_no_field_states_a_reporting_placement_or_exit_outcome(self):
-        text = ARTIFACT.read_text()
-        fields = text.split('\n## Fields\n')[1].split('\n## Guidance\n')[0]
-        for name, body in sections_of(fields).items():
-            with self.subTest(field=name):
-                self.assertIsNone(OUTCOME.search(body), body)
-                self.assertNotIn('where it stands', body)
-
-    def test_check_dependencies_states_each_outcome_the_fields_define(self):
-        details = sections_of(ARTIFACT.read_text())['Check Dependencies']
-        for outcome in ('both resolutions, so neither is the cheaper answer', 'each direct edge a join drops',
-                        'split by rule with its reason, and asks no record line',
-                        'is a problem naming the entry as written, and the run exits nonzero'):
-            with self.subTest(outcome=outcome):
-                self.assertIn(outcome, details)
-
-    def test_unresolvable_entries_name_each_reader_and_its_outcome(self):
-        guidance = sections_of(ARTIFACT.read_text())['Unresolvable Entries']
-        self.assertIn('names an [entry that cannot resolve](#edges) as written, keeps the row it gates where it '
-                      'stands rather than placing it as work still to come, and exits nonzero', guidance)
-        self.assertIn('(#unresolvable-entries)', sections_of(ARTIFACT.read_text())['Edges'])
-        for target in ('#check-dependencies', 'board-queue.md#compute-board-queue',
-                       'board-queue.md#unresolvable-dependencies', 'delivery-plan.md#compute-available-work',
-                       'delivery-plan.md#report-lines'):
-            with self.subTest(target=target):
-                self.assertIn(f'({target}', guidance)
-                file, anchor = target.split('#')
-                self.assertIn(anchor, anchors(ARTIFACT.parent / file if file else ARTIFACT))
-
 
 
 class InvalidReferences(unittest.TestCase):

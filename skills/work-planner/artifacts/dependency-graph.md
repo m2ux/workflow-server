@@ -60,7 +60,8 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - An entry that [cannot resolve](#edges) is a problem naming the entry as written, and the run exits nonzero. Its second clause says what this run could not find, which is the epics it was given.
 - It prints each pair of rows in different epics whose work items share a declared file, with the files they share, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.
 - A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic's rows, so a body carrying the retired form is reported once rather than taking its initiative's gates down with it.
-- It reads each declared file without its link, a wrapping code span, a trailing full stop or a leading `./`, and reports a work item it cannot read.
+- It reads each declared file without its link, a wrapping code span or a trailing full stop, and reports a work item it cannot read.
+- It reports each declared entry that is not one `<branch>:<path>` holding no whitespace, as [Component](work-item.md#component) lays an entry out.
 - It reports a work item declaring a directory among its files: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.
 - It prints the proposed [Epic Priority](work-priority.md#epic-priority) of each epic, largest first.
 - Its supplied inputs are published body text or local drafts.

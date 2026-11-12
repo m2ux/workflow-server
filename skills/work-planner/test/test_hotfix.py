@@ -15,7 +15,7 @@ from kinds import OFF_BOARD, Kind, Tips, interface  # noqa: E402
 from priority import label as priority_label  # noqa: E402
 
 KIND = interface('hot-fix')
-tag, letter, labels, faults, target = KIND.tag, KIND.letter, KIND.labels, KIND.faults, KIND.target
+tag, labels, faults, target = KIND.tag, KIND.labels, KIND.faults, KIND.target
 board_status, linking_pulls, delivery_fault = KIND.board_status, KIND.linking_pulls, KIND.delivery_fault
 delivering_pulls, unit_state, review = KIND.delivering_pulls, KIND.unit_state, KIND.review
 
@@ -40,10 +40,6 @@ class Identity(unittest.TestCase):
         self.assertEqual(tag(hotfix()), 'F04')
         self.assertIsNone(tag(issue(5, 'Key Validation: Reject Bad Keys', labels=('type:hot-fix',))))
         self.assertIsNone(tag(issue(6, '[I07] Canon Walk: Definitions Checked')))
-
-    def test_its_tags_open_with_its_letter(self):
-        self.assertEqual(letter(), 'F')
-        self.assertTrue(tag(hotfix()).startswith(letter()))
 
 
 class Exports(unittest.TestCase):
