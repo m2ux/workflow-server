@@ -1,22 +1,34 @@
 # F15 Review Notes
 
+## Review at fc4d2641b
+
+Agent review of [#1710](https://github.com/m2ux/workflow-server/pull/1710) at fc4d2641b against `workspace` at ad6d35fa6. The [review record](agent-review.json)'s first entry holds the scope, criteria and validation.
+
+- **Change since 9cae1adc2.** hotfix.py's module docstring and three test lines wrap at their modules' width; no word changes.
+- **Findings.** None.
+
 ## Review at 9cae1adc2
 
-Agent review of [#1710](https://github.com/m2ux/workflow-server/pull/1710) at 9cae1adc2 against `workspace` at ad6d35fa6. The [review record](agent-review.json)'s first entry holds the scope, criteria and validation.
+Agent review of [#1710](https://github.com/m2ux/workflow-server/pull/1710) at 9cae1adc2 against `workspace` at ad6d35fa6. The [review record](agent-review.json)'s second entry holds the scope, criteria and validation.
 
 - **Change since 156998dc6.** As the user decided, test_hotfix_readiness and its walk of Review Hot-fix Before Merge are deleted, since none of its tests ran a script on captures or fixtures, and test_deliver holds no scan of deliver.py's source for a second copy of the shared rules. The issue carries AC10 for both.
-- **Findings.** None.
+- **Findings.** Two, found by the coordinator's review and a width check, both fixed below.
+
+| # | Finding | Severity | Fix |
+| --- | --- | --- | --- |
+| 1 | hotfix.py's module docstring held one 149-character line where the rest wraps at about 100. | nonblocking | Re-wrapped with no word changed, in [4382c8b10](https://github.com/m2ux/workflow-server/commit/4382c8b100f0d239145bf60b64d2981417f02847). |
+| 2 | Three lines the branch added ran past the modules' width: test_advance_decisions' docstring and two test_deps lines. | nonblocking | Wrapped, in [fc4d2641b](https://github.com/m2ux/workflow-server/commit/fc4d2641bb95852b6af03246b6ec749f60fcdeab). |
 
 ## Review at 156998dc6
 
-Agent review of [#1710](https://github.com/m2ux/workflow-server/pull/1710) at 156998dc6 against `workspace` at ad6d35fa6. The [review record](agent-review.json)'s second entry holds the scope, criteria and validation.
+Agent review of [#1710](https://github.com/m2ux/workflow-server/pull/1710) at 156998dc6 against `workspace` at ad6d35fa6. The [review record](agent-review.json)'s third entry holds the scope, criteria and validation.
 
 - **Change since b1fca1a3c.** The merge of `workspace` brings in F08's pull request body check; hotfix.py's docstring keeps F08's body sections and names no letter operation, and the test README recounts every module.
 - **Findings.** None.
 
 ## Review at b1fca1a3c
 
-Agent review of [#1710](https://github.com/m2ux/workflow-server/pull/1710) at b1fca1a3c against `workspace`, over the whole branch from e6eb1af6d. The [review record](agent-review.json)'s third entry holds the scope, criteria and validation.
+Agent review of [#1710](https://github.com/m2ux/workflow-server/pull/1710) at b1fca1a3c against `workspace`, over the whole branch from e6eb1af6d. The [review record](agent-review.json)'s fourth entry holds the scope, criteria and validation.
 
 - **Change since 461977abe.** `deps.py` reads each Component entry as one whitespace-free `branch:path` and strips no leading `./`; Dependency Graph and Delivery Plan name the problem; the test README counts test_dispatch's 33 tests. The first commit's subject describes the check as it stands.
 - **Findings.** None.
