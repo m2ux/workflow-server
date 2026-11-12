@@ -1,6 +1,6 @@
 # Align Mode
 
-Brings one or more existing issues of any [registered kind](../artifacts/work-kind.md#registration), and/or pull requests, into line with the plan they belong to and structurally aligns them with the guidelines they are held to.
+Brings one or more existing issues of any registered kind, and/or pull requests, into line with the plan they belong to and structurally aligns them with the guidelines they are held to.
 
 Alignment checks conformity to work-planning rules; judgement of content fitness belongs to goal review.
 
@@ -25,7 +25,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 3. Validate the Bodies
 
-- Apply [Validate Body](../artifacts/work-kind.md#validate-body "ƒ") for the issue's [registered kind](../artifacts/work-kind.md#registration).
+- Apply [Validate Body](../artifacts/work-kind.md#validate-body "ƒ") for the issue's kind.
 - Supply the fetched context and output files.
 
 #### Reference Visibility
