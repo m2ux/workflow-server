@@ -171,6 +171,9 @@ SCRIPT = re.compile(r'(?<![\w./-])((?:[\w.-]+/)*scripts/[\w.-]+\.(?:py|sh|js|mjs
 SCRIPT_SUFFIXES = ('.py', '.sh', '.js', '.mjs', '.ts')
 GRAPHQL = re.compile(r'\bapi\s+graphql\b|([\'"])graphql\1')
 REST_GAP = re.compile(r'^\s*(?:[-*+]\s+)?\*\*REST gap:\*\*')
+# A gh field flag that sends its value as text carrying an @path value, which
+# only -F reads as the file's content: -f or --raw-field, joined or spaced, then key=@.
+TEXT_FILE_VALUE = re.compile(r'(?<![\w-])(?:-f\s*|--raw-field[=\s]\s*)[\'"]?[\w\[\]-]+=@')
 # Projects (classic) in every form: its card and column types, each of its
 # mutations, its card and column connection fields, its REST routes rooted at
 # projects/ or under a repository, organization, user or the authenticated
@@ -202,7 +205,7 @@ KINDS = (
     'prose over eight lines', 'trailing blank line',
     'parallel section in another mood', 'heading without content', 'heading without a blank line above',
     'command spelled out in a mode', 'retired term', 'convention in both guides',
-    'GraphQL without a REST gap', 'Projects classic interface',
+    'GraphQL without a REST gap', 'Projects classic interface', 'file value sent as text',
     'house rule no operation decides', 'ambiguous house rule', 'declared rule absent',
     'mode without a trigger phrase', 'hard-wrapped line',
     'list step in heading model', 'indented detail in heading model',
@@ -1098,13 +1101,18 @@ def script_of(path, line):
 def interfaces(path, root, structures):
     """GitHub commands carry REST-gap evidence in their governing specification
     or execution step when they send GraphQL, including through a script.
-    Every trace of Projects (classic) is reported."""
+    Every trace of Projects (classic) is reported, and so is a command block
+    sending an @path value under a flag that sends it as text."""
     lines, fenced, headings = scan(path) if path.suffix == '.md' else (
         path.read_text().splitlines(), [], [])
     found = [finding(path, root, index, 'Projects classic interface', match[0])
              for index, line in enumerate(lines) if (match := CLASSIC.search(line))]
     if path.suffix != '.md':
         return found
+    commands = scan_blocks(lines).html_lines
+    found += [finding(path, root, index, 'file value sent as text', match[0].strip())
+              for index, line in enumerate(lines)
+              if (fenced[index] or index in commands) and (match := TEXT_FILE_VALUE.search(line))]
     entry = contract(path, structures)
     found += html_interfaces(path, root, lines, fenced, headings, entry)
     total = len(lines)

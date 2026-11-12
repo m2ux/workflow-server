@@ -198,12 +198,17 @@ def row(values: list[str]) -> str:
 
 
 def template_body(kind: str) -> str:
-    """Read exactly one Markdown fence from Fields / Template in the body artifact.
+    """The template of the kind's body artifact, as artifact_template reads it."""
+    return artifact_template(BODY_ARTIFACTS[kind])
+
+
+def artifact_template(name: str) -> str:
+    """Read exactly one Markdown fence from Fields / Template in the named artifact.
 
     Match the closing fence's character and length so embedded examples stay
     inside the template. Missing, ambiguous or unclosed templates are errors.
     """
-    path = ARTIFACTS / BODY_ARTIFACTS[kind]
+    path = ARTIFACTS / name
     fields = template = False
     fence = None
     body = []
@@ -238,8 +243,11 @@ def template_body(kind: str) -> str:
 
 
 class Template:
-    def __init__(self, kind: str):
-        _, sections = split_sections(template_body(kind))
+    """A template's sections, those it marks optional, and its Work Breakdown columns: the template of
+    the kind's body artifact, or of the named artifact."""
+
+    def __init__(self, kind: str = '', artifact: str = ''):
+        _, sections = split_sections(artifact_template(artifact or BODY_ARTIFACTS[kind]))
         self.headings = [h for h, _ in sections]
         self.optional = {h for h, lines in sections if 'delete the section' in '\n'.join(lines).lower()}
         self.columns = next((cells(l) for h, lines in sections for l in lines

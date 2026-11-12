@@ -150,7 +150,7 @@ These rules govern named command and access specifications. Procedural operation
 - **Local scripts.**
   `<workspace>` is the checkout holding the installed scripts. Run its scripts with the absolute `<workspace>/scripts/sbx` path from that checkout.
 - **Bodies.**
-  Pass a complete body or multiline comment through a file. The file holds the exact intended text.
+  Pass a complete body or multiline comment through a file, under the flag [Conventions](conventions.md) names for a file. The file holds the exact intended text.
 
 ## Modes
 

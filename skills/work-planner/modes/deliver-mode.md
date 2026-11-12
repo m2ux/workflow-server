@@ -225,6 +225,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 - Populate the [Template](../artifacts/pull-request-body.md#template) from [Change Evidence](../artifacts/pull-request-body.md#change-evidence), retaining applicable content in [Current Body](../artifacts/pull-request-body.md#current-body) and writing to [Output Body](../artifacts/pull-request-body.md#output-body). For an epic review, Apply [Populate Review Body](../artifacts/pull-request-body.md#populate-review-body "ƒ").
 - All populated fields must meet [Fields](../artifacts/pull-request-body.md#fields).
+- Apply [Validate Pull Request Body](../artifacts/pull-request-body.md#validate-pull-request-body "ƒ") to the populated body, as an epic review where it is one, and correct each finding it provides.
 
 - Verify each result link against [Result Evidence](../artifacts/test-plan.md#result-evidence) before publishing the body.
 

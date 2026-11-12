@@ -1,8 +1,20 @@
 # Pull Request Body
 
-Populates one pull request body from its change, review scope and validation evidence.
+Populates one pull request body from its change, review scope and validation evidence, and validates a body against its template. [pull_request_body](../scripts/pull_request_body.py) implements the validation.
 
 ## Operations
+
+### Validate Pull Request Body
+
+One body file checked against the [Template](#template), or against [Review Body](#review-body) for an epic review.
+
+#### 1. Check Body Against Template
+
+Run [Check Pull Request Body](#check-pull-request-body "ƒ") for the [Body File](#body-file).
+
+#### 2. Provide Body Findings
+
+Provide the [Body Findings](#body-findings).
 
 ### Populate Review Body
 
@@ -23,6 +35,20 @@ The current change carried by one epic base.
 #### 3. Provide Updated Body
 
 Provide the complete [updated body](#output-body) file to the caller.
+
+## Commands
+
+### Check Pull Request Body
+
+Check one body file against its template and provide [Body Findings](#body-findings "●") to the requester.
+
+Exit 1 means the body has a finding.
+
+<big><pre>
+[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/pull_request_body.py '[**&lt;body-file&gt;**](#body-file "○")'
+</pre></big>
+
+- An epic review body adds `--review`, which holds it to [Review Body](#review-body).
 
 ## Fields
 
@@ -94,6 +120,18 @@ The published architecture overview URL on the engineering branch.
 ### Output Body
 
 The supplied local destination for the complete body. eg `fixed-950.md`
+
+### Body File
+
+The complete body a caller supplies for validation, alone in its file. eg `body.md`
+
+### Body Findings
+
+Each way the body departs from its template, each naming its section: a required section missing, an extra section, a repeated or misplaced section, text before the first section, an unreadable [Test Plan](test-plan.md#plan-table), or a `Target:` line, as a [hot-fix](hotfix-body.md#target)'s issue carries. Nothing when it departs in none. eg `body.md: extra section: Problem`
+
+### Workspace
+
+The absolute checkout holding the installed Work Planner scripts and sandbox helper.
 
 ## Guidance
 

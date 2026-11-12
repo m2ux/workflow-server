@@ -4,9 +4,9 @@ An issue whose title opens with [F00] is a hot-fix, and it carries the priority:
 Overview names the long-lived branch it fixes in one Target: line. This module supplies the hot-fix
 kind to the script registry, kinds.py: each operation of its Kind interface, with the inputs and
 results that interface states, reads a hot-fix's tag and the letter it opens with, labels, body
-faults, target, board status, linking and delivering pull requests, the state of its delivery unit
-and the agent review rule for its pull request. The module defines no other public name, and only
-the registry imports it.
+faults, target, the pull request body sections carrying a Target: line, board status, linking and
+delivering pull requests, the state of its delivery unit and the agent review rule for its pull
+request. The module defines no other public name, and only the registry imports it.
 """
 import re
 
@@ -18,6 +18,7 @@ _TAG = re.compile(rf'^\[({_LETTER}\d\d)\]')
 _PRIORITY = 10
 _TARGET = re.compile(r'^Target: `([^`\s]+)`\s*$')
 _ITEM = re.compile(r'^(?:[-*+]|\d+[.)])\s')
+_TARGET_FIELD = re.compile(r'^\s*Target:', re.I)
 
 
 def tag(item: dict) -> str | None:
@@ -79,6 +80,15 @@ def target(issue: dict) -> str:
     """The branch a hot-fix fixes, or '' unless its Overview names exactly one."""
     named = _targets(issue)
     return named[0] if len(named) == 1 else ''
+
+
+def issue_fields(body: str) -> list[str]:
+    """Each section of a pull request body holding a Target: line, in any form and outside fenced code,
+    the field a hot-fix's Overview carries."""
+    from format import prose, split_sections  # format imports this module
+    _, sections = split_sections((body or '').replace('\r\n', '\n'))
+    held = [heading for heading, lines in sections if any(_TARGET_FIELD.match(line) for line in prose(lines))]
+    return list(dict.fromkeys(held))
 
 
 def linking_pulls(prs: list[dict], key: Key) -> list[dict]:

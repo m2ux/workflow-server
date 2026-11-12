@@ -5,7 +5,7 @@ Work Planner plans work as GitHub issues and keeps that plan true until the work
 ## What Is Under Test
 
 - **The scripts.**
-  Twenty-seven programs read those issue bodies, board items and pull request records, and report what a run should change. Most modules here hold one script to the rules its own docstring states.
+  Twenty-eight programs read those issue bodies, board items and pull request records, and report what a run should change. Most modules here hold one script to the rules its own docstring states.
 - **The prose.**
   Modes, protocols and artifacts are instructions an agent follows. The modules check their shape: resolving links, contextual command contracts, selected checkout inputs, planning-record publication, worktree placement and this catalogue.
 - **Neither against a live tracker.**
@@ -53,6 +53,7 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_orphans](test_orphans.py) | [orphans](../scripts/orphans.py) keeps a proposal out of the hoist candidates and out of the initiative list, a declared throwaway out of both candidate groups, and an issue of each registered kind of work out of both, reaching the kind through the script registry |
 | [test_priority](test_priority.py) | [priority](../scripts/priority.py): the rank a priority label gives, the label a number names, and the execution-order key, as Work Priority states them |
 | [test_progress](test_progress.py) | [progress](../scripts/progress.py): one test per rule its docstring states |
+| [test_pull_request_body](test_pull_request_body.py) | [pull_request_body](../scripts/pull_request_body.py): a pull request body checked against the Template, or against Review Body for an epic review, each finding naming its section, as Validate Pull Request Body states it |
 | [test_renumber](test_renumber.py) | [renumber](../scripts/renumber.py) rewrites an initiative's epic numbers, or one epic's task numbers, across issue bodies |
 | [test_revision_check](test_revision_check.py) | An instrument runs at the commit a branch or tag resolves to, and the run leaves no checkout |
 | [test_review_scope](test_review_scope.py) | Review scope admits only evidenced unrelated debt with a saved arising issue outside findings, and keeps every actual finding subject to strict disposition checks |
@@ -117,6 +118,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [orphans](../scripts/orphans.py) | [test_orphans](test_orphans.py) (5) |
 | [priority](../scripts/priority.py) | [test_board_queue](test_board_queue.py) (77), [test_deliver](test_deliver.py) (108), [test_hotfix](test_hotfix.py) (26), [test_priority](test_priority.py) (12), [test_progress](test_progress.py) (79) |
 | [progress](../scripts/progress.py) | [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (21) |
+| [pull_request_body](../scripts/pull_request_body.py) | [test_pull_request_body](test_pull_request_body.py) (14) |
 | [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32), [test_shared](test_shared.py) (21) |
 | [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |
 | [statuses](../scripts/statuses.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (21), [test_statuses](test_statuses.py) (24) |
