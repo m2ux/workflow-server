@@ -19,7 +19,6 @@ import board  # noqa: E402
 import kinds  # noqa: E402
 import priority  # noqa: E402
 import sync  # noqa: E402
-from test_kinds import kind_mentions  # noqa: E402
 
 
 RECORD = 'https://github.com/o/r/tree/engineering/artifacts/planning/2026-11-01-2-i01-e00-w01-go/'
@@ -856,9 +855,6 @@ class HotFixes(unittest.TestCase):
 
 
 class KindRegistry(unittest.TestCase):
-    def test_board_queue_names_no_kind_and_imports_only_the_registry(self):
-        self.assertEqual(kind_mentions((SCRIPTS / 'board-queue.py').read_text()), [])
-
     def test_a_stand_in_kind_is_placed_where_its_board_status_puts_it(self):
         stand_in = types.ModuleType('stand_in')
         stand_in.tag = lambda item: 'Z01' if (item.get('title') or '').startswith('[Z01]') else None

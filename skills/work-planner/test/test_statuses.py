@@ -15,7 +15,6 @@ import kinds  # noqa: E402
 import statuses  # noqa: E402
 import sync  # noqa: E402
 from statuses import DELIVERY, DISPATCH, PLACED, QUEUE, Changes, Jurisdiction, StatusField  # noqa: E402
-from test_kinds import kind_mentions  # noqa: E402
 
 HOME = 'o/r'
 BOARD = 'users/o/projectsV2/9'
@@ -191,8 +190,7 @@ class Rendering(unittest.TestCase):
 
 
 class KindRegistry(unittest.TestCase):
-    def test_statuses_names_no_kind_and_imports_only_the_registry_lookup(self):
-        self.assertEqual(kind_mentions((SCRIPTS / 'statuses.py').read_text()), [])
+    def test_statuses_selects_a_kind_through_the_registry_lookup(self):
         self.assertIs(statuses.kind_of, kinds.kind_of)
 
     def test_a_stand_in_kinds_issue_stands_in_review_and_done_through_the_registry(self):

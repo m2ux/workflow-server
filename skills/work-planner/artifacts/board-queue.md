@@ -1,6 +1,6 @@
 # Board Queue
 
-The queue for one theme board: the statuses [Priority Sets](work-priority.md#priority-sets) give initiatives and epics, the status a kind's Settle Board Status settles, status and assignee changes, pending decisions, waiting work, next epics, Ready units and epics waiting on a priority.
+The queue for one theme board: the statuses [Priority Sets](work-priority.md#priority-sets) give initiatives and epics, hot-fix status, status and assignee changes, pending decisions, waiting work, next epics, Ready units and epics waiting on a priority.
 
 ## Commands
 
@@ -35,7 +35,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - An initiative confirmed unplanned follows the same wait, then moves to Backlog as [Backlog Cascade](#backlog-cascade) states.
 - An initiative In Review or Done remains in that state.
 
-- An item whose [registered kind](work-kind.md#registration) supplies Settle Board Status stands where that operation places it, as [Membership](board.md#membership) states.
+- Each hot-fix stands where its [Board Status](hotfix.md#board-status) places it, as [Membership](board.md#membership) states.
 
 - On an initiative Ready or In Progress, an [active](#epic-activity) epic is In Progress even with open questions. A delivered task row alone is not activity.
 - On that initiative, an inactive epic can start when every entry of its initiative row's Depends on cell is delivered, every prerequisite epic that row names is closed as completed, all of each prerequisite's bases have merged into their long-lived branches, and the epic's Open Questions section is empty.
@@ -58,7 +58,7 @@ A collection of units, each carrying initiative, epic and member task ids plus i
 
 ### Proposed Changes
 
-The queue contains calls for Status and assignee changes to initiatives, epics and items whose [registered kind](work-kind.md#registration) supplies Settle Board Status. Status changes are between Backlog, Ready and In Progress, and such an item's change as that operation gives it. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.
+The queue contains calls for Status and assignee changes to initiatives, epics and hot-fixes. Status changes are between Backlog, Ready and In Progress, and a hot-fix's change as its [Board Status](hotfix.md#board-status) gives it. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.
 
 ### Report Lines
 
@@ -91,7 +91,7 @@ The supplied current board items with Status and their complete issue records, a
 
 ### Pull Request Records
 
-The supplied complete delivery pull request records, one JSON object per nonempty line at the local file path. eg `prs.json`
+The supplied complete initiative and hot-fix pull request records, one JSON object per nonempty line at the local file path. eg `prs.json`
 
 ### Issue Link Snapshot
 

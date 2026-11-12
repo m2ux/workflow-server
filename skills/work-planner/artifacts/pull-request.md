@@ -303,7 +303,7 @@ gh api &#92;
 </pre></big>
 
 - Supply the [title](#title "○"), the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the [complete body file](#body-file "○").
-- A title opening with the tag of a [registered kind](work-kind.md#registration) supplying Review Before Merge, such as `[F00]`, adds `-F draft=true`; that operation marks the pull request ready.
+- A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens; [Review Hot-fix Before Merge](hotfix.md#review-hot-fix-before-merge "ƒ") marks it ready.
 
 ### Open Epic Pull Request
 
@@ -498,7 +498,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Fetch Repository Delivery Pull Requests
 
-Start a collection with all pull requests from one repository whose title opens with a bracketed tag, as an initiative's id and each [registered kind](work-kind.md#registration)'s tag do, and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
+Start a collection with all pull requests from one repository whose title opens with a bracketed tag, as an initiative's id and a hot-fix's [prefix](hotfix-body.md#titles) do, and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 Use [Collection Path](#collection-path "○") for the saved collection.
 
@@ -511,7 +511,7 @@ gh api &#92;
 
 ### Append Repository Delivery Pull Requests
 
-Append all pull requests from one further repository whose title opens with a bracketed tag, as an initiative's id and each [registered kind](work-kind.md#registration)'s tag do, and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
+Append all pull requests from one further repository whose title opens with a bracketed tag, as an initiative's id and a hot-fix's [prefix](hotfix-body.md#titles) do, and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 Use [Collection Path](#collection-path "○") for the saved collection.
 
@@ -712,7 +712,7 @@ The complete selected pull request title. eg `[I07:E00] Purpose`, `[F00] Reject 
 
 ### Head Branch
 
-The task branch or epic-base head selected for creation. eg `task-branch: i07/e00/w01-purpose`, `task-branch: f00-key-validation`, `epic-base: i07/e00/main`
+The task branch or epic-base head selected for creation. eg `task-branch: i07/e00/w01-purpose`, `hot-fix-branch: f00-key-validation`, `epic-base: i07/e00/main`
 
 ### Base Branch
 
@@ -782,7 +782,7 @@ The operation and error, discrepancy or missing evidence that prevents a verifie
 
 ### Merge Permission
 
-Delivery requires both the user's authorization for the selected target and the harness capability to execute its mutation. A task targets its [epic base](delivery-branches.md#epic-bases); an epic targets that base's long-lived branch; a [kind unit](delivery-plan.md#kind-units) uses task delivery against its declared long-lived target. The allowance for an epic base supplies no permission for another target. A merge into the default branch stays with a person. Another target requiring a person's approving review stays with that reviewer. A target without that requirement can be merged only within the authorization and harness permission actually granted for it. Neither the skill nor a ready result expands those grants or authorizes a protection bypass.
+Delivery requires both the user's authorization for the selected target and the harness capability to execute its mutation. A task targets its [epic base](delivery-branches.md#epic-bases); an epic targets that base's long-lived branch; a [hot-fix](hotfix.md#delivery-unit) uses task delivery against its declared long-lived target. The allowance for an epic base supplies no permission for another target. A merge into the default branch stays with a person. Another target requiring a person's approving review stays with that reviewer. A target without that requirement can be merged only within the authorization and harness permission actually granted for it. Neither the skill nor a ready result expands those grants or authorizes a protection bypass.
 
 - **Claude Code.**
   User settings (`~/.claude/settings.json`) grant it with an `autoMode.allow` rule and an `autoMode.environment` entry, each array keeping `"$defaults"`; auto mode reads neither from project settings. `claude auto-mode config` prints the rules in effect. eg `{"autoMode": {"environment": ["$defaults", "Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review"], "allow": ["$defaults", "Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review. Merges into the default branch are not covered"]}}`

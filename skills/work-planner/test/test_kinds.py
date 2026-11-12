@@ -1,8 +1,6 @@
 """The script registry, kinds.py, maps each kind of work to its module and selects an item's kind from its title, and each registered module supplies the Kind interface.
 """
-import ast
 import inspect
-import re
 import sys
 import types
 import unittest
@@ -26,20 +24,6 @@ def operations() -> dict[str, inspect.Signature]:
         if inspect.isfunction(member) and not name.startswith('_'):
             signature = inspect.signature(member)
             found[name] = signature.replace(parameters=list(signature.parameters.values())[1:])
-    return found
-
-
-def kind_mentions(source: str) -> list[str]:
-    """Each kind module a script's source imports, and each spelling of a registered kind's name or
-    module, or of a tag of its letter, anywhere in the source, docstrings and comments included."""
-    tree = ast.parse(source)
-    imported = {alias.name for node in ast.walk(tree) if isinstance(node, ast.Import) for alias in node.names}
-    imported |= {node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)}
-    found = sorted(imported & set(KINDS.values()))
-    for kind, module in KINDS.items():
-        spellings = {kind, module, kind.replace('-', ' ')}
-        found += [name for name in sorted(spellings) if name in source.lower()]
-        found += re.findall(rf'\[{interface(kind).letter()}\d\d\]', source)
     return found
 
 
@@ -79,14 +63,6 @@ class Lookup(unittest.TestCase):
                       '[F004] Reject Bad Keys', 'Reject [F04] Bad Keys', ' [F04] Reject Bad Keys'):
             with self.subTest(title=title):
                 self.assertIsNone(kind_of(issue(5, title)))
-
-
-class Mentions(unittest.TestCase):
-    def test_the_search_finds_each_kind_import_name_and_tag(self):
-        self.assertEqual(kind_mentions('from hotfix import tag\n'), ['hotfix', 'hotfix'])
-        self.assertEqual(kind_mentions('"""Places each hot-fix."""\n'), ['hot-fix'])
-        self.assertEqual(kind_mentions("TITLE = '[F04] Fix'\n"), ['[F04]'])
-        self.assertEqual(kind_mentions('from kinds import kind_of\n'), [])
 
 
 class Substitution(unittest.TestCase):

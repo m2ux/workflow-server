@@ -141,10 +141,10 @@ A task gated on an [unresolvable dependency](board-queue.md#unresolvable-depende
 Each computation holds its changes to one jurisdiction and refuses a change outside it, naming the issue.
 
 - **Every jurisdiction.**
-  A task never stands In Review. In Review is held by an initiative, an epic, or an item whose [registered kind](work-kind.md#registration) supplies Settle Board Status, as that operation gives it.
+  A task never stands In Review. In Review is held by an initiative, an epic, or a hot-fix, as its [Board Status](hotfix.md#board-status) gives it.
 - **Delivery.**
   Board changes computed from delivery evidence move no initiative or epic between Ready and Backlog.
 - **Queue.**
-  The [queue](board-queue.md) sets Backlog, Ready and In Progress on initiatives and epics, and moves no task. In Review and Done are refused, but for the In Review of an open issue, and the Done of one closed as completed, whose registered kind supplies Settle Board Status.
+  The [queue](board-queue.md) sets Backlog, Ready and In Progress on initiatives and epics, and moves no task. In Review and Done are refused, but for an open hot-fix's In Review and the Done of a hot-fix closed as completed.
 - **Dispatch.**
   A dispatch sets In Progress on held tasks and epics and In Review on completed epics, and refuses every other Status and any removal.

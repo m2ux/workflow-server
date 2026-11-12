@@ -62,8 +62,8 @@ The Test Plan section holds the table [Test Plan](test-plan.md) defines.
 ### Titles
 
 - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
-- A pull request delivering an issue tagged by a [registered kind](work-kind.md#registration) takes the title that kind's artifact names for its delivering pull request.
-- A pull request working on neither an epic nor such an issue takes `Name: Subtitle`, with no prefix, as a revision of the skill itself does.
+- A hot-fix's pull request takes the title its [Delivering Pull Request](hotfix.md#delivering-pull-request) names.
+- A pull request working on neither an epic nor a hot-fix takes `Name: Subtitle`, with no prefix, as a revision of the skill itself does.
 - The prefix is how an epic's pull requests are found, and each one, open or merged, is matched to the tasks it works on from its changes and the tasks' Descriptions.
 - The pull request that merges an epic base carries the same prefix. Its head is the epic base, which tells it from a task pull request.
 - A title carrying an initiative's prefix names one of its epics. An epic sync reports one that names none as `no epic`, and one naming its epic by a task id, `[I07:E00:W01]`, as `retitle`.

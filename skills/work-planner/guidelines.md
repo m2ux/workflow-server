@@ -16,14 +16,14 @@ The skill is an object model in prose: an artifact owns state and callable capab
 ### Open-Closed
 
 - **Kind extension.**
-  A new kind of work has its own artifact and script module. General artifacts, modes, protocols and scripts describe their family without naming or branching on individual kinds; adding a kind changes no general file.
+  A new kind of work has its own artifact and script module. A general file links the kind's operation or definition at the step that uses it, and a general script reaches the kind's module through the script registry.
 - **Interface operations.**
-  Where kinds differ, each kind supplies the same named operation and contract. [Work Kind](artifacts/work-kind.md) is the interface's home: general callers Apply its operation, which selects the kind's operation through the published kind registration.
+  An operation several kinds supply under one name, a body's population or validation, lives in [Work Kind](artifacts/work-kind.md), whose step links each supplying kind's operation by name before the general route. An operation one kind alone supplies is linked directly from each step applying it.
 
 ### Liskov Substitution
 
 - **Interchangeable contracts.**
-  Every kind's interface operation accepts the inputs and provides the output shape the [Work Kind](artifacts/work-kind.md) operation it implements promises. A kind may constrain its own fields, but must not narrow accepted interface inputs or return less than that contract requires.
+  Every kind's operation for a [Work Kind](artifacts/work-kind.md) operation accepts the inputs and provides the output shape that operation promises. A kind may constrain its own fields, but must not narrow accepted inputs or return less than that contract requires.
 
 ### Interface Segregation
 
@@ -37,9 +37,9 @@ The skill is an object model in prose: an artifact owns state and callable capab
 ### Dependency Inversion
 
 - **General dependencies.**
-  Modes and protocols depend on general operations. A kind implements, in its own artifact, the interface operations [Work Kind](artifacts/work-kind.md) declares, and its registration links them; a general file never links down to an individual kind.
+  Modes and protocols depend on the operations they apply, each linked at the step applying it, whether general or a kind's own. A kind implements its operations and definitions in its own artifact.
 - **Kind registration.**
-  The [Registration](artifacts/work-kind.md#registration) in Work Kind lists each kind with what it is, the artifacts holding it and the operations each supplies, and one script registry maps each kind to its module. Callers reach kinds through Work Kind's operations and that registration, keeping no list of their own. A caller needing one kind takes it as an input or reads it from the item's kind in the registration.
+  The [Registration](artifacts/work-kind.md#registration) in Work Kind lists each kind with what it is, the artifacts holding it and the body operations each supplies, and one script registry, `scripts/kinds.py`, maps each kind to its module. A general script reaches a kind's module only through that registry.
 
 ### Encapsulation
 

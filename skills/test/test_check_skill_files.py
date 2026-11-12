@@ -2668,30 +2668,18 @@ class BeforeUseOrdering(unittest.TestCase):
         self.assertIn('before-use cycle — specimen/a.md:3 -> specimen/b.md:3 -> specimen/a.md', printed.getvalue())
 
 
-class KindSeparation(unittest.TestCase):
-    """A general artifact, mode, protocol or script names no registered kind of work and imports no kind module;
-    the kind's own files, the registry, the registration and literal examples do."""
-
-    REGISTRATION = ('# Work Kind\n\nThe interface every kind supplies.\n\n## Fields\n\n### Registration\n\n'
-                    '- **Task**  One pull request.\n  - [Task Body](task-body.md)\n'
-                    '- **Hot-fix**  A fix beside queued work.\n'
-                    '  - [Hot-fix](hotfix.md)  [Review Before Merge](hotfix.md#review "ƒ")\n'
-                    '  - [Hot-fix Body](hotfix-body.md)\n\n'
-                    'A general file selects a hot-fix through this registration.\n\n### Result\n\nThe result.\n')
+class KindImports(unittest.TestCase):
+    """A general script imports no kind module, which only the registry reaches; the registry, the kind's own
+    module and the tests do."""
 
     def setUp(self):
         self.root = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.root)
         self.skill = self.root / 'specimen'
         self.write('SKILL.md', '---\nname: specimen\n---\n\n# Specimen\n\nOne sentence.\n\n## Modes\n\n- A mode.\n')
-        self.write('structure.json', json.dumps({'registration': 'artifacts/work-kind.md#registration'}))
-        self.write('artifacts/work-kind.md', self.REGISTRATION)
-        self.write('scripts/kinds.py', "KINDS = {'hot-fix': 'hotfix'}\n\n\ndef interface(kind):\n"
-                   "    return import_module(KINDS[kind])\n")
+        self.write('scripts/kinds.py', "from importlib import import_module\n\nKINDS = {'hot-fix': 'hotfix'}\n\n\n"
+                   "def interface(kind):\n    return import_module(KINDS[kind])\n")
         self.write('scripts/hotfix.py', '"""A hot-fix\'s operations."""\nfrom kinds import Review\n')
-        self.write('artifacts/hotfix.md', '# Hot-fix\n\nA hot-fix and its [body](hotfix-body.md).\n')
-        self.write('artifacts/hotfix-body.md', '# Hot-fix Body\n\nThe hot-fix body, as [Hot-fix](hotfix.md) uses it.\n')
-        self.write('artifacts/task-body.md', '# Task Body\n\nOne task.\n')
 
     def write(self, name, text):
         path = self.skill / name
@@ -2703,30 +2691,11 @@ class KindSeparation(unittest.TestCase):
         return [(str(Path(where).relative_to('specimen')), line, kind)
                 for where, line, kind, _ in checker.kind_findings(self.skill, self.root)]
 
-    def test_the_registry_and_registration_give_each_kind_its_files(self):
-        kinds = checker.registered_kinds(self.skill)
-        self.assertEqual([(kind.name, kind.module) for kind in kinds], [('hot-fix', 'hotfix')])
-        self.assertEqual(sorted(path.name for path in kinds[0].files), ['hotfix-body.md', 'hotfix.md', 'hotfix.py'])
+    def test_the_registry_gives_each_kind_its_module(self):
+        self.assertEqual(checker.kind_modules(self.skill), {'hotfix'})
 
-    def test_kind_files_the_registry_and_the_registration_pass(self):
+    def test_the_registry_and_the_kind_module_pass(self):
         self.assertEqual(self.found(), [])
-
-    def test_a_general_artifact_mode_and_protocol_naming_a_kind_fail(self):
-        self.write('artifacts/board.md', '# Board\n\nThe board.\n\nEach hot-fix stands Ready.\n')
-        self.write('modes/advance-mode.md', '# Advance Mode\n\nDecides which Hot-fixes are next.\n')
-        self.write('protocols/merge.md', '# Merge\n\nRecords a merge.\n\nA HOTFIX merge is recorded.\n')
-        self.assertEqual(self.found(), [('artifacts/board.md', 5, 'kind named in a general file'),
-                                        ('modes/advance-mode.md', 3, 'kind named in a general file'),
-                                        ('protocols/merge.md', 5, 'kind named in a general file')])
-
-    def test_a_general_link_down_to_a_kind_file_fails(self):
-        self.write('artifacts/pull-request.md', '# Pull Request\n\nThe title its [Delivering Pull Request]'
-                   '(hotfix.md#delivering-pull-request) names.\n')
-        self.assertEqual(self.found(), [('artifacts/pull-request.md', 3, 'kind named in a general file')])
-
-    def test_a_general_script_naming_a_kind_fails(self):
-        self.write('scripts/board.py', '"""The board."""\nSTATUS = {"hot-fix": "Ready"}\n')
-        self.assertEqual(self.found(), [('scripts/board.py', 2, 'kind named in a general file')])
 
     def test_a_general_script_importing_a_kind_module_fails(self):
         self.write('scripts/sync.py', '"""Sync."""\nimport hotfix\nfrom hotfix import review\n'
@@ -2739,54 +2708,33 @@ class KindSeparation(unittest.TestCase):
         self.write('scripts/sync.py', '"""Sync."""\nfrom kinds import interface, kind_of\n')
         self.assertEqual(self.found(), [])
 
-    def test_literal_examples_pass(self):
-        self.write('artifacts/standup.md', '# Standup\n\nThe key names each kind, eg `F=Hot-fix`, and a tag such as '
-                   '`[F00]`.\n\n' + FENCE + 'text\n[F00] hot-fix: Reject Bad Keys\n' + FENCE + '\n')
+    def test_a_general_file_naming_a_kind_passes(self):
+        self.write('artifacts/board.md', '# Board\n\nEach [hot-fix](hotfix.md) stands Ready.\n')
+        self.write('scripts/board.py', '"""The board."""\nSTATUS = {"hot-fix": "Ready"}\n')
         self.assertEqual(self.found(), [])
 
-    def test_a_word_containing_a_kind_name_and_a_file_outside_the_general_folders_pass(self):
-        self.write('artifacts/board.md', '# Board\n\nA shotfixer and a hotfixture name no kind.\n')
-        self.write('guidelines.md', '# Guidelines\n\nA kind file is the hot-fix artifact.\n')
+    def test_a_test_importing_a_kind_module_passes(self):
         self.write('test/test_hotfix.py', 'import hotfix\n')
         self.assertEqual(self.found(), [])
 
-    def test_a_kind_file_names_its_own_kind_only(self):
-        self.write('scripts/kinds.py', "KINDS = {'hot-fix': 'hotfix', 'spike': 'spike'}\n")
-        self.write('artifacts/hotfix.md', '# Hot-fix\n\nA hot-fix is no spike.\n')
-        self.assertEqual(self.found(), [('artifacts/hotfix.md', 3, 'kind named in a general file')])
-
-    def test_the_registration_file_names_a_kind_outside_its_registration_only_as_a_fault(self):
-        self.write('artifacts/work-kind.md', self.REGISTRATION.replace('The result.', 'A hot-fix result.'))
-        self.assertEqual(self.found(), [('artifacts/work-kind.md', 19, 'kind named in a general file')])
-
-    def test_a_registration_naming_no_section_is_refused(self):
-        self.write('structure.json', json.dumps({'registration': 'artifacts/work-kind.md#absent'}))
-        with self.assertRaisesRegex(ValueError, 'names no section'):
-            checker.registered_kinds(self.skill)
-
-    def test_a_registration_that_is_no_section_path_is_refused(self):
-        self.write('structure.json', json.dumps({'registration': 'artifacts/work-kind.md'}))
-        with self.assertRaisesRegex(ValueError, 'registration must name a markdown section'):
-            checker.registered_kinds(self.skill)
-
     def test_a_skill_without_a_registry_registers_no_kind(self):
         (self.skill / 'scripts/kinds.py').unlink()
-        self.write('artifacts/board.md', '# Board\n\nEach hot-fix stands Ready.\n')
-        self.assertEqual(checker.registered_kinds(self.skill), [])
+        self.write('scripts/sync.py', 'import hotfix\n')
+        self.assertEqual(checker.kind_modules(self.skill), set())
         self.assertEqual(self.found(), [])
 
     def test_a_registry_that_is_no_literal_dict_is_refused(self):
         self.write('scripts/kinds.py', "KINDS = dict(load())\n")
         with self.assertRaises(ValueError):
-            checker.registered_kinds(self.skill)
+            checker.kind_modules(self.skill)
 
-    def test_a_kind_named_in_a_general_file_fails_the_command(self):
-        self.write('modes/advance-mode.md', '# Advance Mode\n\nDecides which hot-fixes are next.\n')
+    def test_a_kind_module_import_fails_the_command(self):
+        self.write('scripts/sync.py', '"""Sync."""\nimport hotfix\n')
         printed = io.StringIO()
         with redirect_stdout(printed):
             status = checker.main([str(self.skill)])
         self.assertEqual(status, 1)
-        self.assertIn('specimen/modes/advance-mode.md:3: kind named in a general file — hot-fixes names hot-fix',
+        self.assertIn('specimen/scripts/sync.py:2: kind module imported outside the registry — hotfix',
                       printed.getvalue())
 
 
@@ -2837,11 +2785,8 @@ class InstalledWorkPlannerModel(unittest.TestCase):
         kinds = {kind for path, root in files for _, _, kind, _ in checker.check(path, root, {}, cited, called, {})}
         self.assertNotIn('executable step in Fields', kinds)
 
-    def test_installed_general_files_name_no_registered_kind(self):
-        kinds = checker.registered_kinds(self.SKILL)
-        self.assertEqual([(kind.name, kind.module) for kind in kinds], [('hot-fix', 'hotfix')])
-        self.assertEqual(sorted(str(path.relative_to(self.SKILL)) for path in kinds[0].files),
-                         ['artifacts/hotfix-body.md', 'artifacts/hotfix.md', 'scripts/hotfix.py'])
+    def test_installed_scripts_reach_each_kind_module_through_the_registry(self):
+        self.assertEqual(checker.kind_modules(self.SKILL), {'hotfix'})
         self.assertEqual(checker.kind_findings(self.SKILL, self.SKILL.parent), [])
 
 
