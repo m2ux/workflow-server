@@ -69,7 +69,6 @@ These modules exercise the skill's instruction routes and document contracts.
 
 | Module | What it guards |
 | --- | --- |
-| [test_architecture_diagrams](test_architecture_diagrams.py) | Architecture diagrams preserve measured topology and the consumer's owning contract |
 | [test_board_status](test_board_status.py) | Board Status owns the proposed board change and the commands computing it, and Board Delivery and Hot-fix reach them with the decisions they gave |
 | [test_checkouts](test_checkouts.py) | Checkout-sensitive commands consume linked input contracts |
 | [test_documents](test_documents.py) | The installed prose API exposes complete inputs and directed reading paths, [Work Priority](../artifacts/work-priority.md), [Proposal](../artifacts/proposal.md) and [Test Plan](../artifacts/test-plan.md) each define what every other file reaching it links, and [Proposals Board](../artifacts/proposals-board.md) alone selects and creates the proposals board |
@@ -130,8 +129,6 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | `SKILL.md` | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (28) |
 | `artifacts/` | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (28) |
 | [advance-mode](../modes/advance-mode.md) | [test_advance_decisions](test_advance_decisions.py) (18) |
-| [architecture-overview](../artifacts/architecture-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
-| [change-overview](../protocols/change-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
 | [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [deliver-mode](../modes/deliver-mode.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12) |
