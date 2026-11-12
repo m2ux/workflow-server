@@ -37,25 +37,31 @@ registered kind is unlaned. Malformed cells and joined units with different lane
 lines and exit 1; holds, blocked work and delivery evidence remain visible for every lane.
 
 Printed: a unit line for each admitted available unit, naming its lane or unlaned, the record folder
-its ids and Description give it, and a branch and worktree for each epic base it changes, suffixed with the base's long-lived name
-when there are several; an unresolvable line for a row gated on a dependency entry nothing can
-resolve, naming the entry; an undeclared line for a row of a unit in an epic of several bases whose
-linked work item declares no file, or a file naming no long-lived branch with an epic base, naming why; a hold line for each
-reserved row; a blocked line for a free row whose dependencies are not delivered or whose joined
-task is unavailable; an output line for each producer output a row naming another epic's row was
-read for, naming the output, the consumer commit and whether it is available there; a merge line for
-an open pull request, never a draft, that targets the epic base when its test plan has passed, or for an open
-pull request titled with the tag of an open issue of a registered kind that delivers that issue, as
-the kind's delivering_pulls reads it, when its test plan has passed and the issue's target is one a
-unit line could name; and an unresolved line for an issue not given. A run that met an unresolvable
-entry, an undeclared row or kind issue, or an invalid lane unit exits 1.
+its ids and Description give it, a branch and worktree for each epic base it changes, suffixed with
+the base's long-lived name when there are several, and push engineering when its rows change the
+planning-records branch; an unresolvable line for a row gated on a dependency entry nothing can
+resolve, naming the entry; an undeclared line for a row whose linked work item is unread or declares
+no file, or, in an epic of several bases, a file naming no long-lived branch with an epic base,
+naming why; a hold line for each reserved row; a blocked line for a free row whose dependencies are
+not delivered or whose joined task is unavailable; an output line for each producer output a row
+naming another epic's row was read for, naming the output, the consumer commit and whether it is
+available there; a merge line for an open pull request, never a draft, that targets the epic base
+when its test plan has passed, or for an open pull request titled with the tag of an open issue of a
+registered kind that delivers that issue, as the kind's delivering_pulls reads it, when its test
+plan has passed and the issue's target is one a unit line could name; and an unresolved line for an
+issue not given. A run that met an unresolvable entry, an undeclared row or kind issue, or an
+invalid lane unit exits 1.
 
 The epic bases a unit changes are those whose long-lived branch its rows' work items name. A free
 row links its work-item file, which --engineering, the checkout holding the planning records, gives
 to read; the file's declaration line names the long-lived branch and the path of each file it changes:
   **Component:** workspace:skills/work-planner/scripts/deliver.py, main:src/index.ts
-A unit of an epic with one base works on that base. A free row linking no work item is unplanned:
-its session writes the work item after dispatch, so its unit works on every epic base.
+The planning-records branch, engineering, takes direct pushes, as rules.md's Planning-records branch
+rule states: it has no epic base, a base named for it is ignored, a pull request into one is no
+merge, and a unit whose rows declare a file on it pushes it. A unit declaring files on that branch
+alone has no branch. A unit of an epic with one base works on that base for every other file. A free
+row linking no work item is unplanned: its session writes the work item after dispatch, so its unit
+works on every epic base.
 
 Each open issue of a kind the script registry, kinds.py, holds is printed as that kind's
 unit_state reads its delivery unit, as the kind's artifact states it: a unit line, with every
@@ -111,6 +117,8 @@ ISSUE_URL = re.compile(r'/issues/(\d+)$')
 FOLDER = re.compile(r'/(?:tree|blob)/[^/]+/(.+?)/?$')
 STARTED = ('Ready', 'In Progress')
 WORKTREES = '.worktrees'
+# The planning-records branch: direct pushes and no epic base, as rules.md states.
+RECORDS_BRANCH = 'engineering'
 
 
 def is_epic(issue: dict) -> bool:
@@ -129,11 +137,12 @@ def ident_tag(initiative: str, epic: str, task: str) -> str:
 
 
 def epic_bases(refs: list[str], initiative: str, epic: str, names: tuple[str, ...]) -> list[str]:
-    """The epic bases among refs whose long-lived segment is one of names, or any when names is empty."""
+    """The epic bases among refs whose long-lived segment is one of names, or any when names is empty,
+    other than the planning-records branch, which takes no base."""
     found = []
     for ref in refs:
         matched = re.fullmatch(rf'i{initiative}/e{epic}/([^/]+)', ref)
-        if matched and (not names or matched[1] in names):
+        if matched and matched[1] != RECORDS_BRANCH and (not names or matched[1] in names):
             found.append(ref)
     return sorted(set(found))
 
@@ -151,19 +160,22 @@ def long_lived(base: str) -> str:
     return base.rsplit('/', 1)[-1]
 
 
-def changed_bases(unit: list[str], detail: dict, bases: list[str], checkout: str) -> tuple[list[str], list[str]]:
+def changed_bases(unit: list[str], detail: dict, bases: list[str],
+                  checkout: str) -> tuple[list[str], bool, bool, list[str]]:
     """The epic bases a unit changes, as its rows' work items name the long-lived branch of each
-    declared file, and each row declaring no file, or a file on none of the bases, with why. A unit of an epic with one base, or none, changes those.
+    declared file; whether it pushes the planning-records branch, which takes no base; whether that
+    push is all it changes, with no row unplanned and no file on another branch; and each row
+    whose work item is unread or declares no file, or, in an epic of several bases, a file on none
+    of them, with why. A unit of an epic with one base, or none, changes those for any other file.
     A row linking no work item is unplanned: its session writes the work item, so it changes every base."""
-    if len(bases) <= 1:
-        return bases, []
     items, missing = {}, []
     named = {long_lived(base) for base in bases}
-    changed = set()
+    changed, pushed, elsewhere = set(), False, False
     for task in unit:
         path = detail[task]['item']
         if not path:
             changed |= named
+            elsewhere = True
         elif not checkout:
             missing.append(f'{task}: {path} needs --engineering to be read')
         else:
@@ -172,12 +184,20 @@ def changed_bases(unit: list[str], detail: dict, bases: list[str], checkout: str
     missing += problems
     for task, declared in sorted(components.items()):
         for entry in declared:
-            branch = BRANCH.match(entry)
-            if branch[1] not in named:
-                missing.append(f'{task}: file {entry} names {branch[1]}, which has no epic base')
+            branch = BRANCH.match(entry)[1]
+            if branch == RECORDS_BRANCH:
+                pushed = True
+                continue
+            elsewhere = True
+            if len(bases) <= 1:
+                changed |= named
+            elif branch not in named:
+                missing.append(f'{task}: file {entry} names {branch}, which has no epic base')
             else:
-                changed.add(branch[1])
-    return ([] if missing else [base for base in bases if long_lived(base) in changed]), missing
+                changed.add(branch)
+    if missing:
+        return [], False, False, missing
+    return [base for base in bases if long_lived(base) in changed], pushed, pushed and not elsewhere, []
 
 
 def task_branches(branch: str, bases: list[str]) -> list[tuple[str, str, str]]:
@@ -192,10 +212,13 @@ def task_branches(branch: str, bases: list[str]) -> list[tuple[str, str, str]]:
     return found
 
 
-def branch_lines(branch: str, bases: list[str]) -> str:
-    """The branch, base and worktree text of a unit line, one entry for each base."""
-    return '; '.join(f'branch {name}' + (f', base {base}' if base else '') + f', worktree {worktree}'
-                     for name, base, worktree in task_branches(branch, bases))
+def branch_lines(branch: str, bases: list[str], pushed: bool = False, alone: bool = False) -> str:
+    """The branch, base and worktree text of a unit line, one entry for each base, then the
+    planning-records push when the unit makes one; a unit changing that branch alone has no branch."""
+    entries = [] if alone else [
+        f'branch {name}' + (f', base {base}' if base else '') + f', worktree {worktree}'
+        for name, base, worktree in task_branches(branch, bases)]
+    return '; '.join(entries + ([f'push {RECORDS_BRANCH}'] if pushed else []))
 
 
 def target_fault(key: Key, base: str, lived: tuple[str, ...], repository: str) -> tuple[str, str]:
@@ -293,7 +316,7 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...], reposi
         if (initiative, epic) not in epics:
             continue
         segment = re.fullmatch(rf'i{initiative}/e{epic}/([^/]+)', base)
-        if not segment or (names and segment[1] not in names):
+        if not segment or segment[1] == RECORDS_BRANCH or (names and segment[1] not in names):
             continue
         if not testplan.passed(pull.get('body') or ''):
             continue
@@ -417,8 +440,8 @@ def survey(args: argparse.Namespace) -> int:
             if not admits(lane, args.lane):
                 continue
             refs = [((p.get('base') or {}).get('ref') or '') for p in prs] + given
-            bases, missing = changed_bases(unit, detail, epic_bases(refs, initiative, epic, lived),
-                                           args.engineering)
+            offered = epic_bases(refs, initiative, epic, lived)
+            bases, pushed, alone, missing = changed_bases(unit, detail, offered, args.engineering)
             if missing:
                 for why in missing:
                     print(f'  undeclared I{initiative}:E{epic}:{why}')
@@ -427,7 +450,7 @@ def survey(args: argparse.Namespace) -> int:
             name = names(tag, detail[first]['description'], detail[first]['issue'] or key[1], when)
             coverage = ', '.join(dict.fromkeys(c for task in unit
                                                for c in CRITERION.findall(detail[task]['coverage'])))
-            where = branch_lines(name['branch'], bases)
+            where = branch_lines(name['branch'], bases, pushed, alone)
             lane_name = lane_label(lane)
             report = (f'unit I{initiative}:E{epic}:{ids}: {lane_name}, coverage {coverage or "none"}, '
                       f'record {name["folder"]}, {where}')
