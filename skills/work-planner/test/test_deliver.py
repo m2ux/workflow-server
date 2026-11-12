@@ -208,7 +208,7 @@ class Survey(unittest.TestCase):
             body = epic(943, (ids['W02'], 'Queue more', '', ''), (ids['W03'], 'Queue image', '', ''))
             output = survey(staged((body, 'In Progress')), None,
                             *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES, code=1)
-        self.assertIn('undeclared I07:E00:W02: file skills/plan.py names no long-lived branch', output)
+        self.assertIn('undeclared I07:E00:W02: file skills/plan.py is no branch:path entry', output)
         self.assertIn('undeclared I07:E00:W03: file docker:Dockerfile names docker, which has no epic base',
                       output)
         self.assertNotIn('  unit ', output)

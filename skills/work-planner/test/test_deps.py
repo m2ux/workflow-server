@@ -360,7 +360,7 @@ class DirectoryComponents(unittest.TestCase):
     def test_a_component_naming_a_directory_in_the_checkout_is_a_problem(self):
         with tempfile.TemporaryDirectory() as directory:
             (Path(directory) / 'skills' / 'scripts').mkdir(parents=True)
-            (Path(directory) / 'skills' / 'scripts' / 'workspace:a.py').write_text('')
+            (Path(directory) / 'skills' / 'scripts' / 'a.py').write_text('')
             here = Path.cwd()
             os.chdir(directory)
             try:
@@ -656,7 +656,7 @@ class ComponentContention(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'w01.md'
             path.write_text('**Component:** [workspace:a.py](https://example.test/a), '
-                            '`./workspace:b.py`, workspace:a.py, workspace:c.py.\n')
+                            '`workspace:b.py`, workspace:a.py, workspace:c.py.\n')
             components, problems = read_components({'E08:W01': path})
         self.assertEqual(problems, [])
         self.assertEqual(components, {'E08:W01': ('workspace:a.py', 'workspace:b.py', 'workspace:c.py')})
@@ -672,24 +672,23 @@ class ComponentContention(unittest.TestCase):
     def test_an_entry_on_no_long_lived_branch_is_a_problem(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'w01.md'
-            path.write_text('**Component:** main:src/a.ts, src/b.ts, 3:1\n')
+            path.write_text('**Component:** main:src/a.ts, src/b.ts, 3:1, main:src/c.ts (the emitter)\n')
             components, problems = read_components({'E08:W01': path})
         self.assertEqual(components, {})
-        self.assertEqual(problems, ['E08:W01: file src/b.ts names no long-lived branch',
-                                    'E08:W01: file 3:1 names no long-lived branch'])
+        self.assertEqual(problems, ['E08:W01: file src/b.ts is no branch:path entry',
+                                    'E08:W01: file 3:1 is no branch:path entry',
+                                    'E08:W01: file main:src/c.ts (the emitter) is no branch:path entry'])
 
-    def test_a_code_span_is_one_entry_whatever_it_holds(self):
-        self.assertEqual(self.declares('`main:src/my file.ts`, main:src/b.ts'),
-                         ('main:src/my file.ts', 'main:src/b.ts'))
+    def test_a_code_span_entry_is_read_without_its_span(self):
+        self.assertEqual(self.declares('`main:src/a.ts`, main:src/b.ts'), ('main:src/a.ts', 'main:src/b.ts'))
 
     def test_one_path_spelt_two_ways_is_one_file(self):
         self.assertEqual(normalise('`src/a.ts`.'), 'src/a.ts')
-        self.assertEqual(normalise('./src/a.ts'), 'src/a.ts')
         self.assertEqual(normalise('[src/a.ts](https://example.test/a)'), 'src/a.ts')
         code, text = run([('E08', epic_body(('W01', 'Extend assembly', ''))),
                           ('E09', epic_body(('W01', 'Extend assembly again', ''))),
                           ('E08:W01', '**Component:** `main:src/a.ts`.\n'),
-                          ('E09:W01', '**Component:** ./main:src/a.ts\n')])
+                          ('E09:W01', '**Component:** [main:src/a.ts](https://example.test/a)\n')])
         self.assertEqual(code, 0, text)
         self.assertIn('E08:W01 and E09:W01 both extend main:src/a.ts', text)
 

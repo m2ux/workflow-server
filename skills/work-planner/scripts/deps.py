@@ -7,9 +7,9 @@ Usage:
 An argument naming a row is that row's work item, a file whose declaration line names each file
 its implementation changes, separated by commas:
   **Component:** main:src/bundle/assembly.ts, main:src/bundle/emit.ts
-Each entry is a branch:path whose branch opens with a letter, and any other entry is a problem.
-Each declared file is read without its link, a wrapping code span, a trailing full stop or a
-leading ./, so two spellings of one path are one file. A value still carrying the template's
+Each entry is a branch:path holding no whitespace, whose branch opens with a letter, and any other
+entry is a problem. Each declared file is read without its link, a wrapping code span or a
+trailing full stop, so two spellings of one path are one file. A value still carrying the template's
 {{…}} placeholder declares none. Each entry is one file: an entry ending in /, carrying a glob, or
 naming a directory under the working directory declares a directory, which is a problem.
 
@@ -32,7 +32,7 @@ A dependency is one of:
 Markdown links are read by their text, so [E01:W02](https://…/issues/937) is E01:W02.
 
 Problems (exit status 1): a Task cell naming a malformed or a second, different task id,
-unknown references, a work item declaring no file, declaring one on no long-lived branch or naming no row,
+unknown references, a work item declaring no file, an entry that is no branch:path or naming no row,
 an unreadable work item, a task row naming an epic rather than the rows it consumes,
 a task depending on itself or a later task in its epic,
 an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
@@ -155,18 +155,17 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict[str, set[str]],
 
 
 def normalise(entry: str) -> str:
-    """One spelling of a declared file: the link text, without a wrapping code span, a trailing
-    full stop or a leading `./`, so two spellings of one path are one file."""
+    """One spelling of a declared file: the link text, without a wrapping code span or a trailing
+    full stop, so two spellings of one path are one file."""
     text = LINK.sub(r'\1', entry).strip()
     if text.endswith('.'):
         text = text[:-1].strip()
-    text = text.strip('`').strip()
-    return text[2:] if text.startswith('./') else text
+    return text.strip('`').strip()
 
 
 def read_components(items: dict[str, Path]) -> tuple[dict[str, tuple[str, ...]], list[str]]:
     """The files each work item's Component line declares, keyed by its row, and the items declaring
-    none, a file on no long-lived branch, or a directory."""
+    none, an entry that is no branch:path, or a directory."""
     components, problems = {}, []
     for key, path in items.items():
         try:
@@ -182,7 +181,7 @@ def read_components(items: dict[str, Path]) -> tuple[dict[str, tuple[str, ...]],
         if not declared or PLACEHOLDER.search(value):
             problems.append(f'{key}: work item declares no file')
         elif unbranched:
-            problems += [f'{key}: file {entry} names no long-lived branch' for entry in unbranched]
+            problems += [f'{key}: file {entry} is no branch:path entry' for entry in unbranched]
         elif directories:
             problems.append(f'{key}: work item declares directory {", ".join(directories)}; '
                             'each entry is one file')
@@ -192,10 +191,10 @@ def read_components(items: dict[str, Path]) -> tuple[dict[str, tuple[str, ...]],
 
 
 def on_branch(word: str) -> bool:
-    """Whether a word is a `branch:path` entry, its branch opening with a letter, so a ratio such as
-    `3:1` is none."""
+    """Whether a word is a `branch:path` entry holding no whitespace, its branch opening with a letter,
+    so a ratio such as `3:1` or a path followed by prose is none."""
     branch = BRANCH.match(word)
-    return bool(branch) and branch[1][0].isalpha()
+    return bool(branch) and branch[1][0].isalpha() and not any(char.isspace() for char in word)
 
 
 def is_directory(entry: str) -> bool:
