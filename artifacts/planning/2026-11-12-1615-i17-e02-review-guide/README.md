@@ -97,6 +97,7 @@ Ranked most harmful first. Items covered by F14 are listed under [Settled: Work 
      - **#1666:** keep the `agent_review.check` cases; drop `membership` and `observe`.
      - **#1669:** drop the sentence asserts and the Fields word ban.
      - **#1670:** drop `test_the_field_states_the_declaration_and_validation_owns_its_outcomes`.
+     - **`test_hotfix_readiness.py`:** drop its exact Deliver-sentence asserts and keep the structural checks. It predates E02; F14 found it.
 4. **#1656 Policy Review and Boundary review** (criterion 1).
    - **Problem.** No skill file links them. They describe how to run an audit, not a rule any file follows.
    - **Fix.**
