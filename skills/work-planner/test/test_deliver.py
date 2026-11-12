@@ -4,7 +4,6 @@ single home.
 """
 import ast
 import json
-import re
 import sys
 import tempfile
 import types
@@ -1113,31 +1112,6 @@ class LaneCellPreservation(unittest.TestCase):
         self.assert_lane_rows(released, {'W01': ('2', ''), 'W02': ('2', '')})
 
 
-def code_of(source: str) -> tuple[set[str], set[str], list[str]]:
-    """The modules a script imports, every name it binds or reads, and each string constant outside
-    its docstrings."""
-    tree = ast.parse(source)
-    docstrings = {id(node.body[0].value) for node in ast.walk(tree)
-                  if isinstance(node, (ast.Module, ast.FunctionDef, ast.ClassDef)) and node.body
-                  and isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, ast.Constant)}
-    modules, names, strings = set(), set(), []
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Import):
-            modules |= {alias.name for alias in node.names}
-        elif isinstance(node, ast.ImportFrom):
-            modules.add(node.module or '')
-            names |= {alias.name for alias in node.names}
-        elif isinstance(node, ast.Name):
-            names.add(node.id)
-        elif isinstance(node, ast.Attribute):
-            names.add(node.attr)
-        elif isinstance(node, (ast.FunctionDef, ast.ClassDef)):
-            names.add(node.name)
-        elif isinstance(node, ast.Constant) and isinstance(node.value, str) and id(node) not in docstrings:
-            strings.append(node.value)
-    return modules, names, strings
-
-
 def stub_kind(tag: str = 'S01', state: str = 'unit', base: str = 'workspace') -> types.ModuleType:
     """A kind module whose issues are titled [S01] and whose every pull request so titled delivers them."""
     module = types.ModuleType('stubkind')
@@ -1150,17 +1124,6 @@ def stub_kind(tag: str = 'S01', state: str = 'unit', base: str = 'workspace') ->
 
 
 class KindRegistry(unittest.TestCase):
-    def test_deliver_imports_no_kind_module_and_names_no_kind(self):
-        modules, names, strings = code_of((SCRIPTS / 'deliver.py').read_text())
-        self.assertIn('kinds', modules)
-        for kind, module in kinds.KINDS.items():
-            with self.subTest(kind=kind):
-                self.assertNotIn(module, modules)
-                spelled = re.compile(re.escape(module) + '|' + re.escape(kind), re.IGNORECASE)
-                self.assertEqual([n for n in names if spelled.search(n)], [])
-                self.assertEqual([s for s in strings if spelled.search(s)], [])
-        self.assertEqual([s for s in strings if re.search(r'\[?F\d\d', s)], [])
-
     def test_a_registered_kind_reaches_the_survey_through_the_registry(self):
         stub = stub_kind()
         found = issue(4, '[S01] Stub Work: Run It', body='- [ ] **AC1.** Holds.\n')

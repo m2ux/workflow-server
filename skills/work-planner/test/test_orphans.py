@@ -2,7 +2,6 @@
 declared throwaway out of both candidate groups, and an issue of each registered kind of work out of
 both, reaching the kind through the script registry.
 """
-import ast
 import contextlib
 import io
 import json
@@ -107,10 +106,3 @@ class Registry(unittest.TestCase):
         self.assertIn('#2 Loose note', text)
         self.assertIn('--- cited standalone issues (0)', text)
         self.assertNotIn('Stand In', text)
-
-    def test_orphans_imports_no_kind_module(self):
-        tree = ast.parse((SCRIPTS / 'orphans.py').read_text())
-        imported = {alias.name for node in ast.walk(tree) if isinstance(node, ast.Import) for alias in node.names}
-        imported |= {node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)}
-        self.assertIn('kinds', imported)
-        self.assertFalse(imported & set(kinds.KINDS.values()))

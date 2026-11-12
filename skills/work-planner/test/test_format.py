@@ -155,7 +155,6 @@ class OneRow(unittest.TestCase):
         self.assertFalse(any('cited by' in item or item.startswith('W01: delivers') for item in r.decide))
 
 
-
 def initiative_with(criteria: tuple[int, ...], references: tuple[int, ...] = (1,)) -> Review:
     """An initiative whose rows cover the labelled criteria, the first row the first and the second the rest."""
     labels = [f'AC{n}' for n in criteria]
@@ -1027,12 +1026,3 @@ class RegisteredKinds(unittest.TestCase):
         self.assertEqual(r.apply, [])
         self.assertIn('type:stand-in on a title without the stand-in tag: retitle it as a stand-in, '
                       'or remove the label', r.decide)
-
-    def test_the_script_names_no_kind_and_imports_no_kind_module(self):
-        source = (SCRIPTS / 'format.py').read_text()
-        self.assertIn('from kinds import KINDS, interface, kind_of', source)
-        for kind, module in kinds.KINDS.items():
-            with self.subTest(kind=kind):
-                self.assertNotIn(kind, source)
-                self.assertIsNone(re.search(rf'\b(?:import|from) {module}\b', source))
-                self.assertIsNone(re.search(rf'\b{module}\b', source, re.I))

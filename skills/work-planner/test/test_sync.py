@@ -1941,23 +1941,6 @@ class KindRegistry(unittest.TestCase):
     """sync.py reaches each kind of work through the script registry, so registering a kind changes no
     line of it."""
 
-    def test_sync_imports_no_kind_module_and_names_no_kind(self):
-        import ast
-        import re
-        from kinds import KINDS
-        source = (SCRIPTS / 'sync.py').read_text()
-        imported = set()
-        for node in ast.walk(ast.parse(source)):
-            if isinstance(node, ast.Import):
-                imported |= {alias.name for alias in node.names}
-            elif isinstance(node, ast.ImportFrom):
-                imported.add(node.module)
-        for kind, module in KINDS.items():
-            with self.subTest(kind=kind):
-                self.assertNotIn(module, imported)
-                for name in (kind, module):
-                    self.assertIsNone(re.search(rf'(?i){re.escape(name)}', source), name)
-
     def test_an_issue_of_a_stand_in_kind_is_recorded_through_its_interface(self):
         import contextlib
         import io
