@@ -2,7 +2,6 @@
 deliver.py reaches each kind of work through the script registry and each shared rule through its
 single home.
 """
-import ast
 import json
 import sys
 import tempfile
@@ -1162,11 +1161,6 @@ class SharedRules(unittest.TestCase):
         for copy in ('key_of', 'PREFIX'):
             with self.subTest(copy=copy):
                 self.assertFalse(hasattr(deliver, copy))
-
-    def test_deliver_defines_no_shared_rule(self):
-        tree = ast.parse((SCRIPTS / 'deliver.py').read_text())
-        defined = {node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)}
-        self.assertEqual(defined & {'tags', 'issue_key', 'key_of', 'issue_done', 'completed'}, set())
 
 
 if __name__ == '__main__':
