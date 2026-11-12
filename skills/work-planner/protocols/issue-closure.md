@@ -18,7 +18,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 3. Check Delivery Completion
 
-- For a task, or an issue whose [registered kind](../artifacts/work-kind.md#registration) supplies Record Merge, retain the task delivery result its delivering pull request established.
+- For a task or a hot-fix, retain the task delivery result its delivering pull request established.
 
 #### Epic Completion
 

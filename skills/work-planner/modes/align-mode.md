@@ -1,6 +1,6 @@
 # Align Mode
 
-Brings one or more existing issues of any [registered kind](../artifacts/work-kind.md#registration), and/or pull requests, into line with the plan they belong to and structurally aligns them with the guidelines they are held to.
+Brings one or more existing issues of any registered kind, and/or pull requests, into line with the plan they belong to and structurally aligns them with the guidelines they are held to.
 
 Alignment checks conformity to work-planning rules; judgement of content fitness belongs to goal review.
 
@@ -25,7 +25,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 3. Validate the Bodies
 
-- Apply [Validate Body](../artifacts/work-kind.md#validate-body "ƒ") for the issue's [registered kind](../artifacts/work-kind.md#registration).
+- Apply [Validate Body](../artifacts/work-kind.md#validate-body "ƒ") for the issue's kind.
 - Supply the fetched context and output files.
 
 #### Reference Visibility
@@ -63,16 +63,16 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Decide each non-mechanical finding with the user.
 
 - Apply [Apply Body Corrections](../artifacts/issue-body.md#apply-body-corrections "ƒ") with confirmed local resolutions, using the selected kind's template and field conditions.
-- Move Non-Goals found in a body whose kind's template has no Non-Goals section into its initiative's Non-Goals, or, outside any initiative, into the boundary below.
+- Move Non-Goals found in a body whose kind's template has no Non-Goals section into its initiative's Non-Goals, or, for a standalone body, into the boundary below.
 - Remove the misplaced section.
 
-#### Boundary Outside an Initiative
+#### Standalone Boundary
 
-- For such a body outside any initiative:
+- For a standalone body:
 
-- Apply [Populate Body](../artifacts/work-kind.md#populate-body "ƒ") for the body's [registered kind](../artifacts/work-kind.md#registration) to the current body with the confirmed boundary, folding any Non-Goals into Proposal as a closing boundary and writing to that operation's output body.
+- Apply [Populate Standalone Body](../artifacts/standalone-body.md#populate-standalone-body "ƒ") to [Current Body](../artifacts/standalone-body.md#current-body) with [Confirmed Boundary](../artifacts/standalone-body.md#confirmed-boundary), folding any Non-Goals into Proposal as a closing boundary and writing to [Output Body](../artifacts/standalone-body.md#output-body).
 
-- Retain the revised output body for publication.
+- Retain the revised [Output Body](../artifacts/standalone-body.md#output-body) for publication.
 
 #### Other Content Corrections
 

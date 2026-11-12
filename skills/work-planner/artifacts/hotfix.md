@@ -1,72 +1,8 @@
 # Hot-fix
 
-A hot-fix's board status, delivery unit and branch, delivering pull requests, hold and delivery record. Each operation fills the [Work Kind](work-kind.md) interface operation its [registration](work-kind.md#registration) names.
+A hot-fix's board status, delivery unit and branch, delivering pull requests, hold and delivery record, and the operations a general caller applies for a hot-fix.
 
 ## Operations
-
-### Release Hot-fix Hold
-
-One held hot-fix returned to Ready on a requested hold release.
-
-#### 1. Capture Development
-
-Apply [Capture Issue Development](issue.md#capture-issue-development "ƒ") for [Hot-fix Identity](#hot-fix-identity).
-
-#### 2. Refuse a Live Unit
-
-Refuse the release while its [Delivery Unit](#delivery-unit) is running or unrecorded, and provide the pull request that makes it so.
-
-#### 3. Return to Ready
-
-Apply [Place Issue on Board](board.md#place-issue-on-board "ƒ") with the board in [Board Evidence](#board-evidence), the hot-fix issue and Ready.
-
-#### 4. Provide Released Board
-
-Provide [Board Result](#board-result) with the saved item and Status.
-
-### Record Hot-fix Dispatch Status
-
-One dispatched hot-fix held In Progress.
-
-#### 1. Hold In Progress
-
-Apply [Record Dispatch Status](board-delivery.md#record-dispatch-status "ƒ") with [Hot-fix Identity](#hot-fix-identity) for In Progress and the supplied [Board Evidence](#board-evidence). That status is the hold [Delivery Unit](#delivery-unit) defines.
-
-#### 2. Provide Held Board
-
-Provide [Board Result](#board-result) with the [Confirmed Statuses](board-delivery.md#confirmed-statuses) it provides: the confirmed status or discrepancy.
-
-### Record Hot-fix Delivery
-
-One hot-fix issue brought to what its delivering pull request establishes, as its [Delivery Record](#delivery-record) states.
-
-#### 1. Verify Criteria
-
-Apply [Verify Selected Criteria](acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
-
-#### 2. Sync the Issue
-
-Run [Sync Hot-fix Issue](#sync-hot-fix-issue "ƒ") for the selected hot-fix and delivering pull request with the provided verified criterion ids.
-
-#### 3. Save the Issue
-
-Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") with the provided body.
-
-#### 4. Provide Delivery Record
-
-Provide the saved identity and [Delivery Findings](#delivery-findings).
-
-### Record Hot-fix Merge
-
-One merged delivering pull request recorded on its hot-fix's issue alone, as its [Delivery Record](#delivery-record) states.
-
-#### 1. Record the Delivery
-
-Apply [Record Hot-fix Delivery](#record-hot-fix-delivery "ƒ") for the hot-fix, with the merge result and the complete issue-link snapshot as its evidence.
-
-#### 2. Provide Merge Record
-
-Provide the saved identity and [Delivery Findings](#delivery-findings), whose closable result selects the issue's closure. The merge records nothing on an epic or initiative.
 
 ### Review Hot-fix Before Merge
 
@@ -197,7 +133,7 @@ A repository-qualified reference to the hot-fix's delivering pull request.
 
 ### Review Rule
 
-The kind review rule a hot-fix's [delivering pull request](#delivering-pull-request) takes under [Review Record](agent-review.md#review-record). Its record also carries `base_ref`, the name of its base branch, and is current while it names the head SHA and that base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. Every finding is fixed, blocking or not.
+The review rule a hot-fix's [delivering pull request](#delivering-pull-request) takes under [Review Record](agent-review.md#review-record). Its record also carries `base_ref`, the name of its base branch, and is current while it names the head SHA and that base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. Every finding is fixed, blocking or not.
 
 ### Delivery Record
 

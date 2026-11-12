@@ -7,7 +7,6 @@ from pathlib import Path
 
 from fixtures import SCRIPTS
 from test_agent_review import hotfix_pr
-from test_kind_operations import resolve
 from test_plan_mode import section
 
 sys.path.insert(0, str(SCRIPTS))
@@ -114,10 +113,9 @@ def walk(tracker, text=None):
             elif line.startswith('Only a confirmed open, ready pull request'):
                 # The operation provides Review State; its caller's next step owns the merge call.
                 caller = CALLER.read_text()
-                review = section(caller, '#### 9. Review Before Merge')
-                assert 'Apply [Review Before Merge](../artifacts/work-kind.md#review-before-merge "ƒ")' in review
-                assert resolve('Review Before Merge', 'Hot-fix')[1] == 'Review Hot-fix Before Merge'
-                assert 'Otherwise, continue to [Merge](#10-merge) only with the confirmed ready [Review State]' in review
+                review = section(caller, '#### 9. Review a Hot-Fix')
+                assert 'Apply [Review Hot-fix Before Merge](../artifacts/hotfix.md#review-hot-fix-before-merge "ƒ")' in review
+                assert 'Continue to [Merge](#10-merge) only with the confirmed ready [Review State]' in review
                 assert 'Merge Task Pull Requests' in CALL.findall(section(caller, '#### 10. Merge'))
                 tracker.events.append('Merge Task Pull Requests')
                 return 'merge', tracker.events

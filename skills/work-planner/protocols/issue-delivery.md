@@ -1,17 +1,20 @@
 # Issue Delivery
 
-The task and epic bodies, or the body of an issue whose kind records its own delivery, brought to what one pull request's delivery establishes.
+The task and epic bodies, or a hot-fix's body, brought to what one pull request's delivery establishes.
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ## Procedure
 
-### 1. Kind Delivery
+### 1. Hot-Fix
 
-- Apply [Record Delivery](../artifacts/work-kind.md#record-delivery "ƒ") for the selected issue, its delivering pull request and the selected criterion ids in the project checkout.
-- On the [Work Kind Result](../artifacts/work-kind.md#work-kind-result) `unsupplied`, continue at [Task Issues](#2-task-issues).
+- For a [hot-fix](../artifacts/hotfix.md), recorded as its [Delivery Record](../artifacts/hotfix.md#delivery-record) states:
+- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
+- Run [Sync Hot-fix Issue](../artifacts/hotfix.md#sync-hot-fix-issue "ƒ") for the selected hot-fix and delivering pull request with the provided verified criterion ids.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
 - Provide the saved identity and findings to the caller.
 - Return to the caller.
+- For any other issue, continue at [Task Issues](#2-task-issues).
 
 ### 2. Task Issues
 

@@ -314,4 +314,4 @@ An issue at Ready, In Progress, In Review or Done is assigned to the user; one i
 
 ### Membership
 
-Each [registered kind](work-kind.md#registration) of work reaches a board through its [interface operations](work-kind.md). A kind supplying Settle Board Status places, moves and removes its item through that operation, which reads and writes the board with this artifact's operations and commands. Every other item takes the Status [Board Status](board-status.md#item-status) gives it. A kind whose own artifact keeps its issues off every board has no item.
+A hot-fix's item is placed, moved and removed by [Settle Hot-fix Board Status](hotfix.md#settle-hot-fix-board-status "ƒ"), which reads and writes the board with this artifact's operations and commands. A standalone issue has no item, as its [Placement](standalone-body.md#placement) states. Every other item takes the Status [Item Status](board-status.md#item-status) gives it.

@@ -68,7 +68,7 @@ Each repository numbers its own initiatives, and an initiative's epics and task 
 
 ### Sections
 
-The report document's management paragraph, board link, initiative, Completed, In progress, Next, unaffiliated-kind and key sections.
+The report document's management paragraph, board link, initiative, Completed, In progress, Next, hot-fix and key sections.
 
 The management paragraph is set off by blank lines, with the board's link beneath the heading.
 
@@ -80,13 +80,13 @@ The management paragraph is set off by blank lines, with the board's link beneat
   Epics In Progress or In Review and task issues In Progress, each epic with its open pull requests, or else its next task.
 - **Next.**
   The five Ready items, each epic with its next task, and a count of the rest.
-  - Ready items of an unaffiliated kind lead.
+  - Ready hot-fixes lead.
   - They follow [Execution Order](work-priority.md#execution-order).
   - An epic is placed ahead of any listed epic naming it, so a supplier reads before the work drawing on it. An epic names another when a task row names one of its rows or the initiative row names it whole.
-- **Unaffiliated kinds.**
-  Each board item of a [registered kind](work-kind.md#registration) outside every initiative follows the epic groups of Completed, In progress or Next as its status places it, with the delivering pull requests its kind's artifact states beneath. An initiative filter leaves such items out.
+- **Hot-fixes.**
+  Each [hot-fix](hotfix.md) follows the epic groups of Completed, In progress or Next as its status places it, with its [delivering pull requests](hotfix.md#delivering-pull-request) beneath. An initiative filter leaves hot-fixes out.
 - **Key.**
-  I Initiative, E Epic, W Work Item and each unaffiliated kind's tag letter with its name, eg `F=Hot-fix`. Opening marks are ✅ done, 🔄 in progress (an initiative, epic or unaffiliated item open and not In Review, or a task issue In Progress), 👀 in review (an initiative, epic or unaffiliated item In Review, or a pull request ready for review), 📝 draft and ▶️ ready.
+  I Initiative, E Epic, W Work Item and F Hot-fix. Opening marks are ✅ done, 🔄 in progress (an initiative, epic or hot-fix open and not In Review, or a task issue In Progress), 👀 in review (an initiative, epic or hot-fix In Review, or a pull request ready for review), 📝 draft and ▶️ ready.
 
 ### Management Paragraph
 

@@ -23,7 +23,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For a new unit of rows, read the declared files from the work-item file each free row links, before reservation replaces that link.
 - For a retained preparation, use its captured declared files and selected record, confirming this run owns that preparation.
-- For a [kind unit](../artifacts/delivery-plan.md#kind-units), use the declared-file context the artifact of its [registered kind](../artifacts/work-kind.md#registration) defines.
+- For a hot-fix, use the declared-file context its [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
 - Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") for the selected record folder.
 - Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") for that folder.
 - Retain its confirmed remote publication as the unit's [Start Evidence](../artifacts/dispatch-batch.md#start-evidence).
@@ -41,22 +41,24 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status "ƒ") for its task issues, where present, and its epic, requesting In Progress.
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the epic and confirm every selected row holds this record.
 
-#### Kind Unit
+#### Hot-Fix Unit
 
-- For a [kind unit](../artifacts/delivery-plan.md#kind-units):
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the issue's current body.
+- For a [hot-fix unit](../artifacts/delivery-plan.md#hot-fix-units):
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the hot-fix's current body.
 
-##### New Kind Unit
+##### New Hot-Fix Unit
 
 - For a new unit, use that issue, board identity and refreshed board items.
 
-- Apply [Record Dispatch Status](../artifacts/work-kind.md#record-dispatch-status "ƒ") with them, requesting In Progress, and retain the confirmed status or discrepancy it provides. The session starts only once it is confirmed.
+- Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status "ƒ") with [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity) for In Progress and the supplied [Board Evidence](../artifacts/hotfix.md#board-evidence). That status is the hold [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
 
-##### Retained Kind Unit Preparation
+- Retain [Board Result](../artifacts/hotfix.md#board-result) with the confirmed status or discrepancy. The session starts only once it is confirmed.
+
+##### Retained Hot-Fix Preparation
 
 - For a retained preparation, require its current board hold to remain confirmed.
 
-##### Confirmed Kind Unit Hold
+##### Confirmed Hot-Fix Hold
 
 - Retain the confirmed hold for this record.
 

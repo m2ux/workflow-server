@@ -14,7 +14,7 @@ from pathlib import Path
 from fixtures import epic_body, hotfix, initiative_body, issue, item, links, pr, run, url
 from test_board_queue import delivering, staged
 from test_command_contracts import arguments
-from test_kind_operations import KIND_NAMES, operations, registration, HIERARCHY
+from test_kind_operations import operations
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT.parent / 'scripts'))
@@ -46,17 +46,6 @@ def findings(path):
     declared = {}
     cited, called = checker.citations(paths, declared)
     return checker.check(path, ROOT.parent, {}, cited, called, declared)
-
-
-def kind_mentions(path):
-    """Each line naming a kind outside the plan hierarchy, or linking a kind's own artifact."""
-    kinds = {(ROOT / artifact).resolve() for kind, artifacts in registration().items() if kind not in HIERARCHY
-             for artifact, _, _ in artifacts}
-    lines, fenced, _ = checker.scan(path)
-    hits = [f'{number}: {line}' for number, line in enumerate(lines, 1) if KIND_NAMES.search(line)]
-    hits += [target for _, target in checker.targets(path, lines, fenced)
-             if target.partition('#')[0] and (path.parent / target.partition('#')[0]).resolve() in kinds]
-    return hits
 
 
 class Documented(unittest.TestCase):
@@ -271,23 +260,9 @@ class BoardStatusArtifact(unittest.TestCase):
         self.assertEqual(sections(STATUS)['Guidance'], ['Closure', 'Item Status', 'Write Jurisdiction'])
         self.assertEqual(list(sections(STATUS)), ['Commands', 'Fields', 'Guidance'])
 
-    def test_it_names_no_kind(self):
-        self.assertEqual(kind_mentions(STATUS), [])
-
-    def test_the_scripts_its_commands_run_name_no_kind(self):
-        run_here = re.findall(r'skills/work-planner/scripts/([\w-]+)\.py', STATUS.read_text())
-        self.assertEqual(sorted(set(run_here)), ['board', 'deliver'])
-        for path in sorted(ROOT.glob('scripts/*.py')):
-            if path.stem in run_here:
-                with self.subTest(script=path.stem):
-                    self.assertEqual([line for line in path.read_text().splitlines() if KIND_NAMES.search(line)], [])
-
 
 class BoardDeliveryCallers(unittest.TestCase):
-    """Board Delivery applies and confirms what Board Status computes, and names no kind."""
-
-    def test_it_names_no_kind(self):
-        self.assertEqual(kind_mentions(DELIVERY), [])
+    """Board Delivery applies and confirms what Board Status computes."""
 
     def test_it_holds_no_command_or_status_rule_of_its_own(self):
         self.assertEqual(list(sections(DELIVERY)), ['Operations', 'Fields'])
@@ -331,9 +306,11 @@ class HotfixCaller(unittest.TestCase):
         self.assertIn('[Closure](board-status.md#closure)', guidance)
         self.assertNotIn('board-delivery.md', guidance)
 
-    def test_the_settle_interface_is_the_board_status_change(self):
-        body = operations(ROOT / 'artifacts' / 'work-kind.md')['Settle Board Status']
-        self.assertIn('[Status Change](board-status.md#status-change)', body)
+    def test_the_write_jurisdiction_links_the_hot_fix_board_status(self):
+        lines, _, headings = checker.scan(STATUS)
+        start = next(index for index, _, title in headings if title == 'Write Jurisdiction')
+        guidance = '\n'.join(lines[start:checker.heading_end(headings, start, 3, len(lines))])
+        self.assertIn('a hot-fix, as its [Board Status](hotfix.md#board-status) gives it', guidance)
 
     def test_every_board_status_target_resolves(self):
         anchors = {checker.anchor_of(title) for _, _, title in checker.scan(STATUS)[2]}

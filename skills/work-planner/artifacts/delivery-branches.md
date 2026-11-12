@@ -388,8 +388,8 @@ A collection of task-branch, base-branch and worktree-path triples for the unit.
 - **Several long-lived branches.**
   A unit whose rows name more than one long-lived branch takes one task branch per epic base it changes, cut from that base, since the bases share no history. Each is the unit's branch with the base's long-lived branch as its last slug word, and opens its own pull request into its own base.
 - eg `i01/e02/w04-write-defaults-main` from `i01/e02/main` and `i01/e02/w04-write-defaults-workflows` from `i01/e02/workflows` for a unit changing `main` and `workflows`.
-- **Kind units.**
-  A [kind unit](delivery-plan.md#kind-units) works on the branch its kind's artifact's Branch names.
+- **Hot-fix.**
+  A hot-fix works on the branch its [Branch](hotfix.md#branch) names.
 
 Each worktree is named by its branch under the worktree directory of the repository's main working tree.
 
