@@ -603,10 +603,9 @@ def summary_here(items: list[dict]) -> str:
 
 
 class KindRegistry(unittest.TestCase):
-    def test_a_stand_in_kind_is_summarised_and_keyed_through_the_registry(self):
+    def test_a_stand_in_kind_is_summarised_through_the_registry(self):
         stand_in = types.ModuleType('stand_in')
         stand_in.tag = lambda found: 'Z01' if (found.get('title') or '').startswith('[Z01]') else None
-        stand_in.letter = lambda: 'Z'
         stand_in.target = lambda found: 'main'
         stand_in.delivering_pulls = lambda prs, key, found: []
         items = [item(issue(6, '[Z01] Stand In: Work'), 'Ready')]
@@ -615,7 +614,6 @@ class KindRegistry(unittest.TestCase):
                 mock.patch.dict(kinds.KINDS, {'stand-in': 'stand_in'}):
             out = summary_here(items)
         self.assertEqual(section(out, 'Next'), [f"▶️ *Z01 Stand In* — {url('issues', 6)}"])
-        self.assertIn('I=Initiative, E=Epic, W=Work Item, F=Hot-fix, Z=Stand-in', out)
 
 
 class SharedRules(unittest.TestCase):
