@@ -74,7 +74,7 @@ These modules exercise the skill's instruction routes and document contracts.
 | [test_board_status](test_board_status.py) | Board Status owns the proposed board change and the commands computing it, and Board Delivery and Hot-fix reach them with the decisions they gave |
 | [test_checkouts](test_checkouts.py) | Checkout-sensitive commands consume linked input contracts |
 | [test_documents](test_documents.py) | The installed prose API exposes complete inputs and directed reading paths, [Work Priority](../artifacts/work-priority.md), [Proposal](../artifacts/proposal.md) and [Test Plan](../artifacts/test-plan.md) each define what every other file reaching it links, and [Proposals Board](../artifacts/proposals-board.md) alone selects and creates the proposals board |
-| [test_kind_operations](test_kind_operations.py) | [Work Kind](../artifacts/work-kind.md) holds Populate Body and Validate Body, each step linking each supplying kind's operation by name before the general route, and every general step applying a kind's operation links it: the hot-fix's operations directly from each caller, and a hot-fix step with one caller written in that caller |
+| [test_kind_operations](test_kind_operations.py) | Each [Work Kind](../artifacts/work-kind.md) step links each supplying kind's operation and no Registration, each hot-fix operation has its linked callers, and no general step applies an unlinked kind operation |
 | [test_merge_outcomes](test_merge_outcomes.py) | Merge instructions bind verified heads and select terminal or bounded recovery routes |
 | [test_modes](test_modes.py) | Mode summaries in each skill's `SKILL.md` |
 | [test_plan_mode](test_plan_mode.py) | Plan Mode keeps a plan in one home: its planning record on the engineering branch, and drafts from an Approved proposal |
@@ -136,13 +136,10 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [change-overview](../protocols/change-overview.md) | [test_architecture_diagrams](test_architecture_diagrams.py) (7) |
 | [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
-| [deliver-mode](../modes/deliver-mode.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_kind_operations](test_kind_operations.py) (18) |
-| [hotfix](../artifacts/hotfix.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_kind_operations](test_kind_operations.py) (18) |
-| [unit-dispatch](../protocols/unit-dispatch.md) | [test_kind_operations](test_kind_operations.py) (18), [test_unit_dispatch](test_unit_dispatch.py) (12) |
-| [hoist-mode](../modes/hoist-mode.md) | [test_kind_operations](test_kind_operations.py) (18) |
-| [work-kind](../artifacts/work-kind.md) | [test_kind_operations](test_kind_operations.py) (18) |
-| [issue-delivery](../protocols/issue-delivery.md) | [test_kind_operations](test_kind_operations.py) (18) |
-| [task-merge](../protocols/task-merge.md) | [test_kind_operations](test_kind_operations.py) (18) |
+| [deliver-mode](../modes/deliver-mode.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12) |
+| [hotfix](../artifacts/hotfix.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_kind_operations](test_kind_operations.py) (6) |
+| [unit-dispatch](../protocols/unit-dispatch.md) | [test_unit_dispatch](test_unit_dispatch.py) (12) |
+| [work-kind](../artifacts/work-kind.md) | [test_kind_operations](test_kind_operations.py) (6) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_unit_dispatch](test_unit_dispatch.py) (12), [test_worktrees](test_worktrees.py) (2) |
 | [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (14) |
 | [configuration](../configuration.md) | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (28) |

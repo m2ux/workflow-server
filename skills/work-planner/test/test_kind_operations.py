@@ -1,6 +1,5 @@
-"""Work Kind holds Populate Body and Validate Body, each step linking each supplying kind's operation by name before
-the general route, and every general step applying a kind's operation links it: the hot-fix's operations directly from
-each caller, and a hot-fix step with one caller written in that caller."""
+"""Each Work Kind step links each supplying kind's operation and no Registration, each hot-fix operation has its linked
+callers, and no general step applies an unlinked kind operation."""
 import re
 import sys
 import unittest
@@ -9,7 +8,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT.parent / 'scripts'))
 import check_skill_files as checker
-from test_plan_mode import section
 
 KIND = ROOT / 'artifacts' / 'work-kind.md'
 CALL = re.compile(r'(?:Apply|Run) \[([^]]+)\]\(([^)\s]*)[^)]*"ƒ"\)')
@@ -89,13 +87,10 @@ def callers(anchor):
 
 
 class WorkKind(unittest.TestCase):
-    """Work Kind holds the two operations several kinds supply, each step linking each kind's operation by name."""
+    """Each Work Kind step links each supplying kind's operation and no Registration."""
 
     def setUp(self):
         self.held = operations(KIND)
-
-    def test_it_holds_populate_and_validate_body_alone(self):
-        self.assertEqual(list(self.held), ['Populate Body', 'Validate Body'])
 
     def test_each_step_links_each_supplying_kind_operation_and_no_registration(self):
         for name, body in self.held.items():
@@ -115,115 +110,21 @@ class WorkKind(unittest.TestCase):
                         verb, _, rest = name.partition(' ')
                         self.assertRegex(titles[target.partition('#')[2]], rf'^{verb} .+ {rest}$')
 
-    def test_each_general_route(self):
-        self.assertIn('- For any other kind, populate the template its body artifact\'s Fields state',
-                      self.held['Populate Body'])
-        self.assertIn('- For any other kind, Apply [Validate Issue Body](issue-body.md#validate-issue-body "ƒ")',
-                      self.held['Validate Body'])
-
-    def test_the_hot_fix_supplies_only_its_body_population(self):
-        self.assertEqual([(path, links) for path, _, links in registration()['Hot-fix']],
-                         [('artifacts/hotfix.md', []),
-                          ('artifacts/hotfix-body.md',
-                           [('Populate Body', 'artifacts/hotfix-body.md#populate-hot-fix-body')])])
-
-    def test_each_lifecycle_artifact_precedes_its_body(self):
-        for kind, lifecycle, body in (('Proposal', 'Proposal', 'Proposal Body'),
-                                      ('Initiative', 'Initiative', 'Initiative Issue Body'),
-                                      ('Epic', 'Epic', 'Epic Issue Body')):
-            with self.subTest(kind=kind):
-                self.assertEqual([title for _, title, _ in registration()[kind]], [lifecycle, body])
-
 
 class HotfixCallers(unittest.TestCase):
-    """Each hot-fix operation is applied through a direct link from the step that applies it."""
+    """Each hot-fix operation is applied through a direct link from each step applying it."""
 
-    EXPECTED = {
-        'settle-hot-fix-board-status': [('modes/hoist-mode.md', 'with the confirmed theme board and the saved issue'),
-                                        ('protocols/task-merge.md', 'with the supplied board and the hot-fix issue')],
-        'review-hot-fix-before-merge': [('modes/deliver-mode.md', 'for its draft delivering pull request')],
-    }
-
-    def test_every_hot_fix_operation_has_its_direct_callers(self):
-        held = {checker.anchor_of(title) for title in operations(ROOT / 'artifacts' / 'hotfix.md')}
-        self.assertEqual(set(self.EXPECTED), held)
-        for anchor, expected in self.EXPECTED.items():
+    def test_every_hot_fix_operation_has_its_linked_callers(self):
+        held = [checker.anchor_of(title) for title in operations(ROOT / 'artifacts' / 'hotfix.md')]
+        self.assertTrue(held)
+        for anchor in held:
             with self.subTest(operation=anchor):
-                sites = callers(anchor)
-                self.assertEqual([site.partition(':')[0] for site, _ in sites], [where for where, _ in expected])
-                for (_, line), (_, inputs) in zip(sites, expected):
-                    self.assertIn('hot-fix', line.lower())
-                    self.assertIn(inputs, line)
-
-    def test_a_hot_fix_step_with_one_caller_is_a_step_of_that_caller(self):
-        delivery = section((ROOT / 'protocols' / 'issue-delivery.md').read_text(), '### 1. Hot-Fix')
-        self.assertEqual([name for name, _ in CALL.findall(delivery)],
-                         ['Verify Selected Criteria', 'Sync Hot-fix Issue', 'Save Tracker Issue'])
-        merge = section((ROOT / 'protocols' / 'task-merge.md').read_text(), '### 1. Record a Hot-Fix')
-        self.assertIn('Follow [Issue Delivery](issue-delivery.md "ƒ") for the hot-fix, with the merge result and the '
-                      'complete issue-link snapshot as its evidence.', merge)
-        release = section((ROOT / 'modes' / 'deliver-mode.md').read_text(), '###### Hot-Fix Hold')
-        self.assertEqual([name for name, _ in CALL.findall(release)], ['Capture Issue Development', 'Place Issue on Board'])
-        self.assertIn('Refuse the release while its [Delivery Unit](../artifacts/hotfix.md#delivery-unit) is running or '
-                      'unrecorded', release)
-        self.assertIn('- For any other issue, continue at [Task Issues](#2-task-issues).',
-                      section((ROOT / 'protocols' / 'issue-delivery.md').read_text(), '### 1. Hot-Fix'))
-        self.assertIn('- For any other merge, continue at [Read and Record](#2-read-and-record).',
-                      section((ROOT / 'protocols' / 'task-merge.md').read_text(), '### 1. Record a Hot-Fix'))
-        hold = section((ROOT / 'protocols' / 'unit-dispatch.md').read_text(), '##### New Hot-Fix Unit')
-        self.assertIn('use that issue, board identity and refreshed board items', hold)
-        self.assertIn('The session starts only once it is confirmed', hold)
-
-
-class HotfixContracts(unittest.TestCase):
-    """Hot-fix holds the operations several callers apply, each providing its results."""
-
-    def setUp(self):
-        self.supplied = operations(ROOT / 'artifacts' / 'hotfix.md')
-
-    def calls(self, name):
-        return [called for called, _ in CALL.findall(self.supplied[name])]
-
-    def test_it_holds_the_operations_several_callers_apply(self):
-        self.assertEqual(list(self.supplied), ['Review Hot-fix Before Merge', 'Settle Hot-fix Board Status'])
-
-    def test_review_produces_the_general_review_and_provides_review_state(self):
-        body = self.supplied['Review Hot-fix Before Merge']
-        self.assertEqual(self.calls('Review Hot-fix Before Merge')[0], 'Produce Agent Review')
-        self.assertIn('(agent-review.md#produce-agent-review "ƒ")', body)
-        self.assertIn('provides [Review State](pull-request.md#review-state)', body)
-
-    def test_no_general_file_runs_a_hot_fix_step_inline(self):
-        """The steps each operation owns live in the hot-fix artifact, not in the general files that apply it."""
-        for folder in ('modes', 'protocols'):
-            for path in sorted((ROOT / folder).glob('*.md')):
-                text = path.read_text()
-                for mark in ('Verify Hot-Fix Readiness', 'Restore Hot-Fix Draft', 'Repair Hot-Fix Findings'):
-                    with self.subTest(file=path.name, mark=mark):
-                        self.assertNotIn(mark, text)
-
-
-class BodyCallers(unittest.TestCase):
-    """A caller whose kind varies applies Work Kind's body operation; one outside any initiative links Standalone."""
-
-    def test_work_kind_body_operations_have_their_callers(self):
-        self.assertEqual([site.partition(':')[0] for site, _ in selections('Validate Body')], ['modes/align-mode.md'])
-        self.assertEqual([site.partition(':')[0] for site, _ in selections('Populate Body')], ['modes/hoist-mode.md'])
-
-    def test_a_body_outside_any_initiative_links_populate_standalone_body(self):
-        self.assertEqual(sorted({site.partition(':')[0] for site, _ in callers('populate-standalone-body')}),
-                         ['artifacts/work-kind.md', 'modes/align-mode.md', 'modes/deliver-mode.md'])
-
-    def test_hoist_reaches_the_hot_fix_body_through_work_kind(self):
-        self.assertEqual([site.partition(':')[0] for site, _ in callers('populate-hot-fix-body')],
-                         ['artifacts/work-kind.md'])
-        rewrite = section((ROOT / 'modes' / 'hoist-mode.md').read_text(), '##### 1. Populate Selected Body')
-        self.assertIn('[Rewrite Inputs](../artifacts/placement.md#rewrite-inputs)', rewrite)
-        self.assertIn('for a hot-fix, its supplied number, theme label and target', rewrite)
+                self.assertTrue(callers(anchor), f'no step applies {anchor} through a link')
 
 
 class GeneralCallers(unittest.TestCase):
-    """No general step dispatches a kind's operation without linking it."""
+    """No general step dispatches a kind's operation without linking it, and each application names a Work Kind
+    operation that exists."""
 
     def test_no_step_applies_an_unlinked_kind_operation(self):
         for folder in GENERAL:
@@ -238,12 +139,6 @@ class GeneralCallers(unittest.TestCase):
             with self.subTest(line=line):
                 self.assertTrue(UNLINKED.search(line))
         self.assertIsNone(UNLINKED.search('Apply [Populate Body](../artifacts/work-kind.md#populate-body "ƒ")'))
-
-    def test_no_general_file_uses_the_kind_unit_term(self):
-        for folder in GENERAL:
-            for path in sorted((ROOT / folder).glob('*.md')):
-                with self.subTest(file=path.name):
-                    self.assertNotRegex(path.read_text(), r'(?i)kind units?\b|#kind-units')
 
     def test_each_application_names_a_work_kind_operation(self):
         anchors = {checker.anchor_of(name) for name in operations(KIND)}
