@@ -121,8 +121,8 @@ Ranked most harmful first. Items covered by F14 are listed under [Settled: Work 
 
 ## Delivery
 
-- **F14.** The [settled Work Kind revert](#settled-work-kind), against `workspace`.
-- **F15.** Remediation items 1–8, as one hot-fix against `workspace`. It is raised once F14 merges, because item 6 depends on it.
+- **F14.** The [settled Work Kind revert](#settled-work-kind): #1707, delivered by PR #1708, merged as `e6eb1af6d`.
+- **F15.** Remediation items 1–8 and `test_hotfix_readiness.py`: #1709, delivered by PR #1710, merged as `5721e4aad`.
 
 ## Coupling
 
