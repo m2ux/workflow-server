@@ -43,16 +43,16 @@ An initiative row identifies its epic issue. A task issue has its delivery link 
 | New task | A row in an existing epic, with its criteria | Subsumed |
 | New epic | An epic in an existing initiative, with a task row carrying the work | Subsumed |
 | New initiative | An initiative | Kept or subsumed |
-| Registered kind | An issue of another [registered kind](work-kind.md#registration) on its theme board, meeting the definition its artifacts give | Kept |
+| Hot-fix | A [hot-fix](hotfix-body.md#definition) on its theme board, with its target | Kept |
 | Leave | Work outside the initiative structure | Left open |
 
 ### Candidate Issues
 
-Candidates are open issues without an agent-engineering prefix, other than a proposal, an issue whose title carries the tag of a [registered kind](work-kind.md#registration), and a declared throwaway target: an issue carrying a `throwaway:*` label, a fixture a write check changes, which stays open and belongs in no initiative. Orphans have no incoming link from an open initiative, epic or task. Cited standalone issues have such a link in prose or References; their records include labels, citing issues and any linked planning folder. An investigation cited by an epic is a candidate, with disposition determined from supplied criteria.
+Candidates are open issues without an agent-engineering prefix, other than a proposal, a [hot-fix](hotfix-body.md#titles), and a declared throwaway target: an issue carrying a `throwaway:*` label, a fixture a write check changes, which stays open and belongs in no initiative. Orphans have no incoming link from an open initiative, epic or task. Cited standalone issues have such a link in prose or References; their records include labels, citing issues and any linked planning folder. An investigation cited by an epic is a candidate, with disposition determined from supplied criteria.
 
 ### Destination Work
 
-An existing-epic option identifies the row to add, with Description, criteria, Depends on and Joins, or the existing task already delivering the work. Leave applies when no initiative goal covers it and it meets no other registered kind's definition, or when it is not planned work. Each option names its disposition, as [Disposition Conditions](#disposition-conditions) state.
+An existing-epic option identifies the row to add, with Description, criteria, Depends on and Joins, or the existing task already delivering the work. Leave applies when no initiative goal covers it and it is no hot-fix, or when it is not planned work. Each option names its disposition, as [Disposition Conditions](#disposition-conditions) state.
 
 ### Placement Inputs
 
@@ -68,7 +68,7 @@ The supplied confirmed placement, current source and destination records, and af
 
 ### Rewrite Inputs
 
-The source identity, selected destination kind, body evidence and design; for an issue of another registered kind, its theme label, its theme board, each placement field its body artifact requires and the provided number.
+The source identity, selected destination kind, body evidence and design; for a hot-fix, its theme label, confirmed [target](hotfix-body.md#target), theme board and provided number.
 
 ### Transfer Inputs
 
@@ -84,7 +84,7 @@ The candidate issues and open initiative and epic destinations provided for inve
 
 ### Saved Orphan
 
-The saved issue identity and the board item its registered kind settles when applicable, or the confirmed transferred closure or blocker.
+The saved issue identity and settled hot-fix board item when applicable, or the confirmed transferred closure or blocker.
 
 ### Workspace
 
@@ -96,8 +96,8 @@ The absolute supplied checkout path holding the installed Work Planner scripts a
 
 - **Existing task, new task and new epic.**
   The source is subsumed, its work planned as an ordinary task row.
-- **Registered kind.**
-  The source is kept, under its kind's layout, and is placed on its theme board once it is saved as an issue of that kind.
+- **Hot-fix.**
+  The source is kept, under the hot-fix layout, and is placed on its theme board once it is saved as a hot-fix.
 - **New initiative.**
   A source with a planning-record reference is subsumed, with that folder cited beside the source in the destination. Otherwise the source is kept when its work needs its own discussion or evidence, and subsumed when its detail fits in rows, criteria and a reference.
 - **Existing criterion.**

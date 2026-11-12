@@ -29,4 +29,4 @@ The order available epic units take: by initiative priority, then by epic priori
 - Equally ranked initiatives keep repository and issue order, as do equally ranked epics within one initiative; task order breaks remaining ties.
 - An unranked initiative or sibling epic follows ranked items at its own level.
 - An epic's parent is the initiative whose Work Breakdown links its issue, including across repositories; an epic without supplied parent evidence groups with its initiative prefix at unranked initiative priority.
-- A [kind unit](delivery-plan.md#kind-units) sits outside the [Priority Sets](#priority-sets).
+- A [hot-fix unit](delivery-plan.md#hot-fix-units) sits outside the [Priority Sets](#priority-sets).

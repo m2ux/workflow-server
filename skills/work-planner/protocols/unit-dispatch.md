@@ -23,7 +23,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For a new unit of rows, read the declared files from the work-item file each free row links, before reservation replaces that link.
 - For a retained preparation, use its captured declared files and selected record, confirming this run owns that preparation.
-- For a [kind unit](../artifacts/delivery-plan.md#kind-units), use the declared-file context the artifact of its [registered kind](../artifacts/work-kind.md#registration) defines.
+- For a hot-fix, use the declared-file context its [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
 - Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") for the selected record folder.
 - Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") for that folder.
 - Retain its confirmed remote publication as the unit's [Start Evidence](../artifacts/dispatch-batch.md#start-evidence).

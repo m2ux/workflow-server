@@ -15,7 +15,7 @@ Work Planner plans work as GitHub issues and keeps the plan current until the wo
 - Standalone issue
 - Hot-fix
 
-[Work Kind](artifacts/work-kind.md) registers each kind with what it is, the artifacts holding it and the interface operations each supplies.
+[Work Kind](artifacts/work-kind.md) registers each kind with what it is, the artifacts holding it and the body operations each supplies.
 
 Each theme's project board shows where its items stand. The [proposals board](artifacts/proposals-board.md) holds proposals. A planning record holds what an initiative leaves out: the evidence, the decisions and each review.
 

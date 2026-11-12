@@ -273,7 +273,7 @@ When the absent board is the [proposals board](../artifacts/proposals-board.md),
 - Retain the [Copied Board](../artifacts/board.md#copied-board) after linking succeeds.
 - Require the new theme's label and board before an initiative takes that theme.
 
-- The theme board must hold the theme's initiatives, epics, task issues and each issue its [registered kind](../artifacts/work-kind.md#registration) places on it.
+- The theme board must hold the theme's initiatives, epics, task issues and [hot-fixes](../artifacts/hotfix.md#board-status).
 
 ##### 3. Retain Copied Board
 

@@ -10,7 +10,7 @@ The brief's local working-file path, outside every repository it names because t
 
 ### Work Identity
 
-The brief names the URL of the issue the unit delivers, its rows' epic or the issue of a [kind unit](delivery-plan.md#kind-units), task ids, Descriptions, covered acceptance criteria and the theme board carrying that issue's item. It includes each task branch, with the base it is cut from and the unit checkout where the session works on it, and the project checkout the session merges through.
+The brief names the URL of the issue the unit delivers, its rows' epic or a [hot-fix unit](delivery-plan.md#hot-fix-units)'s issue, task ids, Descriptions, covered acceptance criteria and the theme board carrying that issue's item. It includes each task branch, with the base it is cut from and the unit checkout where the session works on it, and the project checkout the session merges through.
 
 ### Planning Record
 
