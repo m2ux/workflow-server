@@ -28,7 +28,7 @@ A review record for the exact integration revision.
 
 #### 3. Write Revision Review Record
 
-Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the `base_ref` the hot-fix Review Rule adds, the scope actually inspected, findings and validation results. An empty findings list states that the review found no in-scope defect.
+Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the `base_ref` a hot-fix's record carries under its [Review Rule](hotfix.md#review-rule), the scope actually inspected, findings and validation results. An empty findings list states that the review found no in-scope defect.
 
 #### 4. Provide Review Evidence
 
