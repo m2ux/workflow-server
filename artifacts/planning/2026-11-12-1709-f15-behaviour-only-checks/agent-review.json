@@ -1,0 +1,78 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1710",
+    "base": "ad6d35fa615dac2b0e837d8ee60bfc1c86779c26",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-12-1709-f15-behaviour-only-checks/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-12",
+    "head": "156998dc6184d896a8dc74a402f43eb9d422f7c7",
+    "scope": "The whole branch against workspace, ad6d35fa6..156998dc6. Since b1fca1a3c: merge 156998dc6 brings in F08 (#1706, merge ad6d35fa6). Conflicts resolved: hotfix.py module docstring keeps F08's pull request body sections and names no letter operation; the test README takes F08's pull_request_body row and every count is recomputed. Read in full: the merge diff b1fca1a3c..156998dc6, pull_request_body.py, test_pull_request_body.py, the kinds.py issue_fields operation, check_skill_files.py KINDS and its file-value check, rules.json operations/bodies, and test_check_skill_files.py ordering (main guard last). The removed-name grep over skills/ was re-run on the merged tree.",
+    "criteria": "AC1: check_skill_files.py holds no before-use or Fields-candidate code or docstring paragraph, the prerequisites fixture is gone, rules.json names neither kind, and executable step in Fields still reports (shared suite FieldsBoundary, grep, checker). AC2: test_reading_routes.py, reading-captures.json and their README rows are gone (planner suite, grep). AC3: test_architecture_diagrams.py, architecture-captures.json and test_unit_dispatch.py are gone; test_advance_decisions runs board-queue.py on captures alone; test_review_scope keeps agent_review.check cases alone; test_deps holds no Dependency Graph sentence assert or word ban; test_format holds no Required Criteria field test (planner suite, grep). AC4: guidelines.md holds no Policy Review or Boundary review, rules.json no matched-contexts, evidence-controls or boundary-review, and Before-use ordering states its principle (checker, grep). AC5: deps.py reads a comma-separated list of whitespace-free branch:path entries, reports any other entry, and holds no names_path, ABBREVIATION or bare-path branch (planner suite). AC6: letter() is in neither kinds.py nor hotfix.py, and progress.py key reads F=Hot-fix (test_progress). AC7: the kind-module import rule, its tests and its rules.json mapping are gone, with the six script-test copies of it (shared suite, grep). AC8: test_shared holds no AST scan for a second copy of PREFIX or PULL_REF (planner suite). AC9: test_hotfix_readiness quotes no Deliver sentence and checks Deliver steps by their call links (planner suite).",
+    "validation": "At 156998dc6: planner suite 1190 tests OK (1 skipped); shared suite 295 tests OK; check_skill_files.py skills/work-planner 65 files, 0 findings; git diff --check ad6d35fa6 156998dc6 clean; removed-name grep 0 lines; pull_request_body.py on the pull request body: no finding.",
+    "findings": []
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1710",
+    "base": "e6eb1af6d9ba6de3b97ff49a85ce82548224e285",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-12-1709-f15-behaviour-only-checks/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-12",
+    "head": "b1fca1a3caa3223e8382a5e12700dcb2978a869c",
+    "scope": "The whole branch against workspace, e6eb1af6d..b1fca1a3c. Since 461977abe: the branch was rebased to reword its first commit (tree unchanged), and b1fca1a3c reads each Component entry as one whitespace-free branch:path, drops the leading ./ strip, names the entry problem in dependency-graph.md and delivery-plan.md, restores the a.py fixture name and counts test_dispatch 33 in the test README. Read in full: scripts/deps.py normalise, read_components and on_branch; scripts/deliver.py changed_bases; artifacts/dependency-graph.md Check Dependencies; artifacts/delivery-plan.md undeclared line; artifacts/work-item.md Component; test_deps ComponentContention and DirectoryComponents; test_deliver Survey. The whole branch at 461977abe was read by an independent reviewer: every changed script, test module, the test README, guidelines.md, rules.json, check_skill_files.py and its tests, against the issue criteria and the I17 E02 review guide items 1-8, with a grep of skills/ for every removed name.",
+    "criteria": "AC1: check_skill_files.py holds no before-use or Fields-candidate code or docstring paragraph, the prerequisites fixture is gone, rules.json names neither kind, and executable step in Fields still reports (shared suite FieldsBoundary, grep, checker). AC2: test_reading_routes.py, reading-captures.json and their README rows are gone (planner suite, grep). AC3: test_architecture_diagrams.py, architecture-captures.json and test_unit_dispatch.py are gone; test_advance_decisions runs board-queue.py on captures alone; test_review_scope keeps agent_review.check cases alone; test_deps holds no Dependency Graph sentence assert or word ban; test_format holds no Required Criteria field test (planner suite, grep). AC4: guidelines.md holds no Policy Review or Boundary review, rules.json no matched-contexts, evidence-controls or boundary-review, and Before-use ordering states its principle (checker, grep). AC5: deps.py reads a comma-separated list of whitespace-free branch:path entries, reports any other entry, and holds no names_path, ABBREVIATION or bare-path branch (planner suite). AC6: letter() is in neither kinds.py nor hotfix.py, and progress.py key reads F=Hot-fix (test_progress). AC7: the kind-module import rule, its tests and its rules.json mapping are gone, with the six script-test copies of it (shared suite, grep). AC8: test_shared holds no AST scan for a second copy of PREFIX or PULL_REF (planner suite). AC9: test_hotfix_readiness quotes no Deliver sentence and checks Deliver steps by their call links (planner suite).",
+    "validation": "At b1fca1a3c: planner suite 1176 tests OK (1 skipped); shared suite 291 tests OK; check_skill_files.py skills/work-planner 65 files, 0 findings; git diff --check e6eb1af6d b1fca1a3c clean; removed-name grep 0 lines.",
+    "findings": []
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1710",
+    "base": "e6eb1af6d9ba6de3b97ff49a85ce82548224e285",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-12-1709-f15-behaviour-only-checks/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-12",
+    "head": "461977abe87fa46fa90d7fecb149b9f3feaf6897",
+    "scope": "The whole branch against workspace, e6eb1af6d..461977abe, read by an independent reviewer against AC1-AC9 and review guide items 1-8.",
+    "criteria": "AC1: check_skill_files.py holds no before-use or Fields-candidate code or docstring paragraph, the prerequisites fixture is gone, rules.json names neither kind, and executable step in Fields still reports (shared suite FieldsBoundary, grep, checker). AC2: test_reading_routes.py, reading-captures.json and their README rows are gone (planner suite, grep). AC3: test_architecture_diagrams.py, architecture-captures.json and test_unit_dispatch.py are gone; test_advance_decisions runs board-queue.py on captures alone; test_review_scope keeps agent_review.check cases alone; test_deps holds no Dependency Graph sentence assert or word ban; test_format holds no Required Criteria field test (planner suite, grep). AC4: guidelines.md holds no Policy Review or Boundary review, rules.json no matched-contexts, evidence-controls or boundary-review, and Before-use ordering states its principle (checker, grep). AC5: deps.py reads a comma-separated list of whitespace-free branch:path entries, reports any other entry, and holds no names_path, ABBREVIATION or bare-path branch (planner suite). AC6: letter() is in neither kinds.py nor hotfix.py, and progress.py key reads F=Hot-fix (test_progress). AC7: the kind-module import rule, its tests and its rules.json mapping are gone, with the six script-test copies of it (shared suite, grep). AC8: test_shared holds no AST scan for a second copy of PREFIX or PULL_REF (planner suite). AC9: test_hotfix_readiness quotes no Deliver sentence and checks Deliver steps by their call links (planner suite).",
+    "validation": "At 461977abe: planner suite 1176 tests OK (1 skipped); shared suite 291 tests OK; check_skill_files.py skills/work-planner 65 files, 0 findings.",
+    "findings": [
+      {
+        "description": "The test README said \"The 34 tests of test_dispatch\"; the module has 33.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b1fca1a3caa3223e8382a5e12700dcb2978a869c"
+      },
+      {
+        "description": "A test_deps fixture file was renamed workspace:a.py by the fixture rewrite, so it no longer named the file the test checks.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b1fca1a3caa3223e8382a5e12700dcb2978a869c"
+      },
+      {
+        "description": "deps.py normalise stripped a leading ./ that only a bare path carries; docs and a test described it.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b1fca1a3caa3223e8382a5e12700dcb2978a869c"
+      },
+      {
+        "description": "Dependency Graph Check Dependencies did not name the entry-on-no-branch problem deps.py reports.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b1fca1a3caa3223e8382a5e12700dcb2978a869c"
+      },
+      {
+        "description": "An entry with prose after its branch: prefix passed as a file, so \"any other entry is a problem\" overclaimed.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b1fca1a3caa3223e8382a5e12700dcb2978a869c"
+      },
+      {
+        "description": "The first commit's subject named the passes it removed rather than the design.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/bdb2f452314765b10b88cd15d983a745e40cf039"
+      }
+    ]
+  }
+]
