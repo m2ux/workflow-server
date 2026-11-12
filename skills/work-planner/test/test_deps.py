@@ -317,8 +317,10 @@ class UnitAccounting(unittest.TestCase):
 
     def test_a_six_criterion_candidate_is_open(self):
         code, text = check(breakdown(('W01', 'AC1, AC2, AC3', '', '', ''),
-                                     ('W02', 'AC4, AC5, AC6', '', '', '')), {'W01': 'workspace:a.py', 'W02': 'workspace:a.py'})
-        self.assertEqual(joins_section(text), [f'E06:W01, E06:W02 extend workspace:a.py: name each other in Joins {OPEN}'])
+                                     ('W02', 'AC4, AC5, AC6', '', '', '')),
+                           {'W01': 'workspace:a.py', 'W02': 'workspace:a.py'})
+        self.assertEqual(joins_section(text),
+                         [f'E06:W01, E06:W02 extend workspace:a.py: name each other in Joins {OPEN}'])
 
     def test_a_joined_unit_over_the_bound_is_a_problem(self):
         code, text = check(breakdown(('W01', 'AC1, AC2, AC3, AC4', '', 'W02', ''),

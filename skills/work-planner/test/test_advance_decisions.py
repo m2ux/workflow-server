@@ -1,4 +1,6 @@
-"""board-queue.py over captured Advance boards: a saved answer settles the queue, and missing or further evidence keeps it pending."""
+"""board-queue.py over captured Advance boards: a saved answer settles the queue, and missing or
+further evidence keeps it pending.
+"""
 import copy
 import json
 import re
