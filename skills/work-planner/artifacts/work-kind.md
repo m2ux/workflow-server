@@ -1,6 +1,6 @@
 # Work Kind
 
-Each kind of work, as its [Registration](#registration) lists it, and the two operations several kinds supply: each runs the operation the item's kind supplies, or the general route for any other kind.
+Each kind of work, as its [Registration](#registration) lists it, and the two operations several kinds supply: each step links each supplying kind's operation by name, then the general route for any other kind.
 
 ## Operations
 

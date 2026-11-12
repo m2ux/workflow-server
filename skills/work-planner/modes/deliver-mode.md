@@ -87,7 +87,14 @@ The continuing coordinator for one authorized delivery scope.
 
 ###### Hot-Fix Hold
 
-- For a hot-fix hold, Apply [Release Hot-fix Hold](../artifacts/hotfix.md#release-hot-fix-hold "ƒ") with its issue and the selected board, and retain the board result or refusal it provides.
+- For a hot-fix hold:
+
+- Apply [Capture Issue Development](../artifacts/issue.md#capture-issue-development "ƒ") for [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity).
+- Refuse the release while its [Delivery Unit](../artifacts/hotfix.md#delivery-unit) is running or unrecorded, and provide the pull request that makes it so to the caller.
+
+- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with the board in [Board Evidence](../artifacts/hotfix.md#board-evidence), the hot-fix issue and Ready.
+
+- Retain [Board Result](../artifacts/hotfix.md#board-result) with the saved item and Status.
 
 ##### Survey Continuation
 

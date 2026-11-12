@@ -15,7 +15,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT.parent / 'scripts'))
 import check_skill_files as checker
-from test_kind_operations import KIND, implementations
 
 WHERE_IT_STANDS = re.compile(r'^\s*(git (?!-C )|gitnexus )')
 VOCABULARY_LEAD = re.compile(r'^(\s*)- \*\*Checkouts\.\*\*')
@@ -189,10 +188,8 @@ class Corpus:
             return bool(re.search(re.escape(checkout) + r' (?:checkout|worktree)\b', inputs)
                         or re.search(r'^checkout$', inputs, re.M))
         end = document.spans[start][1]
-        dispatched = implementations(anchor) if destination == KIND.resolve() else []
         return any(self.accepts(target, fragment, checkout, visited)
-                   for target, fragment in [*((target, fragment) for index, target, fragment in document.calls()
-                                              if start < index < end), *dispatched])
+                   for index, target, fragment in document.calls() if start < index < end)
 
 
 class ExecutingCheckoutEvidence(unittest.TestCase):
