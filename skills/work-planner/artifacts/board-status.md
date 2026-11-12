@@ -145,6 +145,6 @@ Each computation holds its changes to one jurisdiction and refuses a change outs
 - **Delivery.**
   Board changes computed from delivery evidence move no initiative or epic between Ready and Backlog.
 - **Queue.**
-  The [queue](board-queue.md) sets Backlog, Ready and In Progress on initiatives and epics, and moves no task. In Review and Done are refused, but for the In Review of an open issue, and the Done of one closed as completed, of a hot-fix.
+  The [queue](board-queue.md) sets Backlog, Ready and In Progress on initiatives and epics, and moves no task. In Review and Done are refused, but for an open hot-fix's In Review and the Done of a hot-fix closed as completed.
 - **Dispatch.**
   A dispatch sets In Progress on held tasks and epics and In Review on completed epics, and refuses every other Status and any removal.

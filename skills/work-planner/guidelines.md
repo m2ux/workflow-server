@@ -23,7 +23,7 @@ The skill is an object model in prose: an artifact owns state and callable capab
 ### Liskov Substitution
 
 - **Interchangeable contracts.**
-  Every kind's operation for a [Work Kind](artifacts/work-kind.md) operation accepts the inputs and provides the output shape that operation promises. A kind may constrain its own fields, but must not narrow accepted interface inputs or return less than that contract requires.
+  Every kind's operation for a [Work Kind](artifacts/work-kind.md) operation accepts the inputs and provides the output shape that operation promises. A kind may constrain its own fields, but must not narrow accepted inputs or return less than that contract requires.
 
 ### Interface Segregation
 
