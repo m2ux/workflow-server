@@ -45,7 +45,6 @@ These modules exercise the programs in `../scripts`, which the coverage table ma
 | [test_development_link](test_development_link.py) | Development links added and removed by [development-link](../scripts/development-link.py), and read back from both ends |
 | [test_dispatch](test_dispatch.py) | Continuous dispatch from real delivery surveys and observed worker events |
 | [test_format](test_format.py) | [format](../scripts/format.py) on standalone issues |
-| [test_hotfix_readiness](test_hotfix_readiness.py) | Hot-fix readiness routes restore and confirm draft before repair |
 | [test_hotfix](test_hotfix.py) | [hotfix](../scripts/hotfix.py): a hot-fix's identity, labels, target, board status, delivering pull requests, delivery unit state and agent review rule, each reached through the Kind interface the module supplies, which is all it exports |
 | [test_kinds](test_kinds.py) | The script registry, [kinds](../scripts/kinds.py), maps each kind of work to its module and selects an item's kind from its title, and each registered module supplies the Kind interface |
 | [test_lane](test_lane.py) | Lane's raw-cell, assignment, consistency and admission contracts |
@@ -93,7 +92,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 
 | Script | Exercised by |
 | --- | --- |
-| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (21), [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_review_scope](test_review_scope.py) (6) |
+| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (21), [test_review_scope](test_review_scope.py) (6) |
 | [align](../scripts/align.py) | [test_align](test_align.py) (13) |
 | [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_board_queue](test_board_queue.py) (77), [test_deliver](test_deliver.py) (106), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (19) |
 | [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (7), [test_board_queue](test_board_queue.py) (77), [test_shared](test_shared.py) (19) |
@@ -132,8 +131,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | `artifacts/` | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (28) |
 | [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
 | [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
-| [deliver-mode](../modes/deliver-mode.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12) |
-| [hotfix](../artifacts/hotfix.md) | [test_hotfix_readiness](test_hotfix_readiness.py) (12), [test_kind_operations](test_kind_operations.py) (6) |
+| [hotfix](../artifacts/hotfix.md) | [test_kind_operations](test_kind_operations.py) (6) |
 | [work-kind](../artifacts/work-kind.md) | [test_kind_operations](test_kind_operations.py) (6) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_worktrees](test_worktrees.py) (2) |
 | [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (14) |
