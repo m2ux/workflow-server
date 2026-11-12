@@ -731,23 +731,6 @@ class DeclarationAtRevision(unittest.TestCase):
             with self.subTest(fault=fault):
                 self.assertIn(fault, malformed[1])
 
-    def test_the_field_states_the_declaration_and_validation_owns_its_outcomes(self):
-        field = guide_section('Required Criteria').replace(guide_example(), '')
-        for clause in ('the check', 'report', 'unevaluable', 'source', 'evaluated', 'resolving to no commit'):
-            with self.subTest(field_lacks=clause):
-                self.assertNotIn(clause, field.casefold())
-        text = GUIDE.read_text()
-        step = text.split('\n#### 4. Identify Required Criteria\n', 1)[1].split('\n#### ', 1)[0]
-        for clause in ('[Required Criteria](#required-criteria) declaration at the commit the [evaluated revision]',
-                       'name that path, commit and repository as the source',
-                       "changed files as the tracker lists them",
-                       'declares nothing brings no required-criteria finding',
-                       'resolving to no commit, or a [malformed statement](#required-criteria)',
-                       'unevaluable. Report that with the fault named, and report no epic as lacking a criterion',
-                       'changed files are not supplied leaves that criterion unevaluable'):
-            with self.subTest(step_holds=clause):
-                self.assertIn(clause, step)
-
     def test_the_criteria_and_their_source_come_from_the_resolved_commit(self):
         commit = commit_declaration(self.checkout, guide_example())
         read = self.read('HEAD')

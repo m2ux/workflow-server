@@ -104,9 +104,9 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (34) |
-| [format](../scripts/format.py) | [test_format](test_format.py) (116), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (21), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
+| [format](../scripts/format.py) | [test_format](test_format.py) (115), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (21), [test_sync](test_sync.py) (187), [test_templates](test_templates.py) (6) |
 | [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (26), [test_kinds](test_kinds.py) (9) |
-| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (22), [test_board_queue](test_board_queue.py) (77), [test_deliver](test_deliver.py) (108), [test_dispatch](test_dispatch.py) (34), [test_format](test_format.py) (116), [test_hotfix](test_hotfix.py) (26), [test_kinds](test_kinds.py) (9), [test_orphans](test_orphans.py) (5), [test_progress](test_progress.py) (79), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
+| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (22), [test_board_queue](test_board_queue.py) (77), [test_deliver](test_deliver.py) (108), [test_dispatch](test_dispatch.py) (34), [test_format](test_format.py) (115), [test_hotfix](test_hotfix.py) (26), [test_kinds](test_kinds.py) (9), [test_orphans](test_orphans.py) (5), [test_progress](test_progress.py) (79), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (187) |
 | [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (34), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
