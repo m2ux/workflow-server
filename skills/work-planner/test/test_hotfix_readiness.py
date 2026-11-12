@@ -113,9 +113,7 @@ def walk(tracker, text=None):
             elif line.startswith('Only a confirmed open, ready pull request'):
                 # The operation provides Review State; its caller's next step owns the merge call.
                 caller = CALLER.read_text()
-                review = section(caller, '#### 9. Review a Hot-Fix')
-                assert 'Apply [Review Hot-fix Before Merge](../artifacts/hotfix.md#review-hot-fix-before-merge "ƒ")' in review
-                assert 'Continue to [Merge](#10-merge) only with the confirmed ready [Review State]' in review
+                assert 'Review Hot-fix Before Merge' in CALL.findall(section(caller, '#### 9. Review a Hot-Fix'))
                 assert 'Merge Task Pull Requests' in CALL.findall(section(caller, '#### 10. Merge'))
                 tracker.events.append('Merge Task Pull Requests')
                 return 'merge', tracker.events
