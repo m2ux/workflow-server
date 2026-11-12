@@ -1,18 +1,18 @@
 # Task Merge
 
-What the task, epic, board and initiative records, or the issue of a kind recording its own merge, become after one confirmed task merge.
+What the task, epic, board and initiative records, or a hot-fix's issue, become after one confirmed task merge.
 
 Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ## Procedure
 
-### 1. Kind Merge
+### 1. Record a Hot-Fix
 
-- Apply [Record Merge](../artifacts/work-kind.md#record-merge "ƒ") for the issue the merge delivers, with the merge result and the complete issue-link snapshot.
-- On the [Work Kind Result](../artifacts/work-kind.md#work-kind-result) `unsupplied`, continue at [Read and Record](#2-read-and-record).
-- Follow [Issue Closure](issue-closure.md "ƒ") for that issue when eligible.
-- Apply [Settle Board Status](../artifacts/work-kind.md#settle-board-status "ƒ") with the supplied board and the issue.
+- For the merge of a [hot-fix](../artifacts/hotfix.md), Apply [Record Hot-fix Merge](../artifacts/hotfix.md#record-hot-fix-merge "ƒ") with the merge result and the complete issue-link snapshot.
+- Follow [Issue Closure](issue-closure.md "ƒ") for the hot-fix issue when eligible.
+- Apply [Settle Hot-fix Board Status](../artifacts/hotfix.md#settle-hot-fix-board-status "ƒ") with the supplied board and the hot-fix issue.
 - Return to the caller.
+- For any other merge, continue at [Read and Record](#2-read-and-record).
 
 ### 2. Read and Record
 

@@ -93,7 +93,7 @@ Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every is
 
 - Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the labels those Titles name.
 
-- Retain the selected number for rewriting and saving the issue's body, title and labels. After the rewrite, [Settle Board Status](#3-settle-board-status) follows its [placement](../artifacts/placement.md#disposition-conditions).
+- Retain the selected number for rewriting and saving the issue's body, title and labels. After the rewrite, [Settle Hot-fix Status](#3-settle-hot-fix-status) follows its [placement](../artifacts/placement.md#disposition-conditions).
 - Use the source issue as the destination with the disposition [Disposition Conditions](../artifacts/placement.md#disposition-conditions) give that kind. The rewrite branch below supplies its body and keeps the issue open.
 
 ###### Leave
@@ -121,9 +121,9 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 - Resolve findings.
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the validated body, title and labels, the labels being every label its kind's body artifact Titles name.
 
-##### 3. Settle Board Status
+##### 3. Settle Hot-fix Status
 
-Apply [Settle Board Status](../artifacts/work-kind.md#settle-board-status "ƒ") with the confirmed theme board and the saved issue.
+For a hot-fix, Apply [Settle Hot-fix Board Status](../artifacts/hotfix.md#settle-hot-fix-board-status "ƒ") with the confirmed theme board and the saved issue.
 
 ##### 4. Retain Saved Identity
 

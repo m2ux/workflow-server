@@ -303,7 +303,7 @@ gh api &#92;
 </pre></big>
 
 - Supply the [title](#title "○"), the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the [complete body file](#body-file "○").
-- A title opening with the tag of a [registered kind](work-kind.md#registration) supplying Review Before Merge, such as `[F00]`, adds `-F draft=true`; that operation marks the pull request ready.
+- A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens; [Review Hot-fix Before Merge](hotfix.md#review-hot-fix-before-merge "ƒ") marks it ready.
 
 ### Open Epic Pull Request
 

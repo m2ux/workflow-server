@@ -41,22 +41,22 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status "ƒ") for its task issues, where present, and its epic, requesting In Progress.
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the epic and confirm every selected row holds this record.
 
-#### Kind Unit
+#### Hot-Fix Unit
 
-- For a [kind unit](../artifacts/delivery-plan.md#kind-units):
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the issue's current body.
+- For a [hot-fix unit](../artifacts/delivery-plan.md#hot-fix-units):
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the hot-fix's current body.
 
-##### New Kind Unit
+##### New Hot-Fix Unit
 
 - For a new unit, use that issue, board identity and refreshed board items.
 
-- Apply [Record Dispatch Status](../artifacts/work-kind.md#record-dispatch-status "ƒ") with them, requesting In Progress, and retain the confirmed status or discrepancy it provides. The session starts only once it is confirmed.
+- Apply [Record Hot-fix Dispatch Status](../artifacts/hotfix.md#record-hot-fix-dispatch-status "ƒ") with them, and retain the confirmed status or discrepancy it provides. The session starts only once it is confirmed.
 
-##### Retained Kind Unit Preparation
+##### Retained Hot-Fix Preparation
 
 - For a retained preparation, require its current board hold to remain confirmed.
 
-##### Confirmed Kind Unit Hold
+##### Confirmed Hot-Fix Hold
 
 - Retain the confirmed hold for this record.
 

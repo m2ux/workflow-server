@@ -1,6 +1,6 @@
 # Hot-fix
 
-A hot-fix's board status, delivery unit and branch, delivering pull requests, hold and delivery record. Each operation fills the [Work Kind](work-kind.md) interface operation its [registration](work-kind.md#registration) names.
+A hot-fix's board status, delivery unit and branch, delivering pull requests, hold and delivery record, and the operations a general caller applies for a hot-fix.
 
 ## Operations
 
