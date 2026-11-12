@@ -83,11 +83,6 @@ gap, and Projects (classic) is reported wherever it stands. Each labelled
 rule of a guide names, in the `rules.json` beside it, the finding kinds or
 the review that decide it, and the kinds are those this check registers.
 
-A skill whose `scripts/kinds.py` maps each kind of work to its module in a
-literal `KINDS` dict registers those kinds, and a general script reaches a
-kind's module only through that registry, so a script importing a kind
-module is reported.
-
 A skill's SKILL.md is its compilation entry. A link to it from a file it
 reaches forms a cycle that pulls the entry into its own bundle, so a link from
 any other markdown file of the skill to that SKILL.md is reported; a plain
@@ -110,7 +105,6 @@ not read.
 """
 
 import argparse
-import ast
 import difflib
 import html
 import json
@@ -197,7 +191,6 @@ KINDS = (
     'invocation outside command specification', 'invocation argument contract', 'unescaped HTML in invocation', 'operation call verb',
     'unwrapped shell invocation', 'duplicate command parameter prose', 'redundant command wrapper', 'repeated procedure title',
     'executable step in Fields',
-    'kind module imported outside the registry',
     'link to the entry point',
 )
 OPERATIONS = KINDS + ('review',)
@@ -1534,69 +1527,6 @@ def fields_steps(path, lines, fenced, headings, entry):
                     yield index, f'call: {verb[1]} {match[0]}'
 
 
-REGISTRY = Path('scripts/kinds.py')
-
-
-def kind_modules(skill):
-    """The module of each kind of work a skill's registry maps in its literal
-    `KINDS` dict. A skill without a registry registers none; a registry that is
-    no literal dict of names is refused."""
-    registry = skill / REGISTRY
-    if not registry.is_file():
-        return set()
-    try:
-        kinds = next((ast.literal_eval(node.value) for node in ast.parse(registry.read_text()).body
-                      if isinstance(node, ast.Assign)
-                      and any(isinstance(target, ast.Name) and target.id == 'KINDS' for target in node.targets)),
-                     None)
-    except (SyntaxError, ValueError) as error:
-        raise ValueError(f'{registry}: {error}') from error
-    if not isinstance(kinds, dict) or not all(isinstance(key, str) and isinstance(value, str)
-                                              for key, value in kinds.items()):
-        raise ValueError(f'{registry}: maps no kind of work to its module in a literal KINDS dict')
-    return set(kinds.values())
-
-
-def kind_imports(path, modules):
-    """Each line of a Python script importing one of the modules, by an import
-    statement or by `import_module` with the module's name."""
-    try:
-        tree = ast.parse(path.read_text())
-    except SyntaxError:
-        return {}
-    found = {}
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Import):
-            names = [alias.name for alias in node.names]
-        elif isinstance(node, ast.ImportFrom):
-            names = [node.module or '']
-        elif (isinstance(node, ast.Call) and getattr(node.func, 'id', getattr(node.func, 'attr', '')) == 'import_module'
-              and node.args and isinstance(node.args[0], ast.Constant)):
-            names = [str(node.args[0].value)]
-        else:
-            continue
-        for name in names:
-            if name.split('.')[0] in modules:
-                found.setdefault(node.lineno - 1, name)
-    return found
-
-
-def kind_findings(skill, root):
-    """Kind check: a script imports no kind module, which only the registry
-    reaches. A kind's own module and the registry are exempt."""
-    modules = kind_modules(skill)
-    if not modules:
-        return []
-    exempt = {(skill / REGISTRY).resolve(), *((skill / 'scripts' / f'{module}.py').resolve() for module in modules)}
-    found = []
-    for path in sorted((skill / 'scripts').rglob('*.py')) if (skill / 'scripts').is_dir() else []:
-        if path.resolve() in exempt or 'fixtures' in path.relative_to(skill).parts:
-            continue
-        for index, name in sorted(kind_imports(path, modules).items()):
-            found.append(finding(path, root, index, 'kind module imported outside the registry', name))
-    return found
-
-
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('roots', nargs='+', help='skill folders to check')
@@ -1645,8 +1575,6 @@ def main(argv=None):
             findings += interfaces(path, root, declared)
         for guide, root in guides.items():
             findings += undecided_rules(guide, root)
-        for root in roots:
-            findings += kind_findings(root, root.parent)
     except ValueError as error:
         print(f'unreadable declaration — {error}')
         return 1

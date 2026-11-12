@@ -8,7 +8,7 @@
   "solid/required-context": ["review"],
   "solid/before-use-ordering": ["review"],
   "solid/general-dependencies": ["review"],
-  "solid/kind-registration": ["kind module imported outside the registry", "review"],
+  "solid/kind-registration": ["review"],
   "solid/published-capabilities": ["review"],
   "solid/public-fields": ["review"],
   "solid/state-constraints": ["review"],

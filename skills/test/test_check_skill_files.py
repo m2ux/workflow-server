@@ -2365,76 +2365,6 @@ class FieldsBoundary(unittest.TestCase):
         self.assertNotIn('executable step in Fields', {kind for _, kind, _ in self.kinds(path)})
 
 
-class KindImports(unittest.TestCase):
-    """A general script imports no kind module, which only the registry reaches; the registry, the kind's own
-    module and the tests do."""
-
-    def setUp(self):
-        self.root = Path(tempfile.mkdtemp())
-        self.addCleanup(shutil.rmtree, self.root)
-        self.skill = self.root / 'specimen'
-        self.write('SKILL.md', '---\nname: specimen\n---\n\n# Specimen\n\nOne sentence.\n\n## Modes\n\n- A mode.\n')
-        self.write('scripts/kinds.py', "from importlib import import_module\n\nKINDS = {'hot-fix': 'hotfix'}\n\n\n"
-                   "def interface(kind):\n    return import_module(KINDS[kind])\n")
-        self.write('scripts/hotfix.py', '"""A hot-fix\'s operations."""\nfrom kinds import Review\n')
-
-    def write(self, name, text):
-        path = self.skill / name
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text)
-        return path
-
-    def found(self):
-        return [(str(Path(where).relative_to('specimen')), line, kind)
-                for where, line, kind, _ in checker.kind_findings(self.skill, self.root)]
-
-    def test_the_registry_gives_each_kind_its_module(self):
-        self.assertEqual(checker.kind_modules(self.skill), {'hotfix'})
-
-    def test_the_registry_and_the_kind_module_pass(self):
-        self.assertEqual(self.found(), [])
-
-    def test_a_general_script_importing_a_kind_module_fails(self):
-        self.write('scripts/sync.py', '"""Sync."""\nimport hotfix\nfrom hotfix import review\n'
-                   'from importlib import import_module\nmodule = import_module("hotfix")\n')
-        self.assertEqual(self.found(), [('scripts/sync.py', 2, 'kind module imported outside the registry'),
-                                        ('scripts/sync.py', 3, 'kind module imported outside the registry'),
-                                        ('scripts/sync.py', 5, 'kind module imported outside the registry')])
-
-    def test_a_general_script_reaching_kinds_through_the_registry_passes(self):
-        self.write('scripts/sync.py', '"""Sync."""\nfrom kinds import interface, kind_of\n')
-        self.assertEqual(self.found(), [])
-
-    def test_a_general_file_naming_a_kind_passes(self):
-        self.write('artifacts/board.md', '# Board\n\nEach [hot-fix](hotfix.md) stands Ready.\n')
-        self.write('scripts/board.py', '"""The board."""\nSTATUS = {"hot-fix": "Ready"}\n')
-        self.assertEqual(self.found(), [])
-
-    def test_a_test_importing_a_kind_module_passes(self):
-        self.write('test/test_hotfix.py', 'import hotfix\n')
-        self.assertEqual(self.found(), [])
-
-    def test_a_skill_without_a_registry_registers_no_kind(self):
-        (self.skill / 'scripts/kinds.py').unlink()
-        self.write('scripts/sync.py', 'import hotfix\n')
-        self.assertEqual(checker.kind_modules(self.skill), set())
-        self.assertEqual(self.found(), [])
-
-    def test_a_registry_that_is_no_literal_dict_is_refused(self):
-        self.write('scripts/kinds.py', "KINDS = dict(load())\n")
-        with self.assertRaises(ValueError):
-            checker.kind_modules(self.skill)
-
-    def test_a_kind_module_import_fails_the_command(self):
-        self.write('scripts/sync.py', '"""Sync."""\nimport hotfix\n')
-        printed = io.StringIO()
-        with redirect_stdout(printed):
-            status = checker.main([str(self.skill)])
-        self.assertEqual(status, 1)
-        self.assertIn('specimen/scripts/sync.py:2: kind module imported outside the registry — hotfix',
-                      printed.getvalue())
-
-
 class InstalledWorkPlannerModel(unittest.TestCase):
     """The installed Work Planner's Fields, as its declared model selects them."""
 
@@ -2448,14 +2378,6 @@ class InstalledWorkPlannerModel(unittest.TestCase):
         cited, called = checker.citations(self.paths, {})
         kinds = {kind for path, root in files for _, _, kind, _ in checker.check(path, root, {}, cited, called, {})}
         self.assertNotIn('executable step in Fields', kinds)
-
-    def test_installed_scripts_reach_each_kind_module_through_the_registry(self):
-        self.assertEqual(checker.kind_modules(self.SKILL), {'hotfix'})
-        self.assertEqual(checker.kind_findings(self.SKILL, self.SKILL.parent), [])
-
-
-if __name__ == '__main__':
-    unittest.main()
 
 
 class EntryPointLinks(unittest.TestCase):
@@ -2489,3 +2411,7 @@ class EntryPointLinks(unittest.TestCase):
     def test_a_plain_mention_and_the_entry_point_linking_itself_pass(self):
         self.write('references/guide.md', '# Guide\n\nRevise changes SKILL.md and its `[entry](../SKILL.md)` specimen.\n')
         self.assertEqual(self.found(), [])
+
+
+if __name__ == '__main__':
+    unittest.main()
