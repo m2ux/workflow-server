@@ -1,6 +1,19 @@
 [
   {
     "pull_request": "https://github.com/m2ux/workflow-server/pull/1706",
+    "head": "7a83a8ae9e47cd930c00cbc19c7ab6a3752c1e54",
+    "base": "e6eb1af6d9ba6de3b97ff49a85ce82548224e285",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-11-1665-f08-pull-request-body/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-12",
+    "scope": "The whole branch against workspace: e6eb1af6d...7a83a8ae9, after c42cacb1c named the hot-fix Target: line in Body Findings, linking hotfix-body.md#target, and merge 7a83a8ae9 brought in F14 (#1708, e6eb1af6d), which removes Work Kind's generic dispatch and retires the kind-name check. Merge conflict: test/README.md's Scripts table, resolved to F14's counts with the pull_request_body row (14). Read: pull-request-body.md, pull-request.md, deliver-mode.md, conventions.md, rules.json, pull_request_body.py, kinds.py issue_fields, hotfix.py, test_kinds.py and the test README. F14 consistency: no work-kind.md#registration link or registered-kind wording in F08's markdown; Body Findings' link resolves to Hot-fix Body's Target; no F08 test or rules.json entry names the retired check; pull_request_body.py reaches issue_fields through kinds.py, as guidelines.md Kind registration states. Earlier fixes survive the merge unchanged.",
+    "criteria": "AC1: test_pull_request_body (14 tests) and this pull request's body checked clean (T1, T2). AC2: conventions.md Bodies states the -F and -f distinction (T3). AC3: test_check_skill_files' file-value tests and check_skill_files.py over skills/work-planner, 65 files, 0 findings (T4, T5).",
+    "validation": "At 7a83a8ae9: skills/work-planner suite 1267 tests OK (1 skipped); skills/test 333 tests OK; check_skill_files.py skills/work-planner 65 files, 0 findings; git diff --check origin/workspace HEAD clean.",
+    "findings": []
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1706",
     "head": "4d25f17420826a2ec86155578565655723194fa7",
     "base": "9d020bc9bfcfd8e08e21f9e8ebeccedb56ac0611",
     "base_ref": "workspace",

@@ -1,6 +1,6 @@
 # F08 Test Results
 
-Branch `skill/pull-request-body-check` at 4d25f1742, cut from `workspace` at 9d020bc9b. Commits: 8e5d0adb1 names the flag in the conventions and adds the command-block check, d07d6e55a adds Validate Pull Request Body and wires it into Publish Pull Request and Deliver, and review fixes b1c78b53b, c17efa133 and 4d25f1742 report a kind's issue field in any section through the Kind interface's issue_fields, hold an epic review to its References, widen the flag match and rejoin a docstring line.
+Branch `skill/pull-request-body-check` at 7a83a8ae9, which merges `workspace` at e6eb1af6d, F14's merge of #1708, into the branch cut from 9d020bc9b. Commits: 8e5d0adb1 names the flag in the conventions and adds the command-block check, d07d6e55a adds Validate Pull Request Body and wires it into Publish Pull Request and Deliver, review fixes b1c78b53b, c17efa133 and 4d25f1742 report a kind's issue field in any section through the Kind interface's issue_fields, hold an epic review to its References, widen the flag match and rejoin a docstring line, and c42cacb1c names the hot-fix `Target:` line in Body Findings, linking Hot-fix Body's Target. The merge's one conflict, the test README's Scripts table, resolves to F14's counts with the pull_request_body row. The tests in T1, T2 and T4 were run again at 7a83a8ae9.
 
 ## T1. Body Validation Tests
 
@@ -20,8 +20,8 @@ Branch `skill/pull-request-body-check` at 4d25f1742, cut from `workspace` at 9d0
 
 ## T5. Skill-File Check over Work-Planner
 
-`scripts/sbx python3 skills/scripts/check_skill_files.py skills/work-planner`: 65 files checked, 0 findings, so no command block in the skill sends `body=@` under `-f`. `--compare 9d020bc9b HEAD skills/work-planner skills/scripts`: 889 sections at the base, 894 at the head, 9 added, removed or differing — Validate Pull Request Body, Check Pull Request Body, Body File, Body Findings and Workspace added, and Publish Pull Request, deliver-mode's Run Delivery Session and the test README's two tables changed. Conventions' and the guidelines' Bodies bullets sit outside any `###` section the comparison reads. Covers AC3.
+`scripts/sbx python3 skills/scripts/check_skill_files.py skills/work-planner` at 7a83a8ae9: 65 files checked, 0 findings, so no command block in the skill sends `body=@` under `-f`. Against `workspace` at e6eb1af6d, F08's diff adds no Work Kind Registration link to a step or field, and nothing in its tests or `rules.json` names the check F14 retires. Covers AC3.
 
 ## T6. Planner Suite, Shared Suite and Whitespace
 
-At 4d25f1742, the work-planner suite: 1296 tests, OK, 1 skipped. The shared suite (`skills/test`): 340 tests, OK. The skill-file check: 65 files, 0 findings. `git diff --check 9d020bc9b HEAD`: clean.
+At 7a83a8ae9, the work-planner suite: 1267 tests, OK, 1 skipped. The shared suite (`skills/test`): 333 tests, OK. The skill-file check: 65 files, 0 findings. `git diff --check origin/workspace HEAD`: clean.

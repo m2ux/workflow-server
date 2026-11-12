@@ -1,5 +1,13 @@
 # F08 Review Notes
 
+## Review at 7a83a8ae9
+
+Agent review of [#1706](https://github.com/m2ux/workflow-server/pull/1706) at 7a83a8ae9 against `workspace` at e6eb1af6d, over the whole branch. The [review record](agent-review.json)'s first entry holds the scope, criteria and validation.
+
+- **Change since 4d25f1742.** c42cacb1c names the hot-fix `Target:` line in Body Findings, linking [Hot-fix Body's Target](https://github.com/m2ux/workflow-server/blob/skill/pull-request-body-check/skills/work-planner/artifacts/hotfix-body.md#target), and 7a83a8ae9 merges F14 ([#1708](https://github.com/m2ux/workflow-server/pull/1708)). The test README's Scripts table conflict resolves to F14's counts with the pull_request_body row.
+- **Consistency with F14.** F08's prose links no Work Kind Registration in a step or field, and no F08 test or rules.json entry names the retired kind-name check. `pull_request_body.py` reaches `issue_fields` through `kinds.py`, the registry F14 keeps.
+- **Findings.** None.
+
 ## Review at 4d25f1742
 
 Agent review of [#1706](https://github.com/m2ux/workflow-server/pull/1706) at 4d25f1742 against `workspace`, over the whole branch from 9d020bc9b. The [review record](agent-review.json)'s first entry holds the scope, criteria and validation.
@@ -10,7 +18,7 @@ Agent review of [#1706](https://github.com/m2ux/workflow-server/pull/1706) at 4d
 ## Design Point
 
 - **Kinds report their own issue fields.**
-  The Kind interface's `issue_fields` gives the sections of a pull request body holding a line of a field only the kind's issue carries. The hot-fix kind reports any `Target:` line outside fenced code, so `pull_request_body.py` reaches that knowledge through the registry and names no kind, as general scripts reach kinds through [Registration](https://github.com/m2ux/workflow-server/blob/skill/pull-request-body-check/skills/work-planner/artifacts/work-kind.md#registration).
+  The Kind interface's `issue_fields` gives the sections of a pull request body holding a line of a field only the kind's issue carries. The hot-fix kind reports any `Target:` line outside fenced code, so `pull_request_body.py` reaches that knowledge through the script registry, `kinds.py`.
 
 ## Review at c17efa133
 
