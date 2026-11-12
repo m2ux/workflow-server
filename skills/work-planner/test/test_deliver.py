@@ -835,7 +835,8 @@ class HotFixUnits(unittest.TestCase):
 
     def test_target_fault_reads_the_target_alone(self):
         key, lived = ('o/r', 4), ('main', 'workspace')
-        self.assertEqual(deliver.target_fault(key, '', lived, 'o/r'), ('undeclared', 'it names no target'))
+        self.assertEqual(deliver.target_fault(key, '', lived, 'o/r'),
+                         ('undeclared', 'its Overview names no target in one Target: line'))
         self.assertEqual(deliver.target_fault(key, 'workspace', lived, 'o/r'), ('', ''))
         self.assertEqual(deliver.target_fault(key, 'docker', lived, 'o/r')[0], 'undeclared')
         self.assertEqual(deliver.target_fault(key, 'workspace', lived, 'o/other')[0], 'unresolved')
@@ -843,7 +844,7 @@ class HotFixUnits(unittest.TestCase):
 
     def test_a_ready_hot_fix_naming_no_target_is_undeclared(self):
         out = survey(staged((hotfix(4, target=None), 'Ready')), code=1)
-        self.assertIn('  undeclared F04 #4: it names no target\n', out)
+        self.assertIn('  undeclared F04 #4: its Overview names no target in one Target: line\n', out)
         self.assertNotIn('  unit F04', out)
         self.assertIn('undeclared: 1', out)
 
