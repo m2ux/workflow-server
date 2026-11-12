@@ -1,0 +1,47 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1708",
+    "base": "9d020bc9bfcfd8e08e21f9e8ebeccedb56ac0611",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-12-1707-f14-work-kind-step-links/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-12",
+    "head": "fa2f6c23fbef0aadae9d67cc9fc5c0250a46373a",
+    "scope": "The whole branch against workspace, 9d020bc9b..fa2f6c23f: commits eb09a749e, 9c7ae2f6f, 93a2ce585, 647cc1181 and d1d5367e4, and review fix fa2f6c23f, which changes only agent-review.md's hot-fix rule lines, board-status.md's queue jurisdiction sentence and guidelines.md's Liskov bullet since d1d5367e4. Read in full: artifacts/work-kind.md, hotfix.md, agent-review.md, delivery-plan.md, board-queue.md, board.md, board-status.md, placement.md, pull-request.md, standup-report.md; modes/deliver-mode.md, hoist-mode.md, align-mode.md; protocols/issue-delivery.md, task-merge.md, unit-dispatch.md, issue-closure.md; guidelines.md and rules.json; skills/scripts/check_skill_files.py kind_modules and kind_findings, skills/guidelines.md Files; scripts/deliver.py target_fault; every changed test module and the test README. Callers inspected: each link to hotfix.md and hotfix-body.md, each Apply of work-kind.md#populate-body and #validate-body, each link to delivery-plan.md#hot-fix-units, and every reader of the removed Work Kind Result, Item Work Kind and kind-units anchors. Compared each restored line with its text at 5e62cd146^1.",
+    "criteria": "AC1: no general step applies an unlinked kind operation; Review Hot-fix Before Merge and Settle Hot-fix Board Status are applied through direct links from Deliver, Hoist and Task Merge, and the one-caller hold release, dispatch hold, delivery record and merge record are steps of their callers (test_kind_operations, grep). AC2: each hot-fix definition link E02 removed is back where its subject is used and no general file uses the kind-unit term (grep, test_kind_operations). AC3: Work Kind holds Registration, Populate Body and Validate Body, each step linking each supplying kind's operation (test_kind_operations). AC4: the kind-name check, its rules.json mapping, its registration key and tests are removed; the checker reports 0 findings (shared suite, checker). AC5: Task Merge's hot-fix step compiles at 252224 B with the Settle text through its step link, and work-kind.md#validate-body at 52580 B against 221276 B before (test-results T4).",
+    "validation": "At fa2f6c23f: planner suite 1265 tests OK (1 skipped); shared suite 329 tests OK; check_skill_files.py skills/work-planner 65 files, 0 findings; git diff --check 9d020bc9b fa2f6c23f clean.",
+    "findings": []
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1708",
+    "base": "9d020bc9bfcfd8e08e21f9e8ebeccedb56ac0611",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-12-1707-f14-work-kind-step-links/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-12",
+    "head": "d1d5367e408d6929597e06bc60c06af5663060f8",
+    "scope": "The whole branch against workspace, 9d020bc9b..d1d5367e4: commits eb09a749e, 9c7ae2f6f, 93a2ce585, 647cc1181 and d1d5367e4, read against the issue's criteria and each restored line's text at 5e62cd146^1.",
+    "criteria": "AC1: no general step applies an unlinked kind operation; Review Hot-fix Before Merge and Settle Hot-fix Board Status are applied through direct links from Deliver, Hoist and Task Merge, and the one-caller hold release, dispatch hold, delivery record and merge record are steps of their callers (test_kind_operations, grep). AC2: each hot-fix definition link E02 removed is back where its subject is used and no general file uses the kind-unit term (grep, test_kind_operations). AC3: Work Kind holds Registration, Populate Body and Validate Body, each step linking each supplying kind's operation (test_kind_operations). AC4: the kind-name check, its rules.json mapping, its registration key and tests are removed; the checker reports 0 findings (shared suite, checker). AC5: Task Merge's hot-fix step compiles at 252224 B with the Settle text through its step link, and work-kind.md#validate-body at 52580 B against 221276 B before (test-results T4).",
+    "validation": "At d1d5367e4: planner suite 1265 tests OK (1 skipped); shared suite 329 tests OK; check_skill_files.py skills/work-planner 65 files, 0 findings.",
+    "findings": [
+      {
+        "description": "Agent Review restated the hot-fix rule that every finding is fixed, which the hot-fix Review Rule also states, so the rule had two homes.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/fa2f6c23fbef0aadae9d67cc9fc5c0250a46373a"
+      },
+      {
+        "description": "Board Status's queue jurisdiction ended 'and the Done of one closed as completed, of a hot-fix', which reads as unparseable.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/fa2f6c23fbef0aadae9d67cc9fc5c0250a46373a"
+      },
+      {
+        "description": "The Liskov guideline kept 'accepted interface inputs', a term of the retired interface layer.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/fa2f6c23fbef0aadae9d67cc9fc5c0250a46373a"
+      }
+    ]
+  }
+]
