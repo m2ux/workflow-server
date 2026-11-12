@@ -14,6 +14,7 @@
 - **Bodies.**
   - Bodies and long comments always go through a file (`-F body=@file`), never inline, which avoids quoting.
   - **Example.**  workflow-server's dynamic-shell restrictions deny a body inlined in the command.
+  - `gh api -F` reads an `@path` value as that file's content, and `-f` sends the value as text, so `-f body=@file` publishes the path itself. A value supplied as text takes `-f`.
   - A plan's draft bodies are files of its [planning record](artifacts/planning-record.md#layout). Keep every other body file in a working directory outside the repository.
 - **Scripts.**
   Scripts run under `sbx`, invoked by its absolute path from `<workspace>`, the checkout holding this skill. A script that reaches the tracker calls `gh` itself, and one that adds a worktree writes the repository's git directory, which `sbx` leaves read-only; each runs from `<workspace>` outside `sbx`.

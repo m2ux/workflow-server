@@ -172,22 +172,27 @@ Provide [Pull Request Record](#pull-request-record), [Changed Paths](#changed-pa
 
 One pull request created or updated from supplied content and metadata.
 
-#### 1. Create Delivery Pull Request
+#### 1. Validate Supplied Body
+
+- For a creation or a body change, Apply [Validate Pull Request Body](pull-request-body.md#validate-pull-request-body "ƒ") to the [Body File](#body-file), as an epic review when the [Kind](#kind) is epic.
+- On a finding, provide [Failure](#failure) with its [Body Findings](pull-request-body.md#body-findings), publishing nothing.
+
+#### 2. Create Delivery Pull Request
 
 - For creation, Run [Open Task Pull Request](#open-task-pull-request "ƒ") or Run [Open Epic Pull Request](#open-epic-pull-request "ƒ") as the selected kind requires.
 - For a task or epic pull request with a delivery issue, Apply [Link Pull Request to Issue](#link-pull-request-to-issue "ƒ"), meeting [Issue Links](#issue-links).
 
 - A pull request outside epic delivery targets a long-lived branch. An open stacked pull request targets its long-lived branch once its base merges.
 
-#### 2. Update Selected Pull Fields
+#### 3. Update Selected Pull Fields
 
 For an existing [Identity](#identity), Run [Patch Pull Request Body](#patch-pull-request-body "ƒ"), Run [Retitle Pull Request](#retitle-pull-request "ƒ") or Run [Retarget Pull Request](#retarget-pull-request "ƒ") for the selected changes, preserving other fields.
 
-#### 3. Read Saved Pull State
+#### 4. Read Saved Pull State
 
 Apply [Read Pull Request State](#read-pull-request-state "ƒ") again.
 
-#### 4. Provide Saved Pull Record
+#### 5. Provide Saved Pull Record
 
 Provide the saved [Pull Request Record](#pull-request-record) or [Failure](#failure) with the discrepancy.
 

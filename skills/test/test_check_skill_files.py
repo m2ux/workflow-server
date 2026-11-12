@@ -906,6 +906,24 @@ class SkillWideChecks(unittest.TestCase):
         self.write('scripts/board.py', 'QUERY = "{ repository { projects(first: 5) { nodes { id } } } }"\n')
         self.assertEqual(self.found('Projects classic interface'), [('board.py', 1)])
 
+    def test_a_body_file_sent_as_text_is_reported(self):
+        self.artifact(self.specification("gh api --method PATCH 'repos/o/r/issues/1' -f 'body=@body.md'"))
+        self.assertEqual(self.found('file value sent as text'), [('issue.md', 16)])
+
+    def test_a_body_file_sent_as_text_in_an_html_invocation_is_reported(self):
+        self.artifact('### Link Issue\n\nLinks one issue.\n\n<big><pre>\ngh api repos/o/r/issues/1 &#92;\n'
+                      "  --raw-field body=@body.md\n</pre></big>\n")
+        self.assertEqual(self.found('file value sent as text'), [('issue.md', 15)])
+
+    def test_a_joined_flag_and_a_hyphenated_key_sent_as_text_are_reported(self):
+        self.artifact(self.specification("gh api 'repos/o/r/issues/1' --raw-field=body=@body.md -fbody-text=@b.md"))
+        self.assertEqual(self.found('file value sent as text'), [('issue.md', 16)])
+
+    def test_a_body_file_read_as_a_file_and_text_sent_as_text_are_accepted(self):
+        self.artifact(self.specification("gh api 'repos/o/r/issues/1' -F 'body=@body.md' -f title='Fix @home'"))
+        self.write('references/guide.md', '# Guide\n\nNever send -f body=@file, which sends the path.\n')
+        self.assertEqual(self.found('file value sent as text'), [])
+
     def test_projects_v2_and_its_board_link_are_accepted(self):
         self.artifact(self.specification("gh project item-list 17 --owner m2ux"))
         self.write('references/guide.md', '# Guide\n\nThe [board](https://github.com/users/m2ux/projects/17) '

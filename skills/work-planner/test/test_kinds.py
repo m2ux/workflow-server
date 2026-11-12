@@ -100,6 +100,7 @@ class Substitution(unittest.TestCase):
                 self.assertIsInstance(kind.labels(item), list)
                 self.assertIsInstance(kind.faults(item), list)
                 self.assertIsInstance(kind.target(item), str)
+                self.assertIsInstance(kind.issue_fields(item['body'] or ''), list)
                 self.assertIsInstance(kind.linking_pulls([], KEY), list)
                 self.assertIsInstance(kind.delivering_pulls([], KEY, item), list)
                 self.assertIsInstance(kind.delivery_fault(linked(pr(951, 'Other', base='main'), 4), KEY, item), str)
