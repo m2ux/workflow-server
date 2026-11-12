@@ -1,5 +1,16 @@
 # F16 Review Notes
 
+## Review at fb06a8d02
+
+Agent review of [#1712](https://github.com/m2ux/workflow-server/pull/1712) at fb06a8d02 against `workspace` at 5721e4aad, after the user had the branch slimmed to four files: the rule in rules.md, deliver.py, test_deliver and the test README. The other pages are as `workspace` holds them; agents apply the rule from rules.md. A fresh independent reviewer read the slimmed diff; the [review record](agent-review.json)'s first entry holds the scope, criteria and validation.
+
+- **Change since 0b0949a42.** The branch is rewritten as c69a51165 (rules.md) and fb06a8d02 (deliver.py and its tests). The procedure-page changes reviewed at 0b0949a42, and their findings, are gone with those pages.
+- **Findings.** One blocking, fixed. Three nonblocking observations need no change: work items are now read for every planned row, which is the only way to tell an engineering-only row in an epic of one or no base; a deliver.py capture shows AC3's merge side, as review pull requests follow epic bases; a legacy `i../engineering` base already in flight is still counted by sync.py, outside this scope.
+
+| # | Finding | Severity | Fix |
+| --- | --- | --- | --- |
+| 1 | In an epic with no base, a unit changing `engineering` and another branch, or joining an unplanned row to an `engineering` row, printed only `push engineering` and lost its branch. | blocking | A unit drops its branch only when the push is all it changes; `test_a_unit_of_an_epic_with_no_base_keeps_its_branch_beside_the_push` covers it, in [fb06a8d02](https://github.com/m2ux/workflow-server/commit/fb06a8d0225dfe5489f57c865a30d290cc1a39c4). |
+
 ## Review at 0b0949a42
 
 Agent review of [#1712](https://github.com/m2ux/workflow-server/pull/1712) at 0b0949a42 against `workspace` at 5721e4aad. An independent reviewer read the whole diff of df114cfd1 and 3ddedb1f1 with its callers; the session re-read the fix delta in full. The [review record](agent-review.json) holds the scope, criteria and validation.

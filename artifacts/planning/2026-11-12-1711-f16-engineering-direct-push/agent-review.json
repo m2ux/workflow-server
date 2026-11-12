@@ -6,6 +6,26 @@
     "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-12-1711-f16-engineering-direct-push/agent-review.json",
     "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
     "reviewed_at": "2026-11-12",
+    "head": "fb06a8d0225dfe5489f57c865a30d290cc1a39c4",
+    "scope": "The slimmed branch against workspace, 5721e4aad..fb06a8d02: rules.md, scripts/deliver.py, test/test_deliver.py and test/README.md; every other file is as workspace holds it, by the user's decision that agents apply the rule from rules.md. An independent reviewer read the diff of c69a51165 and 8f8f313fa, probed changed_bases and branch_lines directly for zero, one and several bases, unplanned and joined rows, missing --engineering and a legacy engineering base or pull request, and checked rules.md against sync.py's commit-delivery rule and its link anchor. fb06a8d02 amends 8f8f313fa with the fix for its blocking finding; the session re-read that delta and ran the suites.",
+    "criteria": "AC1: test_a_unit_changing_only_engineering_pushes_it_with_no_branch and test_a_unit_of_an_epic_with_no_base_keeps_its_branch_beside_the_push. AC2: test_an_engineering_epic_base_is_neither_required_nor_taken. AC3: test_an_epic_changing_engineering_and_main_merges_into_main_alone shows the merge side; review pull requests follow epic bases, of which engineering has none. AC4: rules.md states the rule once; the checker resolves its link.",
+    "validation": "At fb06a8d02: planner suite 1181 tests OK (1 skipped); shared suite 295 tests OK; check_skill_files.py skills/work-planner 65 files, 0 findings; git diff --check clean; pull_request_body.py on the body: no findings.",
+    "findings": [
+      {
+        "description": "In an epic with no epic base, a unit changing engineering and another branch, or joining an unplanned row to an engineering row, printed only 'push engineering' and lost its branch.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/fb06a8d0225dfe5489f57c865a30d290cc1a39c4"
+      }
+    ]
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1712",
+    "base": "5721e4aad9f191a7434101ec082131f710eb7f1d",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-12-1711-f16-engineering-direct-push/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-12",
     "head": "0b0949a420c0cac8311b83fdc9b77c872c775056",
     "scope": "The whole branch against workspace, 5721e4aad..0b0949a42. An independent reviewer read the full diff of df114cfd1 and 3ddedb1f1: deliver.py's changed_bases, branch_lines, epic_bases, ready_merges and survey, probing one, zero and several bases, unplanned rows joined to engineering rows, missing --engineering and a legacy engineering base or pull request; it read the callers in sync.py (compose_id, the landed rule) and board.py, Deliver's Run Delivery Session, Task Merge, Epic Integration, Delivery Brief and Unit Dispatch, and grepped the whole skill for prose routing engineering through a base or pull request. 0b0949a42 fixes its eight findings; the session re-read that delta in full: only a unit changing engineering alone links a commit, so compose_id never meets a commit beside --link and a commit never delivers a row that also has a pull request.",
     "criteria": "AC1: test_a_unit_changing_only_engineering_pushes_it_with_no_branch shows an engineering-only row, in an epic of one base and of three, as 'push engineering' with no branch; Deliver step 7 and 10 deliver it by its push and Task Merge. AC2: test_an_engineering_epic_base_is_neither_required_nor_taken shows --bases with i07/e00/engineering ignored and no undeclared line; Prepare Delivery Bases, Epic Bases and Changed Branches exclude the branch. AC3: test_an_epic_changing_engineering_and_main_merges_into_main_alone offers a merge into i07/e00/main alone; an epic's review pull requests are one per base, and engineering has none. AC4: Planning Records states the rule; Publish Planning Record, Prepare Delivery Bases, Task Branches, Delivery Plan, Task Delivery, Task Merge and Deliver link it; the checker resolves every link; Commit Planning Record's restatement is gone.",
