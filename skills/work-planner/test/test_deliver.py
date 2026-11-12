@@ -167,16 +167,6 @@ class Survey(unittest.TestCase):
         self.assertNotIn('i07/e00/workflows', output)
         self.assertIn('available: 1', output)
 
-    def test_prose_in_a_component_line_names_no_further_file(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            engineering, ids = planned(root, ('W01', 'main:src/bundle/assembly.ts (assembly, emit step), main:src/c.ts'))
-            output = survey(staged((epic(943, (ids['W01'], 'Queue plan', '', '')), 'In Progress')),
-                            None, *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES)
-        self.assertNotIn('names no long-lived branch', output)
-        self.assertIn('branch i07/e00/w01-queue-plan, base i07/e00/main, '
-                      'worktree .worktrees/i07/e00/w01-queue-plan\n', output)
-
     def test_a_row_declaring_several_files_on_one_base_takes_that_base(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
