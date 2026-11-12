@@ -1,5 +1,4 @@
 {
-  "registration": "artifacts/work-kind.md#registration",
   "SKILL.md": {
     "sections": ["Modes", "Dependencies"],
     "link_roles": true

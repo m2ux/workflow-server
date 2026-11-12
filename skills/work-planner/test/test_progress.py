@@ -22,7 +22,6 @@ import priority  # noqa: E402
 import progress as summarised  # noqa: E402
 import sync  # noqa: E402
 from progress import week_before  # noqa: E402
-from test_kinds import kind_mentions  # noqa: E402
 
 SINCE = '2026-09-25'
 IN = '2026-09-26T08:00:00Z'
@@ -604,9 +603,6 @@ def summary_here(items: list[dict]) -> str:
 
 
 class KindRegistry(unittest.TestCase):
-    def test_progress_names_no_kind_and_imports_only_the_registry(self):
-        self.assertEqual(kind_mentions((SCRIPTS / 'progress.py').read_text()), [])
-
     def test_a_stand_in_kind_is_summarised_and_keyed_through_the_registry(self):
         stand_in = types.ModuleType('stand_in')
         stand_in.tag = lambda found: 'Z01' if (found.get('title') or '').startswith('[Z01]') else None

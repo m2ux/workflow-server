@@ -98,14 +98,9 @@ rule of a guide names, in the `rules.json` beside it, the finding kinds or
 the review that decide it, and the kinds are those this check registers.
 
 A skill whose `scripts/kinds.py` maps each kind of work to its module in a
-literal `KINDS` dict registers those kinds; the section its `structure.json`
-names as `registration` lists each one in bold with the files holding it in
-the links beneath. A general artifact, mode, protocol or script describes its
-family without naming an individual kind, so the name of a registered kind or
-its module in one, outside code, is reported, as is a script importing a kind
-module, which only the registry reaches. The kind's own files, the registry
-and the registration section name it freely, and a code span or fenced block
-holds a literal example rather than a reference.
+literal `KINDS` dict registers those kinds, and a general script reaches a
+kind's module only through that registry, so a script importing a kind
+module is reported.
 
 A skill's SKILL.md is its compilation entry. A link to it from a file it
 reaches forms a cycle that pulls the entry into its own bundle, so a link from
@@ -167,9 +162,6 @@ LEAD_WIDTH = 100
 SECTIONS = ('Prerequisites', 'Procedure', 'Reference', 'Rules', 'Commands')
 ENTRY_SECTIONS = ('Modes', 'Rules', 'Conventions', 'Dependencies')
 STRUCTURE = 'structure.json'
-# The structure key naming the section that registers a skill's kinds of work,
-# as a path from the skill folder and the section's anchor.
-REGISTRATION = 'registration'
 VOCABULARY = 'vocabulary.json'
 RULES = 'rules.json'
 GUIDE = 'guidelines.md'
@@ -219,7 +211,7 @@ KINDS = (
     'invocation outside command specification', 'invocation argument contract', 'unescaped HTML in invocation', 'operation call verb',
     'unwrapped shell invocation', 'duplicate command parameter prose', 'redundant command wrapper', 'repeated procedure title',
     'executable step in Fields', 'before-use cycle',
-    'kind named in a general file', 'kind module imported outside the registry',
+    'kind module imported outside the registry',
     'link to the entry point',
 )
 # Review candidates point semantic review at a source without failing the
@@ -362,10 +354,6 @@ def loaded(path):
     if not isinstance(structure, dict):
         raise ValueError(f'{path}: structure must be an object')
     for key, entry in structure.items():
-        if key == REGISTRATION:
-            if not isinstance(entry, str) or not re.fullmatch(r'[^#\s]+\.md#[a-z0-9-]+', entry):
-                raise ValueError(f'{path}: {key} must name a markdown section as <path>#<anchor>')
-            continue
         validate_structure_entry(path, key, entry)
     return structure
 
@@ -417,7 +405,7 @@ def validate_structure_entry(path, key, entry):
 
 def contract(path, cache):
     """The exact-file, directory or suffix entry covering this file, in that order."""
-    structure = {key: entry for key, entry in structure_at(path.parent, cache).items() if key != REGISTRATION}
+    structure = structure_at(path.parent, cache)
     if entry := structure.get(path.name):
         return entry
     if entry := structure.get(path.parent.name):
@@ -1819,56 +1807,15 @@ def before_use_findings(files, structures=None):
 
 
 REGISTRY = Path('scripts/kinds.py')
-GENERAL = ('artifacts', 'modes', 'protocols', 'scripts')
-REGISTERED = re.compile(r'^[-*]\s+\*\*([^*]+)\*\*')
-REGISTERED_FILE = re.compile(r'^\s+[-*]\s+\[[^\]]*\]\(([^)#\s]+)')
 
 
-@dataclass(frozen=True)
-class RegisteredKind:
-    """One kind of work a skill registers: its name, the module supplying it,
-    the files holding it, and the pattern its names match outside them."""
-    name: str
-    module: str
-    files: frozenset
-    pattern: re.Pattern
-
-
-def name_pattern(names):
-    """Each name in any case, its words joined by a hyphen, an underscore, a
-    space or nothing, plural or not, and standing as a word of its own."""
-    spelled = sorted({r'[-_ ]?'.join(map(re.escape, re.split(r'[-_\s]+', name.strip()))) for name in names},
-                     key=len, reverse=True)
-    return re.compile(r'(?<![A-Za-z0-9])(?:' + '|'.join(spelled) + r')(?:e?s)?(?![A-Za-z0-9])', re.IGNORECASE)
-
-
-def registration(skill):
-    """The section a skill's `structure.json` names as its registration: its
-    file and the indices of its lines, or None where the skill names none. A
-    named section the file does not hold is refused."""
-    path = skill / STRUCTURE
-    named = loaded(path).get(REGISTRATION) if path.is_file() else None
-    if named is None:
-        return None
-    name, _, anchor = named.partition('#')
-    target = (skill / name).resolve()
-    if not target.is_file():
-        raise ValueError(f'{path}: registration {named} names no file')
-    lines, _, headings = scan(target)
-    for start, level, title in headings:
-        if anchor_of(title) == anchor:
-            return target, range(start + 1, heading_end(headings, start, level, len(lines)))
-    raise ValueError(f'{path}: registration {named} names no section')
-
-
-def registered_kinds(skill):
-    """The kinds of work a skill registers: each its registry's literal `KINDS`
-    maps to a module, with that module and the files its registration lists
-    under it. A skill without a registry registers none; a registry that is no
-    literal dict of names is refused."""
+def kind_modules(skill):
+    """The module of each kind of work a skill's registry maps in its literal
+    `KINDS` dict. A skill without a registry registers none; a registry that is
+    no literal dict of names is refused."""
     registry = skill / REGISTRY
     if not registry.is_file():
-        return []
+        return set()
     try:
         kinds = next((ast.literal_eval(node.value) for node in ast.parse(registry.read_text()).body
                       if isinstance(node, ast.Assign)
@@ -1879,24 +1826,7 @@ def registered_kinds(skill):
     if not isinstance(kinds, dict) or not all(isinstance(key, str) and isinstance(value, str)
                                               for key, value in kinds.items()):
         raise ValueError(f'{registry}: maps no kind of work to its module in a literal KINDS dict')
-    listed, current = {}, None
-    if section := registration(skill):
-        source, span = section
-        lines, fenced, _ = scan(source)
-        for index in span:
-            line = lines[index]
-            if fenced[index]:
-                continue
-            if match := REGISTERED.match(line):
-                current = listed.setdefault(match[1].strip().lower(), set())
-            elif current is not None and (match := REGISTERED_FILE.match(line)):
-                current.add((source.parent / match[1]).resolve())
-            elif line.strip() and not line[0].isspace():
-                current = None
-    return [RegisteredKind(name, module,
-                           frozenset({(skill / 'scripts' / f'{module}.py').resolve(), *listed.get(name.lower(), ())}),
-                           name_pattern((name, module)))
-            for name, module in kinds.items()]
+    return set(kinds.values())
 
 
 def kind_imports(path, modules):
@@ -1924,38 +1854,18 @@ def kind_imports(path, modules):
 
 
 def kind_findings(skill, root):
-    """Kind check: a general artifact, mode, protocol or script names no
-    registered kind and imports no kind module, which only the registry
-    reaches. A kind's own files, the registry and the registration name it,
-    and code spans and fenced blocks hold literal examples."""
-    kinds = registered_kinds(skill)
-    if not kinds:
+    """Kind check: a script imports no kind module, which only the registry
+    reaches. A kind's own module and the registry are exempt."""
+    modules = kind_modules(skill)
+    if not modules:
         return []
-    registry = (skill / REGISTRY).resolve()
-    source, span = registration(skill) or (None, range(0))
-    modules = {kind.module for kind in kinds}
-    general = sorted(path for folder in GENERAL if (skill / folder).is_dir()
-                     for path in (skill / folder).rglob('*')
-                     if path.suffix in ('.md', *SCRIPT_SUFFIXES) and 'fixtures' not in path.relative_to(skill).parts
-                     and path.resolve() != registry)
+    exempt = {(skill / REGISTRY).resolve(), *((skill / 'scripts' / f'{module}.py').resolve() for module in modules)}
     found = []
-    for path in general:
-        if path.suffix == '.md':
-            lines, fenced, _ = scan(path)
-            lines = ['' if fenced[index] or (path.resolve() == source and index in span) else CODE_SPAN.sub('', line)
-                     for index, line in enumerate(lines)]
-            imports = {}
-        else:
-            lines = path.read_text().splitlines()
-            imports = kind_imports(path, modules) if path.suffix == '.py' else {}
-        for index, name in sorted(imports.items()):
+    for path in sorted((skill / 'scripts').rglob('*.py')) if (skill / 'scripts').is_dir() else []:
+        if path.resolve() in exempt or 'fixtures' in path.relative_to(skill).parts:
+            continue
+        for index, name in sorted(kind_imports(path, modules).items()):
             found.append(finding(path, root, index, 'kind module imported outside the registry', name))
-        for kind in kinds:
-            if path.resolve() in kind.files:
-                continue
-            found += [finding(path, root, index, 'kind named in a general file', f'{match[0]} names {kind.name}')
-                      for index, line in enumerate(lines)
-                      if index not in imports and (match := kind.pattern.search(line))]
     return found
 
 
