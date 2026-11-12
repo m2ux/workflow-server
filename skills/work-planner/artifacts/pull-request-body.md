@@ -127,7 +127,7 @@ The complete body a caller supplies for validation, alone in its file. eg `body.
 
 ### Body Findings
 
-Each way the body departs from its template, each naming its section: a required section missing, an extra section, a repeated or misplaced section, text before the first section, an unreadable [Test Plan](test-plan.md#plan-table), or a line of a field only a [registered kind](work-kind.md#registration)'s issue carries. Nothing when it departs in none. eg `body.md: extra section: Problem`
+Each way the body departs from its template, each naming its section: a required section missing, an extra section, a repeated or misplaced section, text before the first section, an unreadable [Test Plan](test-plan.md#plan-table), or a `Target:` line, as a [hot-fix](hotfix-body.md#target)'s issue carries. Nothing when it departs in none. eg `body.md: extra section: Problem`
 
 ### Workspace
 
