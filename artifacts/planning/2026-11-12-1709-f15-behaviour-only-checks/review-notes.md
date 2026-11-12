@@ -1,15 +1,22 @@
 # F15 Review Notes
 
+## Review at 9cae1adc2
+
+Agent review of [#1710](https://github.com/m2ux/workflow-server/pull/1710) at 9cae1adc2 against `workspace` at ad6d35fa6. The [review record](agent-review.json)'s first entry holds the scope, criteria and validation.
+
+- **Change since 156998dc6.** As the user decided, test_hotfix_readiness and its walk of Review Hot-fix Before Merge are deleted, since none of its tests ran a script on captures or fixtures, and test_deliver holds no scan of deliver.py's source for a second copy of the shared rules. The issue carries AC10 for both.
+- **Findings.** None.
+
 ## Review at 156998dc6
 
-Agent review of [#1710](https://github.com/m2ux/workflow-server/pull/1710) at 156998dc6 against `workspace` at ad6d35fa6. The [review record](agent-review.json)'s first entry holds the scope, criteria and validation.
+Agent review of [#1710](https://github.com/m2ux/workflow-server/pull/1710) at 156998dc6 against `workspace` at ad6d35fa6. The [review record](agent-review.json)'s second entry holds the scope, criteria and validation.
 
 - **Change since b1fca1a3c.** The merge of `workspace` brings in F08's pull request body check; hotfix.py's docstring keeps F08's body sections and names no letter operation, and the test README recounts every module.
 - **Findings.** None.
 
 ## Review at b1fca1a3c
 
-Agent review of [#1710](https://github.com/m2ux/workflow-server/pull/1710) at b1fca1a3c against `workspace`, over the whole branch from e6eb1af6d. The [review record](agent-review.json)'s second entry holds the scope, criteria and validation.
+Agent review of [#1710](https://github.com/m2ux/workflow-server/pull/1710) at b1fca1a3c against `workspace`, over the whole branch from e6eb1af6d. The [review record](agent-review.json)'s third entry holds the scope, criteria and validation.
 
 - **Change since 461977abe.** `deps.py` reads each Component entry as one whitespace-free `branch:path` and strips no leading `./`; Dependency Graph and Delivery Plan name the problem; the test README counts test_dispatch's 33 tests. The first commit's subject describes the check as it stands.
 - **Findings.** None.
