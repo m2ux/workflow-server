@@ -1,10 +1,10 @@
 # F14 Test Results
 
-Branch `skill/work-kind-step-links` at dcad8df4f, cut from `workspace` at 9d020bc9b. Commits: eb09a749e links each hot-fix operation from the step applying it and reduces Work Kind to Populate Body and Validate Body; 9c7ae2f6f links each hot-fix definition where its subject is used; 93a2ce585 writes each hot-fix step with one caller in that caller; 647cc1181 restores Deliver's named Target line; d1d5367e4 retires the kind-name check and rewrites the SOLID rules; review fix fa2f6c23f links the hot-fix Review Rule from Agent Review; 2f40605c4 drops Align's Registration links and dcad8df4f keeps only structural link checks in the Work Kind tests, as the user's review of #1708 asked.
+Branch `skill/work-kind-step-links` at 57f9e4e04, cut from `workspace` at 9d020bc9b. Commits: eb09a749e links each hot-fix operation from the step applying it and reduces Work Kind to Populate Body and Validate Body; 9c7ae2f6f links each hot-fix definition where its subject is used; 93a2ce585 writes each hot-fix step with one caller in that caller; 647cc1181 restores Deliver's named Target line; d1d5367e4 retires the kind-name check and rewrites the SOLID rules; review fix fa2f6c23f links the hot-fix Review Rule from Agent Review; 2f40605c4 drops Align's Registration links and dcad8df4f keeps only structural link checks in the Work Kind tests, and 57f9e4e04 says only a hot-fix's review record carries `base_ref`, as the user's review of #1708 asked.
 
 ## T1. Planner Suite
 
-`cd skills/work-planner && scripts/sbx python3 -m unittest discover -s test` at dcad8df4f: 1253 tests, OK, 1 skipped. `test_kind_operations.py` (6 tests) checks links alone: each Work Kind step links every operation the Registration lists for it and no Registration, each registered operation names its kind, each hot-fix operation has a step applying it through a link, no step applies an unlinked kind operation, and each application of Work Kind names an operation it holds. Covers AC1, AC2, AC3.
+`cd skills/work-planner && scripts/sbx python3 -m unittest discover -s test` at 57f9e4e04: 1253 tests, OK, 1 skipped. `test_kind_operations.py` (6 tests) checks links alone: each Work Kind step links every operation the Registration lists for it and no Registration, each registered operation names its kind, each hot-fix operation has a step applying it through a link, no step applies an unlinked kind operation, and each application of Work Kind names an operation it holds. Covers AC1, AC2, AC3.
 
 ## T2. Unlinked Dispatch and Kind-Unit Grep
 
@@ -12,11 +12,11 @@ A grep of `artifacts`, `modes`, `protocols`, `SKILL.md` and `guidelines.md` for 
 
 ## T3. Shared Suite and Skill-File Check
 
-`cd skills && scripts/sbx python3 -m unittest discover -s test` at dcad8df4f: 329 tests, OK. `KindImports` (9 tests) shows a general script importing a kind module is reported and a general file naming a kind is not; no `kind named in a general file` kind remains in `check_skill_files.py` or `rules.json`, and `structure.json` names no `registration`. `scripts/sbx python3 skills/scripts/check_skill_files.py skills/work-planner`: 65 files checked, 0 findings. Covers AC4.
+`cd skills && scripts/sbx python3 -m unittest discover -s test` at 57f9e4e04: 329 tests, OK. `KindImports` (9 tests) shows a general script importing a kind module is reported and a general file naming a kind is not; no `kind named in a general file` kind remains in `check_skill_files.py` or `rules.json`, and `structure.json` names no `registration`. `scripts/sbx python3 skills/scripts/check_skill_files.py skills/work-planner`: 65 files checked, 0 findings. Covers AC4.
 
 ## T4. Bundle Proof
 
-Each tree was copied from git, `---\nprosiform: {}\n---\n` prepended to every `.md` lacking frontmatter, and `pf -o <dir> <ref>` run from inside the copy's `skills/work-planner`. Before is `workspace` at 9d020bc9b; after is dcad8df4f. "Settle text" means the bundle carries Settle Hot-fix Board Status's opening, "One hot-fix's board item set where".
+Each tree was copied from git, `---\nprosiform: {}\n---\n` prepended to every `.md` lacking frontmatter, and `pf -o <dir> <ref>` run from inside the copy's `skills/work-planner`. Before is `workspace` at 9d020bc9b; after is dcad8df4f, whose bundled files 57f9e4e04 changes by one Agent Review sentence. "Settle text" means the bundle carries Settle Hot-fix Board Status's opening, "One hot-fix's board item set where".
 
 | Reference | Before | After |
 | --- | --- | --- |
@@ -32,4 +32,4 @@ The whole Task Merge protocol stays over pf's 256 KB default on both revisions, 
 
 ## T5. Whitespace
 
-`git diff --check 9d020bc9b dcad8df4f`: clean.
+`git diff --check 9d020bc9b 57f9e4e04`: clean.

@@ -1,5 +1,12 @@
 # F14 Review Notes
 
+## Review at 57f9e4e04
+
+Agent review of [#1708](https://github.com/m2ux/workflow-server/pull/1708) at 57f9e4e04 against `workspace`, over the whole branch from 9d020bc9b. The [review record](agent-review.json)'s first entry holds the scope, criteria and validation.
+
+- **Change since dcad8df4f.** Write Revision Review Record names the `base_ref` a hot-fix's record carries under its Review Rule.
+- **Findings.** None.
+
 ## Review at dcad8df4f
 
 Agent review of [#1708](https://github.com/m2ux/workflow-server/pull/1708) at dcad8df4f against `workspace`, over the whole branch from 9d020bc9b, after the user's review. The [review record](agent-review.json)'s first entry holds the scope, criteria and validation.
