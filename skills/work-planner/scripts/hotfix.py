@@ -5,7 +5,8 @@ Overview names the long-lived branch it fixes in one Target: line. This module s
 kind to the script registry, kinds.py: each operation of its Kind interface, with the inputs and
 results that interface states, reads a hot-fix's tag, labels, body faults, target, the pull request
 body sections carrying a Target: line, board status, linking and delivering pull requests, the
-state of its delivery unit and the agent review rule for its pull request. The module defines no other public name, and only the registry imports it.
+state of its delivery unit and the agent review rule for its pull request. The module defines no
+other public name, and only the registry imports it.
 """
 import re
 
