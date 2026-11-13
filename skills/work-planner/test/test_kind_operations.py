@@ -10,9 +10,9 @@ sys.path.insert(0, str(ROOT.parent / 'scripts'))
 import check_skill_files as checker
 
 KIND = ROOT / 'artifacts' / 'work-kind.md'
-CALL = re.compile(r'(?:Apply|Run) \[([^]]+)\]\(([^)\s]*)[^)]*"ƒ"\)')
+CALL = re.compile(r'(?:Apply|Run) \[([^]]+)\]\(([^)\s]+)\)')
 NAMED = re.compile(r'\[([^]]+)\]\(([^)\s]+)[^)]*\)')
-DISPATCH = re.compile(r'Apply \[([^]]+)\]\(\.\./artifacts/work-kind\.md#([a-z0-9-]+) "ƒ"\)')
+DISPATCH = re.compile(r'Apply \[([^]]+)\]\(\.\./artifacts/work-kind\.md#([a-z0-9-]+)\)')
 UNLINKED = re.compile(r'Apply (?:that|the [A-Z][\w-]* [\w -]*?) operation|operation (?:the|that) [^.]*\bsupplies\b')
 GENERAL = ('modes', 'protocols', 'artifacts')
 ARTIFACT = re.compile(r'^\s+- \[([^]]+)\]\(([\w-]+\.md)\)(?:\s+(.*))?$')
@@ -138,7 +138,7 @@ class GeneralCallers(unittest.TestCase):
                      'the Populate Body operation the kind supplies'):
             with self.subTest(line=line):
                 self.assertTrue(UNLINKED.search(line))
-        self.assertIsNone(UNLINKED.search('Apply [Populate Body](../artifacts/work-kind.md#populate-body "ƒ")'))
+        self.assertIsNone(UNLINKED.search('Apply [Populate Body](../artifacts/work-kind.md#populate-body)'))
 
     def test_each_application_names_a_work_kind_operation(self):
         anchors = {checker.anchor_of(name) for name in operations(KIND)}

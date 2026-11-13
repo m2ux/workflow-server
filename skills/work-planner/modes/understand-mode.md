@@ -2,7 +2,7 @@
 
 Explains the named pull request's changes through a measured architecture overview and publishes that overview for its reviewer.
 
-Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
+Follow the [Procedure](#procedure), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Procedure
 
@@ -15,7 +15,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 2. Explain Each Change
 
-Follow [Change Overview](../protocols/change-overview.md "ƒ") for each selected pull request, resuming with what it returns.
+Follow [Change Overview](../protocols/change-overview.md) for each selected pull request, resuming with what it returns.
 
 ### 3. Report
 

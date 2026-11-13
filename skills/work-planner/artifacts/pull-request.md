@@ -23,11 +23,11 @@ One delivery pull request's confirmed merge, human handoff or classified refusal
 
 ##### Task Merge
 
-Run [Merge Pull Request](#merge-pull-request "ƒ") for a task with that evidence.
+Run [Merge Pull Request](#merge-pull-request) for a task with that evidence.
 
 ##### Epic Merge
 
-Run [Submit Epic Merge](#submit-epic-merge "ƒ") for an epic with that evidence.
+Run [Submit Epic Merge](#submit-epic-merge) for an epic with that evidence.
 
 ##### Mutation Outcome
 
@@ -39,7 +39,7 @@ Run [Submit Epic Merge](#submit-epic-merge "ƒ") for an epic with that evidence.
 
 #### 3. Confirm Delivery Merge
 
-- Run [Read Merge Result](#read-merge-result "ƒ") for the same [Identity](#identity).
+- Run [Read Merge Result](#read-merge-result) for the same [Identity](#identity).
 - Compare its [Merge State](#merge-state) with the verified head, target and mutation's merge commit.
 - On a missing merge, changed head or target, absent merge commit or disagreeing commit, provide [Failure](#failure) with the discrepancy and return.
 - Provide [Merge Result](#merge-result) with outcome `confirmed-merge`, the verified head and target, and the confirmed merge commit.
@@ -51,18 +51,18 @@ The observed or updated Development relation for a pull request.
 #### 1. Read Complete Development Relation
 
 - For a read-only [Link Request](#link-request), use [Authenticated Access](#authenticated-access):
-- Apply [Read Pull Request State](#read-pull-request-state "ƒ") for the [pull request](#identity)'s metadata, which carries the `html_url` the capture keys it by.
-- Run [Capture Pull Request Links](#capture-pull-request-links "ƒ") with that record and provide its entry, every page read. An unreadable relation is a blocker, not an empty link set.
+- Apply [Read Pull Request State](#read-pull-request-state) for the [pull request](#identity)'s metadata, which carries the `html_url` the capture keys it by.
+- Run [Capture Pull Request Links](#capture-pull-request-links) with that record and provide its entry, every page read. An unreadable relation is a blocker, not an empty link set.
 
 #### 2. Edit Authorized Development Relation
 
 - For a link edit:
 - Require confirmed [Repository Prerequisite](#repository-prerequisite); an unconfirmed setting blocks the edit.
-- For an addition, Run [Set Development Link](#set-development-link "ƒ") with the pull request and [Issue Identity](#issue-identity).
+- For an addition, Run [Set Development Link](#set-development-link) with the pull request and [Issue Identity](#issue-identity).
 
 - For removal of an abandoned or incorrect link:
 - Require [Removal Decision](#removal-decision).
-- Run [Remove Development Link](#remove-development-link "ƒ") with those identities.
+- Run [Remove Development Link](#remove-development-link) with those identities.
 
 #### 3. Provide Verified Relation
 
@@ -74,7 +74,7 @@ The complete issue-link snapshot for a supplied set of pull requests.
 
 #### 1. Capture Complete Issue Links
 
-Run [Capture Pull Request Links](#capture-pull-request-links "ƒ") with the supplied [Pull Request Records](#pull-request-records), saving at [Link-Snapshot Path](#link-snapshot-path), such as `links.json`.
+Run [Capture Pull Request Links](#capture-pull-request-links) with the supplied [Pull Request Records](#pull-request-records), saving at [Link-Snapshot Path](#link-snapshot-path), such as `links.json`.
 
 #### 2. Require Complete Relation Evidence
 
@@ -82,7 +82,7 @@ If it names an unreadable relation, stop and provide each one named as a blocker
 
 #### 3. Refresh Changed Link Snapshot
 
-After a link changes, Run [Capture Pull Request Links](#capture-pull-request-links "ƒ") again with the refreshed [pull request records](#pull-request-records), the same [authenticated access](#authenticated-access) and destination.
+After a link changes, Run [Capture Pull Request Links](#capture-pull-request-links) again with the refreshed [pull request records](#pull-request-records), the same [authenticated access](#authenticated-access) and destination.
 
 #### 4. Provide Complete Snapshot
 
@@ -94,7 +94,7 @@ The verified delivery-issue relation for a pull request.
 
 #### 1. Add Development Relation
 
-Apply [Access Development Links](#access-development-links "ƒ") to add the selected issue to the pull request.
+Apply [Access Development Links](#access-development-links) to add the selected issue to the pull request.
 
 #### 2. Require Verified Edit
 
@@ -102,7 +102,7 @@ Stop on a blocker or an unverified edit.
 
 #### 3. Refresh Issue-Link Snapshot
 
-Apply [Fetch Pull Request Issue Links](#fetch-pull-request-issue-links "ƒ") with [Pull Request Records](#pull-request-records) and [Link-Snapshot Path](#link-snapshot-path) after the edit.
+Apply [Fetch Pull Request Issue Links](#fetch-pull-request-issue-links) with [Pull Request Records](#pull-request-records) and [Link-Snapshot Path](#link-snapshot-path) after the edit.
 
 #### 4. Provide Relation Evidence
 
@@ -114,7 +114,7 @@ The pull request collection covering every supplied board repository and every p
 
 #### 1. Create Fresh Pull Collection
 
-Run [Fetch Repository Delivery Pull Requests](#fetch-repository-delivery-pull-requests "ƒ") for the first entry in [Repository List](#repository-list), saving at [Collection Path](#collection-path), such as `prs.json`. This replaces the destination with a fresh collection.
+Run [Fetch Repository Delivery Pull Requests](#fetch-repository-delivery-pull-requests) for the first entry in [Repository List](#repository-list), saving at [Collection Path](#collection-path), such as `prs.json`. This replaces the destination with a fresh collection.
 
 #### 2. Stop on Initial Failure
 
@@ -122,11 +122,11 @@ Stop on failure.
 
 #### 3. Append Remaining Repositories
 
-Run [Append Repository Delivery Pull Requests](#append-repository-delivery-pull-requests "ƒ") for each further repository, passing the same destination.
+Run [Append Repository Delivery Pull Requests](#append-repository-delivery-pull-requests) for each further repository, passing the same destination.
 
 #### 4. Fetch Plan-Linked Pull Requests
 
-Run [Fetch Linked Pull Requests](#fetch-linked-pull-requests "ƒ") with that destination and the board issue entries in [Issue Records](#issue-records).
+Run [Fetch Linked Pull Requests](#fetch-linked-pull-requests) with that destination and the board issue entries in [Issue Records](#issue-records).
 
 #### 5. Report Incomplete Fetch
 
@@ -142,11 +142,11 @@ The current delivery pull requests for one initiative: each one whose title name
 
 #### 1. Fetch Initiative-Prefixed Pull Requests
 
-Run [Fetch Initiative Pull Requests](#fetch-initiative-pull-requests "ƒ") for the selected initiative.
+Run [Fetch Initiative Pull Requests](#fetch-initiative-pull-requests) for the selected initiative.
 
 #### 2. Fetch All Plan-Linked Pull Requests
 
-Run [Fetch Linked Pull Requests](#fetch-linked-pull-requests "ƒ") with that collection and [Issue Records](#issue-records).
+Run [Fetch Linked Pull Requests](#fetch-linked-pull-requests) with that collection and [Issue Records](#issue-records).
 
 #### 3. Provide Initiative Pull Collection
 
@@ -158,11 +158,11 @@ One current pull request and its requested supporting records.
 
 #### 1. Save Complete Pull Response
 
-Run [Save Pull Request Snapshot](#save-pull-request-snapshot "ƒ") with [Identity](#identity), saving JSON at [Output Files](#output-files).
+Run [Save Pull Request Snapshot](#save-pull-request-snapshot) with [Identity](#identity), saving JSON at [Output Files](#output-files).
 
 #### 2. Fetch Requested Supporting Records
 
-Run [Fetch Pull Request Files](#fetch-pull-request-files "ƒ") or Run [Fetch Pull Request Reviews](#fetch-pull-request-reviews "ƒ") when [Record Selection](#record-selection) requests those records.
+Run [Fetch Pull Request Files](#fetch-pull-request-files) or Run [Fetch Pull Request Reviews](#fetch-pull-request-reviews) when [Record Selection](#record-selection) requests those records.
 
 #### 3. Provide Requested Pull Records
 
@@ -174,23 +174,23 @@ One pull request created or updated from supplied content and metadata.
 
 #### 1. Validate Supplied Body
 
-- For a creation or a body change, Apply [Validate Pull Request Body](pull-request-body.md#validate-pull-request-body "ƒ") to the [Body File](#body-file), as an epic review when the [Kind](#kind) is epic.
+- For a creation or a body change, Apply [Validate Pull Request Body](pull-request-body.md#validate-pull-request-body) to the [Body File](#body-file), as an epic review when the [Kind](#kind) is epic.
 - On a finding, provide [Failure](#failure) with its [Body Findings](pull-request-body.md#body-findings), publishing nothing.
 
 #### 2. Create Delivery Pull Request
 
-- For creation, Run [Open Task Pull Request](#open-task-pull-request "ƒ") or Run [Open Epic Pull Request](#open-epic-pull-request "ƒ") as the selected kind requires.
-- For a task or epic pull request with a delivery issue, Apply [Link Pull Request to Issue](#link-pull-request-to-issue "ƒ"), meeting [Issue Links](#issue-links).
+- For creation, Run [Open Task Pull Request](#open-task-pull-request) or Run [Open Epic Pull Request](#open-epic-pull-request) as the selected kind requires.
+- For a task or epic pull request with a delivery issue, Apply [Link Pull Request to Issue](#link-pull-request-to-issue), meeting [Issue Links](#issue-links).
 
 - A pull request outside epic delivery targets a long-lived branch. An open stacked pull request targets its long-lived branch once its base merges.
 
 #### 3. Update Selected Pull Fields
 
-For an existing [Identity](#identity), Run [Patch Pull Request Body](#patch-pull-request-body "ƒ"), Run [Retitle Pull Request](#retitle-pull-request "ƒ") or Run [Retarget Pull Request](#retarget-pull-request "ƒ") for the selected changes, preserving other fields.
+For an existing [Identity](#identity), Run [Patch Pull Request Body](#patch-pull-request-body), Run [Retitle Pull Request](#retitle-pull-request) or Run [Retarget Pull Request](#retarget-pull-request) for the selected changes, preserving other fields.
 
 #### 4. Read Saved Pull State
 
-Apply [Read Pull Request State](#read-pull-request-state "ƒ") again.
+Apply [Read Pull Request State](#read-pull-request-state) again.
 
 #### 5. Provide Saved Pull Record
 
@@ -202,23 +202,23 @@ Merges each open task pull request whose [test plan has passed](test-plan.md#pas
 
 #### 1. Confirm Repository and Base
 
-Apply [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close "ƒ") for the repository, and confirm the task [Identity](#identity) targets [Base Branch](#base-branch), as [Task Branches](delivery-branches.md#task-branches) names it. An epic base carries no review requirement of its own; carry any applicable target review requirement into [Merge Verified Task Pull](#2-merge-verified-task-pull).
+Apply [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close) for the repository, and confirm the task [Identity](#identity) targets [Base Branch](#base-branch), as [Task Branches](delivery-branches.md#task-branches) names it. An epic base carries no review requirement of its own; carry any applicable target review requirement into [Merge Verified Task Pull](#2-merge-verified-task-pull).
 
 #### 2. Merge Verified Task Pull
 
-- Where its base is an epic base, Apply [Update Epic Base](delivery-branches.md#update-epic-base "ƒ") with the [project checkout](#project-checkout) and that base.
-- Apply [Fetch Merge Readiness](#fetch-merge-readiness "ƒ") for the task pull request and its base.
-- Apply [Merge Delivery Pull Request](#merge-delivery-pull-request "ƒ") with delivery kind task, verified head, target requirements, [Repository Prerequisite](#repository-prerequisite) and passing [Readiness Evidence](#readiness-evidence), without further confirmation.
+- Where its base is an epic base, Apply [Update Epic Base](delivery-branches.md#update-epic-base) with the [project checkout](#project-checkout) and that base.
+- Apply [Fetch Merge Readiness](#fetch-merge-readiness) for the task pull request and its base.
+- Apply [Merge Delivery Pull Request](#merge-delivery-pull-request) with delivery kind task, verified head, target requirements, [Repository Prerequisite](#repository-prerequisite) and passing [Readiness Evidence](#readiness-evidence), without further confirmation.
 - Stop on `human-handoff`, `harness-denial` or an unconfirmed mutation outcome, returning the provided result to the caller.
 
 - Only for `github-refusal`, refresh once:
-- Apply [Update Task Branch](delivery-branches.md#update-task-branch "ƒ") with the [unit checkout](#unit-checkout), the task branch and its base.
-- Apply [Fetch Merge Readiness](#fetch-merge-readiness "ƒ") again for the updated task head.
-- Apply [Merge Delivery Pull Request](#merge-delivery-pull-request "ƒ") once more with that verified evidence. Continue to confirmation only for `confirmed-merge`; return any other result without another attempt. A conflict or repeated refusal leaves the pull request open with the blocker reported.
+- Apply [Update Task Branch](delivery-branches.md#update-task-branch) with the [unit checkout](#unit-checkout), the task branch and its base.
+- Apply [Fetch Merge Readiness](#fetch-merge-readiness) again for the updated task head.
+- Apply [Merge Delivery Pull Request](#merge-delivery-pull-request) once more with that verified evidence. Continue to confirmation only for `confirmed-merge`; return any other result without another attempt. A conflict or repeated refusal leaves the pull request open with the blocker reported.
 
 #### 3. Confirm Task Merge Result
 
-- Only for `confirmed-merge`, Apply [Read Pull Request State](#read-pull-request-state "ƒ") to confirm the merged state, head, base and merge commit.
+- Only for `confirmed-merge`, Apply [Read Pull Request State](#read-pull-request-state) to confirm the merged state, head, base and merge commit.
 - Provide [Merge Result](#merge-result), or [Failure](#failure) with the unresolved conflict, refusal or handoff.
 
 ### Fetch Merge Readiness
@@ -227,16 +227,16 @@ The current pull request's readiness against its target requirements and head ch
 
 #### 1. Read Current Pull Head
 
-- Apply [Read Pull Request State](#read-pull-request-state "ƒ") with the [pull request identity](#identity) and destination `epic-pr.json`.
+- Apply [Read Pull Request State](#read-pull-request-state) with the [pull request identity](#identity) and destination `epic-pr.json`.
 - Retain the literal head SHA and target branch for the evidence calls.
 
 #### 2. Read Current Target Requirements
 
 - For the repository, use [Base Branch](#base-branch) as the [target branch](delivery-branches.md#target-branch), saving protection/rules evidence at [Output Files](#output-files).
 
-- Run [Fetch Branch Protection](delivery-branches.md#fetch-branch-protection "ƒ") for [Target Branch](delivery-branches.md#target-branch) in [Repository](delivery-branches.md#repository), using [Output Files](delivery-branches.md#output-files) for the evidence destinations.
+- Run [Fetch Branch Protection](delivery-branches.md#fetch-branch-protection) for [Target Branch](delivery-branches.md#target-branch) in [Repository](delivery-branches.md#repository), using [Output Files](delivery-branches.md#output-files) for the evidence destinations.
 
-- Run [Fetch Active Branch Rules](delivery-branches.md#fetch-active-branch-rules "ƒ") for the same target.
+- Run [Fetch Active Branch Rules](delivery-branches.md#fetch-active-branch-rules) for the same target.
 
 - Retain [Target Requirements](delivery-branches.md#target-requirements) with both records, or [Failure](delivery-branches.md#failure) when a requirement is unreadable. A protection 404 does not establish the absence of active rules.
 - Carry any unresolved requirement into the readiness result.
@@ -246,17 +246,17 @@ The current pull request's readiness against its target requirements and head ch
 - Read the head evidence.
 - Use the exact head SHA and check/status output paths.
 
-- Run [Fetch Head Check Runs](#fetch-head-check-runs "ƒ") for the verified head.
+- Run [Fetch Head Check Runs](#fetch-head-check-runs) for the verified head.
 
-- Run [Fetch Head Status](#fetch-head-status "ƒ") for the same SHA.
+- Run [Fetch Head Status](#fetch-head-status) for the same SHA.
 
 - Retain [Head Checks](#head-checks) and [Head Status](#head-status), retaining missing or pending evidence as unresolved [Failure](#failure).
-- Apply [Read Pull Request State](#read-pull-request-state "ƒ") for reviews with the pull request identity and reviews output path.
+- Apply [Read Pull Request State](#read-pull-request-state) for reviews with the pull request identity and reviews output path.
 - Compare the check-run and status evidence with the target requirements and current reviews. A missing or pending check, blocked merge state or unmet required review leaves readiness unresolved.
 
 #### 4. Confirm Stable Pull Head
 
-- Apply [Read Pull Request State](#read-pull-request-state "ƒ") again with the same identity and destination.
+- Apply [Read Pull Request State](#read-pull-request-state) again with the same identity and destination.
 - Compare its head with the retained SHA; a changed head requires fresh evidence.
 - Provide [Verified Head](#verified-head), [Target Requirements](#target-requirements) and [Readiness Evidence](#readiness-evidence), retaining unresolved conditions as [Failure](#failure).
 
@@ -266,11 +266,11 @@ An open epic review held in draft while its handoff evidence is unresolved.
 
 #### 1. Mark Open Review Draft
 
-Apply [Read Pull Request State](#read-pull-request-state "ƒ") for full metadata. For an open ready [pull request](#identity), Run [Mark Review Draft](#mark-review-draft "ƒ").
+Apply [Read Pull Request State](#read-pull-request-state) for full metadata. For an open ready [pull request](#identity), Run [Mark Review Draft](#mark-review-draft).
 
 #### 2. Confirm Review Draft State
 
-Apply [Read Pull Request State](#read-pull-request-state "ƒ") again with the same identity and provide [Review State](#review-state) with the confirmed draft state, or [Failure](#failure) with the discrepancy.
+Apply [Read Pull Request State](#read-pull-request-state) again with the same identity and provide [Review State](#review-state) with the confirmed draft state, or [Failure](#failure) with the discrepancy.
 
 ## Commands
 
@@ -308,7 +308,7 @@ gh api &#92;
 </pre></big>
 
 - Supply the [title](#title "○"), the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the [complete body file](#body-file "○").
-- A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens; [Review Hot-fix Before Merge](hotfix.md#review-hot-fix-before-merge "ƒ") marks it ready.
+- A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens; [Review Hot-fix Before Merge](hotfix.md#review-hot-fix-before-merge) marks it ready.
 
 ### Open Epic Pull Request
 

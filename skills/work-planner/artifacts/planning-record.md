@@ -14,7 +14,7 @@ One planning directory and its artifact inventory.
 
 ##### New Record
 
-- Run [Add Planning Record](#add-planning-record "ƒ") with the engineering checkout and supplied planning-folder path.
+- Run [Add Planning Record](#add-planning-record) with the engineering checkout and supplied planning-folder path.
 - Populate README.md from the [Template](#template).
 
 ##### Existing Record
@@ -43,11 +43,11 @@ The record's folder committed and pushed, so every link into it resolves for a r
 
 #### 1. Find Engineering Checkout
 
-Run [Find Engineering Worktree](#find-engineering-worktree "ƒ") for [Planning Folder](#planning-folder).
+Run [Find Engineering Worktree](#find-engineering-worktree) for [Planning Folder](#planning-folder).
 
 #### 2. Publish Planning Files
 
-- Run [Commit Planning Record](#commit-planning-record "ƒ") using [Commit Message File](#commit-message-file).
+- Run [Commit Planning Record](#commit-planning-record) using [Commit Message File](#commit-message-file).
 - Confirm the files this record wrote reached `origin/engineering`, meeting [Shared Worktree](#shared-worktree).
 - Report a rebase that stops on a conflict rather than rewriting the branch.
 
@@ -142,7 +142,7 @@ README.md is the one file the folder must hold. Any file beyond README.md is add
 
 Each file beyond README.md is a row in the README's Artifacts.
 
-A plan's draft issue bodies and its work items are files of its record. Each draft is the source every later edit and save of its issue reads, and it reaches readers through [Publish Planning Record](#publish-planning-record "ƒ").
+A plan's draft issue bodies and its work items are files of its record. Each draft is the source every later edit and save of its issue reads, and it reaches readers through [Publish Planning Record](#publish-planning-record).
 
 ### Header
 

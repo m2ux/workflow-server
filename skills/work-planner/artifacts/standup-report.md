@@ -14,7 +14,7 @@ Require the complete [Issue Link Snapshot](#issue-link-snapshot).
 
 #### 2. Render Window Progress
 
-Run [Summarise Progress](#summarise-progress "ƒ") for the selected reporting window.
+Run [Summarise Progress](#summarise-progress) for the selected reporting window.
 
 #### 3. Provide Unresolved Initiatives
 
@@ -27,7 +27,7 @@ If initiative references remain unresolved, provide them for the caller to suppl
 
 #### 5. Render Final Report
 
-Run [Summarise Progress](#summarise-progress "ƒ") with the same inputs and the paragraph file as `--summary`.
+Run [Summarise Progress](#summarise-progress) with the same inputs and the paragraph file as `--summary`.
 
 #### 6. Provide Report Findings
 

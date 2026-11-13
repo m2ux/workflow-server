@@ -10,7 +10,7 @@ The theme board the request names.
 
 #### 1. Find Requested Board
 
-Run [Find Theme Board](#find-theme-board "ƒ") for the [Theme Name](#theme-name) under [Board Owner](#board-owner). The theme must meet [Themes](#themes).
+Run [Find Theme Board](#find-theme-board) for the [Theme Name](#theme-name) under [Board Owner](#board-owner). The theme must meet [Themes](#themes).
 
 #### 2. Provide Missing Selection
 
@@ -26,19 +26,19 @@ One issue's membership and initial status.
 
 #### 1. Read Status Options
 
-Run [Fetch Board Fields](#fetch-board-fields "ƒ") for the Status options at [Board Coordinates](#board-coordinates), using the supplied issue identity.
+Run [Fetch Board Fields](#fetch-board-fields) for the Status options at [Board Coordinates](#board-coordinates), using the supplied issue identity.
 
 #### 2. Add Supplied Issue
 
-Run [Add Issue to Board](#add-issue-to-board "ƒ") with the [issue id](#issue-id).
+Run [Add Issue to Board](#add-issue-to-board) with the [issue id](#issue-id).
 
 #### 3. Set Initial Status
 
-Run [Set Item Status](#set-item-status "ƒ") with [Initial Status](#initial-status) and the matching field and option ids.
+Run [Set Item Status](#set-item-status) with [Initial Status](#initial-status) and the matching field and option ids.
 
 #### 4. Read Saved Item
 
-Run [Fetch Board Item](#fetch-board-item "ƒ") for the saved item.
+Run [Fetch Board Item](#fetch-board-item) for the saved item.
 
 #### 5. Provide Place Issue on Board
 
@@ -50,11 +50,11 @@ The selected board's items and status fields.
 
 #### 1. Locate Board Status Field
 
-Run [Find Status Field](#find-status-field "ƒ") for [Board Coordinates](#board-coordinates).
+Run [Find Status Field](#find-status-field) for [Board Coordinates](#board-coordinates).
 
 #### 2. Fetch Complete Board Items
 
-Run [Fetch Board Items with Status](#fetch-board-items-with-status "ƒ"), passing that field id and board number.
+Run [Fetch Board Items with Status](#fetch-board-items-with-status), passing that field id and board number.
 
 #### 3. Provide Board State
 
@@ -66,11 +66,11 @@ One board's field definitions and requested item state.
 
 #### 1. Read Board Fields
 
-Run [Fetch Board Fields](#fetch-board-fields "ƒ") for [Board Coordinates](#board-coordinates), saving the records at [Output Files](#output-files).
+Run [Fetch Board Fields](#fetch-board-fields) for [Board Coordinates](#board-coordinates), saving the records at [Output Files](#output-files).
 
 #### 2. Read Requested Item
 
-When [Optional Item](#optional-item) requests a single item for write confirmation, Run [Fetch Board Item](#fetch-board-item "ƒ"). A list snapshot may lag a write.
+When [Optional Item](#optional-item) requests a single item for write confirmation, Run [Fetch Board Item](#fetch-board-item). A list snapshot may lag a write.
 
 #### 3. Provide Current Configuration
 
@@ -314,4 +314,4 @@ An issue at Ready, In Progress, In Review or Done is assigned to the user; one i
 
 ### Membership
 
-A hot-fix's item is placed, moved and removed by [Settle Hot-fix Board Status](hotfix.md#settle-hot-fix-board-status "ƒ"), which reads and writes the board with this artifact's operations and commands. A standalone issue has no item, as its [Placement](standalone-body.md#placement) states. Every other item takes the Status [Item Status](board-status.md#item-status) gives it.
+A hot-fix's item is placed, moved and removed by [Settle Hot-fix Board Status](hotfix.md#settle-hot-fix-board-status), which reads and writes the board with this artifact's operations and commands. A standalone issue has no item, as its [Placement](standalone-body.md#placement) states. Every other item takes the Status [Item Status](board-status.md#item-status) gives it.

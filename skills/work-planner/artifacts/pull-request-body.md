@@ -10,7 +10,7 @@ One body file checked against the [Template](#template), or against [Review Body
 
 #### 1. Check Body Against Template
 
-Run [Check Pull Request Body](#check-pull-request-body "ƒ") for the [Body File](#body-file).
+Run [Check Pull Request Body](#check-pull-request-body) for the [Body File](#body-file).
 
 #### 2. Provide Body Findings
 

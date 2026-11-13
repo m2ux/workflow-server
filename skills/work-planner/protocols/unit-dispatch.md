@@ -2,7 +2,7 @@
 
 One admitted unit held, prepared and started in its delivery session.
 
-Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
+Follow the [Procedure](#procedure), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ## Procedure
 
@@ -24,33 +24,33 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - For a new unit of rows, read the declared files from the work-item file each free row links, before reservation replaces that link.
 - For a retained preparation, use its captured declared files and selected record, confirming this run owns that preparation.
 - For a hot-fix, use the declared-file context its [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
-- Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") for the selected record folder.
-- Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") for that folder.
+- Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record) for the selected record folder.
+- Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record) for that folder.
 - Retain its confirmed remote publication as the unit's [Start Evidence](../artifacts/dispatch-batch.md#start-evidence).
 
 ### 3. Hold the Unit
 
-- Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for the selected board immediately before acquiring the unit's hold.
+- Apply [Read Board State](../artifacts/board.md#read-board-state) for the selected board immediately before acquiring the unit's hold.
 
 #### Task Rows
 
 - For task rows:
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the epic's current body.
-- For a new unit, Run [Reserve Row](../artifacts/epic-issue-body.md#reserve-row "ƒ") for every row of the unit, with that body and the refreshed board items, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for the epic's current body.
+- For a new unit, Run [Reserve Row](../artifacts/epic-issue-body.md#reserve-row) for every row of the unit, with that body and the refreshed board items, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the provided body.
 - For a retained preparation, require every current row to hold its selected record; provide a changed hold as a blocker.
-- Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status "ƒ") for its task issues, where present, and its epic, requesting In Progress.
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the epic and confirm every selected row holds this record.
+- Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status) for its task issues, where present, and its epic, requesting In Progress.
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for the epic and confirm every selected row holds this record.
 
 #### Hot-Fix Unit
 
 - For a [hot-fix unit](../artifacts/delivery-plan.md#hot-fix-units):
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the hot-fix's current body.
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for the hot-fix's current body.
 
 ##### New Hot-Fix Unit
 
 - For a new unit, use that issue, board identity and refreshed board items.
 
-- Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status "ƒ") with [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity) for In Progress and the supplied [Board Evidence](../artifacts/hotfix.md#board-evidence). That status is the hold [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
+- Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status) with [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity) for In Progress and the supplied [Board Evidence](../artifacts/hotfix.md#board-evidence). That status is the hold [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
 
 - Retain [Board Result](../artifacts/hotfix.md#board-result) with the confirmed status or discrepancy. The session starts only once it is confirmed.
 
@@ -72,14 +72,14 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For a new unit, prepare each selected branch, base and worktree in the project checkout:
 - Require [Prerequisite Evidence](../artifacts/delivery-branches.md#prerequisite-evidence) and names meeting [Task Branches](../artifacts/delivery-branches.md#task-branches).
-- Run [Fetch Remote Branch](../artifacts/delivery-branches.md#fetch-remote-branch "ƒ") in the project checkout with its base; stop on failure.
-- Run [Add Task Worktree](../artifacts/delivery-branches.md#add-task-worktree "ƒ") in the project checkout with the selected path, task branch and fetched base.
-- Run [Read Checkout Revision](../artifacts/delivery-branches.md#read-checkout-revision "ƒ") in the unit checkout for `HEAD` and retain its full preparation head with the worktree path, branch and base.
+- Run [Fetch Remote Branch](../artifacts/delivery-branches.md#fetch-remote-branch) in the project checkout with its base; stop on failure.
+- Run [Add Task Worktree](../artifacts/delivery-branches.md#add-task-worktree) in the project checkout with the selected path, task branch and fetched base.
+- Run [Read Checkout Revision](../artifacts/delivery-branches.md#read-checkout-revision) in the unit checkout for `HEAD` and retain its full preparation head with the worktree path, branch and base.
 - A unit changing several long-lived branches repeats this for each selected base.
 
 #### Retained Unit Checkouts
 
-- For a retained preparation, Run [Check Task Worktree](../artifacts/delivery-branches.md#check-task-worktree "ƒ") for each recorded checkout with the project checkout, retained path, branch and full preparation head.
+- For a retained preparation, Run [Check Task Worktree](../artifacts/delivery-branches.md#check-task-worktree) for each recorded checkout with the project checkout, retained path, branch and full preparation head.
 - Require every verified result before preparing the brief. A mismatch stops this unit: provide a unit blocker and retain its checkout and hold.
 
 #### Delivery Brief
@@ -94,7 +94,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 5. Start the Worker
 
-- Run [Check Dispatch Start](../artifacts/dispatch-batch.md#check-dispatch-start "ƒ") with the selected batch and unit, gathered start evidence, current observed sessions, actual free slots and recorded blockers.
+- Run [Check Dispatch Start](../artifacts/dispatch-batch.md#check-dispatch-start) with the selected batch and unit, gathered start evidence, current observed sessions, actual free slots and recorded blockers.
 - Provide a capacity-only wait with the unit's preparation for the coordinator to retain and resume.
 - Start the unit through this session's sub-agent dispatch only after validation succeeds.
 - Supply the complete brief and its unit and engineering checkouts to the worker.

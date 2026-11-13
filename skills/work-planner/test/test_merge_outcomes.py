@@ -33,7 +33,7 @@ def section(source, title):
 
 
 def calls(source):
-    return re.findall(r'(?:Apply|Run) \[([^]]+)\]\([^)]+ "ƒ"\)', source)
+    return re.findall(r'(?:Apply|Run) \[([^]]+)\]\([^)\s]+\)', source)
 
 
 class Instructions:

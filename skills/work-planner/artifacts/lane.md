@@ -37,7 +37,7 @@ Report a unit's common lane or assignment findings and provide [Unit Lane Result
 </pre></big>
 
 - Validate the complete selected unit under [Unit Consistency](#unit-consistency). Findings from other rows remain in the result.
-- Use the result and exit behavior of [Read Lane Assignments](#read-lane-assignments "ƒ"); `lane: null` alone does not establish a valid unlaned unit.
+- Use the result and exit behavior of [Read Lane Assignments](#read-lane-assignments); `lane: null` alone does not establish a valid unlaned unit.
 
 ### Evaluate Lane Admission
 
@@ -53,7 +53,7 @@ Omit the lane option when the request supplies none.
 </pre></big>
 
 - Apply [Admission](#admission) to the selected unit. Findings from other rows remain visible.
-- Use the result and exit behavior of [Read Lane Assignments](#read-lane-assignments "ƒ"). An admitted unit can coexist with an unrelated row finding, so inspect both `admitted` and `problems`.
+- Use the result and exit behavior of [Read Lane Assignments](#read-lane-assignments). An admitted unit can coexist with an unrelated row finding, so inspect both `admitted` and `problems`.
 
 ## Fields
 

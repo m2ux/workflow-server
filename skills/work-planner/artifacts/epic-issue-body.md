@@ -16,21 +16,21 @@ One epic body and its local validation findings.
 
 #### 2. Populate Shared Table
 
-Apply [Write Issue Table](issue-body.md#write-issue-table "ƒ") with [Task Rows](#task-rows).
+Apply [Write Issue Table](issue-body.md#write-issue-table) with [Task Rows](#task-rows).
 
 #### 3. Fill Epic Cells
 
 - Fill the epic-specific cells.
 - Each row must meet [Work Breakdown](#work-breakdown).
-- Run [Write Lane Assignments](lane.md#write-lane-assignments "ƒ") with the populated body, confirmed task-to-index map and output path.
+- Run [Write Lane Assignments](lane.md#write-lane-assignments) with the populated body, confirmed task-to-index map and output path.
 
 #### 4. Build Draft Snapshot
 
-Apply [Build Body Snapshot](issue-body.md#build-body-snapshot "ƒ") with the draft body, title, labels and existing issue JSON when present.
+Apply [Build Body Snapshot](issue-body.md#build-body-snapshot) with the draft body, title, labels and existing issue JSON when present.
 
 #### 5. Validate Draft Body
 
-Apply [Validate Epic Body](#validate-epic-body "ƒ") to the resulting snapshot.
+Apply [Validate Epic Body](#validate-epic-body) to the resulting snapshot.
 
 #### 6. Identify Pending Links
 
@@ -46,11 +46,11 @@ The body's local format and field findings.
 
 #### 1. Read Changed Paths
 
-For each epic pull request reaching a branch the project's [Required Criteria](#required-criteria) declare, Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") to read its changed paths.
+For each epic pull request reaching a branch the project's [Required Criteria](#required-criteria) declare, Apply [Read Pull Request State](pull-request.md#read-pull-request-state) to read its changed paths.
 
 #### 2. Validate Kind Conditions
 
-- Apply [Validate Issue Body](issue-body.md#validate-issue-body "ƒ") against local [Fields](#fields) and initiative context, including each changed-path record at the supplied project revision.
+- Apply [Validate Issue Body](issue-body.md#validate-issue-body) against local [Fields](#fields) and initiative context, including each changed-path record at the supplied project revision.
 - The [evaluated revision](#evaluated-revision) is the epic's base on the long-lived branch that holds the project's configuration, such as `origin/i07/e00/workspace`, or that branch itself, such as `origin/workspace`, while the epic has no base on it. Fetch it before the check reads it.
 
 #### 3. Read Delivery Reach
@@ -76,7 +76,7 @@ One epic body with confirmed task-grain and coverage corrections.
 
 #### 1. Apply Confirmed Changes
 
-- Apply [Populate Epic Issue Body](#populate-epic-issue-body "ƒ") with the confirmed task-row changes, preserving unrelated content.
+- Apply [Populate Epic Issue Body](#populate-epic-issue-body) with the confirmed task-row changes, preserving unrelated content.
 - Description, Coverage, Depends on, Joins, Lane and task grain must meet [Work Breakdown](#work-breakdown).
 - Split a task exceeding the allowed criterion grain into the confirmed tasks.
 
@@ -100,13 +100,13 @@ The agreed disposition of criteria a delivered row left unmet.
 
 - Draft a further task for the [Criterion Selection](#criterion-selection) requiring further work, starting from the delivered [Task Rows](#task-rows) and meeting [Work Breakdown](#work-breakdown).
 - Confirm the draft with the user.
-- On acceptance, Apply [Revise Epic Rows](#revise-epic-rows "ƒ") with the further row and the criteria it adopts from the delivered task's Coverage.
+- On acceptance, Apply [Revise Epic Rows](#revise-epic-rows) with the further row and the criteria it adopts from the delivered task's Coverage.
 - Provide an unanswered draft as pending without continuing to [Reconcile Revised Delivery](#3-reconcile-revised-delivery).
 
 #### 3. Reconcile Revised Delivery
 
-- Run [Sync Epic](#sync-epic "ƒ") for the revised epic in the project checkout with the same fetched epic bases.
-- Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") with the provided body.
+- Run [Sync Epic](#sync-epic) for the revised epic in the project checkout with the same fetched epic bases.
+- Apply [Save Tracker Issue](issue.md#save-tracker-issue) with the provided body.
 - Provide [Row Result](#row-result) with the saved row and criterion disposition.
 
 ## Commands

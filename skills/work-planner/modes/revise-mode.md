@@ -2,7 +2,7 @@
 
 Changes the skill itself: SKILL.md, its modes, artifacts, references and scripts.
 
-Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
+Follow the [Procedure](#procedure), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Procedure
 
@@ -44,10 +44,10 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
 
 ### 6. Verify
 
-- Run [Run Tests](#run-tests "ƒ") when an executable script, its consumed template or a test changed.
+- Run [Run Tests](#run-tests) when an executable script, its consumed template or a test changed.
 - When SKILL.md changes, confirm its frontmatter opens and closes with `---` and holds `name` and `description`.
-- Run [Check Skill Files](#check-skill-files "ƒ") for every affected skill.
-- Run [Compare Section Bodies](#compare-section-bodies "ƒ") when the change moves a section between files, and read each section it reports as added, removed or differing.
+- Run [Check Skill Files](#check-skill-files) for every affected skill.
+- Run [Compare Section Bodies](#compare-section-bodies) when the change moves a section between files, and read each section it reports as added, removed or differing.
 - Apply [disclosure verification](../../guidelines.md#disclosure-verification) with the skill's [representative scenarios](../guidelines.md#progressive-disclosure).
 - Resolve every required file, command and heading without an implicit external dependency.
 

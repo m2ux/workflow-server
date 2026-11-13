@@ -27,7 +27,7 @@ Take the user’s stated and confirmed goal from [Goal Evidence](#goal-evidence)
 
 - Read each local source in [Requirement References](initiative-issue-body.md#requirement-references) at its checkout path, retaining any supplied [Source Evidence](initiative-issue-body.md#source-evidence).
 
-- For a pinned GitHub blob, Run [Fetch Source](initiative-issue-body.md#fetch-source "ƒ") with its repository, path and pinned revision, saving it at [Output Files](initiative-issue-body.md#output-files).
+- For a pinned GitHub blob, Run [Fetch Source](initiative-issue-body.md#fetch-source) with its repository, path and pinned revision, saving it at [Output Files](initiative-issue-body.md#output-files).
 
 - Fetch other URLs through the harness's web access.
 
@@ -42,8 +42,8 @@ Check each criterion against the [shared acceptance criteria](issue-body.md#shar
 
 #### 5. Validate Local Drafts
 
-- Apply [Build Body Snapshot](issue-body.md#build-body-snapshot "ƒ") for each supplied local draft with its title, labels and existing identity when present.
-- Apply [Validate Initiative Body](initiative-issue-body.md#validate-initiative-body "ƒ") with the initiative JSON, every linked epic's current JSON, source evidence and output file.
+- Apply [Build Body Snapshot](issue-body.md#build-body-snapshot) for each supplied local draft with its title, labels and existing identity when present.
+- Apply [Validate Initiative Body](initiative-issue-body.md#validate-initiative-body) with the initiative JSON, every linked epic's current JSON, source evidence and output file.
 - Incorporate its local findings into this review.
 
 #### 6. Check Outside Threats

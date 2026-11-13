@@ -26,7 +26,7 @@
   "procedure/dependent-instructions": ["review"],
   "procedure/branch-headers": ["review"],
   "prose/normative-wording": ["review"],
-  "prose/contextual-contracts": ["duplicate command parameter prose", "command contract links", "operation link role", "review"],
+  "prose/contextual-contracts": ["duplicate command parameter prose", "command contract links", "review"],
   "prose/rule-homes": ["review"],
   "prose/scheme": ["review"],
   "prose/examples": ["review"],

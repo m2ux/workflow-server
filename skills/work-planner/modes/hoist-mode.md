@@ -2,23 +2,23 @@
 
 Brings the chosen orphan issues into the agent-engineering structure, or leaves them open according to the user's decision.
 
-Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
+Follow the [Procedure](#procedure), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Procedure
 
 ### 1. Fetch
 
-Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every issue.
+Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues) for every issue.
 
 ### 2. List Candidates
 
-- Run [List Orphans](../artifacts/placement.md#list-orphans "ƒ") with the complete issue collection.
+- Run [List Orphans](../artifacts/placement.md#list-orphans) with the complete issue collection.
 
 - Use its candidates and available destinations for triage.
 
 ### 3. Triage
 
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for each candidate's body and discussion, with the initiative and epic bodies whose themes or criteria it touches.
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for each candidate's body and discussion, with the initiative and epic bodies whose themes or criteria it touches.
 
 #### Placement Options
 
@@ -37,9 +37,9 @@ Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every is
 
 ### 4. Decide Each Placement
 
-- Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy "ƒ") for each orphan's best option that changes the plan, with the allowance the caller supplied.
+- Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy) for each orphan's best option that changes the plan, with the allowance the caller supplied.
 
-- Confirm an automatic option as it stands, and Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with that option.
+- Confirm an automatic option as it stands, and Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change) with that option.
 - A held option is settled as [Held Change](../artifacts/plan-change.md#held-change) states, leaving the orphan where it is.
 
 - An option put to the user is offered as an [Interview](../guidelines.md#modes). The grounding paragraph says what the orphan asks and where it fits.
@@ -64,34 +64,34 @@ Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every is
 - Add the orphan's outcomes to the task criteria.
 - Add its design to Proposal.
 - When they exceed the epic's criteria, add epic criteria cited by the task row.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the affected bodies.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the affected bodies.
 
 ###### New Task
 
-- Apply [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body "ƒ") with the confirmed task scope, current epic context and output path.
+- Apply [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body) with the confirmed task scope, current epic context and output path.
 - Add the epic criteria the row's Coverage needs where the orphan's outcomes exceed the epic's, as [Destination Work](../artifacts/placement.md#destination-work) states.
 - Leave the row's Task cell holding the row id alone until the work is planned and the row gains its work-item file, as [Task Delivery](../artifacts/epic-issue-body.md#task-delivery) states.
 - Number the row where it can start, and keep its row id for the result.
-- When movable rows change number, Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "ƒ") with the affected initiative and epic drafts and confirmed numbering map.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the checked bodies.
+- When movable rows change number, Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering) with the affected initiative and epic drafts and confirmed numbering map.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the checked bodies.
 
 ###### New Epic
 
-- Apply [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body "ƒ"), carrying the orphan's work in a task row, and keep its row id for the result.
-- Apply [Draft Initiative Issue Body](../artifacts/initiative-issue-body.md#draft-initiative-issue-body "ƒ") with the covering row.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the epic.
+- Apply [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body), carrying the orphan's work in a task row, and keep its row id for the result.
+- Apply [Draft Initiative Issue Body](../artifacts/initiative-issue-body.md#draft-initiative-issue-body) with the covering row.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the epic.
 - Link its issue in the initiative row.
 
 ###### New Initiative Destination
 
-- Apply [Populate Initiative Issue Body](../artifacts/initiative-issue-body.md#populate-initiative-issue-body "ƒ") from the orphan's scoped problem and confirmed goal.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated initiative body.
+- Apply [Populate Initiative Issue Body](../artifacts/initiative-issue-body.md#populate-initiative-issue-body) from the orphan's scoped problem and confirmed goal.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the populated initiative body.
 
 ###### Hot-Fix Destination
 
-- Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") in [Repository](../artifacts/hotfix.md#repository) using the hot-fix prefix letter to select a number for the source issue identified by [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity).
+- Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number) in [Repository](../artifacts/hotfix.md#repository) using the hot-fix prefix letter to select a number for the source issue identified by [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity).
 
-- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the labels hot-fix [Titles](../artifacts/hotfix-body.md#titles) name.
+- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels) with the labels hot-fix [Titles](../artifacts/hotfix-body.md#titles) name.
 
 - Retain the [hot-fix number](../artifacts/hotfix.md#hot-fix-number) for rewriting and saving the issue's body, title and labels. After the rewrite, [Settle Hot-fix Status](#3-settle-hot-fix-status) follows its [placement](../artifacts/placement.md#disposition-conditions).
 - Use the source issue as the destination with disposition Kept. The rewrite branch below supplies its hot-fix body and keeps the issue open.
@@ -112,18 +112,18 @@ Retain [Placement Result](../artifacts/placement.md#placement-result) with the s
 
 - Select the destination kind and evidence/design from [Rewrite Inputs](../artifacts/placement.md#rewrite-inputs).
 
-- Apply [Populate Body](../artifacts/work-kind.md#populate-body "ƒ") for the destination's kind, with the inputs it takes from them: for a hot-fix, its supplied number, theme label and target.
+- Apply [Populate Body](../artifacts/work-kind.md#populate-body) for the destination's kind, with the inputs it takes from them: for a hot-fix, its supplied number, theme label and target.
 - Carry evidence into Problem and design into Proposal.
 
 ##### 2. Validate and Save Body
 
-- Apply [Check Round of Edits](../artifacts/issue-body.md#check-round-of-edits "ƒ") with the populated body and selected kind conditions before publishing.
+- Apply [Check Round of Edits](../artifacts/issue-body.md#check-round-of-edits) with the populated body and selected kind conditions before publishing.
 - Resolve findings.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the validated body, title and labels, a hot-fix's being every label its [Titles](../artifacts/hotfix-body.md#titles) name.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the validated body, title and labels, a hot-fix's being every label its [Titles](../artifacts/hotfix-body.md#titles) name.
 
 ##### 3. Settle Hot-fix Status
 
-For a hot-fix, Apply [Settle Hot-fix Board Status](../artifacts/hotfix.md#settle-hot-fix-board-status "ƒ") with the confirmed theme board and the saved issue.
+For a hot-fix, Apply [Settle Hot-fix Board Status](../artifacts/hotfix.md#settle-hot-fix-board-status) with the confirmed theme board and the saved issue.
 
 ##### 4. Retain Saved Identity
 
@@ -150,11 +150,11 @@ Prepare the comment file naming the taking epic and row, or the taking task issu
 
 - Confirm [Transfer Evidence](../artifacts/issue.md#transfer-evidence) establishes that the destination contains the work and cites the source issue in [Identity](../artifacts/issue.md#identity).
 
-- Apply [Comment on Issue](../artifacts/issue.md#comment-on-issue "ƒ") with the destination reference and [Comment](../artifacts/issue.md#comment).
+- Apply [Comment on Issue](../artifacts/issue.md#comment-on-issue) with the destination reference and [Comment](../artifacts/issue.md#comment).
 
-- Run [Close as Not Planned](../artifacts/issue.md#close-as-not-planned "ƒ"), retaining the issue's body.
+- Run [Close as Not Planned](../artifacts/issue.md#close-as-not-planned), retaining the issue's body.
 
-- Run [Fetch Tracker Issue](../artifacts/issue.md#fetch-tracker-issue "ƒ") to confirm its state and reason.
+- Run [Fetch Tracker Issue](../artifacts/issue.md#fetch-tracker-issue) to confirm its state and reason.
 
 - Retain the confirmed [State](../artifacts/issue.md#state) and reason after the saved issue is read back.
 - Retain [Saved Orphan](../artifacts/placement.md#saved-orphan) with the confirmed closure or blocker.
@@ -165,13 +165,13 @@ Prepare the comment file naming the taking epic and row, or the taking task issu
 
 ### 6. Review
 
-- Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body "ƒ") on every issue the hoist changed or created.
-- Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "ƒ") on each initiative that gained a task or epic.
-- Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy "ƒ") with each finding and resolve it as provided: an automatic correction is applied, and a held one is settled as [Held Change](../artifacts/plan-change.md#held-change) states.
-- Apply [Apply Body Corrections](../artifacts/issue-body.md#apply-body-corrections "ƒ") with confirmed body corrections.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the corrected bodies.
-- Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body "ƒ") again with the saved affected bodies.
-- Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "ƒ") again with the saved affected bodies.
+- Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body) on every issue the hoist changed or created.
+- Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering) on each initiative that gained a task or epic.
+- Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy) with each finding and resolve it as provided: an automatic correction is applied, and a held one is settled as [Held Change](../artifacts/plan-change.md#held-change) states.
+- Apply [Apply Body Corrections](../artifacts/issue-body.md#apply-body-corrections) with confirmed body corrections.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the corrected bodies.
+- Apply [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body) again with the saved affected bodies.
+- Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering) again with the saved affected bodies.
 - Report any unresolved finding.
 
 ### 7. Report

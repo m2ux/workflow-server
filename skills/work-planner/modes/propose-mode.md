@@ -2,7 +2,7 @@
 
 Scopes one problem: the friction, the evidence, and the boundary, and states the goal as clauses the user confirms. It raises one proposal on the [proposals board](../artifacts/proposals-board.md).
 
-Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
+Follow the [Procedure](#procedure), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Procedure
 
@@ -33,23 +33,23 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - The local file is the source for the issue.
 
-- Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") with the proposal prefix letter, and carry the provided proposal number in the title.
+- Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number) with the proposal prefix letter, and carry the provided proposal number in the title.
 - The goal clauses are the clauses the user confirmed. The Non-Goals are the boundary.
 - The design, the acceptance criteria, and the breakdown belong to a later goal.
 
 ### 4. Validate
 
-- Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body "ƒ") with the draft issue JSON and output file.
+- Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body) with the draft issue JSON and output file.
 
 - Resolve each finding.
 - Update the draft.
-- Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body "ƒ") again with the revised JSON and the same output path. Proceed to publication only when validation passes.
+- Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body) again with the revised JSON and the same output path. Proceed to publication only when validation passes.
 
 ### 5. Publish
 
-- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the proposal's required label definitions.
+- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels) with the proposal's required label definitions.
 
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the validated body, title and labels, leaving it unassigned.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the validated body, title and labels, leaving it unassigned.
 
 ### 6. Confirm Placement
 
@@ -62,14 +62,14 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 7. Place
 
-- Apply [Select Proposals Board](../artifacts/proposals-board.md#select-proposals-board "ƒ") under [Board Owner](../artifacts/board.md#board-owner).
+- Apply [Select Proposals Board](../artifacts/proposals-board.md#select-proposals-board) under [Board Owner](../artifacts/board.md#board-owner).
 
 - Retain the [Selected Board](../artifacts/board.md#selected-board) or an absent-board finding for the requester’s selection or creation path.
 
-- For an absent board, Apply [Create Proposals Board](../artifacts/proposals-board.md#create-proposals-board "ƒ").
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the saved issue id.
-- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with that id and the [Requested Status](#requested-status), or, when none is supplied, the initial status a new proposal takes under [Proposal Status](../artifacts/proposal.md#proposal-status).
-- When [Proposal Status](../artifacts/proposal.md#proposal-status) assigns the placed status to the user, Run [Find User](../artifacts/board.md#find-user "ƒ") for the [Assignee Login](../artifacts/board.md#assignee-login), then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with that login as the issue's [Assignee](../artifacts/issue.md#assignee).
+- For an absent board, Apply [Create Proposals Board](../artifacts/proposals-board.md#create-proposals-board).
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for the saved issue id.
+- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board) with that id and the [Requested Status](#requested-status), or, when none is supplied, the initial status a new proposal takes under [Proposal Status](../artifacts/proposal.md#proposal-status).
+- When [Proposal Status](../artifacts/proposal.md#proposal-status) assigns the placed status to the user, Run [Find User](../artifacts/board.md#find-user) for the [Assignee Login](../artifacts/board.md#assignee-login), then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with that login as the issue's [Assignee](../artifacts/issue.md#assignee).
 - Otherwise leave the issue unassigned.
 
 ### 8. Report
