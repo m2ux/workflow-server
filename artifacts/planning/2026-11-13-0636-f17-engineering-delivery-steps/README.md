@@ -10,6 +10,8 @@ This record holds the delivery of hot-fix F17 into `workspace`. A delivery sessi
 
 | Artifact | What it holds |
 | --- | --- |
+| [F17 work item](f17.md) | The files the hot-fix changes and its plan |
+| [Test results](test-results.md) | The checks run for F17, the revision tested and each result |
 
 ## Links
 
