@@ -134,9 +134,9 @@ The continuing coordinator for one authorized delivery scope.
 
 - Keep the coordinator active while scoped workers execute or admitted work awaits a capacity event.
 
-- Wait for a worker result, a harness capacity event or user steering, while providing progress updates.
+- Wait for a worker result or progress update, a harness capacity event or user steering, while providing progress updates.
 - On a worker result, retain its actual delivery, validation, merge and plan-change evidence; a session finishing does not establish delivery by itself.
-- Record a unit [blocker](../artifacts/dispatch-batch.md#blockers) for each row the result names as waiting on an unplaced fix.
+- Record a unit [blocker](../artifacts/dispatch-batch.md#blockers) for each row a worker's progress update or result names as waiting on its fix, resolved once the row's Depends on names that placed fix.
 - Reconcile the session's observed state and actual free slots.
 - Return to advance with the same authorization and fresh delivery evidence, refilling without another unit confirmation.
 
@@ -275,11 +275,15 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 - For each unsaved issue that arose during delivery, Apply [Populate Standalone Body](../artifacts/standalone-body.md#populate-standalone-body "ƒ"), then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body.
 
-- An arising fix that remaining rows wait on, as [Fix the Debt](#8-fix-the-debt) states, is placed as a task row of the epic, or as an issue of its own where its files lie on no epic base, and its placement adds it to each such row's Depends on.
-
-- Follow [Hoist Mode](hoist-mode.md "ƒ") in the project checkout with those new issue identities, each arising issue an agent review's exclusion saved, and the allowance the brief names, after the pull request is open and epic delivery is recorded.
+- Follow [Hoist Mode](hoist-mode.md "ƒ") in the project checkout with those new issue identities, each arising issue an agent review's exclusion saved, and the allowance the brief names, after the pull request is open and epic delivery is recorded, or at once for an arising fix a further run waits on, as [Fix the Debt](#8-fix-the-debt) states.
+- That fix's best option is a task row of the waiting rows' epic, or a [hot-fix](../artifacts/hotfix-body.md#definition) where its files lie on no base of that epic.
 - Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with each placement it applied and each it held.
-- Provide with the session result each row a held placement leaves waiting on an unplaced fix.
+
+- For each placed fix a further run waits on:
+  - Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy "ƒ") for the folded work naming it in each waiting row's Depends on.
+  - When automatic, Apply [Revise Epic Rows](../artifacts/epic-issue-body.md#revise-epic-rows "ƒ") with those Depends on entries, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the revised body.
+  - Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with the edit, applied or held.
+- Provide each row a held placement or edit leaves waiting on its fix to the coordinator at once, as a progress update, and again with the session result.
 
 #### 12. Report the Changes
 
