@@ -12,9 +12,12 @@ This record holds the delivery of hot-fix F17 into `workspace`. A delivery sessi
 | --- | --- |
 | [F17 work item](f17.md) | The files the hot-fix changes and its plan |
 | [Test results](test-results.md) | The checks run for F17, the revision tested and each result |
+| [Agent review](agent-review.json) | The review record of pull request #1714 at its reviewed head |
+| [Review notes](review-notes.md) | The review's findings and their fixes |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Hot-fix | [F17](https://github.com/m2ux/workflow-server/issues/1713) |
+| Pull request | [#1714](https://github.com/m2ux/workflow-server/pull/1714) |

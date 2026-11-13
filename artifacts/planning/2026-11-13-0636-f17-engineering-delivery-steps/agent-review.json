@@ -1,0 +1,40 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1714",
+    "base": "9e4e9e274b808f4d85c4e38f582d44f2470e92f4",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-13-0636-f17-engineering-delivery-steps/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-13",
+    "head": "b8dd4f3f2f2076fea0db34df41cfdaeca3a509be",
+    "scope": "The whole branch against workspace, 9e4e9e274..b8dd4f3f2. An independent reviewer read the diff at 148533531 with issue #1713, rules.md's Planning-records branch rule, deliver-mode.md steps 1-12, Task Merge, Issue Delivery, Sync Epic, Task Delivery and Test Evidence, board.py's row_delivered and progress.py's use of it; it grepped the skill for commit links, --link and the delivered rule, and probed sync.py on fixtures for parsing, idempotency, the two-deliveries refusals, the report line and the delivered rule. b8dd4f3f2 fixes its three blocking findings and finding 5; the session re-read that delta and ran the suites.",
+    "criteria": "AC1: deliver-mode.md step 6 pushes each declared engineering file once the unit's tests pass; an engineering-only unit runs Sync Epic with the pushed commit, saves the body and follows Task Merge with the commit as its delivery, opening and merging no pull request. AC2: test_sync's commit-link tests (linked once and idempotent, beside a pull request either order, short SHA refused, commit beside an open pull request undelivered) and test_board's row_delivered test. AC3: Task Delivery's commit example and the --link map description; the checker resolves every link.",
+    "validation": "At b8dd4f3f2: planner suite 1188 tests OK (1 skipped); shared suite 295 tests OK; check_skill_files.py skills/work-planner 65 files, 0 findings; git diff --check clean; pull_request_body.py on the body: no findings.",
+    "findings": [
+      {
+        "description": "The step-6 Sync Epic body for an engineering-only unit was never saved, so the commit link never reached the epic issue.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b8dd4f3f2f2076fea0db34df41cfdaeca3a509be"
+      },
+      {
+        "description": "Skipping steps 7-10 skipped Task Merge, so an engineering-only unit's criteria, task issue and epic were never settled.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b8dd4f3f2f2076fea0db34df41cfdaeca3a509be"
+      },
+      {
+        "description": "The push bullet preceded the bullets that write and test the files in step 6.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b8dd4f3f2f2076fea0db34df41cfdaeca3a509be"
+      },
+      {
+        "description": "Sync Epic's --link text read as linking the commit for every unit that pushes engineering, while rules.md links it only for a unit changing that branch alone.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b8dd4f3f2f2076fea0db34df41cfdaeca3a509be"
+      }
+    ]
+  }
+]
