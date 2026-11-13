@@ -138,7 +138,7 @@ class DocumentInterfaces(unittest.TestCase):
                     inputs = {target for target, role in contracts if role == 'input'}
                     arguments = [(match[2], checker.link_role(match)) for i in range(start + 1, end)
                                  if i in payload for match in checker.ARGUMENT_LINK.finditer(lines[i])]
-                    self.assertTrue(all(role in ('input', 'output', 'operation') for _, role in arguments),
+                    self.assertTrue(all(role in ('input', 'output') for _, role in arguments),
                                     'an executable annotation has no role')
                     self.assertLessEqual({target for target, role in arguments if role == 'input'}, inputs)
                     self.assertFalse(any(role in ('input', 'output') for _, role in contracts),
@@ -566,4 +566,4 @@ class ProposalsBoardHome(unittest.TestCase):
                                 ('modes/propose-mode.md', 'create-proposals-board'),
                                 ('modes/sync-mode.md', 'create-proposals-board')):
             with self.subTest(file=name, operation=operation):
-                self.assertIn(f'(../artifacts/proposals-board.md#{operation} "ƒ")', (ROOT / name).read_text())
+                self.assertIn(f'(../artifacts/proposals-board.md#{operation})', (ROOT / name).read_text())

@@ -148,7 +148,7 @@ class ApprovedBeforeDrafting(unittest.TestCase):
                       take)
         self.assertIn('- At any other [Proposal Status]' + self.status + ', or with no item on the board, the '
                       'proposal blocks initiative drafting; report the Status read or the missing item.', take)
-        self.assertIn('- Follow [Propose Mode](propose-mode.md "ƒ") with the user\'s goal and '
+        self.assertIn('- Follow [Propose Mode](propose-mode.md) with the user\'s goal and '
                       '[Requested Status](propose-mode.md#requested-status) Approved', take)
         self.assertIn('placed at Approved; an unresolved proposal blocks initiative drafting', take)
         steps = STEP.findall(self.plan)
@@ -156,8 +156,8 @@ class ApprovedBeforeDrafting(unittest.TestCase):
 
     def test_the_gate_reads_the_named_proposals_status_from_the_board(self):
         take = section(self.plan, '### 1. Take the Proposal')
-        read = ('- Apply [Select Proposals Board](../artifacts/proposals-board.md#select-proposals-board "ƒ"), then '
-                'Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for that board, and read the '
+        read = ('- Apply [Select Proposals Board](../artifacts/proposals-board.md#select-proposals-board), then '
+                'Apply [Read Board State](../artifacts/board.md#read-board-state) for that board, and read the '
                 'Status of the proposal\'s item.')
         self.assertIn('- When the user names a proposal:\n\n' + read, take)
         self.assertLess(take.index(read), take.index('- At [Approved]'))
@@ -172,8 +172,8 @@ class ApprovedBeforeDrafting(unittest.TestCase):
         self.assertIn('with that id and the [Requested Status](#requested-status), or, when none is supplied',
                       place)
         self.assertIn('- When [Proposal Status]' + self.status + ' assigns the placed status to the user, Run '
-                      '[Find User](../artifacts/board.md#find-user "ƒ")', place)
-        self.assertIn('Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with that login as '
+                      '[Find User](../artifacts/board.md#find-user)', place)
+        self.assertIn('Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with that login as '
                       "the issue's [Assignee](../artifacts/issue.md#assignee).", place)
 
     def test_requested_status_is_a_proposal_status(self):

@@ -1782,7 +1782,7 @@ An inventory page from supplied evidence.
 
 #### 1. Fetch Inventory Page
 
-Run [Fetch Inventory Page](#fetch-inventory-page "ƒ").
+Run [Fetch Inventory Page](#fetch-inventory-page).
 
 #### 2. Inspect Inventory Page
 
@@ -1822,7 +1822,7 @@ Follow [Rules](../rules.md), [Conventions](../conventions.md) and [Outcomes](#ou
 
 ### 1. Read Inventory
 
-Apply [Read Inventory](../artifacts/inventory.md#read-inventory "ƒ").
+Apply [Read Inventory](../artifacts/inventory.md#read-inventory).
 
 ## Outcomes
 
@@ -1838,7 +1838,7 @@ Follow [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ### 1. Read Inventory
 
-Apply [Read Inventory](../artifacts/inventory.md#read-inventory "ƒ").
+Apply [Read Inventory](../artifacts/inventory.md#read-inventory).
 '''
 
     def setUp(self):
@@ -1931,7 +1931,7 @@ Apply [Read Inventory](../artifacts/inventory.md#read-inventory "ƒ").
     def test_child_procedures_have_independent_sequences(self):
         self.replace(self.mode, '## Outcomes', '''### 2. Repeat Audit
 
-Follow [Refresh Inventory](#refresh-inventory "ƒ").
+Follow [Refresh Inventory](#refresh-inventory).
 
 ### Refresh Inventory
 
@@ -1939,7 +1939,7 @@ The inventory refreshed for the next pass.
 
 #### 1. Read Refreshed Inventory
 
-Apply [Read Inventory](../artifacts/inventory.md#read-inventory "ƒ").
+Apply [Read Inventory](../artifacts/inventory.md#read-inventory).
 
 #### 2. Retain Evidence
 
@@ -1979,20 +1979,12 @@ Keep the refreshed inventory.
                      'inventory_fetch { [**limit**](#limit "○"), offset } &gt; [**page**](#page "●")')
         self.assertEqual(self.findings(), [])
 
-    def test_command_transformation_annotation_resolves_its_callable(self):
-        self.replace(self.inventory, 'inventory_fetch {', '[**inventory_fetch**](#read-inventory "ƒ") {')
-        self.assertEqual(self.findings(), [])
-
     def test_unselected_role_model_keeps_argument_field_validation(self):
         model = {name: dict(entry) for name, entry in self.MODEL.items()}
         model['artifacts'].pop('link_roles')
         self.declare(model)
-        self.replace(self.inventory, 'inventory_fetch {', '[**inventory_fetch**](#read-inventory "ƒ") {')
+        self.replace(self.inventory, 'inventory_fetch {', '[**inventory_fetch**](#read-inventory) {')
         self.assertIn('invocation argument contract', self.kinds())
-
-    def test_command_transformation_cannot_select_a_field(self):
-        self.replace(self.inventory, 'inventory_fetch {', '[**inventory_fetch**](#limit "ƒ") {')
-        self.assertIn('operation link role', self.kinds())
 
     def test_repeated_command_parameter_list_is_reported(self):
         self.replace(self.inventory, '### Limit', '### Offset\n\nThe page offset.\n\n### Limit')
@@ -2011,9 +2003,7 @@ Keep the refreshed inventory.
     def test_word_titles_do_not_supply_role_contracts(self):
         self.replace(self.inventory, '#limit "○"', '#limit "input"')
         self.replace(self.inventory, '#page "●"', '#page "output"')
-        self.replace(self.mode, '#read-inventory "ƒ"', '#read-inventory "operation"')
         self.assertIn('command contract links', self.kinds())
-        self.assertIn('operation link role', self.kinds())
 
     def test_each_command_provides_a_contextual_output(self):
         self.replace(self.inventory, 'Provide [Page](#page "●").', 'Provide the page.')
@@ -2022,14 +2012,6 @@ Keep the refreshed inventory.
     def test_input_links_cannot_select_an_operation_as_a_field(self):
         self.replace(self.inventory, '[Limit](#limit "○")', '[Limit](#read-inventory "○")')
         self.assertIn('command contract links', self.kinds())
-
-    def test_a_callable_link_requires_its_operation_title(self):
-        self.replace(self.mode, '#read-inventory "ƒ"', '#read-inventory')
-        self.assertIn('operation link role', self.kinds())
-
-    def test_an_operation_title_cannot_select_a_field(self):
-        self.replace(self.mode, '#read-inventory "ƒ"', '#limit "ƒ"')
-        self.assertIn('operation link role', self.kinds())
 
     def test_role_links_in_headings_do_not_supply_prose_inputs(self):
         self.replace(self.inventory, 'Fetch the requested page using [Limit](#limit "○").',
@@ -2172,14 +2154,14 @@ Keep the refreshed inventory.
         self.assertIn('operation call verb', self.kinds())
 
     def test_mode_and_protocol_calls_use_follow(self):
-        self.replace(self.mode, 'Apply [Read Inventory](../artifacts/inventory.md#read-inventory "ƒ").',
-                     'Follow [Prepare](../protocols/prepare.md "ƒ").')
+        self.replace(self.mode, 'Apply [Read Inventory](../artifacts/inventory.md#read-inventory).',
+                     'Follow [Prepare](../protocols/prepare.md).')
         self.assertEqual(self.findings(), [])
         self.replace(self.mode, 'Follow [Prepare]', 'Apply [Prepare]')
         self.assertIn('operation call verb', self.kinds())
 
     def test_field_citations_are_not_operation_calls(self):
-        self.replace(self.mode, 'Apply [Read Inventory](../artifacts/inventory.md#read-inventory "ƒ").',
+        self.replace(self.mode, 'Apply [Read Inventory](../artifacts/inventory.md#read-inventory).',
                      'Inspect [Limit](../artifacts/inventory.md#limit).')
         self.assertEqual(self.findings(), [])
 
@@ -2274,8 +2256,8 @@ Keep the refreshed inventory.
                 self.assertIn('unreadable structure', printed.getvalue())
 
     def test_nested_calls_have_no_duplicate_io_contract(self):
-        self.replace(self.inventory, 'Run [Fetch Inventory Page](#fetch-inventory-page "ƒ").',
-                     'Run [Fetch Inventory Page](#fetch-inventory-page "ƒ") with [Limit](#limit "○").')
+        self.replace(self.inventory, 'Run [Fetch Inventory Page](#fetch-inventory-page).',
+                     'Run [Fetch Inventory Page](#fetch-inventory-page) with [Limit](#limit "○").')
         self.assertIn('command contract links', self.kinds())
 
     def test_command_calls_use_run(self):
@@ -2357,19 +2339,19 @@ class FieldsBoundary(unittest.TestCase):
                                  (self.line_of(path, '#### 1. Apply Changes'), 'executable step in Fields')])
 
     def test_an_operation_call_under_fields_is_execution_and_a_definition_link_is_not(self):
-        path = self.artifact('Apply [Read Board](#read-board "ƒ") before saving.')
+        path = self.artifact('Apply [Read Board](#read-board) before saving.')
         details = [detail for _, kind, detail in self.kinds(path) if kind == 'executable step in Fields']
-        self.assertEqual(details, ['call: Apply [Read Board](#read-board "ƒ")'])
-        path = self.artifact('The board as [Read Board](#read-board "ƒ") provides it.')
+        self.assertEqual(details, ['call: Apply [Read Board](#read-board)'])
+        path = self.artifact('The board as [Read Board](#read-board) provides it.')
         self.assertNotIn('executable step in Fields', {kind for _, kind, _ in self.kinds(path)})
 
     def test_declared_call_verbs_match_literally(self):
         entry = {'contracts': 'Fields', 'calls': {'artifacts': 'App.y'}}
-        path = self.artifact('Appxy [Read Board](#read-board "ƒ") before saving.')
+        path = self.artifact('Appxy [Read Board](#read-board) before saving.')
         self.assertEqual(list(checker.fields_steps(path, *checker.scan(path), entry)), [])
-        path = self.artifact('App.y [Read Board](#read-board "ƒ") before saving.')
+        path = self.artifact('App.y [Read Board](#read-board) before saving.')
         self.assertEqual([detail for _, detail in checker.fields_steps(path, *checker.scan(path), entry)],
-                         ['call: App.y [Read Board](#read-board "ƒ")'])
+                         ['call: App.y [Read Board](#read-board)'])
 
     def test_command_invocations_under_fields_keep_their_own_kinds(self):
         path = self.artifact('<big><pre>\ngh issue view 1\n</pre></big>')
@@ -2378,8 +2360,8 @@ class FieldsBoundary(unittest.TestCase):
         self.assertIn('fenced invocation in HTML model', {kind for _, kind, _ in self.kinds(path)})
 
     def test_specimen_steps_under_fields_are_not_execution(self):
-        path = self.artifact(FENCE + 'markdown\n1. Read the board.\nApply [Read Board](#read-board "ƒ").\n' + FENCE
-                             + '\n\nThe template above, eg `1. Apply [Read Board](#read-board "ƒ")`.')
+        path = self.artifact(FENCE + 'markdown\n1. Read the board.\nApply [Read Board](#read-board).\n' + FENCE
+                             + '\n\nThe template above, eg `1. Apply [Read Board](#read-board)`.')
         self.assertNotIn('executable step in Fields', {kind for _, kind, _ in self.kinds(path)})
 
 

@@ -271,17 +271,17 @@ class BoardDeliveryCallers(unittest.TestCase):
     def test_dispatch_and_review_statuses_come_from_board_status_and_are_read_back(self):
         found = operations(DELIVERY)
         self.assertEqual(set(found), {'Record Epic Review', 'Record Dispatch Status'})
-        self.assertIn('Run [Compute Dispatch Status](board-status.md#compute-dispatch-status "ƒ")',
+        self.assertIn('Run [Compute Dispatch Status](board-status.md#compute-dispatch-status)',
                       found['Record Dispatch Status'])
-        self.assertIn('Apply [Record Dispatch Status](#record-dispatch-status "ƒ")', found['Record Epic Review'])
+        self.assertIn('Apply [Record Dispatch Status](#record-dispatch-status)', found['Record Epic Review'])
         for name, body in found.items():
             with self.subTest(operation=name):
-                self.assertIn('(board.md#read-board-configuration "ƒ")', body)
+                self.assertIn('(board.md#read-board-configuration)', body)
                 self.assertIn('[Confirmed Statuses](#confirmed-statuses)', body)
 
     def test_sync_runs_compute_board_changes_from_board_status(self):
         text = (ROOT / 'modes' / 'sync-mode.md').read_text()
-        self.assertEqual(text.count('(../artifacts/board-status.md#compute-board-changes "ƒ")'), 3)
+        self.assertEqual(text.count('(../artifacts/board-status.md#compute-board-changes)'), 3)
 
     def test_no_document_reaches_a_retired_target(self):
         retired = re.compile(r'board-delivery\.md#(status-changes|compute-board-changes|compute-dispatch-status'

@@ -12,7 +12,7 @@ from test_plan_mode import section
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'modes' / 'plan-mode.md'
-CALL = re.compile(r'Apply \[([^]]+)\]\([^)]* "ƒ"\)')
+CALL = re.compile(r'Apply \[([^]]+)\]\([^)\s]*\)')
 PLACEHOLDER = 'https://example.test/pending/'
 
 
