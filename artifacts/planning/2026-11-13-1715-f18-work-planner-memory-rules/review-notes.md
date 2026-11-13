@@ -16,3 +16,12 @@ An independent reviewer read the whole branch against `workspace` (c1c069b41..02
 - Proposals Board Purpose and Plan mode both mention smaller work. Plan mode links Purpose for the judgment.
 - One test_review_scope test name still says "deferred". It tests the invalid-disposition path.
 - No caller can now reach the epic-review guard in Merge Delivery Pull Request. The guard is kept as the issue asks.
+
+## Follow-Up Review
+
+A second independent review of #1716 found four issues. The change d26dc4c00..31ad62178 fixes them, and the session re-checked that change alone.
+
+1. **Engineering model.** Engineering-side files are pushed straight to `engineering` by the task session, with no base, task branch or pull request, and the bypass notice is expected. Fixed: rules.md's Planning-records branch rule states this once. Deliver step 6, Epic Integration's Hand Off and Merge Delivery Pull Request link to that rule, and Publish Planning Record no longer states the notice. deliver.py and delivery-branches.md already agreed with the rule.
+2. **Blocking. Handed-off reviews were held again.** Epic Integration put a ready review back to draft on every sync. Fixed: step 1 first reads the pull request, the board and the agent review, and returns a current handed-off review without holding it. `test_a_current_handed_off_review_returns_before_any_hold` guards this. The re-check found that the check never passed without a board, and 9846016ec fixes that.
+3. **Duplicate test.** `test_a_ready_epic_review_pull_request_is_never_merged` is removed, and the README counts are updated.
+4. **Task Merge wording.** It now reads "Initiative completion does not gate the epic's closure."

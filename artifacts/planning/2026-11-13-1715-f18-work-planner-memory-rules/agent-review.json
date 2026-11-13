@@ -11,10 +11,68 @@
     "criteria": "AC1: test_merge_outcomes shows Epic Integration names no merge operation and Merge Delivery Pull Request hands off an epic review before any mutation. AC2: test_deliver shows a ready epic review pull request yields no merge line. AC3: test_agent_review and test_review_scope refuse an unfixed finding at either severity. AC4: Find Proposals Board's jq selects a bare or prefixed Proposals title. AC5: check_skill_files.py reports 0 findings and the suites pass.",
     "validation": "Planner suite at d26dc4c00: 1185 tests OK, 1 skipped. Shared suite: 295 tests OK. check_skill_files.py skills/work-planner: 65 files, 0 findings. git diff --check clean.",
     "findings": [
-      {"description": "Plan mode's no-proposal path reached Draft Initiative Issue Body, which required a proposal for scope and criteria sources.", "severity": "blocking", "disposition": "fixed", "evidence": "https://github.com/m2ux/workflow-server/commit/d26dc4c00cf596f4500bc3e23925981b0fdaf279"},
-      {"description": "SKILL.md's Plan summary named an approved proposal only.", "severity": "nonblocking", "disposition": "fixed", "evidence": "https://github.com/m2ux/workflow-server/commit/d26dc4c00cf596f4500bc3e23925981b0fdaf279"},
-      {"description": "Review Record scope always described the full diff, against the re-check rule.", "severity": "nonblocking", "disposition": "fixed", "evidence": "https://github.com/m2ux/workflow-server/commit/d26dc4c00cf596f4500bc3e23925981b0fdaf279"},
-      {"description": "'none is deferred' named the removed disposition.", "severity": "nonblocking", "disposition": "fixed", "evidence": "https://github.com/m2ux/workflow-server/commit/d26dc4c00cf596f4500bc3e23925981b0fdaf279"}
+      {
+        "description": "Plan mode's no-proposal path reached Draft Initiative Issue Body, which required a proposal for scope and criteria sources.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/d26dc4c00cf596f4500bc3e23925981b0fdaf279"
+      },
+      {
+        "description": "SKILL.md's Plan summary named an approved proposal only.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/d26dc4c00cf596f4500bc3e23925981b0fdaf279"
+      },
+      {
+        "description": "Review Record scope always described the full diff, against the re-check rule.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/d26dc4c00cf596f4500bc3e23925981b0fdaf279"
+      },
+      {
+        "description": "'none is deferred' named the removed disposition.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/d26dc4c00cf596f4500bc3e23925981b0fdaf279"
+      }
+    ]
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1716",
+    "base": "c1c069b412f2a341f4cc32456e00137bdff26bc7",
+    "base_ref": "workspace",
+    "head": "31ad621783f0b2cd415b1248f9e33785c698e1b9",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-13-1715-f18-work-planner-memory-rules/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review, re-check)",
+    "reviewed_at": "2026-11-13",
+    "scope": "Re-check of the change since the previously reviewed head, d26dc4c00..31ad62178, and the four findings of the follow-up review it fixes: the engineering model stated once in rules.md's Planning-records branch rule and linked from Deliver, Epic Integration and Merge Delivery Pull Request; Epic Integration returning a current handed-off review without holding it; the duplicate survey test removed; Task Merge naming the epic's closure. deliver.py already drops engineering bases and pull requests as the rule states and is unchanged. The re-check found that the repeated-handoff check never passed without a board; 9846016ec and 31ad62178 fix it.",
+    "criteria": "AC1-AC5 as in the first record; test_merge_outcomes adds test_a_current_handed_off_review_returns_before_any_hold, which fails if Hold Epic Review precedes the current-handoff check or the check holds.",
+    "validation": "Planner suite at 9846016ec: 1185 tests OK, 1 skipped; test_merge_outcomes at 31ad62178 OK. Shared suite: 295 tests OK. check_skill_files.py skills/work-planner at 31ad62178: 65 files, 0 findings. git diff --check clean.",
+    "findings": [
+      {
+        "description": "Engineering-side work model stated in several places; bypass notice outside rules.md.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/288f569d8"
+      },
+      {
+        "description": "Epic Integration held a current handed-off review pull request back to draft on every sync.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/975b8fb2b"
+      },
+      {
+        "description": "test_a_ready_epic_review_pull_request_is_never_merged duplicated the test above it.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/a4d106283cd3838166d82c911199177765eaaefe"
+      },
+      {
+        "description": "Task Merge said initiative completion does not gate an epic merge.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/a4d106283cd3838166d82c911199177765eaaefe"
+      }
     ]
   }
 ]

@@ -23,3 +23,10 @@ Find Proposals Board selects `.title == "Proposals" or (.title | startswith("Pro
 ## T4. Whitespace
 
 `git diff --check c1c069b41 d26dc4c00`: clean.
+
+## Re-Check at 31ad62178
+
+- **Planner suite at 9846016ec:** 1185 tests, OK, 1 skipped. `test_merge_outcomes` at 31ad62178: OK. test_readme confirms test_deliver (110) and test_merge_outcomes (16).
+- **Shared suite:** 295 tests, OK.
+- **check_skill_files.py skills/work-planner at 31ad62178:** 65 files, 0 findings.
+- **`git diff --check`:** clean.
