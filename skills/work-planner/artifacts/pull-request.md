@@ -10,7 +10,7 @@ One delivery pull request's confirmed merge, human handoff or classified refusal
 
 #### 1. Read Target Review Requirements
 
-- When the pull request is an epic review, its head an [epic base](delivery-branches.md#epic-bases), provide [Merge Result](#merge-result) with outcome `human-handoff` and the verified head, and return without a merge attempt. The user reviews and merges every epic review pull request, whatever its target's protection.
+- When the pull request is an epic review, its head an [epic base](delivery-branches.md#epic-bases), provide [Merge Result](#merge-result) with outcome `human-handoff` and the verified head, and return without a merge attempt. The user reviews and merges every epic review pull request, whatever its target's protection; the [planning-records branch](../rules.md#rules) has none.
 - Read the supplied [Target Requirements](#target-requirements) alongside the [Verified Head](#verified-head) and confirm the supplied [Merge Authorization](#merge-authorization) against [Merge Permission](#merge-permission).
 - When the target is the default branch or requires an approving review from a person, provide [Merge Result](#merge-result) with outcome `human-handoff`, the verified head and target requirements, and return without a merge attempt. The reviewer owns the merge even when every other condition holds.
 - An agent cannot approve a [pull request](#identity) it opened.
