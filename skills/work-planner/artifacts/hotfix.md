@@ -199,4 +199,4 @@ The supplied source or hot-fix issue's repository, number and URL.
 - An open hot-fix stands In Review while a [delivering pull request](#delivering-pull-request) of it is open and ready for review, and In Progress while one is an open draft.
 - Otherwise an open hot-fix is Ready, whatever any initiative's or epic's [priority](work-priority.md#priority-sets), and In Progress once it holds In Progress or In Review. It reaches the board as its [placement](placement.md#disposition-conditions) orders.
 - A closed hot-fix takes the status [Closure](board-status.md#closure) gives a closed issue.
-- No initiative or epic waits on a hot-fix, and a hot-fix waits on none.
+- A hot-fix waits on no issue, and holds back no initiative or epic. A task row waits on one where its [Depends on](epic-issue-body.md#work-breakdown) names it.

@@ -136,6 +136,7 @@ The continuing coordinator for one authorized delivery scope.
 
 - Wait for a worker result, a harness capacity event or user steering, while providing progress updates.
 - On a worker result, retain its actual delivery, validation, merge and plan-change evidence; a session finishing does not establish delivery by itself.
+- Record a unit [blocker](../artifacts/dispatch-batch.md#blockers) for each row the result names as waiting on an unplaced fix.
 - Reconcile the session's observed state and actual free slots.
 - Return to advance with the same authorization and fresh delivery evidence, refilling without another unit confirmation.
 
@@ -248,10 +249,12 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 #### 8. Fix the Debt
 
-- A unit of any kind fixes every debt item its validation finds, from running its tests, auditing the definitions it changed and reviewing its pull request, on its task branch, so its open pull request carries each fix before it merges.
-- Debt in code outside the unit's change is an issue of its own, arising from the delivery.
+- A unit of any kind fixes every debt item its validation finds, from running its tests, auditing the definitions it changed and reviewing its pull request, on its task branch, so its open pull request carries each fix before it merges and before the unit runs its work again.
+- A debt item is any finding that needs a fix, whether or not it changed a score or result. A trial, eval, benchmark or rehearsal the unit runs is validation, and finds debt as its tests do. Only a finding the user disposes of as no change is recorded without a fix.
+- Debt in code outside the unit's change is an issue of its own, arising from the delivery. Its fix lands before any further run it could affect: each remaining row whose run exercises that code names the fix in Depends on, so it starts from the fixed base.
 
 - Carry each item outside the unit's change into [Arising Issues](#11-arising-issues).
+- Follow [Arising Issues](#11-arising-issues) at once for each item a further run waits on, so the next survey holds the rows that name it.
 - Continue to [Review a Hot-Fix](#9-review-a-hot-fix) for a hot-fix unit, and to [Merge](#10-merge) otherwise.
 
 #### 9. Review a Hot-Fix
@@ -272,8 +275,11 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 
 - For each unsaved issue that arose during delivery, Apply [Populate Standalone Body](../artifacts/standalone-body.md#populate-standalone-body "ƒ"), then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the populated body.
 
+- An arising fix that remaining rows wait on, as [Fix the Debt](#8-fix-the-debt) states, is placed as a task row of the epic, or as an issue of its own where its files lie on no epic base, and its placement adds it to each such row's Depends on.
+
 - Follow [Hoist Mode](hoist-mode.md "ƒ") in the project checkout with those new issue identities, each arising issue an agent review's exclusion saved, and the allowance the brief names, after the pull request is open and epic delivery is recorded.
 - Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with each placement it applied and each it held.
+- Provide with the session result each row a held placement leaves waiting on an unplaced fix.
 
 #### 12. Report the Changes
 
