@@ -133,6 +133,14 @@ class RowPrerequisites(unittest.TestCase):
         board = Board({key: epic}, [], 'o/r', [pr(9, '[I01:E00] Produce', merged='2026-01-01T00:00:00Z')])
         self.assertIs(board.met('W01', key, {}, 'local'), Resolution.MET)
 
+    def test_a_pushed_commit_beside_an_open_pull_request_leaves_the_row_undelivered(self):
+        key = ('o/r', 2)
+        commit = url('commit', 'b41c0bf3e2201452ba9b9fffe6c681b157a5e946')
+        epic = issue(2, '[I01:E00] Local: Work', body=epic_body(
+            (f"[W01]({url('pull', 9)}), [W01]({commit})", 'Produce', ''), ('W02', 'Consume', 'W01')))
+        board = Board({key: epic}, [], 'o/r', [pr(9, '[I01:E00] Produce')])
+        self.assertIs(board.met('W01', key, {}, 'local'), Resolution.UNMET)
+
 
 class UnresolvableDependencies(unittest.TestCase):
     """An entry the cell cannot resolve, told apart from one waiting on delivery."""

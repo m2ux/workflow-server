@@ -441,6 +441,41 @@ class TaskLinks(unittest.TestCase):
         self.assertIn(f"| [W01]({commit}) | Work | AC1 | | | | ✓ |", fixed)
         self.assertIn('closable: yes', done.stdout)
 
+    def test_a_pushed_commit_named_by_its_sha_is_linked_once(self):
+        sha = 'b41c0bf3e2201452ba9b9fffe6c681b157a5e946'
+        plan = 'https://github.com/o/r/blob/engineering/artifacts/planning/x/w01.md'
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({plan})', 'Work', '')))
+        once = synced(epic, [], '--link', f'W01={sha}')
+        again = synced(issue(2, '[I01:E00] First: Epic', body=once), [], '--link', f'W01={sha}')
+        self.assertEqual(once, again)
+        self.assertIn(f"| [W01]({url('commit', sha)}) | Work | AC1 | | | | |", once)
+
+    def test_a_row_links_its_pull_request_and_its_pushed_commit(self):
+        sha = 'b41c0bf3e2201452ba9b9fffe6c681b157a5e946'
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        fixed = synced(epic, [pr(950, '[I01:E00] Work', base='i01/e00/main')], '--link', f'W01=950,W01={sha}')
+        self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('commit', sha)}) | Work | AC1 | | | | |", fixed)
+
+    def test_a_row_linking_its_pushed_commit_gains_its_pull_request(self):
+        sha = 'b41c0bf3e2201452ba9b9fffe6c681b157a5e946'
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('commit', sha)})", 'Work', '')))
+        fixed = synced(epic, [pr(950, '[I01:E00] Work', base='i01/e00/main')], '--link', 'W01=950')
+        self.assertIn(f"| [W01]({url('commit', sha)}), [W01]({url('pull', 950)}) | Work | AC1 | | | | |", fixed)
+
+    def test_a_pushed_commit_beside_an_open_pull_request_does_not_deliver(self):
+        commit = url('commit', 'b41c0bf3e2201452ba9b9fffe6c681b157a5e946')
+        body = epic_body((f"[W01]({url('pull', 950)}), [W01]({commit})", 'Work', ''))
+        epic = issue(2, '[I01:E00] First: Epic', body=body.replace('- [ ] **AC1.**', '- [x] **AC1.**'))
+        done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work', base='i01/e00/main')])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertNotIn('| ✓ |', fixed)
+        self.assertNotIn('closable: yes', done.stdout)
+
+    def test_a_short_commit_sha_is_refused(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        with self.assertRaisesRegex(AssertionError, 'full commit SHA'):
+            synced(epic, [], '--link', 'W01=b41c0bf')
+
     def test_done_ticks_once_the_row_no_longer_names_the_unmet_criterion(self):
         body = epic_body((f"[W01]({url('pull', 950)})", 'Work', '')).replace('| AC1 |', '| |', 1)
         epic = issue(2, '[I01:E00] First: Epic', body=body)

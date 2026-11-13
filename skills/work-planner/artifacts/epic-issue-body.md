@@ -135,9 +135,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - An absent, empty or unreadable statement, and statements that disagree across the bases, are reported `unevaluable` with their source. Without the long-lived branch names, the run names each check it did not make as `not checked`, and an epic that would otherwise be closable is not.
 - An open review pull request's Changes paths are read at its head commit in the `--project` repository: a path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree. A head commit the repository does not hold is reported `unevaluable`.
 - Passed checks settle criteria under [Test Evidence](#test-evidence).
-- Repeat a task id in `--link` once per pull request, one per long-lived branch its unit changes. Retain its existing deliveries and add only those missing, so repeated execution is idempotent.
+- Repeat a task id in `--link` once per pull request, one per long-lived branch its unit changes, or once with the full SHA of the pushed commit when its unit changes only the planning-records branch. Retain its existing deliveries and add only those missing, so repeated execution is idempotent.
 
-- `<task-pull-request-map>` is a comma-separated list of `<task-id>=<pull-request-number>` pairs, with a pair for each pull request a task id links. Pass each task JSON file as a separate argument after `--tasks`.
+- `<task-pull-request-map>` is a comma-separated list of `<task-id>=<pull-request-number>` pairs, with a pair for each pull request a task id links, and a `<task-id>=<commit-sha>` pair for each commit it links. Pass each task JSON file as a separate argument after `--tasks`.
 
 - Updated rows must meet [Task Delivery](#task-delivery) and [Work Breakdown](#work-breakdown).
 
@@ -327,8 +327,8 @@ Each task's delivery state consists of its Task-cell references, reservation or 
 - **Task ids.**
   - An unreserved task awaiting its pull request links its file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.
   - Every link on a task row names that row's id, and the row carries one delivery per long-lived branch its unit changes. A reserved task links only its planning folder: `[W01](…/2026-10-06-943-i07-e00-w01-queue-plan/)`. Every row of a joined unit links the one folder its first row names. The folder's README links each work-item file by the name the row's link carries. Releasing the reservation points the row to that file.
-  - Once a pull request is open, its link replaces the planning link: `[W01](…/pull/950)`. A unit changing two long-lived branches links the pull request on each: `[W01](…/pull/950), [W01](…/pull/951)`. Further delivery work on one of those branches gets another task row under Task grain. Joined rows each link their shared pull request.
-  - The task is delivered when a linked pull request has merged, or its id links a commit.
+  - Once a pull request is open, its link replaces the planning link: `[W01](…/pull/950)`. A unit changing two long-lived branches links the pull request on each: `[W01](…/pull/950), [W01](…/pull/951)`. Further delivery work on one of those branches gets another task row under Task grain. Joined rows each link their shared pull request. A file pushed to the [planning-records branch](../rules.md#rules) is linked by its commit: `[W01](…/commit/b41c0bf…)`.
+  - The task is delivered when a linked pull request has merged, or its id links a commit and no pull request.
   - A link to an open pull request does not deliver the task.
   - A linked pull request whose title names another epic delivers the task once it has merged. The mismatch is reported, and the row stays open while a criterion its Coverage names is unticked.
 - **Tasks with their own issue.**

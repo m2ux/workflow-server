@@ -2,17 +2,21 @@
 
 Keeps an authorized theme-board scope moving through delivery while eligible work and execution capacity permit it.
 
-Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
+Follow [Deliver Board Work](#deliver-board-work "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Procedure
 
-### 1. Select
+### Deliver Board Work
+
+The run the user requests for one theme board.
+
+#### 1. Select
 
 - Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") with the requested theme or board identity.
 
 - Use its provided owner and board number throughout this run.
 
-### 2. Establish the Authorization
+#### 2. Establish the Authorization
 
 - Record the user's requested board, initiative, epic or unit boundary and requested lane as the [run authorization](../artifacts/dispatch-batch.md#authorization).
 
@@ -23,13 +27,13 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy "ƒ") for each plan change with this run's allowance, retaining its applied or held result for the change list.
 - Retain the run's authorization, session inventory, [preparations](../artifacts/dispatch-batch.md#preparations) and [blockers](../artifacts/dispatch-batch.md#blockers) in working files outside the repository for every refill round.
 
-### 3. Coordinate Delivery
+#### 3. Coordinate Delivery
 
 - Follow [Refill Delivery Capacity](#refill-delivery-capacity "ƒ") with the authorization, project checkout, engineering worktree, run allowance and the supplied worker procedure: each worker must Follow [Run Delivery Session](#run-delivery-session "ƒ").
 
 - Keep the calling session as coordinator until that procedure returns its completion or stable blockers.
 
-### 4. Report
+#### 4. Report
 
 - Report each merged pull request, unresolved conflict, epic in review, review pull request update and running or finished unit, using [Report Lines](../artifacts/delivery-plan.md#report-lines) for survey results and [Session Inventory](../artifacts/dispatch-batch.md#session-inventory) for execution state.
 
@@ -218,6 +222,10 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 - Write a file two groups reach — a shared test, an index, a manifest — in this session.
 - Stage and commit each returning group's own files, then run the unit's tests once every group has provided.
 - A group with no available sub-agent capacity is delivered by this session, as is a unit of one group.
+
+- Once the unit's tests pass, commit each declared file on the [planning-records branch](../rules.md#rules) in the engineering worktree and push it.
+- A unit that changes only that branch opens no pull request. Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for its rows with the project checkout, the fetched epic bases and the pushed commit, and Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
+- For that unit, Follow [Task Merge](../protocols/task-merge.md "ƒ") in the project checkout with the pushed commit as its delivery, the unit's current task and epic evidence, and the board identity the brief names, then continue to [Arising Issues](#11-arising-issues).
 
 #### 7. Open the Pull Request
 

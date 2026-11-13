@@ -48,7 +48,7 @@ and fetch again. A title naming another initiative or epic remains a conflict. A
 sync reports retitle for every pull request, linked or not, whose title names an epic of the initiative
 by a task id, [I07:E00:W01], with the [I07:E00] title it takes.
 
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. An id repeats once for each pull request it links, one per long-lived branch; the row keeps the deliveries it links in place and gains each named one it lacks. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed; one whose task issue is not given is unchecked, keeps its Done cell, is reported unchanged, and leaves the epic not closable. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, an open review pull request whose References differ from the task pull requests merged into its base, naming both sets, and an open review pull request whose Changes names a path in a code span that is absent from its head commit, naming that path. A span less any #anchor or :line suffix names a path when it is a component <branch>:<path> for the review's base, or holds a directory and either carries an extension or opens with a top-level directory of the head, or is a bare name whose extension a file at the head carries. A path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree; a head commit the --project repository does not hold is reported unevaluable.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic, or, given a full commit SHA, to that commit pushed to the planning-records branch. An id repeats once for each pull request it links, one per long-lived branch; the row keeps the deliveries it links in place and gains each named one it lacks. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit and no pull request. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed; one whose task issue is not given is unchecked, keeps its Done cell, is reported unchanged, and leaves the epic not closable. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, an open review pull request whose References differ from the task pull requests merged into its base, naming both sets, and an open review pull request whose Changes names a path in a code span that is absent from its head commit, naming that path. A span less any #anchor or :line suffix names a path when it is a component <branch>:<path> for the review's base, or holds a directory and either carries an extension or opens with a top-level directory of the head, or is a bare name whose extension a file at the head carries. A path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree; a head commit the --project repository does not hold is reported unevaluable.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A row whose epic issue is not given is unchecked: its Done
 cell stands as it is, the run reports it unchanged, and the initiative is not closable. A criterion is
@@ -106,9 +106,12 @@ PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
 TICKED = re.compile(r'^- \[[xX]\] ')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
 PULL_URL = re.compile(r'/pull/(\d+)$')
+COMMIT = re.compile(r'[0-9a-f]{40}')
 PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 BELONGS = re.compile(r'\b(?:belongs? to|left to|owned by)\s+(W\d\d)\b', re.IGNORECASE)
 LONG_LIVED: tuple[str, ...] = ()
+# The planning-records branch: direct pushes and no epic base, as rules.md states.
+RECORDS_BRANCH = 'engineering'
 
 
 def attach_links(prs: list[dict], path: str) -> None:
@@ -173,16 +176,15 @@ def delivery_branch(pr: dict, initiative: str) -> str:
     return epic_base(ref, initiative) or ref
 
 
-def compose_id(task: str, text: str, pulls: list[dict], by_url: dict, initiative: str) -> str:
+def compose_id(task: str, text: str, deliveries: list[tuple[str, str]], by_url: dict, initiative: str) -> str:
     """Link one delivery per long-lived branch: the deliveries the row holds stay in place, and each
-    named pull request the row lacks follows them."""
+    named delivery, a (link, branch) pair, the row lacks follows them."""
     named = {}
-    for pr in pulls:
-        branch = delivery_branch(pr, initiative)
-        if pr['html_url'] not in named and branch in named.values():
+    for href, branch in deliveries:
+        if href not in named and branch in named.values():
             sys.exit(f'{task}: names two deliveries on {branch or "that branch"}; '
                      'further work needs another task')
-        named.setdefault(pr['html_url'], branch)
+        named.setdefault(href, branch)
     held = []
     for _, href in LINK.findall(text):
         if '/pull/' not in href and '/commit/' not in href:
@@ -191,14 +193,14 @@ def compose_id(task: str, text: str, pulls: list[dict], by_url: dict, initiative
         if href in named:
             continue
         other = by_url.get(href)
-        if other is None or delivery_branch(other, initiative) in named.values():
-            branch = delivery_branch(other, initiative) if other else ''
+        branch = RECORDS_BRANCH if '/commit/' in href else delivery_branch(other, initiative) if other else ''
+        if not branch or branch in named.values():
             sys.exit(f'{task}: already links a delivery on {branch or "that branch"}; '
                      'further work needs another task')
     return ', '.join(f'[{task}]({href})' for href in [*held, *(url for url in named if url not in held)])
 
 
-def epic_delivery(rows, header, named, links, task_paths, initiative, epic, report, prs):
+def epic_delivery(rows, header, named, links, task_paths, initiative, epic, report, prs, home):
     delivered, by_pr = {}, {}
     given = {p['number']: p for p in prs}
     by_url = {p['html_url']: p for p in prs}
@@ -217,16 +219,20 @@ def epic_delivery(rows, header, named, links, task_paths, initiative, epic, repo
     for r in rows:
         task = row_id(r[at])
         if task in links:
-            pulls = []
+            deliveries = []
             for number in links[task]:
+                if isinstance(number, str):
+                    deliveries.append((f'{home}/commit/{number}', RECORDS_BRANCH))
+                    continue
                 pr = named.get(number)
                 if not pr:
                     sys.exit(f'--link {task}={number}: no pull request naming this epic')
-                pulls.append(pr)
-            linked = compose_id(task, r[at], pulls, by_url, initiative)
+                deliveries.append((pr['html_url'], delivery_branch(pr, initiative)))
+            linked = compose_id(task, r[at], deliveries, by_url, initiative)
             if linked != r[at].strip():
                 r[at] = linked
-                numbers = ', '.join(f'#{n}' for n in dict.fromkeys(links[task]))
+                numbers = ', '.join(f'#{n}' if isinstance(n, int) else n[:9]
+                                    for n in dict.fromkeys(links[task]))
                 report['linked'].append(f"{task} → {numbers}")
         ident = r[at]
         joins = set(re.findall(r'W\d\d', cell(header, r, 'Joins')))
@@ -245,7 +251,7 @@ def epic_delivery(rows, header, named, links, task_paths, initiative, epic, repo
                     report['conflict'].append(f'{task} links #{number}, whose title does not name this epic')
             elif (issue := ISSUE_URL.search(found[2])):
                 issue_numbers.append(int(issue[1]))
-        landed = commits or any(given.get(number, {}).get('merged_at') for number in pulls)
+        landed = (commits and not pulls) or any(given.get(number, {}).get('merged_at') for number in pulls)
         if not pulls and not commits and issue_numbers:
             number = issue_numbers[0]
             report['note'].append(f'{task} links task issue #{number}; link its pull request')
@@ -939,7 +945,7 @@ def main() -> int:
     parser.add_argument('--prs', help='task or epic: pull requests as JSON lines')
     parser.add_argument('--links', help='epic: the closing issue references its pull requests hold')
     parser.add_argument('--pr', type=int, help='task issue: the pull request that delivered it')
-    parser.add_argument('--link', default='', help='epic: task ids to link to pull requests, open or merged, an id once for each, e.g. W01=950,W01=951,W02=950')
+    parser.add_argument('--link', default='', help='epic: task ids to link to pull requests, open or merged, or to a pushed commit by its full SHA, an id once for each, e.g. W01=950,W01=951,W02=950')
     parser.add_argument('--tasks', nargs='*', default=[], help='epic: its task issues as JSON')
     parser.add_argument('--epics', nargs='*', default=[], help='initiative: its epic issues as JSON')
     parser.add_argument('--tick', default='', help='criteria to tick, e.g. AC1,AC3')
@@ -985,9 +991,12 @@ def main() -> int:
         named = {p['number']: p for p in work.delivering_pulls(prs, issue_key(issue), issue)}
     else:
         named = for_epic(prs, initiative, epic) if epic else {}
-    links: dict[str, list[int]] = {}
+    links: dict[str, list[int | str]] = {}
     for k, v in (x.split('=') for x in args.link.split(',') if x.strip()):
-        links.setdefault(k.strip(), []).append(int(v))
+        v = v.strip()
+        if not (COMMIT.fullmatch(v) or v.isdigit()):
+            sys.exit(f'--link {k.strip()}={v}: names neither a pull request number nor a full commit SHA')
+        links.setdefault(k.strip(), []).append(v if COMMIT.fullmatch(v) else int(v))
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('normalized', 'retitle', 'linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
@@ -1026,7 +1035,8 @@ def main() -> int:
             sys.exit('Work Breakdown has no Coverage column; run format.py first')
         header, rows = grid[0], grid[2:]
         if kind == 'epic':
-            delivered = epic_delivery(rows, header, named, links, args.tasks, initiative, epic, report, prs)
+            delivered = epic_delivery(rows, header, named, links, args.tasks, initiative, epic, report, prs,
+                                      issue['html_url'].rsplit('/issues/', 1)[0])
             title_repairs(rows, header, prs, initiative, epic, report)
             questions = next((l for h, l in sections if h == 'Open Questions'), [])
             open_named = any(p.get('state') == 'open' for p in named.values())

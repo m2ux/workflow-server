@@ -108,8 +108,8 @@ import testplan
 from statuses import DISPATCH, Key, STATUSES, Changes, StatusField, board_items, label, pages, status_of
 from format import (AC, cell, hrefs, id_cell, join_sections, reservation,
                     row, row_id, split_sections, title_name)
-from sync import (PR_REF, Unreadable, attach_links, issue_key, long_lived_names, origin_repository,
-                  pull_requests, table)
+from sync import (PR_REF, RECORDS_BRANCH, Unreadable, attach_links, issue_key, long_lived_names,
+                  origin_repository, pull_requests, table)
 
 RECORD = re.compile(r'^(.*/artifacts/planning/)[^/]+/?$')
 CRITERION = re.compile(r'AC\d+')
@@ -117,8 +117,6 @@ ISSUE_URL = re.compile(r'/issues/(\d+)$')
 FOLDER = re.compile(r'/(?:tree|blob)/[^/]+/(.+?)/?$')
 STARTED = ('Ready', 'In Progress')
 WORKTREES = '.worktrees'
-# The planning-records branch: direct pushes and no epic base, as rules.md states.
-RECORDS_BRANCH = 'engineering'
 
 
 def is_epic(issue: dict) -> bool:
