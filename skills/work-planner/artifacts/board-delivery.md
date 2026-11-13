@@ -10,12 +10,12 @@ One epic's review status on its board.
 
 #### 1. Read Board State
 
-Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Review Selection](#review-selection).
+Apply [Read Board State](board.md#read-board-state) for the board in [Review Selection](#review-selection).
 
 #### 2. Read Configuration and Assignee
 
-- Apply [Read Board Configuration](board.md#read-board-configuration "ƒ").
-- Run [Find User](board.md#find-user "ƒ").
+- Apply [Read Board Configuration](board.md#read-board-configuration).
+- Run [Find User](board.md#find-user).
 
 #### 3. Locate Epic Item
 
@@ -24,8 +24,8 @@ Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Revie
 
 #### 4. Write and Confirm Review Status
 
-- Apply [Record Dispatch Status](#record-dispatch-status "ƒ") with the epic as the review identity for In Review or the progress identity for In Progress, as [Review Selection](#review-selection) requests. The In Review it writes, or refuses, is the one Board Status gives the epic's review evidence.
-- When the item still shows the preceding status, Apply [Record Dispatch Status](#record-dispatch-status "ƒ") again for the same review or progress identity. Apply [Read Board Configuration](board.md#read-board-configuration "ƒ") for the same item to confirm the write. The item list can lag a write.
+- Apply [Record Dispatch Status](#record-dispatch-status) with the epic as the review identity for In Review or the progress identity for In Progress, as [Review Selection](#review-selection) requests. The In Review it writes, or refuses, is the one Board Status gives the epic's review evidence.
+- When the item still shows the preceding status, Apply [Record Dispatch Status](#record-dispatch-status) again for the same review or progress identity. Apply [Read Board Configuration](board.md#read-board-configuration) for the same item to confirm the write. The item list can lag a write.
 
 #### 5. Provide Confirmed Status
 
@@ -37,13 +37,13 @@ The task and epic statuses owned by a delivery dispatch.
 
 #### 1. Compute Dispatch Calls
 
-- Run [Compute Dispatch Status](board-status.md#compute-dispatch-status "ƒ") for the supplied progress and review identities.
+- Run [Compute Dispatch Status](board-status.md#compute-dispatch-status) for the supplied progress and review identities.
 - A refusal or handoff blocker it reports is the unresolved discrepancy; run no call and continue to Provide Saved Statuses.
 
 #### 2. Apply and Confirm Calls
 
 - Run each provided call.
-- Apply [Read Board Configuration](board.md#read-board-configuration "ƒ") for each affected item to confirm the write.
+- Apply [Read Board Configuration](board.md#read-board-configuration) for each affected item to confirm the write.
 
 #### 3. Provide Saved Statuses
 

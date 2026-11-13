@@ -32,7 +32,7 @@ Check each section of [Changed Bodies](#changed-bodies) against [Kind Conditions
 
 #### 2. Run Body Format
 
-Run [Check Body Format](#check-body-format "ƒ") to every changed issue, writing its results to [Output Files](#output-files).
+Run [Check Body Format](#check-body-format) to every changed issue, writing its results to [Output Files](#output-files).
 
 #### 3. Provide Checked Round of Edits
 
@@ -44,7 +44,7 @@ One body checked against its supplied kind and template.
 
 #### 1. Run Body Format
 
-Run [Check Body Format](#check-body-format "ƒ") for the selected body.
+Run [Check Body Format](#check-body-format) for the selected body.
 
 #### 2. Review Supplied Conditions
 
@@ -81,7 +81,7 @@ Restate historical narration as the current design.
 
 #### 6. Validate Corrected Body
 
-Apply [Validate Issue Body](#validate-issue-body "ƒ") with the corrected body and supplied validation inputs.
+Apply [Validate Issue Body](#validate-issue-body) with the corrected body and supplied validation inputs.
 
 #### 7. Provide Corrected File
 
@@ -105,26 +105,26 @@ The saved format corrections for one issue and any unresolved content findings.
 
 #### 1. Validate Current Body
 
-- Apply [Validate Issue Body](#validate-issue-body "ƒ") to the current body.
+- Apply [Validate Issue Body](#validate-issue-body) to the current body.
 - Provide an unreadable source as a blocker before editing.
 
 #### 2. Review Mechanical Changes
 
 - Review the provided diff.
-- For wording-preserving format, title and label corrections, Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") without asking.
+- For wording-preserving format, title and label corrections, Apply [Save Tracker Issue](issue.md#save-tracker-issue) without asking.
 - Retain content decisions and cross-body findings separately; do not publish them as mechanical fixes.
 
 #### 3. Resolve Local Content
 
 - Resolve a non-mechanical finding confined to this body.
 - Obtain the user's decision.
-- Apply [Apply Body Corrections](#apply-body-corrections "ƒ") to the current body using the confirmed resolution.
+- Apply [Apply Body Corrections](#apply-body-corrections) to the current body using the confirmed resolution.
 - Publish through Save Tracker Issue. An unanswered decision or a finding requiring changes to other issues returns to the caller as a blocker.
 
 #### 4. Validate Saved Body
 
-- Apply [Read Tracker Issue](issue.md#read-tracker-issue "ƒ") for the saved issue.
-- Apply [Validate Issue Body](#validate-issue-body "ƒ") again with the saved JSON and the same kind conditions, context and output path.
+- Apply [Read Tracker Issue](issue.md#read-tracker-issue) for the saved issue.
+- Apply [Validate Issue Body](#validate-issue-body) again with the saved JSON and the same kind conditions, context and output path.
 - Provide saved [Body Evidence](#body-evidence), whether a correction was made, and [Format Findings](#format-findings). A remaining failure is a blocker.
 
 ## Commands

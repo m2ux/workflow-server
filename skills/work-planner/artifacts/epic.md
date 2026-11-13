@@ -30,9 +30,9 @@ The delivery findings for one epic from supplied evidence.
 
 #### 1. Match Supplied Delivery
 
-- Run [Match Pull Requests](#match-pull-requests "ƒ") for the selected epic, using a local scratch output body.
+- Run [Match Pull Requests](#match-pull-requests) for the selected epic, using a local scratch output body.
 - A closed epic is normalized to the current Work Breakdown columns before its tasks are read, using the shared format rules. Ambiguous or unsupported table content is a blocker.
-- For reported table normalization, Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ"), fetch the saved epic and repeat the match before returning its evidence.
+- For reported table normalization, Apply [Save Tracker Issue](issue.md#save-tracker-issue), fetch the saved epic and repeat the match before returning its evidence.
 
 #### 2. Provide Delivery Findings
 
@@ -44,7 +44,7 @@ The epic's eligibility for integration from current delivery and criterion evide
 
 #### 1. Inspect Current Delivery
 
-Apply [Inspect Epic Delivery](#inspect-epic-delivery "ƒ") for the selected epic.
+Apply [Inspect Epic Delivery](#inspect-epic-delivery) for the selected epic.
 
 #### 2. Confirm Integration Conditions
 

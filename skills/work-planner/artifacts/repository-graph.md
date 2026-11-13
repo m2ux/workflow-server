@@ -10,26 +10,26 @@ Current graph evidence for the supplied change.
 
 #### 1. Read Index Status
 
-Run [Index Status](#index-status "ƒ") in the [review checkout](#review-checkout).
+Run [Index Status](#index-status) in the [review checkout](#review-checkout).
 
 #### 2. Refresh Absent or Stale Index
 
 - If the repository is unindexed or behind [Requested Revision](#requested-revision):
-- Run [Index Repository](#index-repository "ƒ") in the review checkout.
+- Run [Index Repository](#index-repository) in the review checkout.
 - Confirm freshness.
 
 #### 3. Measure Change Surface
 
-- Run [Merge Base](#merge-base "ƒ") in the review checkout for the requested revision and the supplied [base commit](#base-commit).
-- Run [Change Surface](#change-surface "ƒ") in the review checkout against that comparison base.
+- Run [Merge Base](#merge-base) in the review checkout for the requested revision and the supplied [base commit](#base-commit).
+- Run [Change Surface](#change-surface) in the review checkout against that comparison base.
 
 #### 4. Measure Changed Symbols
 
-For each changed symbol, Run [Symbol Context](#symbol-context "ƒ") in the review checkout.
+For each changed symbol, Run [Symbol Context](#symbol-context) in the review checkout.
 
 #### 5. Measure Reported Flows
 
-For each reported flow, Run [Flow Trace](#flow-trace "ƒ") in the review checkout.
+For each reported flow, Run [Flow Trace](#flow-trace) in the review checkout.
 
 #### 6. Check Response Freshness
 
@@ -38,10 +38,10 @@ Inspect the staleness block on every response.
 ##### When the Index Is Behind
 
 - Discard that response’s measurements.
-- Run [Index Repository](#index-repository "ƒ") in the review checkout for the verified head, and confirm freshness.
-- Run [Change Surface](#change-surface "ƒ") again for any discarded surface against the same [comparison base](#comparison-base) in the review checkout.
-- Run [Symbol Context](#symbol-context "ƒ") again for each affected changed symbol in the review checkout.
-- Run [Flow Trace](#flow-trace "ƒ") again for each affected reported flow in the review checkout.
+- Run [Index Repository](#index-repository) in the review checkout for the verified head, and confirm freshness.
+- Run [Change Surface](#change-surface) again for any discarded surface against the same [comparison base](#comparison-base) in the review checkout.
+- Run [Symbol Context](#symbol-context) again for each affected changed symbol in the review checkout.
+- Run [Flow Trace](#flow-trace) again for each affected reported flow in the review checkout.
 
 #### 7. Provide Current Measurements
 

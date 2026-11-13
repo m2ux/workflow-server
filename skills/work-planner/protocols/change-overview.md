@@ -2,32 +2,32 @@
 
 The published architecture overview, planning record and pull request link that explain one pull request's change.
 
-Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
+Follow the [Procedure](#procedure), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).
 
 ## Procedure
 
 ### 1. Prepare the Evidence
 
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for the supplied pull request to obtain its identity, title, base commit and verified head.
-- Apply [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree "ƒ") with the project checkout, pull request number and verified head.
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for the supplied pull request to obtain its identity, title, base commit and verified head.
+- Apply [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree) with the project checkout, pull request number and verified head.
 
 #### Changed Head
 
 - On a changed-head finding:
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again for the same pull request.
-- Apply [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree "ƒ") again with the project checkout, same pull request number and new verified head.
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) again for the same pull request.
+- Apply [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree) again with the project checkout, same pull request number and new verified head.
 
 #### Matching Head
 
 - Continue to measurement only when the worktree matches that head.
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for its changed paths.
-- Apply [Measure Repository Change](../artifacts/repository-graph.md#measure-repository-change "ƒ") with the review checkout it returns, verified head and base commit.
-- On stale index evidence, Apply [Measure Repository Change](../artifacts/repository-graph.md#measure-repository-change "ƒ") again with the review checkout, verified head and base commit after its index update.
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for its changed paths.
+- Apply [Measure Repository Change](../artifacts/repository-graph.md#measure-repository-change) with the review checkout it returns, verified head and base commit.
+- On stale index evidence, Apply [Measure Repository Change](../artifacts/repository-graph.md#measure-repository-change) again with the review checkout, verified head and base commit after its index update.
 
 #### Changed Revision
 
 - On a changed revision:
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again.
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) again.
 - Rebuild the worktree evidence.
 
 #### Freshness Result
@@ -38,7 +38,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Locate any existing overview record for this pull request number before creating a record.
 - Reuse its folder identity when one exists; otherwise choose a planning-folder identity whose reference is the pull request number and whose slug comes from its title.
-- Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") to prepare that folder.
+- Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record) to prepare that folder.
 - Take the graph [measurements](../artifacts/architecture-overview.md#measurements) from [Prepare the Evidence](#1-prepare-the-evidence) and check the proposed diagrams.
 - The diagrams must meet [Diagrams](../artifacts/architecture-overview.md#diagrams).
 
@@ -62,11 +62,11 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 3. Register the Overview
 
-Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record "ƒ") with the record identity, folder, overview file and pull request link. The overview is its one Artifacts row and the pull request is under Links.
+Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record) with the record identity, folder, overview file and pull request link. The overview is its one Artifacts row and the pull request is under Links.
 
 ### 4. Publish and Link
 
-- Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") for the record's folder, so the overview resolves.
+- Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record) for the record's folder, so the overview resolves.
 - Use the current body and published overview URL.
 
 - Add [Overview URL](../artifacts/pull-request-body.md#overview-url) as the Architecture Overview reference in the References of [Current Body](../artifacts/pull-request-body.md#current-body), creating that section in its [Template](../artifacts/pull-request-body.md#template) position when absent and writing to [Output Body](../artifacts/pull-request-body.md#output-body).
@@ -78,5 +78,5 @@ Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planni
 ```
 
 - Retain the complete [updated body](../artifacts/pull-request-body.md#output-body) file for publication.
-- Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") with the provided file.
+- Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request) with the provided file.
 - Provide the pull request, record folder, published overview, diagrams and References row to the caller.

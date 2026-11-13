@@ -32,7 +32,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - Omit `--lane` when the run names no lane. Offered units must meet [Admission](lane.md#admission).
 - Omit `--dispatch-plan` when no dispatch export is requested.
 
-- The computation runs [Evaluate Lane Admission](lane.md#evaluate-lane-admission "ƒ") internally for each derived free unit under [Admission](lane.md#admission). The requester decides holds and dispatch, and supplies missing evidence for another pass.
+- The computation runs [Evaluate Lane Admission](lane.md#evaluate-lane-admission) internally for each derived free unit under [Admission](lane.md#admission). The requester decides holds and dispatch, and supplies missing evidence for another pass.
 
 ## Fields
 

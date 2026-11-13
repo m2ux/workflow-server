@@ -10,36 +10,36 @@ One hot-fix's draft [delivering pull request](#delivering-pull-request) taken th
 
 #### 1. Review the Head
 
-- Apply [Produce Agent Review](agent-review.md#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence.
-- Apply [Populate Planning Record](planning-record.md#populate-planning-record "ƒ") with its provided record, then Apply [Publish Planning Record](planning-record.md#publish-planning-record "ƒ") with that record.
-- Apply [Publish Pull Request](pull-request.md#publish-pull-request "ƒ") to link that published record from the pull request body.
+- Apply [Produce Agent Review](agent-review.md#produce-agent-review) for the resulting head with fresh metadata and updated validation evidence.
+- Apply [Populate Planning Record](planning-record.md#populate-planning-record) with its provided record, then Apply [Publish Planning Record](planning-record.md#publish-planning-record) with that record.
+- Apply [Publish Pull Request](pull-request.md#publish-pull-request) to link that published record from the pull request body.
 
 #### 2. Verify Readiness
 
 - Use the pull request and published review records.
 
-- Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") for its full metadata.
+- Apply [Read Pull Request State](pull-request.md#read-pull-request-state) for its full metadata.
 - If metadata is unreadable or the pull request is closed, provide [Failure](pull-request.md#failure) with the unresolved current state and stop before repair.
 
-- Run [Validate Agent Review](agent-review.md#validate-agent-review "ƒ") with that metadata and [Published Reviews](pull-request.md#published-reviews).
+- Run [Validate Agent Review](agent-review.md#validate-agent-review) with that metadata and [Published Reviews](pull-request.md#published-reviews).
 - On a finding, continue directly to Restore Draft below.
 
-- For a draft with passing evidence, Run [Mark Review Ready](pull-request.md#mark-review-ready "ƒ") with the node id its metadata names.
+- For a draft with passing evidence, Run [Mark Review Ready](pull-request.md#mark-review-ready) with the node id its metadata names.
 - On a failed ready write, retain its failure and continue directly to Restore Draft below.
 
-- Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") again with the same identity.
+- Apply [Read Pull Request State](pull-request.md#read-pull-request-state) again with the same identity.
 - On an unreadable or closed result, provide the unresolved current-state failure and stop before repair.
-- Run [Validate Agent Review](agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records.
+- Run [Validate Agent Review](agent-review.md#validate-agent-review) again with that fresh metadata and the same published records.
 - On a finding or a draft readback, retain the changed revision or readiness failure and continue directly to Restore Draft below.
 - Only a confirmed open, ready pull request with passing current review evidence provides [Review State](pull-request.md#review-state), with its published review record, ready for merge.
 
 #### 3. Restore Draft
 
 - Retain every review or readiness finding.
-- Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") with the same identity before selecting restoration.
+- Apply [Read Pull Request State](pull-request.md#read-pull-request-state) with the same identity before selecting restoration.
 - If metadata is unreadable or the pull request is closed, provide the unresolved restoration discrepancy as [Failure](pull-request.md#failure) and stop before repair.
-- For an open, ready pull request, Run [Mark Review Draft](pull-request.md#mark-review-draft "ƒ") with its identity.
-- After a selected restoration write, including a failed write, Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") with the same identity.
+- For an open, ready pull request, Run [Mark Review Draft](pull-request.md#mark-review-draft) with its identity.
+- After a selected restoration write, including a failed write, Apply [Read Pull Request State](pull-request.md#read-pull-request-state) with the same identity.
 - If the restoration write failed, metadata is unreadable, or the readback is closed or ready, provide the unresolved restoration discrepancy as [Failure](pull-request.md#failure) and stop before repair. Report draft state only when the readback confirms it.
 - With a successful selected write and confirmed open draft, or a confirmed open draft requiring no write, continue to Repair Findings below.
 
@@ -54,11 +54,11 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
 
 #### 1. Read Current Issue
 
-Apply [Read Tracker Issue](issue.md#read-tracker-issue "ƒ") for the current state of [Hot-fix Identity](#hot-fix-identity).
+Apply [Read Tracker Issue](issue.md#read-tracker-issue) for the current state of [Hot-fix Identity](#hot-fix-identity).
 
 #### 2. Read Current Board
 
-Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Board Evidence](#board-evidence) to obtain the issue’s item and Status. A hot-fix with no item has no Status.
+Apply [Read Board State](board.md#read-board-state) for the board in [Board Evidence](#board-evidence) to obtain the issue’s item and Status. A hot-fix with no item has no Status.
 
 #### 3. Apply Required Status
 
@@ -66,11 +66,11 @@ Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Board
 
 ##### A Status
 
-- Apply [Place Issue on Board](board.md#place-issue-on-board "ƒ") with the supplied board, the hot-fix issue and that status, which adds the item where the board has none.
+- Apply [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and that status, which adds the item where the board has none.
 
 ##### Off the Board, With an Item
 
-- Run [Remove Board Item](board.md#remove-board-item "ƒ") with the supplied board owner and number and the item id Read Board State provided.
+- Run [Remove Board Item](board.md#remove-board-item) with the supplied board owner and number and the item id Read Board State provided.
 
 ##### Off the Board, With No Item
 

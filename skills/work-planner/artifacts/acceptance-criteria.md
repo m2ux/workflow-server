@@ -18,7 +18,7 @@ The verification evidence for a supplied set of criteria whose delivery is ready
 #### 2. Run Named Instruments
 
 - Run each criterion's named [instrument](#instrument) at the delivering pull request head for an open task, or its merged revision for delivered work.
-- Run [Run at Revision](#run-at-revision "ƒ") with the [project checkout](#project-checkout), that revision and the instrument.
+- Run [Run at Revision](#run-at-revision) with the [project checkout](#project-checkout), that revision and the instrument.
 - Record the [Instrument Result](#instrument-result) against the commit it reports.
 
 - An instrument runs in a checkout of the project at the exact revision it is verifying, which the caller supplies. A checkout the caller is editing is not that revision, so a criterion verified against uncommitted work is unverified. A branch or tag is resolved to one commit before the run, and the checkout made for the run is removed after it whatever the instrument returns.
@@ -37,8 +37,8 @@ The confirmed criteria and completed rows recorded in an epic or initiative body
 #### 1. Record Verified Criteria
 
 - Record the criteria from [Issue Evidence](#issue-evidence).
-- For an epic, Run [Tick Epic Criteria](epic-issue-body.md#tick-epic-criteria "ƒ") with the verified criterion ids.
-- For an initiative, Run [Tick Initiative Criteria](initiative-issue-body.md#tick-initiative-criteria "ƒ") with the verified criterion ids.
+- For an epic, Run [Tick Epic Criteria](epic-issue-body.md#tick-epic-criteria) with the verified criterion ids.
+- For an initiative, Run [Tick Initiative Criteria](initiative-issue-body.md#tick-initiative-criteria) with the verified criterion ids.
 
 - A ticked criterion carries verification evidence. Epic criteria can derive that evidence from passed checks under [Test Evidence](epic-issue-body.md#test-evidence). Done on the row or table that cites it must follow [Tables](issue-body.md#tables) and [Work Breakdown](epic-issue-body.md#work-breakdown). A criterion refused as not ready to verify is provided unticked with what it is missing.
 
@@ -75,7 +75,7 @@ The id of one acceptance criterion in its owning issue body.
 
 ### Instrument Result
 
-The first standard-output line is a JSON object with `revision`, the resolved commit SHA, and `checkout`, the temporary checkout path; subsequent standard output is the instrument's output. The result also carries the process exit status and standard error. Helper failure can omit the JSON header. The status and error cases are specified by [Run at Revision](#run-at-revision "ƒ"). eg `{"revision":"3f2a1c0d9b1e0000000000000000000000000000","checkout":"/tmp/criterion-check"}`
+The first standard-output line is a JSON object with `revision`, the resolved commit SHA, and `checkout`, the temporary checkout path; subsequent standard output is the instrument's output. The result also carries the process exit status and standard error. Helper failure can omit the JSON header. The status and error cases are specified by [Run at Revision](#run-at-revision). eg `{"revision":"3f2a1c0d9b1e0000000000000000000000000000","checkout":"/tmp/criterion-check"}`
 
 ### Criterion Selection
 

@@ -10,11 +10,11 @@ The current issue, its saved body and discussion.
 
 #### 1. Select Issue Response
 
-Run [Fetch Tracker Issue](#fetch-tracker-issue "ƒ") for the complete JSON, or Run [Fetch Issue Body](#fetch-issue-body "ƒ") for its body.
+Run [Fetch Tracker Issue](#fetch-tracker-issue) for the complete JSON, or Run [Fetch Issue Body](#fetch-issue-body) for its body.
 
 #### 2. Read Requested Discussion
 
-Run [Fetch Issue Comments](#fetch-issue-comments "ƒ") when [Discussion Selection](#discussion-selection) requires the discussion.
+Run [Fetch Issue Comments](#fetch-issue-comments) when [Discussion Selection](#discussion-selection) requires the discussion.
 
 #### 3. Provide Read Tracker Issue
 
@@ -34,19 +34,19 @@ Check the assignments against [Label Names](#label-names); provide a missing-lab
 
 #### 3. Create New Issue
 
-For a new issue, Run [Create Tracker Issue](#create-tracker-issue "ƒ") with the body's file, title and labels.
+For a new issue, Run [Create Tracker Issue](#create-tracker-issue) with the body's file, title and labels.
 
 #### 4. Change Existing Fields
 
-For an existing issue, Run [Patch Issue Body](#patch-issue-body "ƒ"), Run [Retitle Tracker Issue](#retitle-tracker-issue "ƒ"), Run [Add Issue Labels](#add-issue-labels "ƒ"), Run [Remove Issue Label](#remove-issue-label "ƒ") or Run [Add Issue Assignee](#add-issue-assignee "ƒ") for the fields being changed.
+For an existing issue, Run [Patch Issue Body](#patch-issue-body), Run [Retitle Tracker Issue](#retitle-tracker-issue), Run [Add Issue Labels](#add-issue-labels), Run [Remove Issue Label](#remove-issue-label) or Run [Add Issue Assignee](#add-issue-assignee) for the fields being changed.
 
 #### 5. Publish Required Comment
 
-Apply [Comment on Issue](#comment-on-issue "ƒ") with [Comment](#comment) when the requester requires an answer, using the issue number and supplied text or file.
+Apply [Comment on Issue](#comment-on-issue) with [Comment](#comment) when the requester requires an answer, using the issue number and supplied text or file.
 
 #### 6. Read Saved Issue
 
-Run [Fetch Tracker Issue](#fetch-tracker-issue "ƒ").
+Run [Fetch Tracker Issue](#fetch-tracker-issue).
 
 #### 7. Compare Saved Fields
 
@@ -67,8 +67,8 @@ When replying to feedback already folded into the body, compose a precise, factu
 #### 2. Publish Supplied Comment
 
 - Publish [Comment](#comment) on [Identity](#identity) in [Repository](#repository):
-- For a one-line comment, Run [Post Inline Comment](#post-inline-comment "ƒ") with the exact text.
-- For a longer comment, Run [Post Comment File](#post-comment-file "ƒ") with the complete file.
+- For a one-line comment, Run [Post Inline Comment](#post-inline-comment) with the exact text.
+- For a longer comment, Run [Post Comment File](#post-comment-file) with the complete file.
 
 #### 3. Provide Comment URL
 
@@ -80,11 +80,11 @@ The issue's current content and its Development pull requests, as GitHub exposes
 
 #### 1. Fetch Current Issue
 
-Run [Fetch Tracker Issue](#fetch-tracker-issue "ƒ") for the selected issue.
+Run [Fetch Tracker Issue](#fetch-tracker-issue) for the selected issue.
 
 #### 2. Read Development Links
 
-Run [Capture Issue Links](#capture-issue-links "ƒ") with that file, saving `links-943.json` or the supplied path. An unreadable relation writes no snapshot, which blocks the caller; an empty array means the field was read and is empty.
+Run [Capture Issue Links](#capture-issue-links) with that file, saving `links-943.json` or the supplied path. An unreadable relation writes no snapshot, which blocks the caller; an empty array means the field was read and is empty.
 
 #### 3. Provide Captured Files
 
@@ -119,7 +119,7 @@ The next unused number for one prefixed issue kind in the repository.
 
 #### 1. Read Existing Titles
 
-Run [List Prefixed Titles](#list-prefixed-titles "ƒ") for the supplied [Repository](#repository) and [Tracker Prefix](#tracker-prefix), covering all issue states.
+Run [List Prefixed Titles](#list-prefixed-titles) for the supplied [Repository](#repository) and [Tracker Prefix](#tracker-prefix), covering all issue states.
 
 #### 2. Read Highest Prefix
 
@@ -264,7 +264,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --issue-links '[**&lt;issue-links-file&gt;**](#development-snapshot "○")'
 </pre></big>
 
-- The sweep audits every closed issue in the collection, so the collection sets its scope. Run [Check Issue Closure](#check-issue-closure "ƒ") to each issue. Open issues and pull requests in the collection are skipped.
+- The sweep audits every closed issue in the collection, so the collection sets its scope. Run [Check Issue Closure](#check-issue-closure) to each issue. Open issues and pull requests in the collection are skipped.
 - `--issue-links` takes the issue-links file of the collection's repository alone; any other shape, or another repository's file, is refused as unreadable evidence.
 - Each line names the issue, its state reason (`completed`, `not_planned`, or `unknown` when none is recorded) and its findings, under one of three labels:
 - `unsupported:` for an issue closed for any reason but `not_planned` whose evidence does not support it.
@@ -434,7 +434,7 @@ The issue is open or closed with its recorded completion reason. Completed work 
 
 ### Auto-Close Setting
 
-The repository's boolean **Auto-close issues with merged linked pull requests** setting, recorded as enabled or disabled with its repository identity and session confirmation evidence; an unknown value is unconfirmed. [Confirm Repository Auto-Close](#confirm-repository-auto-close "ƒ") establishes the value and the delivery gate.
+The repository's boolean **Auto-close issues with merged linked pull requests** setting, recorded as enabled or disabled with its repository identity and session confirmation evidence; an unknown value is unconfirmed. [Confirm Repository Auto-Close](#confirm-repository-auto-close) establishes the value and the delivery gate.
 
 ### Repository
 

@@ -10,11 +10,11 @@ One initiative body and its local validation findings.
 
 #### 1. Draft Scoped Body
 
-Apply [Draft Initiative Issue Body](#draft-initiative-issue-body "ƒ") with [Proposal Context](#proposal-context) and destinations in [Output Files](#output-files).
+Apply [Draft Initiative Issue Body](#draft-initiative-issue-body) with [Proposal Context](#proposal-context) and destinations in [Output Files](#output-files).
 
 #### 2. Check Current Round
 
-Apply [Check Round of Edits](issue-body.md#check-round-of-edits "ƒ").
+Apply [Check Round of Edits](issue-body.md#check-round-of-edits).
 
 #### 3. Provide Draft Findings
 
@@ -44,7 +44,7 @@ One initiative body, scoped to one proposal.
 
 #### 4. Populate Shared Table
 
-Apply [Write Issue Table](issue-body.md#write-issue-table "ƒ") with the supplied row data.
+Apply [Write Issue Table](issue-body.md#write-issue-table) with the supplied row data.
 
 #### 5. Fill Initiative Cells
 
@@ -62,7 +62,7 @@ The body's local format and field findings.
 
 #### 1. Validate Kind Conditions
 
-Apply [Validate Issue Body](issue-body.md#validate-issue-body "ƒ") against local [Fields](#fields) and the supplied epic and source evidence.
+Apply [Validate Issue Body](issue-body.md#validate-issue-body) against local [Fields](#fields) and the supplied epic and source evidence.
 
 #### 2. Retain Current Title
 

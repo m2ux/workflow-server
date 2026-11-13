@@ -10,7 +10,7 @@ The body's local format and field findings.
 
 #### 1. Validate Kind Conditions
 
-Apply [Validate Issue Body](issue-body.md#validate-issue-body "ƒ") to [Proposal Record](#proposal-record) against local [Fields](#fields), using the supplied related evidence and [Output Body](#output-body), proposal field conditions and required title and label metadata.
+Apply [Validate Issue Body](issue-body.md#validate-issue-body) to [Proposal Record](#proposal-record) against local [Fields](#fields), using the supplied related evidence and [Output Body](#output-body), proposal field conditions and required title and label metadata.
 
 #### 2. Provide Local Findings
 

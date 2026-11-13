@@ -16,13 +16,13 @@ A review record for the exact integration revision.
 #### 2. Resolve Review Findings
 
 - Record findings with severity and disposition. A nonblocking deferred finding names its ticket.
-- For each excluded observation, Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") for a new arising standalone issue with no agent-engineering prefix, placed as its [Placement](standalone-body.md#placement) states, then record the exclusion in the [Review Record](#review-record) `scope`, outside the findings collection.
+- For each excluded observation, Apply [Save Tracker Issue](issue.md#save-tracker-issue) for a new arising standalone issue with no agent-engineering prefix, placed as its [Placement](standalone-body.md#placement) states, then record the exclusion in the [Review Record](#review-record) `scope`, outside the findings collection.
 - An observation with an unresolved classification, missing scope evidence or an unsaved arising issue remains a finding with its required disposition.
 
 - When a blocking finding, or a finding the hot-fix [Review Rule](hotfix.md#review-rule) holds to a fix, requires one:
 - Fix every required finding on the reviewed branch.
 - Run appropriate regression checks.
-- Apply [Produce Agent Review](#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence, then provide its review record to the requester and stop.
+- Apply [Produce Agent Review](#produce-agent-review) for the resulting head with fresh metadata and updated validation evidence, then provide its review record to the requester and stop.
 
 - Blocking findings, and each finding the hot-fix Review Rule holds to a fix, must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff.
 
