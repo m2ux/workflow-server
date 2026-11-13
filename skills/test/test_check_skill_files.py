@@ -1957,8 +1957,20 @@ Keep the refreshed inventory.
         self.replace(self.inventory, '## Commands', '### Refresh Inventory' + second + '## Commands')
         self.assertEqual(self.findings(), [])
 
-    def test_nested_step_detail_is_reported(self):
+    def test_nested_item_without_an_introducing_parent_is_reported(self):
         self.replace(self.mode, 'Apply [Read Inventory]', '  - Apply [Read Inventory]')
+        self.assertIn('indented detail in heading model', self.kinds())
+
+    def test_item_nested_under_its_introduction_is_valid(self):
+        self.replace(self.mode, 'Apply [Read Inventory]', '- For the refreshed inventory:\n  - Apply [Read Inventory]')
+        self.assertEqual(self.findings(), [])
+
+    def test_item_skipping_a_level_is_reported(self):
+        self.replace(self.mode, 'Apply [Read Inventory]', '- For the refreshed inventory:\n    - Apply [Read Inventory]')
+        self.assertIn('indented detail in heading model', self.kinds())
+
+    def test_nested_item_after_a_blank_line_is_reported(self):
+        self.replace(self.mode, 'Apply [Read Inventory]', '- For the refreshed inventory:\n\n  - Apply [Read Inventory]')
         self.assertIn('indented detail in heading model', self.kinds())
 
     def test_flush_bullets_are_valid_step_detail(self):
@@ -2235,7 +2247,7 @@ Keep the refreshed inventory.
                      'gh api graphql -F query=@query.graphql\n**REST gap:** A literal payload line.')
         self.assertIn('GraphQL without a REST gap', self.kinds())
 
-    def test_step_paragraphs_are_flush(self):
+    def test_indented_step_paragraphs_are_reported(self):
         self.replace(self.mode, 'Apply [Read Inventory]', '  Apply [Read Inventory]')
         self.assertIn('indented detail in heading model', self.kinds())
 
