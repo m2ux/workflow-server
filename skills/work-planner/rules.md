@@ -13,4 +13,4 @@
 
 ## Link Roles
 
-A Markdown link title identifies its role: `○` is a command input; `●` is a command output; `ƒ` is a called command, operation, protocol or procedure. Command specifications own I/O roles; nested calls carry the transformation role and any selection or continuation.
+A Markdown link title identifies a command I/O role: `○` is a command input; `●` is a command output. A call is identified by its [verb](guidelines.md#modes) and its target. Command specifications own I/O roles; nested calls carry the call link and any selection or continuation.
