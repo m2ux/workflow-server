@@ -10,28 +10,21 @@ One delivery pull request's confirmed merge, human handoff or classified refusal
 
 #### 1. Read Target Review Requirements
 
+- When the pull request is an epic review, its head an [epic base](delivery-branches.md#epic-bases), provide [Merge Result](#merge-result) with outcome `human-handoff` and the verified head, and return without a merge attempt. The user reviews and merges every epic review pull request, whatever its target's protection.
 - Read the supplied [Target Requirements](#target-requirements) alongside the [Verified Head](#verified-head) and confirm the supplied [Merge Authorization](#merge-authorization) against [Merge Permission](#merge-permission).
 - When the target is the default branch or requires an approving review from a person, provide [Merge Result](#merge-result) with outcome `human-handoff`, the verified head and target requirements, and return without a merge attempt. The reviewer owns the merge even when every other condition holds.
 - An agent cannot approve a [pull request](#identity) it opened.
 - Keep approval with that reviewer. Another account, an administrative bypass or a setting change cannot supply it. Changing repository protection requires the user's explicit authorization, asked for separately.
-- For example, workflow-server's `main` requires one approving review, so carry an epic to ready and stop.
+- For example, workflow-server's `main` requires one approving review, so a hot-fix into it stops at ready.
 - Otherwise continue to merge approved delivery only when the authorization permits this delivery target and [Repository Prerequisite](#repository-prerequisite) is confirmed; provide a missing condition as [Failure](#failure) and return.
 
 #### 2. Merge Approved Delivery
 
-- Select the mutation from [Kind](#kind), using the current [Readiness Evidence](#readiness-evidence), authorization, target requirements and exact verified head SHA.
-
-##### Task Merge
-
-Run [Merge Pull Request](#merge-pull-request "ƒ") for a task with that evidence.
-
-##### Epic Merge
-
-Run [Submit Epic Merge](#submit-epic-merge "ƒ") for an epic with that evidence.
+- Run [Merge Pull Request](#merge-pull-request "ƒ") with the current [Readiness Evidence](#readiness-evidence), authorization, target requirements and exact verified head SHA.
 
 ##### Mutation Outcome
 
-- For either selected mutation, retain its [Merge Response](#merge-response), or the observed permission-layer refusal or [Failure](#failure).
+- Retain its [Merge Response](#merge-response), or the observed permission-layer refusal or [Failure](#failure).
 - When the harness declines to execute the mutation, provide [Merge Result](#merge-result) with outcome `harness-denial`, the verified head and target, the observed refusal and missing permission, and return. GitHub supplies no response to that attempt. Report current ready-and-verified state only while its evidence remains current; this outcome requests no human approval and permits no further merge attempt in this run.
 - When GitHub returns a refusal, including a head-SHA mismatch or a response with `merged: false`, provide [Merge Result](#merge-result) with outcome `github-refusal`, the exact attempted head and target and GitHub's refusal evidence, and return for the caller's bounded fresh-verification route.
 - For an unreadable response or transport failure, provide [Failure](#failure) with the unknown mutation outcome and return; no merge is confirmed.
@@ -51,18 +44,17 @@ The observed or updated Development relation for a pull request.
 #### 1. Read Complete Development Relation
 
 - For a read-only [Link Request](#link-request), use [Authenticated Access](#authenticated-access):
-- Apply [Read Pull Request State](#read-pull-request-state "ƒ") for the [pull request](#identity)'s metadata, which carries the `html_url` the capture keys it by.
-- Run [Capture Pull Request Links](#capture-pull-request-links "ƒ") with that record and provide its entry, every page read. An unreadable relation is a blocker, not an empty link set.
+  - Apply [Read Pull Request State](#read-pull-request-state "ƒ") for the [pull request](#identity)'s metadata, which carries the `html_url` the capture keys it by.
+  - Run [Capture Pull Request Links](#capture-pull-request-links "ƒ") with that record and provide its entry, every page read. An unreadable relation is a blocker, not an empty link set.
 
 #### 2. Edit Authorized Development Relation
 
 - For a link edit:
-- Require confirmed [Repository Prerequisite](#repository-prerequisite); an unconfirmed setting blocks the edit.
-- For an addition, Run [Set Development Link](#set-development-link "ƒ") with the pull request and [Issue Identity](#issue-identity).
-
-- For removal of an abandoned or incorrect link:
-- Require [Removal Decision](#removal-decision).
-- Run [Remove Development Link](#remove-development-link "ƒ") with those identities.
+  - Require confirmed [Repository Prerequisite](#repository-prerequisite); an unconfirmed setting blocks the edit.
+  - For an addition, Run [Set Development Link](#set-development-link "ƒ") with the pull request and [Issue Identity](#issue-identity).
+  - For removal of an abandoned or incorrect link:
+    - Require [Removal Decision](#removal-decision).
+    - Run [Remove Development Link](#remove-development-link "ƒ") with those identities.
 
 #### 3. Provide Verified Relation
 
@@ -208,13 +200,13 @@ Apply [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close "ƒ
 
 - Where its base is an epic base, Apply [Update Epic Base](delivery-branches.md#update-epic-base "ƒ") with the [project checkout](#project-checkout) and that base.
 - Apply [Fetch Merge Readiness](#fetch-merge-readiness "ƒ") for the task pull request and its base.
-- Apply [Merge Delivery Pull Request](#merge-delivery-pull-request "ƒ") with delivery kind task, verified head, target requirements, [Repository Prerequisite](#repository-prerequisite) and passing [Readiness Evidence](#readiness-evidence), without further confirmation.
+- Apply [Merge Delivery Pull Request](#merge-delivery-pull-request "ƒ") with the verified head, target requirements, [Repository Prerequisite](#repository-prerequisite) and passing [Readiness Evidence](#readiness-evidence), without further confirmation.
 - Stop on `human-handoff`, `harness-denial` or an unconfirmed mutation outcome, returning the provided result to the caller.
 
 - Only for `github-refusal`, refresh once:
-- Apply [Update Task Branch](delivery-branches.md#update-task-branch "ƒ") with the [unit checkout](#unit-checkout), the task branch and its base.
-- Apply [Fetch Merge Readiness](#fetch-merge-readiness "ƒ") again for the updated task head.
-- Apply [Merge Delivery Pull Request](#merge-delivery-pull-request "ƒ") once more with that verified evidence. Continue to confirmation only for `confirmed-merge`; return any other result without another attempt. A conflict or repeated refusal leaves the pull request open with the blocker reported.
+  - Apply [Update Task Branch](delivery-branches.md#update-task-branch "ƒ") with the [unit checkout](#unit-checkout), the task branch and its base.
+  - Apply [Fetch Merge Readiness](#fetch-merge-readiness "ƒ") again for the updated task head.
+  - Apply [Merge Delivery Pull Request](#merge-delivery-pull-request "ƒ") once more with that verified evidence. Continue to confirmation only for `confirmed-merge`; return any other result without another attempt. A conflict or repeated refusal leaves the pull request open with the blocker reported.
 
 #### 3. Confirm Task Merge Result
 
@@ -362,22 +354,6 @@ Find the open pull request whose head is the supplied epic base and provide [Rev
 <big><pre>
 gh api "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls?state=open&head=[**&lt;owner&gt;**](#repository "○"):[**&lt;epic-base&gt;**](#head-branch "○")" --jq '.[0].number'
 </pre></big>
-
-### Submit Epic Merge
-
-Merge the epic base into its long-lived target at the supplied head and provide [Merge Response](#merge-response "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
-<big><pre>
-gh api &#92;
-  --method PUT repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/merge &#92;
-  -f merge_method=merge &#92;
-  -f sha=[**&lt;head-sha&gt;**](#verified-head "○") &#92;
-  --jq '{merged, message, sha}'
-</pre></big>
-
-- Require [Merge Authorization](#merge-authorization "○"), [Readiness Evidence](#readiness-evidence "○"), [Target Requirements](#target-requirements "○") before executing the command.
-
-- The merge method is a merge commit. The endpoint refuses a different head.
 
 ### Read Merge Result
 
@@ -633,7 +609,7 @@ The confirmed authorization for the agent to merge.
 
 ### Merge Result
 
-The operation's result has `outcome`, pull request identity, exact verified `head`, `target` and evidence. Its outcomes are `confirmed-merge` (the readback-confirmed merge commit), `human-handoff` (the default-branch or required-person merge boundary), `harness-denial` (the observed permission refusal with no GitHub response), and `github-refusal` (GitHub's refusal response). Only `confirmed-merge` carries a confirmed merge commit; every other outcome leaves the pull request open. An unreadable response or disagreeing readback is [Failure](#failure), with no confirmed merge. eg `{"outcome":"confirmed-merge","pull_request":"m2ux/workflow-server#950","head":"0123456789abcdef0123456789abcdef01234567","target":"i07/e00/main","merge_commit":"89abcdef0123456789abcdef0123456789abcdef01","evidence":"merge response and matching readback"}`
+The operation's result has `outcome`, pull request identity, exact verified `head`, `target` and evidence. Its outcomes are `confirmed-merge` (the readback-confirmed merge commit), `human-handoff` (an epic review, or the default-branch or required-person merge boundary), `harness-denial` (the observed permission refusal with no GitHub response), and `github-refusal` (GitHub's refusal response). Only `confirmed-merge` carries a confirmed merge commit; every other outcome leaves the pull request open. An unreadable response or disagreeing readback is [Failure](#failure), with no confirmed merge. eg `{"outcome":"confirmed-merge","pull_request":"m2ux/workflow-server#950","head":"0123456789abcdef0123456789abcdef01234567","target":"i07/e00/main","merge_commit":"89abcdef0123456789abcdef0123456789abcdef01","evidence":"merge response and matching readback"}`
 
 ### Merge Response
 
@@ -787,7 +763,7 @@ The operation and error, discrepancy or missing evidence that prevents a verifie
 
 ### Merge Permission
 
-Delivery requires both the user's authorization for the selected target and the harness capability to execute its mutation. A task targets its [epic base](delivery-branches.md#epic-bases); an epic targets that base's long-lived branch; a [hot-fix](hotfix.md#delivery-unit) uses task delivery against its declared long-lived target. The allowance for an epic base supplies no permission for another target. A merge into the default branch stays with a person. Another target requiring a person's approving review stays with that reviewer. A target without that requirement can be merged only within the authorization and harness permission actually granted for it. Neither the skill nor a ready result expands those grants or authorizes a protection bypass.
+Delivery requires the user's authorization for the selected target and the harness capability to execute its mutation. A task merges into its [epic base](delivery-branches.md#epic-bases), and a [hot-fix](hotfix.md#delivery-unit) into its declared long-lived target, within the authorization and harness permission granted for that target. A target that requires an approving review is merged by its reviewer. An epic review pull request is the user's to merge, as [Read Target Review Requirements](#1-read-target-review-requirements) states.
 
 - **Claude Code.**
-  User settings (`~/.claude/settings.json`) grant it with an `autoMode.allow` rule and an `autoMode.environment` entry, each array keeping `"$defaults"`; auto mode reads neither from project settings. `claude auto-mode config` prints the rules in effect. eg `{"autoMode": {"environment": ["$defaults", "Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review"], "allow": ["$defaults", "Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review. Merges into the default branch are not covered"]}}`
+  User settings (`~/.claude/settings.json`) grant it with an `autoMode.allow` rule and an `autoMode.environment` entry, each array keeping `"$defaults"`; auto mode reads neither from project settings. `claude auto-mode config` prints the rules in effect. eg `{"autoMode": {"environment": ["$defaults", "Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review"], "allow": ["$defaults", "Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review"]}}`

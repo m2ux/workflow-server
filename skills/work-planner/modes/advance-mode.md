@@ -37,13 +37,9 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 ### 5. Resolve Missing Evidence
 
 - For each unresolved issue reference:
-
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") into a file.
-
-- Add the provided file to the resolved off-board issue files.
-
+  - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") into a file.
+  - Add the provided file to the resolved off-board issue files.
 - Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board, retaining resolved issue files and confirmed unplanned initiative identities.
-
 - Repeat while references remain unresolved; an unavailable issue leaves the queue pending.
 
 ### 6. Resolve Queue Decisions
@@ -53,9 +49,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy "ƒ") for each line, with the allowance the caller supplied.
 
 - For an automatic `order` or `ask` line, use these recommendations:
-
-- For `order`, priority 1 on every open initiative already In Progress or named by an open pull request, and no number on the rest. Where no initiative qualifies, nothing is under way and the line has no recommended answer.
-- For `ask`, the number of the highest set already running, so the initiative joins it, or 1 where no initiative carries a priority label.
+  - For `order`, priority 1 on every open initiative already In Progress or named by an open pull request, and no number on the rest. Where no initiative qualifies, nothing is under way and the line has no recommended answer.
+  - For `ask`, the number of the highest set already running, so the initiative joins it, or 1 where no initiative carries a priority label.
 
 - For an automatic line, take its recommended decision and Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change "ƒ") with that decision.
 - A held line, and an automatic one the recommendation leaves without an answer, is settled as [Held Change](../artifacts/plan-change.md#held-change) states, following the interview rules in the [guidelines](../guidelines.md#modes) where it reaches the user.
@@ -65,21 +60,18 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - For `order`, the answer is the [parallel work map](../artifacts/work-priority.md#priority-sets): a positive integer on each listed initiative, or none left unordered.
 
 - For `ask`:
-
-- The answer is a positive integer or none.
-- Record the initiative's identity as confirmed unplanned when the answer is none.
+  - The answer is a positive integer or none.
+  - Record the initiative's identity as confirmed unplanned when the answer is none.
 
 - After an answer, including an allowed automatic answer:
-
-- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the [priority label](../artifacts/work-priority.md#priority-label) each confirmed number names, for every repository holding one of those initiatives.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with each initiative identity and its confirmed priority-label addition.
-- On a failed save, provide the failure with the pending queue and stop this continuation.
-- Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") again.
-- Check that the refreshed board items confirm every saved priority-label addition.
-- On an unavailable or disagreeing readback, provide the discrepancy with the pending queue and stop this continuation.
-- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board using refreshed board items and the retained pull request and issue-link snapshots, retaining resolved issue files and confirmed unplanned initiative identities.
-
-- Resolve any further missing evidence through [Resolve Missing Evidence](#5-resolve-missing-evidence).
+  - Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels "ƒ") with the [priority label](../artifacts/work-priority.md#priority-label) each confirmed number names, for every repository holding one of those initiatives.
+  - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with each initiative identity and its confirmed priority-label addition.
+  - On a failed save, provide the failure with the pending queue and stop this continuation.
+  - Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") again.
+  - Check that the refreshed board items confirm every saved priority-label addition.
+  - On an unavailable or disagreeing readback, provide the discrepancy with the pending queue and stop this continuation.
+  - Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board using refreshed board items and the retained pull request and issue-link snapshots, retaining resolved issue files and confirmed unplanned initiative identities.
+  - Resolve any further missing evidence through [Resolve Missing Evidence](#5-resolve-missing-evidence).
 
 - Repeat this step while an answer leaves a further decision pending.
 - Continue to [Write](#7-write) only when the refreshed queue meets [Completeness](../artifacts/board-queue.md#completeness).

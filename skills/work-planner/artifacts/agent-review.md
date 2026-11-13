@@ -11,20 +11,22 @@ A review record for the exact integration revision.
 #### 1. Review Complete Integration Diff
 
 - Read the complete target-to-head diff, affected definitions and callers, and every criterion’s verification evidence using the [Review Inputs](#review-inputs). Inspect behavior and failure paths; test counts alone do not establish review completion.
+- A review following a round of fixes re-checks those fixes alone: the change from the previously reviewed head and the findings it fixed.
 - Classify each observed problem using [Review Scope](#review-scope).
 
 #### 2. Resolve Review Findings
 
-- Record findings with severity and disposition. A nonblocking deferred finding names its ticket.
+- Record findings with severity and disposition.
 - For each excluded observation, Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") for a new arising standalone issue with no agent-engineering prefix, placed as its [Placement](standalone-body.md#placement) states, then record the exclusion in the [Review Record](#review-record) `scope`, outside the findings collection.
 - An observation with an unresolved classification, missing scope evidence or an unsaved arising issue remains a finding with its required disposition.
 
-- When a blocking finding, or a finding the hot-fix [Review Rule](hotfix.md#review-rule) holds to a fix, requires one:
-- Fix every required finding on the reviewed branch.
-- Run appropriate regression checks.
-- Apply [Produce Agent Review](#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence, then provide its review record to the requester and stop.
+- When a finding is recorded:
+  - Fix every finding on the reviewed branch, blocking or not, with the smallest edit that makes the criteria hold.
+  - When findings cluster in one mechanism, question that mechanism; removing it is preferred to guarding it.
+  - Run appropriate regression checks.
+  - Apply [Produce Agent Review](#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence, then provide its review record to the requester and stop.
 
-- Blocking findings, and each finding the hot-fix Review Rule holds to a fix, must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff.
+- Every finding must be fixed and re-checked at the recorded head before handoff.
 
 #### 3. Write Revision Review Record
 
@@ -54,9 +56,9 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Review Record
 
-Each record contains `pull_request` (the full GitHub URL), `head` and `base` (full commit SHAs), `url` (the published HTTPS record URL), `reviewer`, `reviewed_at`, `scope`, `criteria`, `validation` and `findings`. The scope describes the full integration diff, inspected callers and each excluded observation with its scope evidence and arising issue link; criteria and validation describe the evidence inspected and its results. The pull request body links the published record.
+Each record contains `pull_request` (the full GitHub URL), `head` and `base` (full commit SHAs), `url` (the published HTTPS record URL), `reviewer`, `reviewed_at`, `scope`, `criteria`, `validation` and `findings`. The scope describes the full integration diff, or after a round of fixes the change since the previously reviewed head and the findings it fixed, with the inspected callers and each excluded observation with its scope evidence and arising issue link; criteria and validation describe the evidence inspected and its results. The pull request body links the published record.
 
-Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. A record is current while it names the pull request's head and base SHAs. A record on a hot-fix's delivering pull request is current, and holds findings to a fix, as the hot-fix [Review Rule](hotfix.md#review-rule) states. The last record for the same revision is authoritative.
+Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open` or `fixed`). A fixed finding has an HTTPS `evidence` link, and an open one blocks handoff. A record is current while it names the pull request's head and base SHAs. A record on a hot-fix's delivering pull request is current as the hot-fix [Review Rule](hotfix.md#review-rule) states. The last record for the same revision is authoritative.
 
 ### Review Inputs
 
@@ -83,5 +85,7 @@ The absolute supplied checkout path holding the installed Work Planner scripts a
 ### Review Scope
 
 Findings cover defects introduced by the change, change-related defects and risks that compromise affected callers. A pre-existing defect remains in scope when the change exposes it or depends on its faulty behavior.
+
+A finding is a defect that breaks a realistic run of the requested behavior or of an existing flow. The record's `scope` names each speculative edge case the review rejected, so the requester can report it.
 
 An unrelated pre-existing observation is outside findings only when evidence establishes its earlier existence and independence from changed behavior and affected callers. That evidence identifies the observed problem, source revisions and relevant call-path comparison; it accompanies a linked arising issue in the record's `scope`, outside findings.

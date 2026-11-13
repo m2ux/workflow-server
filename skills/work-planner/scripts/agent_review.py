@@ -1,9 +1,9 @@
 """Validate published agent review evidence against a current integration pull request.
 
-A record is current while it names the pull request's head and base SHAs, and a blocking finding
-passes only once fixed. On a pull request whose title opens with the tag of a kind of work kinds.py
-registers, the kind's review rule decides which record fields hold a record current and adds its
-fault to each finding. Either rule reads the head and base SHAs and the base branch only once
+A record is current while it names the pull request's head and base SHAs, and every finding passes
+only once fixed, with its evidence linked. On a pull request whose title opens with the tag of a kind
+of work kinds.py registers, the kind's review rule decides which record fields hold a record current.
+Either rule reads the head and base SHAs and the base branch only once
 validated, so a pull request lacking any of them has no current record."""
 import argparse
 import json
@@ -55,7 +55,7 @@ def review(pr, tips):
     kind = kind_of(pr)
     if kind:
         return interface(kind).review(tips)
-    return Review({'head': tips.head, 'base': tips.base}, lambda finding: '')
+    return Review({'head': tips.head, 'base': tips.base})
 
 
 def check(pr, records):
@@ -91,16 +91,12 @@ def check(pr, records):
         if not isinstance(finding, dict) or not str(finding.get('description') or '').strip():
             return 'invalid agent review finding'
         severity, disposition = finding.get('severity'), finding.get('disposition')
-        if severity not in ('blocking', 'nonblocking') or disposition not in ('open', 'fixed', 'deferred'):
+        if severity not in ('blocking', 'nonblocking') or disposition not in ('open', 'fixed'):
             return 'invalid finding severity or disposition'
-        if severity == 'blocking' and disposition != 'fixed':
-            return 'unresolved blocking agent review finding'
-        if fault := rule.finding_fault(finding):
-            return fault
-        if disposition == 'open':
-            return 'agent review finding needs a disposition'
-        if not web_url(finding.get('evidence' if disposition == 'fixed' else 'ticket')):
-            return 'finding disposition lacks linked evidence or ticket'
+        if disposition != 'fixed':
+            return 'unresolved agent review finding'
+        if not web_url(finding.get('evidence')):
+            return 'fixed finding lacks linked evidence'
     return None
 
 

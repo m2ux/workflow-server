@@ -1,4 +1,5 @@
-"""Merge instructions bind verified heads and select terminal or bounded recovery routes.
+"""Merge instructions bind verified heads and select terminal or bounded recovery routes, and no route
+merges an epic review pull request.
 
 The fixture executor supports the changed instruction forms, records selected
 capabilities and runs each documented mutation against a local gh double. It
@@ -44,8 +45,8 @@ class Instructions:
         self.epic = EPIC.read_text() if epic is None else epic
         self.events = []
 
-    def mutation(self, kind, head, actual_head=None):
-        command = section(self.pull, 'Merge Pull Request' if kind == 'task' else 'Submit Epic Merge')
+    def mutation(self, head, actual_head=None):
+        command = section(self.pull, 'Merge Pull Request')
         raw = re.search(r'<big><pre>\n(.*?)\n</pre></big>', command, re.S)[1]
         rendered = re.sub(r'\[\*\*(.*?)\*\*\]\([^)]*\)', r'\1', raw)
         rendered = html.unescape(rendered)
@@ -70,13 +71,19 @@ print(json.dumps({'merged': True, 'message': 'merged', 'sha': os.environ['MERGE_
                        MERGE_SHA=MERGE)
             run = subprocess.run(rendered, shell=True, env=env, capture_output=True, text=True)
             captured = json.loads((root/'capture.json').read_text())
-        self.events.append(('mutation', kind, captured))
+        self.events.append(('mutation', captured))
         return run.returncode, json.loads(run.stdout)
 
     def delivery(self, outcome, *, head=HEAD, target=TARGET, default=False,
-                 person_review=False, actual_head=None, readback=None):
+                 person_review=False, epic_review=False, actual_head=None, readback=None):
         operation = section(self.pull, 'Merge Delivery Pull Request')
         requirements = section(operation, '1. Read Target Review Requirements')
+        if epic_review:
+            clause = next((line for line in requirements.splitlines()
+                           if 'epic review' in line and '`human-handoff`' in line), None)
+            if not clause or 'return without a merge attempt' not in clause:
+                raise ValueError('an epic review reaches a merge attempt')
+            return 'human-handoff'
         if default or person_review:
             clause = next(line for line in requirements.splitlines()
                           if 'When the target' in line and '`human-handoff`' in line)
@@ -92,7 +99,7 @@ print(json.dumps({'merged': True, 'message': 'merged', 'sha': os.environ['MERGE_
             if 'GitHub supplies no response' not in clause or 'and return' not in clause:
                 raise ValueError('harness denial lacks a terminal no-response clause')
             return outcome
-        code, response = self.mutation('task', head, actual_head)
+        code, response = self.mutation(head, actual_head)
         if code or not response['merged']:
             clause = next(line for line in branches.splitlines() if '`github-refusal`' in line)
             if 'and return' not in clause:
@@ -107,54 +114,16 @@ print(json.dumps({'merged': True, 'message': 'merged', 'sha': os.environ['MERGE_
             return 'failure'
         return 'confirmed-merge'
 
-    def integration(self, outcomes, *, refresh_passes=True, heads=(HEAD, NEW_HEAD),
-                    initial_head=HEAD):
-        merge_step = section(self.epic, '3. Merge or Hand Off')
-        self.events.append(('verify', initial_head))
-        for attempt, outcome in enumerate(outcomes):
-            head = heads[min(attempt, len(heads)-1)]
-            self.events.append(('merge-operation', head))
-            if outcome in ('human-handoff', 'harness-denial'):
-                title = 'Human Handoff' if outcome == 'human-handoff' else 'Harness Denial'
-                branch = section(merge_step, title)
-                if 'return' not in branch or calls(branch):
-                    raise ValueError(f'{outcome} is not terminal')
-                return outcome
-            if outcome == 'github-refusal':
-                branch = section(merge_step, 'GitHub Refusal')
-                self.events.extend(('capability', name) for name in calls(branch))
-                if 'For each `github-refusal`' not in branch:
-                    raise ValueError('refusal leaves readiness published')
-                if attempt:
-                    if 'without a further retry or merged-success readback' not in branch:
-                        raise ValueError('repeated refusal has no terminal bound')
-                    return outcome
-                if 'before one further merge attempt' not in branch:
-                    raise ValueError('retry has no bound')
-                fresh = re.search(r'fresh (.*?) evidence before', branch)[1]
-                for evidence in ('branch', 'criterion', 'head', 'target', 'review', 'check'):
-                    if evidence not in fresh:
-                        raise ValueError(f'retry lacks fresh {evidence}')
-                self.events.append(('refresh', heads[1], fresh))
-                if not refresh_passes:
-                    if 'return that blocker without another attempt' not in branch:
-                        raise ValueError('failed verification reaches retry')
-                    return 'failure'
-                self.events.append(('verify', heads[1]))
-                continue
-            if outcome == 'confirmed-merge':
-                branch = section(merge_step, 'Confirmed Merge')
-                if 'continue to confirm the result' not in branch:
-                    raise ValueError('merge confirmation is unreachable')
-                final = section(self.epic, '4. Confirm the Result')
-                if not final.lstrip().startswith('- Only after `confirmed-merge`'):
-                    raise ValueError('final readback lacks a success gate')
-                self.events.extend(('capability', name) for name in calls(final))
-                return outcome
-            if 'an unclassified [Failure]' not in merge_step:
-                raise ValueError('unclassified mutation result has no terminal route')
-            return 'failure'
-        raise ValueError('fixture ended before a terminal result')
+    def integration(self):
+        merging = [name for name in calls(self.epic)
+                   if 'Merge' in name and name != 'Fetch Merge Readiness']
+        if merging:
+            raise ValueError(f'epic integration merges: {merging}')
+        hand_off = section(self.epic, '3. Hand Off')
+        if 'to the user' not in hand_off or 'and return' not in hand_off:
+            raise ValueError('the handoff is not terminal')
+        self.events.extend(('capability', name) for name in calls(hand_off))
+        return 'human-handoff'
 
 
 class MergeOutcomes(unittest.TestCase):
@@ -171,15 +140,17 @@ class MergeOutcomes(unittest.TestCase):
 
     def test_task_mutation_submits_verified_sha(self):
         route = Instructions()
-        code, response = route.mutation('task', HEAD)
+        code, response = route.mutation(HEAD)
         self.assertEqual((code, response['merged']), (0, True))
-        self.assertIn('sha=' + HEAD, route.events[0][2])
-        self.assertIn('merge_method=merge', route.events[0][2])
+        self.assertIn('sha=' + HEAD, route.events[0][1])
+        self.assertIn('merge_method=merge', route.events[0][1])
 
-    def test_epic_mutation_submits_verified_sha(self):
-        route = Instructions()
-        self.assertEqual(route.mutation('epic', HEAD)[0], 0)
-        self.assertIn('sha=' + HEAD, route.events[0][2])
+    def test_no_command_merges_an_epic_review(self):
+        source = PULL.read_text()
+        self.assertNotIn('Submit Epic Merge', source)
+        merges = re.findall(r'^### (.*)\n\n(.*)', section(source, 'Commands'), re.M)
+        self.assertEqual([title for title, opening in merges if opening.startswith('Merge ')],
+                         ['Merge Pull Request'])
 
     def test_moving_head_refuses_exact_documented_mutation(self):
         route = Instructions()
@@ -215,69 +186,47 @@ class MergeOutcomes(unittest.TestCase):
                 state.update(update)
                 self.assertEqual(Instructions().delivery('attempt', readback=state), 'failure')
 
-    def test_epic_human_handoff_has_no_retry_or_success_readback(self):
-        route = Instructions()
-        self.assertEqual(route.integration(['human-handoff']), 'human-handoff')
-        self.assertEqual(route.events, [('verify', HEAD), ('merge-operation', HEAD)])
-
-    def test_epic_harness_denial_has_no_retry_or_success_readback(self):
-        route = Instructions()
-        self.assertEqual(route.integration(['harness-denial']), 'harness-denial')
-        self.assertEqual(route.events, [('verify', HEAD), ('merge-operation', HEAD)])
-
-    def test_github_retry_withdraws_and_verifies_fresh_head_first(self):
-        route = Instructions()
-        self.assertEqual(route.integration(['github-refusal', 'confirmed-merge']), 'confirmed-merge')
-        self.assertEqual([event[0] for event in route.events],
-                         ['verify', 'merge-operation', 'capability', 'capability', 'refresh',
-                          'verify', 'merge-operation', 'capability'])
-        self.assertEqual(route.events[2:4], [('capability', 'Hold Epic Review'),
-                                           ('capability', 'Record Epic Review')])
-        self.assertEqual(route.events[5:7], [('verify', NEW_HEAD), ('merge-operation', NEW_HEAD)])
-        self.assertEqual(route.events[-1], ('capability', 'Read Pull Request State'))
-
-    def test_repeated_github_refusal_is_terminal_after_two_attempts(self):
-        route = Instructions()
-        self.assertEqual(route.integration(['github-refusal'] * 3), 'github-refusal')
-        self.assertEqual(sum(e[0] == 'merge-operation' for e in route.events), 2)
-        self.assertNotIn(('capability', 'Read Pull Request State'), route.events)
-        self.assertEqual(route.events[-2:], [('capability', 'Hold Epic Review'),
-                                            ('capability', 'Record Epic Review')])
-
-    def test_failed_refresh_stops_before_second_merge(self):
-        route = Instructions()
-        self.assertEqual(route.integration(['github-refusal', 'confirmed-merge'], refresh_passes=False), 'failure')
-        self.assertEqual(sum(e[0] == 'merge-operation' for e in route.events), 1)
-        self.assertNotIn(('capability', 'Read Pull Request State'), route.events)
-
-    def test_retry_terminal_outcomes_do_not_reach_success(self):
-        for terminal in ('human-handoff', 'harness-denial', 'failure'):
-            with self.subTest(outcome=terminal):
-                route = Instructions()
-                self.assertEqual(route.integration(['github-refusal', terminal]), terminal)
-                self.assertNotIn(('capability', 'Read Pull Request State'), route.events)
-
-    def test_confirmed_epic_merge_is_only_success_readback_route(self):
-        route = Instructions()
-        self.assertEqual(route.integration(['confirmed-merge']), 'confirmed-merge')
-        self.assertEqual(route.events[-1], ('capability', 'Read Pull Request State'))
-
     def test_removed_sha_binding_is_observed_by_moving_head_fixture(self):
         source = re.sub(r'  -f sha=\[\*\*&lt;head-sha&gt;\*\*\]\(#verified-head "○"\) &#92;\n', '', PULL.read_text(), count=1)
         route = Instructions(pull=source)
-        code, _ = route.mutation('task', HEAD)
+        code, _ = route.mutation(HEAD)
         self.assertNotEqual(code, 0)
-        self.assertNotIn('sha=' + HEAD, route.events[0][2])
+        self.assertNotIn('sha=' + HEAD, route.events[0][1])
 
-    def test_removed_terminal_guard_is_rejected_by_route_fixture(self):
-        source = EPIC.read_text().replace('provide the result to the reviewer and return.', 'provide the result to the reviewer.')
+    def test_an_epic_review_hands_off_before_any_mutation(self):
+        route = Instructions()
+        self.assertEqual(route.delivery('attempt', epic_review=True), 'human-handoff')
+        self.assertEqual(route.events, [])
+
+    def test_epic_integration_hands_off_without_a_merge(self):
+        route = Instructions()
+        self.assertEqual(route.integration(), 'human-handoff')
+        self.assertEqual(route.events, [('capability', 'Validate Agent Review')])
+
+    def test_a_current_handed_off_review_returns_before_any_hold(self):
+        prepare = section(EPIC.read_text(), '1. Prepare the Evidence')
+        order = calls(prepare)
+        self.assertLess(order.index('Validate Agent Review'), order.index('Hold Epic Review'))
+        handed = next(line for line in prepare.splitlines() if 'already handed off' in line)
+        self.assertNotIn('Hold Epic Review', handed)
+        self.assertIn('return without holding it', handed)
+
+    def test_removed_epic_guard_is_rejected_by_route_fixture(self):
+        source = '\n'.join(line for line in PULL.read_text().splitlines()
+                           if not line.startswith('- When the pull request is an epic review'))
+        with self.assertRaisesRegex(ValueError, 'epic review reaches a merge'):
+            Instructions(pull=source).delivery('attempt', epic_review=True)
+
+    def test_a_merge_call_in_epic_integration_is_rejected_by_route_fixture(self):
+        call = '- Apply [Merge Delivery Pull Request](../artifacts/pull-request.md#merge-delivery-pull-request "ƒ").\n'
+        source = EPIC.read_text().replace('### 3. Hand Off\n\n', '### 3. Hand Off\n\n' + call)
+        with self.assertRaisesRegex(ValueError, 'epic integration merges'):
+            Instructions(epic=source).integration()
+
+    def test_removed_handoff_return_is_rejected_by_route_fixture(self):
+        source = EPIC.read_text().replace('published agent review records, and return.', 'published agent review records.')
         with self.assertRaisesRegex(ValueError, 'not terminal'):
-            Instructions(epic=source).integration(['human-handoff'])
-
-    def test_removed_success_gate_is_rejected_by_route_fixture(self):
-        source = EPIC.read_text().replace('- Only after `confirmed-merge`, Apply', '- Apply')
-        with self.assertRaisesRegex(ValueError, 'lacks a success gate'):
-            Instructions(epic=source).integration(['confirmed-merge'])
+            Instructions(epic=source).integration()
 
 
 if __name__ == '__main__':

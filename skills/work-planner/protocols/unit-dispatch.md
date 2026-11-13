@@ -15,9 +15,9 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 #### Unit of Rows
 
 - For a unit of rows:
-- Confirm the epic carries every [Required Criteria](../artifacts/epic-issue-body.md#required-criteria) criterion its changes bring, with its declared delivering row.
-- Keep each such row a unit of its own, joined to no other row.
-- On an unmet criterion condition, provide a unit blocker and stop this unit.
+  - Confirm the epic carries every [Required Criteria](../artifacts/epic-issue-body.md#required-criteria) criterion its changes bring, with its declared delivering row.
+  - Keep each such row a unit of its own, joined to no other row.
+  - On an unmet criterion condition, provide a unit blocker and stop this unit.
 
 ### 2. Publish the Record
 
@@ -35,16 +35,16 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 #### Task Rows
 
 - For task rows:
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the epic's current body.
-- For a new unit, Run [Reserve Row](../artifacts/epic-issue-body.md#reserve-row "ƒ") for every row of the unit, with that body and the refreshed board items, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
-- For a retained preparation, require every current row to hold its selected record; provide a changed hold as a blocker.
-- Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status "ƒ") for its task issues, where present, and its epic, requesting In Progress.
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the epic and confirm every selected row holds this record.
+  - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the epic's current body.
+  - For a new unit, Run [Reserve Row](../artifacts/epic-issue-body.md#reserve-row "ƒ") for every row of the unit, with that body and the refreshed board items, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
+  - For a retained preparation, require every current row to hold its selected record; provide a changed hold as a blocker.
+  - Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status "ƒ") for its task issues, where present, and its epic, requesting In Progress.
+  - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the epic and confirm every selected row holds this record.
 
 #### Hot-Fix Unit
 
 - For a [hot-fix unit](../artifacts/delivery-plan.md#hot-fix-units):
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the hot-fix's current body.
+  - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the hot-fix's current body.
 
 ##### New Hot-Fix Unit
 
@@ -71,11 +71,11 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 #### New Unit Checkouts
 
 - For a new unit, prepare each selected branch, base and worktree in the project checkout:
-- Require [Prerequisite Evidence](../artifacts/delivery-branches.md#prerequisite-evidence) and names meeting [Task Branches](../artifacts/delivery-branches.md#task-branches).
-- Run [Fetch Remote Branch](../artifacts/delivery-branches.md#fetch-remote-branch "ƒ") in the project checkout with its base; stop on failure.
-- Run [Add Task Worktree](../artifacts/delivery-branches.md#add-task-worktree "ƒ") in the project checkout with the selected path, task branch and fetched base.
-- Run [Read Checkout Revision](../artifacts/delivery-branches.md#read-checkout-revision "ƒ") in the unit checkout for `HEAD` and retain its full preparation head with the worktree path, branch and base.
-- A unit changing several long-lived branches repeats this for each selected base.
+  - Require [Prerequisite Evidence](../artifacts/delivery-branches.md#prerequisite-evidence) and names meeting [Task Branches](../artifacts/delivery-branches.md#task-branches).
+  - Run [Fetch Remote Branch](../artifacts/delivery-branches.md#fetch-remote-branch "ƒ") in the project checkout with its base; stop on failure.
+  - Run [Add Task Worktree](../artifacts/delivery-branches.md#add-task-worktree "ƒ") in the project checkout with the selected path, task branch and fetched base.
+  - Run [Read Checkout Revision](../artifacts/delivery-branches.md#read-checkout-revision "ƒ") in the unit checkout for `HEAD` and retain its full preparation head with the worktree path, branch and base.
+  - A unit changing several long-lived branches repeats this for each selected base.
 
 #### Retained Unit Checkouts
 

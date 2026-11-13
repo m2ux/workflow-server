@@ -48,12 +48,12 @@ Provide the [Copied Board](board.md#copied-board) after linking succeeds.
 
 ### Find Proposals Board
 
-Print the number of the open board with the [configured title](../configuration.md#proposals-board) and provide [Selected Board](board.md#selected-board "●") to the requester.
+Print the number of the open board carrying the [configured title](../configuration.md#proposals-board) and provide [Selected Board](board.md#selected-board "●") to the requester.
 
 <big><pre>
 gh api &#92;
   --paginate "users/[**&lt;owner&gt;**](board.md#board-owner "○")/projectsV2?per_page=100" &#92;
-  --jq '.&#91;&#93; | select(.closed | not) | select(.title == "Proposals") | .number'
+  --jq '.&#91;&#93; | select(.closed | not) | select(.title == "Proposals" or (.title | startswith("Proposals: "))) | .number'
 </pre></big>
 
 ## Fields
@@ -61,3 +61,5 @@ gh api &#92;
 ### Purpose
 
 The board holding proposal issues, the incoming funnel for work that may become an initiative. Its title and copy source are [configured](../configuration.md#proposals-board).
+
+A proposal is raised for a major project alone. Feature- or documentation-scale work is planned straight as an initiative from the goal the user confirms.

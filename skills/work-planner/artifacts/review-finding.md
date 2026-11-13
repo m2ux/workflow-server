@@ -11,15 +11,11 @@ The verified findings presented for resolution.
 #### 1. Populate Verified Findings
 
 - For each item in [Finding Set](#finding-set):
-
-- Verify the problem against the source in [Finding Evidence](#finding-evidence).
-
-- If evidence is missing or contradictory, provide that finding for the caller to resolve.
-
-- Populate the finding with its source quotation.
-- It must meet [Finding Content](#finding-content) and [Decision State](#decision-state).
-
-- Retain [Finding Result](#finding-result) with the finding and any pending decision.
+  - Verify the problem against the source in [Finding Evidence](#finding-evidence).
+  - If evidence is missing or contradictory, provide that finding for the caller to resolve.
+  - Populate the finding with its source quotation.
+  - It must meet [Finding Content](#finding-content) and [Decision State](#decision-state).
+  - Retain [Finding Result](#finding-result) with the finding and any pending decision.
 
 ##### Verified Finding Set
 
@@ -31,6 +27,7 @@ The verified findings presented for resolution.
 - Put each pending decision to the user, one question at a time.
 - Wait for the answer.
 - Record the confirmed answer on the finding, meeting [Decision State](#decision-state).
+- A confirmed resolution is held to the row and criterion counts it stated. A draft exceeding them returns to the user before any save.
 - Provide [Finding Result](#finding-result) with each confirmed resolution for application to its selected issue kind. A pending decision is provided without applying a change.
 
 ## Fields
@@ -38,6 +35,8 @@ The verified findings presented for resolution.
 ### Finding Content
 
 Each finding has an area, severity, one problem/solution pair and a source quotation with file and line. The source establishes the stated problem. Findings are grouped by area when presented together.
+
+A solution that adds, splits or refines rows states the count of rows and criteria it produces, measured against the body it changes. It groups work by concern, one row across several files, and gives a file its own row only where files collide.
 
 ### Decision State
 

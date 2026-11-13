@@ -579,6 +579,22 @@ def link_roles(path, lines, fenced, entry):
             yield index, 'command contract links', source
 
 
+def nested_item(lines, index):
+    """Whether the line is a list item nested beneath the item that introduces it: indented by two
+    spaces per level, in an unbroken run of list items whose nearest shallower item sits one level up."""
+    match = BULLET.match(lines[index])
+    depth = len(match[1]) if match and match[2] == ' ' else -1
+    if depth < 2 or depth % 2:
+        return False
+    for above in range(index - 1, -1, -1):
+        item = BULLET.match(lines[above])
+        if not lines[above].strip() or not item or item[2] != ' ':
+            return False
+        if len(item[1]) < depth:
+            return len(item[1]) == depth - 2
+    return False
+
+
 def heading_model(path, lines, fenced, headings, entry):
     """Findings selected by a heading-based procedure declaration."""
     if not entry or entry.get('steps') != 'headings':
@@ -595,7 +611,7 @@ def heading_model(path, lines, fenced, headings, entry):
             continue
         if ORDERED.match(line):
             yield index, 'list step in heading model', line.strip()
-        if INDENTED.match(line):
+        if INDENTED.match(line) and not nested_item(lines, index):
             yield index, 'indented detail in heading model', line.strip()
     parents, groups = {}, {}
     for index, level, title in headings:

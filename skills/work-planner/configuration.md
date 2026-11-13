@@ -10,7 +10,7 @@ The copy source is the open board titled `Initiative Template`. Its `Status` fie
 
 ### Proposals Board
 
-The board is titled `Proposals`. Its copy source is the open board titled `Proposals Template`. That template carries Priority: High, Medium and Low, and its view is a board grouped by Status.
+The board is titled `Proposals`, alone or followed by a colon and a description, as a theme board's title is: `Proposals: Incoming Feature and Project Funnel`. A new board takes the bare title. Its copy source is the open board titled `Proposals Template`. That template carries Priority: High, Medium and Low, and its view is a board grouped by Status.
 
 ## Themes
 

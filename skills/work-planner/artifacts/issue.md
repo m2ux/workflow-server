@@ -67,8 +67,8 @@ When replying to feedback already folded into the body, compose a precise, factu
 #### 2. Publish Supplied Comment
 
 - Publish [Comment](#comment) on [Identity](#identity) in [Repository](#repository):
-- For a one-line comment, Run [Post Inline Comment](#post-inline-comment "ƒ") with the exact text.
-- For a longer comment, Run [Post Comment File](#post-comment-file "ƒ") with the complete file.
+  - For a one-line comment, Run [Post Inline Comment](#post-inline-comment "ƒ") with the exact text.
+  - For a longer comment, Run [Post Comment File](#post-comment-file "ƒ") with the complete file.
 
 #### 3. Provide Comment URL
 
@@ -267,9 +267,10 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - The sweep audits every closed issue in the collection, so the collection sets its scope. Run [Check Issue Closure](#check-issue-closure "ƒ") to each issue. Open issues and pull requests in the collection are skipped.
 - `--issue-links` takes the issue-links file of the collection's repository alone; any other shape, or another repository's file, is refused as unreadable evidence.
 - Each line names the issue, its state reason (`completed`, `not_planned`, or `unknown` when none is recorded) and its findings, under one of three labels:
-- `unsupported:` for an issue closed for any reason but `not_planned` whose evidence does not support it.
-- `unevaluable:` for a closed issue the file holds no link list for, which is missing evidence rather than an empty link set.
-- `not planned:` for an issue closed as `not_planned` whose evidence would not support completion; these follow the findings, listed for reference.
+  - `unsupported:` for an issue closed for any reason but `not_planned` whose evidence does not support it.
+  - `unevaluable:` for a closed issue the file holds no link list for, which is missing evidence rather than an empty link set.
+  - `not planned:` for an issue closed as `not_planned` whose evidence would not support completion; these follow the findings, listed for reference.
+
 - The last line counts each label. Exit 0 means no issue is unsupported or unevaluable. Exit 1 means at least one is, or the evidence is unreadable. The command performs no network calls or writes.
 
 ### Close as Not Planned

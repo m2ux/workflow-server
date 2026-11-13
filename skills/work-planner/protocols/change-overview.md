@@ -14,8 +14,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 #### Changed Head
 
 - On a changed-head finding:
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again for the same pull request.
-- Apply [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree "ƒ") again with the project checkout, same pull request number and new verified head.
+  - Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again for the same pull request.
+  - Apply [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree "ƒ") again with the project checkout, same pull request number and new verified head.
 
 #### Matching Head
 
@@ -27,8 +27,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 #### Changed Revision
 
 - On a changed revision:
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again.
-- Rebuild the worktree evidence.
+  - Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again.
+  - Rebuild the worktree evidence.
 
 #### Freshness Result
 

@@ -9,17 +9,16 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 ### 1. Take the Proposal
 
 - When the user names a proposal:
-
-- Apply [Select Proposals Board](../artifacts/proposals-board.md#select-proposals-board "ƒ"), then Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for that board, and read the Status of the proposal's item.
-- At [Approved](../artifacts/proposal.md#proposal-status), the proposal's issue body defines the problem scope.
-- At any other [Proposal Status](../artifacts/proposal.md#proposal-status), or with no item on the board, the proposal blocks initiative drafting; report the Status read or the missing item.
+  - Apply [Select Proposals Board](../artifacts/proposals-board.md#select-proposals-board "ƒ"), then Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for that board, and read the Status of the proposal's item.
+  - At [Approved](../artifacts/proposal.md#proposal-status), the proposal's issue body defines the problem scope.
+  - At any other [Proposal Status](../artifacts/proposal.md#proposal-status), or with no item on the board, the proposal blocks initiative drafting; report the Status read or the missing item.
 
 - When the user names an initiative that already exists, Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for its body. That body defines the problem scope, and no proposal is raised for work it already carries.
 
-- When neither a proposal nor an existing initiative is named:
-
-- Follow [Propose Mode](propose-mode.md "ƒ") with the user's goal and [Requested Status](propose-mode.md#requested-status) Approved; the user's confirmation of the goal approves the proposal.
-- Resume this selection step with its published proposal, placed at Approved; an unresolved proposal blocks initiative drafting.
+- When neither a proposal nor an existing initiative is named, judge the work's scale against the proposals board's [Purpose](../artifacts/proposals-board.md#purpose):
+  - For a major project, Follow [Propose Mode](propose-mode.md "ƒ") with the user's goal and [Requested Status](propose-mode.md#requested-status) Approved; the user's confirmation of the goal approves the proposal.
+    - Resume this selection step with its published proposal, placed at Approved; an unresolved proposal blocks initiative drafting.
+  - For feature- or documentation-scale work, interview the user for the goal; the goal clauses they confirm define the problem scope.
 
 ### 2. Prepare the Planning Record
 
@@ -30,7 +29,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 ### 3. Draft Each Initiative Body
 
 - For a new initiative, Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") for its proposed prefix with the initiative prefix letter.
-- Apply [Draft Initiative Issue Body](../artifacts/initiative-issue-body.md#draft-initiative-issue-body "ƒ") for each initiative with the scoped proposal, confirmed goal clauses, requirement sources, epic summaries and an output path in the record's folder. The epics' acceptance criteria carry the detail that makes the initiative's criteria true.
+- Apply [Draft Initiative Issue Body](../artifacts/initiative-issue-body.md#draft-initiative-issue-body "ƒ") for each initiative with the scoped proposal, where there is one, confirmed goal clauses, requirement sources, epic summaries and an output path in the record's folder. The epics' acceptance criteria carry the detail that makes the initiative's criteria true.
 
 ### 4. Populate the Epics
 
@@ -50,13 +49,10 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Apply [Report Review Finding](../artifacts/review-finding.md#report-review-finding "ƒ") for each provided finding, with its scope, evidence and proposed resolution.
 
 - Apply each confirmed resolution to the drafts:
-
-- For a local epic finding, Apply [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body "ƒ") with the confirmed Proposal, row and criterion changes, including every new or renumbered criterion in Coverage, retaining the same output path in the record's folder.
-
-- For a confirmed distinct concern:
-
-- Draft its own epic and initiative row.
-- Repeat ordering review for the new epic and initiative row.
+  - For a local epic finding, Apply [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body "ƒ") with the confirmed Proposal, row and criterion changes, including every new or renumbered criterion in Coverage, retaining the same output path in the record's folder.
+  - For a confirmed distinct concern:
+    - Draft its own epic and initiative row.
+    - Repeat ordering review for the new epic and initiative row.
 
 - Record the finding, resolution and decision in the planning record.
 
@@ -80,11 +76,10 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 #### Epic Publication
 
 - For each new or revised epic in dependency order:
-
-- Replace its temporary prerequisite links with the confirmed issue identities already provided by saves.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with its intended body and confirmed priority label, retaining an existing epic's issue identity.
-- On a failed save or disagreeing saved fields, provide the failure evidence and stop before saving a dependent epic, validating the saved plan or preparing delivery.
-- Use the provided saved identity in the initiative row and each dependent draft.
+  - Replace its temporary prerequisite links with the confirmed issue identities already provided by saves.
+  - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with its intended body and confirmed priority label, retaining an existing epic's issue identity.
+  - On a failed save or disagreeing saved fields, provide the failure evidence and stop before saving a dependent epic, validating the saved plan or preparing delivery.
+  - Use the provided saved identity in the initiative row and each dependent draft.
 
 - After every epic is saved, confirm no unresolved epic placeholder remains in the initiative or epic bodies.
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") for the initiative with its complete intended rows, for either parent path.
@@ -103,15 +98,20 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Update the planning record with evidence, decisions and issue links.
 - Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") for the record's folder.
 
+#### Board Placement
+
+- Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") for the initiative's theme.
+- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with Backlog for each new initiative and epic.
+- Placing them Ready or In Progress is Advance's work, which first syncs every open initiative on the board and asks for a board-wide ranking; state that scope when offering it.
+
 ### 7. Keep the Goal Current
 
 - When the goal, a criterion, a Problem, a Proposal or an epic changes:
-
-- Apply [Review Initiative Goal](../artifacts/goal-trace.md#review-initiative-goal "ƒ") again with the revised bodies and current sources.
-- Apply [Report Review Finding](../artifacts/review-finding.md#report-review-finding "ƒ") for each finding.
-- Apply confirmed resolutions.
-- Repeat that review until clear.
-- After each round, Apply [Check Round of Edits](../artifacts/issue-body.md#check-round-of-edits "ƒ") on affected bodies.
+  - Apply [Review Initiative Goal](../artifacts/goal-trace.md#review-initiative-goal "ƒ") again with the revised bodies and current sources.
+  - Apply [Report Review Finding](../artifacts/review-finding.md#report-review-finding "ƒ") for each finding.
+  - Apply confirmed resolutions.
+  - Repeat that review until clear.
+  - After each round, Apply [Check Round of Edits](../artifacts/issue-body.md#check-round-of-edits "ƒ") on affected bodies.
 
 - Whenever tasks, edges or a work item's declared files change, Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering "ƒ") again.
 
@@ -128,35 +128,31 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 ### 8. Prepare Epic Delivery
 
 - Before any task starts:
-
-- Resolve every Open Question with the user.
-- Record the answer.
-- Update the affected bodies, removing each settled question.
-- Split multi-condition criteria at the end of the list.
-- Update Coverage for the split criteria.
-- Apply [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites "ƒ") with current initiative and prerequisite evidence; stop on a failed or incomplete result.
-- After prerequisites pass, Apply [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases "ƒ") with the project checkout.
-- Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") to retarget each affected open task pull request to its epic base.
-- Repeat goal and ordering review on changed bodies before returning readiness.
+  - Resolve every Open Question with the user.
+  - Record the answer.
+  - Update the affected bodies, removing each settled question.
+  - Split multi-condition criteria at the end of the list.
+  - Update Coverage for the split criteria.
+  - Apply [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites "ƒ") with current initiative and prerequisite evidence; stop on a failed or incomplete result.
+  - After prerequisites pass, Apply [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases "ƒ") with the project checkout.
+  - Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") to retarget each affected open task pull request to its epic base.
+  - Repeat goal and ordering review on changed bodies before returning readiness.
 
 ### 9. Record Delivered Work
 
 - When work has landed:
-
-- Follow [Sync Mode](sync-mode.md "ƒ") for the affected initiative.
-
-- For an unplaced task issue:
-
-- Apply [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body "ƒ") with its new row and the output path in the record's folder.
-- Save that body.
-- Follow [Sync Mode](sync-mode.md "ƒ") again with the refreshed epic.
+  - Follow [Sync Mode](sync-mode.md "ƒ") for the affected initiative.
+  - For an unplaced task issue:
+    - Apply [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body "ƒ") with its new row and the output path in the record's folder.
+    - Save that body.
+    - Follow [Sync Mode](sync-mode.md "ƒ") again with the refreshed epic.
 
 - Provide the saved delivery state or blockers.
 
 ## Outcomes
 
 - **A scoped initiative.**
-  The user has an initiative scoped to the proposal they named, or to a proposal raised for that problem.
+  The user has an initiative scoped to the proposal they named, to a proposal raised for a major project, or to the goal they confirmed for smaller work.
 - **Several initiatives.**
   One proposal may become several initiatives. A partition by solution maturity, such as an MVP demo, a functional prototype, and a production-intent version, is an example of that result. Those initiatives may run in series or in parallel. The example does not limit the partition.
 - **A goal made true.**

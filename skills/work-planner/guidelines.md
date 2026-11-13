@@ -79,18 +79,18 @@ These rules apply to mode and protocol procedures and artifact operations.
 - **Subsection titles.**
   A named callable procedure or operation title uses at least two words for its action and subject.
 - **Numbered steps.**
-  Every step is a heading of its consecutive number and action, starting at `1.` within each procedure. A top-level mode or protocol step uses `###`; a step within a named procedure or artifact operation uses `####`. A single-step procedure also has a numbered heading. Instructions, bullets and invocation links sit flush beneath the heading.
+  Every step is a heading of its consecutive number and action, starting at `1.` within each procedure. A top-level mode or protocol step uses `###`; a step within a named procedure or artifact operation uses `####`. A single-step procedure also has a numbered heading. Instructions, bullets and invocation links start beneath the heading, nested only as [List introductions](#procedure) states.
 
 - **Sub-bullets.**
   Detail bullets use sentence case. The first word is capitalized, and a name keeps its own capitals.
 - **Separate actions.**
-  A numbered step with multiple instruction or detail items uses flush bullets for every item; a step with one item uses plain text. Put each sentence that advances the sequence in its own item, splitting comma- and semicolon-separated actions the same way. Keep numbered headings as the outer sequence. Put a shared condition or iteration above its following actions, preserving order, inputs, validation gates and continuation points. Keep an input list, action condition or explanatory sentence with the action it qualifies; these are not separate sequence elements.
+  A numbered step with multiple instruction or detail items uses bullets for every item; a step with one item uses plain text. Put each sentence that advances the sequence in its own item, splitting comma- and semicolon-separated actions the same way. Keep numbered headings as the outer sequence. Put a shared condition or iteration in an introducing item above its following actions, preserving order, inputs, validation gates and continuation points. Keep an input list, action condition or explanatory sentence with the action it qualifies; these are not separate sequence elements.
 - **List introductions.**
-  Within a procedure step, an item that introduces or governs following items uses the step's item format. Determine its scope from the meaning of the instructions. Use bullets for peer actions, alternative branches and sibling groups. Give actions outside an introduction's scope an explicit continuation.
+  Within a procedure step, an item that introduces or governs following items nests them beneath it as sub-items, two spaces per level, with no blank line between: its branches, and each branch's actions beneath that branch. A named branch is a sub-item opening with its bold label, `  - **Unmerged.** …`. Determine an introduction's reach from the meaning of the instructions. Items outside its reach return to its level, with an explicit continuation where the sequence needs one.
 - **Dependent instructions.**
-  Put instructions that handle an action's specific output immediately after that action, naming the condition and provided value. Keep detail flush beneath the step heading. Name the provided object explicitly when a pronoun would leave its referent unclear.
+  Put instructions that handle an action's specific output immediately after that action, naming the condition and provided value. Name the provided object explicitly when a pronoun would leave its referent unclear.
 - **Branch headers.**
-  Named findings and conditional branches follow the action or scope that governs them. Each branch uses a named child heading or a conditional introductory item, with flush content in the step's item format. Mutually exclusive choices share one decision step. Place actions common to all branches after the branch group, with an explicit continuation and any shared return to the caller.
+  Named findings and conditional branches follow the action or scope that governs them. Each branch uses a named child heading, or a sub-item of its introduction as [List introductions](#procedure) states. Mutually exclusive choices share one decision step. Place actions common to all branches after the branch group, with an explicit continuation and any shared return to the caller.
 
 ## Prose
 
@@ -172,6 +172,7 @@ Read this before adding or changing a mode, applying [SOLID](#solid).
 - **Interview.**
   A question the user must decide is put this way.
   - A plain-language paragraph before the question gives the context the user needs to answer it.
+  - A question confirming several decisions at once numbers them, gives each its own plain-language paragraph stating what the thing does today, why that is a problem and what the change buys, then asks one accept-or-change question naming the numbers.
   - The question offers more than one choice. The recommended choice is marked on its option.
   - Wait for the user's answer. An unanswered question stays pending. A recommendation or elapsed time supplies no answer.
   - The user can select Other and specify a response beyond the options.
@@ -240,7 +241,7 @@ Read this before adding or changing an artifact, applying [SOLID](#solid).
 - **Operation steps.**
   Address instructions directly to the agent, following the [procedure rules](#procedure).
 - **Population conditions.**
-  A population step leads with the writing action and its template or owning operation. Mandatory field conditions follow as flush bullets beneath that step, linked to their local or shared definitions. Each condition states what must hold; field rules remain at their linked home.
+  A population step leads with the writing action and its template or owning operation. Mandatory field conditions follow as bullets beneath that step, linked to their local or shared definitions. Each condition states what must hold; field rules remain at their linked home.
 - **Command implementation.**
   Follow [Operations](#operations) for command and access invocation rules.
 - **No spare parts.**

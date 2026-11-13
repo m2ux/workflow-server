@@ -148,9 +148,10 @@ class ApprovedBeforeDrafting(unittest.TestCase):
                       take)
         self.assertIn('- At any other [Proposal Status]' + self.status + ', or with no item on the board, the '
                       'proposal blocks initiative drafting; report the Status read or the missing item.', take)
-        self.assertIn('- Follow [Propose Mode](propose-mode.md "ƒ") with the user\'s goal and '
+        self.assertIn('- For a major project, Follow [Propose Mode](propose-mode.md "ƒ") with the user\'s goal and '
                       '[Requested Status](propose-mode.md#requested-status) Approved', take)
         self.assertIn('placed at Approved; an unresolved proposal blocks initiative drafting', take)
+        self.assertIn('- For feature- or documentation-scale work, interview the user for the goal', take)
         steps = STEP.findall(self.plan)
         self.assertLess(steps.index('Take the Proposal'), steps.index('Draft Each Initiative Body'))
 
@@ -159,7 +160,7 @@ class ApprovedBeforeDrafting(unittest.TestCase):
         read = ('- Apply [Select Proposals Board](../artifacts/proposals-board.md#select-proposals-board "ƒ"), then '
                 'Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for that board, and read the '
                 'Status of the proposal\'s item.')
-        self.assertIn('- When the user names a proposal:\n\n' + read, take)
+        self.assertIn('- When the user names a proposal:\n  ' + read, take)
         self.assertLess(take.index(read), take.index('- At [Approved]'))
 
     def test_a_requested_status_places_the_proposal_without_asking(self):

@@ -60,7 +60,7 @@ class ValidatedTips(unittest.TestCase):
         received = []
         stand_in = types.ModuleType('stand_in')
         stand_in.tag = lambda item: 'Z01' if (item.get('title') or '').startswith('[Z01]') else None
-        stand_in.review = lambda tips: received.append(tips) or kinds.Review({'head': tips.head}, lambda finding: '')
+        stand_in.review = lambda tips: received.append(tips) or kinds.Review({'head': tips.head})
         pull, record = reviewed_pr()
         pull['title'] = '[Z01] Stand In'
         with mock.patch.dict(sys.modules, {'stand_in': stand_in}), \
@@ -79,9 +79,8 @@ class HotFixReview(unittest.TestCase):
 
     def test_every_finding_is_fixed(self):
         pull, record = hotfix_pr()
-        record['findings'] = [{'description': 'Follow-up', 'severity': 'nonblocking', 'disposition': 'deferred',
-                               'ticket': 'https://github.com/o/r/issues/5'}]
-        self.assertIn('unfixed finding', check(pull, [record]))
+        record['findings'] = [{'description': 'Follow-up', 'severity': 'nonblocking', 'disposition': 'open'}]
+        self.assertIn('unresolved', check(pull, [record]))
         record['findings'][0].update(disposition='fixed', evidence='https://github.com/o/r/commit/1')
         self.assertIsNone(check(pull, [record]))
 
@@ -94,28 +93,18 @@ class HotFixReview(unittest.TestCase):
 
 
 class RegisteredKind(unittest.TestCase):
-    def test_each_kind_supplies_its_own_currency_and_finding_rule(self):
+    def test_each_kind_supplies_its_own_currency_rule(self):
         stand_in = types.ModuleType('stand_in')
         stand_in.tag = lambda item: 'Z01' if (item.get('title') or '').startswith('[Z01]') else None
-        stand_in.review = lambda tips: kinds.Review(
-            {'head': tips.head},
-            lambda finding: 'a stand-in defers nothing' if finding.get('disposition') == 'deferred' else '')
+        stand_in.review = lambda tips: kinds.Review({'head': tips.head})
         pull, record = hotfix_pr()
         pull['title'] = '[Z01] Stand In'
-        deferred = [{'description': 'Follow-up', 'severity': 'nonblocking', 'disposition': 'deferred',
-                     'ticket': 'https://github.com/o/r/issues/5'}]
-        fixed = [{'description': 'Follow-up', 'severity': 'nonblocking', 'disposition': 'fixed',
-                  'evidence': 'https://github.com/o/r/commit/1'}]
         with mock.patch.dict(sys.modules, {'stand_in': stand_in}), \
                 mock.patch.dict(kinds.KINDS, {'stand-in': 'stand_in'}):
-            self.assertEqual(check(pull, [{**record, 'findings': deferred}]), 'a stand-in defers nothing')
-            self.assertIsNone(check(pull, [{**record, 'findings': fixed}]))
             self.assertIsNone(check(pull, [{**record, 'base': 'c' * 40, 'base_ref': 'main'}]))
             self.assertIn('stale', check(pull, [{**record, 'head': 'c' * 40}]))
             hot = {**pull, 'title': '[F04] Reject Bad Keys'}
             self.assertIn('stale', check(hot, [{**record, 'base_ref': 'main'}]))
-            self.assertIn('unfixed finding', check(hot, [{**record, 'findings': deferred}]))
-        self.assertIsNone(check(pull, [{**record, 'findings': deferred}]))
         self.assertIn('stale', check(pull, [{**record, 'base': 'c' * 40}]))
 
 
@@ -144,11 +133,17 @@ class AgentReview(unittest.TestCase):
     def test_current_published_review_passes(self):
         self.assertIsNone(check(self.pr, [self.record]))
 
-    def test_open_or_deferred_blocker_blocks(self):
-        for disposition in ('open', 'deferred'):
-            self.record['findings'] = [{'description': 'Missing guard', 'severity': 'blocking',
-                                       'disposition': disposition, 'ticket': 'https://github.com/o/r/issues/1'}]
-            self.assertIn('unresolved blocking', check(self.pr, [self.record]))
+    def test_an_unfixed_finding_blocks_whatever_its_severity(self):
+        for severity in ('blocking', 'nonblocking'):
+            with self.subTest(severity=severity):
+                self.record['findings'] = [{'description': 'Missing guard', 'severity': severity,
+                                           'disposition': 'open'}]
+                self.assertIn('unresolved', check(self.pr, [self.record]))
+
+    def test_a_deferred_disposition_is_invalid(self):
+        self.record['findings'] = [{'description': 'Follow-up', 'severity': 'nonblocking',
+                                   'disposition': 'deferred', 'ticket': 'https://github.com/o/r/issues/1'}]
+        self.assertIn('invalid', check(self.pr, [self.record]))
 
     def test_fixed_blocker_requires_evidence_and_current_review(self):
         self.record['findings'] = [{'description': 'Missing guard', 'severity': 'blocking',
@@ -159,11 +154,11 @@ class AgentReview(unittest.TestCase):
         self.pr['head']['sha'] = 'c' * 40
         self.assertIn('stale', check(self.pr, [self.record]))
 
-    def test_deferred_nonblocker_requires_ticket(self):
+    def test_a_fixed_nonblocker_requires_evidence(self):
         self.record['findings'] = [{'description': 'Follow-up', 'severity': 'nonblocking',
-                                   'disposition': 'deferred'}]
-        self.assertIn('ticket', check(self.pr, [self.record]))
-        self.record['findings'][0]['ticket'] = 'https://github.com/o/r/issues/1'
+                                   'disposition': 'fixed'}]
+        self.assertIn('linked evidence', check(self.pr, [self.record]))
+        self.record['findings'][0]['evidence'] = 'https://github.com/o/r/commit/' + 'a' * 40
         self.assertIsNone(check(self.pr, [self.record]))
 
     def test_missing_scope_criteria_validation_or_link_blocks(self):
@@ -176,7 +171,7 @@ class AgentReview(unittest.TestCase):
 
     def test_latest_same_revision_record_is_authoritative(self):
         blocked = {**self.record, 'findings': [{'description': 'Regression', 'severity': 'blocking', 'disposition': 'open'}]}
-        self.assertIn('blocking', check(self.pr, [self.record, blocked]))
+        self.assertIn('unresolved', check(self.pr, [self.record, blocked]))
 
     def test_every_open_epic_integration_needs_review(self):
         epic = issue(943, '[I07:E00] Epic')

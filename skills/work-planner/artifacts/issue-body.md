@@ -220,6 +220,8 @@ A collection of labelled criterion statements; each criterion must meet these co
 - Meets [Requirement Characteristics](../references/requirement-characteristics.md).
 - **One invariant.**
   Each criterion states a single condition that holds or does not. One joining several is split, and the Coverage cells cite the new ones. A condition over a list of subjects is one condition.
+- **Live behavior.**
+  A criterion tests behavior the system has. A retired option, key or parameter is removed with its criteria, and the general grammar rejects it.
 
 #### Criterion Labels
 

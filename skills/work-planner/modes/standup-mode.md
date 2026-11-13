@@ -20,9 +20,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 #### Missing Checkpoint
 
 - If the checkpoint is absent:
-
-- Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for the board.
-- Treat each selected initiative's delivery state as needing refresh.
+  - Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for the board.
+  - Treat each selected initiative's delivery state as needing refresh.
 
 #### Refresh Selected Initiatives
 
@@ -47,9 +46,8 @@ Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-re
 ### 5. Resolve Evidence
 
 - For each unresolved initiative:
-
-- Run [Find Initiative Issue](../artifacts/issue.md#find-initiative-issue "ƒ").
-- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for its current JSON.
+  - Run [Find Initiative Issue](../artifacts/issue.md#find-initiative-issue "ƒ").
+  - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for its current JSON.
 - Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-report "ƒ") again with all resolved initiative records, retaining the selected window, filter and original snapshots. An unavailable record remains a reported gap.
 
 ### 6. Report
@@ -59,10 +57,9 @@ Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-re
 - Put unresolved findings beneath it.
 
 - For an epic the preceding Compose Standup Report call returns with an unreadable Work Breakdown:
-
-- Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format "ƒ") for that epic against its [template and field conditions](../artifacts/epic-issue-body.md#fields).
-- If it confirms a saved correction, repeat [Fetch](#3-fetch) through [Report](#6-report) with refreshed records, retaining the selected board, window and initiative filter.
-- If it reports a blocker or no correction, provide the unresolved finding without repeating the same repair.
+  - Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format "ƒ") for that epic against its [template and field conditions](../artifacts/epic-issue-body.md#fields).
+  - If it confirms a saved correction, repeat [Fetch](#3-fetch) through [Report](#6-report) with refreshed records, retaining the selected board, window and initiative filter.
+  - If it reports a blocker or no correction, provide the unresolved finding without repeating the same repair.
 
 ## Outcomes
 

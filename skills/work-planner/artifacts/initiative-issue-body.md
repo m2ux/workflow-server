@@ -22,7 +22,7 @@ Provide [Output Files](#output-files) with the populated body and [Validation Fi
 
 ### Draft Initiative Issue Body
 
-One initiative body, scoped to one proposal.
+One initiative body, scoped to one proposal, or to the confirmed goal of work planned without one.
 
 #### 1. Populate Initiative Template
 
@@ -40,7 +40,7 @@ One initiative body, scoped to one proposal.
 
 - Write the acceptance criteria before the Work Breakdown, so each row's Coverage can cite them.
 - Each criterion must come from a confirmed clause and meet [Initiative Acceptance Criteria](#initiative-acceptance-criteria).
-- The criteria must come from the requirements sources the proposal references. Where the proposal references none, they must come from the proposal's body alone.
+- The criteria must come from the requirements sources the proposal references. Where the proposal references none, they must come from the proposal's body alone. Work planned without a proposal takes its criteria from the confirmed goal clauses and the sources the user named for them.
 
 #### 4. Populate Shared Table
 
@@ -235,7 +235,7 @@ A marked source in References is a document the initiative's criteria answer to.
 
 ### Proposal Context
 
-The scoped proposal, confirmed goal clauses, requirement sources and epic summaries supplied for drafting.
+The scoped proposal where there is one, the confirmed goal clauses, requirement sources and epic summaries supplied for drafting.
 
 ### Initiative Record
 

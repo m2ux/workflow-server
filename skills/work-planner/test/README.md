@@ -73,7 +73,7 @@ These modules exercise the skill's instruction routes and document contracts.
 | [test_checkouts](test_checkouts.py) | Checkout-sensitive commands consume linked input contracts |
 | [test_documents](test_documents.py) | The installed prose API exposes complete inputs and directed reading paths, [Work Priority](../artifacts/work-priority.md), [Proposal](../artifacts/proposal.md) and [Test Plan](../artifacts/test-plan.md) each define what every other file reaching it links, and [Proposals Board](../artifacts/proposals-board.md) alone selects and creates the proposals board |
 | [test_kind_operations](test_kind_operations.py) | Each [Work Kind](../artifacts/work-kind.md) step links each supplying kind's operation and no Registration, each hot-fix operation has its linked callers, and no general step applies an unlinked kind operation |
-| [test_merge_outcomes](test_merge_outcomes.py) | Merge instructions bind verified heads and select terminal or bounded recovery routes |
+| [test_merge_outcomes](test_merge_outcomes.py) | Merge instructions bind verified heads and select terminal or bounded recovery routes, and no route merges an epic review pull request |
 | [test_modes](test_modes.py) | Mode summaries in each skill's `SKILL.md` |
 | [test_plan_mode](test_plan_mode.py) | Plan Mode keeps a plan in one home: its planning record on the engineering branch, and drafts from an Approved proposal |
 | [test_plan_publication](test_plan_publication.py) | Plan publication validates confirmed saved epic and parent identities |
@@ -92,7 +92,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 
 | Script | Exercised by |
 | --- | --- |
-| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (21), [test_review_scope](test_review_scope.py) (6) |
+| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (22), [test_review_scope](test_review_scope.py) (6) |
 | [align](../scripts/align.py) | [test_align](test_align.py) (13) |
 | [board](../scripts/board.py) | [test_board](test_board.py) (61), [test_board_queue](test_board_queue.py) (77), [test_deliver](test_deliver.py) (110), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (19) |
 | [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (7), [test_board_queue](test_board_queue.py) (77), [test_shared](test_shared.py) (19) |
@@ -105,14 +105,14 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (33) |
 | [format](../scripts/format.py) | [test_format](test_format.py) (114), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (19), [test_sync](test_sync.py) (191), [test_templates](test_templates.py) (6) |
-| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (25), [test_kinds](test_kinds.py) (9) |
-| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (21), [test_board_queue](test_board_queue.py) (77), [test_deliver](test_deliver.py) (110), [test_dispatch](test_dispatch.py) (33), [test_format](test_format.py) (114), [test_hotfix](test_hotfix.py) (25), [test_kinds](test_kinds.py) (9), [test_orphans](test_orphans.py) (4), [test_progress](test_progress.py) (79), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (191) |
+| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (24), [test_kinds](test_kinds.py) (9) |
+| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (22), [test_board_queue](test_board_queue.py) (77), [test_deliver](test_deliver.py) (110), [test_dispatch](test_dispatch.py) (33), [test_format](test_format.py) (114), [test_hotfix](test_hotfix.py) (24), [test_kinds](test_kinds.py) (9), [test_orphans](test_orphans.py) (4), [test_progress](test_progress.py) (79), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (191) |
 | [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (33), [test_lane](test_lane.py) (12) |
 | [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
 | [links-by-pull-request](../scripts/links-by-pull-request.py) | [test_link_capture](test_link_capture.py) (22) |
 | [orphans](../scripts/orphans.py) | [test_orphans](test_orphans.py) (4) |
-| [priority](../scripts/priority.py) | [test_board_queue](test_board_queue.py) (77), [test_deliver](test_deliver.py) (110), [test_hotfix](test_hotfix.py) (25), [test_priority](test_priority.py) (12), [test_progress](test_progress.py) (79) |
+| [priority](../scripts/priority.py) | [test_board_queue](test_board_queue.py) (77), [test_deliver](test_deliver.py) (110), [test_hotfix](test_hotfix.py) (24), [test_priority](test_priority.py) (12), [test_progress](test_progress.py) (79) |
 | [progress](../scripts/progress.py) | [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (19) |
 | [pull_request_body](../scripts/pull_request_body.py) | [test_pull_request_body](test_pull_request_body.py) (14) |
 | [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32), [test_shared](test_shared.py) (19) |
@@ -129,8 +129,8 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [README](README.md) | [test_readme](test_readme.py) (14) |
 | `SKILL.md` | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (28) |
 | `artifacts/` | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (14), [test_documents](test_documents.py) (28) |
-| [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
-| [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (19) |
+| [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (16) |
+| [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (16) |
 | [hotfix](../artifacts/hotfix.md) | [test_kind_operations](test_kind_operations.py) (6) |
 | [work-kind](../artifacts/work-kind.md) | [test_kind_operations](test_kind_operations.py) (6) |
 | [delivery-branches](../artifacts/delivery-branches.md) | [test_worktrees](test_worktrees.py) (2) |

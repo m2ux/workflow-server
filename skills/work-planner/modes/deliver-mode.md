@@ -35,7 +35,7 @@ The run the user requests for one theme board.
 
 #### 4. Report
 
-- Report each merged pull request, unresolved conflict, epic in review, review pull request update and running or finished unit, using [Report Lines](../artifacts/delivery-plan.md#report-lines) for survey results and [Session Inventory](../artifacts/dispatch-batch.md#session-inventory) for execution state.
+- Report each merged pull request, unresolved conflict, epic review pull request handed to the user, review pull request update and running or finished unit, using [Report Lines](../artifacts/delivery-plan.md#report-lines) for survey results and [Session Inventory](../artifacts/dispatch-batch.md#session-inventory) for execution state.
 
 - Include each held or blocked unit, what it waits on and any unavailable execution capacity.
 - Report the run's [change list](../artifacts/plan-change.md#change-list) as a list of its own, including applied and held changes.
@@ -92,13 +92,10 @@ The continuing coordinator for one authorized delivery scope.
 ###### Hot-Fix Hold
 
 - For a hot-fix hold:
-
-- Apply [Capture Issue Development](../artifacts/issue.md#capture-issue-development "ƒ") for [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity).
-- Refuse the release while its [Delivery Unit](../artifacts/hotfix.md#delivery-unit) is running or unrecorded, and provide the pull request that makes it so to the caller.
-
-- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with the board in [Board Evidence](../artifacts/hotfix.md#board-evidence), the hot-fix issue and Ready.
-
-- Retain [Board Result](../artifacts/hotfix.md#board-result) with the saved item and Status.
+  - Apply [Capture Issue Development](../artifacts/issue.md#capture-issue-development "ƒ") for [Hot-fix Identity](../artifacts/hotfix.md#hot-fix-identity).
+  - Refuse the release while its [Delivery Unit](../artifacts/hotfix.md#delivery-unit) is running or unrecorded, and provide the pull request that makes it so to the caller.
+  - Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with the board in [Board Evidence](../artifacts/hotfix.md#board-evidence), the hot-fix issue and Ready.
+  - Retain [Board Result](../artifacts/hotfix.md#board-result) with the saved item and Status.
 
 ##### Survey Continuation
 
@@ -223,7 +220,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 - Stage and commit each returning group's own files, then run the unit's tests once every group has provided.
 - A group with no available sub-agent capacity is delivered by this session, as is a unit of one group.
 
-- Once the unit's tests pass, commit each declared file on the [planning-records branch](../rules.md#rules) in the engineering worktree and push it.
+- Once the unit's tests pass, commit each declared file on the [planning-records branch](../rules.md#rules) in the engineering worktree and push it straight to that branch.
 - A unit that changes only that branch opens no pull request. Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for its rows with the project checkout, the fetched epic bases and the pushed commit, and Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
 - For that unit, Follow [Task Merge](../protocols/task-merge.md "ƒ") in the project checkout with the pushed commit as its delivery, the unit's current task and epic evidence, and the board identity the brief names, then continue to [Arising Issues](#11-arising-issues).
 
@@ -246,9 +243,8 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 - A hot-fix unit's title carries its prefix, so its [delivering pull request](../artifacts/hotfix.md#delivering-pull-request) opens as a draft.
 
 - For a unit of rows:
-
-- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for the unit's task rows, with the project checkout and the fetched epic bases.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
+  - Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for the unit's task rows, with the project checkout and the fetched epic bases.
+  - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
 
 #### 8. Fix the Debt
 
@@ -293,9 +289,9 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 - **Parallel where the plan allows it.**
   The user has the epics the plan starts together under way at once, and within a unit, work that can proceed together does.
 - **Passed work merged.**
-  Each open pull request whose test plan has passed is merged, and one a conflict blocks stays open with the conflict named.
+  Each open task or hot-fix pull request whose test plan has passed is merged, and one a conflict blocks stays open with the conflict named.
 - **Review visible on the board.**
-  The user sees each completed epic in review on its theme board, with its review pull request ready once its delivery evidence passes.
+  The user sees each completed epic in review on its theme board, with its review pull request ready once its delivery evidence passes, and merges it after their own review.
 - **Held work visible.**
   The user sees existing sessions, held records and the evidence each blocked unit needs.
 - **One session for each unit.**

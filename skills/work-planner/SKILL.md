@@ -30,8 +30,8 @@ Select the mode as appropriate to fulfill the user request:
   - Scoping a problem nothing is planned against yet
   - Raising a proposal issue with optional board placement
 - **[Plan](modes/plan-mode.md "ƒ")**
-  - Forward-looking, scoped to one approved proposal
-  - Turning an approved proposal into initiatives
+  - Forward-looking, scoped to one approved proposal, or to a confirmed goal for feature-scale work
+  - Turning an approved proposal or confirmed goal into initiatives
   - Raising, breaking down and restructuring initiatives and epics
   - Review passes of a plan against its goal, dependencies included
   - Renumbering of epics and tasks

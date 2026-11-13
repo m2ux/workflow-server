@@ -5,7 +5,6 @@ registered module supplies every operation of the Kind interface with the inputs
 there. A general script selects an issue's or pull request's kind with kind_of and reaches the kind's
 logic through interface; it imports no kind module and keeps no list of kinds of its own.
 """
-from collections.abc import Callable
 from importlib import import_module
 from typing import NamedTuple, Protocol
 
@@ -20,8 +19,6 @@ class Review(NamedTuple):
 
     # Each review record field, and the value it holds while the record is current for the pull request.
     current: dict[str, object]
-    # The fault in a finding that the general finding rule passes, or '' when none.
-    finding_fault: Callable[[dict], str]
 
 
 class Tips(NamedTuple):
@@ -76,7 +73,7 @@ class Kind(Protocol):
 
     def review(self, tips: Tips) -> Review:
         """The agent review rule for a pull request of the kind, given the tips agent_review validated: the
-        record fields that hold a record current, and the fault the kind finds in a finding."""
+        record fields that hold a record current."""
 
 
 def interface(kind: str) -> Kind:

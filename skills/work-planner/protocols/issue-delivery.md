@@ -9,11 +9,12 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 ### 1. Hot-Fix
 
 - For a [hot-fix](../artifacts/hotfix.md), recorded as its [Delivery Record](../artifacts/hotfix.md#delivery-record) states:
-- Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
-- Run [Sync Hot-fix Issue](../artifacts/hotfix.md#sync-hot-fix-issue "ƒ") for the selected hot-fix and delivering pull request with the provided verified criterion ids.
-- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
-- Provide the saved identity and findings to the caller.
-- Return to the caller.
+  - Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
+  - Run [Sync Hot-fix Issue](../artifacts/hotfix.md#sync-hot-fix-issue "ƒ") for the selected hot-fix and delivering pull request with the provided verified criterion ids.
+  - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
+  - Provide the saved identity and findings to the caller.
+  - Return to the caller.
+
 - For any other issue, continue at [Task Issues](#2-task-issues).
 
 ### 2. Task Issues
@@ -42,8 +43,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 #### Remaining Criteria
 
 - When verified criterion ids remain unticked in that body:
-- Apply [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria "ƒ") for the provided verified criterion ids.
-- Retain the body provided by that Tick Verified Criteria call.
+  - Apply [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria "ƒ") for the provided verified criterion ids.
+  - Retain the body provided by that Tick Verified Criteria call.
 
 #### Body Publication
 

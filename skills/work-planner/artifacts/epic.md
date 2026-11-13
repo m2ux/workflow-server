@@ -52,7 +52,7 @@ Confirm every task is delivered, every epic criterion has current [Verification 
 
 #### 3. Provide Integration Readiness
 
-Provide the integration readiness in [Delivery State](#delivery-state), with the evidence revisions and each blocker. Readiness establishes the epic's content conditions; the caller supplies pull-request review, target and head-check evidence for the merge.
+Provide the integration readiness in [Delivery State](#delivery-state), with the evidence revisions and each blocker. Readiness establishes the epic's content conditions; the caller supplies pull-request review, target and head-check evidence for the handoff.
 
 ## Commands
 

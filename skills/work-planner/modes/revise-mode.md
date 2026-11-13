@@ -13,6 +13,7 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
 ### 2. Understand the Request
 
 - Interview the user, as an [Interview](../guidelines.md#modes), until the change and its scope are clear.
+- A correction the user makes to how the skill plans, delivers, merges, reviews, briefs, syncs or manages boards is a change to this skill, raised as a hot-fix, so every session reads it in the skill.
 
 - Find every file the change touches: the rule's home, each file that cites it, and any script, docstring or test that states it.
 
@@ -33,13 +34,13 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
 ### 5. Check Against the Guidelines
 
 - Read every changed file against the [shared skill guidelines](../../guidelines.md) and [skill guidelines](../guidelines.md), checking:
+  - The description, when the skill's reach changed.
+  - One line per item, bold leads on their own line, and the declared step and detail structure for each family.
+  - Each rule stated once, and no description of replaced behaviour left anywhere.
+  - Every invocation in its named Commands specification, with caller links and command-owned I/O contracts.
+  - Every link and anchor resolving.
+  - [Progressive disclosure](../../guidelines.md#progressive-disclosure), including complete common sections and caller prerequisites.
 
-- The description, when the skill's reach changed.
-- One line per item, bold leads on their own line, and the declared step and detail structure for each family.
-- Each rule stated once, and no description of replaced behaviour left anywhere.
-- Every invocation in its named Commands specification, with caller links and command-owned I/O contracts.
-- Every link and anchor resolving.
-- [Progressive disclosure](../../guidelines.md#progressive-disclosure), including complete common sections and caller prerequisites.
 - Fix each departure.
 
 ### 6. Verify
