@@ -25,3 +25,7 @@ A second independent review of #1716 found four issues. The change d26dc4c00..31
 2. **Blocking. Handed-off reviews were held again.** Epic Integration put a ready review back to draft on every sync. Fixed: step 1 first reads the pull request, the board and the agent review, and returns a current handed-off review without holding it. `test_a_current_handed_off_review_returns_before_any_hold` guards this. The re-check found that the check never passed without a board, and 9846016ec fixes that.
 3. **Duplicate test.** `test_a_ready_epic_review_pull_request_is_never_merged` is removed, and the README counts are updated.
 4. **Task Merge wording.** It now reads "Initiative completion does not gate the epic's closure."
+
+## Wording Pass
+
+At ec2075cb6, the sentences this hot-fix adds state what holds. Merge Permission now names who merges each target within the authorization granted, and the autoMode example ends at what it allows. Sync's Unmerged branch now says that Close carries the review pull request through Epic Integration to the user. The re-check found no finding.

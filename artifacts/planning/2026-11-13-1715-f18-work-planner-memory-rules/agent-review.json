@@ -74,5 +74,18 @@
         "evidence": "https://github.com/m2ux/workflow-server/commit/a4d106283cd3838166d82c911199177765eaaefe"
       }
     ]
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1716",
+    "base": "c1c069b412f2a341f4cc32456e00137bdff26bc7",
+    "base_ref": "workspace",
+    "head": "ec2075cb6083cfb7068c1ef291ba8dcf7c627605",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-13-1715-f18-work-planner-memory-rules/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review, re-check)",
+    "reviewed_at": "2026-11-13",
+    "scope": "Re-check of 31ad62178..ec2075cb6. 1ace8ddea restates Merge Permission and its autoMode example by who merges each target, and rewrites the negative-only sentences the branch adds. Those sentences are in agent-review.md, issue-body.md, proposals-board.md, deliver-mode.md, revise-mode.md, rules.md, epic-integration.md, pull-request.md and initiative-issue-body.md. ec2075cb6 states that Sync's Close carries an unmerged base's review pull request through Epic Integration to the user. The re-check found every gate and rule kept: return-without-merge, return-without-holding and the hand-off condition are unchanged.",
+    "criteria": "AC1-AC5 as in the first record; test_merge_outcomes adds test_a_current_handed_off_review_returns_before_any_hold, which fails if Hold Epic Review precedes the current-handoff check or the check holds.",
+    "validation": "Planner suite at ec2075cb6: 1185 tests OK, 1 skipped. Shared suite at 1ace8ddea: 295 tests OK. check_skill_files.py skills/work-planner at ec2075cb6: 65 files, 0 findings. git diff --check clean.",
+    "findings": []
   }
 ]
