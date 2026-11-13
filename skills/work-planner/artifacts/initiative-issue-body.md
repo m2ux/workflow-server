@@ -235,7 +235,7 @@ A marked source in References is a document the initiative's criteria answer to.
 
 ### Proposal Context
 
-The scoped proposal, or none for work planned without one, with the confirmed goal clauses, requirement sources and epic summaries supplied for drafting.
+The scoped proposal where there is one, the confirmed goal clauses, requirement sources and epic summaries supplied for drafting.
 
 ### Initiative Record
 

@@ -11,7 +11,7 @@ A review record for the exact integration revision.
 #### 1. Review Complete Integration Diff
 
 - Read the complete target-to-head diff, affected definitions and callers, and every criterion’s verification evidence using the [Review Inputs](#review-inputs). Inspect behavior and failure paths; test counts alone do not establish review completion.
-- A review following a round of fixes re-checks those fixes alone: the change from the previously reviewed head and the findings it fixed. It does not repeat the complete review.
+- A review following a round of fixes re-checks those fixes alone: the change from the previously reviewed head and the findings it fixed.
 - Classify each observed problem using [Review Scope](#review-scope).
 
 #### 2. Resolve Review Findings
@@ -21,7 +21,7 @@ A review record for the exact integration revision.
 - An observation with an unresolved classification, missing scope evidence or an unsaved arising issue remains a finding with its required disposition.
 
 - When a finding is recorded:
-- Fix every finding on the reviewed branch, blocking or not, with the smallest edit that makes the criteria hold. A fix adds no feature, state or mechanism.
+- Fix every finding on the reviewed branch, blocking or not, with the smallest edit that makes the criteria hold.
 - When findings cluster in one mechanism, question that mechanism; removing it is preferred to guarding it.
 - Run appropriate regression checks.
 - Apply [Produce Agent Review](#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence, then provide its review record to the requester and stop.
@@ -86,6 +86,6 @@ The absolute supplied checkout path holding the installed Work Planner scripts a
 
 Findings cover defects introduced by the change, change-related defects and risks that compromise affected callers. A pre-existing defect remains in scope when the change exposes it or depends on its faulty behavior.
 
-A finding is a defect that breaks a realistic run of the requested behavior or of an existing flow. A speculative edge case is no finding: the record's `scope` names each one rejected, so the requester can report it.
+A finding is a defect that breaks a realistic run of the requested behavior or of an existing flow. The record's `scope` names each speculative edge case the review rejected, so the requester can report it.
 
 An unrelated pre-existing observation is outside findings only when evidence establishes its earlier existence and independence from changed behavior and affected callers. That evidence identifies the observed problem, source revisions and relevant call-path comparison; it accompanies a linked arising issue in the record's `scope`, outside findings.

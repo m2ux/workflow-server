@@ -46,10 +46,10 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - On a readiness failure, stop this handoff before requesting In Review.
 - Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") requesting In Review, with the epic, board identity, fresh pull request records and published agent review records. Report an absent board item; integration is not gated on board membership.
-- Apply [Fetch Merge Readiness](../artifacts/pull-request.md#fetch-merge-readiness "ƒ") for the exact current head and target. A conflict, failed or pending check, unmet epic condition or incomplete evidence blocks handoff; Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") again and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") requesting In Progress before returning that blocker. A required approving review is the user's to give and blocks nothing here.
+- Apply [Fetch Merge Readiness](../artifacts/pull-request.md#fetch-merge-readiness "ƒ") for the exact current head and target. A conflict, failed or pending check, unmet epic condition or incomplete evidence blocks handoff; Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") again and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") requesting In Progress before returning that blocker. A required approving review is the user's to give.
 
 ### 3. Hand Off
 
 - Refresh the review metadata and Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding.
 - Provide the ready review pull request to the user with its verified head, target, [Epic Readiness](../artifacts/pull-request.md#epic-readiness) and published agent review records, and return.
-- The user reviews and merges every epic review pull request, whatever its target's protection. This protocol makes no merge attempt; the epic's sync records the merge once it lands. The [planning-records branch](../rules.md#rules) has no review pull request to hand off.
+- The user reviews and merges every epic review pull request, whatever its target's protection, and the epic's sync records the merge once it lands.

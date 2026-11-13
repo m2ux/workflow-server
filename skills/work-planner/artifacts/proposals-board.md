@@ -62,4 +62,4 @@ gh api &#92;
 
 The board holding proposal issues, the incoming funnel for work that may become an initiative. Its title and copy source are [configured](../configuration.md#proposals-board).
 
-A proposal is raised for a major project alone. Feature- or documentation-scale work is planned straight as an initiative from the goal the user confirms, with no proposal and no place on this board.
+A proposal is raised for a major project alone. Feature- or documentation-scale work is planned straight as an initiative from the goal the user confirms.
