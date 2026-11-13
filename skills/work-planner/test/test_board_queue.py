@@ -302,6 +302,14 @@ class Queue(unittest.TestCase):
         self.assertIn('order: #2 [I02] Debt: One', queue(items, unplanned=('1',)))
         self.assertNotIn('order:', queue(items, unplanned=('1', '2')))
 
+    def test_an_unlabelled_board_returns_an_idle_unplanned_initiative_to_backlog(self):
+        bare = initiative(1, 'Bare: Current', (f"[E00]({url('issues', 2)})", ''), priority='')
+        out = queue(staged((bare, 'In Progress'), (epic(2, '01:E00', ('W01', 'Go', '')), 'In Progress')),
+                    unplanned=('1',))
+        self.assertIn('[I01] Bare: Current: In Progress → Backlog', out)
+        self.assertNotIn('order:', out)
+        self.assertNotIn('unit I01', out)
+
     def test_an_in_progress_initiative_without_priority_is_asked(self):
         bare = initiative(1, 'Bare: Current', (f"[E00]({url('issues', 2)})", ''), priority='')
         out = queue(staged((bare, 'In Progress'), (epic(2, '01:E00', ('W01', 'Go', '')), 'In Progress')))

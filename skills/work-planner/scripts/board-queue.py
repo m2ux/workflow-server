@@ -341,22 +341,22 @@ class Queue:
         for key in open_initiatives:
             if rank(self.issues[key]) is None and self.status.get(key) == 'Ready':
                 self.shelve(key)
+        in_progress = [key for key in open_initiatives if self.status.get(key) == 'In Progress']
+        for key in in_progress:
+            if key not in self.unplanned or rank(self.issues[key]) is not None:
+                continue
+            if not self.wait(key):
+                self.shelve(key)
         labelled = [key for key in open_initiatives if rank(self.issues[key]) is not None]
         if not labelled:
             self.order(open_initiatives)
             self.park()
             self.unranked()
             return
-        in_progress = [key for key in open_initiatives if self.status.get(key) == 'In Progress']
         for key in in_progress:
             if rank(self.issues[key]) is not None or key in self.unplanned:
                 continue
             self.notes.append(f'  ask {self.line(key)}: priority')
-        for key in in_progress:
-            if key not in self.unplanned or rank(self.issues[key]) is not None:
-                continue
-            if not self.wait(key):
-                self.shelve(key)
         self.place_sets(open_initiatives)
         self.park()
         self.unranked()
