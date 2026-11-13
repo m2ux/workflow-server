@@ -8,6 +8,9 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 1. Prepare the Evidence
 
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for the supplied review identity, Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for the supplied board, and Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with that fresh metadata and [Published Reviews](../artifacts/pull-request.md#published-reviews).
+- For an open review pull request already handed off, ready for review, standing In Review and passing that validation against its current head and target, provide it to the user as [Hand Off](#3-hand-off) does and return without holding it.
+- Otherwise, with stale review evidence, a moved target or no handoff yet, continue below.
 - Before any preparation, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") for the supplied review identity and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") requesting In Progress with the epic, board identity, fresh pull request records, an empty review-record list and output paths. An absent board item is reported; it does not prevent validation.
 - For any failed preparation or readiness gate before the handoff, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") again with their preceding inputs before returning or retrying, including failures between ready and board writes. The confirmed absence of a board is the sole exception to board withdrawal.
 - Apply [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close "ƒ") for the repository, which the review pull request needs to link its epic.
@@ -49,4 +52,4 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Refresh the review metadata and Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding.
 - Provide the ready review pull request to the user with its verified head, target, [Epic Readiness](../artifacts/pull-request.md#epic-readiness) and published agent review records, and return.
-- The user reviews and merges every epic review pull request, whatever its target's protection. This protocol makes no merge attempt; the epic's sync records the merge once it lands.
+- The user reviews and merges every epic review pull request, whatever its target's protection. This protocol makes no merge attempt; the epic's sync records the merge once it lands. The [planning-records branch](../rules.md#rules) has no review pull request to hand off.

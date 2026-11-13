@@ -203,6 +203,14 @@ class MergeOutcomes(unittest.TestCase):
         self.assertEqual(route.integration(), 'human-handoff')
         self.assertEqual(route.events, [('capability', 'Validate Agent Review')])
 
+    def test_a_current_handed_off_review_returns_before_any_hold(self):
+        prepare = section(EPIC.read_text(), '1. Prepare the Evidence')
+        order = calls(prepare)
+        self.assertLess(order.index('Validate Agent Review'), order.index('Hold Epic Review'))
+        handed = next(line for line in prepare.splitlines() if 'already handed off' in line)
+        self.assertNotIn('Hold Epic Review', handed)
+        self.assertIn('return without holding it', handed)
+
     def test_removed_epic_guard_is_rejected_by_route_fixture(self):
         source = '\n'.join(line for line in PULL.read_text().splitlines()
                            if not line.startswith('- When the pull request is an epic review'))
