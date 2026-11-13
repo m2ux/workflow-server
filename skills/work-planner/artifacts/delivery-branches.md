@@ -363,7 +363,7 @@ The project's ordered long-lived branch names, declared in `config/branches` at 
 
 The epic's base-branch collection, one branch per changed long-lived branch.
 
-- Each long-lived branch an epic changes has a base branch, named for the initiative, the epic and that branch, and rooted in that long-lived branch. Its prerequisite epics are closed as completed with every delivery base merged.
+- Each long-lived branch an epic changes, other than the [planning-records branch](../rules.md#rules), which takes direct pushes, has a base branch, named for the initiative, the epic and that branch, and rooted in that long-lived branch. Its prerequisite epics are closed as completed with every delivery base merged.
 - eg `i07/e00/main` for an epic base cut from `main`.
 - The base's last segment is its long-lived branch, which gives the target it merges and is merged into.
 - Each base is worked in one worktree, named by the base under the worktree directory of the repository's main working tree.
@@ -382,7 +382,7 @@ The detached checkout path for a reviewed pull request, named by its repository-
 A collection of task-branch, base-branch and worktree-path triples for the unit. Each task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`. The unit's pull request is opened from this branch into that base.
 
 - **Changed branches.**
-  A unit changes every long-lived branch named by a file its rows' work items list in their [Component](work-item.md#component) declarations. A unit of an epic with one base changes that base.
+  A unit changes every long-lived branch named by a file its rows' work items list in their [Component](work-item.md#component) declarations; a file on the [planning-records branch](../rules.md#rules) is pushed to it, with no task branch. A unit of an epic with one base changes that base.
 - **Unplanned rows.**
   A free row linking no work item is unplanned: its session writes the work item after dispatch. Its unit changes every epic base, and the session opens a pull request only from each branch its work changes.
 - **Several long-lived branches.**

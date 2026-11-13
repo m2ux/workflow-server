@@ -8,6 +8,8 @@
   Modes, protocols, artifacts. A mode aggregates protocol calls, as an application calls services; a protocol runs artifact operations and other protocols; an artifact runs neither. A call goes down the stack, never up. A mode reaches an artifact operation directly only where no protocol owns that change.
 - **Execution.**
   A call identifies its selected context and refreshed evidence; its command specification owns the I/O contract. A protocol is one change that lands in several artifacts together, and is run whole. Run another mode, a protocol, or a named subsection only where the procedure calls it; finish that call and provide its result before continuing, unless the procedure explicitly dispatches concurrent work.
+- **Planning-records branch.**
+  The [planning-records branch](configuration.md#planning-records) takes direct pushes and is never reviewed: a change to it, a planning record or a file a work item declares on it, is committed in the engineering worktree and pushed. It has no epic base, task pull request or review pull request, so an epic's review pull requests cover its other long-lived branches alone. A unit changing that branch alone opens no pull request: its rows link the pushed commit, which delivers them.
 
 ## Link Roles
 

@@ -213,6 +213,15 @@ class Survey(unittest.TestCase):
         self.assertNotIn('  unit ', output)
         self.assertIn('available: 0, held: 0, blocked: 0, unresolvable: 0, undeclared: 2', output)
 
+    def test_a_unit_of_one_base_declaring_none_is_undeclared(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            engineering, ids = planned(root, ('W01', 'skills/plan.py'))
+            output = survey(staged((epic(943, (ids['W01'], 'Queue plan', '', '')), 'In Progress')), None,
+                            *declared(root, 'main'), *engineering, '--bases', 'i07/e00/main', code=1)
+        self.assertIn('undeclared I07:E00:W01: file skills/plan.py is no branch:path entry', output)
+        self.assertNotIn('  unit ', output)
+
     def test_an_unplanned_row_of_several_bases_takes_every_epic_base(self):
         rows_given = {'plain': ('W01', 'Queue plan', '', ''),
                       'task issue': ('[W01](https://github.com/o/r/issues/950)', 'Queue plan', '', '')}
@@ -372,6 +381,65 @@ class Survey(unittest.TestCase):
         self.assertIn('unit I07:E00:W01+W02: unlaned, coverage AC1, '
                       f'record {TODAY}-943-i07-e00-w01-queue-plan', output)
         self.assertIn('available: 1,', output)
+
+    def test_a_unit_changing_only_engineering_pushes_it_with_no_branch(self):
+        for case, given in {'one base': ('--bases', 'i07/e00/main'), 'several bases': THREE_BASES}.items():
+            with self.subTest(case), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                engineering, ids = planned(root, ('W01', 'engineering:artifacts/design.md'))
+                output = survey(staged((epic(943, (ids['W01'], 'Queue plan', '', '')), 'In Progress')),
+                                None, *declared(root, 'engineering', 'main', 'workflows', 'workspace'),
+                                *engineering, *given)
+                self.assertIn(f'unit I07:E00:W01: unlaned, coverage AC1, '
+                              f'record {TODAY}-943-i07-e00-w01-queue-plan, push engineering\n', output)
+                self.assertNotIn('branch ', output)
+                self.assertIn('available: 1, held: 0, blocked: 0, unresolvable: 0, undeclared: 0', output)
+
+    def test_an_engineering_epic_base_is_neither_required_nor_taken(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            engineering, ids = planned(root, ('W01', 'main:src/plan.ts, engineering:artifacts/design.md'))
+            output = survey(staged((epic(943, (ids['W01'], 'Queue plan', '', '')), 'In Progress')),
+                            None, *declared(root, 'engineering', 'main', 'workflows'), *engineering,
+                            '--bases', 'i07/e00/engineering,i07/e00/main,i07/e00/workflows')
+        self.assertIn(f'record {TODAY}-943-i07-e00-w01-queue-plan, '
+                      'branch i07/e00/w01-queue-plan, base i07/e00/main, '
+                      'worktree .worktrees/i07/e00/w01-queue-plan; push engineering\n', output)
+        self.assertNotIn('i07/e00/engineering', output)
+        self.assertIn('undeclared: 0', output)
+
+    def test_a_unit_of_an_epic_with_no_base_keeps_its_branch_beside_the_push(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            engineering, ids = planned(root, ('W01', 'main:src/plan.ts, engineering:artifacts/design.md'),
+                                       ('W02', 'engineering:artifacts/notes.md'),
+                                       ('W04', 'engineering:artifacts/tail.md'))
+            body = epic(943, (ids['W01'], 'Queue plan', '', ''), (ids['W02'], 'Queue notes', '', ''),
+                        ('W03', 'Queue more', '', 'W04'), (ids['W04'], 'Queue tail', '', 'W03'))
+            output = survey(staged((body, 'In Progress')), None,
+                            *declared(root, 'engineering', 'main'), *engineering)
+        self.assertIn(f'record {TODAY}-943-i07-e00-w01-queue-plan, branch i07/e00/w01-queue-plan, '
+                      'worktree .worktrees/i07/e00/w01-queue-plan; push engineering\n', output)
+        self.assertIn(f'record {TODAY}-943-i07-e00-w02-queue-notes, push engineering\n', output)
+        self.assertIn(f'record {TODAY}-943-i07-e00-w03-queue-more, branch i07/e00/w03-queue-more, '
+                      'worktree .worktrees/i07/e00/w03-queue-more; push engineering\n', output)
+
+    def test_an_epic_changing_engineering_and_main_merges_into_main_alone(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            engineering, ids = planned(root, ('W02', 'engineering:artifacts/design.md'))
+            body = epic(943, (f"[W01]({url('pull', 950)})", 'Queue plan', '', ''),
+                        (f"[W03]({url('pull', 951)})", 'Queue design', '', ''),
+                        (ids['W02'], 'Queue notes', '', ''))
+            output = survey(staged((body, 'In Progress')),
+                            [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main'),
+                             pr(951, '[I07:E00] Queue design', body=PLAN, base='i07/e00/engineering')],
+                            *declared(root, 'engineering', 'main'), *engineering)
+        self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
+        self.assertNotIn('merge #951', output)
+        self.assertIn(f'record {TODAY}-943-i07-e00-w02-queue-notes, push engineering\n', output)
+        self.assertNotIn('i07/e00/engineering', output)
+        self.assertIn('merge: 1', output)
 
     def test_a_finished_pull_request_is_merged(self):
         linked = f"[W01]({url('pull', 950)})"
