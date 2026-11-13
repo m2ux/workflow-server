@@ -97,7 +97,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 **Unmerged.**
 
-- [Close](#10-close) opens or merges that pull request.
+- [Close](#10-close) opens its review pull request where none exists and carries it through Epic Integration to the user, who merges it.
 
 **Target.**
 
