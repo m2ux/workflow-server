@@ -30,3 +30,11 @@ Find Proposals Board selects `.title == "Proposals" or (.title | startswith("Pro
 - **Shared suite:** 295 tests, OK.
 - **check_skill_files.py skills/work-planner at 31ad62178:** 65 files, 0 findings.
 - **`git diff --check`:** clean.
+
+## Re-Check at 2319fcbed
+
+- **Planner suite:** 1185 tests, OK, 1 skipped.
+- **Shared suite:** 298 tests, OK. This adds the checker's nested-item tests.
+- **check_skill_files.py skills/work-planner:** 0 findings.
+- **Other skills:** gitnexus, workflow-canon and server-in-the-loop give the same findings under the base checker and the new one.
+- **`git diff --check`:** clean.

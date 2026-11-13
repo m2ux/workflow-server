@@ -29,3 +29,19 @@ A second independent review of #1716 found four issues. The change d26dc4c00..31
 ## Wording Pass
 
 At ec2075cb6, the sentences this hot-fix adds state what holds. Merge Permission now names who merges each target within the authorization granted, and the autoMode example ends at what it allows. Sync's Unmerged branch now says that Close carries the review pull request through Epic Integration to the user. The re-check found no finding.
+
+## Nesting Pass
+
+The user chose to nest each introduction's reach beneath it.
+
+- **Checker.** check_skill_files.py accepts a list item nested two spaces per level under the item that introduces it. Flat layout stays valid. Indentation with no introducing item, a skipped level, or a blank line before it is still reported.
+- **Guidelines.** List introductions now holds the rule once, and the other procedure rules link to it.
+- **Re-nesting.** 78 introductions in 22 files were re-nested by hand. Six were left as they are:
+  - Five introduce named child headings, which Branch Headers allows: deliver-mode Record each provided result, hoist-mode Execute only the branch and work taken by another issue, sync-mode After the issue bodies and closures are saved, and hotfix Apply the status change.
+  - One is a command detail whose body is an indented fenced block: pull-request Mark Review Ready's query file.
+
+An independent reviewer found three items placed in the wrong reach, and 2319fcbed fixes them:
+
+- advance-mode's queue recompute and Repeat now sit after the per-reference loop.
+- standup-mode's Compose Standup Report again now sits after the per-initiative loop.
+- plan-mode's Resume now sits under the major-project branch.

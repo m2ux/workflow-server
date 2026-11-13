@@ -87,5 +87,37 @@
     "criteria": "AC1-AC5 as in the first record; test_merge_outcomes adds test_a_current_handed_off_review_returns_before_any_hold, which fails if Hold Epic Review precedes the current-handoff check or the check holds.",
     "validation": "Planner suite at ec2075cb6: 1185 tests OK, 1 skipped. Shared suite at 1ace8ddea: 295 tests OK. check_skill_files.py skills/work-planner at ec2075cb6: 65 files, 0 findings. git diff --check clean.",
     "findings": []
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1716",
+    "base": "c1c069b412f2a341f4cc32456e00137bdff26bc7",
+    "base_ref": "workspace",
+    "head": "2319fcbed7e6e576c1cad8304b53ac22dd97642f",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-13-1715-f18-work-planner-memory-rules/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review, independent re-check)",
+    "reviewed_at": "2026-11-13",
+    "scope": "Change since the previously reviewed head, ec2075cb6..2319fcbed, reviewed by an independent reviewer. It covered check_skill_files.py nested_item and its tests, the List introductions rule in work-planner guidelines.md and its links, and 78 re-nested introductions across 22 work-planner files plus two plan tests. The reviewer compared every changed file with whitespace removed: no text was lost or reordered. No flush introduction remains. Running the base and the new checker on gitnexus, workflow-canon and server-in-the-loop gives identical findings (40, 21 and 8). 2319fcbed fixes the three reach findings. Rejected as speculative: link removal nested under link edit (removal is a link edit); Resolve Missing Evidence under After an answer; Retain Branch Result under a successful fetch (ambiguity unchanged); Require the new theme's label under the absent-board branch; checker acceptance of nesting under an item not ending in a colon.",
+    "criteria": "AC1-AC5 as in the first record. The nested form is the stated rule, and check_skill_files.py accepts it while still reporting indentation without an introducing item, a skipped level or a blank line between.",
+    "validation": "Planner suite at 2319fcbed: 1185 tests OK, 1 skipped. Shared suite: 298 tests OK. check_skill_files.py skills/work-planner: 65 files, 0 findings. Other skills' findings are unchanged against the base checker. git diff --check clean.",
+    "findings": [
+      {
+        "description": "advance-mode Resolve Missing Evidence: the queue recompute and Repeat were nested under the per-reference loop.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/2319fcbed7e6e576c1cad8304b53ac22dd97642f"
+      },
+      {
+        "description": "standup-mode Resolve Evidence: Compose Standup Report again was nested under the per-initiative loop.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/2319fcbed7e6e576c1cad8304b53ac22dd97642f"
+      },
+      {
+        "description": "plan-mode Take the Proposal: Resume belonged under the major-project branch.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/2319fcbed7e6e576c1cad8304b53ac22dd97642f"
+      }
+    ]
   }
 ]
