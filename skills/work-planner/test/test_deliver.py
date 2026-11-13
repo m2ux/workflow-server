@@ -324,6 +324,16 @@ class Survey(unittest.TestCase):
         self.assertIn('blocked I07:E00:W02: depends on W01', output)
         self.assertIn('available: 1, held: 0, blocked: 1', output)
 
+    def test_a_run_row_waits_for_the_fix_it_names_and_starts_once_it_closes(self):
+        rows = (('W01', 'Trial one', '#4', ''), ('W02', 'Trial two', '#4', ''))
+        output = survey(staged((epic(943, *rows), 'In Progress'), (hotfix(4), 'In Progress')))
+        self.assertIn('blocked I07:E00:W01: depends on #4', output)
+        self.assertIn('blocked I07:E00:W02: depends on #4', output)
+        self.assertIn('available: 0, held: 1, blocked: 2', output)
+        output = survey(staged((epic(943, *rows), 'In Progress'), (hotfix(4, state='closed'), 'Done')))
+        self.assertIn('unit I07:E00:W01', output)
+        self.assertIn('unit I07:E00:W02', output)
+
     def test_an_entry_that_cannot_resolve_is_told_from_a_blocked_row(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
