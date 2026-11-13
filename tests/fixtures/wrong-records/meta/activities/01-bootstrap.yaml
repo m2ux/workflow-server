@@ -1,0 +1,11 @@
+id: bootstrap
+version: 1.0.0
+name: Bootstrap
+description: A single step, so the shared home is a loadable workflow rather than a bare directory.
+
+steps:
+  - kind: action
+    id: begin
+    actions:
+      - action: log
+        message: "Shared home."

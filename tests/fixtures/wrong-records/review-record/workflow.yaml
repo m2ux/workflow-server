@@ -1,0 +1,21 @@
+id: review-record
+version: 1.0.0
+title: Review Record
+description: Two hosts of one assumption run — one gating its record step on review mode, one not.
+initialActivity: guards-the-record
+variables:
+  - name: is_review_mode
+    type: boolean
+    description: Whether the run is reviewing someone else's work, in which case no gate asks a user for a decision.
+    defaultValue: false
+  - name: has_open_assumptions
+    type: boolean
+    description: Whether irreducible open assumptions remain for this run to settle.
+    defaultValue: true
+  - name: assumptions_log
+    type: object
+    description: The assumptions log the recording step writes each outcome into.
+graph:
+  guards-the-record:
+    done: records-regardless
+  records-regardless: {}

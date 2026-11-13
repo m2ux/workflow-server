@@ -128,6 +128,14 @@ export interface WalkStep {
   checkpoints: CheckpointRecord[];
   /** Declared artifact filenames for the activity (interpolated). */
   artifacts: string[];
+  /**
+   * The artifact contract this delivery announced, as announced — the filenames the server composed
+   * from the activity's technique outputs, before any token in one is rendered.
+   *
+   * `artifacts` above renders them through the walker's bag, which a dry walk fills with stand-ins.
+   * A reader asking what the activity promised its worker wants the spellings, not the stand-ins.
+   */
+  artifactContract: string[];
   /** Artifact stub files the robot worker actually wrote to disk (3c mode). */
   artifactsWritten: string[];
   /** Step ids the robot worker executed in order (3c mode). */
@@ -954,6 +962,7 @@ export async function walk(
       activityId: current,
       checkpoints: cpRecords,
       artifacts: artifactNames(act, variables),
+      artifactContract: (act.artifacts ?? []).map((a) => a.name),
       artifactsWritten,
       stepsExecuted,
       gatesReadUnbound,
