@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.5.2
+  version: 2.6.0
 ---
 
 ## Capability
@@ -30,10 +30,6 @@ Conduct structured manual diff review using external side-by-side diff tool with
 #### audience
 
 `human`
-
-#### block_rationale
-
-Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices; Block titles name each change and link to its primary line
 
 ### reviewed_code_base_url
 

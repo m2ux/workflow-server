@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -49,19 +49,11 @@ Full filesystem path to `RUN-MANIFEST.json`.
 
 ### run_status
 
-Completion status of the run.
+Completion status of the run: `complete` where the report, the definitive findings, and every unit's expected artifacts are present, `partial` where the reports exist and a unit is missing an expected artifact, and `error` where REPORT.md or DEFINITIVE-FINDINGS.md is missing or empty.
 
-#### complete
+#### values
 
-Report, definitive findings, and every unit's expected artifacts are present.
-
-#### partial
-
-Reports exist but one or more units are missing expected artifacts.
-
-#### error
-
-REPORT.md or DEFINITIVE-FINDINGS.md is missing or empty.
+`complete` `partial` `error`
 
 ## Protocol
 
