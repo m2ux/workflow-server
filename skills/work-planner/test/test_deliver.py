@@ -213,6 +213,15 @@ class Survey(unittest.TestCase):
         self.assertNotIn('  unit ', output)
         self.assertIn('available: 0, held: 0, blocked: 0, unresolvable: 0, undeclared: 2', output)
 
+    def test_a_unit_of_one_base_declaring_none_is_undeclared(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            engineering, ids = planned(root, ('W01', 'skills/plan.py'))
+            output = survey(staged((epic(943, (ids['W01'], 'Queue plan', '', '')), 'In Progress')), None,
+                            *declared(root, 'main'), *engineering, '--bases', 'i07/e00/main', code=1)
+        self.assertIn('undeclared I07:E00:W01: file skills/plan.py is no branch:path entry', output)
+        self.assertNotIn('  unit ', output)
+
     def test_an_unplanned_row_of_several_bases_takes_every_epic_base(self):
         rows_given = {'plain': ('W01', 'Queue plan', '', ''),
                       'task issue': ('[W01](https://github.com/o/r/issues/950)', 'Queue plan', '', '')}
