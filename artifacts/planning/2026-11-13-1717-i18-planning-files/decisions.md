@@ -12,6 +12,9 @@
 3. **Shape.** One initiative, one epic, a handful of rows.
 4. **Board.** Board 17 at Backlog, with no priority label on either issue.
 5. **Delivery.** Every finding is fixed in the delivery that finds it. The user reviews and merges the epic review pull request; no agent merges it.
+6. **Decisions file.** Plan Change owns `decisions.md`, which holds the user's decisions and the change list; no record writes `changes.md` or `change-list.md`.
+7. **Review notes.** No record writes review notes; `agent-review.json` is the one review file.
+8. **Layout check cut-off.** Planning Record states the date the layout check took effect; a folder dated before it passes, and a newer one is checked on every publish.
 
 ## Planning Decisions
 
@@ -21,10 +24,10 @@
 - **No design row.** The user settled the two artifacts and the ownership rule, and this record settles each owner's path and template in the table below, so no row designs before the others build.
 - **No lanes.** One epic of five rows needs no lane assignment; the rows' lanes are empty.
 - **Joined first unit.** Engineering Branch and the narrowed Planning Record both rewrite `planning-record.md` and its test, so they land as one pull request of five criteria.
-- **New records only, by date.** The layout check passes a folder dated before the date Planning Record states for it, so a record opened earlier stays as written while a new one is checked on every publish.
+- **New records only, by date.** Confirmed as the user's decision 8. The layout check passes a folder dated before the date Planning Record states for it, so a record opened earlier stays as written while a new one is checked on every publish.
 - **Body drafts per owner.** Initiative Issue Body and Epic Issue Body each state their own draft path, as the user named. Other body kinds a record does not hold.
-- **Decisions belong to Plan Change.** Rules' Decisions bullet records a decision in the planning record and no artifact owned the file. Plan Change already defines the change list a run's record keeps; its record file `decisions.md` holds the user's decisions and the change list as entries, so the lane map is a decision entry and the separate change-list files (`changes.md`, `change-list.md`) have one name.
-- **Review notes leave.** `review-notes.md` restates the Agent Review record's findings, dispositions, fix evidence and exclusions, which the JSON record already holds, so no artifact takes it on.
+- **Decisions belong to Plan Change.** Confirmed as the user's decision 6. Rules' Decisions bullet records a decision in the planning record and no artifact owned the file. Plan Change already defines the change list a run's record keeps; its record file `decisions.md` holds the user's decisions and the change list as entries, so the lane map is a decision entry and the separate change-list files (`changes.md`, `change-list.md`) have one name.
+- **Review notes leave.** Confirmed as the user's decision 7. `review-notes.md` restates the Agent Review record's findings, dispositions, fix evidence and exclusions, which the JSON record already holds, so no artifact takes it on.
 - **Test results take one name.** Test Plan's Result Evidence names "the work's published planning document"; Test Plan owns it as `test-results.md`, the file workflow-server records already use.
 - **Work items in two shapes.** A plan record holds `e<nn>/w<nn>.md`, since one plan spans epics; a delivery record holds `<task-id>.md`, the name the released row links.
 - **Working files stay out.** Snapshots, readbacks, raw logs, session progress and another tool's state are working files, kept outside the repository as Conventions states for body files. What a record cites of them is its owner's report: Dependency Graph's or Test Plan's.
