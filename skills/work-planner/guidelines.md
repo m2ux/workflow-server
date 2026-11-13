@@ -172,6 +172,7 @@ Read this before adding or changing a mode, applying [SOLID](#solid).
 - **Interview.**
   A question the user must decide is put this way.
   - A plain-language paragraph before the question gives the context the user needs to answer it.
+  - A question confirming several decisions at once numbers them, gives each its own plain-language paragraph stating what the thing does today, why that is a problem and what the change buys, then asks one accept-or-change question naming the numbers.
   - The question offers more than one choice. The recommended choice is marked on its option.
   - Wait for the user's answer. An unanswered question stays pending. A recommendation or elapsed time supplies no answer.
   - The user can select Other and specify a response beyond the options.

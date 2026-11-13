@@ -13,6 +13,7 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
 ### 2. Understand the Request
 
 - Interview the user, as an [Interview](../guidelines.md#modes), until the change and its scope are clear.
+- A correction the user makes to how the skill plans, delivers, merges, reviews, briefs, syncs or manages boards is a change to this skill, raised as a hot-fix. It is never kept as a session memory, which drifts from the skill and overrides it unseen.
 
 - Find every file the change touches: the rule's home, each file that cites it, and any script, docstring or test that states it.
 

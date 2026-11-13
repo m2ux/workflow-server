@@ -85,7 +85,7 @@ cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' && &#92;
 </pre></big>
 
 - It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).
-- Planning records go straight to the branch; they take no pull request.
+- Planning records go straight to the branch; they take no pull request. A remote message that the push bypassed a branch rule is that intended path and is not reported.
 - Pass the message through a file outside the worktree; the worktree is a linked one, so git writes here run unsandboxed.
 
 ### Add Planning Record
