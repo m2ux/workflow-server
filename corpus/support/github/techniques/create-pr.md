@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -27,7 +27,11 @@ PR body markdown.
 
 ### as_draft
 
-*(optional, default: true)* When true, open as a draft. When false, open ready for review.
+*(optional)* When true, open as a draft. When false, open ready for review.
+
+#### default
+
+`true`
 
 ## Outputs
 

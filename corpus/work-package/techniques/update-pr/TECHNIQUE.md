@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.7.2
+  version: 2.8.0
 ---
 
 ## Capability
@@ -31,7 +31,11 @@ Path to the target checkout (where the PR lives), from which the target repo URL
 
 ### pr_template_variant
 
-*(optional, enum: `initial` | `final`, default `final`)* Which PR body template to render
+*(optional, enum: `initial` | `final`)* Which PR body template to render
+
+#### default
+
+`final`
 
 ## Outputs
 
