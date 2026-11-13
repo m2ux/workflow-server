@@ -2,17 +2,21 @@
 
 Keeps an authorized theme-board scope moving through delivery while eligible work and execution capacity permit it.
 
-Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
+Follow [Deliver Board Work](#deliver-board-work "ƒ"), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
 
 ## Procedure
 
-### 1. Select
+### Deliver Board Work
+
+The run the user requests for one theme board.
+
+#### 1. Select
 
 - Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") with the requested theme or board identity.
 
 - Use its provided owner and board number throughout this run.
 
-### 2. Establish the Authorization
+#### 2. Establish the Authorization
 
 - Record the user's requested board, initiative, epic or unit boundary and requested lane as the [run authorization](../artifacts/dispatch-batch.md#authorization).
 
@@ -23,13 +27,13 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy "ƒ") for each plan change with this run's allowance, retaining its applied or held result for the change list.
 - Retain the run's authorization, session inventory, [preparations](../artifacts/dispatch-batch.md#preparations) and [blockers](../artifacts/dispatch-batch.md#blockers) in working files outside the repository for every refill round.
 
-### 3. Coordinate Delivery
+#### 3. Coordinate Delivery
 
 - Follow [Refill Delivery Capacity](#refill-delivery-capacity "ƒ") with the authorization, project checkout, engineering worktree, run allowance and the supplied worker procedure: each worker must Follow [Run Delivery Session](#run-delivery-session "ƒ").
 
 - Keep the calling session as coordinator until that procedure returns its completion or stable blockers.
 
-### 4. Report
+#### 4. Report
 
 - Report each merged pull request, unresolved conflict, epic in review, review pull request update and running or finished unit, using [Report Lines](../artifacts/delivery-plan.md#report-lines) for survey results and [Session Inventory](../artifacts/dispatch-batch.md#session-inventory) for execution state.
 
