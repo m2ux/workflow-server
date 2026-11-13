@@ -210,6 +210,7 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 #### 6. Implement
 
 - Deliver each task branch in the unit checkout its [Work Identity](../artifacts/delivery-brief.md#work-identity) names, with every test the work item names, as [Tables](../artifacts/issue-body.md#tables) state.
+- Commit each declared file on the [planning-records branch](../rules.md#rules) in the engineering worktree and push it. A unit that changes only that branch opens no pull request: Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for its rows with the project checkout, the fetched epic bases and the pushed commit, and continue to [Arising Issues](#11-arising-issues).
 
 - Group the unit's work items by the files they declare, work items sharing any file in one group, and give each group to the sub-agent dispatch this session provides when the unit has more than one group and [actual free slots](../artifacts/dispatch-batch.md#session-inventory) permit it.
 - Give each sub-agent the unit's worktree, its group's work items, and the criteria those work items cover.
