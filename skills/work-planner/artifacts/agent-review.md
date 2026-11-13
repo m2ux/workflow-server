@@ -26,7 +26,7 @@ A review record for the exact integration revision.
 - Run appropriate regression checks.
 - Apply [Produce Agent Review](#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence, then provide its review record to the requester and stop.
 
-- Every finding must be fixed and re-checked at the recorded head before handoff; none is deferred.
+- Every finding must be fixed and re-checked at the recorded head before handoff.
 
 #### 3. Write Revision Review Record
 
@@ -56,7 +56,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 ### Review Record
 
-Each record contains `pull_request` (the full GitHub URL), `head` and `base` (full commit SHAs), `url` (the published HTTPS record URL), `reviewer`, `reviewed_at`, `scope`, `criteria`, `validation` and `findings`. The scope describes the full integration diff, inspected callers and each excluded observation with its scope evidence and arising issue link; criteria and validation describe the evidence inspected and its results. The pull request body links the published record.
+Each record contains `pull_request` (the full GitHub URL), `head` and `base` (full commit SHAs), `url` (the published HTTPS record URL), `reviewer`, `reviewed_at`, `scope`, `criteria`, `validation` and `findings`. The scope describes the full integration diff, or after a round of fixes the change since the previously reviewed head and the findings it fixed, with the inspected callers and each excluded observation with its scope evidence and arising issue link; criteria and validation describe the evidence inspected and its results. The pull request body links the published record.
 
 Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open` or `fixed`). A fixed finding has an HTTPS `evidence` link, and an open one blocks handoff. A record is current while it names the pull request's head and base SHAs. A record on a hot-fix's delivering pull request is current as the hot-fix [Review Rule](hotfix.md#review-rule) states. The last record for the same revision is authoritative.
 

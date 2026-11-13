@@ -31,7 +31,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 ### 3. Draft Each Initiative Body
 
 - For a new initiative, Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number "ƒ") for its proposed prefix with the initiative prefix letter.
-- Apply [Draft Initiative Issue Body](../artifacts/initiative-issue-body.md#draft-initiative-issue-body "ƒ") for each initiative with the scoped proposal, confirmed goal clauses, requirement sources, epic summaries and an output path in the record's folder. The epics' acceptance criteria carry the detail that makes the initiative's criteria true.
+- Apply [Draft Initiative Issue Body](../artifacts/initiative-issue-body.md#draft-initiative-issue-body "ƒ") for each initiative with the scoped proposal, where there is one, confirmed goal clauses, requirement sources, epic summaries and an output path in the record's folder. The epics' acceptance criteria carry the detail that makes the initiative's criteria true.
 
 ### 4. Populate the Epics
 
