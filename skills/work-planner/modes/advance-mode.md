@@ -57,7 +57,9 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - A held or unanswered decision under an allowance has no user to answer it: provide the pending queue with the [change list](../artifacts/plan-change.md#change-list) and stop. [Write](#7-write) treats that queue as incomplete.
 - A held decision put to the user continues with the user's answer; one the user leaves unanswered stops this step as one under an allowance does.
 
-- For `order`, the answer is the [parallel work map](../artifacts/work-priority.md#priority-sets): a positive integer on each listed initiative, or none left unordered.
+- For `order`:
+  - The answer is the [parallel work map](../artifacts/work-priority.md#priority-sets): a positive integer or none on each listed initiative.
+  - Record each initiative answered none as confirmed unplanned.
 
 - For `ask`:
   - The answer is a positive integer or none.

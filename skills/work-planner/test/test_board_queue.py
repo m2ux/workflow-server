@@ -293,6 +293,15 @@ class Queue(unittest.TestCase):
         self.assertNotIn('→', out)
         self.assertNotIn('the queue is current', out)
 
+    def test_an_order_leaves_out_each_initiative_confirmed_unplanned(self):
+        feature = initiative(1, 'Feature: One', (f"[E00]({url('issues', 3)})", ''), priority='')
+        debt = initiative(2, 'Debt: One', (f"[E00]({url('issues', 4)})", ''), priority='')
+        items = staged((feature, 'Backlog'), (debt, 'Backlog'),
+                       (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog'),
+                       (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog'))
+        self.assertIn('order: #2 [I02] Debt: One', queue(items, unplanned=('1',)))
+        self.assertNotIn('order:', queue(items, unplanned=('1', '2')))
+
     def test_an_in_progress_initiative_without_priority_is_asked(self):
         bare = initiative(1, 'Bare: Current', (f"[E00]({url('issues', 2)})", ''), priority='')
         out = queue(staged((bare, 'In Progress'), (epic(2, '01:E00', ('W01', 'Go', '')), 'In Progress')))
