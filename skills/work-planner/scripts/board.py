@@ -51,7 +51,7 @@ The board's Status field offers Backlog, Ready, In Progress and Done, and In Rev
 statuses.py holds the field, the option body files and the fallback for an option the board lacks.
 
 A dependency within an epic is delivered when its task row is, or its issue is closed as completed. A dependency on another epic's task is met when that row is delivered and each output it delivered is available at the consumer's base, as Outputs verifies; the producer epic's other rows and its closure gate nothing. It gates the row naming it and leaves its siblings free. board.py reads no checkout, so an output in the consumer's own repository is unverified here, and a task naming its row stays in Backlog until its session holds it; an output another repository holds is available once it has reached its long-lived branch. An epic starts only after every prerequisite epic its initiative row names is completed. A task row is
-delivered when a linked pull request has merged, or its id links a commit. A row that links a task
+delivered when a linked pull request has merged, or its id links a commit and no pull request. A row that links a task
 issue and no pull request is delivered when that issue is closed as completed. An open pull request
 does not deliver the task. A bare #750 names an issue in the repository of the issue whose row cites it. An entry naming no row and
 linking no issue, naming an issue not given (another initiative's epic, #750) or naming a row an
@@ -314,7 +314,7 @@ class Board:
                     self.unresolved.append(f'{why}: {found[2]} is not in --prs')
                 elif pr.get('merged_at'):
                     merged = True
-        if commits or merged:
+        if merged or (commits and not pulls):
             return Resolution.MET
         if pulls:
             return Resolution.UNMET

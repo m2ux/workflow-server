@@ -462,6 +462,15 @@ class TaskLinks(unittest.TestCase):
         fixed = synced(epic, [pr(950, '[I01:E00] Work', base='i01/e00/main')], '--link', 'W01=950')
         self.assertIn(f"| [W01]({url('commit', sha)}), [W01]({url('pull', 950)}) | Work | AC1 | | | | |", fixed)
 
+    def test_a_pushed_commit_beside_an_open_pull_request_does_not_deliver(self):
+        commit = url('commit', 'b41c0bf3e2201452ba9b9fffe6c681b157a5e946')
+        body = epic_body((f"[W01]({url('pull', 950)}), [W01]({commit})", 'Work', ''))
+        epic = issue(2, '[I01:E00] First: Epic', body=body.replace('- [ ] **AC1.**', '- [x] **AC1.**'))
+        done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work', base='i01/e00/main')])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertNotIn('| ✓ |', fixed)
+        self.assertNotIn('closable: yes', done.stdout)
+
     def test_a_short_commit_sha_is_refused(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
         with self.assertRaisesRegex(AssertionError, 'full commit SHA'):
