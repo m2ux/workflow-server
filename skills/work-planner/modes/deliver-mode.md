@@ -210,7 +210,6 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 #### 6. Implement
 
 - Deliver each task branch in the unit checkout its [Work Identity](../artifacts/delivery-brief.md#work-identity) names, with every test the work item names, as [Tables](../artifacts/issue-body.md#tables) state.
-- Commit each declared file on the [planning-records branch](../rules.md#rules) in the engineering worktree and push it. A unit that changes only that branch opens no pull request: Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for its rows with the project checkout, the fetched epic bases and the pushed commit, and continue to [Arising Issues](#11-arising-issues).
 
 - Group the unit's work items by the files they declare, work items sharing any file in one group, and give each group to the sub-agent dispatch this session provides when the unit has more than one group and [actual free slots](../artifacts/dispatch-batch.md#session-inventory) permit it.
 - Give each sub-agent the unit's worktree, its group's work items, and the criteria those work items cover.
@@ -219,6 +218,10 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 - Write a file two groups reach — a shared test, an index, a manifest — in this session.
 - Stage and commit each returning group's own files, then run the unit's tests once every group has provided.
 - A group with no available sub-agent capacity is delivered by this session, as is a unit of one group.
+
+- Once the unit's tests pass, commit each declared file on the [planning-records branch](../rules.md#rules) in the engineering worktree and push it.
+- A unit that changes only that branch opens no pull request. Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for its rows with the project checkout, the fetched epic bases and the pushed commit, and Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
+- For that unit, Follow [Task Merge](../protocols/task-merge.md "ƒ") in the project checkout with the pushed commit as its delivery, the unit's current task and epic evidence, and the board identity the brief names, then continue to [Arising Issues](#11-arising-issues).
 
 #### 7. Open the Pull Request
 

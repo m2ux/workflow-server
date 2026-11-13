@@ -135,7 +135,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - An absent, empty or unreadable statement, and statements that disagree across the bases, are reported `unevaluable` with their source. Without the long-lived branch names, the run names each check it did not make as `not checked`, and an epic that would otherwise be closable is not.
 - An open review pull request's Changes paths are read at its head commit in the `--project` repository: a path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree. A head commit the repository does not hold is reported `unevaluable`.
 - Passed checks settle criteria under [Test Evidence](#test-evidence).
-- Repeat a task id in `--link` once per pull request, one per long-lived branch its unit changes, and once with the full SHA of the commit pushed to the planning-records branch. Retain its existing deliveries and add only those missing, so repeated execution is idempotent.
+- Repeat a task id in `--link` once per pull request, one per long-lived branch its unit changes, or once with the full SHA of the pushed commit when its unit changes only the planning-records branch. Retain its existing deliveries and add only those missing, so repeated execution is idempotent.
 
 - `<task-pull-request-map>` is a comma-separated list of `<task-id>=<pull-request-number>` pairs, with a pair for each pull request a task id links, and a `<task-id>=<commit-sha>` pair for each commit it links. Pass each task JSON file as a separate argument after `--tasks`.
 
