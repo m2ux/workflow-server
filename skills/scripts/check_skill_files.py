@@ -57,7 +57,7 @@ selects enriched HTML invocations in the declared command specifications.
 `contracts: "Fields"` selects command input/output links whose targets are
 third-level Fields contracts. Procedures route calls and results; each
 command specification owns its complete contextual I/O contract.
-`link_roles: true` checks the ○, ● and ƒ link titles.
+`link_roles: true` checks the ○ and ● link titles.
 `preamble` lists required intro link targets; `calls` maps target directory
 names to Apply or Follow. Malformed and unknown options fail declaration
 validation before a partial model can run.
@@ -71,7 +71,7 @@ sits; a prerequisite citation names a section the reader must already hold,
 so its target belongs in another file.
 
 A declared contract section holds values. A numbered step, a numbered
-heading or a call verb on an operation link in it executes, and is reported.
+heading or a call verb on a link to an operation in it executes, and is reported.
 
 The skill-wide checks read what a skill declares rather than guessing from
 its prose. A mode reaches command specifications by their names; HTML command
@@ -120,7 +120,7 @@ RULE = re.compile(r'^\s*(-{3,}|\*{3,}|_{3,})\s*$')
 HEADING = re.compile(r'^(#{1,6})\s+(.*)$')
 LINK_DESTINATION = r'([^)]+?)(?:\s+"(?:\\.|[^"\\])*")?'
 LINK = re.compile(r'\[[^\]]*\]\(' + LINK_DESTINATION + r'\)')
-ROLE_TITLES = {'○': 'input', '●': 'output', 'ƒ': 'operation'}
+ROLE_TITLES = {'○': 'input', '●': 'output'}
 CODE_SPAN = re.compile(r'`[^`]*`')
 PLACEHOLDER = re.compile(r'\{\{.*\}\}|\{[a-z_]+\}|^[.…\s]*$')
 PREREQUISITE = re.compile(r'Read ((?:\[[^\]]+\]\([^)]+\)(?:,\s*)?)+) first\.')
@@ -190,7 +190,7 @@ KINDS = (
     'mode without a trigger phrase', 'hard-wrapped line',
     'list step in heading model', 'indented detail in heading model',
     'heading step sequence', 'procedure without heading steps', 'procedure preamble missing',
-    'command contract links', 'operation link role', 'fenced invocation in HTML model', 'malformed HTML invocation',
+    'command contract links', 'fenced invocation in HTML model', 'malformed HTML invocation',
     'invocation outside command specification', 'invocation argument contract', 'unescaped HTML in invocation', 'operation call verb',
     'unwrapped shell invocation', 'duplicate command parameter prose', 'redundant command wrapper', 'repeated procedure title',
     'executable step in Fields',
@@ -566,15 +566,10 @@ def operation_target(path, target):
 
 
 def link_roles(path, lines, fenced, entry):
-    """Role titles select Field contracts or callable operations."""
+    """Role titles select Field contracts."""
     if not entry or not (entry.get('link_roles') or entry.get('contracts')):
         return
     for index, target, role, source in role_links(lines, fenced):
-        callable_target = operation_target(path, target)
-        if entry.get('link_roles') and callable_target and role != 'operation':
-            yield index, 'operation link role', source
-        elif entry.get('link_roles') and role == 'operation' and not callable_target:
-            yield index, 'operation link role', source
         if role in ('input', 'output') and not field_contract(path, target, entry.get('contracts', 'Fields')):
             yield index, 'command contract links', source
 
@@ -688,8 +683,6 @@ def html_commands(path, lines, fenced, entry, specs):
                 yield index, 'unescaped HTML in invocation', 'encode literal angle brackets as &lt; and &gt;'
             for match in ARGUMENT_LINK.finditer(lines[index]):
                 role = link_role(match)
-                if entry.get('link_roles') and role == 'operation':
-                    continue
                 if not field_contract(path, match[2], entry.get('contracts', 'Fields')):
                     yield index, 'invocation argument contract', match[2]
                 if entry.get('link_roles') and role not in ('input', 'output'):
