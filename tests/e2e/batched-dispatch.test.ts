@@ -23,6 +23,8 @@ import type { HistoryEntry } from '../../src/schema/state.schema.js';
  * - The first two stops bind the SAME THREE techniques. One walk reads how much of the second
  *   delivery the holding context already has against how much the first collapsed within itself,
  *   which needs content shared across stops and at least as much of it as the first stop carries.
+ * - The first stop binds one further technique, last. It is larger than the eager budget of the
+ *   window one walk declares, so that walk opens with room and fetches it afterwards.
  * - The last two bind one technique each. They exist to reach the cap and to be refused at it, and
  *   nothing reads what they deliver.
  */
@@ -177,6 +179,110 @@ describe('batched dispatch (#407)', () => {
     // The batch reported its own headroom as spent on the way in, so a cooperating worker stops
     // there without needing the refusal.
     expect(walk.batches[0]!['may_continue']).toBe(false);
+  });
+
+  it('respawns when a fetch after open is what exhausts the budget', async () => {
+    // The window is the other side of the walk above. There the opening response is already over
+    // the budget, so the refusal is decided before any fetch. Here the opening response still fits
+    // — 6_000 tokens budgets 8_400 characters, and this fixture's opening delivery sits under that —
+    // and the last technique of the opening activity is larger than the eager budget at this window,
+    // so it is absent from the response. The fetch of that technique is what crosses the budget.
+    const tokens = 6_000;
+    const scope = 'worker-run-spent';
+    const replacement = 'worker-run-respawned';
+    const { client } = h;
+    const planningFolder = join(h.workspaceDir, '.engineering/artifacts/planning', scope);
+    const start = await client.callTool({
+      name: 'start_session',
+      arguments: { workflow_id: WORKFLOW, agent_id: 'orchestrator', planning_folder: planningFolder },
+    });
+    if (isError(start)) throw new Error(`start_session failed: ${rawText(start)}`);
+    const sessionIndex = parseToolResponse(start).session_index as string;
+
+    await client.callTool({
+      name: 'next_activity',
+      arguments: { session_index: sessionIndex, activity_id: RUN[0] },
+    });
+    const opened = await client.callTool({
+      name: 'get_activity',
+      arguments: { session_index: sessionIndex, context_tokens: tokens, agent_id: scope },
+    });
+    if (isError(opened)) throw new Error(`get_activity ${RUN[0]} failed: ${rawText(opened)}`);
+    const openBatch = (opened._meta as Record<string, unknown>)['batch'] as Record<string, unknown>;
+    const openChars = openBatch['delivered_chars'] as number;
+    const budgetChars = openBatch['budget_chars'] as number;
+    expect(budgetChars).toBe(8_400);
+    expect(openBatch['may_continue']).toBe(true);
+    expect(openChars).toBeLessThanOrEqual(budgetChars);
+    // Bundling ran for the techniques that fit, and stopped before the one that does not.
+    expect(rawText(opened)).toContain('▼ STEP prepare');
+    expect(rawText(opened)).not.toContain('outgrows the eager budget');
+
+    const fetched = await client.callTool({
+      name: 'get_technique',
+      arguments: { session_index: sessionIndex, step_id: 'surplus', agent_id: scope },
+    });
+    if (isError(fetched)) throw new Error(`get_technique surplus failed: ${rawText(fetched)}`);
+    expect(rawText(fetched)).toContain('outgrows the eager budget');
+    expect(rawText(fetched)).not.toContain('delivery: unchanged');
+
+    const advanced = await client.callTool({
+      name: 'next_activity',
+      arguments: {
+        session_index: sessionIndex,
+        activity_id: RUN[1],
+        from_activity: RUN[0],
+        agent_id: scope,
+        context_tokens: tokens,
+      },
+    });
+    if (isError(advanced)) throw new Error(`next_activity ${RUN[1]} failed: ${rawText(advanced)}`);
+    const advancedBatch = (advanced._meta as Record<string, unknown>)['batch'] as Record<string, unknown>;
+    // The same identity, read after the fetch: the opening had room and this boundary does not.
+    expect(advancedBatch['may_continue']).toBe(false);
+    expect(advancedBatch['delivered_chars'] as number).toBeGreaterThan(advancedBatch['budget_chars'] as number);
+
+    const refused = await client.callTool({
+      name: 'get_activity',
+      arguments: { session_index: sessionIndex, context_tokens: tokens, agent_id: scope },
+    });
+    expect(isError(refused)).toBe(true);
+    expect(rawText(refused)).toContain('over the batch budget');
+
+    // The activity the reading refused is taken by a new identity, which is the respawn.
+    const spawned = await client.callTool({
+      name: 'get_activity',
+      arguments: { session_index: sessionIndex, context_tokens: tokens, agent_id: replacement },
+    });
+    if (isError(spawned)) throw new Error(`get_activity replacement failed: ${rawText(spawned)}`);
+    expect((spawned._meta as Record<string, unknown>)['dispatch']).toBe('fresh');
+
+    const history = (JSON.parse(readFileSync(join(planningFolder, 'session.json'), 'utf8')) as { history: HistoryEntry[] }).history;
+    const fetch = history.find(e =>
+      e.type === 'technique_fetched'
+      && (e.data as { agentId?: string; stepId?: string } | undefined)?.agentId === scope
+      && (e.data as { stepId?: string }).stepId === 'surplus');
+    const fetchData = fetch?.data as { chars?: number; delivery?: string } | undefined;
+    expect(fetchData?.delivery).toBe('full');
+    expect(fetchData?.chars ?? 0).toBeGreaterThan(budgetChars - openChars);
+
+    const spent = history.filter(e =>
+      e.type === 'activity_dispatched' && (e.data as { agentId?: string }).agentId === scope);
+    expect(spent.map(e => e.activity)).toEqual([RUN[0]]);
+
+    const refusals = history.filter(e => e.type === 'batch_refused');
+    expect(refusals).toHaveLength(1);
+    expect(refusals[0]!.activity).toBe(RUN[1]);
+    expect(refusals[0]!.data as Record<string, unknown>).toMatchObject({
+      agentId: scope,
+      limit: 'delivery_budget',
+      activities: 1,
+    });
+
+    const respawned = history.filter(e =>
+      e.type === 'activity_dispatched' && (e.data as { agentId?: string }).agentId === replacement);
+    expect(respawned.map(e => e.activity)).toEqual([RUN[1]]);
+    expect(respawned.map(e => (e.data as { dispatch: string }).dispatch)).toEqual(['fresh']);
   });
 
   it('serves an activity the context already holds, so a batch survives its gates', async () => {
