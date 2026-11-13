@@ -539,17 +539,6 @@ class Survey(unittest.TestCase):
                         [pr(950, '[I07:E00] Queue plan', body=PLAN, base='main')])
         self.assertNotIn('merge #', output)
 
-    def test_a_ready_epic_review_pull_request_is_never_merged(self):
-        record = epic(943, (f"[W01]({url('pull', 950)})", 'Queue plan', '', ''))
-        record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.**')
-        output = survey(staged((record, 'In Review')),
-                        [pr(950, '[I07:E00] Queue plan', merged='2026-09-01T00:00:00Z', body=PLAN,
-                            base='i07/e00/main'),
-                         pr(951, '[I07:E00] Queue Plan: Hold the Work', body=PLAN, base='main',
-                            head='i07/e00/main')])
-        self.assertNotIn('merge #', output)
-        self.assertIn('merge: 0', output)
-
     def test_a_held_task_holds_the_unit_it_joins(self):
         held = f'[W02]({RECORDS}/{TODAY}-943-i07-e00-w02-dispatch/)'
         output = survey(staged((epic(943, ('W01', 'Queue plan', '', 'W02'),

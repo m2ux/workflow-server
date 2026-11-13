@@ -36,4 +36,4 @@ Follow [Review Pull Request](review-pull-request.md "ƒ") for the affected epic 
 - Refresh the evidence.
 - Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for the current epic in the project checkout with the fetched epic bases.
 - Follow [Issue Closure](issue-closure.md "ƒ") when eligible.
-- Run [Sync Initiative](../artifacts/initiative-issue-body.md#sync-initiative "ƒ") with the current initiative and every linked epic record. Initiative completion does not gate an epic merge. The epic entering review is the one board change a task merge makes, and the initiative is left to its own sync.
+- Run [Sync Initiative](../artifacts/initiative-issue-body.md#sync-initiative "ƒ") with the current initiative and every linked epic record. Initiative completion does not gate the epic's closure. The epic entering review is the one board change a task merge makes, and the initiative is left to its own sync.
