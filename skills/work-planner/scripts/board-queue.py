@@ -250,9 +250,15 @@ class Queue:
                 self.notes.append(f"  rank {self.line(key)}: {', '.join(names)}")
 
     def order(self, keys: list[tuple[str, int]]) -> None:
-        """The initiatives the user maps when the board has no priority and nothing In Progress."""
+        """The initiatives the user maps when the board has no priority, less those confirmed unplanned.
+
+        A board whose every open initiative is confirmed unplanned has no order to decide.
+        """
         found = [key for key in keys if self.status.get(key) not in ('Done', 'In Review')]
-        body = ', '.join(self.line(key) for key in sorted(found)) or 'none'
+        pending = [key for key in found if key not in self.unplanned]
+        if found and not pending:
+            return
+        body = ', '.join(self.line(key) for key in sorted(pending)) or 'none'
         self.notes.append(f'  order: {body}')
 
     def ready_units(self) -> None:
@@ -335,22 +341,22 @@ class Queue:
         for key in open_initiatives:
             if rank(self.issues[key]) is None and self.status.get(key) == 'Ready':
                 self.shelve(key)
+        in_progress = [key for key in open_initiatives if self.status.get(key) == 'In Progress']
+        for key in in_progress:
+            if key not in self.unplanned or rank(self.issues[key]) is not None:
+                continue
+            if not self.wait(key):
+                self.shelve(key)
         labelled = [key for key in open_initiatives if rank(self.issues[key]) is not None]
         if not labelled:
             self.order(open_initiatives)
             self.park()
             self.unranked()
             return
-        in_progress = [key for key in open_initiatives if self.status.get(key) == 'In Progress']
         for key in in_progress:
             if rank(self.issues[key]) is not None or key in self.unplanned:
                 continue
             self.notes.append(f'  ask {self.line(key)}: priority')
-        for key in in_progress:
-            if key not in self.unplanned or rank(self.issues[key]) is not None:
-                continue
-            if not self.wait(key):
-                self.shelve(key)
         self.place_sets(open_initiatives)
         self.park()
         self.unranked()

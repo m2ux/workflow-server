@@ -64,7 +64,7 @@ The queue contains calls for Status and assignee changes to initiatives, epics a
 
 | Line | When It Is Printed | What It Names |
 | --- | --- | --- |
-| `order` | No open initiative has a priority label | The open initiatives, including any already In Progress, for a [parallel work map](work-priority.md#priority-sets) |
+| `order` | No open initiative has a priority label, and one is not confirmed [unplanned](#unplanned-initiatives) | The open initiatives not confirmed unplanned, including any already In Progress, for a [parallel work map](work-priority.md#priority-sets) |
 | `ask` | An initiative is In Progress and has no priority label | That initiative, for a positive integer or none |
 | `wait` | An initiative is held In Progress by an epic it lists that is active, handed off or In Review | That initiative, the open delivery pull requests, and each epic In Review, awaiting review or held by a session |
 | `reconcile` | An initiative would return to Backlog while an epic of it is active, handed off or In Review | That initiative and each such epic, for the user to finish or release |
