@@ -11,15 +11,11 @@ The verified findings presented for resolution.
 #### 1. Populate Verified Findings
 
 - For each item in [Finding Set](#finding-set):
-
-- Verify the problem against the source in [Finding Evidence](#finding-evidence).
-
-- If evidence is missing or contradictory, provide that finding for the caller to resolve.
-
-- Populate the finding with its source quotation.
-- It must meet [Finding Content](#finding-content) and [Decision State](#decision-state).
-
-- Retain [Finding Result](#finding-result) with the finding and any pending decision.
+  - Verify the problem against the source in [Finding Evidence](#finding-evidence).
+  - If evidence is missing or contradictory, provide that finding for the caller to resolve.
+  - Populate the finding with its source quotation.
+  - It must meet [Finding Content](#finding-content) and [Decision State](#decision-state).
+  - Retain [Finding Result](#finding-result) with the finding and any pending decision.
 
 ##### Verified Finding Set
 

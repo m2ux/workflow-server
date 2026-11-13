@@ -160,7 +160,7 @@ class ApprovedBeforeDrafting(unittest.TestCase):
         read = ('- Apply [Select Proposals Board](../artifacts/proposals-board.md#select-proposals-board "ƒ"), then '
                 'Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for that board, and read the '
                 'Status of the proposal\'s item.')
-        self.assertIn('- When the user names a proposal:\n\n' + read, take)
+        self.assertIn('- When the user names a proposal:\n  ' + read, take)
         self.assertLess(take.index(read), take.index('- At [Approved]'))
 
     def test_a_requested_status_places_the_proposal_without_asking(self):

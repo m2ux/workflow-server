@@ -30,8 +30,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 #### Changed Branch Content
 
 - When the branch content changes, before checking merge readiness:
-- Follow [Review Pull Request](review-pull-request.md "ƒ") again with the current task merges.
-- Follow [Change Overview](change-overview.md "ƒ") again with the same pull request identity and updated head.
+  - Follow [Review Pull Request](review-pull-request.md "ƒ") again with the current task merges.
+  - Follow [Change Overview](change-overview.md "ƒ") again with the same pull request identity and updated head.
 
 #### Current Review Handoff
 

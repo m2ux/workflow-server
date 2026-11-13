@@ -21,10 +21,10 @@ A review record for the exact integration revision.
 - An observation with an unresolved classification, missing scope evidence or an unsaved arising issue remains a finding with its required disposition.
 
 - When a finding is recorded:
-- Fix every finding on the reviewed branch, blocking or not, with the smallest edit that makes the criteria hold.
-- When findings cluster in one mechanism, question that mechanism; removing it is preferred to guarding it.
-- Run appropriate regression checks.
-- Apply [Produce Agent Review](#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence, then provide its review record to the requester and stop.
+  - Fix every finding on the reviewed branch, blocking or not, with the smallest edit that makes the criteria hold.
+  - When findings cluster in one mechanism, question that mechanism; removing it is preferred to guarding it.
+  - Run appropriate regression checks.
+  - Apply [Produce Agent Review](#produce-agent-review "ƒ") for the resulting head with fresh metadata and updated validation evidence, then provide its review record to the requester and stop.
 
 - Every finding must be fixed and re-checked at the recorded head before handoff.
 

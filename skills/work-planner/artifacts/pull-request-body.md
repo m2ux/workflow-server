@@ -28,9 +28,9 @@ The current change carried by one epic base.
 #### 2. Account for Task Merge
 
 - For a later task merge:
-- Restate each standing Changes bullet the merged change makes false, so the bullet states the base as it now is.
-- Add its functional change under the corresponding area.
-- Cite the merged task pull request as the next reference.
+  - Restate each standing Changes bullet the merged change makes false, so the bullet states the base as it now is.
+  - Add its functional change under the corresponding area.
+  - Cite the merged task pull request as the next reference.
 
 #### 3. Provide Updated Body
 

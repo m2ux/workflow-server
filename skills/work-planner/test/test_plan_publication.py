@@ -144,7 +144,7 @@ def walk(tracker, text=None):
     text = SOURCE.read_text() if text is None else text
     parent = section(text, '#### Parent Identity')
     for raw in parent.splitlines():
-        line = raw.removeprefix('- ').strip()
+        line = raw.strip().removeprefix('- ').strip()
         if not line:
             continue
         if line.startswith('For a new initiative,'):
@@ -165,14 +165,14 @@ def walk(tracker, text=None):
             raise AssertionError(f'unsupported parent clause: {line}')
 
     publication = section(text, '#### Epic Publication').splitlines()
-    boundary = next(i for i, line in enumerate(publication) if line.startswith('- After every epic'))
+    boundary = next(i for i, line in enumerate(publication) if line.lstrip().startswith('- After every epic'))
     loop = publication[:boundary]
     assert any('For each new or revised epic in dependency order:' in line for line in loop)
     for epic in tracker.ordered_epics():
         tracker.current = epic
         tag = tracker.tag(epic)
         for raw in loop:
-            line = raw.removeprefix('- ').strip()
+            line = raw.strip().removeprefix('- ').strip()
             if not line or line.startswith('For each new or revised epic'):
                 continue
             if line.startswith('Replace its temporary prerequisite links'):
@@ -190,7 +190,7 @@ def walk(tracker, text=None):
             else:
                 raise AssertionError(f'unsupported epic clause: {line}')
     for raw in publication[boundary:]:
-        line = raw.removeprefix('- ').strip()
+        line = raw.strip().removeprefix('- ').strip()
         if not line:
             continue
         if line.startswith('After every epic is saved'):
@@ -206,7 +206,7 @@ def walk(tracker, text=None):
             raise AssertionError(f'unsupported parent publication clause: {line}')
 
     for raw in section(text, '#### Saved Validation').splitlines():
-        line = raw.removeprefix('- ').strip()
+        line = raw.strip().removeprefix('- ').strip()
         if not line:
             continue
         operations = CALL.findall(line)
@@ -333,7 +333,7 @@ class SavedPlanPublication(unittest.TestCase):
 
     def test_removing_saved_parent_publication_rejects_the_stale_parent_fixture(self):
         text = '\n'.join(line for line in SOURCE.read_text().splitlines()
-                         if not line.startswith('- Apply [Save Tracker Issue]')
+                         if not line.lstrip().startswith('- Apply [Save Tracker Issue]')
                          or "for the initiative with its complete intended rows" not in line)
         tracker = Tracker()
         result, events = walk(tracker, text)

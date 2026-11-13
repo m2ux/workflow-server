@@ -19,8 +19,8 @@ Run [List Epic Bases](#list-epic-bases "ƒ") in the project checkout for [Epic I
 #### 3. Resolve Missing Branch Configuration
 
 - If `config/branches` is missing or empty at that revision, or does not name the changed branch:
-- Report the names as unevaluable at that revision.
-- Obtain the project's branch names before creating delivery branches.
+  - Report the names as unevaluable at that revision.
+  - Obtain the project's branch names before creating delivery branches.
 
 #### 4. Require Confirmed Prerequisites
 
@@ -29,14 +29,11 @@ Require the caller's confirmed [prerequisite evidence](#prerequisite-evidence) b
 #### 5. Create Missing Epic Bases
 
 - For each missing base in the project checkout, use its corresponding long-lived branch, epic base name and confirmed prerequisites:
-
-- Require confirmed [Prerequisite Evidence](#prerequisite-evidence) and a missing destination for [Epic-Base Name](#epic-base-name). Refuse a destination that already exists.
-
-- Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the corresponding long-lived [source branch](#source-branch), such as `main`.
-
-- After a successful fetch:
-- Run [Publish Epic Base](#publish-epic-base "ƒ") in the project checkout with that remote source and the missing epic base name, such as `i07/e00/main`, meeting [Epic Bases](#epic-bases).
-- Retain [Branch Result](#branch-result) with the created branch, or [Failure](#failure).
+  - Require confirmed [Prerequisite Evidence](#prerequisite-evidence) and a missing destination for [Epic-Base Name](#epic-base-name). Refuse a destination that already exists.
+  - Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the corresponding long-lived [source branch](#source-branch), such as `main`.
+  - After a successful fetch:
+    - Run [Publish Epic Base](#publish-epic-base "ƒ") in the project checkout with that remote source and the missing epic base name, such as `i07/e00/main`, meeting [Epic Bases](#epic-bases).
+    - Retain [Branch Result](#branch-result) with the created branch, or [Failure](#failure).
 
 #### 6. Provide Prepare Delivery Bases
 
@@ -69,8 +66,8 @@ Run [Merge Remote Branch](#merge-remote-branch "ƒ") in the epic base checkout w
 #### 6. Publish Updated Epic Base
 
 - After a successful merge:
-- Run [Push Epic Base](#push-epic-base "ƒ") in the epic base checkout.
-- Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
+  - Run [Push Epic Base](#push-epic-base "ƒ") in the epic base checkout.
+  - Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
 
 ### Update Task Branch
 
@@ -91,8 +88,8 @@ Run [Merge Remote Branch](#merge-remote-branch "ƒ") in the unit checkout with t
 #### 4. Publish Updated Task Branch
 
 - After a successful merge:
-- Run [Push Task Branch](#push-task-branch "ƒ") in the unit checkout with [Task Branch](#task-branch) as destination.
-- Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
+  - Run [Push Task Branch](#push-task-branch "ƒ") in the unit checkout with [Task Branch](#task-branch) as destination.
+  - Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
 
 ### Create Pull Request Worktree
 
@@ -117,10 +114,10 @@ Take the worktree path from the [pull request number](#pull-request-number), mee
 #### 5. Check Existing Review Worktree
 
 - If that worktree already exists:
-- Run [Read Checkout Revision](#read-checkout-revision "ƒ") in that review checkout for `HEAD`.
-- Run [Read Checkout Status](#read-checkout-status "ƒ") there.
-- Reuse it only at the verified head and when its status reports detached HEAD with no tracked or untracked changes.
-- Otherwise retain it and select an unused path suffixed with the verified commit.
+  - Run [Read Checkout Revision](#read-checkout-revision "ƒ") in that review checkout for `HEAD`.
+  - Run [Read Checkout Status](#read-checkout-status "ƒ") there.
+  - Reuse it only at the verified head and when its status reports detached HEAD with no tracked or untracked changes.
+  - Otherwise retain it and select an unused path suffixed with the verified commit.
 
 #### 6. Add Detached Review Worktree
 

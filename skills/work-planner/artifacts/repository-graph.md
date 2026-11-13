@@ -15,8 +15,8 @@ Run [Index Status](#index-status "ƒ") in the [review checkout](#review-checkout
 #### 2. Refresh Absent or Stale Index
 
 - If the repository is unindexed or behind [Requested Revision](#requested-revision):
-- Run [Index Repository](#index-repository "ƒ") in the review checkout.
-- Confirm freshness.
+  - Run [Index Repository](#index-repository "ƒ") in the review checkout.
+  - Confirm freshness.
 
 #### 3. Measure Change Surface
 

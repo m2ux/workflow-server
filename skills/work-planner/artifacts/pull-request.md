@@ -44,18 +44,17 @@ The observed or updated Development relation for a pull request.
 #### 1. Read Complete Development Relation
 
 - For a read-only [Link Request](#link-request), use [Authenticated Access](#authenticated-access):
-- Apply [Read Pull Request State](#read-pull-request-state "ƒ") for the [pull request](#identity)'s metadata, which carries the `html_url` the capture keys it by.
-- Run [Capture Pull Request Links](#capture-pull-request-links "ƒ") with that record and provide its entry, every page read. An unreadable relation is a blocker, not an empty link set.
+  - Apply [Read Pull Request State](#read-pull-request-state "ƒ") for the [pull request](#identity)'s metadata, which carries the `html_url` the capture keys it by.
+  - Run [Capture Pull Request Links](#capture-pull-request-links "ƒ") with that record and provide its entry, every page read. An unreadable relation is a blocker, not an empty link set.
 
 #### 2. Edit Authorized Development Relation
 
 - For a link edit:
-- Require confirmed [Repository Prerequisite](#repository-prerequisite); an unconfirmed setting blocks the edit.
-- For an addition, Run [Set Development Link](#set-development-link "ƒ") with the pull request and [Issue Identity](#issue-identity).
-
-- For removal of an abandoned or incorrect link:
-- Require [Removal Decision](#removal-decision).
-- Run [Remove Development Link](#remove-development-link "ƒ") with those identities.
+  - Require confirmed [Repository Prerequisite](#repository-prerequisite); an unconfirmed setting blocks the edit.
+  - For an addition, Run [Set Development Link](#set-development-link "ƒ") with the pull request and [Issue Identity](#issue-identity).
+  - For removal of an abandoned or incorrect link:
+    - Require [Removal Decision](#removal-decision).
+    - Run [Remove Development Link](#remove-development-link "ƒ") with those identities.
 
 #### 3. Provide Verified Relation
 
@@ -205,9 +204,9 @@ Apply [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close "ƒ
 - Stop on `human-handoff`, `harness-denial` or an unconfirmed mutation outcome, returning the provided result to the caller.
 
 - Only for `github-refusal`, refresh once:
-- Apply [Update Task Branch](delivery-branches.md#update-task-branch "ƒ") with the [unit checkout](#unit-checkout), the task branch and its base.
-- Apply [Fetch Merge Readiness](#fetch-merge-readiness "ƒ") again for the updated task head.
-- Apply [Merge Delivery Pull Request](#merge-delivery-pull-request "ƒ") once more with that verified evidence. Continue to confirmation only for `confirmed-merge`; return any other result without another attempt. A conflict or repeated refusal leaves the pull request open with the blocker reported.
+  - Apply [Update Task Branch](delivery-branches.md#update-task-branch "ƒ") with the [unit checkout](#unit-checkout), the task branch and its base.
+  - Apply [Fetch Merge Readiness](#fetch-merge-readiness "ƒ") again for the updated task head.
+  - Apply [Merge Delivery Pull Request](#merge-delivery-pull-request "ƒ") once more with that verified evidence. Continue to confirmation only for `confirmed-merge`; return any other result without another attempt. A conflict or repeated refusal leaves the pull request open with the blocker reported.
 
 #### 3. Confirm Task Merge Result
 
