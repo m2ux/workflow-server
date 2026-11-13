@@ -1,0 +1,27 @@
+--- problems
+none
+
+--- joins: candidate units, rows of one epic extending one file
+E00:W01, E00:W02, E00:W03 extend workspace:skills/work-planner/test/test_plan_mode.py: split by rule, 7 criteria exceed the bound of 6
+E00:W01, E00:W02, E00:W04 extend workspace:skills/work-planner/artifacts/planning-record.md: split by rule, 7 criteria exceed the bound of 6
+E00:W01, E00:W03, E00:W04, E00:W05 extend workspace:skills/work-planner/test/README.md: split by rule, 9 criteria exceed the bound of 6
+
+--- advisory: numbering against start order
+none
+
+--- levels (0 = can start now)
+0 E00:W01 - Engineering Branch owns where records land
+0 E00:W02 - Planning Record holds the general record
+1 E00:W03 - Plan-side owners define their record files
+1 E00:W04 - Layout check gates a new record
+2 E00:W05 - Delivery-side owners define their record files
+
+--- component contention: rows of different epics extending one file
+none
+
+--- epic priority (epics sharing a number start together)
+1 E00
+
+--- longest chains: 1, each of 3 steps
+on every chain: E00:W02, E00:W03, E00:W05
+E00:W02 -> E00:W03 -> E00:W05
