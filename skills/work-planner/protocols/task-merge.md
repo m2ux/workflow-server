@@ -28,7 +28,7 @@ Follow [Review Pull Request](review-pull-request.md "ƒ") for the affected epic 
 ### 4. Complete When Ready
 
 - When every task and criterion is complete:
-- Follow [Epic Integration](epic-integration.md "ƒ") with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot, criterion verification evidence and supplied board identity. An unmet delivery or merge condition stays pending.
+- Follow [Epic Integration](epic-integration.md "ƒ") with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot, criterion verification evidence and supplied board identity. An unmet delivery or handoff condition stays pending.
 
 ### 5. Close the Epic
 

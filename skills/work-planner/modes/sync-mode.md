@@ -212,9 +212,9 @@ Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with e
 - For each open epic pull request:
 
 - Follow [Epic Integration](../protocols/epic-integration.md "ƒ") with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot, criterion verification evidence and selected board identity or its confirmed absence.
-- Report incomplete delivery or unmet merge requirements.
+- Report incomplete delivery, each handoff blocker and each review pull request handed to the user.
 
-- Fetch the pull requests again after merging.
+- Fetch the pull requests again, so an epic base the user has merged reads as merged.
 
 - Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the refreshed records, the same project checkout and the same epic bases.
 - Follow [Issue Closure](../protocols/issue-closure.md "ƒ") each epic the re-run reports closable.

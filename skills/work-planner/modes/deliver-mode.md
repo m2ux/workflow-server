@@ -35,7 +35,7 @@ The run the user requests for one theme board.
 
 #### 4. Report
 
-- Report each merged pull request, unresolved conflict, epic in review, review pull request update and running or finished unit, using [Report Lines](../artifacts/delivery-plan.md#report-lines) for survey results and [Session Inventory](../artifacts/dispatch-batch.md#session-inventory) for execution state.
+- Report each merged pull request, unresolved conflict, epic review pull request handed to the user, review pull request update and running or finished unit, using [Report Lines](../artifacts/delivery-plan.md#report-lines) for survey results and [Session Inventory](../artifacts/dispatch-batch.md#session-inventory) for execution state.
 
 - Include each held or blocked unit, what it waits on and any unavailable execution capacity.
 - Report the run's [change list](../artifacts/plan-change.md#change-list) as a list of its own, including applied and held changes.
@@ -293,9 +293,9 @@ Confirm the supplied reserved folder exists and the unit remains held for this s
 - **Parallel where the plan allows it.**
   The user has the epics the plan starts together under way at once, and within a unit, work that can proceed together does.
 - **Passed work merged.**
-  Each open pull request whose test plan has passed is merged, and one a conflict blocks stays open with the conflict named.
+  Each open task or hot-fix pull request whose test plan has passed is merged, and one a conflict blocks stays open with the conflict named.
 - **Review visible on the board.**
-  The user sees each completed epic in review on its theme board, with its review pull request ready once its delivery evidence passes.
+  The user sees each completed epic in review on its theme board, with its review pull request ready once its delivery evidence passes, and merges it after their own review.
 - **Held work visible.**
   The user sees existing sessions, held records and the evidence each blocked unit needs.
 - **One session for each unit.**
