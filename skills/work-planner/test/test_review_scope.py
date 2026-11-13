@@ -12,21 +12,20 @@ SEVERITIES = ('blocking', 'nonblocking')
 
 class ReviewScope(unittest.TestCase):
     def test_integration_review_dispositions_and_missing_links(self):
-        expected = {('blocking', 'open'): 'unresolved blocking', ('blocking', 'deferred'): 'unresolved blocking',
-                    ('nonblocking', 'open'): 'needs a disposition',
-                    ('nonblocking', 'deferred'): None, ('blocking', 'fixed'): None, ('nonblocking', 'fixed'): None}
+        expected = {('blocking', 'open'): 'unresolved', ('nonblocking', 'open'): 'unresolved',
+                    ('blocking', 'deferred'): 'invalid', ('nonblocking', 'deferred'): 'invalid',
+                    ('blocking', 'fixed'): None, ('nonblocking', 'fixed'): None}
         for (severity, disposition), problem in expected.items():
             with self.subTest(severity=severity, disposition=disposition):
                 pull, record = reviewed_pr()
-                link = 'evidence' if disposition == 'fixed' else 'ticket'
                 finding = dict(description='In-scope defect', severity=severity, disposition=disposition)
                 record['findings'] = [finding]
                 if problem:
-                    finding[link] = 'https://example.test/issues/84'
+                    finding['ticket'] = 'https://example.test/issues/84'
                     self.assertIn(problem, check(pull, [record]))
                     continue
-                self.assertIn('lacks linked evidence or ticket', check(pull, [record]))
-                finding[link] = 'https://example.test/issues/84'
+                self.assertIn('lacks linked evidence', check(pull, [record]))
+                finding['evidence'] = 'https://example.test/commit/84'
                 self.assertIsNone(check(pull, [record]))
 
     def test_scope_annotations_cannot_waive_an_open_or_deferred_hotfix_finding(self):
@@ -60,8 +59,8 @@ class ReviewScope(unittest.TestCase):
         pull, record = reviewed_pr()
         record['scope'] += ' Claimed unrelated observation is in the collection.'
         record['findings'] = [dict(description='Affected caller risk', severity='blocking',
-                                   disposition='deferred', ticket='https://example.test/issues/81')]
-        self.assertIn('blocking', check(pull, [record]))
+                                   disposition='open')]
+        self.assertIn('unresolved', check(pull, [record]))
 
     def test_scope_notes_do_not_establish_current_review_identity(self):
         pull, record = hotfix_pr()

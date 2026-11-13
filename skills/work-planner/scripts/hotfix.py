@@ -132,10 +132,5 @@ def unit_state(issue: dict, held: str | None, linking: list[dict], delivering: l
 def review(tips: Tips) -> Review:
     """The agent review rule for a hot-fix's pull request: a record is current while it names the pull
     request's head SHA and, as base_ref, its base branch, so a target moving on leaves the review
-    current and a retarget does not; every finding is fixed."""
-    return Review({'head': tips.head, 'base_ref': tips.base_ref}, _unfixed)
-
-
-def _unfixed(finding: dict) -> str:
-    """The fault of a hot-fix review finding left unfixed, or '' for a fixed one."""
-    return '' if finding.get('disposition') == 'fixed' else "unfixed finding on a hot-fix's delivering pull request"
+    current and a retarget does not."""
+    return Review({'head': tips.head, 'base_ref': tips.base_ref})

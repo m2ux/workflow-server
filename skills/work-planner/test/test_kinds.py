@@ -110,7 +110,6 @@ class Substitution(unittest.TestCase):
                 rule = kind.review(kinds.Tips('a' * 40, 'b' * 40, 'main'))
                 self.assertIsInstance(rule, kinds.Review)
                 self.assertIsInstance(rule.current, dict)
-                self.assertIsInstance(rule.finding_fault({'disposition': 'fixed'}), str)
 
 
 if __name__ == '__main__':

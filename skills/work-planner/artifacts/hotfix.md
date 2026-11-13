@@ -133,7 +133,7 @@ A repository-qualified reference to the hot-fix's delivering pull request.
 
 ### Review Rule
 
-The review rule a hot-fix's [delivering pull request](#delivering-pull-request) takes under [Review Record](agent-review.md#review-record). Its record also carries `base_ref`, the name of its base branch, and is current while it names the head SHA and that base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. Every finding is fixed, blocking or not.
+The review rule a hot-fix's [delivering pull request](#delivering-pull-request) takes under [Review Record](agent-review.md#review-record). Its record also carries `base_ref`, the name of its base branch, and is current while it names the head SHA and that base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not.
 
 ### Delivery Record
 

@@ -172,14 +172,6 @@ class Review(unittest.TestCase):
     def test_a_record_naming_the_head_and_base_branch_is_current(self):
         self.assertEqual(review(Tips('a' * 40, 'b' * 40, 'main')).current, {'head': 'a' * 40, 'base_ref': 'main'})
 
-    def test_every_finding_is_fixed(self):
-        rule = review(Tips('a' * 40, 'b' * 40, 'main'))
-        self.assertEqual(rule.finding_fault({'disposition': 'fixed'}), '')
-        for disposition in ('open', 'deferred'):
-            with self.subTest(disposition=disposition):
-                self.assertEqual(rule.finding_fault({'disposition': disposition}),
-                                 "unfixed finding on a hot-fix's delivering pull request")
-
 
 class ThroughTheRegistry(unittest.TestCase):
     """Each operation of the Kind interface, reached as a general script reaches it."""
