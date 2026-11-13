@@ -1,0 +1,20 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1716",
+    "base": "c1c069b412f2a341f4cc32456e00137bdff26bc7",
+    "base_ref": "workspace",
+    "head": "d26dc4c00cf596f4500bc3e23925981b0fdaf279",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-13-1715-f18-work-planner-memory-rules/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-13",
+    "scope": "The whole branch against workspace, c1c069b41..02cc78cb0, by an independent reviewer with issue #1715: every caller of Merge Delivery Pull Request, Produce Agent Review and Draft Initiative Issue Body; deliver.py ready_merges; Advance's sync step; greps for deferred, ticket, finding_fault, Submit Epic Merge, epic merge and proposal wording. 02cc78cb0..d26dc4c00 fixes its four findings; the session re-checked that change alone and ran the suites. Rejected as speculative: two open proposals boards matching at once; a task pull request headed by an epic base; Purpose and Plan mode both naming smaller work; a test name keeping the word deferred; the epic-review guard having no current caller.",
+    "criteria": "AC1: test_merge_outcomes shows Epic Integration names no merge operation and Merge Delivery Pull Request hands off an epic review before any mutation. AC2: test_deliver shows a ready epic review pull request yields no merge line. AC3: test_agent_review and test_review_scope refuse an unfixed finding at either severity. AC4: Find Proposals Board's jq selects a bare or prefixed Proposals title. AC5: check_skill_files.py reports 0 findings and the suites pass.",
+    "validation": "Planner suite at d26dc4c00: 1185 tests OK, 1 skipped. Shared suite: 295 tests OK. check_skill_files.py skills/work-planner: 65 files, 0 findings. git diff --check clean.",
+    "findings": [
+      {"description": "Plan mode's no-proposal path reached Draft Initiative Issue Body, which required a proposal for scope and criteria sources.", "severity": "blocking", "disposition": "fixed", "evidence": "https://github.com/m2ux/workflow-server/commit/d26dc4c00cf596f4500bc3e23925981b0fdaf279"},
+      {"description": "SKILL.md's Plan summary named an approved proposal only.", "severity": "nonblocking", "disposition": "fixed", "evidence": "https://github.com/m2ux/workflow-server/commit/d26dc4c00cf596f4500bc3e23925981b0fdaf279"},
+      {"description": "Review Record scope always described the full diff, against the re-check rule.", "severity": "nonblocking", "disposition": "fixed", "evidence": "https://github.com/m2ux/workflow-server/commit/d26dc4c00cf596f4500bc3e23925981b0fdaf279"},
+      {"description": "'none is deferred' named the removed disposition.", "severity": "nonblocking", "disposition": "fixed", "evidence": "https://github.com/m2ux/workflow-server/commit/d26dc4c00cf596f4500bc3e23925981b0fdaf279"}
+    ]
+  }
+]
