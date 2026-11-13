@@ -39,8 +39,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - For each unresolved issue reference:
   - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") into a file.
   - Add the provided file to the resolved off-board issue files.
-  - Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board, retaining resolved issue files and confirmed unplanned initiative identities.
-  - Repeat while references remain unresolved; an unavailable issue leaves the queue pending.
+- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board, retaining resolved issue files and confirmed unplanned initiative identities.
+- Repeat while references remain unresolved; an unavailable issue leaves the queue pending.
 
 ### 6. Resolve Queue Decisions
 

@@ -48,7 +48,7 @@ Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-re
 - For each unresolved initiative:
   - Run [Find Initiative Issue](../artifacts/issue.md#find-initiative-issue "ƒ").
   - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for its current JSON.
-  - Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-report "ƒ") again with all resolved initiative records, retaining the selected window, filter and original snapshots. An unavailable record remains a reported gap.
+- Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-report "ƒ") again with all resolved initiative records, retaining the selected window, filter and original snapshots. An unavailable record remains a reported gap.
 
 ### 6. Report
 

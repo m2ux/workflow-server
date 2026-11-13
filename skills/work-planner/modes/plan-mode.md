@@ -17,7 +17,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - When neither a proposal nor an existing initiative is named, judge the work's scale against the proposals board's [Purpose](../artifacts/proposals-board.md#purpose):
   - For a major project, Follow [Propose Mode](propose-mode.md "ƒ") with the user's goal and [Requested Status](propose-mode.md#requested-status) Approved; the user's confirmation of the goal approves the proposal.
-  - Resume this selection step with its published proposal, placed at Approved; an unresolved proposal blocks initiative drafting.
+    - Resume this selection step with its published proposal, placed at Approved; an unresolved proposal blocks initiative drafting.
   - For feature- or documentation-scale work, interview the user for the goal; the goal clauses they confirm define the problem scope.
 
 ### 2. Prepare the Planning Record
