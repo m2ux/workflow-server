@@ -16,10 +16,11 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - When the user names an initiative that already exists, Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for its body. That body defines the problem scope, and no proposal is raised for work it already carries.
 
-- When neither a proposal nor an existing initiative is named:
+- When neither a proposal nor an existing initiative is named, judge the work's scale against the proposals board's [Purpose](../artifacts/proposals-board.md#purpose):
 
-- Follow [Propose Mode](propose-mode.md "ƒ") with the user's goal and [Requested Status](propose-mode.md#requested-status) Approved; the user's confirmation of the goal approves the proposal.
+- For a major project, Follow [Propose Mode](propose-mode.md "ƒ") with the user's goal and [Requested Status](propose-mode.md#requested-status) Approved; the user's confirmation of the goal approves the proposal.
 - Resume this selection step with its published proposal, placed at Approved; an unresolved proposal blocks initiative drafting.
+- For feature- or documentation-scale work, interview the user for the goal; the goal clauses they confirm define the problem scope.
 
 ### 2. Prepare the Planning Record
 
@@ -103,6 +104,12 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Update the planning record with evidence, decisions and issue links.
 - Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record "ƒ") for the record's folder.
 
+#### Board Placement
+
+- Apply [Select Project Board](../artifacts/board.md#select-project-board "ƒ") for the initiative's theme.
+- Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with Backlog for each new initiative and epic.
+- Placing them Ready or In Progress is Advance's work, which first syncs every open initiative on the board and asks for a board-wide ranking; state that scope when offering it.
+
 ### 7. Keep the Goal Current
 
 - When the goal, a criterion, a Problem, a Proposal or an epic changes:
@@ -156,7 +163,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 ## Outcomes
 
 - **A scoped initiative.**
-  The user has an initiative scoped to the proposal they named, or to a proposal raised for that problem.
+  The user has an initiative scoped to the proposal they named, to a proposal raised for a major project, or to the goal they confirmed for smaller work.
 - **Several initiatives.**
   One proposal may become several initiatives. A partition by solution maturity, such as an MVP demo, a functional prototype, and a production-intent version, is an example of that result. Those initiatives may run in series or in parallel. The example does not limit the partition.
 - **A goal made true.**
