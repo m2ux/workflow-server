@@ -50,4 +50,3 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Refresh the review metadata and Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding.
 - Provide the ready review pull request to the user with its verified head, target, [Epic Readiness](../artifacts/pull-request.md#epic-readiness) and published agent review records, and return.
 - The user reviews and merges every epic review pull request, whatever its target's protection. This protocol makes no merge attempt; the epic's sync records the merge once it lands.
-
