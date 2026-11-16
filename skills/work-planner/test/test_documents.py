@@ -239,10 +239,10 @@ class DocumentInterfaces(unittest.TestCase):
     def test_script_reach_excludes_specimens_and_unexecuted_blocks(self):
         with tempfile.TemporaryDirectory() as directory:
             fixture = Path(directory)
-            (fixture / 'structure.json').write_text(json.dumps({'artifacts': {
-                'sections': ['Operations', 'Commands', 'Fields'], 'procedures': 'Operations',
-                'steps': 'headings', 'commands': 'html', 'specifications': 'Commands',
-            }}))
+            (fixture / 'guidelines.md').write_text(
+                '# Guidelines\n\n## Sections\n\n| Option | artifacts |\n| --- | --- |\n'
+                '| sections | Operations, Commands, Fields |\n| procedures | Operations |\n'
+                '| steps | headings |\n| commands | html |\n| specifications | Commands |\n')
             path = fixture / 'artifacts/control.md'
             path.parent.mkdir()
             path.write_text("""# Script Evidence

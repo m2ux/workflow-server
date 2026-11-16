@@ -43,9 +43,13 @@ before opening it. A skill's entry point takes the entry its structure names
 for it, or the shared guideline set when it has none. Any other file carrying
 no procedure keeps its own shape.
 
-A skill that adds directories of its own declares what they carry in its
-`structure.json`, keyed by an exact file name, a directory name or a
-`*suffix` its filenames end with. An explicit file-name entry selects that
+A skill that adds directories of its own declares what they carry in the
+Sections table of its guide, the one table its guide's Sections section
+holds, read by authors and by this check alike. Each column is a file
+selector: an exact file name, a directory name or a `*suffix` its filenames
+end with. Each row is an option, and a blank cell leaves it undeclared for
+that selector. A list cell is comma-separated, a flag is yes or no, and
+calls pairs each target directory with its verb. An explicit file-name entry selects that
 file before its directory or suffix entry. A directory key covers every file
 beneath that directory within the skill. Each entry may declare its
 section_level; an absent level means two. Command specifications sit one
@@ -54,12 +58,12 @@ in order, which of them are required, the section holding their command
 specifications, and whether a specification there belongs to its file
 whatever cites it. The `*` entry is the set for any other file carrying a
 procedure; a file carrying one that no entry covers is reported.
-Heading-based entries declare `steps: "headings"` and their `procedures`
-section. `commands: "html"` selects enriched HTML invocations in the declared
-command specifications. `contracts: "Fields"` selects command input/output
+Heading-based entries declare `steps` headings and their `procedures`
+section. `commands` html selects enriched HTML invocations in the declared
+command specifications. `contracts` Fields selects command input/output
 links whose targets are third-level Fields contracts. Procedures route calls
 and results; each command specification owns its complete contextual I/O
-contract. `link_roles: true` checks the ○, ● and ƒ link titles.
+contract. `link_roles` yes checks the ○, ● and ƒ link titles.
 `preamble` lists required intro link targets; `calls` maps target directory
 names to Apply or Follow. Malformed and unknown options fail declaration
 validation before a partial model can run.
@@ -143,7 +147,11 @@ BARE_LABEL = re.compile(r'^\s*(?:[-*+]\s+|\d+[.)]\s+)?\*\*(?:`[^`]*`|[^*])+\*\*\
 PROSE_LIMIT = 8
 LEAD_WIDTH = 100
 ENTRY_SECTIONS = ('Modes', 'Rules', 'Conventions', 'Dependencies')
-STRUCTURE = 'structure.json'
+# A skill's guide declares its file structure under this heading's anchor.
+SECTIONS_TABLE = 'sections'
+TABLE_RULE = re.compile(r'\|?[\s|:-]+\|?')
+LIST_OPTIONS = ('sections', 'required', 'preamble', 'scoped_children')
+BOOLEAN_OPTIONS = ('link_roles', 'keeps_commands')
 VOCABULARY = 'vocabulary.json'
 RULES = 'rules.json'
 GUIDE = 'guidelines.md'
@@ -311,14 +319,13 @@ def targets(path, lines, fenced):
 
 
 def structure_at(directory, cache):
-    """The structure governing a directory, from the nearest `structure.json`
-    at or above it, so a skill's contract reaches its files whether the check
-    is given the skill, the tree holding it, or one directory of it. A tree
-    with none gives an empty structure."""
+    """The structure governing a directory, from the nearest guide at or above
+    it whose Sections section declares one, so a skill's contract reaches its
+    files whether the check is given the skill, the tree holding it, or one
+    directory of it. A tree with none gives an empty structure."""
     if directory not in cache:
-        path = directory / STRUCTURE
-        if path.is_file():
-            cache[directory] = loaded(path)
+        if guide := declaring_guide(directory):
+            cache[directory] = section_table(guide)
         elif directory.parent == directory:
             cache[directory] = {}
         else:
@@ -326,18 +333,69 @@ def structure_at(directory, cache):
     return cache[directory]
 
 
-def loaded(path):
-    """One structure file, refused whole where an entry states no sections,
-    since a contract that names none would pass every file it covers."""
-    try:
-        structure = json.loads(path.read_text())
-    except json.JSONDecodeError as error:
-        raise ValueError(f'{path}: {error}') from error
-    if not isinstance(structure, dict):
-        raise ValueError(f'{path}: structure must be an object')
+def declaring_guide(directory):
+    """The guide in a directory, or in its references/, holding a Sections
+    section: the one place a skill declares its file structure."""
+    return next((path for path in (directory / GUIDE, directory / 'references' / GUIDE)
+                 if path.is_file() and any(anchor_of(title) == SECTIONS_TABLE for _, _, title in scan(path)[2])), None)
+
+
+def section_table(guide):
+    """The structure a guide's Sections table declares: one column per file
+    selector and one row per option, each cell that option's value for that
+    selector and a blank cell leaving it undeclared. Refused whole where the
+    section holds no table or a row is malformed, and each entry where it
+    states no sections, since a contract that names none would pass every file
+    it covers."""
+    lines, fenced, headings = parse(guide.read_text())
+    start, level = next((index, level) for index, level, title in headings if anchor_of(title) == SECTIONS_TABLE)
+    end = next((index for index, depth, _ in headings if index > start and depth <= level), len(lines))
+    rows = [table_cells(line) for index, line in enumerate(lines[start + 1:end], start + 1)
+            if not fenced[index] and line.lstrip().startswith('|') and not TABLE_RULE.fullmatch(line.strip())]
+    if len(rows) < 2 or rows[0][0] != 'Option':
+        raise ValueError(f'{guide}: Sections holds no table headed Option')
+    selectors = rows[0][1:]
+    structure = {selector: {} for selector in selectors}
+    seen = set()
+    for row in rows[1:]:
+        option = row[0]
+        if len(row) != len(rows[0]):
+            raise ValueError(f'{guide}: Sections row {option!r} has {len(row)} cells, not {len(rows[0])}')
+        if option in seen:
+            raise ValueError(f'{guide}: Sections states {option!r} twice')
+        seen.add(option)
+        for selector, cell in zip(selectors, row[1:]):
+            if cell:
+                structure[selector][option] = option_value(guide, option, cell)
     for key, entry in structure.items():
-        validate_structure_entry(path, key, entry)
+        validate_structure_entry(guide, key, entry)
     return structure
+
+
+def table_cells(line):
+    """A table row's cells, stripped, with code-span backticks removed."""
+    return [cell.strip().replace('`', '') for cell in line.strip().strip('|').split('|')]
+
+
+def option_value(guide, option, cell):
+    """One Sections cell read as its option's type: a comma-separated list, a
+    level, yes or no, a map of `name: Verb` pairs, or a single word."""
+    if option in LIST_OPTIONS:
+        return [value.strip() for value in cell.split(',')]
+    if option == 'section_level':
+        if not cell.isdigit():
+            raise ValueError(f'{guide}: section_level must be an integer from 1 to 6')
+        return int(cell)
+    if option in BOOLEAN_OPTIONS:
+        if cell not in ('yes', 'no'):
+            raise ValueError(f'{guide}: {option} must be yes or no')
+        return cell == 'yes'
+    if option == 'calls':
+        pairs = [pair.split(':') for pair in cell.split(',')]
+        if not all(len(pair) == 2 for pair in pairs):
+            raise ValueError(f'{guide}: calls must map target directories to Apply or Follow')
+        return {name.strip(): verb.strip() for name, verb in pairs}
+    return cell
 
 
 def validate_structure_entry(path, key, entry):
@@ -399,7 +457,7 @@ def contract(path, cache):
     for directory in path.parents:
         if entry := structure.get(directory.name):
             return entry
-        if (directory / STRUCTURE).is_file():
+        if declaring_guide(directory):
             break
     return next((entry for key, entry in structure.items()
                  if len(key) > 1 and key.startswith('*') and path.name.endswith(key[1:])), None)
@@ -862,7 +920,7 @@ def check(path, root, cache, cited, called, structures=None):
             measured = sections_against(headings, tuple(fallback['sections']),
                                         tuple(fallback.get('required', ())), fallback.get('section_level', 2))
         else:
-            report(0, 'procedure file with no structure entry', 'declare its sections in structure.json')
+            report(0, 'procedure file with no structure entry', "declare its sections in its skill guide's Sections table")
     for index, kind, detail in measured:
         report(index, kind, detail)
 
