@@ -33,7 +33,7 @@ The rules this skill's files follow beyond the [skill guidelines](../../guidelin
   - A file carrying one takes the sections below. A catalog, a context file and a contract file state what a procedure consults, and nothing about them is a sequence, so each keeps its own shape.
   - The entry point takes [its own structure](#skillmd-structure) whatever it carries.
 - **Top-level sections.**
-  - Prerequisites, Procedure, Reference, Rules and Commands, in that order, each optional but for Procedure. The `*` entry of [structure.json](../structure.json) declares them to the shared check.
+  - A procedure file takes the [sections](#sections) its column declares, in that order.
   - Anything else the file needs is a sub-section under one of them, so a diverse title names a part of a known whole.
 - **What the reader does with a heading places it.**
   - Reference holds what a step consults or produces: a table, an output shape, a vocabulary.
@@ -41,6 +41,15 @@ The rules this skill's files follow beyond the [skill guidelines](../../guidelin
   - An alternative way in is a step of the Procedure.
 - **Procedure.**
   A `## Procedure` of numbered steps, each opening with a bold label. Where the file holds several procedures, each is a sub-section of it.
+
+## Sections
+
+Each procedure file's sections, in order, and the ones it requires. A blank cell leaves the option undeclared.
+
+| Option | `*-mode.md` | `*` |
+| --- | --- | --- |
+| `sections` | Prerequisites, Procedure, Reference, Rules, Commands | Prerequisites, Procedure, Reference, Rules, Commands |
+| `required` | Procedure, Rules | Procedure |
 
 ## Mode Files
 

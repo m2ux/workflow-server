@@ -2,6 +2,24 @@
 
 The rules this skill's files follow alongside the [shared skill guidelines](../guidelines.md). Modes, protocols and artifacts use the directory-specific structures below. A rule that binds only modes, only protocols, only artifacts, or only references is in that section.
 
+## Sections
+
+Each file kind's sections, in order, and the options the shared check reads for it. A blank cell leaves the option undeclared.
+
+| Option | `SKILL.md` | `modes` | `protocols` | `artifacts` |
+| --- | --- | --- | --- | --- |
+| `sections` | Modes, Dependencies | Procedure, Outcomes, Commands, Fields, Guidance | Procedure, Commands, Fields, Guidance | Operations, Commands, Fields, Guidance |
+| `required` |  | Procedure, Outcomes | Procedure | Fields |
+| `procedures` |  | Procedure | Procedure | Operations |
+| `steps` |  | headings | headings | headings |
+| `specifications` |  | Commands | Commands | Commands |
+| `commands` |  | html | html | html |
+| `contracts` |  | Fields | Fields | Fields |
+| `preamble` |  | ../rules.md, ../conventions.md, #outcomes | ../rules.md, ../conventions.md |  |
+| `calls` |  | artifacts: Apply, modes: Follow, protocols: Follow | artifacts: Apply, modes: Follow, protocols: Follow | artifacts: Apply |
+| `link_roles` | yes | yes | yes | yes |
+| `keeps_commands` |  |  |  | yes |
+
 ## SOLID
 
 The skill is an object model in prose: an artifact owns state and callable capabilities, a protocol coordinates one change, and a mode orchestrates one user goal. Operations and named command specifications are its public capabilities; Fields defines its state and public shape. Calls follow the [layer boundary](rules.md).
@@ -180,7 +198,7 @@ Read this before adding or changing a mode, applying [SOLID](#solid).
 - **Step rules.**
   A rule that binds one step sits in that step. A rule that binds every mode is added to this section.
 - **Sections.**
-  Procedure, Outcomes, optional Commands, optional Fields for local command contracts, then optional Guidance. Procedure and Outcomes are required. The opening preamble links Procedure, Rules, Conventions and Outcomes on one line.
+  A mode takes the [sections](#sections) its column declares, Fields holding local command contracts. The opening preamble links Procedure, Rules, Conventions and Outcomes on one line.
 
 ## Protocols
 
@@ -203,7 +221,7 @@ Read this before adding or changing a protocol, applying [SOLID](#solid).
 - **Step rules.**
   A rule that binds one step sits in that step. A rule that binds every protocol is added to this section.
 - **Sections.**
-  Procedure, optional Commands, optional Fields for local command contracts, then optional Guidance. Procedure is required. The opening preamble links Procedure, Rules and Conventions on one line.
+  A protocol takes the [sections](#sections) its column declares, Fields holding local command contracts. The opening preamble links Procedure, Rules and Conventions on one line.
 
 ## Artifacts
 
@@ -252,7 +270,7 @@ Read this before adding or changing an artifact, applying [SOLID](#solid).
   Put each action’s preconditions and refusals at its owning operation or command specification. Shared conditions have one home; callers retain only their applicable selection, authorization or evidence transition. A rule binding every artifact belongs in this section.
 
 - **Sections.**
-  Optional Operations, optional Commands, Fields, then optional Guidance. Fields is required. Commands holds named specifications; Operations holds substantive numbered procedures.
+  An artifact takes the [sections](#sections) its column declares. Commands holds named specifications; Operations holds substantive numbered procedures.
 
 ## References
 

@@ -23,7 +23,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **References.**
   - A mode file is named `<mode>-mode.md`. `references/` holds `guidelines.md` when the skill has rules of its own, and each guide the skill's files share.
   - A skill may add directories of its own, one for its modes among them, and keep its guidelines beside SKILL.md. Its guidelines state what those files carry and the sections they take.
-  - `structure.json` beside SKILL.md declares to the shared check the sections of every file carrying a procedure, keyed by directory, by `*suffix`, or by `*` for any other such file. Each entry may declare section_level as an integer from 1 to 6; an absent level means 2. Command specifications sit one level below their section. An entry may declare `scoped_children` for local role titles one level below the named procedures' operations; readers select them within their unique operation, and file-fragment links select unique headings. The check reports a file carrying a procedure that no entry covers.
+  - The skill's guide holds a Sections section whose one table declares the sections of every file carrying a procedure, read by authors and the shared check alike. Its header row reads Option and then one file selector per column: a directory, a `*suffix`, a file name, or `*` for any other such file. Each further row is an option: sections in order, required, procedures, specifications, steps, commands, contracts, preamble and scoped_children as comma-separated lists or single words, link_roles and keeps_commands as yes or no, and calls as `directory: Verb` pairs. A blank cell leaves the option undeclared. Each entry may declare section_level as an integer from 1 to 6; an absent level means 2. Command specifications sit one level below their section. An entry may declare `scoped_children` for local role titles one level below the named procedures' operations; readers select them within their unique operation, and file-fragment links select unique headings. The check reports a file carrying a procedure that no entry covers.
   - Its guidelines also state how its procedure files and command specifications are written.
   - Scripts and tests each have a folder of their own. Standalone templates use `templates/`.
 - **Shared.**
@@ -34,7 +34,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **Top-level sections.**
   - Modes, Rules, Conventions and Dependencies, in that order, each optional.
   - The Opening stands under the title, ahead of them. Anything else the entry point needs is a sub-section under one of them.
-  - A skill-specific entry set is declared by `*SKILL.md` in `structure.json`.
+  - A skill-specific entry set is declared by a `*SKILL.md` column of its Sections table.
 - **Opening.**
   One sentence on what the skill does, then a bulleted list with one item for each thing it acts on.
 - **Modes.**
@@ -122,7 +122,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **Entry point.**
   SKILL.md is the compilation entry. A link to it from a file it reaches forms a cycle that pulls the entry into its own bundle, so no skill file links SKILL.md.
 - **Resolution.**
-  Every link resolves to a file that exists and every file fragment to exactly one heading. Repeated local child roles are declared in structure.json and selected within their enclosing operation.
+  Every link resolves to a file that exists and every file fragment to exactly one heading. Repeated local child roles are declared in the Sections table and selected within their enclosing operation.
 
 ## Commands
 

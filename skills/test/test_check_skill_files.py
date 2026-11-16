@@ -47,6 +47,30 @@ STRUCTURE = {
 }
 
 
+def declare(directory, structure):
+    """Write the skill guide whose Sections table declares the structure: one
+    column per selector, one row per option, a blank cell where a selector
+    leaves an option undeclared."""
+    selectors = list(structure)
+    options = list(dict.fromkeys(option for entry in structure.values() for option in entry))
+
+    def cell(value):
+        if isinstance(value, bool):
+            return 'yes' if value else 'no'
+        if isinstance(value, list):
+            return ', '.join(map(str, value))
+        if isinstance(value, dict):
+            return ', '.join(f'{name}: {verb}' for name, verb in value.items())
+        return str(value)
+
+    rows = [['Option', *selectors], ['---'] * (len(selectors) + 1)]
+    rows += [[option, *(cell(structure[s][option]) if option in structure[s] else '' for s in selectors)]
+             for option in options]
+    directory.mkdir(parents=True, exist_ok=True)
+    (directory / 'guidelines.md').write_text(
+        '# Guidelines\n\n## Sections\n\n' + ''.join('| ' + ' | '.join(row) + ' |\n' for row in rows))
+
+
 def calling(title, target, heading='Procedure'):
     """A file whose procedure runs the command the target names, which is what
     makes a file a caller."""
@@ -59,7 +83,7 @@ class SkillFileChecks(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.root)
         self.skill = self.root / 'specimen'
         (self.skill / 'references').mkdir(parents=True)
-        (self.skill / 'structure.json').write_text(json.dumps(STRUCTURE))
+        declare(self.skill, STRUCTURE)
 
     def write(self, name, text):
         path = self.skill / name
@@ -83,7 +107,7 @@ class SkillFileChecks(unittest.TestCase):
     def test_declared_heading_and_unheaded_procedures_preserve_citation_roles(self):
         structure = json.loads(json.dumps(STRUCTURE))
         structure['protocols']['procedures'] = 'Procedure'
-        (self.skill / 'structure.json').write_text(json.dumps(structure))
+        declare(self.skill, structure)
         for body in ('### 1. Read the Issue\n\nRun [Fetch Issue](../artifacts/issue.md#fetch-issue).\n\n'
                      '### 2. Return the Issue\n\nReturn the issue.\n',
                      'Run [Fetch Issue](../artifacts/issue.md#fetch-issue) and return it.\n'):
@@ -125,7 +149,7 @@ class SkillFileChecks(unittest.TestCase):
     def test_heading_procedure_keeps_unused_subject_specifications_visible(self):
         structure = json.loads(json.dumps(STRUCTURE))
         structure['protocols']['procedures'] = 'Procedure'
-        (self.skill / 'structure.json').write_text(json.dumps(structure))
+        declare(self.skill, structure)
         self.write('protocols/intake.md', '# Intake\n\n## Procedure\n\n'
                    '### 1. Read the Issue\n\nRun [Fetch Issue](../artifacts/issue.md#fetch-issue).\n\n'
                    '### 2. Return the Issue\n\nReturn it.\n')
@@ -137,7 +161,7 @@ class SkillFileChecks(unittest.TestCase):
     def scoped_operations(self):
         structure = json.loads(json.dumps(STRUCTURE))
         structure['artifacts']['scoped_children'] = ['Inputs', 'Outputs', 'Procedure']
-        (self.skill / 'structure.json').write_text(json.dumps(structure))
+        declare(self.skill, structure)
         return self.write('artifacts/issue.md', '# Issue\n\n## Operations\n\n'
             '### Read Alpha\n\n#### Inputs\n\nALPHA_INPUT.\n\n'
             '#### Outputs\n\nALPHA_OUTPUT.\n\n#### Procedure\n\nReturn alpha.\n\n'
@@ -169,7 +193,7 @@ class SkillFileChecks(unittest.TestCase):
 
     def test_undeclared_skill_retains_flat_heading_uniqueness(self):
         self.scoped_operations()
-        (self.skill / 'structure.json').write_text(json.dumps(STRUCTURE))
+        declare(self.skill, STRUCTURE)
         self.assertIn('duplicate anchor', self.kinds())
 
     def test_a_conforming_skill_reports_nothing(self):
@@ -512,14 +536,12 @@ class SkillFileChecks(unittest.TestCase):
         self.assertIn('section outside the set', self.kinds())
 
     def test_a_procedure_file_no_entry_covers_is_reported(self):
-        (self.skill / 'structure.json').write_text(
-            json.dumps({key: entry for key, entry in STRUCTURE.items() if key != '*'}))
+        declare(self.skill, {key: entry for key, entry in STRUCTURE.items() if key != '*'})
         self.write('references/dispatch.md', '# Dispatch\n\nWhat it does.\n' + self.PROCEDURE)
         self.assertEqual(self.kinds(), {'procedure file with no structure entry'})
 
     def test_a_file_carrying_no_procedure_needs_no_entry(self):
-        (self.skill / 'structure.json').write_text(
-            json.dumps({key: entry for key, entry in STRUCTURE.items() if key != '*'}))
+        declare(self.skill, {key: entry for key, entry in STRUCTURE.items() if key != '*'})
         self.write('references/guide.md', '# Guide\n\n## Findings\n\nOne sentence.\n')
         self.assertEqual(self.findings(), [])
 
@@ -538,9 +560,9 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(self.findings(), [])
 
     def test_declared_entry_sections_preserve_order_and_required_sections(self):
-        (self.skill / 'structure.json').write_text(json.dumps({
+        declare(self.skill, {
             '*SKILL.md': {'sections': ['Activities', 'Dependencies'],
-                          'required': ['Activities', 'Dependencies']}}))
+                          'required': ['Activities', 'Dependencies']}})
         self.write('SKILL.md', '# Specimen\n\n## Activities\n\nChoose one.\n\n'
                    '## Dependencies\n\nPython.\n')
         self.assertEqual(self.findings(), [])
@@ -603,9 +625,9 @@ class SkillFileChecks(unittest.TestCase):
         self.assertNotIn('other', called[path])
 
     def test_a_structure_reaches_files_whatever_root_is_named(self):
-        """The contract comes from the nearest structure file above the file
-        under check, so naming the tree or one directory of a skill applies the
-        same contract as naming the skill."""
+        """The contract comes from the nearest guide declaring Sections above
+        the file under check, so naming the tree or one directory of a skill
+        applies the same contract as naming the skill."""
         self.write('modes/plan.md', '# Plan\n\n## Procedure\n\n1. **Check.**  A step.\n\n'
                    '## Outcomes\n\nDone.\n')
         for root in (self.root, self.skill, self.skill / 'modes'):
@@ -613,13 +635,13 @@ class SkillFileChecks(unittest.TestCase):
                 printed = io.StringIO()
                 with redirect_stdout(printed):
                     status = checker.main([str(root)])
-                self.assertEqual((status, printed.getvalue().splitlines()[-1]),
-                                 (0, '1 files checked, 0 findings'))
+                self.assertEqual((status, printed.getvalue().splitlines()[-1].split(', ')[1]),
+                                 (0, '0 findings'))
 
     def test_a_structure_entry_without_sections_is_refused(self):
         """An entry naming no sections would pass every file it covers, so the
         check reports the contract rather than running on it."""
-        (self.skill / 'structure.json').write_text(json.dumps({'modes': {'required': ['Procedure']}}))
+        declare(self.skill, {'modes': {'required': ['Procedure']}})
         self.write('modes/plan.md', '# Plan\n')
         printed = io.StringIO()
         with redirect_stdout(printed):
@@ -628,7 +650,7 @@ class SkillFileChecks(unittest.TestCase):
         self.assertIn('modes states no sections', printed.getvalue())
 
     def test_an_unreadable_structure_is_refused(self):
-        (self.skill / 'structure.json').write_text('{')
+        (self.skill / 'guidelines.md').write_text('# Guidelines\n\n## Sections\n\nNo table.\n')
         self.write('modes/plan.md', '# Plan\n')
         printed = io.StringIO()
         with redirect_stdout(printed):
@@ -641,7 +663,7 @@ class SkillFileChecks(unittest.TestCase):
             with self.subTest(level=level):
                 structure = json.loads(json.dumps(STRUCTURE))
                 structure['artifacts']['section_level'] = level
-                (self.skill / 'structure.json').write_text(json.dumps(structure))
+                declare(self.skill, structure)
                 h = '#' * level
                 path = self.write('artifacts/issue.md',
                     f'{h} Operations\n\n{h}# Read Issue\n\n'
@@ -657,7 +679,7 @@ class SkillFileChecks(unittest.TestCase):
 
     def test_h1_commands_section_does_not_make_the_whole_file_a_catalog(self):
         structure = {'*': {'sections': ['Procedure', 'Commands', 'Guidance'], 'section_level': 1}}
-        (self.skill / 'structure.json').write_text(json.dumps(structure))
+        declare(self.skill, structure)
         path = self.write('references/run.md', '# Procedure\n\n'
                           '1. Run [Fetch](#fetch).\n\n# Commands\n\n## Fetch\n\n'
                           '1. Example [Advice](#advice).\n\n# Guidance\n\n## Advice\n\nText.\n')
@@ -668,10 +690,10 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(called[path], {'fetch': {path}})
 
     def test_invalid_section_levels_are_refused(self):
-        for level in (0, 7, '1', True, None, 1.5):
+        for level in (0, 7, 'one', 'yes', 1.5):
             with self.subTest(level=level):
-                (self.skill / 'structure.json').write_text(json.dumps({
-                    'artifacts': {'sections': ['Fields'], 'section_level': level}}))
+                declare(self.skill, {
+                    'artifacts': {'sections': ['Fields'], 'section_level': level}})
                 self.write('artifacts/issue.md', '# Fields\n\nNumber.\n')
                 printed = io.StringIO()
                 with redirect_stdout(printed):
@@ -684,7 +706,7 @@ class SkillFileChecks(unittest.TestCase):
             for level in (1, 2, 3):
                 with self.subTest(key=key, level=level):
                     entry = dict(STRUCTURE[key], section_level=level)
-                    (self.skill / 'structure.json').write_text(json.dumps({key: entry}))
+                    declare(self.skill, {key: entry})
                     h = '#' * level
                     procedure = entry.get('procedures', 'Procedure')
                     path = self.write('artifacts/issue.md',
@@ -707,8 +729,8 @@ class SkillFileChecks(unittest.TestCase):
     def test_declared_levels_bound_each_graphql_gap(self):
         for level in (1, 2, 3):
             with self.subTest(level=level):
-                (self.skill / 'structure.json').write_text(json.dumps({
-                    'artifacts': dict(STRUCTURE['artifacts'], section_level=level)}))
+                declare(self.skill, {
+                    'artifacts': dict(STRUCTURE['artifacts'], section_level=level)})
                 h = '#' * level
                 path = self.write('artifacts/issue.md',
                     f'{h} Fields\n\nNumber.\n\n{h} Commands\n\n'
@@ -723,8 +745,8 @@ class SkillFileChecks(unittest.TestCase):
     def test_declared_levels_bound_mode_command_blocks(self):
         for level in (1, 2, 3):
             with self.subTest(level=level):
-                (self.skill / 'structure.json').write_text(json.dumps({
-                    'modes': dict(STRUCTURE['modes'], section_level=level)}))
+                declare(self.skill, {
+                    'modes': dict(STRUCTURE['modes'], section_level=level)})
                 h = '#' * level
                 path = self.write('modes/plan-mode.md',
                     f'{h} Procedure\n\n1. Run [Fetch](#fetch).\n\n'
@@ -840,7 +862,7 @@ class EntryPointSections(unittest.TestCase):
 
     def test_a_contract_covering_every_file_does_not_reach_the_entry_point(self):
         structure = dict(STRUCTURE, **{'*.md': {'sections': ['Procedure'], 'required': ['Procedure']}})
-        (self.skill / 'structure.json').write_text(json.dumps(structure))
+        declare(self.skill, structure)
         self.assertEqual(self.entry(self.MODES, self.RULES), [])
 
 
@@ -968,8 +990,7 @@ class SkillWideChecks(unittest.TestCase):
         self.root = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.root)
         self.skill = self.root / 'specimen'
-        (self.skill / 'structure.json').parent.mkdir(parents=True)
-        (self.skill / 'structure.json').write_text(json.dumps(STRUCTURE))
+        declare(self.skill, STRUCTURE)
         self.write('SKILL.md', '# Specimen\n\nA sentence.\n')
         (self.root / 'guidelines.md').write_text(SHARED_GUIDE)
         (self.root / 'rules.json').write_text(json.dumps(SHARED_RULES))
@@ -1011,7 +1032,7 @@ class SkillWideChecks(unittest.TestCase):
         self.mode('1. **Fetch.**\n   Run [Fetch Issue](#fetch-issue).\n',
                   f'### Fetch Issue\n\nFetches one issue.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n')
         status, printed = self.run_check()
-        self.assertEqual((status, printed.splitlines()[-1]), (0, '2 files checked, 0 findings'))
+        self.assertEqual((status, printed.splitlines()[-1].split(', ')[1]), (0, '0 findings'))
 
     def test_a_template_block_in_a_mode_is_no_command(self):
         self.mode(f'1. **Write.**\n   Write it.\n\n{FENCE}markdown\n## Heading\n{FENCE}\n')
@@ -1357,7 +1378,7 @@ class CallersAndReach(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.root)
         self.skill = self.root / 'specimen'
         self.skill.mkdir()
-        (self.skill / 'structure.json').write_text(json.dumps(STRUCTURE))
+        declare(self.skill, STRUCTURE)
         self.issue = self.write('artifacts/issue.md',
                                 '# Issue\n\n## Prerequisites\n\nRead these files first.\n\n'
                                 '- [Body](body.md)\n\n## Operations\n\n### Read Tracker Issue\n\n'
@@ -1407,9 +1428,9 @@ class CallersAndReach(unittest.TestCase):
         """Without the artifact keeping its subject's commands, the body's
         command has one file reaching it. A specification's reach asks for no
         move, and the same citation stated as a step does."""
-        (self.skill / 'structure.json').write_text(json.dumps(
+        declare(self.skill, 
             {key: {k: v for k, v in entry.items() if k != 'keeps_commands'}
-             for key, entry in STRUCTURE.items()}))
+             for key, entry in STRUCTURE.items()})
 
         def placed():
             files = self.files()
@@ -1467,7 +1488,7 @@ class UncitedSpecifications(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.root)
         self.skill = self.root / 'specimen'
         self.skill.mkdir()
-        (self.skill / 'structure.json').write_text(json.dumps(STRUCTURE))
+        declare(self.skill, STRUCTURE)
 
     def write(self, name, text):
         path = self.skill / name
@@ -1593,7 +1614,7 @@ class SpecificationInItsCallersCommands(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.root)
         self.skill = self.root / 'specimen'
         (self.skill / 'references').mkdir(parents=True)
-        (self.skill / 'structure.json').write_text(json.dumps({self.MODE: STRUCTURE[self.MODE]}))
+        declare(self.skill, {self.MODE: STRUCTURE[self.MODE]})
         self.write('references/revise-mode.md',
                    '# Revise\n\n## Procedure\n\n1. **Check.**  Run [Run Skill Checks](#run-skill-checks).\n\n'
                    '## Rules\n\n- **Scope.**  One skill.\n\n## Commands\n\n### Run Skill Checks\n\n'
@@ -2098,7 +2119,7 @@ Apply [Read Inventory](../artifacts/inventory.md#read-inventory "ƒ").
         return path
 
     def declare(self, model):
-        (self.skill / 'structure.json').write_text(json.dumps(model))
+        declare(self.skill, model)
 
     def findings(self):
         files = sorted(self.skill.rglob('*.md'))
@@ -2464,7 +2485,7 @@ Keep the refreshed inventory.
     def test_distinct_skills_retain_their_declared_models(self):
         legacy = self.root / 'legacy'
         legacy.mkdir()
-        (legacy / 'structure.json').write_text(json.dumps(STRUCTURE))
+        declare(legacy, STRUCTURE)
         (legacy / 'SKILL.md').write_text('# Legacy\n\n## Rules\n\nThe existing rule.\n')
         (legacy / 'modes').mkdir()
         (legacy / 'modes/plan.md').write_text('# Plan\n\n## Procedure\n\n1. Read it.\n\n## Outcomes\n\nDone.\n')
@@ -2504,11 +2525,11 @@ Keep the refreshed inventory.
 
     def test_malformed_models_fail_closed_before_file_validation(self):
         invalid = [
-            {'sections': 'Procedure'}, {'sections': ['Procedure', 'Procedure']},
-            {'required': 'Procedure'}, {'required': ['Absent']}, {'steps': 'lists'},
-            {'commands': 'fenced'}, {'contracts': 'Absent'}, {'preamble': 'rules.md'},
-            {'preamble': []}, {'calls': {'artifacts': 'Run'}}, {'calls': []},
-            {'keeps_commands': 'yes'}, {'link_roles': 'yes'}, {'unknown': True}, {'procedures': 'Absent'},
+            {'sections': ['Procedure', 'Procedure']},
+            {'required': ['Absent']}, {'steps': 'lists'},
+            {'commands': 'fenced'}, {'contracts': 'Absent'}, {'preamble': ['rules.md', '']},
+            {'calls': {'artifacts': 'Run'}}, {'calls': 'artifacts'},
+            {'keeps_commands': 'maybe'}, {'link_roles': 'true'}, {'unknown': True}, {'procedures': 'Absent'},
             {'commands': 'html', 'sections': ['Procedure', 'Commands'], 'procedures': 'Procedure'},
         ]
         for values in invalid:
@@ -2554,13 +2575,23 @@ Keep the refreshed inventory.
         self.replace(self.inventory, command, command + '\n\n' + command)
         self.assertIn('malformed HTML invocation', self.kinds())
 
-    def test_a_nonobject_model_is_refused(self):
-        self.declare([])
+    def test_a_table_not_headed_option_is_refused(self):
+        (self.skill / 'guidelines.md').write_text(
+            '# Guidelines\n\n## Sections\n\n| Kind | modes |\n| --- | --- |\n| sections | Procedure |\n')
         printed = io.StringIO()
         with redirect_stdout(printed):
             status = checker.main([str(self.skill)])
         self.assertEqual(status, 1)
-        self.assertIn('structure must be an object', printed.getvalue())
+        self.assertIn('Sections holds no table headed Option', printed.getvalue())
+
+    def test_a_row_with_the_wrong_cell_count_is_refused(self):
+        (self.skill / 'guidelines.md').write_text(
+            '# Guidelines\n\n## Sections\n\n| Option | modes |\n| --- | --- |\n| sections | Procedure | Rules |\n')
+        printed = io.StringIO()
+        with redirect_stdout(printed):
+            status = checker.main([str(self.skill)])
+        self.assertEqual(status, 1)
+        self.assertIn("Sections row 'sections' has 3 cells, not 2", printed.getvalue())
 
 
 class FieldsBoundary(unittest.TestCase):
@@ -2571,7 +2602,7 @@ class FieldsBoundary(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.root)
         self.skill = self.root / 'specimen'
         self.skill.mkdir()
-        (self.skill / 'structure.json').write_text(json.dumps(DeclaredHeadingModels.MODEL))
+        declare(self.skill, DeclaredHeadingModels.MODEL)
         self.write('SKILL.md', '# Specimen\n\nOne declared skill.\n')
         self.write('rules.md', '# Rules\n\nThe shared scope.\n')
         self.write('conventions.md', '# Conventions\n\nThe execution context.\n')
