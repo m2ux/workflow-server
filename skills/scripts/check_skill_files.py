@@ -37,27 +37,29 @@ citing another command needs it to run, so its file reaches that command
 without becoming its caller. Placement reads callers alone; reach decides
 what a scenario reads, which a retrieval walk measures.
 
-The top-level sections of a file carrying a procedure are the set the guidelines
-name, in the order they name them, Procedure among them, so the reader knows
-what the file carries before opening it. An explicit entry-point contract
-selects its section set; an entry point with none takes the shared set. Any
-other file carrying no procedure keeps its own shape.
+The top-level sections of a file carrying a procedure are the set its skill's
+structure declares, in that order, so the reader knows what the file carries
+before opening it. A skill's entry point takes the entry its structure names
+for it, or the shared guideline set when it has none. Any other file carrying
+no procedure keeps its own shape.
 
 A skill that adds directories of its own declares what they carry in its
 `structure.json`, keyed by an exact file name, a directory name or a
-`*suffix` its filenames end with. An entry states the sections those files
-may take, in order, which
-of them are required, the section holding their command specifications, and
-whether a specification there belongs to its file whatever cites it. An
-explicit file-name entry selects that file before its directory or suffix
-entry; an entry point's section set takes only its explicit file entry. A
-file no entry covers takes the shared set. Heading-based entries declare
-`steps: "headings"` and their `procedures` section. `commands: "html"`
-selects enriched HTML invocations in the declared command specifications.
-`contracts: "Fields"` selects command input/output links whose targets are
-third-level Fields contracts. Procedures route calls and results; each
-command specification owns its complete contextual I/O contract.
-`link_roles: true` checks the ○, ● and ƒ link titles.
+`*suffix` its filenames end with. An explicit file-name entry selects that
+file before its directory or suffix entry. A directory key covers every file
+beneath that directory within the skill. Each entry may declare its
+section_level; an absent level means two. Command specifications sit one
+level below that level. An entry states the sections those files may take,
+in order, which of them are required, the section holding their command
+specifications, and whether a specification there belongs to its file
+whatever cites it. The `*` entry is the set for any other file carrying a
+procedure; a file carrying one that no entry covers is reported.
+Heading-based entries declare `steps: "headings"` and their `procedures`
+section. `commands: "html"` selects enriched HTML invocations in the declared
+command specifications. `contracts: "Fields"` selects command input/output
+links whose targets are third-level Fields contracts. Procedures route calls
+and results; each command specification owns its complete contextual I/O
+contract. `link_roles: true` checks the ○, ● and ƒ link titles.
 `preamble` lists required intro link targets; `calls` maps target directory
 names to Apply or Follow. Malformed and unknown options fail declaration
 validation before a partial model can run.
@@ -105,6 +107,7 @@ not read.
 """
 
 import argparse
+from collections import Counter
 import difflib
 import html
 import json
@@ -130,16 +133,15 @@ STEP_NAME = re.compile(r'\b[Tt]he (?:[\w-]+ ){0,3}?([\w-]+) steps?\b')
 ORDERED = re.compile(r'^\s{0,3}\d+[.)]\s')
 BULLET = re.compile(r'^(\s*)-(\s*)(.*)$')
 BOLD_LEAD = re.compile(r'^\s*-\s+\*\*')
-BARE_LEAD = re.compile(r'^\s*-\s+\*\*[^*]+\*\*\s*$')
+BARE_LEAD = re.compile(r'^\s*-\s+\*\*(?:`[^`]*`|[^*])+\*\*\s*$')
 INDENTED = re.compile(r'^\s+\S')
 DESCRIPTION = re.compile(r'^description:\s*(.*?)\s*$')
 BLOCK_SCALARS = ('>', '>-', '>+', '|', '|-', '|+')
 MODE = re.compile(r'^[-*]\s+(\*\*)?\[([^\]]+)\]\([^)]+\)(?(1)\*\*)')
 BLOCK_START = re.compile(r'^\s*([-*+]\s|\d+[.)]\s|#|\||>|<|`{3,}|~{3,})')
-BARE_LABEL = re.compile(r'^\s*(?:[-*+]\s+|\d+[.)]\s+)?\*\*[^*]+\*\*\s*$')
+BARE_LABEL = re.compile(r'^\s*(?:[-*+]\s+|\d+[.)]\s+)?\*\*(?:`[^`]*`|[^*])+\*\*\s*$')
 PROSE_LIMIT = 8
 LEAD_WIDTH = 100
-SECTIONS = ('Prerequisites', 'Procedure', 'Reference', 'Rules', 'Commands')
 ENTRY_SECTIONS = ('Modes', 'Rules', 'Conventions', 'Dependencies')
 STRUCTURE = 'structure.json'
 VOCABULARY = 'vocabulary.json'
@@ -179,6 +181,7 @@ KINDS = (
     'command specification in the entry point', 'command specification with one caller',
     'command specification nothing cites',
     'section outside the set', 'sections out of order', 'section missing',
+    'procedure file with no structure entry',
     'unresolved link', 'unresolved anchor',
     'empty bullet', 'bullet without a space', 'bullet holding a code fence', 'bullet holding a bullet',
     'inline bold lead too wide', 'prerequisite citation inside one file', 'unlinked step reference',
@@ -342,13 +345,17 @@ def validate_structure_entry(path, key, entry):
     if not isinstance(entry, dict) or not entry.get('sections'):
         raise ValueError(f'{path}: {key} states no sections')
     allowed = {'sections', 'required', 'procedures', 'specifications', 'keeps_commands',
-               'steps', 'commands', 'contracts', 'preamble', 'calls', 'link_roles'}
+               'steps', 'commands', 'contracts', 'preamble', 'calls', 'link_roles',
+               'section_level', 'scoped_children'}
     unknown = set(entry) - allowed
     if unknown:
         raise ValueError(f'{path}: {key} has unknown options: {", ".join(sorted(unknown))}')
-    if not key or '*' in key[1:] or key == '*' or '/' in key or key in {'.', '..'}:
+    if not key or '*' in key[1:] or '/' in key or key in {'.', '..'}:
         raise ValueError(f'{path}: invalid file selector {key!r}')
-    for field in ('sections', 'required', 'preamble'):
+    level = entry.get('section_level', 2)
+    if type(level) is not int or not 1 <= level <= 6:
+        raise ValueError(f'{path}: {key} section_level must be an integer from 1 to 6')
+    for field in ('sections', 'required', 'preamble', 'scoped_children'):
         if field not in entry:
             continue
         values = entry[field]
@@ -383,41 +390,47 @@ def validate_structure_entry(path, key, entry):
 
 
 def contract(path, cache):
-    """The exact-file, directory or suffix entry covering this file, in that order."""
+    """The entry covering this file: the one named for the file itself, the one
+    named for the nearest directory holding it, up to the skill's own, or the
+    one whose `*suffix` its name ends with. A file no entry covers has none."""
     structure = structure_at(path.parent, cache)
     if entry := structure.get(path.name):
         return entry
-    if entry := structure.get(path.parent.name):
-        return entry
+    for directory in path.parents:
+        if entry := structure.get(directory.name):
+            return entry
+        if (directory / STRUCTURE).is_file():
+            break
     return next((entry for key, entry in structure.items()
-                 if key.startswith('*') and path.name.endswith(key[1:])), None)
+                 if len(key) > 1 and key.startswith('*') and path.name.endswith(key[1:])), None)
 
 
-def specifications(headings, section='commands'):
+def specifications(headings, section='commands', section_level=2):
     """Each command specification: a sub-section of a Commands section, or of a
     listing of a catalog, whose title makes the whole file one. A catalog's
     Conventions section states how its commands run, so it lists none."""
-    catalog = any(level == 1 and anchor_of(title) == 'commands' for _, level, title in headings)
+    catalog = any(level == section_level - 1 and anchor_of(title) == 'commands'
+                  for _, level, title in headings)
     inside = catalog
     for index, level, title in headings:
-        if level == 3 and inside:
+        if level == section_level + 1 and inside:
             yield index, title
-        elif level == 2:
+        elif level == section_level:
             inside = (anchor_of(title) != 'conventions' if catalog
                       else anchor_of(title) == section)
-        elif level == 1 and not catalog:
+        elif level < section_level and not catalog:
             inside = False
 
 
-def specification_spans(headings, total, section='commands'):
+def specification_spans(headings, total, section='commands', section_level=2):
     """Line indices held by the file's command specifications. A specification
     states how one command runs, so a citation standing in it names a sibling
     operation rather than running it, and its own numbered detail is part of
     that statement."""
     spans = set()
-    for start, _ in specifications(headings, section):
+    for start, _ in specifications(headings, section, section_level):
         end = next((index for index, level, _ in headings
-                    if index > start and level <= 3), total)
+                    if index > start and level <= section_level + 1), total)
         spans.update(range(start, end))
     return spans
 
@@ -429,21 +442,24 @@ def held_section(entry):
 
 def procedure_spans(lines, fenced, headings, entry=None):
     """Execution regions selected by the file model. Heading models use the
-    numbered step sections. List models use top-level sections carrying
-    numbered steps, excluding command specifications; a declared procedure
-    section also holds single-step procedures."""
+    numbered step sections. List models use sections at the declared level
+    carrying numbered steps, each running until the next heading of its own
+    level or above, so the steps under a sub-heading belong to it; command
+    specifications are read out first. A declared procedure section also
+    holds single-step procedures."""
     if (entry or {}).get('steps') == 'headings':
         return {index for start, level, title, end in procedure_headings(lines, headings, entry)
                 if HEADING_STEP.match(title) for index in range(start, end)}
-    specifications_here = specification_spans(headings, len(lines), held_section(entry))
+    section_level = (entry or {}).get('section_level', 2)
+    specifications_here = specification_spans(headings, len(lines), held_section(entry), section_level)
     commands = scan_blocks(lines).html_lines
-    tops = [index for index, level, _ in headings if level <= 2]
+    tops = [index for index, level, _ in headings if level <= section_level]
     spans = set()
     for position, start in enumerate(tops):
         end = tops[position + 1] if position + 1 < len(tops) else len(lines)
         body = [index for index in range(start, end) if index not in specifications_here]
         named = (entry or {}).get('procedures')
-        if (named and lines[start] == f'## {named}') or any(
+        if (named and lines[start] == '#' * section_level + f' {named}') or any(
                 ORDERED.match(lines[index]) and not fenced[index] and index not in commands for index in body):
             spans.update(body)
     return spans
@@ -457,7 +473,8 @@ def citations(paths, structures=None):
     cited = {}
     called = {}
     for path in paths:
-        for _, target, kind in citation_kinds(path, contract(path, structures)):
+        entry = contract(path, structures) or structure_at(path.parent, structures).get('*')
+        for _, target, kind in citation_kinds(path, entry):
             name, _, fragment = target.partition('#')
             if not fragment:
                 continue
@@ -787,7 +804,8 @@ def check(path, root, cache, cited, called, structures=None):
 
     def anchors(target):
         if target not in cache:
-            cache[target] = {anchor_of(title) for _, _, title in scan(target)[2]}
+            counts = Counter(anchor_of(title) for _, _, title in scan(target)[2])
+            cache[target] = {slug for slug, count in counts.items() if count == 1}
         return cache[target]
 
     callers = called.get(path, {})
@@ -806,13 +824,16 @@ def check(path, root, cache, cited, called, structures=None):
     # skill's entry point holds no command, so a specification there is
     # reported whatever cites it, which is the one placement no caller count
     # can reach.
-    entry = contract(path, {} if structures is None else structures)
-    for index, title in specifications(headings, held_section(entry)):
+    structures = {} if structures is None else structures
+    entry = contract(path, structures)
+    fallback = structure_at(path.parent, structures).get('*')
+    effective = entry or fallback
+    for index, title in specifications(headings, held_section(effective), (effective or {}).get('section_level', 2)):
         if path.name == 'SKILL.md':
             report(index, 'command specification in the entry point', title)
             continue
         citing = callers.get(anchor_of(title), ())
-        if not (entry or {}).get('keeps_commands') and len(citing) == 1 and path not in citing:
+        if not (effective or {}).get('keeps_commands') and len(citing) == 1 and path not in citing:
             caller = named(next(iter(citing)), root)
             report(index, 'command specification with one caller', f'{title}, cited from {caller}')
 
@@ -821,18 +842,27 @@ def check(path, root, cache, cited, called, structures=None):
     # knows what the file holds before opening it. What the file carries selects
     # it: a catalog, a context file and a contract file state what a procedure
     # consults, and nothing about them is a sequence. A skill's entry point
-    # takes the set the guidelines give it whatever it carries. Where the skill
+    # takes its declared entry set or the shared guideline set. Where the skill
     # declares a contract for the file, that contract is the set, and the file
-    # takes it whether or not it carries a step.
+    # takes it whether or not it carries a step. Any other file carrying a step
+    # takes the skill's `*` entry, and a skill declaring none has named no set
+    # for it.
     measured = ()
     if path.name == 'SKILL.md':
-        selected = structure_at(path.parent, {} if structures is None else structures).get(path.name)
-        measured = sections_against(headings, selected['sections'] if selected else ENTRY_SECTIONS,
-                                    selected.get('required', ()) if selected else ())
-    elif entry or procedure_spans(lines, fenced, headings):
-        allowed = tuple(entry['sections']) if entry else SECTIONS
-        required = tuple(entry.get('required', ())) if entry else ('Procedure',)
-        measured = sections_against(headings, allowed, required)
+        declared = structure_at(path.parent, structures)
+        entry_set = declared.get(path.name) or declared.get('*SKILL.md')
+        measured = sections_against(headings, tuple(entry_set['sections']) if entry_set else ENTRY_SECTIONS,
+                                    tuple(entry_set.get('required', ())) if entry_set else (),
+                                    entry_set.get('section_level', 2) if entry_set else 2)
+    elif entry:
+        measured = sections_against(headings, tuple(entry['sections']),
+                                    tuple(entry.get('required', ())), entry.get('section_level', 2))
+    elif procedure_spans(lines, fenced, headings, fallback):
+        if fallback:
+            measured = sections_against(headings, tuple(fallback['sections']),
+                                        tuple(fallback.get('required', ())), fallback.get('section_level', 2))
+        else:
+            report(0, 'procedure file with no structure entry', 'declare its sections in structure.json')
     for index, kind, detail in measured:
         report(index, kind, detail)
 
@@ -909,7 +939,7 @@ def check(path, root, cache, cited, called, structures=None):
         if index and lines[index - 1].strip() and index - 1 not in skip:
             report(index, 'heading without a blank line above', title)
 
-    for index, detail in mixed_moods(lines, specimens, headings, entry):
+    for index, detail in mixed_moods(lines, specimens, headings, effective):
         report(index, 'parallel section in another mood', detail)
 
     if lines and not lines[-1].strip():
@@ -918,10 +948,10 @@ def check(path, root, cache, cited, called, structures=None):
     for index, title in empty_sections(lines, headings):
         report(index, 'heading without content', title)
 
-    for index, slug, first in duplicate_anchors(headings):
+    for index, slug, first in duplicate_anchors(headings, effective):
         report(index, 'duplicate anchor', f'{slug}, also at line {first + 1}')
 
-    for index, title in uncited_specifications(path, headings, entry, cited):
+    for index, title in uncited_specifications(path, headings, effective, cited):
         report(index, 'command specification nothing cites', title)
 
     if path.name == 'SKILL.md':
@@ -984,7 +1014,8 @@ def mode_commands(path, root, structures):
     if (entry or {}).get('commands') == 'html':
         return []
     lines, _, headings = scan(path)
-    held = specification_spans(headings, len(lines), held_section(entry))
+    entry = entry or structure_at(path.parent, structures).get('*')
+    held = specification_spans(headings, len(lines), held_section(entry), (entry or {}).get('section_level', 2))
     return [finding(path, root, index, 'command spelled out in a mode', lines[index].strip())
             for index, language in fence_openings(lines)
             if language in SHELL and index not in held]
@@ -1108,8 +1139,11 @@ def interfaces(path, root, structures):
     entry = contract(path, structures)
     found += html_interfaces(path, root, lines, fenced, headings, entry)
     total = len(lines)
-    for start, title in specifications(headings, held_section(entry)):
-        end = next((index for index, level, _ in headings if index > start and level <= 3), total)
+    entry = entry or structure_at(path.parent, structures).get('*')
+    section_level = (entry or {}).get('section_level', 2)
+    for start, title in specifications(headings, held_section(entry), section_level):
+        end = next((index for index, level, _ in headings
+                    if index > start and level <= section_level + 1), total)
         span = range(start, end)
         graphql = any(fenced[index] and (GRAPHQL.search(lines[index]) or any(
             GRAPHQL.search(script.read_text()) for script in script_of(path, lines[index])))
@@ -1155,12 +1189,12 @@ def undecided_rules(guide, root):
     return found
 
 
-def sections_against(headings, allowed, required=()):
+def sections_against(headings, allowed, required=(), section_level=2):
     """Each departure of a file's top-level sections from a named set: a
     section outside it, one standing ahead of a section the set places before
     it, and a required one the file lacks, each with the line index it stands
     on, its kind and its detail."""
-    sections = [(index, title.strip()) for index, level, title in headings if level == 2]
+    sections = [(index, title.strip()) for index, level, title in headings if level == section_level]
     rank = -1
     for index, title in sections:
         if title not in allowed:
@@ -1296,7 +1330,8 @@ def mixed_moods(lines, fenced, headings, entry=None):
     mood its opening sentence decides sets the mood the others follow. A
     command specification's title opens with the verb it performs, so those
     verbs read as instructions alongside the common ones."""
-    verbs = INSTRUCTIONS | {title.split()[0].strip('*_') for _, title in specifications(headings)}
+    verbs = INSTRUCTIONS | {title.split()[0].strip('*_') for _, title in specifications(
+        headings, held_section(entry), (entry or {}).get('section_level', 2))}
     groups = {}
     parent = {}
     for position, (index, level, title) in enumerate(headings):
@@ -1445,13 +1480,14 @@ def citation_kinds(path, entry=None):
     without running anything. Any other link is descriptive: the reader may
     follow it and need not."""
     lines, fenced, headings = scan(path)
+    section_level = (entry or {}).get('section_level', 2)
     steps = procedure_spans(lines, fenced, headings, entry)
     commands = scan_blocks(lines).html_lines
-    held = specification_spans(headings, len(lines), held_section(entry))
+    held = specification_spans(headings, len(lines), held_section(entry), section_level)
     listed = set()
-    tops = [index for index, level, _ in headings if level <= 2]
+    tops = [index for index, level, _ in headings if level <= section_level]
     for position, start in enumerate(tops):
-        if lines[start].strip() == '## Prerequisites':
+        if lines[start].strip() == '#' * section_level + ' Prerequisites':
             end = tops[position + 1] if position + 1 < len(tops) else len(lines)
             listed.update(range(start, end))
     kinds = []
@@ -1481,7 +1517,8 @@ def reach(paths, structures=None):
     structures = {} if structures is None else structures
     reached = {}
     for path in paths:
-        for _, target, kind in citation_kinds(path, contract(path, structures)):
+        entry = contract(path, structures) or structure_at(path.parent, structures).get('*')
+        for _, target, kind in citation_kinds(path, entry):
             if kind not in REQUIRED:
                 continue
             name, _, fragment = target.partition('#')
@@ -1500,21 +1537,35 @@ def uncited_specifications(path, headings, entry, cited):
     if path.name == 'SKILL.md':
         return
     citing = cited.get(path, {})
-    for index, title in specifications(headings, held_section(entry)):
+    for index, title in specifications(headings, held_section(entry), (entry or {}).get('section_level', 2)):
         if not citing.get(anchor_of(title)):
             yield index, title
 
 
-def duplicate_anchors(headings):
-    """Each heading whose anchor an earlier heading of the file holds, with
-    that anchor and the earlier heading's index. A fragment reaches the first
-    heading of its anchor, so a repeat is ambiguous before any link cites it."""
-    seen = {}
-    for index, _, title in headings:
+def duplicate_anchors(headings, entry=None):
+    """Repeated flat anchors, excluding declared local roles in distinct procedures.
+
+    A local role is read within its enclosing operation. It has no unambiguous
+    file fragment; link resolution accepts only headings unique in that file.
+    """
+    entry = entry or {}
+    level = entry.get('section_level', 2)
+    roles = entry.get('scoped_children', ())
+    parents, seen = {}, {}
+    for index, depth, title in headings:
+        parents = {d: row for d, row in parents.items() if d < depth}
+        scope = None
+        if (title in roles and depth == level + 2
+                and parents.get(level, (None, None))[1] == entry.get('procedures')
+                and level + 1 in parents):
+            scope = parents[level + 1][0]
         slug = anchor_of(title)
-        if slug in seen:
-            yield index, slug, seen[slug]
-        seen.setdefault(slug, index)
+        for first, previous_scope in seen.get(slug, ()):
+            if scope is None or previous_scope is None or scope == previous_scope:
+                yield index, slug, first
+                break
+        seen.setdefault(slug, []).append((index, scope))
+        parents[depth] = (index, title)
 
 
 def contract_sections(lines, headings, entry):
