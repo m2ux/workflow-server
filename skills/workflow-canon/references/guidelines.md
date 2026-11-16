@@ -10,13 +10,69 @@ The rules this skill's files follow beyond the [skill guidelines](../../guidelin
 ## SKILL.md Structure
 
 - **Section order.**  Rules precedes Dependencies.
+- **Rules.**
+  A statement that binds every mode goes in Rules, never as loose prose in another section.
+- **Dependencies.**
+  Every tool, sandbox, runtime, branch and harness capability the skill relies on is named in Dependencies, with what it is needed for.
+- **Command conventions.**
+  SKILL.md links the [command conventions](command-conventions.md) on a required path and holds no command of its own.
+- **Modes.**
+  - Each mode is its bold name, without the word "mode", linking to its mode file.
+  - Beneath it, a bulleted list that selects the mode, since the reader holds a request and picks one mode from this list alone:
+    - The first item states the mode's direction and what it is scoped to, and nothing else: `Backward-looking, scoped to one integration's branches`.
+    - Each further item is one line: a noun phrase or a gerund phrase naming a request this mode answers.
+    - An item earns its place only where a request reaches this mode because of it. At most five follow the first.
+    - A step the mode takes once selected stays in the mode file, as does a distinction from another mode.
+    - A mode the mode runs for itself goes unnamed, since naming it routes that mode's own requests here.
+    - It has no trailing full stop and no purpose clause.
+
+## Procedure Files
+
+- **What the file carries selects the set.**
+  - A procedure is a top-level section carrying a numbered step, whatever its heading names it, as [Commands](#commands) defines it.
+  - A file carrying one takes the sections below. A catalog, a context file and a contract file state what a procedure consults, and nothing about them is a sequence, so each keeps its own shape.
+  - The entry point takes [its own structure](#skillmd-structure) whatever it carries.
+- **Top-level sections.**
+  - Prerequisites, Procedure, Reference, Rules and Commands, in that order, each optional but for Procedure. The `*` entry of [structure.json](../structure.json) declares them to the shared check.
+  - Anything else the file needs is a sub-section under one of them, so a diverse title names a part of a known whole.
+- **What the reader does with a heading places it.**
+  - Reference holds what a step consults or produces: a table, an output shape, a vocabulary.
+  - Rules holds what binds the file whatever step it is on.
+  - An alternative way in is a step of the Procedure.
+- **Procedure.**
+  A `## Procedure` of numbered steps, each opening with a bold label. Where the file holds several procedures, each is a sub-section of it.
 
 ## Mode Files
 
+- **File name.**  A mode file is `references/<mode>-mode.md`.
 - **Opening.**  `# <Name> Mode`, then a paragraph on what the mode does.
 - **Sections.**
-  A mode carries a procedure, so a mode file takes the [procedure-file sections](../../guidelines.md#procedure-files) and their order, and carries Rules as well as Procedure.
+  A mode carries a procedure, so a mode file takes the [procedure-file sections](#procedure-files) and their order, and carries Rules as well as Procedure.
 - **Rules.**  A statement that binds only this mode goes in the mode's `## Rules`.
+
+## Commands
+
+- **One spec per operation.**
+  - Every command has a sub-section named for what it does: Initialize Audit Surface.
+  - A script used several ways has a spec for each use.
+- **Local to the procedure.**
+  - A specification sits in the file whose procedure runs it, in a `## Commands` section at the end of that file.
+  - A single catalog holds only those specifications most of whose entries have several callers. Where a block of a catalog has one caller, it belongs to that caller.
+  - A caller is a procedure that runs the command. A sibling specification, and any passage of prose naming a command, does not make the file holding it a caller.
+  - A procedure is a section carrying numbered steps, whatever its heading names it. The step is the author stating that the reader performs these, in this order, and is the only place a file records that.
+  - Prose runs nothing whatever its mood, order or count: a sentence routing three commands in sequence names them as a statement of what one command does names it. State a route as steps to call them.
+  - SKILL.md holds no specification. A command the entry point names is specified in the file whose procedure runs it, or in the catalog.
+  - A specification with two owners has one home and a link from the other. A count of those links that keeps growing says the split is in the wrong place.
+- **Spec layout.**
+  - Each spec opens with a one-line, succinct description of what the command does.
+  - Detail a caller needs, such as flags or inputs, follows as bullets, then the command block.
+  - Preconditions and refusals sit in the step that runs the command, never in the spec.
+- **Named by link.**
+  - Prose names a spec by linking to its sub-section, mid-sentence: `run [Initialize Audit Surface](change-surface.md#initialize-audit-surface) before the first check`.
+  - A command body is inlined only in the file that owns the spec.
+- **Conventions.**
+  - Session setup, execution location, example values and other skill-wide prerequisites stand where a procedure reaching them opens no further file: SKILL.md, which selects the mode, or the file holding the operations those procedures open anyway.
+  - Conventions governing one procedure's commands sit in that procedure's file, ahead of its Commands section.
 
 ## Progressive Disclosure
 
