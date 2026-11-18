@@ -24,7 +24,7 @@ A live sidecar walks real workflow traffic to validate codebase changes, corpus 
 
 - **[Loop](references/loop-mode.md)**
   - Forward-looking, scoped to one system change
-  - A live sidecar loop after unit, e2e and guard tests
+  - Running a live sidecar loop after unit, e2e and guard tests
   - Specimen validation of a codebase or corpus change
   - An MVW walk on workflow-server-exp
 
