@@ -27,7 +27,7 @@ A dependency is one of:
   W03             a task in the same epic
   W04–W09         a range of tasks in the same epic
   E01:W02         a task in another epic
-  #750            an external issue, not checked
+  #750            an external issue; a linked one's number is checked against its link
   I05:E00:W02     another initiative's epic or task, not checked
 Markdown links are read by their text, so [E01:W02](https://…/issues/937) is E01:W02.
 A linked #750 names the issue its link names, so an entry whose #750 text and issue link carry
@@ -70,7 +70,7 @@ from pathlib import Path
 from lane import check_unit, read_lanes
 
 LINK = re.compile(r'\[([^\]]*)\]\([^)]*\)')
-NUMBERED = re.compile(r'\[#(\d+)\]\([^)]*/issues/(\d+)\)')
+NUMBERED = re.compile(r'\[#(\d+)\]\([^)]*/issues/(\d+)/?(?:[#?][^)]*)?\)')
 RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
 TASK = re.compile(r'E\d\d:W\d\d')
 EPIC = re.compile(r'E\d\d')
@@ -95,7 +95,8 @@ def disagreements(key: str, header: list[str], line: str) -> list[str]:
     issue number. The cell is read with its links kept."""
     raw = dict(zip(header, (c.strip() for c in line.strip().strip('|').split('|'))))
     return [f'{key}: #{text} links issue {linked}; a #750 entry links issue 750'
-            for text, linked in NUMBERED.findall(raw.get('Depends on', '')) if text != linked]
+            for text, linked in NUMBERED.findall(raw.get('Depends on', ''))
+            if int(text) != int(linked)]
 
 
 def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict[str, set[str]], dict[str, set[str]],

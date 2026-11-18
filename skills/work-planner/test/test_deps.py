@@ -819,12 +819,16 @@ class IssueEntries(unittest.TestCase):
                 self.assertEqual(code, 0, text)
 
     def test_a_task_row_number_its_link_does_not_carry_is_a_problem(self):
-        code, text = run([('E01', epic_body(('W01', 'Consume', '[#750](https://github.com/o/r/issues/751)')))])
-        self.assertEqual(code, 1, text)
-        self.assertIn('E01:W01: #750 links issue 751; a #750 entry links issue 750', text)
+        for link in ('https://github.com/o/r/issues/751', 'https://github.com/o/skills/issues/751',
+                     'https://github.com/o/r/issues/751#issuecomment-1'):
+            with self.subTest(link=link):
+                code, text = run([('E01', epic_body(('W01', 'Consume', f'[#750]({link})')))])
+                self.assertEqual(code, 1, text)
+                self.assertIn('E01:W01: #750 links issue 751; a #750 entry links issue 750', text)
 
     def test_an_initiative_number_its_link_does_not_carry_is_a_problem(self):
-        code, text = run([('I', initiative_body(('E00', '[#750](https://github.com/o/r/issues/751)'))),
+        entry = '[#750](https://github.com/o/r/issues/751)'
+        code, text = run([('I', initiative_body(('E00', entry))),
                           ('E00', epic_body(('W01', 'Output', '')))])
         self.assertEqual(code, 1, text)
         self.assertIn('initiative E00: #750 links issue 751; a #750 entry links issue 750', text)
