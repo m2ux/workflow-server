@@ -1,0 +1,118 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1731",
+    "base": "3ea815122e6d1f79e05b032ed78ef93c32ec0bd7",
+    "base_ref": "workspace",
+    "head": "fbecce7d8479f2d3107ff5100508007e6b22345a",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-18-1725-f00-command-specifications-in-steps/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review, fresh reviewer)",
+    "reviewed_at": "2026-11-18",
+    "scope": "The whole branch against workspace at 834e3649c by a fresh independent reviewer with issue #1725 and folded #1732: the shared Commands rules and check_skill_files.py (specifications, in_step, operation specifications, invocation count, uncited and entry-point checks, the Apply verb, vendored exclusion, list-model REST gap, mode_commands, own-text --compare), its tests, every work-planner caller line whose link became a plain title and every Run link turned Apply, server-in-the-loop against its earlier SKILL.md, and workflow-canon and gitnexus against workspace. 834e3649c..b854991d6 fixes the round, re-checked alone; b854991d6..fbecce7d8 fixes the re-check finding. Excluded and held for the user, not defects of this change: Markdown rendering a command detail list and the step bullets after it as one list (fixing it adds text or markup); Apply for Run inside Sweep Closure Evidence, which decision 2 makes every link to an operation; the Validate Lane Unit sentence moved from a step into Check Dependencies; the repeated word in loop-mode Reload; and server-in-the-loop sections the declared entry-point set requires.",
+    "criteria": "AC1: skills/guidelines.md Commands rules write a single step's command in the step and make shared ones operations, with no Commands section; shared suite passes. AC2: test_a_commands_section_is_reported_wherever_it_stands and test_a_specifications_key_is_refused; the check over skills/ reports Commands sections in workflow-canon alone. AC3: every work-planner specification stands in its step or an operation its steps Apply, with its contract links; the work-planner suite and the check over it pass. AC4: the check reports no finding for server-in-the-loop, and the vendored gitnexus skills stand outside it by the rule skills/guidelines.md states.",
+    "validation": "At fbecce7d8: skills/test 305 tests OK; skills/work-planner/test 1197 tests OK, 1 skipped; check_skill_files.py over skills/work-planner and skills/server-in-the-loop 68 files, 0 findings; over skills/ 87 files, 45 findings, all in workflow-canon; naming skills/gitnexus/gitnexus-cli checks 0 files; workflow-canon and skills/gitnexus have no diff against workspace; the reviewer's text comparison accounts for every specification line.",
+    "findings": [
+      {
+        "description": "server-in-the-loop's Modes bullet was no noun or gerund phrase, failing test_modes.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b854991d6fa423876f3462778fd18b49cf000af0"
+      },
+      {
+        "description": "Two caller lines read as other actions once their link became a plain title (Index Status, Merge Base).",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/20802ffcaf30c2a753f6c876cbecbbe66d61c569"
+      },
+      {
+        "description": "Commands sat after their result handling in delivery-branches.md.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/20802ffcaf30c2a753f6c876cbecbbe66d61c569"
+      },
+      {
+        "description": "Command bodies ran in another order than their caller line named them in pull-request.md.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/20802ffcaf30c2a753f6c876cbecbbe66d61c569"
+      },
+      {
+        "description": "A step sentence read \"invokes Apply [Validate Lane Unit]\".",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/20802ffcaf30c2a753f6c876cbecbbe66d61c569"
+      },
+      {
+        "description": "A command in an entry point under a heading carrying a numbered list escaped the check.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/8dd67c9b43e04f96641a7d8c6efbc357a5dc5e05"
+      },
+      {
+        "description": "A call link to a step's own command passed unreported.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/8dd67c9b43e04f96641a7d8c6efbc357a5dc5e05"
+      },
+      {
+        "description": "A step writing several commands needed only one input and one output link in all.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/8dd67c9b43e04f96641a7d8c6efbc357a5dc5e05"
+      },
+      {
+        "description": "A flush GraphQL block in a list-model sub-procedure skipped the REST-gap check.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/8dd67c9b43e04f96641a7d8c6efbc357a5dc5e05"
+      },
+      {
+        "description": "The uncited rule claimed every structure while the check reads declared ones.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/8dd67c9b43e04f96641a7d8c6efbc357a5dc5e05"
+      },
+      {
+        "description": "The vendored exclusion matched a folder name, so naming a gitnexus skill directly checked it.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/8dd67c9b43e04f96641a7d8c6efbc357a5dc5e05"
+      },
+      {
+        "description": "Numbered detail after an operation's command made it a procedure.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/8dd67c9b43e04f96641a7d8c6efbc357a5dc5e05"
+      },
+      {
+        "description": "Tests lacked the uncited clearing paths and the new checks.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/8dd67c9b43e04f96641a7d8c6efbc357a5dc5e05"
+      },
+      {
+        "description": "test_board_status called the check without citations.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/20802ffcaf30c2a753f6c876cbecbbe66d61c569"
+      },
+      {
+        "description": "The shared Commands rules still gave every command a sub-section and stated no title rule.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/8dd67c9b43e04f96641a7d8c6efbc357a5dc5e05"
+      },
+      {
+        "description": "loop-mode steps lacked their bold labels.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b854991d6fa423876f3462778fd18b49cf000af0"
+      },
+      {
+        "description": "Moved result lines lost the conditions they sat under in delivery-branches.md.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/fbecce7d8479f2d3107ff5100508007e6b22345a"
+      }
+    ]
+  }
+]
