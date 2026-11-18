@@ -37,7 +37,7 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
   - The description, when the skill's reach changed.
   - One line per item, bold leads on their own line, and the declared step and detail structure for each family.
   - Each rule stated once, and no description of replaced behaviour left anywhere.
-  - Every invocation in its named Commands specification, with caller links and command-owned I/O contracts.
+  - Every invocation in its named command specification, in the step that runs it, with caller links and command-owned I/O contracts.
   - Every link and anchor resolving.
   - [Progressive disclosure](../../guidelines.md#progressive-disclosure), including complete common sections and caller prerequisites.
 
@@ -52,22 +52,7 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
 - Apply [disclosure verification](../../guidelines.md#disclosure-verification) with the skill's [representative scenarios](../guidelines.md#progressive-disclosure).
 - Resolve every required file, command and heading without an implicit external dependency.
 
-### 7. Deliver
-
-- Commit.
-- Push.
-- Report what changed in each file.
-
-## Outcomes
-
-- **The skill matches the request.**
-  The user has the change they asked for in the skill, committed and pushed.
-- **The guidelines hold.**
-  The change agrees with the guidelines, and a new rule the user stated for how the skill is written is part of that change.
-
-## Commands
-
-### Run Tests
+#### Run Tests
 
 Run the skill's script tests and provide [Test Result](#test-result "●") to the requester.
 
@@ -75,7 +60,7 @@ Run the skill's script tests and provide [Test Result](#test-result "●") to th
 cd "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner" && "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 -m unittest discover -s test
 </pre></big>
 
-### Check Skill Files
+#### Check Skill Files
 
 Check the affected skill's files against the rules the shared skill guidelines state and provide [Skill Check Result](#skill-check-result "●") to the requester.
 
@@ -85,7 +70,7 @@ Repeat the skill argument for additional affected skills.
 cd "[**&lt;workspace&gt;**](#workspace "○")" && "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py "[**&lt;skill-directory&gt;**](#skill-directory "○")"
 </pre></big>
 
-### Compare Section Bodies
+#### Compare Section Bodies
 
 Compare every third-level section's body between the change's base and its head to identify sections damaged in a move, and provide [Section Comparison](#section-comparison "●") to the requester.
 
@@ -98,6 +83,19 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - A relative link target is compared by its fragment alone, so a retargeted link is no difference.
 - Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
 - Exit 1 means a section was added, removed or differs.
+
+### 7. Deliver
+
+- Commit.
+- Push.
+- Report what changed in each file.
+
+## Outcomes
+
+- **The skill matches the request.**
+  The user has the change they asked for in the skill, committed and pushed.
+- **The guidelines hold.**
+  The change agrees with the guidelines, and a new rule the user stated for how the skill is written is part of that change.
 
 ## Fields
 

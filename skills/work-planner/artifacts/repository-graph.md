@@ -12,6 +12,18 @@ Current graph evidence for the supplied change.
 
 Run [Index Status](#index-status "ƒ") in the [review checkout](#review-checkout).
 
+##### Index Status
+
+Report whether the repository is indexed and how far behind the index sits, and provide [Index State](#index-state "●") to the requester.
+
+Compare the indexed commit with [Requested Revision](#requested-revision "○").
+
+Run in the [Review Checkout](#review-checkout "○").
+
+<big><pre>
+gitnexus status
+</pre></big>
+
 #### 2. Refresh Absent or Stale Index
 
 - If the repository is unindexed or behind [Requested Revision](#requested-revision):
@@ -22,6 +34,19 @@ Run [Index Status](#index-status "ƒ") in the [review checkout](#review-checkout
 
 - Run [Merge Base](#merge-base "ƒ") in the review checkout for the requested revision and the supplied [base commit](#base-commit).
 - Run [Change Surface](#change-surface "ƒ") in the review checkout against that comparison base.
+
+##### Merge Base
+
+Fetch the base commit, print the commit the pull request's change starts from, and provide [Comparison Base](#comparison-base "●") to the requester.
+
+The review head's fetch brings only the head's history, so a base that moved on after the project checkout's last fetch is fetched here.
+
+Run in the [Review Checkout](#review-checkout "○").
+
+<big><pre>
+git fetch origin '[**&lt;base-commit&gt;**](#base-commit "○")' && &#92;
+  git merge-base '[**&lt;requested-revision&gt;**](#requested-revision "○")' '[**&lt;base-commit&gt;**](#base-commit "○")'
+</pre></big>
 
 #### 4. Measure Changed Symbols
 
@@ -47,20 +72,6 @@ Inspect the staleness block on every response.
 
 Provide [Graph Measurements](#graph-measurements) only when current with the supplied head and meeting [Fields](#fields), or a freshness blocker.
 
-## Commands
-
-### Index Status
-
-Report whether the repository is indexed and how far behind the index sits, and provide [Index State](#index-state "●") to the requester.
-
-Compare the indexed commit with [Requested Revision](#requested-revision "○").
-
-Run in the [Review Checkout](#review-checkout "○").
-
-<big><pre>
-gitnexus status
-</pre></big>
-
 ### Index Repository
 
 Index the repository and provide [Index State](#index-state "●") to the requester. An unindexed or behind repository needs indexing before any measurement.
@@ -73,19 +84,6 @@ Run in the [Review Checkout](#review-checkout "○").
 
 <big><pre>
 gitnexus analyze --index-only
-</pre></big>
-
-### Merge Base
-
-Fetch the base commit, print the commit the pull request's change starts from, and provide [Comparison Base](#comparison-base "●") to the requester.
-
-The review head's fetch brings only the head's history, so a base that moved on after the project checkout's last fetch is fetched here.
-
-Run in the [Review Checkout](#review-checkout "○").
-
-<big><pre>
-git fetch origin '[**&lt;base-commit&gt;**](#base-commit "○")' && &#92;
-  git merge-base '[**&lt;requested-revision&gt;**](#requested-revision "○")' '[**&lt;base-commit&gt;**](#base-commit "○")'
 </pre></big>
 
 ### Change Surface

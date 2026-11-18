@@ -109,8 +109,6 @@ The agreed disposition of criteria a delivered row left unmet.
 - Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") with the provided body.
 - Provide [Row Result](#row-result) with the saved row and criterion disposition.
 
-## Commands
-
 ### Sync Epic
 
 Link each named task id to the open or merged pull requests naming the epic it is delivered through, tick Done on completed rows, and provide [Output Body](#output-body "●") and [Delivery Findings](epic.md#delivery-findings "●") to the requester.

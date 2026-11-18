@@ -41,11 +41,9 @@ def sections(path, level=2):
 
 
 def findings(path):
-    """The shared checker's findings for one file, read against every file of the skill, as its run reads them."""
-    paths = sorted(item for item in ROOT.rglob('*.md') if 'fixtures' not in item.relative_to(ROOT).parts)
+    """The shared checker's findings for one file, as its run reads them."""
     declared = {}
-    cited, called = checker.citations(paths, declared)
-    return checker.check(path, ROOT.parent, {}, cited, called, declared)
+    return checker.check(path, ROOT.parent, {}, declared)
 
 
 class Documented(unittest.TestCase):
@@ -242,7 +240,7 @@ class BoardStatusArtifact(unittest.TestCase):
 
     def test_its_commands_compute_delivery_and_dispatch_changes(self):
         lines, _, headings = checker.scan(STATUS)
-        specs = [title for _, title in checker.specifications(headings)]
+        specs = [title for _, _, title in checker.specifications(lines, headings, checker.contract(STATUS, {}))]
         self.assertEqual(specs, ['Compute Board Changes', 'Compute Dispatch Status'])
         text = STATUS.read_text()
         self.assertIn('skills/work-planner/scripts/board.py', text)
@@ -258,7 +256,7 @@ class BoardStatusArtifact(unittest.TestCase):
 
     def test_its_guidance_holds_closure_item_status_and_write_jurisdiction(self):
         self.assertEqual(sections(STATUS)['Guidance'], ['Closure', 'Item Status', 'Write Jurisdiction'])
-        self.assertEqual(list(sections(STATUS)), ['Commands', 'Fields', 'Guidance'])
+        self.assertEqual(list(sections(STATUS)), ['Operations', 'Fields', 'Guidance'])
 
 
 class BoardDeliveryCallers(unittest.TestCase):

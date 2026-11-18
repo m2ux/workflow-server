@@ -12,6 +12,16 @@ The open proposals board under the owner.
 
 Run [Find Proposals Board](#find-proposals-board "ƒ") under [Board Owner](board.md#board-owner).
 
+##### Find Proposals Board
+
+Print the number of the open board carrying the [configured title](../configuration.md#proposals-board) and provide [Selected Board](board.md#selected-board "●") to the requester.
+
+<big><pre>
+gh api &#92;
+  --paginate "users/[**&lt;owner&gt;**](board.md#board-owner "○")/projectsV2?per_page=100" &#92;
+  --jq '.&#91;&#93; | select(.closed | not) | select(.title == "Proposals" or (.title | startswith("Proposals: "))) | .number'
+</pre></big>
+
 #### 2. Provide Selected Board
 
 Provide the [selected board](board.md#selected-board) number, or an absent-board result for the caller's creation path.
@@ -43,18 +53,6 @@ Run [Link Board to Repository](board.md#link-board-to-repository "ƒ") with the 
 #### 6. Provide Linked Board
 
 Provide the [Copied Board](board.md#copied-board) after linking succeeds.
-
-## Commands
-
-### Find Proposals Board
-
-Print the number of the open board carrying the [configured title](../configuration.md#proposals-board) and provide [Selected Board](board.md#selected-board "●") to the requester.
-
-<big><pre>
-gh api &#92;
-  --paginate "users/[**&lt;owner&gt;**](board.md#board-owner "○")/projectsV2?per_page=100" &#92;
-  --jq '.&#91;&#93; | select(.closed | not) | select(.title == "Proposals" or (.title | startswith("Proposals: "))) | .number'
-</pre></big>
 
 ## Fields
 

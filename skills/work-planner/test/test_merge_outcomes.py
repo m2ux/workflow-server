@@ -148,7 +148,7 @@ class MergeOutcomes(unittest.TestCase):
     def test_no_command_merges_an_epic_review(self):
         source = PULL.read_text()
         self.assertNotIn('Submit Epic Merge', source)
-        merges = re.findall(r'^### (.*)\n\n(.*)', section(source, 'Commands'), re.M)
+        merges = re.findall(r'^#{3,6} (.*)\n\n(.*)', source, re.M)
         self.assertEqual([title for title, opening in merges if opening.startswith('Merge ')],
                          ['Merge Pull Request'])
 

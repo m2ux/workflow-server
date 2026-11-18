@@ -46,8 +46,6 @@ The confirmed criteria and completed rows recorded in an epic or initiative body
 
 Provide the [resulting body](#output-body) and any refused criteria to the caller for publication.
 
-## Commands
-
 ### Run at Revision
 
 Run one instrument in a detached checkout at the commit resolved by a branch, tag or commit and provide [Instrument Result](#instrument-result "●") to the requester. The run creates and removes the checkout.

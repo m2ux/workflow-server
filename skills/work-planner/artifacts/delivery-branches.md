@@ -35,6 +35,17 @@ Require the caller's confirmed [prerequisite evidence](#prerequisite-evidence) b
     - Run [Publish Epic Base](#publish-epic-base "ƒ") in the project checkout with that remote source and the missing epic base name, such as `i07/e00/main`, meeting [Epic Bases](#epic-bases).
     - Retain [Branch Result](#branch-result) with the created branch, or [Failure](#failure).
 
+##### Publish Epic Base
+
+Create a remote epic base from the fetched source branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+<big><pre>
+git push origin 'origin/[**&lt;source-branch&gt;**](#source-branch "○"):refs/heads/[**&lt;epic-base&gt;**](#epic-base-name "○")'
+</pre></big>
+
+- Run in the [Project Checkout](#project-checkout "○").
+- Require [Missing Destination](#missing-destination "○"), [Prerequisite Evidence](#prerequisite-evidence "○") before executing the command.
+
 #### 6. Provide Prepare Delivery Bases
 
 Provide [Epic-Base Names](#epic-base-names) after preparation, or [Failure](#failure) when preparation cannot complete.
@@ -55,6 +66,18 @@ Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [Project Checkout](#
 
 Run [Add Epic Base Worktree](#add-epic-base-worktree "ƒ") in the project checkout for an absent epic base checkout, and reuse an existing one; stop on failure, which a base checked out elsewhere returns.
 
+##### Add Epic Base Worktree
+
+Create the worktree for an existing epic base and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+<big><pre>
+git worktree add '[**&lt;worktree-path&gt;**](#worktree-path "○")' '[**&lt;epic-base&gt;**](#epic-base-name "○")'
+</pre></big>
+
+- Run in the [Project Checkout](#project-checkout "○").
+
+- The path resolves against the directory the command runs in, so supply it as [Epic Bases](#epic-bases) anchors it rather than relative to a linked worktree.
+
 #### 4. Fetch Long-Lived Target
 
 Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the epic base checkout with the long-lived target, such as `main`; stop on failure.
@@ -68,6 +91,17 @@ Run [Merge Remote Branch](#merge-remote-branch "ƒ") in the epic base checkout w
 - After a successful merge:
   - Run [Push Epic Base](#push-epic-base "ƒ") in the epic base checkout.
   - Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
+
+##### Push Epic Base
+
+Push the epic base checked out where it runs to its configured upstream and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+<big><pre>
+git push
+</pre></big>
+
+- Run in the [Checkout](#checkout "○").
+- Require [Successful Merge](#successful-merge "○") before executing the command.
 
 ### Update Task Branch
 
@@ -91,6 +125,17 @@ Run [Merge Remote Branch](#merge-remote-branch "ƒ") in the unit checkout with t
   - Run [Push Task Branch](#push-task-branch "ƒ") in the unit checkout with [Task Branch](#task-branch) as destination.
   - Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
 
+##### Push Task Branch
+
+Push the head of the checkout it runs in to its named remote task branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+<big><pre>
+git push origin 'HEAD:refs/heads/[**&lt;task-branch&gt;**](#task-branch "○")'
+</pre></big>
+
+- Run in the [Unit Checkout](#unit-checkout "○").
+- Require [Successful Merge](#successful-merge "○") before executing the command.
+
 ### Create Pull Request Worktree
 
 The detached worktree where the graph reads the reviewed change.
@@ -98,6 +143,16 @@ The detached worktree where the graph reads the reviewed change.
 #### 1. Fetch Verified Review Head
 
 Run [Fetch Review Head](#fetch-review-head "ƒ") in the [project checkout](#project-checkout) of the repository the pull request changes, passing its number; stop on failure.
+
+##### Fetch Review Head
+
+Fetch one pull request head into FETCH_HEAD and provide [Checkout Commit](#checkout-commit "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+Run in the [Project Checkout](#project-checkout "○").
+
+<big><pre>
+git fetch origin pull/[**&lt;pull-request-number&gt;**](#pull-request-number "○")/head
+</pre></big>
 
 #### 2. Resolve Fetched Review Commit
 
@@ -119,9 +174,29 @@ Take the worktree path from the [pull request number](#pull-request-number), mee
   - Reuse it only at the verified head and when its status reports detached HEAD with no tracked or untracked changes.
   - Otherwise retain it and select an unused path suffixed with the verified commit.
 
+##### Read Checkout Status
+
+Report branch or detached-HEAD state and tracked and untracked changes in one checkout and provide [Checkout Status](#checkout-status "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+<big><pre>
+git -C '[**&lt;checkout&gt;**](#checkout "○")' status --porcelain --branch
+</pre></big>
+
 #### 6. Add Detached Review Worktree
 
 For an unused path, Run [Add Review Worktree](#add-review-worktree "ƒ") in the project checkout with that path and the verified commit.
+
+##### Add Review Worktree
+
+Create a detached worktree at the fetched review head and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+<big><pre>
+git worktree add --detach '[**&lt;worktree-path&gt;**](#worktree-path "○")' [**&lt;head-commit&gt;**](#verified-head "○")
+</pre></big>
+
+- Run in the [Project Checkout](#project-checkout "○").
+
+- The path resolves against the directory the command runs in, so supply it as [Review Worktrees](#review-worktrees) anchors it rather than relative to a linked worktree.
 
 #### 7. Confirm Review Checkout Head
 
@@ -150,8 +225,6 @@ Run [List Epic Bases](#list-epic-bases "ƒ") in the project checkout for [Epic I
 #### 4. Provide Delivery Branches
 
 Provide [Branch Names](#branch-names) and [Epic-Base Names](#epic-base-names), or [Failure](#failure) with any missing configuration.
-
-## Commands
 
 ### List Epic Bases
 
@@ -194,17 +267,6 @@ Run in the [Checkout](#checkout "○").
 git fetch origin '[**&lt;source-branch&gt;**](#source-branch "○")'
 </pre></big>
 
-### Publish Epic Base
-
-Create a remote epic base from the fetched source branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
-<big><pre>
-git push origin 'origin/[**&lt;source-branch&gt;**](#source-branch "○"):refs/heads/[**&lt;epic-base&gt;**](#epic-base-name "○")'
-</pre></big>
-
-- Run in the [Project Checkout](#project-checkout "○").
-- Require [Missing Destination](#missing-destination "○"), [Prerequisite Evidence](#prerequisite-evidence "○") before executing the command.
-
 ### Merge Remote Branch
 
 Merge one fetched remote branch into the branch of the checkout it runs in and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -224,28 +286,6 @@ git merge --no-edit 'origin/[**&lt;source-branch&gt;**](#source-branch "○")'
 - **Dropped.**
   The session that made an entry drops it once restored, by the `stash@{<n>}` reference its message holds at that moment, since `git stash drop` takes no bare commit.
 - eg `git stash push -m "i11/e10/w29 before base merge"`, then `git stash list --format='%H %gd %s'` to find the entry, `git stash apply <entry-commit>`, and `git stash drop "stash@{<n>}"`.
-
-### Push Epic Base
-
-Push the epic base checked out where it runs to its configured upstream and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
-<big><pre>
-git push
-</pre></big>
-
-- Run in the [Checkout](#checkout "○").
-- Require [Successful Merge](#successful-merge "○") before executing the command.
-
-### Push Task Branch
-
-Push the head of the checkout it runs in to its named remote task branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
-<big><pre>
-git push origin 'HEAD:refs/heads/[**&lt;task-branch&gt;**](#task-branch "○")'
-</pre></big>
-
-- Run in the [Unit Checkout](#unit-checkout "○").
-- Require [Successful Merge](#successful-merge "○") before executing the command.
 
 ### Check Task Worktree
 
@@ -276,40 +316,6 @@ git worktree add '[**&lt;worktree-path&gt;**](#worktree-path "○")' -b '[**&lt;
 
 - The path resolves against the directory the command runs in, so supply it as [Task Branches](#task-branches) anchors it rather than relative to a linked worktree.
 
-### Fetch Review Head
-
-Fetch one pull request head into FETCH_HEAD and provide [Checkout Commit](#checkout-commit "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
-Run in the [Project Checkout](#project-checkout "○").
-
-<big><pre>
-git fetch origin pull/[**&lt;pull-request-number&gt;**](#pull-request-number "○")/head
-</pre></big>
-
-### Add Epic Base Worktree
-
-Create the worktree for an existing epic base and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
-<big><pre>
-git worktree add '[**&lt;worktree-path&gt;**](#worktree-path "○")' '[**&lt;epic-base&gt;**](#epic-base-name "○")'
-</pre></big>
-
-- Run in the [Project Checkout](#project-checkout "○").
-
-- The path resolves against the directory the command runs in, so supply it as [Epic Bases](#epic-bases) anchors it rather than relative to a linked worktree.
-
-### Add Review Worktree
-
-Create a detached worktree at the fetched review head and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
-<big><pre>
-git worktree add --detach '[**&lt;worktree-path&gt;**](#worktree-path "○")' [**&lt;head-commit&gt;**](#verified-head "○")
-</pre></big>
-
-- Run in the [Project Checkout](#project-checkout "○").
-
-- The path resolves against the directory the command runs in, so supply it as [Review Worktrees](#review-worktrees) anchors it rather than relative to a linked worktree.
-
 ### Fetch Branch Protection
 
 Save the target branch protection response and provide [Target Requirements](#target-requirements "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -332,14 +338,6 @@ Resolve one revision to its commit in the selected checkout and provide [Checkou
 
 <big><pre>
 git -C '[**&lt;checkout&gt;**](#checkout "○")' rev-parse '[**&lt;revision&gt;**](#revision "○")^{commit}'
-</pre></big>
-
-### Read Checkout Status
-
-Report branch or detached-HEAD state and tracked and untracked changes in one checkout and provide [Checkout Status](#checkout-status "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
-<big><pre>
-git -C '[**&lt;checkout&gt;**](#checkout "○")' status --porcelain --branch
 </pre></big>
 
 ## Fields

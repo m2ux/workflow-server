@@ -12,6 +12,16 @@ The theme board the request names.
 
 Run [Find Theme Board](#find-theme-board "ƒ") for the [Theme Name](#theme-name) under [Board Owner](#board-owner). The theme must meet [Themes](#themes).
 
+##### Find Theme Board
+
+Print the number of the open board matching the theme name after any proposal designator and provide [Selected Board](#selected-board "●") to the requester.
+
+<big><pre>
+gh api &#92;
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2?per_page=100" &#92;
+  --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub("^\\&#91;P&#91;0-9&#93;+\\&#93; "; "") | startswith("[**&lt;theme-name&gt;**](#theme-name "○"): ")) | .number'
+</pre></big>
+
 #### 2. Provide Missing Selection
 
 Provide a missing-selection result when no theme is specified; the caller obtains that choice.
@@ -32,9 +42,28 @@ Run [Fetch Board Fields](#fetch-board-fields "ƒ") for the Status options at [Bo
 
 Run [Add Issue to Board](#add-issue-to-board "ƒ") with the [issue id](#issue-id).
 
+##### Add Issue to Board
+
+Add the caller-supplied issue to a board, print the new item's id, and provide [Membership Result](#membership-result "●") to the requester.
+
+<big><pre>
+gh api --method POST users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items -f type=Issue -F id=[**&lt;issue-id&gt;**](#issue-id "○") --jq .id
+</pre></big>
+
 #### 3. Set Initial Status
 
 Run [Set Item Status](#set-item-status "ƒ") with [Initial Status](#initial-status) and the matching field and option ids.
+
+##### Set Item Status
+
+Set one board item's Status and provide [Membership Result](#membership-result "●") to the requester.
+
+<big><pre>
+gh api &#92;
+  --method PATCH users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items/[**&lt;item-id&gt;**](#item-coordinates "○") &#92;
+  --input '[**&lt;status-input-file&gt;**](#status-input-file "○")' &#92;
+  --jq .id
+</pre></big>
 
 #### 4. Read Saved Item
 
@@ -52,9 +81,29 @@ The selected board's items and status fields.
 
 Run [Find Status Field](#find-status-field "ƒ") for [Board Coordinates](#board-coordinates).
 
+##### Find Status Field
+
+Print the id of a board's Status field and provide [Status Field](#status-field "●") to the requester.
+
+<big><pre>
+gh api &#92;
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/fields?per_page=100" &#92;
+  --jq '.&#91;&#93; | select(.name == "Status") | .id'
+</pre></big>
+
 #### 2. Fetch Complete Board Items
 
 Run [Fetch Board Items with Status](#fetch-board-items-with-status "ƒ"), passing that field id and board number.
+
+##### Fetch Board Items with Status
+
+Save a board's items with their Status and complete issues and provide [Board State](#board-state "●") to the requester.
+
+<big><pre>
+gh api &#92;
+  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field "○")" &#92;
+  &gt; '[**&lt;board-items-file&gt;**](#board-items-file "○")'
+</pre></big>
 
 #### 3. Provide Board State
 
@@ -75,8 +124,6 @@ When [Optional Item](#optional-item) requests a single item for write confirmati
 #### 3. Provide Current Configuration
 
 Provide [Board Configuration](#board-configuration) with the field definitions and requested current item.
-
-## Commands
 
 ### Find Board Template
 
@@ -111,25 +158,6 @@ Link one board to the supplied repository and provide [Link Result](#link-result
 gh project link [**&lt;board-number&gt;**](#board-coordinates "○") --owner [**&lt;owner&gt;**](#board-owner "○") --repo [**&lt;repo&gt;**](#repository "○")
 </pre></big>
 
-### Add Issue to Board
-
-Add the caller-supplied issue to a board, print the new item's id, and provide [Membership Result](#membership-result "●") to the requester.
-
-<big><pre>
-gh api --method POST users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items -f type=Issue -F id=[**&lt;issue-id&gt;**](#issue-id "○") --jq .id
-</pre></big>
-
-### Set Item Status
-
-Set one board item's Status and provide [Membership Result](#membership-result "●") to the requester.
-
-<big><pre>
-gh api &#92;
-  --method PATCH users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items/[**&lt;item-id&gt;**](#item-coordinates "○") &#92;
-  --input '[**&lt;status-input-file&gt;**](#status-input-file "○")' &#92;
-  --jq .id
-</pre></big>
-
 ### Remove Board Item
 
 Remove one item from a board and provide [Membership Result](#membership-result "●") to the requester. Leave its issue as it stands.
@@ -144,36 +172,6 @@ Save a board's fields and provide [Board Configuration](#board-configuration "�
 
 <big><pre>
 gh api --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/fields?per_page=100" &gt; '[**&lt;board-fields-file&gt;**](#board-fields-file "○")'
-</pre></big>
-
-### Find Theme Board
-
-Print the number of the open board matching the theme name after any proposal designator and provide [Selected Board](#selected-board "●") to the requester.
-
-<big><pre>
-gh api &#92;
-  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2?per_page=100" &#92;
-  --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub("^\\&#91;P&#91;0-9&#93;+\\&#93; "; "") | startswith("[**&lt;theme-name&gt;**](#theme-name "○"): ")) | .number'
-</pre></big>
-
-### Find Status Field
-
-Print the id of a board's Status field and provide [Status Field](#status-field "●") to the requester.
-
-<big><pre>
-gh api &#92;
-  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/fields?per_page=100" &#92;
-  --jq '.&#91;&#93; | select(.name == "Status") | .id'
-</pre></big>
-
-### Fetch Board Items with Status
-
-Save a board's items with their Status and complete issues and provide [Board State](#board-state "●") to the requester.
-
-<big><pre>
-gh api &#92;
-  --paginate "users/[**&lt;owner&gt;**](#board-owner "○")/projectsV2/[**&lt;board-number&gt;**](#board-coordinates "○")/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field "○")" &#92;
-  &gt; '[**&lt;board-items-file&gt;**](#board-items-file "○")'
 </pre></big>
 
 ### Fetch Board Item

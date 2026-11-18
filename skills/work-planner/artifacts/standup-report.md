@@ -34,8 +34,6 @@ Run [Summarise Progress](#summarise-progress "ƒ") with the same inputs and the 
 - Provide [Report Result](#report-result) with the report and separate unresolved findings.
 - The report must meet [Fields](#fields).
 
-## Commands
-
 ### Summarise Progress
 
 Print the standup from supplied board items, pull request records and their issue-link snapshot and provide [Report Result](#report-result "●") to the requester.

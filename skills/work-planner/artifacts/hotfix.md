@@ -80,8 +80,6 @@ Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Board
 
 Provide [Board Result](#board-result) with the settled item, its removal, or the unchanged board.
 
-## Commands
-
 ### Sync Hot-fix Issue
 
 Record the open or merged pull request delivering a hot-fix, tick verified criteria, report whether the hot-fix is closable, and provide [Output Body](#output-body "●") and [Delivery Findings](#delivery-findings "●") to the requester.

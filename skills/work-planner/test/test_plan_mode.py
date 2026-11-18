@@ -130,7 +130,7 @@ class PublishedOnEngineering(unittest.TestCase):
         self.assertIn("cd '<engineering-worktree>' && git add -A && "
                       "(git diff --cached --quiet || git commit -F '<message-file>') && "
                       "git fetch origin engineering && git rebase origin/engineering && git push",
-                      section(text, '### Commit Planning Record'))
+                      section(text, '##### Commit Planning Record'))
 
 
 class ApprovedBeforeDrafting(unittest.TestCase):

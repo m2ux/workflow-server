@@ -76,8 +76,6 @@ Include excluded names in Problem and Proposal and criterion/source departures i
 
 Provide [Output Files](#output-files) with the corrected body and [Validation Findings](#validation-findings) containing the mechanical diff and unresolved findings.
 
-## Commands
-
 ### Sync Initiative
 
 Report an initiative's delivery state against its epics, tick Done on an epic row whose issue is closed as completed, and provide [Delivery Findings](initiative.md#delivery-findings "●") and, when a body was requested, [Output Files](#output-files "●") to the requester. A row whose epic it is not given keeps its Done cell and is reported unchanged.

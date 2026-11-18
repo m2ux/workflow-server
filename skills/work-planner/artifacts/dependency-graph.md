@@ -37,7 +37,40 @@ The task graph and the row numbers it permits, checked and renumbered across the
 - Record the printed longest chains and each printed contending pair in the planning record.
 - Provide [Graph Result](#graph-result) with the checked bodies, proposed [Epic Priority](work-priority.md#epic-priority) map and unresolved findings; do not publish a failed renumbering.
 
-## Commands
+##### Renumber Tasks
+
+Renumber one epic's tasks in the supplied files according to the given map and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py &#92;
+  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs "○") &#92;
+  --epic [**&lt;epic-number&gt;**](#renumber-inputs "○") &#92;
+  --own '[**&lt;epic-body-file&gt;**](#dependency-files "○")' &#92;
+  --tasks [**&lt;task-number-map&gt;**](#renumber-inputs "○") '[**&lt;affected-body-file&gt;**](#renumber-inputs "○")'
+</pre></big>
+
+- `<task-number-map>` is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each affected body file as a separate argument.
+
+- It renumbers `<epic-id> Wxx` and `<epic-id>:Wxx` everywhere, and bare `Wxx` inside that epic's own body. **Example:** for `E01`, the qualified forms are `E01 Wxx` and `E01:Wxx`.
+- The map assigns each old task number a distinct new number. A source absent from the files or a duplicate destination is refused.
+- Append `--outside` followed by each explicitly authorized outside-initiative body file when supplied; only this initiative's prefixed references change there.
+- Only rows no pull request names may be renumbered. Inspect the rewritten files before publishing them.
+
+##### Renumber Epics
+
+Renumber an initiative's epics across supplied body files and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py &#92;
+  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs "○") &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --map [**&lt;epic-number-map&gt;**](#renumber-inputs "○") '[**&lt;body-file&gt;**](#renumber-inputs "○")'
+</pre></big>
+
+- The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.
+- Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.
 
 ### Check Dependencies
 
@@ -72,41 +105,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   An epic with no prerequisite epic, one whose tasks are not yet written among them, carries the largest number, and each other epic takes one less than the smallest its prerequisites carry.
 - **Component contention establishes whether it can.**
   An epic holding a row that contends with a row of an epic of the same depth takes the number below that depth, and the epics depending on it follow it down, as [Component Contention](#component-contention) states.
-
-### Renumber Tasks
-
-Renumber one epic's tasks in the supplied files according to the given map and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py &#92;
-  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs "○") &#92;
-  --epic [**&lt;epic-number&gt;**](#renumber-inputs "○") &#92;
-  --own '[**&lt;epic-body-file&gt;**](#dependency-files "○")' &#92;
-  --tasks [**&lt;task-number-map&gt;**](#renumber-inputs "○") '[**&lt;affected-body-file&gt;**](#renumber-inputs "○")'
-</pre></big>
-
-- `<task-number-map>` is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each affected body file as a separate argument.
-
-- It renumbers `<epic-id> Wxx` and `<epic-id>:Wxx` everywhere, and bare `Wxx` inside that epic's own body. **Example:** for `E01`, the qualified forms are `E01 Wxx` and `E01:Wxx`.
-- The map assigns each old task number a distinct new number. A source absent from the files or a duplicate destination is refused.
-- Append `--outside` followed by each explicitly authorized outside-initiative body file when supplied; only this initiative's prefixed references change there.
-- Only rows no pull request names may be renumbered. Inspect the rewritten files before publishing them.
-
-### Renumber Epics
-
-Renumber an initiative's epics across supplied body files and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py &#92;
-  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs "○") &#92;
-  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
-  --map [**&lt;epic-number-map&gt;**](#renumber-inputs "○") '[**&lt;body-file&gt;**](#renumber-inputs "○")'
-</pre></big>
-
-- The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.
-- Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.
 
 ## Fields
 

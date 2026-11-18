@@ -8,17 +8,15 @@ Each file kind's sections, in order, and the options the shared check reads for 
 
 | Option | `SKILL.md` | `modes` | `protocols` | `artifacts` |
 | --- | --- | --- | --- | --- |
-| `sections` | Modes, Dependencies | Procedure, Outcomes, Commands, Fields, Guidance | Procedure, Commands, Fields, Guidance | Operations, Commands, Fields, Guidance |
+| `sections` | Modes, Dependencies | Procedure, Outcomes, Fields, Guidance | Procedure, Fields, Guidance | Operations, Fields, Guidance |
 | `required` |  | Procedure, Outcomes | Procedure | Fields |
 | `procedures` |  | Procedure | Procedure | Operations |
 | `steps` |  | headings | headings | headings |
-| `specifications` |  | Commands | Commands | Commands |
 | `commands` |  | html | html | html |
 | `contracts` |  | Fields | Fields | Fields |
 | `preamble` |  | ../rules.md, ../conventions.md, #outcomes | ../rules.md, ../conventions.md |  |
 | `calls` |  | artifacts: Apply, modes: Follow, protocols: Follow | artifacts: Apply, modes: Follow, protocols: Follow | artifacts: Apply |
 | `link_roles` | yes | yes | yes | yes |
-| `keeps_commands` |  |  |  | yes |
 
 ## SOLID
 
@@ -71,7 +69,7 @@ The skill is an object model in prose: an artifact owns state and callable capab
 - **State constraints.**
   Fields define values, types, permitted states and invariants. Conditional constraints and schema examples are valid field content.
 - **Callable transformations.**
-  Derivation, state or membership selection, evidence gathering, execution, refusals, retries and continuation belong in callable operations, with invocations in named Commands specifications. Declarative prose that derives a caller's action from evidence is behavior under this boundary.
+  Derivation, state or membership selection, evidence gathering, execution, refusals, retries and continuation belong in callable operations, with invocations in named command specifications. Declarative prose that derives a caller's action from evidence is behavior under this boundary.
 
 ## Titles
 
@@ -136,12 +134,12 @@ These rules apply to mode and protocol procedures and artifact operations.
 These rules govern named command and access specifications. Procedural operations follow Procedure and Artifacts below.
 
 - **Spec layout.**
-  A named `###` specification under Commands owns one raw HTML `<big><pre>…</pre></big>` invocation. Open with an imperative instruction combining the action, each linked provided output and its recipient. A single prose condition or detail item accompanies the preamble as unbulleted text before the invocation; related sentences may qualify one action. Multi-item detail lists follow the invocation box. Other unbulleted context and the REST gap for GraphQL precede the invocation. Long shell invocations use token-boundary continuations and readable option/value groups, preserving required quoting, operators and argument order. Encode terminal backslashes as `&#92;` so rendering preserves the literal continuation and one line break.
+  A named specification owns one raw HTML `<big><pre>…</pre></big>` invocation. Open with an imperative instruction combining the action, each linked provided output and its recipient. A single prose condition or detail item accompanies the preamble as unbulleted text before the invocation; related sentences may qualify one action. Multi-item detail lists follow the invocation box. Other unbulleted context and the REST gap for GraphQL precede the invocation. Long shell invocations use token-boundary continuations and readable option/value groups, preserving required quoting, operators and argument order. Encode terminal backslashes as `&#92;` so rendering preserves the literal continuation and one line break.
 
 - **One command.**
   Each invocation exposes one command or access action. Put sequencing, branching, repetition and readback in the governing procedure. A working-directory prefix and output-filter pipeline belong to the command they serve. Optional flags for one command share its invocation.
 - **One home.**
-  A command specification lives with the artifact that owns its subject, or with the mode for skill maintenance and work spanning artifacts. Callers Run its named link directly. A kind supplies only its additional selections to a common operation.
+  A command specification lives with the artifact that owns its subject, or with the mode for skill maintenance and work spanning artifacts. It is a sub-section of the step that runs it, or an operation of its own in that file's procedure section where several steps or another file's steps run it. Callers Run its named link directly. A kind supplies only its additional selections to a common operation.
 
 - **Direction.**
   The calling step names the operation it applies. Its invocation does not name that caller.
@@ -166,7 +164,7 @@ These rules govern named command and access specifications. Procedural operation
 Read this before adding or changing a mode, applying [SOLID](#solid).
 
 - **Orchestration.**
-  Modes coordinate; artifact operations perform and validate work on their own subject. Mode procedures select scope, call artifact operations or command specifications, route findings and user decisions, and coordinate changes across artifacts. A procedure managing several artifacts belongs in a mode. Skill maintenance and commands spanning artifacts have specifications in the mode’s Commands section.
+  Modes coordinate; artifact operations perform and validate work on their own subject. Mode procedures select scope, call artifact operations or command specifications, route findings and user decisions, and coordinate changes across artifacts. A procedure managing several artifacts belongs in a mode. Skill maintenance and commands spanning artifacts have specifications in the mode’s procedure.
 
 - **One goal.**
   A mode follows [Single Responsibility](#single-responsibility).
@@ -255,7 +253,7 @@ Read this before adding or changing an artifact, applying [SOLID](#solid).
 - **Common file.**
   Apply [Open-Closed](#open-closed) to each body family. A kind's table, title and specific checks live in its file; the common file holds the rules every body shares.
 - **Operations.**
-  Every procedural sequence occupies a named `###` subsection under Operations, including a kind's population path. Operations itself contains no steps; incorporate any overarching sequence into the named operations that perform its constituent work. Omit Operations when the artifact has no operation. Each subsection uses an [opening](#procedure) and numbered heading steps. A kind step links to the common procedure unit it uses and adds only the further population. It does not copy the shared rules.
+  Every procedural sequence occupies a named `###` subsection under Operations, including a kind's population path. A command specification standing as an operation of its own holds its one command and no steps. Operations itself contains no steps; incorporate any overarching sequence into the named operations that perform its constituent work. Omit Operations when the artifact has no operation. Each subsection uses an [opening](#procedure) and numbered heading steps. A kind step links to the common procedure unit it uses and adds only the further population. It does not copy the shared rules.
 - **Operation steps.**
   Address instructions directly to the agent, following the [procedure rules](#procedure).
 - **Population conditions.**
@@ -270,7 +268,7 @@ Read this before adding or changing an artifact, applying [SOLID](#solid).
   Put each action’s preconditions and refusals at its owning operation or command specification. Shared conditions have one home; callers retain only their applicable selection, authorization or evidence transition. A rule binding every artifact belongs in this section.
 
 - **Sections.**
-  An artifact takes the [sections](#sections) its column declares. Commands holds named specifications; Operations holds substantive numbered procedures.
+  An artifact takes the [sections](#sections) its column declares. Operations holds substantive numbered procedures and the command specifications its steps run.
 
 ## References
 
@@ -279,7 +277,7 @@ Read this before adding or changing a reference, applying [SOLID](#solid).
 - **Support.**
   A reference is an ad hoc document that supports the process. It is neither a mode nor an artifact.
 - **Shape.**
-  It follows the shared sections above. It does not use Procedure, Fields, Operations, Commands, and Outcomes.
+  It follows the shared sections above. It does not use Procedure, Fields, Operations and Outcomes.
 - **Cited only.**
   A reference is only ever referred to. It cites neither a mode nor an artifact.
 - **Names.**

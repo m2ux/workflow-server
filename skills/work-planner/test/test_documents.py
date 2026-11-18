@@ -24,8 +24,8 @@ def executable_scripts(paths):
         entry = checker.contract(path, {})
         if not entry or entry.get('commands') != 'html':
             continue
-        for start, title in checker.specifications(headings, checker.held_section(entry)):
-            end = checker.heading_end(headings, start, 3, len(lines))
+        for start, level, title in checker.specifications(lines, headings, entry):
+            end = checker.heading_end(headings, start, level, len(lines))
             if not called.get(path, {}).get(checker.anchor_of(title)):
                 continue
             for first, last in checker.scan_blocks(lines).invocations:
@@ -68,8 +68,10 @@ class DocumentInterfaces(unittest.TestCase):
             if section is None:
                 continue
             end = checker.heading_end(headings, section, 2, len(lines))
+            # A command specification keeps its subject's file whatever runs it.
+            held = {start for start, _, _ in checker.specifications(lines, headings, checker.contract(path, {}))}
             for start, depth, title in headings:
-                if section < start < end and depth == 3:
+                if section < start < end and depth == 3 and start not in held:
                     references[(path.resolve(), checker.anchor_of(title))] = []
         for path in paths:
             lines, fenced, _ = checker.scan(path)
@@ -115,16 +117,17 @@ class DocumentInterfaces(unittest.TestCase):
             payload = checker.scan_blocks(lines).html_lines
             entry = checker.contract(path, {})
             self.assertEqual(entry.get('steps'), 'headings')
+            held = checker.specification_spans(lines, headings, entry)
             section = None
             for position, (start, level, title) in enumerate(headings):
                 if level == 2:
                     section = title
-                if section != entry['procedures'] or level != 3:
+                if section != entry['procedures'] or level != 3 or start in held:
                     continue
                 with self.subTest(file=path.name, operation=title):
                     end = next((i for i, depth, _ in headings[position + 1:] if depth <= 3), len(lines))
                     body = [lines[i] for i in range(start + 1, end)
-                            if not fenced[i] and i not in payload]
+                            if not fenced[i] and i not in payload and i not in held]
                     steps = [(i, name) for i, depth, name in headings
                              if start < i < end and depth == 4 and checker.HEADING_STEP.match(name)]
                     self.assertGreaterEqual(len(title.split()), 2)
@@ -134,10 +137,11 @@ class DocumentInterfaces(unittest.TestCase):
                     self.assertFalse(any(re.match(r'^\d+\. ', line) for line in body))
                     self.assertFalse(any(re.match(r'^\*\*(?:Inputs|Outputs):', line) for line in body))
                     contracts = [(target, role) for i, target, role, _ in checker.role_links(lines, fenced)
-                                 if start < i < end and (i in payload or not checker.HEADING.match(lines[i]))]
+                                 if start < i < end and i not in held
+                                 and (i in payload or not checker.HEADING.match(lines[i]))]
                     inputs = {target for target, role in contracts if role == 'input'}
                     arguments = [(match[2], checker.link_role(match)) for i in range(start + 1, end)
-                                 if i in payload for match in checker.ARGUMENT_LINK.finditer(lines[i])]
+                                 if i in payload and i not in held for match in checker.ARGUMENT_LINK.finditer(lines[i])]
                     self.assertTrue(all(role in ('input', 'output', 'operation') for _, role in arguments),
                                     'an executable annotation has no role')
                     self.assertLessEqual({target for target, role in arguments if role == 'input'}, inputs)
@@ -241,8 +245,8 @@ class DocumentInterfaces(unittest.TestCase):
             fixture = Path(directory)
             (fixture / 'guidelines.md').write_text(
                 '# Guidelines\n\n## Sections\n\n| Option | artifacts |\n| --- | --- |\n'
-                '| sections | Operations, Commands, Fields |\n| procedures | Operations |\n'
-                '| steps | headings |\n| commands | html |\n| specifications | Commands |\n')
+                '| sections | Operations, Fields |\n| procedures | Operations |\n'
+                '| steps | headings |\n| commands | html |\n')
             path = fixture / 'artifacts/control.md'
             path.parent.mkdir()
             path.write_text("""# Script Evidence
@@ -255,9 +259,7 @@ class DocumentInterfaces(unittest.TestCase):
 
 Run [Run Selected Tool](#run-selected-tool).
 
-## Commands
-
-### Run Selected Tool
+##### Run Selected Tool
 
 <big><pre>python3 skills/work-planner/scripts/live.py</pre></big>
 
@@ -526,7 +528,7 @@ class ProposalsBoardHome(unittest.TestCase):
     neither it nor Proposal."""
 
     def test_proposals_board_holds_its_operations_and_command(self):
-        titles = {title for _, depth, title in checker.scan(PROPOSALS_BOARD)[2] if depth == 3}
+        titles = {title for _, depth, title in checker.scan(PROPOSALS_BOARD)[2] if depth >= 3}
         self.assertLessEqual(set(BOARD_SECTIONS), titles)
 
     def test_no_other_file_holds_them(self):

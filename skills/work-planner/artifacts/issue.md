@@ -12,9 +12,29 @@ The current issue, its saved body and discussion.
 
 Run [Fetch Tracker Issue](#fetch-tracker-issue "ƒ") for the complete JSON, or Run [Fetch Issue Body](#fetch-issue-body "ƒ") for its body.
 
+##### Fetch Issue Body
+
+Save an issue's body alone and provide [Issue Body](#issue-body "●") to the requester.
+
+Run in the repository checkout.
+
+<big><pre>
+gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") --jq .body &gt; '[**&lt;output-body-file&gt;**](#output-files "○")'
+</pre></big>
+
 #### 2. Read Requested Discussion
 
 Run [Fetch Issue Comments](#fetch-issue-comments "ƒ") when [Discussion Selection](#discussion-selection) requires the discussion.
+
+##### Fetch Issue Comments
+
+Print an issue's comments and provide [Discussion](#discussion "●") to the requester.
+
+Run in the repository checkout.
+
+<big><pre>
+gh api --paginate repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/comments
+</pre></big>
 
 #### 3. Provide Read Tracker Issue
 
@@ -36,9 +56,81 @@ Check the assignments against [Label Names](#label-names); provide a missing-lab
 
 For a new issue, Run [Create Tracker Issue](#create-tracker-issue "ƒ") with the body's file, title and labels.
 
+##### Create Tracker Issue
+
+Create an issue from a body file with its title and labels, print its number, and provide [Identity](#identity "●") to the requester.
+
+<big><pre>
+gh api &#92;
+  --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues &#92;
+  -f title='[**&lt;title&gt;**](#issue-changes "○")' &#92;
+  -F 'body=@[**&lt;body-file&gt;**](#issue-changes "○")' &#92;
+  -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names "○")' &#92;
+  --jq .number
+</pre></big>
+
+- Run in the repository checkout.
+
+- Repeat `-f 'labels[]=<label>'` for each supplied label.
+
 #### 4. Change Existing Fields
 
 For an existing issue, Run [Patch Issue Body](#patch-issue-body "ƒ"), Run [Retitle Tracker Issue](#retitle-tracker-issue "ƒ"), Run [Add Issue Labels](#add-issue-labels "ƒ"), Run [Remove Issue Label](#remove-issue-label "ƒ") or Run [Add Issue Assignee](#add-issue-assignee "ƒ") for the fields being changed.
+
+##### Patch Issue Body
+
+Replace an issue's body from a file and provide [Identity](#identity "●") and [Content](#content "●") to the requester.
+
+Run in the repository checkout.
+
+<big><pre>
+gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") -F 'body=@[**&lt;body-file&gt;**](#issue-changes "○")' --jq .number
+</pre></big>
+
+##### Retitle Tracker Issue
+
+Replace an issue's title and provide [Content](#content "●") to the requester.
+
+Run in the repository checkout.
+
+<big><pre>
+gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") -f title='[**&lt;title&gt;**](#issue-changes "○")' --jq .title
+</pre></big>
+
+##### Add Issue Labels
+
+Add labels to an issue and provide [Label Names](#label-names "●") to the requester.
+
+<big><pre>
+gh api --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/labels -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names "○")' --jq '.&#91;&#93;.name'
+</pre></big>
+
+- Run in the repository checkout.
+
+- Repeat `-f 'labels[]=<label>'` for each supplied label.
+
+##### Remove Issue Label
+
+Remove one label from an issue and provide [Label Names](#label-names "●") to the requester.
+
+Run in the repository checkout.
+
+<big><pre>
+gh api --method DELETE 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/labels/[**&lt;label&gt;**](#label-names "○")' --jq '.&#91;&#93;.name'
+</pre></big>
+
+##### Add Issue Assignee
+
+Assign a login to an issue and provide [Assignee](#assignee "●") to the requester.
+
+Run in the repository checkout.
+
+<big><pre>
+gh api &#92;
+  --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/assignees &#92;
+  -f 'assignees&#91;&#93;=[**&lt;login&gt;**](#assignee "○")' &#92;
+  --jq '.assignees&#91;&#93;.login'
+</pre></big>
 
 #### 5. Publish Required Comment
 
@@ -69,6 +161,32 @@ When replying to feedback already folded into the body, compose a precise, factu
 - Publish [Comment](#comment) on [Identity](#identity) in [Repository](#repository):
   - For a one-line comment, Run [Post Inline Comment](#post-inline-comment "ƒ") with the exact text.
   - For a longer comment, Run [Post Comment File](#post-comment-file "ƒ") with the complete file.
+
+##### Post Inline Comment
+
+Post one line of exact comment text, capture its URL, and provide [Comment](#comment "●") to the requester.
+
+Run in the repository checkout.
+
+<big><pre>
+gh api &#92;
+  --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/comments &#92;
+  -f body='[**&lt;comment-text&gt;**](#comment "○")' &#92;
+  --jq .html_url
+</pre></big>
+
+##### Post Comment File
+
+Post a complete comment file, capture its URL, and provide [Comment](#comment "●") to the requester.
+
+Run in the repository checkout.
+
+<big><pre>
+gh api &#92;
+  --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/comments &#92;
+  -F 'body=@[**&lt;comment-file&gt;**](#comment "○")' &#92;
+  --jq .html_url
+</pre></big>
 
 #### 3. Provide Comment URL
 
@@ -121,6 +239,18 @@ The next unused number for one prefixed issue kind in the repository.
 
 Run [List Prefixed Titles](#list-prefixed-titles "ƒ") for the supplied [Repository](#repository) and [Tracker Prefix](#tracker-prefix), covering all issue states.
 
+##### List Prefixed Titles
+
+List titles carrying one kind's prefix letter in all states and provide [Tracker Prefix](#tracker-prefix "●") to the requester.
+
+Run in the repository checkout.
+
+<big><pre>
+gh api &#92;
+  --paginate 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repository&gt;**](#repository "○")/issues?state=all&per_page=100' &#92;
+  --jq '.&#91;&#93; | select(.title | test("^\\&#91;[**&lt;prefix-letter&gt;**](#tracker-prefix "○")&#91;0-9&#93;{2}\\&#93;")) | .title'
+</pre></big>
+
 #### 2. Read Highest Prefix
 
 Read the highest prefix carrying that letter.
@@ -132,100 +262,6 @@ Confirm the following number, or `00` when there is no prefix, remains unused be
 #### 4. Provide Confirmed Number
 
 Provide the confirmed [Tracker Number](#tracker-number).
-
-## Commands
-
-### Create Tracker Issue
-
-Create an issue from a body file with its title and labels, print its number, and provide [Identity](#identity "●") to the requester.
-
-<big><pre>
-gh api &#92;
-  --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues &#92;
-  -f title='[**&lt;title&gt;**](#issue-changes "○")' &#92;
-  -F 'body=@[**&lt;body-file&gt;**](#issue-changes "○")' &#92;
-  -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names "○")' &#92;
-  --jq .number
-</pre></big>
-
-- Run in the repository checkout.
-
-- Repeat `-f 'labels[]=<label>'` for each supplied label.
-
-### Patch Issue Body
-
-Replace an issue's body from a file and provide [Identity](#identity "●") and [Content](#content "●") to the requester.
-
-Run in the repository checkout.
-
-<big><pre>
-gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") -F 'body=@[**&lt;body-file&gt;**](#issue-changes "○")' --jq .number
-</pre></big>
-
-### Fetch Issue Body
-
-Save an issue's body alone and provide [Issue Body](#issue-body "●") to the requester.
-
-Run in the repository checkout.
-
-<big><pre>
-gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") --jq .body &gt; '[**&lt;output-body-file&gt;**](#output-files "○")'
-</pre></big>
-
-### Retitle Tracker Issue
-
-Replace an issue's title and provide [Content](#content "●") to the requester.
-
-Run in the repository checkout.
-
-<big><pre>
-gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") -f title='[**&lt;title&gt;**](#issue-changes "○")' --jq .title
-</pre></big>
-
-### Add Issue Labels
-
-Add labels to an issue and provide [Label Names](#label-names "●") to the requester.
-
-<big><pre>
-gh api --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/labels -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names "○")' --jq '.&#91;&#93;.name'
-</pre></big>
-
-- Run in the repository checkout.
-
-- Repeat `-f 'labels[]=<label>'` for each supplied label.
-
-### Remove Issue Label
-
-Remove one label from an issue and provide [Label Names](#label-names "●") to the requester.
-
-Run in the repository checkout.
-
-<big><pre>
-gh api --method DELETE 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/labels/[**&lt;label&gt;**](#label-names "○")' --jq '.&#91;&#93;.name'
-</pre></big>
-
-### Add Issue Assignee
-
-Assign a login to an issue and provide [Assignee](#assignee "●") to the requester.
-
-Run in the repository checkout.
-
-<big><pre>
-gh api &#92;
-  --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/assignees &#92;
-  -f 'assignees&#91;&#93;=[**&lt;login&gt;**](#assignee "○")' &#92;
-  --jq '.assignees&#91;&#93;.login'
-</pre></big>
-
-### Fetch Issue Comments
-
-Print an issue's comments and provide [Discussion](#discussion "●") to the requester.
-
-Run in the repository checkout.
-
-<big><pre>
-gh api --paginate repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/comments
-</pre></big>
 
 ### Fetch Tracker Issue
 
@@ -287,32 +323,6 @@ gh api &#92;
 
 - Run in the repository checkout.
 - Base the transfer pointer on [Transfer Evidence](#transfer-evidence "○").
-
-### Post Inline Comment
-
-Post one line of exact comment text, capture its URL, and provide [Comment](#comment "●") to the requester.
-
-Run in the repository checkout.
-
-<big><pre>
-gh api &#92;
-  --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/comments &#92;
-  -f body='[**&lt;comment-text&gt;**](#comment "○")' &#92;
-  --jq .html_url
-</pre></big>
-
-### Post Comment File
-
-Post a complete comment file, capture its URL, and provide [Comment](#comment "●") to the requester.
-
-Run in the repository checkout.
-
-<big><pre>
-gh api &#92;
-  --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/comments &#92;
-  -F 'body=@[**&lt;comment-file&gt;**](#comment "○")' &#92;
-  --jq .html_url
-</pre></big>
 
 ### Set Completed State
 
@@ -402,18 +412,6 @@ gh api &#92;
 - Run in the repository checkout.
 
 - `<initiative-prefix>` includes the initiative id and its enclosing brackets.
-
-### List Prefixed Titles
-
-List titles carrying one kind's prefix letter in all states and provide [Tracker Prefix](#tracker-prefix "●") to the requester.
-
-Run in the repository checkout.
-
-<big><pre>
-gh api &#92;
-  --paginate 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repository&gt;**](#repository "○")/issues?state=all&per_page=100' &#92;
-  --jq '.&#91;&#93; | select(.title | test("^\\&#91;[**&lt;prefix-letter&gt;**](#tracker-prefix "○")&#91;0-9&#93;{2}\\&#93;")) | .title'
-</pre></big>
 
 ## Fields
 

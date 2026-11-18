@@ -93,12 +93,12 @@ class Document:
         if self.entry.get('commands') != 'html':
             return
         operations = {}
-        specifications = checker.specification_spans(self.headings, len(self.lines), checker.held_section(self.entry))
+        specifications = {start for start, _, _ in checker.specifications(self.lines, self.headings, self.entry)
+                          if (section := self.section(start, 2)) is not None
+                          and self.spans[section][3] == self.entry.get('procedures')}
         for first, last in self.blocks.invocations:
-            if first not in specifications:
-                continue
-            start = self.section(first, 3)
-            if start is not None:
+            start = next(iter(self.enclosing(first)), None)
+            if start in specifications:
                 payload = '\n'.join(self.lines[first:last + 1]).strip()
                 payload = payload.removeprefix('<big><pre>').removesuffix('</pre></big>')
                 operations.setdefault(start, []).extend(checker.logical_command_lines(payload))
@@ -228,7 +228,7 @@ class ExecutingCheckoutEvidence(unittest.TestCase):
 
 Use [Checkout](#checkout "○").
 
-## Commands
+## Operations
 
 ### Inspect Current Checkout
 
@@ -252,12 +252,6 @@ Use [Checkout](#checkout "○").
 <big><pre>
 git status
 </pre></big>
-
-## Operations
-
-### Unexecuted Operation
-
-<big><pre>git status</pre></big>
 
 ## Fields
 
@@ -283,7 +277,7 @@ The selected working checkout.
 """)
             document = Document(path, {'sections': ['Operations', 'Fields'],
                                        'procedures': 'Operations', 'steps': 'headings',
-                                       'commands': 'html', 'specifications': 'Commands'})
+                                       'commands': 'html'})
             commands = {title: (bare, checkout_input) for _, title, bare, checkout_input in document.commands()}
             self.assertEqual(commands, {
                 'Inspect Current Checkout': (True, True),
@@ -296,7 +290,7 @@ The selected working checkout.
             path = Path(directory) / 'artifacts/control.md'
             path.parent.mkdir()
             content = '\n'.join([
-                '# Contextual Input', '', '## Commands', '', '### Inspect Supplied State', '',
+                '# Contextual Input', '', '## Operations', '', '### Inspect Supplied State', '',
                 'Inspect supplied checkout state.', '',
                 'Inspect the supplied state.', '',
                 '```markdown', 'Use [Review Checkout](#review-checkout "○").', '```', '',
@@ -305,7 +299,7 @@ The selected working checkout.
                 '## Fields', '', '### Review Checkout', '', 'The review checkout holding the change.', '',
             ])
             entry = {'sections': ['Operations', 'Fields'], 'procedures': 'Operations',
-                     'steps': 'headings', 'commands': 'html', 'specifications': 'Commands'}
+                     'steps': 'headings', 'commands': 'html'}
             path.write_text(content)
             document = Document(path, entry)
             start = document.anchors['inspect-supplied-state']
@@ -351,7 +345,7 @@ Apply [Inspect Literal Target](#literal-target) in the review checkout.
 """)
             document = Document(path, {'sections': ['Operations', 'Fields'],
                                        'procedures': 'Operations', 'steps': 'headings',
-                                       'commands': 'html', 'specifications': 'Commands'})
+                                       'commands': 'html'})
             self.assertEqual([anchor for _, _, anchor in document.calls()], ['live-target'])
 
 

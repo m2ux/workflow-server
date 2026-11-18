@@ -127,8 +127,6 @@ The saved format corrections for one issue and any unresolved content findings.
 - Apply [Validate Issue Body](#validate-issue-body "ƒ") again with the saved JSON and the same kind conditions, context and output path.
 - Provide saved [Body Evidence](#body-evidence), whether a correction was made, and [Format Findings](#format-findings). A remaining failure is a blocker.
 
-## Commands
-
 ### Check Body Format
 
 Check one issue against its template, write mechanical body fixes when `--fix` is supplied, and provide [Format Findings](#format-findings "●") and, when a corrected body was requested, [Output Files](#output-files "●") to the requester.
