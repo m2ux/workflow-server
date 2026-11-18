@@ -126,11 +126,10 @@ class PublishedOnEngineering(unittest.TestCase):
     def test_publishing_commits_and_pushes_the_engineering_branch(self):
         text = (ROOT / 'artifacts' / 'planning-record.md').read_text()
         publish = section(text, '### Publish Planning Record')
-        self.assertIn('#commit-planning-record', checker.LINK.findall(publish))
         self.assertIn("cd '<engineering-worktree>' && git add -A && "
                       "(git diff --cached --quiet || git commit -F '<message-file>') && "
                       "git fetch origin engineering && git rebase origin/engineering && git push",
-                      section(text, '##### Commit Planning Record'))
+                      publish)
 
 
 class ApprovedBeforeDrafting(unittest.TestCase):
@@ -172,7 +171,7 @@ class ApprovedBeforeDrafting(unittest.TestCase):
         place = section(self.propose, '### 7. Place')
         self.assertIn('with that id and the [Requested Status](#requested-status), or, when none is supplied',
                       place)
-        self.assertIn('- When [Proposal Status]' + self.status + ' assigns the placed status to the user, Run '
+        self.assertIn('- When [Proposal Status]' + self.status + ' assigns the placed status to the user, Apply '
                       '[Find User](../artifacts/board.md#find-user "ƒ")', place)
         self.assertIn('Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with that login as '
                       "the issue's [Assignee](../artifacts/issue.md#assignee).", place)

@@ -188,6 +188,10 @@ class Corpus:
             return bool(re.search(re.escape(checkout) + r' (?:checkout|worktree)\b', inputs)
                         or re.search(r'^checkout$', inputs, re.M))
         end = document.spans[start][1]
+        for spec, _, _ in checker.specifications(document.lines, document.headings, document.entry):
+            if start <= spec < end and self.accepts(destination, checker.anchor_of(document.spans[spec][3]),
+                                                    checkout, visited):
+                return True
         return any(self.accepts(target, fragment, checkout, visited)
                    for index, target, fragment in document.calls() if start < index < end)
 
@@ -196,7 +200,7 @@ class ExecutingCheckoutEvidence(unittest.TestCase):
     def test_actual_graph_commands_and_transitive_calls_are_present(self):
         corpus = Corpus()
         graph = (ROOT / 'artifacts/repository-graph.md').resolve()
-        self.assertIn((graph, 'index-status'), corpus.commands)
+        self.assertIn((graph, '1-read-index-status'), corpus.commands)
         self.assertIn((graph, 'index-repository'), corpus.commands)
         self.assertIn((graph, 'measure-repository-change'), corpus.acting)
         self.assertTrue(any(destination == graph and anchor == 'measure-repository-change'
@@ -387,12 +391,12 @@ class SelectedCheckoutContracts(unittest.TestCase):
         corpus = Corpus()
         graph = (ROOT / 'artifacts/repository-graph.md').resolve()
         branches = (ROOT / 'artifacts/delivery-branches.md').resolve()
-        for anchor in ('index-status', 'measure-repository-change'):
+        for anchor in ('1-read-index-status', 'measure-repository-change'):
             with self.subTest(operation=anchor):
                 self.assertTrue(corpus.accepts(graph, anchor, 'review'))
                 self.assertFalse(corpus.accepts(graph, anchor, 'unit'))
-        self.assertTrue(corpus.accepts(branches, 'push-task-branch', 'unit'))
-        self.assertFalse(corpus.accepts(branches, 'push-task-branch', 'project'))
+        self.assertTrue(corpus.accepts(branches, '4-publish-updated-task-branch', 'unit'))
+        self.assertFalse(corpus.accepts(branches, '4-publish-updated-task-branch', 'project'))
 
     def test_selected_checkouts_reach_accepting_command_inputs(self):
         corpus = Corpus()

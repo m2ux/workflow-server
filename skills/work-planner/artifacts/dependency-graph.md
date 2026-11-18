@@ -12,7 +12,7 @@ The task graph and the row numbers it permits, checked and renumbered across the
 
 - Use local drafts from [Graph Inputs](#graph-inputs) when reviewing unpublished work.
 - For published issues, Apply [Read Tracker Issue](issue.md#read-tracker-issue "ƒ") for the initiative and each epic body.
-- Run [Check Dependencies](#check-dependencies "ƒ") with the initiative body, every epic body and every supplied work-item file. The computation invokes Run [Validate Lane Unit](lane.md#validate-lane-unit "ƒ") internally with each derived unit’s epic body and complete ids.
+- Apply [Check Dependencies](#check-dependencies "ƒ") with the initiative body, every epic body and every supplied work-item file. The computation invokes Apply [Validate Lane Unit](lane.md#validate-lane-unit "ƒ") internally with each derived unit’s epic body and complete ids.
 
 #### 2. Resolve Graph Findings
 
@@ -28,18 +28,24 @@ The task graph and the row numbers it permits, checked and renumbered across the
 #### 3. Apply Confirmed Numbering
 
 - Renumber the confirmed maps, preserving the numbers [Numbering Map](#numbering-map) protects.
-- For a confirmed epic map, Run [Renumber Epics](#renumber-epics "ƒ") with current pull request records and every affected body.
-- For a confirmed task map, Run [Renumber Tasks](#renumber-tasks "ƒ") with the initiative and epic identities, owning epic body, confirmed old-to-new task-number map and every affected body file.
-- Re-sort rewritten tables.
-- Inspect every reported range.
-- Search prose for references the script cannot see.
-- After each edge or numbering change, Run [Check Dependencies](#check-dependencies "ƒ") with the refreshed initiative and epic bodies and every supplied work-item and split-unit record file. Repeat that operation until it reports no problem.
-- Record the printed longest chains and each printed contending pair in the planning record.
-- Provide [Graph Result](#graph-result) with the checked bodies, proposed [Epic Priority](work-priority.md#epic-priority) map and unresolved findings; do not publish a failed renumbering.
+- For a confirmed epic map, Renumber Epics with current pull request records and every affected body.
 
-##### Renumber Tasks
+**Renumber Epics.**  Renumber an initiative's epics across supplied body files and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
 
-Renumber one epic's tasks in the supplied files according to the given map and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py &#92;
+  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs "○") &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --map [**&lt;epic-number-map&gt;**](#renumber-inputs "○") '[**&lt;body-file&gt;**](#renumber-inputs "○")'
+</pre></big>
+
+- The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.
+- Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.
+
+- For a confirmed task map, Renumber Tasks with the initiative and epic identities, owning epic body, confirmed old-to-new task-number map and every affected body file.
+
+**Renumber Tasks.**  Renumber one epic's tasks in the supplied files according to the given map and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
@@ -57,20 +63,12 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - Append `--outside` followed by each explicitly authorized outside-initiative body file when supplied; only this initiative's prefixed references change there.
 - Only rows no pull request names may be renumbered. Inspect the rewritten files before publishing them.
 
-##### Renumber Epics
-
-Renumber an initiative's epics across supplied body files and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py &#92;
-  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs "○") &#92;
-  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
-  --map [**&lt;epic-number-map&gt;**](#renumber-inputs "○") '[**&lt;body-file&gt;**](#renumber-inputs "○")'
-</pre></big>
-
-- The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.
-- Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.
+- Re-sort rewritten tables.
+- Inspect every reported range.
+- Search prose for references the script cannot see.
+- After each edge or numbering change, Apply [Check Dependencies](#check-dependencies "ƒ") with the refreshed initiative and epic bodies and every supplied work-item and split-unit record file. Repeat that operation until it reports no problem.
+- Record the printed longest chains and each printed contending pair in the planning record.
+- Provide [Graph Result](#graph-result) with the checked bodies, proposed [Epic Priority](work-priority.md#epic-priority) map and unresolved findings; do not publish a failed renumbering.
 
 ### Check Dependencies
 

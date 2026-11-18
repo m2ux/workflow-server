@@ -51,7 +51,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Apply [Capture Issue Development](../artifacts/issue.md#capture-issue-development "ƒ") for the issue in [Identity](../artifacts/issue.md#identity), saving its current JSON and Development snapshot to [Output Files](../artifacts/issue.md#output-files).
 - The issue's entire Development field establishes membership, across repositories and states. Titles, branch names, body mentions and a list filtered to one initiative do not. An empty field adds no [pull request](../artifacts/pull-request.md#identity) requirement.
 
-- Run [Check Issue Closure](../artifacts/issue.md#check-issue-closure "ƒ") with those two files.
+- Apply [Check Issue Closure](../artifacts/issue.md#check-issue-closure "ƒ") with those two files.
 
 - Require the normal delivery checks in [Delivery Evidence](../artifacts/issue.md#delivery-evidence) to pass, every criterion to be verified and ticked, and every currently linked pull request to be merged.
 - Keep the issue open for an open, draft or closed-without-merge linked pull request, and for links never read.
@@ -61,11 +61,11 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Apply [Capture Issue Development](../artifacts/issue.md#capture-issue-development "ƒ") immediately before closure.
 
-- Run [Check Issue Closure](../artifacts/issue.md#check-issue-closure "ƒ") with the issue and Development files it wrote, using absolute evidence paths when changing directory.
+- Apply [Check Issue Closure](../artifacts/issue.md#check-issue-closure "ƒ") with the issue and Development files it wrote, using absolute evidence paths when changing directory.
 
 - Require exit 0 and passing normal checks from [Delivery Evidence](../artifacts/issue.md#delivery-evidence); a sync report of closable does not permit skipping this gate.
 
-- Immediately after the gate passes, Run [Set Completed State](../artifacts/issue.md#set-completed-state "ƒ") with the issue's [repository](../artifacts/issue.md#repository) and number and the passing evidence.
+- Immediately after the gate passes, Apply [Set Completed State](../artifacts/issue.md#set-completed-state "ƒ") with the issue's [repository](../artifacts/issue.md#repository) and number and the passing evidence.
 
 - Retain the saved [State](../artifacts/issue.md#state) or [Closure Findings](../artifacts/issue.md#closure-findings) with the failure.
 

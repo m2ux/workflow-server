@@ -8,11 +8,11 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 1. Fetch
 
-Run [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every issue.
+Apply [Fetch All Issues](../artifacts/issue.md#fetch-all-issues "ƒ") for every issue.
 
 ### 2. List Candidates
 
-- Run [List Orphans](../artifacts/placement.md#list-orphans "ƒ") with the complete issue collection.
+- Apply [List Orphans](../artifacts/placement.md#list-orphans "ƒ") with the complete issue collection.
 
 - Use its candidates and available destinations for triage.
 
@@ -152,9 +152,9 @@ Prepare the comment file naming the taking epic and row, or the taking task issu
 
 - Apply [Comment on Issue](../artifacts/issue.md#comment-on-issue "ƒ") with the destination reference and [Comment](../artifacts/issue.md#comment).
 
-- Run [Close as Not Planned](../artifacts/issue.md#close-as-not-planned "ƒ"), retaining the issue's body.
+- Apply [Close as Not Planned](../artifacts/issue.md#close-as-not-planned "ƒ"), retaining the issue's body.
 
-- Run [Fetch Tracker Issue](../artifacts/issue.md#fetch-tracker-issue "ƒ") to confirm its state and reason.
+- Apply [Fetch Tracker Issue](../artifacts/issue.md#fetch-tracker-issue "ƒ") to confirm its state and reason.
 
 - Retain the confirmed [State](../artifacts/issue.md#state) and reason after the saved issue is read back.
 - Retain [Saved Orphan](../artifacts/placement.md#saved-orphan) with the confirmed closure or blocker.

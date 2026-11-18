@@ -46,7 +46,7 @@ class Instructions:
         self.events = []
 
     def mutation(self, head, actual_head=None):
-        command = section(self.pull, 'Merge Pull Request')
+        command = section(self.pull, '2. Merge Approved Delivery')
         raw = re.search(r'<big><pre>\n(.*?)\n</pre></big>', command, re.S)[1]
         rendered = re.sub(r'\[\*\*(.*?)\*\*\]\([^)]*\)', r'\1', raw)
         rendered = html.unescape(rendered)
@@ -148,9 +148,9 @@ class MergeOutcomes(unittest.TestCase):
     def test_no_command_merges_an_epic_review(self):
         source = PULL.read_text()
         self.assertNotIn('Submit Epic Merge', source)
-        merges = re.findall(r'^#{3,6} (.*)\n\n(.*)', source, re.M)
-        self.assertEqual([title for title, opening in merges if opening.startswith('Merge ')],
-                         ['Merge Pull Request'])
+        merges = re.findall(r'<big><pre>\n(.*?)</pre></big>', source, re.S)
+        self.assertEqual(len([command for command in merges if '/merge' in command]), 1)
+        self.assertIn('/merge', section(section(source, 'Merge Delivery Pull Request'), '2. Merge Approved Delivery'))
 
     def test_moving_head_refuses_exact_documented_mutation(self):
         route = Instructions()
@@ -175,8 +175,10 @@ class MergeOutcomes(unittest.TestCase):
     def test_confirmed_merge_reads_state_after_mutation(self):
         route = Instructions()
         self.assertEqual(route.delivery('attempt'), 'confirmed-merge')
-        self.assertEqual([event[0] for event in route.events], ['mutation', 'capability'])
-        self.assertEqual(route.events[1], ('capability', 'Read Merge Result'))
+        self.assertEqual([event[0] for event in route.events], ['mutation'])
+        confirmation = section(section(PULL.read_text(), 'Merge Delivery Pull Request'), '3. Confirm Delivery Merge')
+        self.assertIn('<big><pre>', confirmation)
+        self.assertIn('merge_commit_sha', confirmation)
 
     def test_readback_disagreements_cannot_confirm_merge(self):
         for update in (dict(merged=False), dict(head=NEW_HEAD), dict(base='main'),

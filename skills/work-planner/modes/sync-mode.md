@@ -56,14 +56,14 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For a task with a delivering pull request, open or merged, Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
 
-- Run [Sync Task Issue](../artifacts/task-body.md#sync-task-issue "ƒ") for the selected task and delivering pull request with the verified criterion ids.
+- Apply [Sync Task Issue](../artifacts/task-body.md#sync-task-issue "ƒ") for the selected task and delivering pull request with the verified criterion ids.
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body before closure.
 - Once the pull request has merged, Apply [Comment on Issue](../artifacts/issue.md#comment-on-issue "ƒ") to record it: `Delivered by #950.`
 - Follow [Issue Closure](../protocols/issue-closure.md "ƒ") when it reports closable.
 
 ### 6. Sync Each Epic
 
-- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ"), linking every match from [Match Pull Requests to Tasks](#4-match-pull-requests-to-tasks), open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at. Linking a pull request replaces the planning-record link on that task.
+- Apply [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ"), linking every match from [Match Pull Requests to Tasks](#4-match-pull-requests-to-tasks), open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at. Linking a pull request replaces the planning-record link on that task.
 
 - Handle the provided delivery findings:
   - **Normalized.**
@@ -104,11 +104,11 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
     - A held row is settled as [Held Change](../artifacts/plan-change.md#held-change) states; an unanswered placement stays pending.
     - Apply [Revise Epic Rows](../artifacts/epic-issue-body.md#revise-epic-rows "ƒ") with the confirmed row.
     - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
-    - Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the saved epic, refreshed task records and the same epic bases. An unanswered placement stays pending.
+    - Apply [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the saved epic, refreshed task records and the same epic bases. An unanswered placement stays pending.
   - **Open questions.**
     - Return to [Select](#1-select) for this epic.
     - Resolve the questions there.
-    - Fetch the saved body, then Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the same epic bases.
+    - Fetch the saved body, then Apply [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the same epic bases.
   - **Ready to verify.**
     - [Verify](#7-verify) settles them.
   - **Unmet.**
@@ -120,14 +120,14 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
   - **Unevaluable.**
     - Report each source and why to the user, with each check the run names not checked.
     - Leave an unmatched or in-flight pull request whose head is an epic base unmatched, since the run could not tell it from a task delivery.
-    - Fetch each draft base, long-lived branch or review head named unread, and Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the same epic bases.
+    - Fetch each draft base, long-lived branch or review head named unread, and Apply [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the same epic bases.
     - The epic stays open until every epic base states the same readable declaration.
   - **Source.**
     - Report it with the results.
   - **Not checked.**
     - Report each check with the unevaluable sources that left it unread.
 
-- After applying the provided findings, Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again for the refreshed epic evidence in the project checkout with the fetched epic bases. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, unchanged, and unplaced are clear, apart from a pull request the user leaves unmatched.
+- After applying the provided findings, Apply [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again for the refreshed epic evidence in the project checkout with the fetched epic bases. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, unchanged, and unplaced are clear, apart from a pull request the user leaves unmatched.
 
 ### 7. Verify
 
@@ -160,12 +160,12 @@ Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with e
 
 - Fetch the pull requests again, so an epic base the user has merged reads as merged.
 
-- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the refreshed records, the same project checkout and the same epic bases.
+- Apply [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the refreshed records, the same project checkout and the same epic bases.
 - Follow [Issue Closure](../protocols/issue-closure.md "ƒ") each epic the re-run reports closable.
 
 ### 11. Sync the Initiative
 
-- Run [Sync Initiative](../artifacts/initiative-issue-body.md#sync-initiative "ƒ") with the epic JSON fetched after closing.
+- Apply [Sync Initiative](../artifacts/initiative-issue-body.md#sync-initiative "ƒ") with the epic JSON fetched after closing.
 
 - For provided criteria ready to verify:
   - Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
@@ -200,11 +200,11 @@ When the absent board is the [proposals board](../artifacts/proposals-board.md),
 - When the selected theme board is absent:
   - Use the owner, [repository](../artifacts/board.md#repository), theme title and originating proposal record when applicable.
   - Require the originating proposal record in [Theme Provenance](../artifacts/board.md#theme-provenance) for a proposal-derived board; provide a missing-input finding when its designator is unavailable.
-  - Run [Find Board Template](../artifacts/board.md#find-board-template "ƒ") under [Board Owner](../artifacts/board.md#board-owner) with the exact [theme-template title](../configuration.md#theme-boards).
+  - Apply [Find Board Template](../artifacts/board.md#find-board-template "ƒ") under [Board Owner](../artifacts/board.md#board-owner) with the exact [theme-template title](../configuration.md#theme-boards).
   - Use the provided number as the copy source.
-  - Run [Copy Board Template](../artifacts/board.md#copy-board-template "ƒ") with that template number, the owner and the title required by [Theme Board Title](../artifacts/board.md#theme-board-title).
+  - Apply [Copy Board Template](../artifacts/board.md#copy-board-template "ƒ") with that template number, the owner and the title required by [Theme Board Title](../artifacts/board.md#theme-board-title).
   - Retain the new board number. The copy carries the [theme-board fields](../configuration.md#theme-boards).
-  - Run [Link Board to Repository](../artifacts/board.md#link-board-to-repository "ƒ") with the owner, new board number and [repository](../artifacts/board.md#repository).
+  - Apply [Link Board to Repository](../artifacts/board.md#link-board-to-repository "ƒ") with the owner, new board number and [repository](../artifacts/board.md#repository).
   - Retain the [Copied Board](../artifacts/board.md#copied-board) after linking succeeds.
   - Require the new theme's label and board before an initiative takes that theme.
 
@@ -227,14 +227,14 @@ Retain the [Copied Board](../artifacts/board.md#copied-board) after the selected
 - Apply [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links "ƒ") for those records.
 - Fetch the published agent review records linked from each open epic integration pull request, retaining absent or unreadable evidence as a handoff blocker.
 - Apply [Read Board Configuration](../artifacts/board.md#read-board-configuration "ƒ").
-- Run [Find User](../artifacts/board.md#find-user "ƒ").
+- Apply [Find User](../artifacts/board.md#find-user "ƒ").
 - Retain these provided snapshots for the following computation.
 
 ##### 2. Plan Delivery Changes
 
-- Run [Compute Board Changes](../artifacts/board-status.md#compute-board-changes "ƒ") to the captured evidence.
+- Apply [Compute Board Changes](../artifacts/board-status.md#compute-board-changes "ƒ") to the captured evidence.
 - Fetch each unresolved issue.
-- Run [Compute Board Changes](../artifacts/board-status.md#compute-board-changes "ƒ") again, adding the fetched off-board issue records to the retained evidence.
+- Apply [Compute Board Changes](../artifacts/board-status.md#compute-board-changes "ƒ") again, adding the fetched off-board issue records to the retained evidence.
 
 ##### 3. Apply and Confirm Calls
 
@@ -249,7 +249,7 @@ Retain the [Copied Board](../artifacts/board.md#copied-board) after the selected
 
 - Fetch the issues and items again.
 - Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes.
-- Run [Compute Board Changes](../artifacts/board-status.md#compute-board-changes "ƒ") to the refreshed evidence, retaining every resolved off-board issue record.
+- Apply [Compute Board Changes](../artifacts/board-status.md#compute-board-changes "ƒ") to the refreshed evidence, retaining every resolved off-board issue record.
 - Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
 
 ##### 5. Retain Confirmed Board Statuses
@@ -273,14 +273,14 @@ Retain [Confirmed Statuses](../artifacts/board-delivery.md#confirmed-statuses) a
 - Select the repository holding the issues and the initiative, epics and tasks this run touched as [Audit Selection](../artifacts/issue.md#audit-selection).
 
 - Fetch only the closed issues in [Audit Selection](../artifacts/issue.md#audit-selection) using [Authenticated Access](../artifacts/issue.md#authenticated-access), saving evidence to [Output Files](../artifacts/issue.md#output-files):
-  - For named issues, Run [Fetch Selected Closed Issues](../artifacts/issue.md#fetch-selected-closed-issues "ƒ") with their numbers.
-  - For the whole [repository](../artifacts/issue.md#repository), Run [Fetch Closed Issues](../artifacts/issue.md#fetch-closed-issues "ƒ").
+  - For named issues, Apply [Fetch Selected Closed Issues](../artifacts/issue.md#fetch-selected-closed-issues "ƒ") with their numbers.
+  - For the whole [repository](../artifacts/issue.md#repository), Apply [Fetch Closed Issues](../artifacts/issue.md#fetch-closed-issues "ƒ").
 
 - An empty collection means none of the named issues is closed; retain an empty audit result and continue to the per-issue report.
 
-- Run [Capture Issue Links](../artifacts/issue.md#capture-issue-links "ƒ") with that collection; an unreadable relation is provided as a blocker and the sweep does not run.
+- Apply [Capture Issue Links](../artifacts/issue.md#capture-issue-links "ƒ") with that collection; an unreadable relation is provided as a blocker and the sweep does not run.
 
-- Run [Sweep Closure Evidence](../artifacts/issue.md#sweep-closure-evidence "ƒ") with the collection and the issue-links file.
+- Apply [Sweep Closure Evidence](../artifacts/issue.md#sweep-closure-evidence "ƒ") with the collection and the issue-links file.
 
 - Retain [Closure Findings](../artifacts/issue.md#closure-findings) with each unsupported issue’s state reason and findings, and each unevaluable issue as missing evidence. List not-planned closures separately for reference. The audit changes no issue.
 

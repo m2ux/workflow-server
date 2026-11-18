@@ -10,9 +10,7 @@ The required label definitions available for issue publication.
 
 #### 1. Read Repository Labels
 
-Run [List Labels](#list-labels "ƒ") for [Repository](#repository).
-
-##### List Labels
+List Labels for [Repository](#repository).
 
 List the labels that exist in the repository and provide [Label Identity](#label-identity "●") to the requester.
 
@@ -28,9 +26,7 @@ Compare the provided labels with the required definitions in [Label Identity](#l
 
 #### 3. Create Missing Labels
 
-Run [Create Label](#create-label "ƒ") for each absent required definition.
-
-##### Create Label
+Create Label for each absent required definition.
 
 Create the label with its specified name, colour and description, and provide [Label Identity](#label-identity "●") to the requester.
 

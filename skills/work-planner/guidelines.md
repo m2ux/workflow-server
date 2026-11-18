@@ -134,12 +134,12 @@ These rules apply to mode and protocol procedures and artifact operations.
 These rules govern named command and access specifications. Procedural operations follow Procedure and Artifacts below.
 
 - **Spec layout.**
-  A named specification owns one raw HTML `<big><pre>…</pre></big>` invocation. Open with an imperative instruction combining the action, each linked provided output and its recipient. A single prose condition or detail item accompanies the preamble as unbulleted text before the invocation; related sentences may qualify one action. Multi-item detail lists follow the invocation box. Other unbulleted context and the REST gap for GraphQL precede the invocation. Long shell invocations use token-boundary continuations and readable option/value groups, preserving required quoting, operators and argument order. Encode terminal backslashes as `&#92;` so rendering preserves the literal continuation and one line break.
+  A step writes each specification it runs with one raw HTML `<big><pre>…</pre></big>` invocation, and a specification standing as an operation owns one. Open with an imperative instruction combining the action, each linked provided output and its recipient. A single prose condition or detail item accompanies the preamble as unbulleted text before the invocation; related sentences may qualify one action. Multi-item detail lists follow the invocation box. Other unbulleted context and the REST gap for GraphQL precede the invocation. Long shell invocations use token-boundary continuations and readable option/value groups, preserving required quoting, operators and argument order. Encode terminal backslashes as `&#92;` so rendering preserves the literal continuation and one line break.
 
 - **One command.**
   Each invocation exposes one command or access action. Put sequencing, branching, repetition and readback in the governing procedure. A working-directory prefix and output-filter pipeline belong to the command they serve. Optional flags for one command share its invocation.
 - **One home.**
-  A command specification lives with the artifact that owns its subject, or with the mode for skill maintenance and work spanning artifacts. It is a sub-section of the step that runs it, or an operation of its own in that file's procedure section where several steps or another file's steps run it. Callers Run its named link directly. A kind supplies only its additional selections to a common operation.
+  A command specification lives with the artifact that owns its subject, or with the mode for skill maintenance and work spanning artifacts. It is written in the step that runs it, or is an operation of its own in that file's procedure section where several steps, another file's steps or other text reach it, and callers Apply that operation's named link directly. A kind supplies only its additional selections to a common operation.
 
 - **Direction.**
   The calling step names the operation it applies. Its invocation does not name that caller.
@@ -179,7 +179,7 @@ Read this before adding or changing a mode, applying [SOLID](#solid).
 - **Body files.**
   A file that populates a body is named `<subject>-body.md`. The mode owns how many of that subject a request becomes.
 - **Other modes.**
-  Invoke another mode with Follow, naming the selected scope and the whole mode or exact child subsection. Apply calls artifact operations; Follow calls protocols and local child procedures; Run calls command specifications. A subsection call executes that subsection only. Calls are sequential unless concurrency is explicit: finish the called work, then resume with its result; a blocker provides control to the caller.
+  Invoke another mode with Follow, naming the selected scope and the whole mode or exact child subsection. Apply calls artifact operations and command specifications standing as operations; Follow calls protocols and local child procedures. A subsection call executes that subsection only. Calls are sequential unless concurrency is explicit: finish the called work, then resume with its result; a blocker provides control to the caller.
 
 - **No spare parts.**
   A mode does not carry an outcome, a procedure unit, or a command its procedure never uses.

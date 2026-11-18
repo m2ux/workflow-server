@@ -69,7 +69,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - For an absent board, Apply [Create Proposals Board](../artifacts/proposals-board.md#create-proposals-board "ƒ").
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the saved issue id.
 - Apply [Place Issue on Board](../artifacts/board.md#place-issue-on-board "ƒ") with that id and the [Requested Status](#requested-status), or, when none is supplied, the initial status a new proposal takes under [Proposal Status](../artifacts/proposal.md#proposal-status).
-- When [Proposal Status](../artifacts/proposal.md#proposal-status) assigns the placed status to the user, Run [Find User](../artifacts/board.md#find-user "ƒ") for the [Assignee Login](../artifacts/board.md#assignee-login), then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with that login as the issue's [Assignee](../artifacts/issue.md#assignee).
+- When [Proposal Status](../artifacts/proposal.md#proposal-status) assigns the placed status to the user, Apply [Find User](../artifacts/board.md#find-user "ƒ") for the [Assignee Login](../artifacts/board.md#assignee-login), then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with that login as the issue's [Assignee](../artifacts/issue.md#assignee).
 - Otherwise leave the issue unassigned.
 
 ### 8. Report

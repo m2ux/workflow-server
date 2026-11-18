@@ -26,7 +26,7 @@ def executable_scripts(paths):
             continue
         for start, level, title in checker.specifications(lines, headings, entry):
             end = checker.heading_end(headings, start, level, len(lines))
-            if not called.get(path, {}).get(checker.anchor_of(title)):
+            if not checker.in_step(headings, start) and not called.get(path, {}).get(checker.anchor_of(title)):
                 continue
             for first, last in checker.scan_blocks(lines).invocations:
                 if not (start < first <= last < end):
@@ -292,7 +292,7 @@ Run [Run Selected Tool](#run-selected-tool).
 
 
 SYNC_EPIC_CALL = re.compile(
-    r'\b[Rr]un\s+\[Sync Epic\]\(')
+    r'\b[Aa]pply\s+\[Sync Epic\]\(')
 
 
 class EpicDeliveryCallers(unittest.TestCase):
@@ -342,11 +342,11 @@ class EpicDeliveryCallers(unittest.TestCase):
             'When [Sync Epic](x.md) reports an epic base unmerged'))
         self.assertIsNone(SYNC_EPIC_CALL.search(
             'When the preceding Sync Epic call reports a row done'))
-        for verb in ('Apply', 'Reapply', 'Repeat', 'Repeating'):
+        for verb in ('Run', 'Reapply', 'Repeat', 'Repeating'):
             self.assertIsNone(SYNC_EPIC_CALL.search(
                 f'{verb} [Sync Epic](x.md) with the saved epic.'))
         self.assertIsNotNone(SYNC_EPIC_CALL.search(
-            'Run [Sync Epic](x.md) with the saved epic bases.'))
+            'Apply [Sync Epic](x.md) with the saved epic bases.'))
 
 
 WORK_PRIORITY = ROOT / 'artifacts' / 'work-priority.md'
@@ -520,7 +520,7 @@ class TestPlanHome(unittest.TestCase):
 
 
 PROPOSALS_BOARD = ROOT / 'artifacts' / 'proposals-board.md'
-BOARD_SECTIONS = ('Select Proposals Board', 'Create Proposals Board', 'Find Proposals Board')
+BOARD_SECTIONS = ('Select Proposals Board', 'Create Proposals Board')
 
 
 class ProposalsBoardHome(unittest.TestCase):

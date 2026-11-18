@@ -26,11 +26,11 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Apply [Fetch All Delivery Pull Requests](../artifacts/pull-request.md#fetch-all-delivery-pull-requests "ƒ") for the [repositories](../artifacts/board.md#repositories) and items Read Board State provided.
 - Apply [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links "ƒ") for those pull requests, which is where the issue each one delivers is read.
 - Apply [Read Board Configuration](../artifacts/board.md#read-board-configuration "ƒ") for the board fields.
-- Run [Find User](../artifacts/board.md#find-user "ƒ") for the assignee login.
+- Apply [Find User](../artifacts/board.md#find-user "ƒ") for the assignee login.
 
 ### 4. Plan
 
-- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board.
+- Apply [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board.
 
 - Include every resolved off-board issue file and confirmed unplanned initiative identity.
 
@@ -39,7 +39,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - For each unresolved issue reference:
   - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") into a file.
   - Add the provided file to the resolved off-board issue files.
-- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board, retaining resolved issue files and confirmed unplanned initiative identities.
+- Apply [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board, retaining resolved issue files and confirmed unplanned initiative identities.
 - Repeat while references remain unresolved; an unavailable issue leaves the queue pending.
 
 ### 6. Resolve Queue Decisions
@@ -72,7 +72,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
   - Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") again.
   - Check that the refreshed board items confirm every saved priority-label addition.
   - On an unavailable or disagreeing readback, provide the discrepancy with the pending queue and stop this continuation.
-  - Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board using refreshed board items and the retained pull request and issue-link snapshots, retaining resolved issue files and confirmed unplanned initiative identities.
+  - Apply [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board using refreshed board items and the retained pull request and issue-link snapshots, retaining resolved issue files and confirmed unplanned initiative identities.
   - Resolve any further missing evidence through [Resolve Missing Evidence](#5-resolve-missing-evidence).
 
 - Repeat this step while an answer leaves a further decision pending.
@@ -84,7 +84,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 - Once the queue is [complete](../artifacts/board-queue.md#completeness), run each proposed Status and assignee call it provided.
 
 - Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") again.
-- Run [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board using refreshed board items and the retained pull request and issue-link snapshots, retaining resolved issue files and confirmed unplanned initiative identities.
+- Apply [Compute Board Queue](../artifacts/board-queue.md#compute-board-queue "ƒ") for the selected board using refreshed board items and the retained pull request and issue-link snapshots, retaining resolved issue files and confirmed unplanned initiative identities.
 - Resolve new missing evidence or decisions through [Resolve Missing Evidence](#5-resolve-missing-evidence) and [Resolve Queue Decisions](#6-resolve-queue-decisions).
 - Repeat this step until the refreshed queue is complete and contains no further call.
 

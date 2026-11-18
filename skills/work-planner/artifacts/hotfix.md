@@ -21,15 +21,15 @@ One hot-fix's draft [delivering pull request](#delivering-pull-request) taken th
 - Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") for its full metadata.
 - If metadata is unreadable or the pull request is closed, provide [Failure](pull-request.md#failure) with the unresolved current state and stop before repair.
 
-- Run [Validate Agent Review](agent-review.md#validate-agent-review "ƒ") with that metadata and [Published Reviews](pull-request.md#published-reviews).
+- Apply [Validate Agent Review](agent-review.md#validate-agent-review "ƒ") with that metadata and [Published Reviews](pull-request.md#published-reviews).
 - On a finding, continue directly to Restore Draft below.
 
-- For a draft with passing evidence, Run [Mark Review Ready](pull-request.md#mark-review-ready "ƒ") with the node id its metadata names.
+- For a draft with passing evidence, Apply [Mark Review Ready](pull-request.md#mark-review-ready "ƒ") with the node id its metadata names.
 - On a failed ready write, retain its failure and continue directly to Restore Draft below.
 
 - Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") again with the same identity.
 - On an unreadable or closed result, provide the unresolved current-state failure and stop before repair.
-- Run [Validate Agent Review](agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records.
+- Apply [Validate Agent Review](agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records.
 - On a finding or a draft readback, retain the changed revision or readiness failure and continue directly to Restore Draft below.
 - Only a confirmed open, ready pull request with passing current review evidence provides [Review State](pull-request.md#review-state), with its published review record, ready for merge.
 
@@ -38,7 +38,7 @@ One hot-fix's draft [delivering pull request](#delivering-pull-request) taken th
 - Retain every review or readiness finding.
 - Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") with the same identity before selecting restoration.
 - If metadata is unreadable or the pull request is closed, provide the unresolved restoration discrepancy as [Failure](pull-request.md#failure) and stop before repair.
-- For an open, ready pull request, Run [Mark Review Draft](pull-request.md#mark-review-draft "ƒ") with its identity.
+- For an open, ready pull request, Apply [Mark Review Draft](pull-request.md#mark-review-draft "ƒ") with its identity.
 - After a selected restoration write, including a failed write, Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") with the same identity.
 - If the restoration write failed, metadata is unreadable, or the readback is closed or ready, provide the unresolved restoration discrepancy as [Failure](pull-request.md#failure) and stop before repair. Report draft state only when the readback confirms it.
 - With a successful selected write and confirmed open draft, or a confirmed open draft requiring no write, continue to Repair Findings below.
@@ -70,7 +70,7 @@ Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Board
 
 ##### Off the Board, With an Item
 
-- Run [Remove Board Item](board.md#remove-board-item "ƒ") with the supplied board owner and number and the item id Read Board State provided.
+- Apply [Remove Board Item](board.md#remove-board-item "ƒ") with the supplied board owner and number and the item id Read Board State provided.
 
 ##### Off the Board, With No Item
 
@@ -125,7 +125,7 @@ A repository-qualified reference to the hot-fix's delivering pull request.
 
 - A pull request delivers a hot-fix when its title opens with the hot-fix's prefix, `[F00] Purpose`, it lives in the hot-fix's repository, its base is the hot-fix's [target](hotfix-body.md#target), and its Development field links the hot-fix.
 - It is opened from the hot-fix's [branch](#branch), as a draft.
-- It is marked ready for review only once its review cycle is complete: its current [agent review](agent-review.md#review-record) meets the [Review Rule](#review-rule).
+- It is marked ready for review only once its review cycle is complete: its current [agent review](agent-review.md#review-record) meets the [Review Rule](#review-rule), as [Review Hot-fix Before Merge](#review-hot-fix-before-merge "ƒ") confirms.
 - A reopened hot-fix still counts a delivering pull request merged before it reopened, since the issue records no reopen time.
 - A pull request into a branch the body named as its target before an edit stops counting, since the body names the current target.
 

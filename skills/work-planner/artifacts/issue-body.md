@@ -32,7 +32,7 @@ Check each section of [Changed Bodies](#changed-bodies) against [Kind Conditions
 
 #### 2. Run Body Format
 
-Run [Check Body Format](#check-body-format "ƒ") to every changed issue, writing its results to [Output Files](#output-files).
+Apply [Check Body Format](#check-body-format "ƒ") to every changed issue, writing its results to [Output Files](#output-files).
 
 #### 3. Provide Checked Round of Edits
 
@@ -44,7 +44,7 @@ One body checked against its supplied kind and template.
 
 #### 1. Run Body Format
 
-Run [Check Body Format](#check-body-format "ƒ") for the selected body.
+Apply [Check Body Format](#check-body-format "ƒ") for the selected body.
 
 #### 2. Review Supplied Conditions
 

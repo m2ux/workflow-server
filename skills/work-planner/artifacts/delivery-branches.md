@@ -10,11 +10,11 @@ The branches a task pull request targets.
 
 #### 1. Read Changed Branches
 
-For each branch in [Changed Branches](#changed-branches), Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout), then Run [List Long-Lived Branches](#list-long-lived-branches "ƒ") with `--project` set to the checkout and `--revision` to that remote branch, such as `origin/main`, as [Branches](#branches) names for base preparation.
+For each branch in [Changed Branches](#changed-branches), Apply [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout), then Apply [List Long-Lived Branches](#list-long-lived-branches "ƒ") with `--project` set to the checkout and `--revision` to that remote branch, such as `origin/main`, as [Branches](#branches) names for base preparation.
 
 #### 2. List Existing Epic Bases
 
-Run [List Epic Bases](#list-epic-bases "ƒ") in the project checkout for [Epic Identity](#epic-identity).
+Apply [List Epic Bases](#list-epic-bases "ƒ") in the project checkout for [Epic Identity](#epic-identity).
 
 #### 3. Resolve Missing Branch Configuration
 
@@ -30,12 +30,10 @@ Require the caller's confirmed [prerequisite evidence](#prerequisite-evidence) b
 
 - For each missing base in the project checkout, use its corresponding long-lived branch, epic base name and confirmed prerequisites:
   - Require confirmed [Prerequisite Evidence](#prerequisite-evidence) and a missing destination for [Epic-Base Name](#epic-base-name). Refuse a destination that already exists.
-  - Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the corresponding long-lived [source branch](#source-branch), such as `main`.
+  - Apply [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the corresponding long-lived [source branch](#source-branch), such as `main`.
   - After a successful fetch:
-    - Run [Publish Epic Base](#publish-epic-base "ƒ") in the project checkout with that remote source and the missing epic base name, such as `i07/e00/main`, meeting [Epic Bases](#epic-bases).
+    - Publish Epic Base in the project checkout with that remote source and the missing epic base name, such as `i07/e00/main`, meeting [Epic Bases](#epic-bases).
     - Retain [Branch Result](#branch-result) with the created branch, or [Failure](#failure).
-
-##### Publish Epic Base
 
 Create a remote epic base from the fetched source branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
@@ -60,13 +58,11 @@ Take the long-lived target and epic base checkout’s path from [Epic-Base Name]
 
 #### 2. Fetch Current Epic Base
 
-Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [Project Checkout](#project-checkout) with that epic base; stop on failure.
+Apply [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [Project Checkout](#project-checkout) with that epic base; stop on failure.
 
 #### 3. Prepare Epic Base Checkout
 
-Run [Add Epic Base Worktree](#add-epic-base-worktree "ƒ") in the project checkout for an absent epic base checkout, and reuse an existing one; stop on failure, which a base checked out elsewhere returns.
-
-##### Add Epic Base Worktree
+Add Epic Base Worktree in the project checkout for an absent epic base checkout, and reuse an existing one; stop on failure, which a base checked out elsewhere returns.
 
 Create the worktree for an existing epic base and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
@@ -80,19 +76,17 @@ git worktree add '[**&lt;worktree-path&gt;**](#worktree-path "○")' '[**&lt;epi
 
 #### 4. Fetch Long-Lived Target
 
-Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the epic base checkout with the long-lived target, such as `main`; stop on failure.
+Apply [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the epic base checkout with the long-lived target, such as `main`; stop on failure.
 
 #### 5. Merge Current Target
 
-Run [Merge Remote Branch](#merge-remote-branch "ƒ") in the epic base checkout with the target branch name, such as `main`, to merge `origin/main`. A conflict stops the update, leaves the pull request open and is reported.
+Apply [Merge Remote Branch](#merge-remote-branch "ƒ") in the epic base checkout with the target branch name, such as `main`, to merge `origin/main`. A conflict stops the update, leaves the pull request open and is reported.
 
 #### 6. Publish Updated Epic Base
 
 - After a successful merge:
-  - Run [Push Epic Base](#push-epic-base "ƒ") in the epic base checkout.
+  - Push Epic Base in the epic base checkout.
   - Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
-
-##### Push Epic Base
 
 Push the epic base checked out where it runs to its configured upstream and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
@@ -109,7 +103,7 @@ The current base merged into a unit's task branch.
 
 #### 1. Fetch Current Task Base
 
-Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [unit checkout](#unit-checkout) with [Base Branch](#base-branch), such as `i07/e00/main`.
+Apply [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [unit checkout](#unit-checkout) with [Base Branch](#base-branch), such as `i07/e00/main`.
 
 #### 2. Stop on Fetch Failure
 
@@ -117,15 +111,13 @@ Stop on failure.
 
 #### 3. Merge Current Task Base
 
-Run [Merge Remote Branch](#merge-remote-branch "ƒ") in the unit checkout with the base name, such as `i07/e00/main`, to merge `origin/i07/e00/main`. A conflict stops the update, leaves the pull request open and is reported.
+Apply [Merge Remote Branch](#merge-remote-branch "ƒ") in the unit checkout with the base name, such as `i07/e00/main`, to merge `origin/i07/e00/main`. A conflict stops the update, leaves the pull request open and is reported.
 
 #### 4. Publish Updated Task Branch
 
 - After a successful merge:
-  - Run [Push Task Branch](#push-task-branch "ƒ") in the unit checkout with [Task Branch](#task-branch) as destination.
+  - Push Task Branch in the unit checkout with [Task Branch](#task-branch) as destination.
   - Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
-
-##### Push Task Branch
 
 Push the head of the checkout it runs in to its named remote task branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
@@ -142,9 +134,7 @@ The detached worktree where the graph reads the reviewed change.
 
 #### 1. Fetch Verified Review Head
 
-Run [Fetch Review Head](#fetch-review-head "ƒ") in the [project checkout](#project-checkout) of the repository the pull request changes, passing its number; stop on failure.
-
-##### Fetch Review Head
+Fetch Review Head in the [project checkout](#project-checkout) of the repository the pull request changes, passing its number; stop on failure.
 
 Fetch one pull request head into FETCH_HEAD and provide [Checkout Commit](#checkout-commit "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
@@ -156,7 +146,7 @@ git fetch origin pull/[**&lt;pull-request-number&gt;**](#pull-request-number "�
 
 #### 2. Resolve Fetched Review Commit
 
-Run [Read Checkout Revision](#read-checkout-revision "ƒ") on the project checkout for `FETCH_HEAD`.
+Apply [Read Checkout Revision](#read-checkout-revision "ƒ") on the project checkout for `FETCH_HEAD`.
 
 #### 3. Check Verified Head
 
@@ -169,12 +159,10 @@ Take the worktree path from the [pull request number](#pull-request-number), mee
 #### 5. Check Existing Review Worktree
 
 - If that worktree already exists:
-  - Run [Read Checkout Revision](#read-checkout-revision "ƒ") in that review checkout for `HEAD`.
-  - Run [Read Checkout Status](#read-checkout-status "ƒ") there.
+  - Apply [Read Checkout Revision](#read-checkout-revision "ƒ") in that review checkout for `HEAD`.
+  - Read Checkout Status there.
   - Reuse it only at the verified head and when its status reports detached HEAD with no tracked or untracked changes.
   - Otherwise retain it and select an unused path suffixed with the verified commit.
-
-##### Read Checkout Status
 
 Report branch or detached-HEAD state and tracked and untracked changes in one checkout and provide [Checkout Status](#checkout-status "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
@@ -184,9 +172,7 @@ git -C '[**&lt;checkout&gt;**](#checkout "○")' status --porcelain --branch
 
 #### 6. Add Detached Review Worktree
 
-For an unused path, Run [Add Review Worktree](#add-review-worktree "ƒ") in the project checkout with that path and the verified commit.
-
-##### Add Review Worktree
+For an unused path, Add Review Worktree in the project checkout with that path and the verified commit.
 
 Create a detached worktree at the fetched review head and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
@@ -200,7 +186,7 @@ git worktree add --detach '[**&lt;worktree-path&gt;**](#worktree-path "○")' [*
 
 #### 7. Confirm Review Checkout Head
 
-Run [Read Checkout Revision](#read-checkout-revision "ƒ") in the selected review checkout for `HEAD` to confirm its commit.
+Apply [Read Checkout Revision](#read-checkout-revision "ƒ") in the selected review checkout for `HEAD` to confirm its commit.
 
 #### 8. Provide Review Checkout
 
@@ -212,15 +198,15 @@ The configured long-lived branches and existing epic bases.
 
 #### 1. Fetch Evaluated Revision
 
-Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the branch the supplied [revision](#revision) names on origin, such as `i07/e00/main` for `origin/i07/e00/main`; stop on failure.
+Apply [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the branch the supplied [revision](#revision) names on origin, such as `i07/e00/main` for `origin/i07/e00/main`; stop on failure.
 
 #### 2. Read Declared Branch Names
 
-Run [List Long-Lived Branches](#list-long-lived-branches "ƒ") with the supplied [checkout](#project-checkout) and [revision](#revision). Absent, empty or unreadable configuration at that revision leaves branch names unevaluable, reported with its source.
+Apply [List Long-Lived Branches](#list-long-lived-branches "ƒ") with the supplied [checkout](#project-checkout) and [revision](#revision). Absent, empty or unreadable configuration at that revision leaves branch names unevaluable, reported with its source.
 
 #### 3. List Current Epic Bases
 
-Run [List Epic Bases](#list-epic-bases "ƒ") in the project checkout for [Epic Identity](#epic-identity).
+Apply [List Epic Bases](#list-epic-bases "ƒ") in the project checkout for [Epic Identity](#epic-identity).
 
 #### 4. Provide Delivery Branches
 

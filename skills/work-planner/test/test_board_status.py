@@ -269,7 +269,7 @@ class BoardDeliveryCallers(unittest.TestCase):
     def test_dispatch_and_review_statuses_come_from_board_status_and_are_read_back(self):
         found = operations(DELIVERY)
         self.assertEqual(set(found), {'Record Epic Review', 'Record Dispatch Status'})
-        self.assertIn('Run [Compute Dispatch Status](board-status.md#compute-dispatch-status "ƒ")',
+        self.assertIn('Apply [Compute Dispatch Status](board-status.md#compute-dispatch-status "ƒ")',
                       found['Record Dispatch Status'])
         self.assertIn('Apply [Record Dispatch Status](#record-dispatch-status "ƒ")', found['Record Epic Review'])
         for name, body in found.items():

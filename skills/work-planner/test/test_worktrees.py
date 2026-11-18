@@ -49,7 +49,7 @@ class WorktreePlacement(unittest.TestCase):
         caller's working directory."""
         found = list(specs_creating_a_worktree())
         self.assertEqual({title for _, title, _ in found},
-                         {'Add Task Worktree', 'Add Epic Base Worktree', 'Add Review Worktree'})
+                         {'Add Task Worktree', '3. Prepare Epic Base Checkout', '6. Add Detached Review Worktree'})
         self.assertEqual(len(found), 3)
         for path, title, body in found:
             with self.subTest(file=path.name, command=title):
