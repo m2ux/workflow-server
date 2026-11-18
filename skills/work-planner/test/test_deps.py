@@ -806,3 +806,25 @@ class InvalidReferences(unittest.TestCase):
                           ('E01', epic_body(('W01', 'Consume', 'E00:W01')))])
         self.assertEqual(code, 0, text)
         self.assertNotIn('cannot resolve', text)
+
+
+class IssueEntries(unittest.TestCase):
+    """A #N entry names the issue its link names, so a link carrying another number is a problem."""
+
+    def test_a_number_its_link_carries_passes(self):
+        for entry in ('#750', '[#9](https://github.com/o/skills/issues/9)',
+                      '[#750](https://github.com/o/r/issues/750)'):
+            with self.subTest(entry=entry):
+                code, text = run([('E01', epic_body(('W01', 'Consume', entry)))])
+                self.assertEqual(code, 0, text)
+
+    def test_a_task_row_number_its_link_does_not_carry_is_a_problem(self):
+        code, text = run([('E01', epic_body(('W01', 'Consume', '[#750](https://github.com/o/r/issues/751)')))])
+        self.assertEqual(code, 1, text)
+        self.assertIn('E01:W01: #750 links issue 751; a #750 entry links issue 750', text)
+
+    def test_an_initiative_number_its_link_does_not_carry_is_a_problem(self):
+        code, text = run([('I', initiative_body(('E00', '[#750](https://github.com/o/r/issues/751)'))),
+                          ('E00', epic_body(('W01', 'Output', '')))])
+        self.assertEqual(code, 1, text)
+        self.assertIn('initiative E00: #750 links issue 751; a #750 entry links issue 750', text)
