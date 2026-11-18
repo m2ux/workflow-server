@@ -22,9 +22,46 @@ Author and Audit use the same captured inventory, applicability matrices and evi
 2. **Declare the scope.**
    Fill the [scope input](../templates/audit-scope.json) with paths relative to the corpus root, the exact base commit when comparing changes, and checks selected through [canon context](canon-context.md#checks). Include supporting resources, READMEs, routines, unchanged consumers and relationship context. The guard obligation is required. Candidate draft bytes must exist in an isolated corpus tree before capture.
 3. **Capture the bytes.**
-   [Initialize the surface](#initialize-audit-surface). It captures source bytes, revisions, parser/tool identities, deleted base files, all AP/DP entries and supplemental canon units. Four Markdown documents contain workflow, technique, routine and activity tables separated by source and section; empty types explicitly say so. The coordinator owns the state and generated views.
+   Initialize the surface. It captures source bytes, revisions, parser/tool identities, deleted base files, all AP/DP entries and supplemental canon units. Four Markdown documents contain workflow, technique, routine and activity tables separated by source and section; empty types explicitly say so. The coordinator owns the state and generated views.
+   - **Initialize Audit Surface.**
+     Capture source bytes and render all four matrices with unresolved cells.
+     - Paths are relative to a root containing `corpus/`. Use the actual inventory author identity and a new run directory.
+
+     ```bash
+     python3 <skill-root>/scripts/audit_surface.py init --root <corpus-root> --engine <engine-root> --scope <scope.json> --actor <host-agent-id> --run <run>
+     ```
 4. **Check the proposed inventory.**
    Read [Identity](#identity), then assign [independent inventory verification](audit-dispatch.md#phases). Verifiers derive expected items and relationships from captured sources and the corpus manifest. They compare the proposed rows, complete AP/DP inventory, diagnostics and unselected files against those expectations. Automated extraction is a candidate inventory, including unresolved reference candidates; it does not establish completeness.
+
+### Submit Audit Results
+
+Validate a typed return and preserve its immutable receipt.
+
+- Invalid returns cannot partially change state; valid partial results leave the residual incomplete.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py submit --run <run> --receipt <receipt.json>
+```
+
+### Reset Audit Cells
+
+Reopen selected decisions and invalidate dependent evidence and assignments.
+
+- Supply a JSON array of cell IDs and the correction reason.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py reset --run <run> --items <items.json> --reason '<reason>'
+```
+
+### Retry Audit Assignment
+
+Retire interrupted ownership so its unresolved work can be planned again.
+
+- Accepted items remain settled. Record why the worker stopped and recalibrate excessive estimates.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py retry --run <run> --assignment <id> --reason '<reason>'
+```
 
 ## Reference
 
@@ -107,18 +144,6 @@ Coverage completion and conformance are separate. Confirmed violations can have 
 
 For a workflow-owned report, follow [Workflow Reports](reporting.md#workflow-reports) and transfer the generated counts, residuals and links into that guide's layout. The generated coverage remains authoritative.
 
-## Commands
-
-### Initialize Audit Surface
-
-Capture source bytes and render all four matrices with unresolved cells.
-
-- Paths are relative to a root containing `corpus/`. Use the actual inventory author identity and a new run directory.
-
-```bash
-python3 <skill-root>/scripts/audit_surface.py init --root <corpus-root> --engine <engine-root> --scope <scope.json> --actor <host-agent-id> --run <run>
-```
-
 ### Check Audit Status
 
 Reconcile current evidence, rendered views and outstanding obligations.
@@ -140,26 +165,6 @@ Regenerate matrices, evidence and reports from canonical state.
 python3 <skill-root>/scripts/audit_surface.py render --run <run>
 ```
 
-### Submit Audit Results
-
-Validate a typed return and preserve its immutable receipt.
-
-- Invalid returns cannot partially change state; valid partial results leave the residual incomplete.
-
-```bash
-python3 <skill-root>/scripts/audit_surface.py submit --run <run> --receipt <receipt.json>
-```
-
-### Reset Audit Cells
-
-Reopen selected decisions and invalidate dependent evidence and assignments.
-
-- Supply a JSON array of cell IDs and the correction reason.
-
-```bash
-python3 <skill-root>/scripts/audit_surface.py reset --run <run> --items <items.json> --reason '<reason>'
-```
-
 ### Refresh Audit Surface
 
 Capture current inputs and invalidate a changed generation.
@@ -168,16 +173,6 @@ Capture current inputs and invalidate a changed generation.
 
 ```bash
 python3 <skill-root>/scripts/audit_surface.py refresh --run <run>
-```
-
-### Retry Audit Assignment
-
-Retire interrupted ownership so its unresolved work can be planned again.
-
-- Accepted items remain settled. Record why the worker stopped and recalibrate excessive estimates.
-
-```bash
-python3 <skill-root>/scripts/audit_surface.py retry --run <run> --assignment <id> --reason '<reason>'
 ```
 
 ### Run Audit Script Tests

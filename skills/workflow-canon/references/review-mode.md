@@ -11,14 +11,66 @@ Before the first command spec, read the [command conventions](command-convention
 1. **Establish the subject.**
    - Read applicable project instructions and take the repository, integration PRs or branches, intended targets and merge order from the request and repository metadata.
    - Identify the long-lived branches and what each owns from [Branches and Sources](coverage.md#branches-and-sources) and the project's documentation, manifests and CI. Resolve the shared [planning record](planning.md) before saving evidence.
-   - [Fetch Pull Request](#fetch-pull-request) and [Fetch Requirements](#fetch-requirements) where applicable. Resolve only missing decisions with the user, one question at a time.
+   - Fetch Pull Request and Fetch Requirements where applicable. Resolve only missing decisions with the user, one question at a time.
+     - **Fetch Pull Request.**  Save a PR, its changed files and its commits through REST.
+
+       ```bash
+       gh api repos/{owner}/{repo}/pulls/950 > <record>/pr-950.json
+       gh api --paginate repos/{owner}/{repo}/pulls/950/files > <record>/pr-950-files.json
+       gh api --paginate repos/{owner}/{repo}/pulls/950/commits > <record>/pr-950-commits.json
+       ```
+     - **Fetch Requirements.**  Save an issue whose requirements the integration claims to deliver.
+
+       ```bash
+       gh api repos/{owner}/{repo}/issues/950 > <record>/issue-950.json
+       ```
 2. **Capture the revisions.**
-   - [Fetch Branches](#fetch-branches), then [Compare Revisions](#compare-revisions) for each head and target. Record the merge base, full SHAs, constituent PRs and delivered requirements.
-   - [Create Review Worktree](#create-review-worktree) for each distinct reviewed tree. [Prepare Integration Result](#prepare-integration-result) where the head does not already contain its current target.
+   - Fetch Branches, then Compare Revisions for each head and target. Record the merge base, full SHAs, constituent PRs and delivered requirements.
+     - **Fetch Branches.**  Refresh each named remote branch for revision capture.
+
+       ```bash
+       git fetch <remote> <branch>
+       git rev-parse <remote>/<branch>
+       ```
+     - **Compare Revisions.**
+       Inspect the incoming change and the relationship to its current target.
+       - Use full captured SHAs after resolving branch names.
+       - A three-dot diff describes the incoming change; the proposed integration result supplies the combined behavior.
+
+       ```bash
+       git merge-base <target-sha> <head-sha>
+       git diff --stat <target-sha>...<head-sha>
+       git diff <target-sha>...<head-sha>
+       git log --oneline <target-sha>..<head-sha>
+       ```
+   - [Create Review Worktree](#create-review-worktree) for each distinct reviewed tree. Prepare Integration Result where the head does not already contain its current target.
+     - **Prepare Integration Result.**
+       Combine a head with its current target inside a disposable review worktree.
+       - Start the worktree at the target SHA, using [Create Review Worktree](#create-review-worktree).
+       - A clean merge's tree SHA identifies the candidate alongside both parent SHAs. A conflict is evidence; preserve its details and abort without resolving it.
+       - Use a separate worktree per proposed result. Independently versioned products retain their own histories.
+
+       ```bash
+       git -C <review-worktree> merge --no-commit --no-ff <head-sha>
+       git -C <review-worktree> write-tree
+       ```
    - When engine or corpus behavior is involved, resolve [Engine and Corpus Pairing](coverage.md#engine-and-corpus-pairing).
    - Record the final combination and any intermediate combination the proposed merge or deployment order exposes. Keep separate branch products in their own trees.
 3. **Read the design.**
-   - Use [Read Captured File](#read-captured-file) for whole-document links and [Read Captured Section](#read-captured-section) for heading links. Start with the documentation index, then the architecture, affected component contracts, schemas, configuration and test guidance at the captured revisions.
+   - Use Read Captured File for whole-document links and Read Captured Section for heading links. Start with the documentation index, then the architecture, affected component contracts, schemas, configuration and test guidance at the captured revisions.
+     - **Read Captured File.**
+       Read a complete document, manifest or CI definition from a captured branch revision.
+
+       ```bash
+       git show <sha>:<repo-relative-path>
+       ```
+     - **Read Captured Section.**  Read an anchored section from a captured branch revision.
+       - Locate the heading in the outline, then substitute the start and end lines required by the [linked-section rule](../SKILL.md#rules). Markdown code fences do not create document headings.
+
+       ```bash
+       git show <sha>:<repo-relative-path> | rg -n '^#{1,6} '
+       git show <sha>:<repo-relative-path> | sed -n '<start-line>,<end-line>p'
+       ```
    - When engine or corpus behavior is involved, use [Design Reading](coverage.md#design-reading) to select the authoritative architecture and component documents.
    - Trace each affected requirement from its authoritative source through declaration, loading, execution, delivered content and observable output. Follow unchanged consumers of changed shared components.
    - Record disagreements between design, schema and implementation as review evidence.
@@ -34,10 +86,44 @@ Before the first command spec, read the [command conventions](command-convention
    - Assess the proposed deployment order against session and runtime behavior. Distinguish an existing defect from a regression and from an unavailable measurement.
    - Check whether the PR bodies describe the complete current result and identify the constituent PRs accurately.
 7. **Refresh evidence.**
-   - [Fetch Check Evidence](#fetch-check-evidence) for each reviewed PR and its relevant CI runs. Inspect recorded checkout revisions as well as the reported check SHA.
-   - [Refresh Revisions](#refresh-revisions) before concluding. A moved head, target or paired dependency sends the affected conclusions back through examination and validation.
+   - Fetch Check Evidence for each reviewed PR and its relevant CI runs. Inspect recorded checkout revisions as well as the reported check SHA.
+     - **Fetch Check Evidence.**
+       Read checks and commit statuses, then the relevant Actions run and jobs.
+       - Run and job metadata identify the reported SHA; logs and artifacts establish separately checked-out dependency SHAs.
+       - Use the latest relevant attempts and retain their URLs. A success on another pairing leaves the candidate unmeasured.
+
+       ```bash
+       gh api --paginate repos/{owner}/{repo}/commits/<sha>/check-runs
+       gh api repos/{owner}/{repo}/commits/<sha>/status
+       gh api repos/{owner}/{repo}/actions/runs/<run-id>
+       gh api --paginate repos/{owner}/{repo}/actions/runs/<run-id>/jobs
+       ```
+   - Refresh Revisions before concluding. A moved head, target or paired dependency sends the affected conclusions back through examination and validation.
+     - **Refresh Revisions.**
+       Compare current remote heads and PR metadata with the captured review subject.
+
+       ```bash
+       git ls-remote <remote> refs/heads/<head> refs/heads/<target> refs/heads/<paired-branch>
+       gh api repos/{owner}/{repo}/pulls/950
+       ```
 8. **Report.**
    Write the [integration review](../templates/integration-review.md) in the shared [planning record](planning.md), using [Verdicts](#verdicts) and [Findings](#findings). End with the smallest concrete actions that close the findings or evidence gaps.
+
+### Create Review Worktree
+
+Create a detached tree at a captured revision without moving an existing checkout.
+
+```bash
+git worktree add --detach <review-worktree> <sha>
+```
+
+### Abort Review Merge
+
+Return a disposable candidate to its captured target after recording a merge conflict.
+
+```bash
+git -C <review-worktree> merge --abort
+```
 
 ## Reference
 
@@ -93,117 +179,3 @@ Group findings by area of concern and order them by severity. Each finding state
   Constituent PR approvals and passing checks do not establish that their combined result works. Record a conflicting integration result and [Abort Review Merge](#abort-review-merge) without inventing a resolution.
 - **Missing authority or environment.**
   Record the required observation when it needs an unavailable environment or an action outside existing authorization, and continue independent review work.
-
-## Commands
-
-### Fetch Pull Request
-
-Save a PR, its changed files and its commits through REST.
-
-```bash
-gh api repos/{owner}/{repo}/pulls/950 > <record>/pr-950.json
-gh api --paginate repos/{owner}/{repo}/pulls/950/files > <record>/pr-950-files.json
-gh api --paginate repos/{owner}/{repo}/pulls/950/commits > <record>/pr-950-commits.json
-```
-
-### Fetch Requirements
-
-Save an issue whose requirements the integration claims to deliver.
-
-```bash
-gh api repos/{owner}/{repo}/issues/950 > <record>/issue-950.json
-```
-
-### Fetch Branches
-
-Refresh each named remote branch for revision capture.
-
-```bash
-git fetch <remote> <branch>
-git rev-parse <remote>/<branch>
-```
-
-### Compare Revisions
-
-Inspect the incoming change and the relationship to its current target.
-
-- Use full captured SHAs after resolving branch names.
-- A three-dot diff describes the incoming change; the proposed integration result supplies the combined behavior.
-
-```bash
-git merge-base <target-sha> <head-sha>
-git diff --stat <target-sha>...<head-sha>
-git diff <target-sha>...<head-sha>
-git log --oneline <target-sha>..<head-sha>
-```
-
-### Create Review Worktree
-
-Create a detached tree at a captured revision without moving an existing checkout.
-
-```bash
-git worktree add --detach <review-worktree> <sha>
-```
-
-### Prepare Integration Result
-
-Combine a head with its current target inside a disposable review worktree.
-
-- Start the worktree at the target SHA, using [Create Review Worktree](#create-review-worktree).
-- A clean merge's tree SHA identifies the candidate alongside both parent SHAs. A conflict is evidence; preserve its details and abort without resolving it.
-- Use a separate worktree per proposed result. Independently versioned products retain their own histories.
-
-```bash
-git -C <review-worktree> merge --no-commit --no-ff <head-sha>
-git -C <review-worktree> write-tree
-```
-
-### Abort Review Merge
-
-Return a disposable candidate to its captured target after recording a merge conflict.
-
-```bash
-git -C <review-worktree> merge --abort
-```
-
-### Read Captured File
-
-Read a complete document, manifest or CI definition from a captured branch revision.
-
-```bash
-git show <sha>:<repo-relative-path>
-```
-
-### Read Captured Section
-
-Read an anchored section from a captured branch revision.
-
-- Locate the heading in the outline, then substitute the start and end lines required by the [linked-section rule](../SKILL.md#rules). Markdown code fences do not create document headings.
-
-```bash
-git show <sha>:<repo-relative-path> | rg -n '^#{1,6} '
-git show <sha>:<repo-relative-path> | sed -n '<start-line>,<end-line>p'
-```
-
-### Fetch Check Evidence
-
-Read checks and commit statuses, then the relevant Actions run and jobs.
-
-- Run and job metadata identify the reported SHA; logs and artifacts establish separately checked-out dependency SHAs.
-- Use the latest relevant attempts and retain their URLs. A success on another pairing leaves the candidate unmeasured.
-
-```bash
-gh api --paginate repos/{owner}/{repo}/commits/<sha>/check-runs
-gh api repos/{owner}/{repo}/commits/<sha>/status
-gh api repos/{owner}/{repo}/actions/runs/<run-id>
-gh api --paginate repos/{owner}/{repo}/actions/runs/<run-id>/jobs
-```
-
-### Refresh Revisions
-
-Compare current remote heads and PR metadata with the captured review subject.
-
-```bash
-git ls-remote <remote> refs/heads/<head> refs/heads/<target> refs/heads/<paired-branch>
-gh api repos/{owner}/{repo}/pulls/950
-```

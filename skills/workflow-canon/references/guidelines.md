@@ -48,7 +48,7 @@ Each procedure file's sections, in order, and the ones it requires. A blank cell
 
 | Option | `*-mode.md` | `*` |
 | --- | --- | --- |
-| `sections` | Prerequisites, Procedure, Reference, Rules, Commands | Prerequisites, Procedure, Reference, Rules, Commands |
+| `sections` | Prerequisites, Procedure, Reference, Rules | Prerequisites, Procedure, Reference, Rules |
 | `required` | Procedure, Rules | Procedure |
 
 ## Mode Files
@@ -64,24 +64,25 @@ Each procedure file's sections, in order, and the ones it requires. A blank cell
 - **One spec per operation.**
   - Every command has a sub-section named for what it does: Initialize Audit Surface.
   - A script used several ways has a spec for each use.
-- **Local to the procedure.**
-  - A specification sits in the file whose procedure runs it, in a `## Commands` section at the end of that file.
-  - A single catalog holds only those specifications most of whose entries have several callers. Where a block of a catalog has one caller, it belongs to that caller.
+- **In the step that runs it.**
+  - A specification sits in the procedure step that runs it: its description, detail and command block. No file takes a Commands section.
+  - A specification several steps run, or a step of another file runs, is a sub-section of the procedure in the file owning its subject, and those steps run it.
+  - A specification no procedure runs has no step to hold it, so it stays with the section whose prose or sibling specification names it.
   - A caller is a procedure that runs the command. A sibling specification, and any passage of prose naming a command, does not make the file holding it a caller.
   - A procedure is a section carrying numbered steps, whatever its heading names it. The step is the author stating that the reader performs these, in this order, and is the only place a file records that.
   - Prose runs nothing whatever its mood, order or count: a sentence routing three commands in sequence names them as a statement of what one command does names it. State a route as steps to call them.
-  - SKILL.md holds no specification. A command the entry point names is specified in the file whose procedure runs it, or in the catalog.
+  - SKILL.md holds no specification. A command the entry point names is specified in the step that runs it.
   - A specification with two owners has one home and a link from the other. A count of those links that keeps growing says the split is in the wrong place.
 - **Spec layout.**
   - Each spec opens with a one-line, succinct description of what the command does.
   - Detail a caller needs, such as flags or inputs, follows as bullets, then the command block.
   - Preconditions and refusals sit in the step that runs the command, never in the spec.
 - **Named by link.**
-  - Prose names a spec by linking to its sub-section, mid-sentence: `run [Initialize Audit Surface](change-surface.md#initialize-audit-surface) before the first check`.
+  - Prose names a spec by linking to its sub-section, mid-sentence: `run [Check Audit Status](change-surface.md#check-audit-status) before the evaluation gate`.
   - A command body is inlined only in the file that owns the spec.
 - **Conventions.**
   - Session setup, execution location, example values and other skill-wide prerequisites stand where a procedure reaching them opens no further file: SKILL.md, which selects the mode, or the file holding the operations those procedures open anyway.
-  - Conventions governing one procedure's commands sit in that procedure's file, ahead of its Commands section.
+  - Conventions governing one procedure's commands sit in that procedure's file, ahead of the procedure.
 
 ## Progressive Disclosure
 
@@ -110,7 +111,7 @@ Apply the shared [progressive disclosure](../../guidelines.md#progressive-disclo
 - **Currency.**
   Check project settings against current instructions and captured revisions. Counts, runtime versions, thresholds and branch pairings come from the sources that own them.
 - **Separation.**
-  An executable operation belongs to the file whose procedure runs it. Skill-wide conventions form one bounded file; conventions governing one procedure's commands sit in that procedure's file, ahead of its Commands section.
+  An executable operation belongs to the file whose procedure runs it. Skill-wide conventions form one bounded file; conventions governing one procedure's commands sit in that procedure's file, ahead of the procedure.
 
 ## Shared Planning
 
