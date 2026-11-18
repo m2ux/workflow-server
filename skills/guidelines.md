@@ -129,14 +129,15 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 ## Commands
 
 - **One spec per operation.**
-  - Every command has a sub-section named for what it does: Fetch issue, Run guard suite.
+  - A command standing as an operation has a sub-section named for what it does: Fetch issue, Run guard suite.
+  - A step running one command names it in its line by its plain title; a step running several opens each command's text with its bold title.
   - A script used several ways has a spec for each use.
 - **In the step that runs it.**
   - A specification one step runs is written in that step: its description, template and detail, with its `○` inputs and `●` output, and no link to it. No file takes a Commands section.
   - A specification several steps run, a step of another file runs, or text outside its step links to, is an operation of its own in the procedure section of the file owning its subject, and those steps Apply it. An operation holding one command takes no numbered step heading.
   - A caller is a procedure that runs the command. A specification standing outside any step, and any passage of prose naming a command, does not make the file holding it a caller.
   - Reach is what a reader must load: a step's citation, a specification's citation, and a prerequisite. A specification standing outside any step reaches a command it cites without calling it, so reach measures retrieval and leaves placement to callers.
-  - A specification no procedure runs has no step to hold it, so it stays with the section whose prose or sibling specification names it; in a mode file, whose commands stand in its procedure, it is an operation of the procedure. One nothing cites has no reader, whatever structure holds it.
+  - A specification no procedure runs has no step to hold it, so it stays with the section whose prose or sibling specification names it; in a mode file, whose commands stand in its procedure, it is an operation of the procedure. An operation specification nothing cites has no reader.
   - A procedure is a section carrying numbered steps, whatever its heading names it. The step is the author stating that the reader performs these, in this order, and is the only place a file records that.
   - Prose runs nothing whatever its mood, order or count: a sentence routing three commands in sequence names them as a statement of what one command does names it. State a route as steps to call them.
   - SKILL.md holds no specification. A command the entry point names is specified in the step that runs it.

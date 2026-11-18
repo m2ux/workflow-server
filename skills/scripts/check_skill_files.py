@@ -152,8 +152,15 @@ TABLE_RULE = re.compile(r'\|?[\s|:-]+\|?')
 LIST_OPTIONS = ('sections', 'required', 'preamble', 'scoped_children')
 BOOLEAN_OPTIONS = ('link_roles',)
 VOCABULARY = 'vocabulary.json'
-# The folder of the vendored skills skills/guidelines.md leaves outside the check.
-VENDORED = 'gitnexus'
+# The folder of the vendored skills, under skills/, that skills/guidelines.md
+# leaves outside the check.
+VENDORED = ('skills', 'gitnexus')
+
+
+def vendored(path):
+    """Whether a file lies in the vendored skills' folder, wherever a run is rooted."""
+    parts = path.resolve().parts
+    return any(parts[index:index + len(VENDORED)] == VENDORED for index in range(len(parts)))
 RULES = 'rules.json'
 GUIDE = 'guidelines.md'
 SHELL = ('', 'bash', 'sh', 'shell', 'zsh', 'console')
@@ -466,7 +473,8 @@ def specifications(lines, headings, entry=None):
     its command is one: the step that runs the command writes it. A heading
     carrying numbered steps, as numbered headings beneath it or a numbered
     list in its own text, is a procedure, so an invocation it holds directly
-    names no specification."""
+    names no specification; below a file's sections, numbered detail after
+    the invocation is the specification's own."""
     blocks = scan_blocks(lines)
     fenced = blocks.fenced
     if (entry or {}).get('commands') == 'html':
@@ -482,7 +490,11 @@ def specifications(lines, headings, entry=None):
         end = heading_end(headings, index, level, len(lines))
         if any(HEADING_STEP.match(name) for start, _, name in headings[position + 1:] if start < end):
             continue
-        if any(ORDERED.match(lines[line]) for line in range(index + 1, following)
+        # A section carries its steps anywhere in its text; a sub-section's
+        # numbered lines after its command are that command's detail.
+        first = min(start for start in starts if index < start < following)
+        last = following if level <= (entry or {}).get('section_level', 2) else first
+        if any(ORDERED.match(lines[line]) for line in range(index + 1, last)
                if not fenced[line] and line not in commands):
             continue
         yield index, level, title
@@ -664,13 +676,30 @@ def operation_target(path, target):
     return fragment == 'procedure' and entry.get('procedures') == 'Procedure'
 
 
+def step_command(path, target):
+    """Whether a heading link names a specification a step writes as its own
+    text, which no other step runs."""
+    name, _, fragment = target.partition('#')
+    if not fragment or '://' in name or name.startswith('mailto:'):
+        return False
+    destination = (path.parent / name).resolve() if name else path
+    if not destination.is_file() or destination.suffix != '.md':
+        return False
+    lines, _, headings = scan(destination)
+    entry = contract(destination, {}) or {}
+    return any(anchor_of(title) == anchor_of(fragment) and in_step(headings, start)
+               for start, _, title in specifications(lines, headings, entry))
+
+
 def link_roles(path, lines, fenced, entry):
     """Role titles select Field contracts or callable operations."""
     if not entry or not (entry.get('link_roles') or entry.get('contracts')):
         return
     for index, target, role, source in role_links(lines, fenced):
         callable_target = operation_target(path, target)
-        if entry.get('link_roles') and callable_target and role != 'operation':
+        if entry.get('link_roles') and role == 'operation' and step_command(path, target):
+            yield index, 'operation link role', source + ' names a step\'s own command; make it an operation'
+        elif entry.get('link_roles') and callable_target and role != 'operation':
             yield index, 'operation link role', source
         elif entry.get('link_roles') and role == 'operation' and not callable_target:
             yield index, 'operation link role', source
@@ -755,12 +784,27 @@ def heading_model(path, lines, fenced, headings, entry):
         specs = [(index, title, heading_end(headings, index, level, len(lines)))
                  for index, level, title in specifications(lines, headings, entry)]
         if entry.get('contracts'):
+            invocations = scan_blocks(lines).invocations
+            links = [(index, role) for index, _, role, _ in role_links(lines, fenced)
+                     if not HEADING.match(lines[index])]
             for start, title, end in specs:
-                roles = {role for index, _, role, _ in role_links(lines, fenced)
-                         if start < index < end and not HEADING.match(lines[index])}
-                for role in ('input', 'output'):
-                    if role not in roles:
-                        yield start, 'command contract links', f'{title}: contextual {role} link required'
+                # Each command holds the links of its own text, so a step writing
+                # several carries every command's contract.
+                held = [(first, last) for first, last in invocations if start < first and last < end]
+                # A step writing several commands opens each with its bold title.
+                labels = [index for index in range(start + 1, end)
+                          if re.match(r'\*\*[^*]+\.\*\*  ', lines[index]) and not fenced[index]]
+                if len(held) > 1 and len(labels) == len(held):
+                    bounds, ends = [label - 1 for label in labels], labels[1:] + [end]
+                else:
+                    bounds = [start] + [last for _, last in held[:-1]]
+                    ends = [first for first, _ in held[1:]] + [end]
+                for number, (low, high) in enumerate(zip(bounds, ends) if held else [(start, end)], 1):
+                    roles = {role for index, role in links if low < index < high}
+                    label = title if len(held) < 2 else f'{title}, command {number}'
+                    for role in ('input', 'output'):
+                        if role not in roles:
+                            yield start, 'command contract links', f'{label}: contextual {role} link required'
         yield from html_commands(path, lines, fenced, headings, entry, specs, inside)
     if entry.get('calls'):
         yield from operation_calls(path, lines, fenced, headings, entry,
@@ -919,10 +963,16 @@ def check(path, root, cache, structures=None, cited=None):
     # reported whatever cites it. Elsewhere, in a file its skill declares a
     # structure for, an operation specification nothing cites has no reader;
     # a step's own command is read with its step.
+    if path.name == 'SKILL.md':
+        for index, language in fence_openings(lines):
+            if language in SHELL:
+                report(index, 'command specification in the entry point', lines[index].strip())
+        for start, _ in scan_blocks(lines).invocations:
+            report(start, 'command specification in the entry point', lines[start].strip())
     for index, _, title in specifications(lines, headings, effective):
         if path.name == 'SKILL.md':
-            report(index, 'command specification in the entry point', title)
-        elif (effective and cited is not None and not in_step(headings, index)
+            continue
+        if (effective and cited is not None and not in_step(headings, index)
               and not cited.get(path, {}).get(anchor_of(title))):
             report(index, 'command specification nothing cites', title)
 
@@ -1244,6 +1294,18 @@ def interfaces(path, root, structures):
             for index in span)
         if graphql and not any(REST_GAP.match(lines[index]) for index in span):
             found.append(finding(path, root, start, 'GraphQL without a REST gap', title))
+    held = specification_spans(lines, headings, entry)
+    for index, language in fence_openings(lines):
+        if language not in SHELL or index in held or lines[index] != lines[index].lstrip():
+            continue
+        start = max((heading for heading, _, _ in headings if heading < index), default=-1)
+        stop = next((heading for heading, _, _ in headings if heading > index), total)
+        end = next((later for later in range(index + 1, total) if not fenced[later]), total)
+        graphql = any(GRAPHQL.search(lines[line]) or any(
+            GRAPHQL.search(script.read_text()) for script in script_of(path, lines[line]))
+            for line in range(index, end))
+        if graphql and not any(REST_GAP.match(lines[line]) for line in range(start + 1, stop)):
+            found.append(finding(path, root, index, 'GraphQL without a REST gap', lines[index].strip()))
     for first, last in list_item_blocks(lines, fenced):
         graphql = any(GRAPHQL.search(lines[index]) or any(
             GRAPHQL.search(script.read_text()) for script in script_of(path, lines[index]))
@@ -1742,11 +1804,10 @@ def main(argv=None):
     scripts = []
     for root in roots:
         files += [(path, root.parent) for path in sorted(root.rglob('*.md'))
-                  if 'fixtures' not in path.relative_to(root).parts
-                  and VENDORED not in path.relative_to(root.parent).parts]
+                  if 'fixtures' not in path.relative_to(root).parts and not vendored(path)]
         scripts += [(path, root.parent) for path in sorted(root.rglob('*'))
                     if path.suffix in SCRIPT_SUFFIXES and 'scripts' in path.relative_to(root.parent).parts
-                    and VENDORED not in path.relative_to(root.parent).parts]
+                    and not vendored(path)]
 
     declared = {}
     cache = {}

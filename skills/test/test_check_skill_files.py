@@ -1561,7 +1561,7 @@ class ReviewedCheckCases(unittest.TestCase):
     def test_a_specification_in_the_entry_point_is_reported_wherever_it_stands(self):
         self.write('SKILL.md', '# Specimen\n\nA sentence.\n\n## Conventions\n\n'
                    f'### Run It\n\nRuns it.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n')
-        self.assertEqual(self.found('command specification in the entry point'), [('SKILL.md', 7)])
+        self.assertEqual(self.found('command specification in the entry point'), [('SKILL.md', 11)])
 
     def test_a_specification_nothing_cites_is_reported(self):
         self.write('references/plan-mode.md', '# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n'
@@ -1572,6 +1572,48 @@ class ReviewedCheckCases(unittest.TestCase):
         self.write('references/plan-mode.md', (self.skill / 'references/plan-mode.md').read_text()
                    .replace('Fetch the issue.', 'Run [Fetch Issue](#fetch-issue).'))
         self.assertEqual(self.found('command specification nothing cites'), [])
+
+    def test_any_citation_gives_an_operation_specification_its_reader(self):
+        mode = ('# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n1. **Fetch.**  Fetch the issue.\n\n'
+                f'### Fetch Issue\n\nFetches it.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n\n'
+                f'### Close Issue\n\nCloses it.\n\n{FENCE}bash\ngh api repos/o/r/close\n{FENCE}\n\n'
+                '## Rules\n\n- **Scope.**  One issue.\n')
+        for name, text, other in (
+                ('sibling', mode.replace('Closes it.', 'Closes it after [Fetch Issue](#fetch-issue).'), None),
+                ('prose elsewhere', mode, ('references/guide.md',
+                                           '# Guide\n\nIssues open through [Fetch Issue](plan-mode.md#fetch-issue).\n')),
+                ('prerequisite', mode, ('references/sync.md',
+                                        '# Sync\n\nRead [Fetch Issue](plan-mode.md#fetch-issue) first.\n'))):
+            with self.subTest(citation=name):
+                for stale in ('references/guide.md', 'references/sync.md'):
+                    (self.skill / stale).unlink(missing_ok=True)
+                self.write('references/plan-mode.md', text)
+                if other:
+                    self.write(*other)
+                self.assertNotIn(('plan-mode.md', 9), self.found('command specification nothing cites'))
+
+    def test_a_command_under_any_entry_point_heading_is_reported(self):
+        self.write('SKILL.md', '# Specimen\n\nA sentence.\n\n## Conventions\n\n### Setup\n\n'
+                   f'1. **Install.**  Install it.\n\n{FENCE}bash\nnpm ci\n{FENCE}\n\n'
+                   f'2. **Run.**  Run it.\n\n   {FENCE}bash\nnpm test\n   {FENCE}\n')
+        self.assertEqual(self.found('command specification in the entry point'), [('SKILL.md', 11), ('SKILL.md', 17)])
+
+    def test_a_flush_graphql_block_in_a_sub_procedure_needs_its_gap(self):
+        self.write('references/plan-mode.md', '# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n'
+                   '1. **Read.**  Read the board.\n\n### Read Board\n\n1. **Fetch.**  Fetch it.\n\n'
+                   f'{FENCE}bash\ngh api graphql -F query=@board.graphql\n{FENCE}\n\n'
+                   '## Rules\n\n- **Scope.**  One board.\n')
+        self.assertEqual(self.found('GraphQL without a REST gap'), [('plan-mode.md', 13)])
+        self.write('references/plan-mode.md', (self.skill / 'references/plan-mode.md').read_text()
+                   .replace('Fetch it.\n', 'Fetch it.\n\n**REST gap:** No board read.\n'))
+        self.assertEqual(self.found('GraphQL without a REST gap'), [])
+
+    def test_numbered_detail_after_the_command_stays_the_specifications(self):
+        self.write('references/plan-mode.md', '# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n'
+                   '1. **Fetch.**  Fetch the issue.\n\n'
+                   f'### Fetch Issue\n\nFetches it.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n\n'
+                   '1. A first detail.\n2. A second.\n\n## Rules\n\n- **Scope.**  One issue.\n')
+        self.assertEqual(self.found('command specification nothing cites'), [('plan-mode.md', 9)])
 
     def test_a_procedure_preamble_holds_no_command(self):
         self.write('references/plan-mode.md', '# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n'
@@ -1649,6 +1691,10 @@ class SkillsCheckedTogether(unittest.TestCase):
         with redirect_stdout(printed):
             status = checker.main([str(self.root / 'skills')])
         self.assertEqual((status, printed.getvalue()), (0, '3 files checked, 0 findings\n'))
+        printed = io.StringIO()
+        with redirect_stdout(printed):
+            status = checker.main([str(self.root / 'skills' / 'gitnexus' / 'gitnexus-cli')])
+        self.assertEqual((status, printed.getvalue()), (0, '0 files checked, 0 findings\n'))
 
     def test_the_check_takes_no_exclusion(self):
         printed = io.StringIO()
@@ -2331,6 +2377,20 @@ Keep the refreshed inventory.
     def test_a_step_names_its_action_without_repeating_its_parent(self):
         self.replace(self.inventory, '#### 1. Fetch Inventory Page', '#### 1. Read Inventory')
         self.assertIn('repeated procedure title', self.kinds())
+
+    def test_a_step_writing_two_commands_carries_each_contract(self):
+        second = '\n**Count Pages.**  Count the pages.\n\n<big><pre>\ninventory_count\n</pre></big>\n'
+        self.replace(self.inventory, 'Provide [Page](#page "●").\n',
+                     'Provide [Page](#page "●").\n' + second)
+        self.replace(self.inventory, 'Fetches one inventory page.', '**Fetch Page.**  Fetches one inventory page.')
+        details = [detail for _, _, kind, detail in self.findings() if kind == 'command contract links']
+        self.assertEqual(details, ['1. Fetch Inventory Page, command 2: contextual input link required',
+                                   '1. Fetch Inventory Page, command 2: contextual output link required'])
+
+    def test_a_call_link_to_a_steps_own_command_is_refused(self):
+        self.replace(self.inventory, 'Inspect the page against',
+                     'Apply [Fetch Inventory Page](#1-fetch-inventory-page "ƒ"), then inspect the page against')
+        self.assertIn('operation link role', self.kinds())
 
     def test_an_operation_specification_contains_exactly_one_invocation(self):
         command = '<big><pre>\ninventory_fetch { [**limit**](#limit "○"), offset }\n</pre></big>'
