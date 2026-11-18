@@ -91,8 +91,9 @@ they open in one mood, judged from the first words of each opening sentence.
 
 A move is judged between two revisions rather than in one tree, so
 `--compare <base> <head>` reads the named skill folders from git at each and
-compares every third-level section's body with its counterpart, reporting
-each one that differs other than by a link target.
+compares the own text of every section at the third level or deeper with
+its counterpart, reporting each one that differs other than by a link
+target.
 
 A run names one skill or more, read together, so a citation crossing from
 one into another resolves against the tree it lands in; a skill not named is
@@ -178,6 +179,7 @@ CLASSIC = re.compile(r'\bProject(?:Card|Column)s?\b'
 # does, so a kind outside this set names no operation.
 KINDS = (
     'duplicate anchor', 'heading jump', 'Commands section',
+    'command specification in the entry point', 'command specification nothing cites',
     'section outside the set', 'sections out of order', 'section missing',
     'procedure file with no structure entry',
     'unresolved link', 'unresolved anchor',
@@ -192,7 +194,7 @@ KINDS = (
     'list step in heading model', 'indented detail in heading model',
     'heading step sequence', 'procedure without heading steps', 'procedure preamble missing',
     'command contract links', 'operation link role', 'fenced invocation in HTML model', 'malformed HTML invocation',
-    'invocation outside a procedure', 'invocation argument contract', 'unescaped HTML in invocation', 'operation call verb',
+    'invocation outside a procedure', 'invocation outside command specification', 'invocation argument contract', 'unescaped HTML in invocation', 'operation call verb',
     'unwrapped shell invocation', 'duplicate command parameter prose', 'repeated procedure title',
     'executable step in Fields',
     'link to the entry point',
@@ -450,17 +452,27 @@ def contract(path, cache):
 
 def specifications(lines, headings, entry=None):
     """Each command specification: a heading whose own text, ahead of its
-    first sub-heading, holds an invocation. The HTML model's invocation is its
-    `<big><pre>` block, and any other model's is a shell block."""
+    first sub-heading, holds a flush invocation. The HTML model's invocation
+    is its `<big><pre>` block, and any other model's is a shell block; one
+    indented into a list item belongs to that item. In a heading model a
+    numbered step, and a heading over numbered steps, is a procedure rather
+    than a specification, so an invocation it holds directly names none."""
     blocks = scan_blocks(lines)
     if (entry or {}).get('commands') == 'html':
         starts = [start for start, _ in blocks.invocations]
     else:
         starts = [index for index, language in blocks.openings if language in SHELL]
+    starts = [start for start in starts if lines[start] == lines[start].lstrip()]
+    stepped = (entry or {}).get('steps') == 'headings'
     for position, (index, level, title) in enumerate(headings):
         following = headings[position + 1][0] if position + 1 < len(headings) else len(lines)
-        if any(index < start < following for start in starts):
-            yield index, level, title
+        if not any(index < start < following for start in starts):
+            continue
+        if stepped and (HEADING_STEP.match(title) or any(
+                HEADING_STEP.match(name) for start, _, name in headings[position + 1:]
+                if start < heading_end(headings, index, level, len(lines)))):
+            continue
+        yield index, level, title
 
 
 def specification_spans(lines, headings, entry=None):
@@ -733,6 +745,8 @@ def html_commands(path, lines, fenced, headings, entry, specs, inside):
     for start, end in blocks:
         if start not in inside:
             yield start, 'invocation outside a procedure', 'place the specification in the step that runs it'
+        elif not any(index < start <= end < stop for index, _, stop in specs):
+            yield start, 'invocation outside command specification', 'name the specification as a sub-section of its step'
         if lines[start] != lines[start].lstrip():
             yield start, 'indented detail in heading model', 'invocation wrapper must be flush'
         payload = '\n'.join(lines[start:end + 1]).strip()
@@ -823,7 +837,7 @@ def html_interfaces(path, root, lines, fenced, headings, entry):
 
 
 
-def check(path, root, cache, structures=None):
+def check(path, root, cache, structures=None, cited=None):
     lines, fenced, headings = scan(path)
     skip = frontmatter(lines)
     commands = scan_blocks(lines).html_lines
@@ -860,6 +874,14 @@ def check(path, root, cache, structures=None):
         for index, depth, title in headings:
             if depth == level and anchor_of(title) == 'commands':
                 report(index, 'Commands section', 'place each specification in the step that runs it')
+    # A skill's entry point holds no command, so a specification there is
+    # reported whatever cites it. Elsewhere, in a file its skill declares a
+    # structure for, a specification nothing cites has no reader.
+    for index, _, title in specifications(lines, headings, effective):
+        if path.name == 'SKILL.md':
+            report(index, 'command specification in the entry point', title)
+        elif effective and cited is not None and not cited.get(path, {}).get(anchor_of(title)):
+            report(index, 'command specification nothing cites', title)
 
     # The top-level sections of a file carrying a procedure are a named set in
     # a named order, and its procedure is the one named Procedure, so the reader
@@ -1025,9 +1047,10 @@ def fence_openings(lines):
 
 
 def mode_commands(path, root, structures):
-    """Commands check: a mode's command stands in the step that runs it, so a
-    shell or unlabelled block in a mode file outside its procedures is a
-    command spelled out where no step runs it. A mode file is named
+    """Commands check: a mode's command stands in the step that runs it, or in
+    an operation of its procedure those steps run, so a shell or unlabelled
+    block in a mode file anywhere else, its procedure's preamble included, is
+    a command spelled out where no step runs it. A mode file is named
     `<mode>-mode.md`, as the guidelines name it."""
     if not path.name.endswith('-mode.md'):
         return []
@@ -1037,9 +1060,17 @@ def mode_commands(path, root, structures):
     lines, fenced, headings = scan(path)
     entry = entry or structure_at(path.parent, structures).get('*')
     steps = procedure_spans(lines, fenced, headings, entry)
+    level = (entry or {}).get('section_level', 2)
+
+    def held(index):
+        # In a step's list item, or in an operation under the procedure.
+        enclosing = max(((start, depth) for start, depth, _ in headings if start < index),
+                        default=(None, 0))
+        return lines[index] != lines[index].lstrip() or enclosing[1] > level
+
     return [finding(path, root, index, 'command spelled out in a mode', lines[index].strip())
             for index, language in fence_openings(lines)
-            if language in SHELL and index not in steps]
+            if language in SHELL and (index not in steps or not held(index))]
 
 
 def declaration_at(directory, name, cache, read):
@@ -1170,7 +1201,43 @@ def interfaces(path, root, structures):
             for index in span)
         if graphql and not any(REST_GAP.match(lines[index]) for index in span):
             found.append(finding(path, root, start, 'GraphQL without a REST gap', title))
+    for first, last in list_item_blocks(lines, fenced):
+        graphql = any(GRAPHQL.search(lines[index]) or any(
+            GRAPHQL.search(script.read_text()) for script in script_of(path, lines[index]))
+            for index in range(first, last))
+        item = list_item(lines, fenced, first)
+        if graphql and item and not any(REST_GAP.match(lines[index]) for index in range(*item)):
+            found.append(finding(path, root, item[0], 'GraphQL without a REST gap', lines[item[0]].strip()[:60]))
     return found
+
+
+def list_item_blocks(lines, fenced):
+    """Each indented shell block, a specification nested in a list item, as
+    its opening and closing line indices."""
+    for index, language in fence_openings(lines):
+        if language in SHELL and lines[index] != lines[index].lstrip():
+            end = next((later for later in range(index + 1, len(lines)) if not fenced[later]), len(lines))
+            yield index, end
+
+
+def list_item(lines, fenced, index):
+    """The span of the list item a nested line belongs to: the nearest item
+    above it opening shallower than the line, up to the next line opening at
+    that depth or shallower."""
+    depth = len(lines[index]) - len(lines[index].lstrip())
+    for above in range(index - 1, -1, -1):
+        line = lines[above]
+        if fenced[above] or not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        if HEADING.match(line):
+            return None
+        if indent < depth and (BULLET.match(line) or ORDERED.match(line.lstrip())):
+            end = next((later for later in range(index + 1, len(lines))
+                        if lines[later].strip() and not fenced[later]
+                        and len(lines[later]) - len(lines[later].lstrip()) <= indent), len(lines))
+            return above, end
+    return None
 
 
 def rule_operations(path):
@@ -1382,18 +1449,19 @@ def mixed_moods(lines, fenced, headings, entry=None):
 
 
 def bodies(texts):
-    """Every third-level section of each file, as (file, heading, body) in
-    file order. A body runs to the next heading of its level or above, and is
-    held with its relative link targets reduced to their fragments, since a
-    moved section's links must change and a retarget is not an edit."""
+    """Every section at the third level or deeper of each file, as (file,
+    heading, body) in file order. A body is the section's own text, running
+    to the next heading of any level, so a section moved into a step or under
+    another heading pairs with its counterpart whatever level it now takes.
+    It is held with its relative link targets reduced to their fragments,
+    since a moved section's links must change and a retarget is not an edit."""
     found = []
     for name in sorted(texts):
         lines, _, headings = parse(texts[name])
         for position, (start, level, title) in enumerate(headings):
-            if level != 3:
+            if level < 3:
                 continue
-            end = next((index for index, depth, _ in headings[position + 1:] if depth <= 3),
-                       len(lines))
+            end = headings[position + 1][0] if position + 1 < len(headings) else len(lines)
             body = [LINK.sub(retarget, line) for line in lines[start + 1:end]]
             while body and not body[0].strip():
                 body.pop(0)
@@ -1496,9 +1564,10 @@ REQUIRED = (STEP, SPECIFICATION, PREREQUISITE_READ)
 def citation_kinds(path, entry=None):
     """Each link target of a file with the kind of citation it stands in.
 
-    A step runs its target, so it alone makes a caller. An HTML argument and
-    a linked operation contract state required evidence without calling its
-    target, and a prerequisite
+    A step runs its target, so it alone makes a caller. A command
+    specification standing outside any step, an HTML argument and a linked
+    operation contract state required evidence without calling its target,
+    and a prerequisite
     names what the reader must already hold, so each is required reach
     without running anything. Any other link is descriptive: the reader may
     follow it and need not."""
@@ -1506,6 +1575,8 @@ def citation_kinds(path, entry=None):
     section_level = (entry or {}).get('section_level', 2)
     steps = procedure_spans(lines, fenced, headings, entry)
     commands = scan_blocks(lines).html_lines
+    held = specification_spans(lines, headings, entry)
+    stepped = (entry or {}).get('steps') == 'headings'
     listed = set()
     tops = [index for index, level, _ in headings if level <= section_level]
     for position, start in enumerate(tops):
@@ -1518,6 +1589,8 @@ def citation_kinds(path, entry=None):
         contextual_contract = any(match[1] == target and link_role(match) in ('input', 'output')
                                   for match in LINK.finditer(CODE_SPAN.sub('', lines[index])))
         if index in commands or contextual_contract:
+            kind = SPECIFICATION
+        elif index in held and not (stepped and index in steps):
             kind = SPECIFICATION
         elif index in steps:
             kind = STEP
@@ -1633,8 +1706,9 @@ def main(argv=None):
     cache = {}
     findings = []
     try:
+        cited, _ = citations([path for path, _ in files], declared)
         for path, root in files:
-            findings += check(path, root, cache, declared)
+            findings += check(path, root, cache, declared, cited)
     except ValueError as error:
         print(f'unreadable structure — {error}')
         return 1

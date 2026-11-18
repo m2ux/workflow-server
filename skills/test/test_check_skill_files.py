@@ -555,7 +555,7 @@ class SkillFileChecks(unittest.TestCase):
                     f'{FENCE}bash\ngh api repos/o/r\n{FENCE}\n')
                 found = checker.mode_commands(path, self.root, {})
                 self.assertEqual([(line, kind) for _, line, kind, _ in found],
-                                 [(13, 'command spelled out in a mode')])
+                                 [(5, 'command spelled out in a mode'), (13, 'command spelled out in a mode')])
 
     def test_directory_sections_reject_wrong_order_and_rules(self):
         self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\nNumber.\n\n'
@@ -721,7 +721,7 @@ class EmptySectionChecks(unittest.TestCase):
 class ParallelSectionMood(unittest.TestCase):
     """Sibling sections whose titles end in one word open in one mood."""
 
-    COMMANDS = ('## Commands\n\n### Check Shell Syntax\n\nParse a script.\n\n'
+    COMMANDS = ('## Checks\n\n### Check Shell Syntax\n\nParse a script.\n\n'
                 '### Validate Compose\n\nResolve the file.\n')
 
     def setUp(self):
@@ -1037,7 +1037,7 @@ class SkillWideChecks(unittest.TestCase):
 # its link retargeted, and the other sections stay where they stand.
 BEFORE = {
     'skill/artifacts/issue.md': (
-        '# Issue\n\n## Commands\n\n### Fetch Issue\n\nRead the issue.\n\n'
+        '# Issue\n\n## Operations\n\n### Fetch Issue\n\nRead the issue.\n\n'
         '- See [Fields](issue.md#fields).\n\n### Save Issue\n\nWrite the issue.\n\n'
         '## Fields\n\n### Template\n\nThe issue template.\n'),
     'skill/modes/sync-mode.md': (
@@ -1046,7 +1046,7 @@ BEFORE = {
 }
 AFTER = {
     'skill/artifacts/issue.md': (
-        '# Issue\n\n## Commands\n\n### Save Issue\n\nWrite the issue.\n\n'
+        '# Issue\n\n## Operations\n\n### Save Issue\n\nWrite the issue.\n\n'
         '## Fields\n\n### Template\n\nThe issue template.\n'),
     'skill/modes/sync-mode.md': (
         '# Sync\n\n## Operations\n\n### Close Issue\n\nClose the issue.\n\n'
@@ -1234,6 +1234,45 @@ class CallersAndReach(unittest.TestCase):
         reached = checker.reach(files, declared)
         self.assertEqual({source.name for source, _ in reached[self.issue]['fetch-issue']},
                          {'issue.md', 'sync.md'})
+
+    def callers(self, name, text):
+        path = self.write(name, text)
+        _, called = checker.citations(self.files(), {})
+        return {anchor for anchor, sources in called.get(self.issue, {}).items() if path in sources}
+
+    def test_a_prose_route_naming_commands_in_order_runs_none(self):
+        self.assertEqual(self.callers('references/route.md',
+            '# Route\n\n## Dispatch Route\n\nUse [Fetch Issue](../artifacts/issue.md#fetch-issue), '
+            'then [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).\n'), set())
+
+    def test_the_same_route_stated_as_steps_runs_each_command(self):
+        self.assertEqual(self.callers('references/route.md',
+            '# Route\n\n## Dispatch Route\n\n1. **Fetch.**  Run [Fetch Issue](../artifacts/issue.md#fetch-issue).\n'
+            '2. **Read.**  Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).\n'),
+            {'fetch-issue', 'read-tracker-issue'})
+
+    def test_a_procedure_heading_over_prose_runs_no_command(self):
+        self.assertEqual(self.callers('references/guide.md',
+            '# Guide\n\n## Procedure\n\n- **Sub-bullets.**  A step naming '
+            '[Fetch Issue](../artifacts/issue.md#fetch-issue) is in sentence case.\n'), set())
+
+    def test_reference_and_rules_prose_is_not_a_caller(self):
+        self.assertEqual(self.callers('references/plan-mode.md',
+            '# Plan Mode\n\n## Procedure\n\n1. **Open.**  The first step.\n\n## Reference\n\n'
+            'Every check runs [Fetch Issue](../artifacts/issue.md#fetch-issue).\n\n## Rules\n\n'
+            '- **Scope.**  Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) alone.\n'), set())
+
+    def test_a_specification_outside_any_step_reaches_without_calling(self):
+        FENCE_TEXT = chr(96) * 3
+        path = self.write('references/route-mode.md',
+            '# Route Mode\n\n## Procedure\n\n1. **Open.**  Run [Close Issue](#close-issue).\n\n'
+            '### Close Issue\n\nCloses it after [Fetch Issue](../artifacts/issue.md#fetch-issue).\n\n'
+            f'{FENCE_TEXT}bash\ngh api repos/o/r/issues/1\n{FENCE_TEXT}\n\n## Rules\n\n- **Scope.**  One.\n')
+        self.assertEqual(self.kinds(path)['../artifacts/issue.md#fetch-issue'], checker.SPECIFICATION)
+        _, called = checker.citations(self.files(), {})
+        self.assertNotIn(path, called.get(self.issue, {}).get('fetch-issue', set()))
+        reached = checker.reach(self.files(), {})
+        self.assertIn((path, checker.SPECIFICATION), reached[self.issue]['fetch-issue'])
 
     def test_prerequisites_are_reach_and_descriptive_links_are_neither(self):
         kinds = self.kinds(self.issue)
@@ -1505,6 +1544,37 @@ class ReviewedCheckCases(unittest.TestCase):
     def test_an_entry_point_commands_section_is_outside_the_set(self):
         self.write('SKILL.md', '# Specimen\n\nA sentence.\n\n## Commands\n\n### Run It\n\nRuns it.\n')
         self.assertEqual(self.found('section outside the set'), [('SKILL.md', 5)])
+        self.assertEqual(self.found('Commands section'), [('SKILL.md', 5)])
+
+    def test_a_specification_in_the_entry_point_is_reported_wherever_it_stands(self):
+        self.write('SKILL.md', '# Specimen\n\nA sentence.\n\n## Conventions\n\n'
+                   f'### Run It\n\nRuns it.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n')
+        self.assertEqual(self.found('command specification in the entry point'), [('SKILL.md', 7)])
+
+    def test_a_specification_nothing_cites_is_reported(self):
+        self.write('references/plan-mode.md', '# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n'
+                   '1. **Fetch.**  Fetch the issue.\n\n'
+                   f'### Fetch Issue\n\nFetches it.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n\n'
+                   '## Rules\n\n- **Scope.**  One issue.\n')
+        self.assertEqual(self.found('command specification nothing cites'), [('plan-mode.md', 9)])
+        self.write('references/plan-mode.md', (self.skill / 'references/plan-mode.md').read_text()
+                   .replace('Fetch the issue.', 'Run [Fetch Issue](#fetch-issue).'))
+        self.assertEqual(self.found('command specification nothing cites'), [])
+
+    def test_a_procedure_preamble_holds_no_command(self):
+        self.write('references/plan-mode.md', '# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n'
+                   f'{FENCE}bash\ngh api repos/o/r\n{FENCE}\n\n1. **Fetch.**  Fetch it.\n\n'
+                   '## Rules\n\n- **Scope.**  One issue.\n')
+        self.assertEqual(self.found('command spelled out in a mode'), [('plan-mode.md', 7)])
+
+    def test_a_nested_specifications_rest_gap_stands_in_its_own_item(self):
+        self.write('references/plan-mode.md', '# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n'
+                   '1. **Read.**\n   - **Read Board.**  Reads it.\n\n'
+                   f'     {FENCE}bash\n     gh api graphql -F query=@board.graphql\n     {FENCE}\n'
+                   '2. **Write.**\n   - **Write Board.**  Writes it.\n\n     **REST gap:** No board write.\n\n'
+                   f'     {FENCE}bash\n     gh api graphql -F query=@write.graphql\n     {FENCE}\n\n'
+                   '## Rules\n\n- **Scope.**  One board.\n')
+        self.assertEqual(self.found('GraphQL without a REST gap'), [('plan-mode.md', 8)])
 
     # Layout, commands and mood.
 
@@ -1627,7 +1697,7 @@ class ReviewedUrlCases(unittest.TestCase):
     def test_a_rest_gap_named_mid_line_is_no_gap(self):
         guide = self.root / 'skills' / 'alpha' / 'artifacts' / 'issue.md'
         guide.parent.mkdir(parents=True)
-        guide.write_text('# Issue\n\n## Commands\n\n### Link Issue\n\n'
+        guide.write_text('# Issue\n\n## Operations\n\n### Link Issue\n\n'
                          'Links one issue, as the **REST gap:** of Unlink Issue states.\n\n'
                          f'{FENCE}bash\ngh api graphql -F query=@link.graphql\n{FENCE}\n')
         passed, output = self.run_check('alpha', 'beta')
@@ -2183,8 +2253,28 @@ Keep the refreshed inventory.
         self.assertIn('artifacts has unknown options: specifications', printed.getvalue())
 
     def test_a_commands_section_is_refused_in_a_heading_model(self):
-        self.replace(self.inventory, '## Fields', '## Commands\n\n### Fetch Page\n\nFetches one.\n\n## Fields')
+        self.replace(self.inventory, '## Fields', '## Commands\n\n### Fetch Page\n\nFetches one.\n\n'
+                     '<big><pre>\ninventory_fetch { [**limit**](#limit "○") }\n</pre></big>\n\n'
+                     'Provide [Page](#page "●").\n\n## Fields')
         self.assertIn('Commands section', self.kinds())
+        self.assertIn('invocation outside a procedure', self.kinds())
+
+    def test_a_step_holding_an_invocation_directly_is_reported(self):
+        self.replace(self.inventory, '#### 2. Inspect Inventory Page\n\n',
+                     '#### 2. Inspect Inventory Page\n\n1. Inspect it.\n\nUse [Limit](#limit "○").\n\n'
+                     '<big><pre>\ninventory_inspect\n</pre></big>\n\n')
+        kinds = self.kinds()
+        self.assertIn('invocation outside command specification', kinds)
+        self.assertIn('list step in heading model', kinds)
+        self.assertIn('command contract links', kinds)
+
+    def test_an_operation_specification_and_a_procedure_are_compared_apart(self):
+        self.replace(self.inventory, '## Fields', '### Count Inventory\n\nCount the inventory pages.\n\n'
+                     '<big><pre>\ninventory_limit { [**limit**](#limit "○") }\n</pre></big>\n\n'
+                     'Provide [Limit](#limit "●").\n\n## Fields')
+        self.replace(self.inventory, 'Inspect the page against', 'Run [Count Inventory](#count-inventory "ƒ"), '
+                     'then inspect the page against')
+        self.assertNotIn('parallel section in another mood', self.kinds())
 
     def test_an_operation_several_steps_run_may_be_one_specification(self):
         spec = self.INVENTORY.split('##### Fetch Inventory Page\n', 1)[1].split('#### 2.', 1)[0]

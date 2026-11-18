@@ -53,7 +53,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **Dependencies.**
   Every tool, sandbox, runtime, branch and harness capability the skill relies on is named in Dependencies, with what it is needed for.
 - **Commands.**
-  SKILL.md holds no command of its own, so it takes no Commands section.
+  SKILL.md holds no command specification of its own.
 
 ## Procedure files
 
@@ -131,10 +131,10 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - A script used several ways has a spec for each use.
 - **In the step that runs it.**
   - A specification sits in the procedure step that runs it: its description, template and detail, with its `○` inputs and `●` output. No file takes a Commands section.
-  - A specification several steps run, or a step of another file runs, is an operation of its own in the procedure section of the file owning its subject, and those steps run it.
-  - A caller is a procedure that runs the command. A sibling specification, and any passage of prose naming a command, does not make the file holding it a caller.
-  - Reach is what a reader must load: a step's citation, a specification's citation, and a prerequisite. A specification citing another command reaches it without calling it, so reach measures retrieval and leaves placement to callers.
-  - A specification no procedure runs has no step to hold it, so it stays with the section whose prose or sibling specification names it. One nothing cites has no reader, whatever structure holds it.
+  - A specification several steps run, a step of another file runs, or text outside its step links to, is an operation of its own in the procedure section of the file owning its subject, and those steps run it.
+  - A caller is a procedure that runs the command. A specification standing outside any step, and any passage of prose naming a command, does not make the file holding it a caller.
+  - Reach is what a reader must load: a step's citation, a specification's citation, and a prerequisite. A specification standing outside any step reaches a command it cites without calling it, so reach measures retrieval and leaves placement to callers.
+  - A specification no procedure runs has no step to hold it, so it stays with the section whose prose or sibling specification names it; in a mode file, whose commands stand in its procedure, it is an operation of the procedure. One nothing cites has no reader, whatever structure holds it.
   - A procedure is a section carrying numbered steps, whatever its heading names it. The step is the author stating that the reader performs these, in this order, and is the only place a file records that.
   - Prose runs nothing whatever its mood, order or count: a sentence routing three commands in sequence names them as a statement of what one command does names it. State a route as steps to call them.
   - SKILL.md holds no specification. A command the entry point names is specified in the step that runs it.
@@ -145,7 +145,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **Named by link.**
   - Prose names a spec by linking to its sub-section, mid-sentence: "run [Check Body Format](work-planner/artifacts/issue-body.md#check-body-format) on each epic".
   - A command body is inlined only in the file that owns the spec.
-  - A mode file holds a shell or unlabelled code block only inside the procedure step that runs it.
+  - A mode file holds a shell or unlabelled code block only inside its procedure: in the step that runs it, or in an operation those steps run.
 - **Interface.**
   - A command reaches GitHub through REST wherever REST supports the operation, and through current GraphQL where it does not.
   - A specification whose command sends GraphQL, itself or through a script it runs, states what REST lacks on a `**REST gap:**` line.
