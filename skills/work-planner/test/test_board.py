@@ -193,6 +193,53 @@ class UnresolvableDependencies(unittest.TestCase):
                                             'names that row; resolve the others'])
 
 
+class IssueDependencies(unittest.TestCase):
+    """A #N entry names the issue its link names, and the row's own repository's issue unlinked."""
+
+    def board(self) -> tuple[Board, tuple[str, int]]:
+        """A consumer in o/r beside issue 9 of o/r, closed, and issue 9 of o/skills, open."""
+        key = ('o/r', 3)
+        consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(('W01', 'Consume', '')))
+        home = issue(9, 'Home issue', 'closed', '2026-01-01T00:00:00Z')
+        outside = issue(9, 'Outside issue', repo='o/skills')
+        return Board({key: consumer, ('o/r', 9): home, ('o/skills', 9): outside}, [], 'o/r'), key
+
+    def test_a_link_to_another_repository_names_that_repository_s_issue(self):
+        board, key = self.board()
+        dependency = f"[#9]({url('issues', 9, 'o/skills')})"
+        self.assertIs(board.met(dependency, key, {}, 'E01:W01'), Resolution.UNMET)
+        self.assertEqual(board.unresolved, [])
+
+    def test_a_link_to_another_repository_names_its_issue_whatever_the_text(self):
+        board, key = self.board()
+        dependency = f"[#4]({url('issues', 9, 'o/skills')})"
+        self.assertIs(board.met(dependency, key, {}, 'E01:W01'), Resolution.UNMET)
+        self.assertEqual(board.unresolved, [])
+
+    def test_a_link_carrying_a_fragment_names_its_issue(self):
+        board, key = self.board()
+        dependency = f"[#9]({url('issues', 9, 'o/skills')}#issuecomment-1)"
+        self.assertIs(board.met(dependency, key, {}, 'E01:W01'), Resolution.UNMET)
+        self.assertEqual(board.unresolved, [])
+
+    def test_a_number_whose_link_names_no_issue_cannot_resolve(self):
+        board, key = self.board()
+        dependency = f"[#9]({url('pull', 9, 'o/skills')})"
+        self.assertIs(board.met(dependency, key, {}, 'E01:W01'), Resolution.UNRESOLVABLE)
+        self.assertEqual(board.unresolved, ['E01:W01: cannot resolve #9: its link names no issue'])
+
+    def test_an_unlinked_number_names_the_row_s_own_repository_s_issue(self):
+        board, key = self.board()
+        self.assertIs(board.met('#9', key, {}, 'E01:W01'), Resolution.MET)
+        self.assertEqual(board.unresolved, [])
+
+    def test_a_number_and_link_naming_different_issues_of_the_repository_cannot_resolve(self):
+        board, key = self.board()
+        dependency = f"[#9]({url('issues', 4)})"
+        self.assertIs(board.met(dependency, key, {}, 'E01:W01'), Resolution.UNRESOLVABLE)
+        self.assertEqual(board.unresolved, ['E01:W01: cannot resolve #9: its link names #4'])
+
+
 class EpicPrerequisites(unittest.TestCase):
     def test_an_initiative_row_dependency_gates_the_whole_epic(self):
         key = ('o/r', 3)
