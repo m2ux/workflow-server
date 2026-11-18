@@ -10,7 +10,7 @@ Current graph evidence for the supplied change.
 
 #### 1. Read Index Status
 
-Index Status in the [review checkout](#review-checkout).
+Run Index Status in the [review checkout](#review-checkout).
 
 Report whether the repository is indexed and how far behind the index sits, and provide [Index State](#index-state "●") to the requester.
 
@@ -30,7 +30,7 @@ gitnexus status
 
 #### 3. Measure Change Surface
 
-- Merge Base in the review checkout for the requested revision and the supplied [base commit](#base-commit).
+- Run Merge Base in the review checkout for the requested revision and the supplied [base commit](#base-commit).
 
 Fetch the base commit, print the commit the pull request's change starts from, and provide [Comparison Base](#comparison-base "●") to the requester.
 

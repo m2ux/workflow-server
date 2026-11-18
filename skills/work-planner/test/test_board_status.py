@@ -41,9 +41,11 @@ def sections(path, level=2):
 
 
 def findings(path):
-    """The shared checker's findings for one file, as its run reads them."""
+    """The shared checker's findings for one file, read against every file of the skill, as its run reads them."""
+    paths = sorted(item for item in ROOT.rglob('*.md') if 'fixtures' not in item.relative_to(ROOT).parts)
     declared = {}
-    return checker.check(path, ROOT.parent, {}, declared)
+    cited, _ = checker.citations(paths, declared)
+    return checker.check(path, ROOT.parent, {}, declared, cited)
 
 
 class Documented(unittest.TestCase):

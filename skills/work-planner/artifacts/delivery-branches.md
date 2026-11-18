@@ -33,7 +33,6 @@ Require the caller's confirmed [prerequisite evidence](#prerequisite-evidence) b
   - Apply [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the corresponding long-lived [source branch](#source-branch), such as `main`.
   - After a successful fetch:
     - Publish Epic Base in the project checkout with that remote source and the missing epic base name, such as `i07/e00/main`, meeting [Epic Bases](#epic-bases).
-    - Retain [Branch Result](#branch-result) with the created branch, or [Failure](#failure).
 
 Create a remote epic base from the fetched source branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
@@ -43,6 +42,8 @@ git push origin 'origin/[**&lt;source-branch&gt;**](#source-branch "○"):refs/h
 
 - Run in the [Project Checkout](#project-checkout "○").
 - Require [Missing Destination](#missing-destination "○"), [Prerequisite Evidence](#prerequisite-evidence "○") before executing the command.
+
+- Retain [Branch Result](#branch-result) with the created branch, or [Failure](#failure).
 
 #### 6. Provide Prepare Delivery Bases
 
@@ -86,7 +87,6 @@ Apply [Merge Remote Branch](#merge-remote-branch "ƒ") in the epic base checkout
 
 - After a successful merge:
   - Push Epic Base in the epic base checkout.
-  - Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
 
 Push the epic base checked out where it runs to its configured upstream and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
@@ -96,6 +96,8 @@ git push
 
 - Run in the [Checkout](#checkout "○").
 - Require [Successful Merge](#successful-merge "○") before executing the command.
+
+- Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
 
 ### Update Task Branch
 
@@ -117,7 +119,6 @@ Apply [Merge Remote Branch](#merge-remote-branch "ƒ") in the unit checkout with
 
 - After a successful merge:
   - Push Task Branch in the unit checkout with [Task Branch](#task-branch) as destination.
-  - Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
 
 Push the head of the checkout it runs in to its named remote task branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
@@ -127,6 +128,8 @@ git push origin 'HEAD:refs/heads/[**&lt;task-branch&gt;**](#task-branch "○")'
 
 - Run in the [Unit Checkout](#unit-checkout "○").
 - Require [Successful Merge](#successful-merge "○") before executing the command.
+
+- Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
 
 ### Create Pull Request Worktree
 
@@ -161,14 +164,15 @@ Take the worktree path from the [pull request number](#pull-request-number), mee
 - If that worktree already exists:
   - Apply [Read Checkout Revision](#read-checkout-revision "ƒ") in that review checkout for `HEAD`.
   - Read Checkout Status there.
-  - Reuse it only at the verified head and when its status reports detached HEAD with no tracked or untracked changes.
-  - Otherwise retain it and select an unused path suffixed with the verified commit.
 
 Report branch or detached-HEAD state and tracked and untracked changes in one checkout and provide [Checkout Status](#checkout-status "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
 git -C '[**&lt;checkout&gt;**](#checkout "○")' status --porcelain --branch
 </pre></big>
+
+- For an existing worktree, reuse it only at the verified head and when its status reports detached HEAD with no tracked or untracked changes.
+- Otherwise retain it and select an unused path suffixed with the verified commit.
 
 #### 6. Add Detached Review Worktree
 

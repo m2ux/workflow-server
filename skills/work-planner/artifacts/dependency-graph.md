@@ -12,7 +12,7 @@ The task graph and the row numbers it permits, checked and renumbered across the
 
 - Use local drafts from [Graph Inputs](#graph-inputs) when reviewing unpublished work.
 - For published issues, Apply [Read Tracker Issue](issue.md#read-tracker-issue "ƒ") for the initiative and each epic body.
-- Apply [Check Dependencies](#check-dependencies "ƒ") with the initiative body, every epic body and every supplied work-item file. The computation invokes Apply [Validate Lane Unit](lane.md#validate-lane-unit "ƒ") internally with each derived unit’s epic body and complete ids.
+- Apply [Check Dependencies](#check-dependencies "ƒ") with the initiative body, every epic body and every supplied work-item file.
 
 #### 2. Resolve Graph Findings
 
@@ -85,7 +85,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 - Initiative edges must follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.
 - It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.
-- It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero.
+- It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero. The computation invokes [Validate Lane Unit](lane.md#validate-lane-unit "ƒ") internally with each derived unit’s epic body and complete ids.
 - It prints each open [candidate unit](#joins), one its rows do not join and no `R=` record line names exactly, with both resolutions, so neither is the cheaper answer, and each direct edge a join drops. An `R=` file it cannot read is a problem.
 - It prints each candidate split by rule with its reason, and asks no record line for it.
 - An entry that [cannot resolve](#edges) is a problem naming the entry as written, and the run exits nonzero. Its second clause says what this run could not find, which is the epics it was given.

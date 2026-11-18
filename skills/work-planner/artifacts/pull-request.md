@@ -253,12 +253,6 @@ gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#reposito
 
 Fetch Pull Request Files or Fetch Pull Request Reviews when [Record Selection](#record-selection) requests those records.
 
-**Fetch Pull Request Reviews.**  Save every review on one pull request and provide [Reviews](#reviews "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
-<big><pre>
-gh api --paginate 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/reviews?per_page=100' &gt; '[**&lt;reviews-file&gt;**](#output-files "○")'
-</pre></big>
-
 **Fetch Pull Request Files.**  Save the paths a pull request changes and provide [Changed Paths](#changed-paths "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
@@ -266,6 +260,12 @@ gh api &#92;
   --paginate repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/files &#92;
   --jq '.[].filename' &#92;
   &gt; '[**&lt;changed-paths-file&gt;**](#output-files "○")'
+</pre></big>
+
+**Fetch Pull Request Reviews.**  Save every review on one pull request and provide [Reviews](#reviews "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+<big><pre>
+gh api --paginate 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/reviews?per_page=100' &gt; '[**&lt;reviews-file&gt;**](#output-files "○")'
 </pre></big>
 
 #### 3. Provide Requested Pull Records
@@ -324,13 +324,12 @@ gh api &#92;
 
 For an existing [Identity](#identity), Patch Pull Request Body, Retitle Pull Request or Retarget Pull Request for the selected changes, preserving other fields.
 
-**Retarget Pull Request.**  Point a pull request at another base branch, such as its epic's base branch, and provide [Base Branch](#base-branch "●") to the requester, or [Failure](#failure "●") if the operation fails.
+**Patch Pull Request Body.**  Replace a pull request's body and provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+The file is the whole body. The issue a pull request delivers is linked on the pull request itself, so this call leaves that link standing.
 
 <big><pre>
-gh api &#92;
-  --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○") &#92;
-  -f base='[**&lt;target-branch&gt;**](#base-branch "○")' &#92;
-  --jq .base.ref
+gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○") -F 'body=@[**&lt;body-file&gt;**](#body-file "○")' --jq .html_url
 </pre></big>
 
 **Retitle Pull Request.**  Replace a pull request's title and provide [Title](#title "●") to the requester, or [Failure](#failure "●") if the operation fails.
@@ -339,12 +338,13 @@ gh api &#92;
 gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○") -f title='[**&lt;title&gt;**](#title "○")' --jq .title
 </pre></big>
 
-**Patch Pull Request Body.**  Replace a pull request's body and provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
-The file is the whole body. The issue a pull request delivers is linked on the pull request itself, so this call leaves that link standing.
+**Retarget Pull Request.**  Point a pull request at another base branch, such as its epic's base branch, and provide [Base Branch](#base-branch "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
 <big><pre>
-gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○") -F 'body=@[**&lt;body-file&gt;**](#body-file "○")' --jq .html_url
+gh api &#92;
+  --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○") &#92;
+  -f base='[**&lt;target-branch&gt;**](#base-branch "○")' &#92;
+  --jq .base.ref
 </pre></big>
 
 #### 4. Read Saved Pull State
