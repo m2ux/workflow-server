@@ -53,11 +53,13 @@ statuses.py holds the field, the option body files and the fallback for an optio
 A dependency within an epic is delivered when its task row is, or its issue is closed as completed. A dependency on another epic's task is met when that row is delivered and each output it delivered is available at the consumer's base, as Outputs verifies; the producer epic's other rows and its closure gate nothing. It gates the row naming it and leaves its siblings free. board.py reads no checkout, so an output in the consumer's own repository is unverified here, and a task naming its row stays in Backlog until its session holds it; an output another repository holds is available once it has reached its long-lived branch. An epic starts only after every prerequisite epic its initiative row names is completed. A task row is
 delivered when a linked pull request has merged, or its id links a commit and no pull request. A row that links a task
 issue and no pull request is delivered when that issue is closed as completed. An open pull request
-does not deliver the task. A bare #750 names an issue in the repository of the issue whose row cites it. An entry naming no row and
-linking no issue, naming an issue not given (another initiative's epic, #750) or naming a row an
-epic does not carry cannot resolve: the entry is named, the task it gates keeps the Status it
-holds, and the run exits 1. Give the missing issue with --others to resolve it. An issue outside
-the initiative's repository prints as owner/repo#number.
+does not deliver the task. A linked entry names the issue its link names, in whichever repository,
+whatever its text. An unlinked #750 names an issue in the repository of the issue whose row cites
+it. An entry naming no row and linking no issue, naming an issue not given (another initiative's
+epic, #750) or naming a row an epic does not carry cannot resolve. So does a #750 entry whose link
+names no issue, or names another issue of the repository holding the row. The entry is named, the
+task it gates keeps the Status it holds, and the run exits 1. Give the missing issue with --others
+to resolve it. An issue outside the initiative's repository prints as owner/repo#number.
 
 An issue from Ready on is assigned to the --assignee user, and one in Backlog has no assignee.
 
@@ -82,9 +84,9 @@ from sync import (PR_REF, PREFIX, TICKED, Unreadable, attach_links, git, issue_d
                   pull_requests, table)
 
 TASK = re.compile(r'W\d\d')
-ISSUE_URL = re.compile(r'/issues/(\d+)$')
+ISSUE_URL = re.compile(r'/issues/(\d+)/?(?:[#?].*)?$')
 WORK_ITEM = re.compile(r'/blob/[^/]+/(.+\.md)$')
-ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)$')
+ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)/?(?:[#?].*)?$')
 RANGE = re.compile(r'^W(\d\d)[–-]W(\d\d)$')
 TASK_REF = re.compile(r'(?:^|:)(W\d\d)$')
 REPO_OF = re.compile(r'github\.com/([^/]+/[^/]+)/(?:pull|commit)/')
@@ -437,9 +439,9 @@ class Board:
 
     def met(self, cell: str, home: Key, epics: dict[str, Key], why: str) -> Resolution:
         """How far every dependency in a Depends on cell resolves. home is the issue whose table
-        holds the row, and the repository a bare #750 is read against; epics maps the initiative's
-        Eyy ids to their issues. Every entry is read, so a cell carrying two that cannot resolve
-        names both."""
+        holds the row, and the repository an unlinked #750 is read against; a linked entry names the
+        issue its link names. epics maps the initiative's Eyy ids to their issues. Every entry is
+        read, so a cell carrying two that cannot resolve names both."""
         answers = []
         for entry in (e.strip() for e in cell.split(',') if e.strip()):
             link = LINK.fullmatch(entry)
@@ -453,7 +455,16 @@ class Board:
             elif re.fullmatch(r'W\d\d', text):
                 answer = self.row_delivered(home, text, why)
             elif re.fullmatch(r'#\d+', text):
-                answer = self.issue_delivered((home[0], int(text[1:])), why)
+                written = (home[0], int(text[1:]))
+                if url and not found:
+                    self.unresolved.append(f'{why}: {UNRESOLVABLE} {text}: its link names no issue')
+                    answer = Resolution.UNRESOLVABLE
+                elif found and found[0] == home[0] and found != written:
+                    self.unresolved.append(f'{why}: {UNRESOLVABLE} {text}: its link names '
+                                           f'{label(found, self.home)}')
+                    answer = Resolution.UNRESOLVABLE
+                else:
+                    answer = self.issue_delivered(found or written, why)
             else:
                 key = found or epics.get(text.split(':')[0])
                 if key is None:

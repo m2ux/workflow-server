@@ -94,13 +94,13 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | --- | --- |
 | [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (22), [test_review_scope](test_review_scope.py) (6) |
 | [align](../scripts/align.py) | [test_align](test_align.py) (13) |
-| [board](../scripts/board.py) | [test_board](test_board.py) (61), [test_board_queue](test_board_queue.py) (79), [test_deliver](test_deliver.py) (110), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (19) |
+| [board](../scripts/board.py) | [test_board](test_board.py) (67), [test_board_queue](test_board_queue.py) (79), [test_deliver](test_deliver.py) (110), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (19) |
 | [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (7), [test_board_queue](test_board_queue.py) (79), [test_shared](test_shared.py) (19) |
 | [closure](../scripts/closure.py) | [test_closure](test_closure.py) (13), [test_command_contracts](test_command_contracts.py) (14) |
 | [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) (14) |
 | [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (110), [test_dispatch](test_dispatch.py) (33), [test_shared](test_shared.py) (19) |
 | [delivery-branches](../scripts/delivery-branches.py) | [test_task_worktree](test_task_worktree.py) (9) |
-| [deps](../scripts/deps.py) | [test_deps](test_deps.py) (84) |
+| [deps](../scripts/deps.py) | [test_deps](test_deps.py) (88) |
 | [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
 | [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
 | [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (33) |
@@ -117,7 +117,7 @@ One row per script in `../scripts`, then one per document the tests read. The ta
 | [pull_request_body](../scripts/pull_request_body.py) | [test_pull_request_body](test_pull_request_body.py) (14) |
 | [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32), [test_shared](test_shared.py) (19) |
 | [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |
-| [statuses](../scripts/statuses.py) | [test_board](test_board.py) (61), [test_shared](test_shared.py) (19), [test_statuses](test_statuses.py) (24) |
+| [statuses](../scripts/statuses.py) | [test_board](test_board.py) (67), [test_shared](test_shared.py) (19), [test_statuses](test_statuses.py) (24) |
 | [sync](../scripts/sync.py) | [test_align](test_align.py) (13), [test_board_queue](test_board_queue.py) (79), [test_deliver](test_deliver.py) (110), [test_link_capture](test_link_capture.py) (22), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (19), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (191) |
 | [testplan](../scripts/testplan.py) | [test_align](test_align.py) (13), [test_testplan](test_testplan.py) (12) |
 

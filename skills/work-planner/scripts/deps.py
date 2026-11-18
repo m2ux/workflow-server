@@ -27,12 +27,15 @@ A dependency is one of:
   W03             a task in the same epic
   W04–W09         a range of tasks in the same epic
   E01:W02         a task in another epic
-  #750            an external issue, not checked
+  #750            an external issue; a linked one's number is checked against its link
   I05:E00:W02     another initiative's epic or task, not checked
 Markdown links are read by their text, so [E01:W02](https://…/issues/937) is E01:W02.
+A linked #750 names the issue its link names, so an entry whose #750 text and issue link carry
+different numbers is a problem: a dependency on another repository's issue is a link to that issue.
 
 Problems (exit status 1): a Task cell naming a malformed or a second, different task id,
-unknown references, a work item declaring no file, an entry that is no branch:path or naming no row,
+unknown references, a #750 entry whose link names no issue or another issue number, a work item
+declaring no file, an entry that is no branch:path or naming no row,
 an unreadable work item, a task row naming an epic rather than the rows it consumes,
 a task depending on itself or a later task in its epic,
 an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
@@ -48,7 +51,8 @@ its reason, where its rows cover more than six criteria or a path between two of
 a row outside it. An R= file that cannot be read is a problem.
 With I=, the initiative's Depends on cells are checked: each epic's cell names exactly the other
 epics required in full by every task or joined unit, less transitive epic dependencies, and names no task.
-Another initiative's epic (I05:E00) or an issue (#750) may also be named.
+Another initiative's epic (I05:E00) or an issue (#750) may also be named, its link read as a
+task row's is.
 Advisory: task numbers that do not follow the order tasks can start.
 Also printed: each pair of rows in different epics whose work items share a declared file, every
 row no file was read for, whether its work item was absent, unreadable or undeclared, so a
@@ -66,6 +70,8 @@ from pathlib import Path
 from lane import check_unit, read_lanes
 
 LINK = re.compile(r'\[([^\]]*)\]\([^)]*\)')
+NUMBERED = re.compile(r'\[#(\d+)\]\(([^)]*)\)')
+ISSUE_LINK = re.compile(r'github\.com/[^/]+/[^/]+/issues/(\d+)/?(?:[#?].*)?$')
 RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
 TASK = re.compile(r'E\d\d:W\d\d')
 EPIC = re.compile(r'E\d\d')
@@ -83,6 +89,20 @@ UNIT_BOUND = 6
 
 def cells(line: str) -> list[str]:
     return [c.strip() for c in LINK.sub(r'\1', line).strip().strip('|').split('|')]
+
+
+def disagreements(key: str, header: list[str], line: str) -> list[str]:
+    """A problem for each #750 entry of a table line's Depends on cell whose link names no issue
+    or another issue number. The cell is read with its links kept."""
+    raw = dict(zip(header, (c.strip() for c in line.strip().strip('|').split('|'))))
+    problems = []
+    for text, target in NUMBERED.findall(raw.get('Depends on', '')):
+        linked = ISSUE_LINK.search(target)
+        if not linked:
+            problems.append(f'{key}: #{text} links no issue; a #750 entry links issue 750')
+        elif int(text) != int(linked[1]):
+            problems.append(f'{key}: #{text} links issue {linked[1]}; a #750 entry links issue 750')
+    return problems
 
 
 def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict[str, set[str]], dict[str, set[str]],
@@ -118,6 +138,7 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict[str, set[str]],
             disagreeing = sorted({i for i in ids[1:] if i != wid and i not in malformed})
             if disagreeing:
                 problems.append(f'{epic}:{wid}: Task cell also names {", ".join(disagreeing)}')
+            problems += disagreements(f'{epic}:{wid}', header, line)
             rows[f'{epic}:{wid}'] = (row.get('Description', ''), row.get('Depends on', ''),
                                      row.get('Joins', ''))
             criteria[f'{epic}:{wid}'] = set(CRITERION.findall(row.get('Coverage', '')))
@@ -386,6 +407,7 @@ def check_initiative(path: Path, tasks: dict) -> list[str]:
         epic = r.get('Epic', '')
         if not EPIC.fullmatch(epic):
             continue
+        problems += disagreements(f'initiative {epic}', header, line)
         written = [x.strip() for x in r.get('Depends on', '').split(',') if x.strip()]
         other = [x for x in written if not (EPIC.fullmatch(x) or INITIATIVE_EPIC.fullmatch(x))]
         direct = needs.get(epic, set())
