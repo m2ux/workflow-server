@@ -826,6 +826,12 @@ class IssueEntries(unittest.TestCase):
                 self.assertEqual(code, 1, text)
                 self.assertIn('E01:W01: #750 links issue 751; a #750 entry links issue 750', text)
 
+    def test_a_number_linking_no_issue_is_a_problem(self):
+        entry = '[#9](https://github.com/o/skills/pull/9)'
+        code, text = run([('E01', epic_body(('W01', 'Consume', entry)))])
+        self.assertEqual(code, 1, text)
+        self.assertIn('E01:W01: #9 links no issue; a #750 entry links issue 750', text)
+
     def test_an_initiative_number_its_link_does_not_carry_is_a_problem(self):
         entry = '[#750](https://github.com/o/r/issues/751)'
         code, text = run([('I', initiative_body(('E00', entry))),

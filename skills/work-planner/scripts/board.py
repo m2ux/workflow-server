@@ -84,7 +84,7 @@ from sync import (PR_REF, PREFIX, TICKED, Unreadable, attach_links, git, issue_d
                   pull_requests, table)
 
 TASK = re.compile(r'W\d\d')
-ISSUE_URL = re.compile(r'/issues/(\d+)$')
+ISSUE_URL = re.compile(r'/issues/(\d+)/?(?:[#?].*)?$')
 WORK_ITEM = re.compile(r'/blob/[^/]+/(.+\.md)$')
 ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)/?(?:[#?].*)?$')
 RANGE = re.compile(r'^W(\d\d)[–-]W(\d\d)$')

@@ -34,8 +34,8 @@ A linked #750 names the issue its link names, so an entry whose #750 text and is
 different numbers is a problem: a dependency on another repository's issue is a link to that issue.
 
 Problems (exit status 1): a Task cell naming a malformed or a second, different task id,
-unknown references, a #750 entry whose link names another issue number, a work item declaring
-no file, an entry that is no branch:path or naming no row,
+unknown references, a #750 entry whose link names no issue or another issue number, a work item
+declaring no file, an entry that is no branch:path or naming no row,
 an unreadable work item, a task row naming an epic rather than the rows it consumes,
 a task depending on itself or a later task in its epic,
 an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
@@ -70,7 +70,8 @@ from pathlib import Path
 from lane import check_unit, read_lanes
 
 LINK = re.compile(r'\[([^\]]*)\]\([^)]*\)')
-NUMBERED = re.compile(r'\[#(\d+)\]\([^)]*/issues/(\d+)/?(?:[#?][^)]*)?\)')
+NUMBERED = re.compile(r'\[#(\d+)\]\(([^)]*)\)')
+ISSUE_LINK = re.compile(r'/issues/(\d+)/?(?:[#?].*)?$')
 RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
 TASK = re.compile(r'E\d\d:W\d\d')
 EPIC = re.compile(r'E\d\d')
@@ -91,12 +92,17 @@ def cells(line: str) -> list[str]:
 
 
 def disagreements(key: str, header: list[str], line: str) -> list[str]:
-    """A problem for each #750 entry of a table line's Depends on cell whose link names another
-    issue number. The cell is read with its links kept."""
+    """A problem for each #750 entry of a table line's Depends on cell whose link names no issue
+    or another issue number. The cell is read with its links kept."""
     raw = dict(zip(header, (c.strip() for c in line.strip().strip('|').split('|'))))
-    return [f'{key}: #{text} links issue {linked}; a #750 entry links issue 750'
-            for text, linked in NUMBERED.findall(raw.get('Depends on', ''))
-            if int(text) != int(linked)]
+    problems = []
+    for text, target in NUMBERED.findall(raw.get('Depends on', '')):
+        linked = ISSUE_LINK.search(target)
+        if not linked:
+            problems.append(f'{key}: #{text} links no issue; a #750 entry links issue 750')
+        elif int(text) != int(linked[1]):
+            problems.append(f'{key}: #{text} links issue {linked[1]}; a #750 entry links issue 750')
+    return problems
 
 
 def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict[str, set[str]], dict[str, set[str]],
