@@ -4,42 +4,14 @@ The coordinator plans and reconciles bounded work; host agents read captured evi
 
 ## Procedure
 
-Read [Audit Command Conventions](change-surface.md#audit-command-conventions) first.
-
 ### Dispatch Route
 
 1. **Plan the assignments.**
    Use [Plan Audit Assignments](#plan-audit-assignments).
 2. **Bind the agent.**
-   Use Bind Audit Agent, binding the actual host agent identity.
-   - **Bind Audit Agent.**  Bind an assignment to its actual host agent identity.
-     - Independent roles cannot own their authored work; retired assignments require a new residual plan.
-
-     ```bash
-     python3 <skill-root>/scripts/audit_surface.py bind --run <run> --assignment <id> --actor <host-agent-id>
-     ```
+   Use [Bind Audit Agent](#bind-audit-agent), binding the actual host agent identity.
 3. **Write the packet and dispatch.**
    Use [Write Audit Packet](#write-audit-packet), give the agent the packet and [return contract](#returns), and dispatch through the host.
-
-### Plan Audit Assignments
-
-Compute disjoint residual assignments under declared budgets.
-
-- Select `inventory`, `map`, `verify`, `evaluate` or `obligations`. Unknown limits, unmet gates or indivisible oversized context refuse dispatch.
-
-```bash
-python3 <skill-root>/scripts/audit_surface.py plan --run <run> --phase <phase> --budgets <budgets.json>
-```
-
-### Write Audit Packet
-
-Write captured context and ownership for one agent.
-
-- Give the packet and [return contract](#returns) to the bound host agent. Serialized size must fit the plan.
-
-```bash
-python3 <skill-root>/scripts/audit_surface.py packet --run <run> --assignment <id> --out <packet.json>
-```
 
 ## Reference
 
@@ -108,3 +80,37 @@ Return a JSON file following the [receipt example](../templates/audit-receipt.js
 
 - **Scripts establish structure, agents establish accuracy.**
   Scripts do not create agents or turn simulated judgments into semantic validation.
+
+## Commands
+
+Read [Audit Command Conventions](change-surface.md#audit-command-conventions) first.
+
+### Plan Audit Assignments
+
+Compute disjoint residual assignments under declared budgets.
+
+- Select `inventory`, `map`, `verify`, `evaluate` or `obligations`. Unknown limits, unmet gates or indivisible oversized context refuse dispatch.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py plan --run <run> --phase <phase> --budgets <budgets.json>
+```
+
+### Bind Audit Agent
+
+Bind an assignment to its actual host agent identity.
+
+- Independent roles cannot own their authored work; retired assignments require a new residual plan.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py bind --run <run> --assignment <id> --actor <host-agent-id>
+```
+
+### Write Audit Packet
+
+Write captured context and ownership for one agent.
+
+- Give the packet and [return contract](#returns) to the bound host agent. Serialized size must fit the plan.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py packet --run <run> --assignment <id> --out <packet.json>
+```

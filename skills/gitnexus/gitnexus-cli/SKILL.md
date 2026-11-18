@@ -7,7 +7,9 @@ description: "Use when the user needs to run GitNexus CLI commands like analyze/
 
 All commands work via `npx` — no global install required.
 
-## analyze — Build or refresh the index
+## Commands
+
+### analyze — Build or refresh the index
 
 ```bash
 npx gitnexus analyze
@@ -22,7 +24,7 @@ Run from the project root. This parses all source files, builds the knowledge gr
 
 **When to run:** First time in a project, after major code changes, or when `gitnexus://repo/{name}/context` reports the index is stale. In Claude Code, a PostToolUse hook runs `analyze` automatically after `git commit` and `git merge`, preserving embeddings if previously generated.
 
-## status — Check index freshness
+### status — Check index freshness
 
 ```bash
 npx gitnexus status
@@ -30,7 +32,7 @@ npx gitnexus status
 
 Shows whether the current repo has a GitNexus index, when it was last updated, and symbol/relationship counts. Use this to check if re-indexing is needed.
 
-## clean — Delete the index
+### clean — Delete the index
 
 ```bash
 npx gitnexus clean
@@ -43,7 +45,7 @@ Deletes the `.gitnexus/` directory and unregisters the repo from the global regi
 | `--force` | Skip confirmation prompt                          |
 | `--all`   | Clean all indexed repos, not just the current one |
 
-## wiki — Generate documentation from the graph
+### wiki — Generate documentation from the graph
 
 ```bash
 npx gitnexus wiki
@@ -60,7 +62,7 @@ Generates repository documentation from the knowledge graph using an LLM. Requir
 | `--concurrency <n>` | Parallel LLM calls (default: 3)           |
 | `--gist`            | Publish wiki as a public GitHub Gist      |
 
-## list — Show all indexed repos
+### list — Show all indexed repos
 
 ```bash
 npx gitnexus list

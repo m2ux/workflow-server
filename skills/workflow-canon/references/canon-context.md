@@ -27,25 +27,6 @@ Resolve the requested definitions to files, touched paths, changed I/O contracts
 
 Resolve any prior residual from the shared [planning record](planning.md) by current path before continuing it.
 
-### Resolve Ref
-
-Read the full commit identity for a captured ref.
-
-```bash
-git rev-parse <ref>
-```
-
-### Find Consumers
-
-Lists the references other workflows hold into the target.
-
-- Run from the corpus root.
-- Resolve each hit's binds and Apply links from there.
-
-```bash
-rg -n "work-package/" corpus/ -g "*.md" -g "*.yaml"
-```
-
 ## Homes
 
 Read homes on disk at the captured revisions. The links identify paths from the corpus or engine root; they do not substitute the latest web copy for the reviewed tree.
@@ -59,6 +40,86 @@ Read homes on disk at the captured revisions. The links identify paths from the 
 | Schema fields | [Schemas](https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md) |
 
 Locate unresolved roots through [Find the Server Checkout](#find-the-server-checkout) and [Check the Corpus Tree](#check-the-corpus-tree). The engine's instructions own paired checks, worktree selection and binding-fidelity triage. Node, npm and installed engine dependencies supply the guards; a live workflow session may supply individual sections through its resource tool.
+
+## Checks
+
+Select checks from the task's declared check contract and the project's requirements. [Canon Check Conventions](#canon-check-conventions) govern every canon check in this file.
+
+- **A checker the task supplies for a bounded scope.**
+  Read its interface and use [Run Project Check](command-conventions.md#run-project-check); report the scope its observations establish.
+- **The project's guard suite.**
+  Use [Run Guards on the Delta](#run-guards-on-the-delta) with an identified base and candidate under equivalent conditions, or [Run Guard Suite](#run-guard-suite) for a single candidate or draft.
+- **An established step-list, exit, gate or graph change.**
+  Also requires [Run Option Coverage](#run-option-coverage), baselined before editing.
+- **An established shared-construct change.**
+  Select broader consumer coverage through [Workflows Coverage](coverage.md#workflows-coverage).
+
+## Edit Hook
+
+The registered hook uses Python 3.10+ and the workspace's `.project/main` checkout with installed `tsx`. Its integration refs are the corpus tree's latest fetched `origin/workflows` and `origin/iNN/workflows`; it measures against their nearest merge-base. Read [Run the Edit Guard](#run-the-edit-guard) when handling its result or invoking it explicitly. The hook's operational contract also applies to a host without automatic registration.
+
+When the hook returns a failure, close the introduced defect or state why the result is unmeasured before the next edit.
+
+## Canon Check Conventions
+
+- **Branch point.**
+  Hold the baseline checkout and paired engine revision fixed for each comparison. Refresh the selected integration refs before deriving the baseline.
+- **Exit status.**
+  Capture the check's own exit status before filtering output; a pipe reports the filter's status.
+- **Guard outcomes.**
+  Capture measured findings separately from an unmeasured result, which exits 2. A schema-reading failure may reflect an engine/corpus pairing mismatch; establish the pairing before attributing a definition defect.
+- **Option coverage.**
+  The full CI test suite skips the coverage walk. Inspect the recorded exceptions against the reason for each unreachable option.
+
+### Guard Obligations
+
+- **Binding fidelity.**
+  - It exits `OK` while carrying triaged debt, stamped with the corpus commit.
+  - On drift, a clean result means the verdicts are old: record `blocked`, and re-affirm entries whose cited file changed since the stamp.
+- **Suppressions.**
+  - A suppression matches a normalised key. Its reason and its line sit outside the comparison, and the key drops the line number, so one line can earn two entries.
+  - Count the findings at the site before calling an entry redundant.
+- **New guards.**
+  - Prove a new guard against the corpus at the commit before the fix it was written for.
+  - A carve-out that follows from the entry belongs in the guard's condition.
+  - Take a file's kind from its declaration, and name in the check the kinds it admits.
+- **Definition changes.**
+  - A definition change owes the code branch its pointer, walk baseline, stamp, and every triage entry it settled, in the order `AGENTS.md` states.
+  - The suppression of a binding finding it closed is the entry that goes stale on that commit.
+
+## Commands
+
+### Resolve Ref
+
+Read the full commit identity for a captured ref.
+
+```bash
+git rev-parse <ref>
+```
+
+### Run Corpus Checks
+
+Validate the corpus roster, protocol and recorded paths with the paired engine.
+
+```bash
+bash <corpus>/walks/check-roster.sh
+python3 <corpus>/walks/check-walk-protocol.py
+python3 <corpus>/walks/check-walk-protocol.py --self-test
+WORKFLOWS_DIR=<corpus> npx vitest run tests/e2e/snapshot.test.ts
+WORKFLOWS_DIR=<corpus> npx vitest run tests/e2e/all-workflows-walk.test.ts
+```
+
+### Run Option Coverage
+
+Walk the current corpus roster and compare checkpoint reachability with its exceptions.
+
+- Read the roster first and supply its walked IDs as a literal comma-separated value.
+- An omitted scope walks the full roster. [Workflows Coverage](coverage.md#workflows-coverage) determines when a literal `WF_COVERAGE_SCOPE` narrows the walk.
+
+```bash
+jq -r '.walked | join(",")' <corpus>/walks/roster.json
+WORKFLOWS_DIR=<corpus> WF_WALKED=<walked-ids> npm run test:coverage-walk
+```
 
 ### Find the Server Checkout
 
@@ -101,41 +162,15 @@ rg -n "^## " corpus/canon/resources/anti-patterns.md
 rg -n "^### " corpus/canon/resources/anti-patterns.md
 ```
 
-## Checks
+### Find Consumers
 
-Select checks from the task's declared check contract and the project's requirements. [Canon Check Conventions](#canon-check-conventions) govern every canon check in this file.
+Lists the references other workflows hold into the target.
 
-- **A checker the task supplies for a bounded scope.**
-  Read its interface and use [Run Project Check](command-conventions.md#run-project-check); report the scope its observations establish.
-- **The project's guard suite.**
-  Use [Run Guards on the Delta](#run-guards-on-the-delta) with an identified base and candidate under equivalent conditions, or [Run Guard Suite](#run-guard-suite) for a single candidate or draft.
-- **An established step-list, exit, gate or graph change.**
-  Also requires [Run Option Coverage](#run-option-coverage), baselined before editing.
-- **An established shared-construct change.**
-  Select broader consumer coverage through [Workflows Coverage](coverage.md#workflows-coverage).
-
-### Run Corpus Checks
-
-Validate the corpus roster, protocol and recorded paths with the paired engine.
+- Run from the corpus root.
+- Resolve each hit's binds and Apply links from there.
 
 ```bash
-bash <corpus>/walks/check-roster.sh
-python3 <corpus>/walks/check-walk-protocol.py
-python3 <corpus>/walks/check-walk-protocol.py --self-test
-WORKFLOWS_DIR=<corpus> npx vitest run tests/e2e/snapshot.test.ts
-WORKFLOWS_DIR=<corpus> npx vitest run tests/e2e/all-workflows-walk.test.ts
-```
-
-### Run Option Coverage
-
-Walk the current corpus roster and compare checkpoint reachability with its exceptions.
-
-- Read the roster first and supply its walked IDs as a literal comma-separated value.
-- An omitted scope walks the full roster. [Workflows Coverage](coverage.md#workflows-coverage) determines when a literal `WF_COVERAGE_SCOPE` narrows the walk.
-
-```bash
-jq -r '.walked | join(",")' <corpus>/walks/roster.json
-WORKFLOWS_DIR=<corpus> WF_WALKED=<walked-ids> npm run test:coverage-walk
+rg -n "work-package/" corpus/ -g "*.md" -g "*.yaml"
 ```
 
 ### Run Guard Suite
@@ -154,12 +189,6 @@ Runs the guard suite at the merge-base and on this tree, and attributes each fai
 ```bash
 WORKFLOWS_DIR=<corpus> npm run check:delta -- --base <base-ref>
 ```
-
-## Edit Hook
-
-The registered hook uses Python 3.10+ and the workspace's `.project/main` checkout with installed `tsx`. Its integration refs are the corpus tree's latest fetched `origin/workflows` and `origin/iNN/workflows`; it measures against their nearest merge-base. Read [Run the Edit Guard](#run-the-edit-guard) when handling its result or invoking it explicitly. The hook's operational contract also applies to a host without automatic registration.
-
-When the hook returns a failure, close the introduced defect or state why the result is unmeasured before the next edit.
 
 ### Run the Edit Guard
 
@@ -183,30 +212,3 @@ Runs the corpus guards over an edited definition's corpus tree, and reports the 
 ```bash
 echo '{"tool_input": {"file_path": ".project/workflows/corpus/work-package/workflow.yaml"}}' | python3 skills/workflow-canon/scripts/edit_guard.py
 ```
-
-## Canon Check Conventions
-
-- **Branch point.**
-  Hold the baseline checkout and paired engine revision fixed for each comparison. Refresh the selected integration refs before deriving the baseline.
-- **Exit status.**
-  Capture the check's own exit status before filtering output; a pipe reports the filter's status.
-- **Guard outcomes.**
-  Capture measured findings separately from an unmeasured result, which exits 2. A schema-reading failure may reflect an engine/corpus pairing mismatch; establish the pairing before attributing a definition defect.
-- **Option coverage.**
-  The full CI test suite skips the coverage walk. Inspect the recorded exceptions against the reason for each unreachable option.
-
-### Guard Obligations
-
-- **Binding fidelity.**
-  - It exits `OK` while carrying triaged debt, stamped with the corpus commit.
-  - On drift, a clean result means the verdicts are old: record `blocked`, and re-affirm entries whose cited file changed since the stamp.
-- **Suppressions.**
-  - A suppression matches a normalised key. Its reason and its line sit outside the comparison, and the key drops the line number, so one line can earn two entries.
-  - Count the findings at the site before calling an entry redundant.
-- **New guards.**
-  - Prove a new guard against the corpus at the commit before the fix it was written for.
-  - A carve-out that follows from the entry belongs in the guard's condition.
-  - Take a file's kind from its declaration, and name in the check the kinds it admits.
-- **Definition changes.**
-  - A definition change owes the code branch its pointer, walk baseline, stamp, and every triage entry it settled, in the order `AGENTS.md` states.
-  - The suppression of a binding finding it closed is the entry that goes stale on that commit.

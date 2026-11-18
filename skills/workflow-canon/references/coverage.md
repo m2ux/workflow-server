@@ -97,6 +97,49 @@ Select additional observations for the affected behavior:
 
 For changed documentation or site content, [Check Engine Documentation](#check-engine-documentation) and compare examples and generated surfaces with their owners. Pure prose changes can use narrower runtime coverage under Review's [Coverage](review-mode.md#coverage).
 
+## Workflows Coverage
+
+Use [Run Guard Suite](canon-context.md#run-guard-suite) and [Run Corpus Checks](canon-context.md#run-corpus-checks) from the intended engine checkout for the registered guard sweep, roster and walk-protocol validation, snapshots and all-workflows drift. The corpus supplies definitions and baselines; its tooling comes from the paired engine.
+
+- **Definition contracts.**
+  Inspect schema agreement; steps, gates, actions, loops, checkpoints, exits and fans; value provenance and absence/null/falsy behavior; routine expansion; technique anatomy and inherited contracts; defaults, executable references and artifact persistence.
+- **Receiving roles.**
+  Trace the actual content and resource sections delivered to each role, including review, interactive and headless paths when affected. Apply Review's [Coverage](review-mode.md#coverage) to separate instruction inspection from execution evidence.
+- **Option coverage.**
+  [Run Option Coverage](canon-context.md#run-option-coverage) over the full roster for shared engine behavior, meta definitions, common routines/contracts, routing, walker/policy or roster changes. A smaller scope needs evidence that its dependency analysis includes every affected consumer.
+- **Records and exceptions.**
+  Inspect snapshots, roster membership, option-coverage exceptions and triage entries with the definitions they describe. Check stale keys, newly unobserved options, missing consumers and the rationale for each affected exception.
+- **Running sessions.**
+  Assess definition versions and the documented resume/seeding behavior. [Count Running Sessions](#count-running-sessions) where the relevant state is available; a local census establishes nothing about another deployment.
+
+## Docker Coverage
+
+[Check Shell Syntax](#check-shell-syntax) for changed helpers and [Validate Compose](#validate-compose) with disposable paths. For image/runtime changes, [Build Review Image](#build-review-image) with the reviewed Docker files and intended engine build context, then [Exercise Review Container](#exercise-review-container).
+
+- **Runtime.**
+  Use a disposable container to observe HTTP health/readiness and an MCP interaction, production dependencies and schemas, non-root ownership, corpus read-only access, planning/state writes, configuration precedence and graceful stop.
+- **Durability.**
+  [Restart Review Container](#restart-review-container) with its state mount and observe signing-key and session continuity where affected. [Stop Review Container](#stop-review-container) after recording the evidence.
+- **Helpers.**
+  Exercise changed install/start/stop/update behavior in disposable directories or controlled fixtures: existing checkouts, dirty trees, branch selection, quoted paths, repeat execution and failed prerequisites.
+- **Publishing.**
+  Inspect the engine's [image workflow](https://github.com/m2ux/workflow-server/blob/main/.github/workflows/docker-publish.yml) for the Docker revision it fetches, build context, publication conditions and scan conditions. Host Node smoke checks establish host behavior; container evidence must come from the reviewed image.
+
+## Workspace Coverage
+
+[Check Skill Summaries](revise-mode.md#check-skill-summaries) exercises a shared check alongside applicable Python suites, and [Check Shell Syntax](#check-shell-syntax) covers Bash syntax. Configuration is parsed with its actual consumer or format validator.
+
+- **Hooks.**
+  Exercise allowed, rejected and malformed tool inputs, path/quoting cases, registration and invocation, and the output contract through the hook's supported test entry point.
+- **Scripts.**
+  Use disposable repositories and directories to check component/worktree discovery, branch selection, engineering layout, repeat execution and failure behavior.
+- **Skills.**
+  Check file links, command availability, inputs/outputs, templates, host capabilities and behavioral walkthroughs. Mechanical tests cover only the claims they observe.
+- **Shared configuration.**
+  Trace changed workspace paths and settings into engine configuration and container mounts. Engine tests alone do not cover this branch.
+
+## Commands
+
 ### Install Engine Dependencies
 
 Install the captured lockfile with the runtime required by that revision's CI.
@@ -140,21 +183,6 @@ npm run build:site
 git diff -- site
 ```
 
-## Workflows Coverage
-
-Use [Run Guard Suite](canon-context.md#run-guard-suite) and [Run Corpus Checks](canon-context.md#run-corpus-checks) from the intended engine checkout for the registered guard sweep, roster and walk-protocol validation, snapshots and all-workflows drift. The corpus supplies definitions and baselines; its tooling comes from the paired engine.
-
-- **Definition contracts.**
-  Inspect schema agreement; steps, gates, actions, loops, checkpoints, exits and fans; value provenance and absence/null/falsy behavior; routine expansion; technique anatomy and inherited contracts; defaults, executable references and artifact persistence.
-- **Receiving roles.**
-  Trace the actual content and resource sections delivered to each role, including review, interactive and headless paths when affected. Apply Review's [Coverage](review-mode.md#coverage) to separate instruction inspection from execution evidence.
-- **Option coverage.**
-  [Run Option Coverage](canon-context.md#run-option-coverage) over the full roster for shared engine behavior, meta definitions, common routines/contracts, routing, walker/policy or roster changes. A smaller scope needs evidence that its dependency analysis includes every affected consumer.
-- **Records and exceptions.**
-  Inspect snapshots, roster membership, option-coverage exceptions and triage entries with the definitions they describe. Check stale keys, newly unobserved options, missing consumers and the rationale for each affected exception.
-- **Running sessions.**
-  Assess definition versions and the documented resume/seeding behavior. [Count Running Sessions](#count-running-sessions) where the relevant state is available; a local census establishes nothing about another deployment.
-
 ### Count Running Sessions
 
 List running sessions in the configured planning tree for an affected workflow.
@@ -164,19 +192,6 @@ List running sessions in the configured planning tree for an affected workflow.
 ```bash
 npm run sessions:census -- --root <session-planning-root> --workflow <workflow-id> --status running --list
 ```
-
-## Docker Coverage
-
-[Check Shell Syntax](#check-shell-syntax) for changed helpers and [Validate Compose](#validate-compose) with disposable paths. For image/runtime changes, [Build Review Image](#build-review-image) with the reviewed Docker files and intended engine build context, then [Exercise Review Container](#exercise-review-container).
-
-- **Runtime.**
-  Use a disposable container to observe HTTP health/readiness and an MCP interaction, production dependencies and schemas, non-root ownership, corpus read-only access, planning/state writes, configuration precedence and graceful stop.
-- **Durability.**
-  [Restart Review Container](#restart-review-container) with its state mount and observe signing-key and session continuity where affected. [Stop Review Container](#stop-review-container) after recording the evidence.
-- **Helpers.**
-  Exercise changed install/start/stop/update behavior in disposable directories or controlled fixtures: existing checkouts, dirty trees, branch selection, quoted paths, repeat execution and failed prerequisites.
-- **Publishing.**
-  Inspect the engine's [image workflow](https://github.com/m2ux/workflow-server/blob/main/.github/workflows/docker-publish.yml) for the Docker revision it fetches, build context, publication conditions and scan conditions. Host Node smoke checks establish host behavior; container evidence must come from the reviewed image.
 
 ### Check Shell Syntax
 
@@ -239,16 +254,3 @@ Remove the disposable review service after its evidence is recorded.
 ```bash
 docker compose -p integration-review --env-file <scratch>/review.env -f <docker-tree>/docker-compose.yml -f <scratch>/review.override.yml down
 ```
-
-## Workspace Coverage
-
-[Check Skill Summaries](revise-mode.md#check-skill-summaries) exercises a shared check alongside applicable Python suites, and [Check Shell Syntax](#check-shell-syntax) covers Bash syntax. Configuration is parsed with its actual consumer or format validator.
-
-- **Hooks.**
-  Exercise allowed, rejected and malformed tool inputs, path/quoting cases, registration and invocation, and the output contract through the hook's supported test entry point.
-- **Scripts.**
-  Use disposable repositories and directories to check component/worktree discovery, branch selection, engineering layout, repeat execution and failure behavior.
-- **Skills.**
-  Check file links, command availability, inputs/outputs, templates, host capabilities and behavioral walkthroughs. Mechanical tests cover only the claims they observe.
-- **Shared configuration.**
-  Trace changed workspace paths and settings into engine configuration and container mounts. Engine tests alone do not cover this branch.

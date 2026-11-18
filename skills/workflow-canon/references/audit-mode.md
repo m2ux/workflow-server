@@ -32,26 +32,6 @@ Read the [canon prerequisites](canon-context.md#prerequisites), then its [terms]
    - A Detect applied by pattern is a guard candidate. Name what it keys on and record it against the registry in the report; external filing follows existing user authority.
    - The threshold is the second occurrence: twice in one walk, or once in each of two consecutive walks. A `fix` finding counts.
 
-### List Units for a Construct
-
-Prints every canon unit that fires on one construct id, with its file and line.
-
-- The id is a construct a draft writes: a bare kind, a field path, `resource`, `readme`, or `*`.
-- A unit is listed when it declares that id, a prefix of it, its bare kind, or `*`.
-- Runs in the server checkout. `--root` names the corpus tree. The listing is printed and not stored.
-
-```bash
-npx tsx guards/list-fires-on.ts 'activity.steps[].when' --root <corpus>
-```
-
-### Fetch Unit
-
-Reads one section or entry of a home.
-
-- **On disk.**
-  [List units](canon-context.md#list-units) for the range, then Read it. For one entry, list the `###` lines and read that block.
-- **In a workflow session.**  `get_resource` with `canon/<home>#<heading>`.
-
 ## Reference
 
 ### Attribution
@@ -72,3 +52,25 @@ Reads one section or entry of a home.
   Reconcile each return and continue the required residual through [dispatch](audit-dispatch.md#phases). An empty findings list is not coverage evidence.
 - **Stop.**
   Use the shared [completion predicate](change-surface.md#completion). A user stop preserves an incomplete, resumable run.
+
+## Commands
+
+### List Units for a Construct
+
+Prints every canon unit that fires on one construct id, with its file and line.
+
+- The id is a construct a draft writes: a bare kind, a field path, `resource`, `readme`, or `*`.
+- A unit is listed when it declares that id, a prefix of it, its bare kind, or `*`.
+- Runs in the server checkout. `--root` names the corpus tree. The listing is printed and not stored.
+
+```bash
+npx tsx guards/list-fires-on.ts 'activity.steps[].when' --root <corpus>
+```
+
+### Fetch Unit
+
+Reads one section or entry of a home.
+
+- **On disk.**
+  [List units](canon-context.md#list-units) for the range, then Read it. For one entry, list the `###` lines and read that block.
+- **In a workflow session.**  `get_resource` with `canon/<home>#<heading>`.
