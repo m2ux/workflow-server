@@ -37,7 +37,7 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
   - The description, when the skill's reach changed.
   - One line per item, bold leads on their own line, and the declared step and detail structure for each family.
   - Each rule stated once, and no description of replaced behaviour left anywhere.
-  - Every invocation in its named Commands specification, with caller links and command-owned I/O contracts.
+  - Every invocation in its named command specification, in the step that runs it, with caller links and command-owned I/O contracts.
   - Every link and anchor resolving.
   - [Progressive disclosure](../../guidelines.md#progressive-disclosure), including complete common sections and caller prerequisites.
 
@@ -45,10 +45,39 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
 
 ### 6. Verify
 
-- Run [Run Tests](#run-tests "ƒ") when an executable script, its consumed template or a test changed.
+- Run Tests when an executable script, its consumed template or a test changed.
+
+**Run Tests.**  Run the skill's script tests and provide [Test Result](#test-result "●") to the requester.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner" && "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 -m unittest discover -s test
+</pre></big>
+
 - When SKILL.md changes, confirm its frontmatter opens and closes with `---` and holds `name` and `description`.
-- Run [Check Skill Files](#check-skill-files "ƒ") for every affected skill.
-- Run [Compare Section Bodies](#compare-section-bodies "ƒ") when the change moves a section between files, and read each section it reports as added, removed or differing.
+- Check Skill Files for every affected skill.
+
+**Check Skill Files.**  Check the affected skill's files against the rules the shared skill guidelines state and provide [Skill Check Result](#skill-check-result "●") to the requester.
+
+Repeat the skill argument for additional affected skills.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py "[**&lt;skill-directory&gt;**](#skill-directory "○")"
+</pre></big>
+
+- Compare Section Bodies when the change moves a section between files, and read each section it reports as added, removed or differing.
+
+**Compare Section Bodies.**  Compare the own text of every section at the third level or deeper between the change's base and its head to identify sections damaged in a move, and provide [Section Comparison](#section-comparison "●") to the requester.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py &#92;
+  --compare "[**&lt;base&gt;**](#base "○")" "[**&lt;head&gt;**](#head "○")" "[**&lt;skill-directory&gt;**](#skill-directory "○")"
+</pre></big>
+
+- A relative link target is compared by its fragment alone, so a retargeted link is no difference.
+- Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
+- Exit 1 means a section was added, removed or differs.
+
 - Apply [disclosure verification](../../guidelines.md#disclosure-verification) with the skill's [representative scenarios](../guidelines.md#progressive-disclosure).
 - Resolve every required file, command and heading without an implicit external dependency.
 
@@ -64,40 +93,6 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
   The user has the change they asked for in the skill, committed and pushed.
 - **The guidelines hold.**
   The change agrees with the guidelines, and a new rule the user stated for how the skill is written is part of that change.
-
-## Commands
-
-### Run Tests
-
-Run the skill's script tests and provide [Test Result](#test-result "●") to the requester.
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner" && "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 -m unittest discover -s test
-</pre></big>
-
-### Check Skill Files
-
-Check the affected skill's files against the rules the shared skill guidelines state and provide [Skill Check Result](#skill-check-result "●") to the requester.
-
-Repeat the skill argument for additional affected skills.
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py "[**&lt;skill-directory&gt;**](#skill-directory "○")"
-</pre></big>
-
-### Compare Section Bodies
-
-Compare every third-level section's body between the change's base and its head to identify sections damaged in a move, and provide [Section Comparison](#section-comparison "●") to the requester.
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py &#92;
-  --compare "[**&lt;base&gt;**](#base "○")" "[**&lt;head&gt;**](#head "○")" "[**&lt;skill-directory&gt;**](#skill-directory "○")"
-</pre></big>
-
-- A relative link target is compared by its fragment alone, so a retargeted link is no difference.
-- Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
-- Exit 1 means a section was added, removed or differs.
 
 ## Fields
 

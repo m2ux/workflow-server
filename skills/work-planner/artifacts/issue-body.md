@@ -32,7 +32,7 @@ Check each section of [Changed Bodies](#changed-bodies) against [Kind Conditions
 
 #### 2. Run Body Format
 
-Run [Check Body Format](#check-body-format "ƒ") to every changed issue, writing its results to [Output Files](#output-files).
+Apply [Check Body Format](#check-body-format "ƒ") to every changed issue, writing its results to [Output Files](#output-files).
 
 #### 3. Provide Checked Round of Edits
 
@@ -44,7 +44,7 @@ One body checked against its supplied kind and template.
 
 #### 1. Run Body Format
 
-Run [Check Body Format](#check-body-format "ƒ") for the selected body.
+Apply [Check Body Format](#check-body-format "ƒ") for the selected body.
 
 #### 2. Review Supplied Conditions
 
@@ -126,8 +126,6 @@ The saved format corrections for one issue and any unresolved content findings.
 - Apply [Read Tracker Issue](issue.md#read-tracker-issue "ƒ") for the saved issue.
 - Apply [Validate Issue Body](#validate-issue-body "ƒ") again with the saved JSON and the same kind conditions, context and output path.
 - Provide saved [Body Evidence](#body-evidence), whether a correction was made, and [Format Findings](#format-findings). A remaining failure is a blocker.
-
-## Commands
 
 ### Check Body Format
 

@@ -29,14 +29,8 @@ def specs_creating_a_worktree():
     for path in (ROOT / 'artifacts' / 'delivery-branches.md',):
         lines, fenced, headings = checker.scan(path)
         payload = checker.scan_blocks(lines).html_lines
-        section = None
-        for position, (start, level, title) in enumerate(headings):
-            if level == 2:
-                section = title
-            if section != 'Commands' or level != 3:
-                continue
-            end = next((i for i, depth, _ in headings[position + 1:] if depth <= 3), len(lines))
-            body = lines[start + 1:end]
+        for start, level, title in checker.specifications(lines, headings, checker.contract(path, {})):
+            end = checker.heading_end(headings, start, level, len(lines))
             if any(CREATES_WORKTREE in lines[i] and (fenced[i] or i in payload)
                    for i in range(start + 1, end)):
                 prose = [lines[i] for i in range(start + 1, end)
@@ -55,7 +49,7 @@ class WorktreePlacement(unittest.TestCase):
         caller's working directory."""
         found = list(specs_creating_a_worktree())
         self.assertEqual({title for _, title, _ in found},
-                         {'Add Task Worktree', 'Add Epic Base Worktree', 'Add Review Worktree'})
+                         {'Add Task Worktree', '3. Prepare Epic Base Checkout', '6. Add Detached Review Worktree'})
         self.assertEqual(len(found), 3)
         for path, title, body in found:
             with self.subTest(file=path.name, command=title):

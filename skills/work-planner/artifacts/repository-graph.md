@@ -10,46 +10,7 @@ Current graph evidence for the supplied change.
 
 #### 1. Read Index Status
 
-Run [Index Status](#index-status "ƒ") in the [review checkout](#review-checkout).
-
-#### 2. Refresh Absent or Stale Index
-
-- If the repository is unindexed or behind [Requested Revision](#requested-revision):
-  - Run [Index Repository](#index-repository "ƒ") in the review checkout.
-  - Confirm freshness.
-
-#### 3. Measure Change Surface
-
-- Run [Merge Base](#merge-base "ƒ") in the review checkout for the requested revision and the supplied [base commit](#base-commit).
-- Run [Change Surface](#change-surface "ƒ") in the review checkout against that comparison base.
-
-#### 4. Measure Changed Symbols
-
-For each changed symbol, Run [Symbol Context](#symbol-context "ƒ") in the review checkout.
-
-#### 5. Measure Reported Flows
-
-For each reported flow, Run [Flow Trace](#flow-trace "ƒ") in the review checkout.
-
-#### 6. Check Response Freshness
-
-Inspect the staleness block on every response.
-
-##### When the Index Is Behind
-
-- Discard that response’s measurements.
-- Run [Index Repository](#index-repository "ƒ") in the review checkout for the verified head, and confirm freshness.
-- Run [Change Surface](#change-surface "ƒ") again for any discarded surface against the same [comparison base](#comparison-base) in the review checkout.
-- Run [Symbol Context](#symbol-context "ƒ") again for each affected changed symbol in the review checkout.
-- Run [Flow Trace](#flow-trace "ƒ") again for each affected reported flow in the review checkout.
-
-#### 7. Provide Current Measurements
-
-Provide [Graph Measurements](#graph-measurements) only when current with the supplied head and meeting [Fields](#fields), or a freshness blocker.
-
-## Commands
-
-### Index Status
+Run Index Status in the [review checkout](#review-checkout).
 
 Report whether the repository is indexed and how far behind the index sits, and provide [Index State](#index-state "●") to the requester.
 
@@ -60,6 +21,53 @@ Run in the [Review Checkout](#review-checkout "○").
 <big><pre>
 gitnexus status
 </pre></big>
+
+#### 2. Refresh Absent or Stale Index
+
+- If the repository is unindexed or behind [Requested Revision](#requested-revision):
+  - Apply [Index Repository](#index-repository "ƒ") in the review checkout.
+  - Confirm freshness.
+
+#### 3. Measure Change Surface
+
+- Run Merge Base in the review checkout for the requested revision and the supplied [base commit](#base-commit).
+
+Fetch the base commit, print the commit the pull request's change starts from, and provide [Comparison Base](#comparison-base "●") to the requester.
+
+The review head's fetch brings only the head's history, so a base that moved on after the project checkout's last fetch is fetched here.
+
+Run in the [Review Checkout](#review-checkout "○").
+
+<big><pre>
+git fetch origin '[**&lt;base-commit&gt;**](#base-commit "○")' && &#92;
+  git merge-base '[**&lt;requested-revision&gt;**](#requested-revision "○")' '[**&lt;base-commit&gt;**](#base-commit "○")'
+</pre></big>
+
+- Apply [Change Surface](#change-surface "ƒ") in the review checkout against that comparison base.
+
+#### 4. Measure Changed Symbols
+
+For each changed symbol, Apply [Symbol Context](#symbol-context "ƒ") in the review checkout.
+
+#### 5. Measure Reported Flows
+
+For each reported flow, Apply [Flow Trace](#flow-trace "ƒ") in the review checkout.
+
+#### 6. Check Response Freshness
+
+Inspect the staleness block on every response.
+
+##### When the Index Is Behind
+
+- Discard that response’s measurements.
+- Apply [Index Repository](#index-repository "ƒ") in the review checkout for the verified head, and confirm freshness.
+- Apply [Change Surface](#change-surface "ƒ") again for any discarded surface against the same [comparison base](#comparison-base) in the review checkout.
+- Apply [Symbol Context](#symbol-context "ƒ") again for each affected changed symbol in the review checkout.
+- Apply [Flow Trace](#flow-trace "ƒ") again for each affected reported flow in the review checkout.
+
+#### 7. Provide Current Measurements
+
+Provide [Graph Measurements](#graph-measurements) only when current with the supplied head and meeting [Fields](#fields), or a freshness blocker.
 
 ### Index Repository
 
@@ -73,19 +81,6 @@ Run in the [Review Checkout](#review-checkout "○").
 
 <big><pre>
 gitnexus analyze --index-only
-</pre></big>
-
-### Merge Base
-
-Fetch the base commit, print the commit the pull request's change starts from, and provide [Comparison Base](#comparison-base "●") to the requester.
-
-The review head's fetch brings only the head's history, so a base that moved on after the project checkout's last fetch is fetched here.
-
-Run in the [Review Checkout](#review-checkout "○").
-
-<big><pre>
-git fetch origin '[**&lt;base-commit&gt;**](#base-commit "○")' && &#92;
-  git merge-base '[**&lt;requested-revision&gt;**](#requested-revision "○")' '[**&lt;base-commit&gt;**](#base-commit "○")'
 </pre></big>
 
 ### Change Surface

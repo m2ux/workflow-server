@@ -2,7 +2,7 @@
 
 The body of an existing task issue, and the record of its delivery.
 
-## Commands
+## Operations
 
 ### Sync Task Issue
 

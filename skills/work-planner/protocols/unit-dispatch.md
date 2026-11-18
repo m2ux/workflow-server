@@ -36,7 +36,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For task rows:
   - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the epic's current body.
-  - For a new unit, Run [Reserve Row](../artifacts/epic-issue-body.md#reserve-row "ƒ") for every row of the unit, with that body and the refreshed board items, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
+  - For a new unit, Apply [Reserve Row](../artifacts/epic-issue-body.md#reserve-row "ƒ") for every row of the unit, with that body and the refreshed board items, then Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
   - For a retained preparation, require every current row to hold its selected record; provide a changed hold as a blocker.
   - Apply [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status "ƒ") for its task issues, where present, and its epic, requesting In Progress.
   - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for the epic and confirm every selected row holds this record.
@@ -72,14 +72,14 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - For a new unit, prepare each selected branch, base and worktree in the project checkout:
   - Require [Prerequisite Evidence](../artifacts/delivery-branches.md#prerequisite-evidence) and names meeting [Task Branches](../artifacts/delivery-branches.md#task-branches).
-  - Run [Fetch Remote Branch](../artifacts/delivery-branches.md#fetch-remote-branch "ƒ") in the project checkout with its base; stop on failure.
-  - Run [Add Task Worktree](../artifacts/delivery-branches.md#add-task-worktree "ƒ") in the project checkout with the selected path, task branch and fetched base.
-  - Run [Read Checkout Revision](../artifacts/delivery-branches.md#read-checkout-revision "ƒ") in the unit checkout for `HEAD` and retain its full preparation head with the worktree path, branch and base.
+  - Apply [Fetch Remote Branch](../artifacts/delivery-branches.md#fetch-remote-branch "ƒ") in the project checkout with its base; stop on failure.
+  - Apply [Add Task Worktree](../artifacts/delivery-branches.md#add-task-worktree "ƒ") in the project checkout with the selected path, task branch and fetched base.
+  - Apply [Read Checkout Revision](../artifacts/delivery-branches.md#read-checkout-revision "ƒ") in the unit checkout for `HEAD` and retain its full preparation head with the worktree path, branch and base.
   - A unit changing several long-lived branches repeats this for each selected base.
 
 #### Retained Unit Checkouts
 
-- For a retained preparation, Run [Check Task Worktree](../artifacts/delivery-branches.md#check-task-worktree "ƒ") for each recorded checkout with the project checkout, retained path, branch and full preparation head.
+- For a retained preparation, Apply [Check Task Worktree](../artifacts/delivery-branches.md#check-task-worktree "ƒ") for each recorded checkout with the project checkout, retained path, branch and full preparation head.
 - Require every verified result before preparing the brief. A mismatch stops this unit: provide a unit blocker and retain its checkout and hold.
 
 #### Delivery Brief
@@ -94,7 +94,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 5. Start the Worker
 
-- Run [Check Dispatch Start](../artifacts/dispatch-batch.md#check-dispatch-start "ƒ") with the selected batch and unit, gathered start evidence, current observed sessions, actual free slots and recorded blockers.
+- Apply [Check Dispatch Start](../artifacts/dispatch-batch.md#check-dispatch-start "ƒ") with the selected batch and unit, gathered start evidence, current observed sessions, actual free slots and recorded blockers.
 - Provide a capacity-only wait with the unit's preparation for the coordinator to retain and resume.
 - Start the unit through this session's sub-agent dispatch only after validation succeeds.
 - Supply the complete brief and its unit and engineering checkouts to the worker.

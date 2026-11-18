@@ -15,7 +15,7 @@ Apply [Read Board State](board.md#read-board-state "ƒ") for the board in [Revie
 #### 2. Read Configuration and Assignee
 
 - Apply [Read Board Configuration](board.md#read-board-configuration "ƒ").
-- Run [Find User](board.md#find-user "ƒ").
+- Apply [Find User](board.md#find-user "ƒ").
 
 #### 3. Locate Epic Item
 
@@ -37,7 +37,7 @@ The task and epic statuses owned by a delivery dispatch.
 
 #### 1. Compute Dispatch Calls
 
-- Run [Compute Dispatch Status](board-status.md#compute-dispatch-status "ƒ") for the supplied progress and review identities.
+- Apply [Compute Dispatch Status](board-status.md#compute-dispatch-status "ƒ") for the supplied progress and review identities.
 - A refusal or handoff blocker it reports is the unresolved discrepancy; run no call and continue to Provide Saved Statuses.
 
 #### 2. Apply and Confirm Calls

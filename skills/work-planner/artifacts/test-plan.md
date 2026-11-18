@@ -2,7 +2,7 @@
 
 The checks a task pull request's body records against the criteria they observe, the evidence of each result, and when the plan has passed. [testplan](../scripts/testplan.py) implements reading the plan into rows, whether it has passed and the criteria it claims.
 
-## Commands
+## Operations
 
 ### Check Test Plan
 

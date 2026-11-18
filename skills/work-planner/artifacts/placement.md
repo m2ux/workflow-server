@@ -2,7 +2,7 @@
 
 A proposed destination and disposition for one orphan's work.
 
-## Commands
+## Operations
 
 ### List Orphans
 
