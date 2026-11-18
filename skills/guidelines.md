@@ -28,6 +28,8 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - Scripts and tests each have a folder of their own. Standalone templates use `templates/`.
 - **Shared.**
   `skills/` holds this file beside the `scripts/` and `test/` folders for checks that every skill runs. A check binding one skill lives in that skill's own folders.
+- **Vendored.**
+  The gitnexus skills under `skills/gitnexus/` are vendored from GitNexus and keep its shape, so they stand outside these guidelines and the shared check.
 
 ## SKILL.md structure
 
@@ -130,8 +132,8 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - Every command has a sub-section named for what it does: Fetch issue, Run guard suite.
   - A script used several ways has a spec for each use.
 - **In the step that runs it.**
-  - A specification sits in the procedure step that runs it: its description, template and detail, with its `○` inputs and `●` output. No file takes a Commands section.
-  - A specification several steps run, a step of another file runs, or text outside its step links to, is an operation of its own in the procedure section of the file owning its subject, and those steps run it.
+  - A specification one step runs is written in that step: its description, template and detail, with its `○` inputs and `●` output, and no link to it. No file takes a Commands section.
+  - A specification several steps run, a step of another file runs, or text outside its step links to, is an operation of its own in the procedure section of the file owning its subject, and those steps Apply it. An operation holding one command takes no numbered step heading.
   - A caller is a procedure that runs the command. A specification standing outside any step, and any passage of prose naming a command, does not make the file holding it a caller.
   - Reach is what a reader must load: a step's citation, a specification's citation, and a prerequisite. A specification standing outside any step reaches a command it cites without calling it, so reach measures retrieval and leaves placement to callers.
   - A specification no procedure runs has no step to hold it, so it stays with the section whose prose or sibling specification names it; in a mode file, whose commands stand in its procedure, it is an operation of the procedure. One nothing cites has no reader, whatever structure holds it.
@@ -143,7 +145,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - Each spec opens with a one-line, succinct description of what the command does.
   - Detail a caller needs, such as flags, inputs or refusals, follows as bullets, then the command block.
 - **Named by link.**
-  - Prose names a spec by linking to its sub-section, mid-sentence: "run [Check Body Format](work-planner/artifacts/issue-body.md#check-body-format) on each epic".
+  - Prose names a specification standing as an operation by linking to its section, mid-sentence: "apply [Check Body Format](work-planner/artifacts/issue-body.md#check-body-format) to each epic".
   - A command body is inlined only in the file that owns the spec.
   - A mode file holds a shell or unlabelled code block only inside its procedure: in the step that runs it, or in an operation those steps run.
 - **Interface.**

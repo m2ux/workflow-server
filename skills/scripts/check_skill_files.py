@@ -12,24 +12,29 @@ fences, while bold argument links are actual contract references. A
 template's `{{...}}` stands for text the author supplies, so it is measured where it lands rather
 than here.
 
-A command specification stands in the procedure step that runs it. A
+A command specification is written in the procedure step that runs it, or
+stands as an operation of its own that several steps apply. A
 specification is a heading whose own text, ahead of its first sub-heading,
-holds an invocation: an HTML invocation where the file's entry declares
-`commands` html, and a shell block otherwise. A file's top-level Commands
-section is a second home for those specifications, so one is reported in
-every file but a skill's guide, whose Commands rules state how
-specifications are written. In a heading model an invocation stands inside
-the declared procedure section, under a step or as an operation those steps
-run. The selected model identifies execution steps: numbered list items in
-the shared model, or numbered headings under a declared procedure section.
-The step is the author stating what the reader performs and in which order.
+holds a flush invocation: an HTML invocation where the file's entry
+declares `commands` html, and a shell block otherwise; a heading carrying
+numbered steps is a procedure instead. A file's top-level Commands section
+is a second home for those specifications, so one is reported in every file
+but a skill's guide, whose Commands rules state how specifications are
+written. In a heading model an invocation stands inside the declared
+procedure section, in a step or in an operation, and a step writing its
+command keeps the step layout. A skill's entry point holds no
+specification, and an operation specification nothing cites has no reader.
+The selected model identifies execution steps: numbered list items in the
+shared model, or numbered headings under a declared procedure section. The
+step is the author stating what the reader performs and in which order.
 
 A file is a caller where a procedure of it carries the citation. Reach is a
 second relation over the same citations. A citation is required where the
-reader must load its target to carry on: a procedure's step, an HTML
-argument, a linked operation contract, and a prerequisite, whether a
-canonical prerequisite sentence or a file's Prerequisites section. Reach
-decides what a scenario reads, which a retrieval walk measures.
+reader must load its target to carry on: a procedure's step, an operation
+specification's own text, an HTML argument, a linked operation contract,
+and a prerequisite, whether a canonical prerequisite sentence or a file's
+Prerequisites section. Reach decides what a scenario reads, which a
+retrieval walk measures.
 
 The top-level sections of a file carrying a procedure are the set its skill's
 structure declares, in that order, so the reader knows what the file carries
@@ -97,7 +102,8 @@ target.
 
 A run names one skill or more, read together, so a citation crossing from
 one into another resolves against the tree it lands in; a skill not named is
-not read.
+not read. The vendored gitnexus skills keep their upstream's shape, as
+skills/guidelines.md states, so a run leaves them out.
 
     python3 skills/scripts/check_skill_files.py skills/work-planner
     python3 skills/scripts/check_skill_files.py --compare <base> <head> skills/work-planner
@@ -146,6 +152,8 @@ TABLE_RULE = re.compile(r'\|?[\s|:-]+\|?')
 LIST_OPTIONS = ('sections', 'required', 'preamble', 'scoped_children')
 BOOLEAN_OPTIONS = ('link_roles',)
 VOCABULARY = 'vocabulary.json'
+# The folder of the vendored skills skills/guidelines.md leaves outside the check.
+VENDORED = 'gitnexus'
 RULES = 'rules.json'
 GUIDE = 'guidelines.md'
 SHELL = ('', 'bash', 'sh', 'shell', 'zsh', 'console')
@@ -454,25 +462,55 @@ def specifications(lines, headings, entry=None):
     """Each command specification: a heading whose own text, ahead of its
     first sub-heading, holds a flush invocation. The HTML model's invocation
     is its `<big><pre>` block, and any other model's is a shell block; one
-    indented into a list item belongs to that item. In a heading model a
-    numbered step, and a heading over numbered steps, is a procedure rather
-    than a specification, so an invocation it holds directly names none."""
+    indented into a list item belongs to that item. A numbered step holding
+    its command is one: the step that runs the command writes it. A heading
+    carrying numbered steps, as numbered headings beneath it or a numbered
+    list in its own text, is a procedure, so an invocation it holds directly
+    names no specification."""
     blocks = scan_blocks(lines)
+    fenced = blocks.fenced
     if (entry or {}).get('commands') == 'html':
         starts = [start for start, _ in blocks.invocations]
     else:
         starts = [index for index, language in blocks.openings if language in SHELL]
     starts = [start for start in starts if lines[start] == lines[start].lstrip()]
-    stepped = (entry or {}).get('steps') == 'headings'
+    commands = blocks.html_lines
     for position, (index, level, title) in enumerate(headings):
         following = headings[position + 1][0] if position + 1 < len(headings) else len(lines)
         if not any(index < start < following for start in starts):
             continue
-        if stepped and (HEADING_STEP.match(title) or any(
-                HEADING_STEP.match(name) for start, _, name in headings[position + 1:]
-                if start < heading_end(headings, index, level, len(lines)))):
+        end = heading_end(headings, index, level, len(lines))
+        if any(HEADING_STEP.match(name) for start, _, name in headings[position + 1:] if start < end):
+            continue
+        if any(ORDERED.match(lines[line]) for line in range(index + 1, following)
+               if not fenced[line] and line not in commands):
             continue
         yield index, level, title
+
+
+def in_step(headings, index):
+    """Whether a heading is a numbered step or stands beneath one."""
+    chain = []
+    for start, level, title in headings:
+        if start > index:
+            break
+        chain = [(depth, name) for depth, name in chain if depth < level] + [(level, title)]
+    return any(HEADING_STEP.match(name) for _, name in chain)
+
+
+def operation_specifications(lines, headings, entry=None):
+    """Each specification standing as an operation of its own rather than
+    written in a step, with the line indices it holds: its text states one
+    command and sequences nothing, so the step layout governing a
+    procedure's steps leaves it to the specification rules."""
+    return {start: (title, set(range(start, heading_end(headings, start, level, len(lines)))))
+            for start, level, title in specifications(lines, headings, entry)
+            if not in_step(headings, start)}
+
+
+def operation_lines(lines, headings, entry=None):
+    """Line indices held by the specifications standing as operations."""
+    return {index for _, held in operation_specifications(lines, headings, entry).values() for index in held}
 
 
 def specification_spans(lines, headings, entry=None):
@@ -665,11 +703,12 @@ def heading_model(path, lines, fenced, headings, entry):
               for index in range(start, heading_end(headings, start, level, len(lines)))}
     commands = scan_blocks(lines).html_lines
     held = specification_spans(lines, headings, entry)
+    operations = operation_lines(lines, headings, entry)
     scopes = list(procedure_headings(lines, headings, entry))
     steps = [(index, level, title, end) for index, level, title, end in scopes
              if HEADING_STEP.match(title)]
     for index, line in enumerate(lines):
-        if index not in inside or fenced[index] or index in commands or index in held:
+        if index not in inside or fenced[index] or index in commands or index in operations:
             continue
         if ORDERED.match(line):
             yield index, 'list step in heading model', line.strip()
@@ -696,10 +735,10 @@ def heading_model(path, lines, fenced, headings, entry):
     for index, level, title in roots:
         end = heading_end(headings, index, level, len(lines))
         if not any(index < start < end for start, _, _, _ in steps) and not any(
-                index < start < end for start in held):
+                index < start < end for start in operations):
             yield index, 'procedure without heading steps', title
     for index, level, title, end in scopes:
-        if level == 3 and not HEADING_STEP.match(title) and index not in held and not any(
+        if level == 3 and not HEADING_STEP.match(title) and index not in operations and not any(
                 index < start < end for start, _, _, _ in steps):
             yield index, 'procedure without heading steps', title
     if required := entry.get('preamble'):
@@ -738,15 +777,16 @@ def html_commands(path, lines, fenced, headings, entry, specs, inside):
     for index, language in fence_openings(lines):
         if language in SHELL or language == 'tool':
             yield index, 'fenced invocation in HTML model', language or 'unlabelled'
+    # An operation states one command; a step may run several, each its own invocation.
     for first, title, _ in specs:
         own = next((index for index, _, _ in headings if index > first), len(lines))
-        if sum(first < start <= end < own for start, end in blocks) != 1:
+        if not in_step(headings, first) and sum(first < start <= end < own for start, end in blocks) != 1:
             yield first, 'malformed HTML invocation', title + ': exactly one invocation required'
     for start, end in blocks:
         if start not in inside:
             yield start, 'invocation outside a procedure', 'place the specification in the step that runs it'
         elif not any(index < start <= end < stop for index, _, stop in specs):
-            yield start, 'invocation outside command specification', 'name the specification as a sub-section of its step'
+            yield start, 'invocation outside command specification', 'write the command in the step that runs it'
         if lines[start] != lines[start].lstrip():
             yield start, 'indented detail in heading model', 'invocation wrapper must be flush'
         payload = '\n'.join(lines[start:end + 1]).strip()
@@ -798,10 +838,11 @@ def html_commands(path, lines, fenced, headings, entry, specs, inside):
 
 def operation_calls(path, lines, fenced, headings, entry, inside):
     """The declared routing verb on an actual operation call, excluding field
-    citations and the text of a command specification, which names what it
-    links without calling it."""
+    citations and the text of an operation specification, which names what it
+    links without calling it. A command specification standing as an
+    operation is applied, wherever it stands."""
     commands = scan_blocks(lines).html_lines
-    held = specification_spans(lines, headings, entry)
+    held = operation_lines(lines, headings, entry)
     for index, line in enumerate(lines):
         if index not in inside or index in commands or index in held or fenced[index]:
             continue
@@ -809,7 +850,7 @@ def operation_calls(path, lines, fenced, headings, entry, inside):
         for match in LINK.finditer(text):
             name, _, fragment = match[1].partition('#')
             destination = (path.parent / name).resolve() if name else path
-            verb = 'Run' if command_target(path, match[1]) else entry['calls'].get(destination.parent.name)
+            verb = 'Apply' if command_target(path, match[1]) else entry['calls'].get(destination.parent.name)
             if not verb or not destination.is_file():
                 continue
             if operation_target(path, match[1]) and not re.search(r'\b' + re.escape(verb) + r'\s+$', text[:match.start()]):
@@ -876,11 +917,13 @@ def check(path, root, cache, structures=None, cited=None):
                 report(index, 'Commands section', 'place each specification in the step that runs it')
     # A skill's entry point holds no command, so a specification there is
     # reported whatever cites it. Elsewhere, in a file its skill declares a
-    # structure for, a specification nothing cites has no reader.
+    # structure for, an operation specification nothing cites has no reader;
+    # a step's own command is read with its step.
     for index, _, title in specifications(lines, headings, effective):
         if path.name == 'SKILL.md':
             report(index, 'command specification in the entry point', title)
-        elif effective and cited is not None and not cited.get(path, {}).get(anchor_of(title)):
+        elif (effective and cited is not None and not in_step(headings, index)
+              and not cited.get(path, {}).get(anchor_of(title))):
             report(index, 'command specification nothing cites', title)
 
     # The top-level sections of a file carrying a procedure are a named set in
@@ -1692,15 +1735,18 @@ def main(argv=None):
         return compare_revisions(*options.compare, options.roots, options.quiet)
 
     # A fixture tree holds test inputs in the format its suite reads, which is
-    # specimen text rather than a skill file, so the guidelines do not reach it.
+    # specimen text rather than a skill file, so the guidelines do not reach it,
+    # and a vendored skill keeps its upstream's shape.
     roots = [Path(name).resolve() for name in options.roots]
     files = []
     scripts = []
     for root in roots:
         files += [(path, root.parent) for path in sorted(root.rglob('*.md'))
-                  if 'fixtures' not in path.relative_to(root).parts]
+                  if 'fixtures' not in path.relative_to(root).parts
+                  and VENDORED not in path.relative_to(root.parent).parts]
         scripts += [(path, root.parent) for path in sorted(root.rglob('*'))
-                    if path.suffix in SCRIPT_SUFFIXES and 'scripts' in path.relative_to(root.parent).parts]
+                    if path.suffix in SCRIPT_SUFFIXES and 'scripts' in path.relative_to(root.parent).parts
+                    and VENDORED not in path.relative_to(root.parent).parts]
 
     declared = {}
     cache = {}

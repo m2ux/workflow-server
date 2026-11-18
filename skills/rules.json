@@ -5,6 +5,7 @@
   "files/skillmd": ["review"],
   "files/references": ["review"],
   "files/shared": ["review"],
+  "files/vendored": ["review"],
   "skillmd-structure/top-level-sections": ["section outside the set", "sections out of order"],
   "skillmd-structure/opening": ["review"],
   "skillmd-structure/modes": ["review"],

@@ -1075,6 +1075,18 @@ class SectionBodyComparison(unittest.TestCase):
         _, counted_base, counted_head = checker.compare(BEFORE, AFTER)
         self.assertEqual((counted_base, counted_head), (4, 4))
 
+    def test_a_section_moved_into_a_step_pairs_by_its_own_text(self):
+        before = {'s/artifacts/a.md': '# A\n\n## Operations\n\n### Read\n\nOpening.\n\n'
+                                      '#### 1. Fetch\n\nRun [Fetch It](b.md#fetch-it).\n',
+                  's/artifacts/b.md': '# B\n\n## Commands\n\n### Fetch It\n\nFetches it.\n'}
+        after = {'s/artifacts/a.md': '# A\n\n## Operations\n\n### Read\n\nOpening.\n\n'
+                                     '#### 1. Fetch\n\nRun [Fetch It](#fetch-it).\n\n##### Fetch It\n\nFetches it.\n',
+                 's/artifacts/b.md': '# B\n'}
+        results, counted_base, counted_head = checker.compare(before, after)
+        judged = {title: kind for kind, _, _, title, _ in results}
+        self.assertEqual(judged, {'Read': 'identical', '1. Fetch': 'identical', 'Fetch It': 'moved'})
+        self.assertEqual((counted_base, counted_head), (3, 3))
+
     def test_a_reworded_body_is_differing_with_its_diff(self):
         after = dict(AFTER)
         after['skill/modes/sync-mode.md'] = after['skill/modes/sync-mode.md'].replace(
@@ -1566,6 +1578,8 @@ class ReviewedCheckCases(unittest.TestCase):
                    f'{FENCE}bash\ngh api repos/o/r\n{FENCE}\n\n1. **Fetch.**  Fetch it.\n\n'
                    '## Rules\n\n- **Scope.**  One issue.\n')
         self.assertEqual(self.found('command spelled out in a mode'), [('plan-mode.md', 7)])
+        # A heading carrying numbered steps is a procedure, never a specification.
+        self.assertEqual(self.found('command specification nothing cites'), [])
 
     def test_a_nested_specifications_rest_gap_stands_in_its_own_item(self):
         self.write('references/plan-mode.md', '# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n'
@@ -1627,6 +1641,14 @@ class SkillsCheckedTogether(unittest.TestCase):
         self.write('beta/SKILL.md', '# Beta\n\nEvery check opens with '
                    '[Fetch issue](../alpha/references/catalog.md#fetch-issue).\n' + self.JUMP)
         self.assertFalse(self.run_check('alpha', 'beta')[0])
+
+    def test_a_vendored_skill_stands_outside_the_check(self):
+        self.write('gitnexus/gitnexus-cli/SKILL.md', '# CLI\n\n## Commands\n\n### analyze\n\n'
+                   + chr(96) * 3 + 'bash\nnpx gitnexus analyze\n' + chr(96) * 3 + '\n')
+        printed = io.StringIO()
+        with redirect_stdout(printed):
+            status = checker.main([str(self.root / 'skills')])
+        self.assertEqual((status, printed.getvalue()), (0, '3 files checked, 0 findings\n'))
 
     def test_the_check_takes_no_exclusion(self):
         printed = io.StringIO()
@@ -1739,10 +1761,6 @@ class DeclaredHeadingModels(unittest.TestCase):
 An inventory page from supplied evidence.
 
 #### 1. Fetch Inventory Page
-
-Run [Fetch Inventory Page](#fetch-inventory-page "ƒ").
-
-##### Fetch Inventory Page
 
 Fetches one inventory page.
 
@@ -2259,14 +2277,25 @@ Keep the refreshed inventory.
         self.assertIn('Commands section', self.kinds())
         self.assertIn('invocation outside a procedure', self.kinds())
 
-    def test_a_step_holding_an_invocation_directly_is_reported(self):
-        self.replace(self.inventory, '#### 2. Inspect Inventory Page\n\n',
-                     '#### 2. Inspect Inventory Page\n\n1. Inspect it.\n\nUse [Limit](#limit "○").\n\n'
-                     '<big><pre>\ninventory_inspect\n</pre></big>\n\n')
-        kinds = self.kinds()
-        self.assertIn('invocation outside command specification', kinds)
-        self.assertIn('list step in heading model', kinds)
-        self.assertIn('command contract links', kinds)
+
+    def operation(self, again='again, then inspect the page against'):
+        """The step's command moved into an operation of its own that both steps apply."""
+        spec = self.INVENTORY.split('#### 1. Fetch Inventory Page\n', 1)[1].split('#### 2.', 1)[0]
+        self.replace(self.inventory, '#### 1. Fetch Inventory Page\n' + spec,
+                     '#### 1. Fetch Inventory Page\n\nApply [Fetch Inventory Page](#fetch-inventory-page "ƒ").\n\n')
+        self.replace(self.inventory, '## Fields', '### Fetch Inventory Page\n' + spec + '## Fields')
+        self.replace(self.inventory, 'Inspect the page against',
+                     'Apply [Fetch Inventory Page](#fetch-inventory-page "ƒ") ' + again)
+        return spec
+
+    def test_an_invocation_over_an_operations_steps_is_reported(self):
+        self.replace(self.inventory, 'An inventory page from supplied evidence.\n',
+                     'An inventory page from supplied evidence.\n\n<big><pre>\ninventory_inspect\n</pre></big>\n')
+        self.assertIn('invocation outside command specification', self.kinds())
+
+    def test_a_step_holding_its_command_keeps_the_step_layout(self):
+        self.replace(self.inventory, 'Fetches one inventory page.\n', '1. Fetches one inventory page.\n')
+        self.assertIn('list step in heading model', self.kinds())
 
     def test_an_operation_specification_and_a_procedure_are_compared_apart(self):
         self.replace(self.inventory, '## Fields', '### Count Inventory\n\nCount the inventory pages.\n\n'
@@ -2277,20 +2306,17 @@ Keep the refreshed inventory.
         self.assertNotIn('parallel section in another mood', self.kinds())
 
     def test_an_operation_several_steps_run_may_be_one_specification(self):
-        spec = self.INVENTORY.split('##### Fetch Inventory Page\n', 1)[1].split('#### 2.', 1)[0]
-        self.replace(self.inventory, '##### Fetch Inventory Page\n' + spec, '')
-        self.replace(self.inventory, '## Fields', '### Fetch Inventory Page\n' + spec + '## Fields')
-        self.replace(self.inventory, 'Inspect the page against', 'Run [Fetch Inventory Page](#fetch-inventory-page "ƒ") '
-                     'again, then inspect the page against')
+        self.operation()
         self.assertEqual(self.findings(), [])
 
     def test_nested_calls_have_no_duplicate_io_contract(self):
-        self.replace(self.inventory, 'Run [Fetch Inventory Page](#fetch-inventory-page "ƒ").',
-                     'Run [Fetch Inventory Page](#fetch-inventory-page "ƒ") with [Limit](#limit "○").')
+        self.operation('with [Limit](#limit "○"), then inspect the page against')
         self.assertIn('command contract links', self.kinds())
 
-    def test_command_calls_use_run(self):
-        self.replace(self.inventory, 'Run [Fetch Inventory Page]', 'Apply [Fetch Inventory Page]')
+    def test_operation_specifications_are_applied(self):
+        self.operation()
+        self.replace(self.inventory, 'Apply [Fetch Inventory Page](#fetch-inventory-page "ƒ").',
+                     'Run [Fetch Inventory Page](#fetch-inventory-page "ƒ").')
         self.assertIn('operation call verb', self.kinds())
 
     def test_a_procedures_output_does_not_supply_the_command_contract(self):
@@ -2306,8 +2332,12 @@ Keep the refreshed inventory.
         self.replace(self.inventory, '#### 1. Fetch Inventory Page', '#### 1. Read Inventory')
         self.assertIn('repeated procedure title', self.kinds())
 
-    def test_a_specification_contains_exactly_one_invocation(self):
+    def test_an_operation_specification_contains_exactly_one_invocation(self):
         command = '<big><pre>\ninventory_fetch { [**limit**](#limit "○"), offset }\n</pre></big>'
+        self.replace(self.inventory, command, command + '\n\n' + command)
+        self.assertNotIn('malformed HTML invocation', self.kinds())
+        self.inventory.write_text(self.INVENTORY)
+        self.operation()
         self.replace(self.inventory, command, command + '\n\n' + command)
         self.assertIn('malformed HTML invocation', self.kinds())
 
