@@ -72,7 +72,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && "[**&lt;workspace&gt;**](#work
 
 #### Compare Section Bodies
 
-Compare every third-level section's body between the change's base and its head to identify sections damaged in a move, and provide [Section Comparison](#section-comparison "●") to the requester.
+Compare the own text of every section at the third level or deeper between the change's base and its head to identify sections damaged in a move, and provide [Section Comparison](#section-comparison "●") to the requester.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;

@@ -33,7 +33,7 @@
   "prose/consumers": ["review"],
   "prose/measured-claims": ["review"],
   "prose/reachable-dependencies": ["review"],
-  "operations/spec-layout": ["fenced invocation in HTML model", "invocation outside a procedure", "malformed HTML invocation", "unwrapped shell invocation", "GraphQL without a REST gap", "review"],
+  "operations/spec-layout": ["fenced invocation in HTML model", "invocation outside a procedure", "invocation outside command specification", "malformed HTML invocation", "unwrapped shell invocation", "GraphQL without a REST gap", "review"],
   "operations/one-command": ["review"],
   "operations/one-home": ["review"],
   "operations/direction": ["review"],
