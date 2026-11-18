@@ -216,6 +216,18 @@ class IssueDependencies(unittest.TestCase):
         self.assertIs(board.met(dependency, key, {}, 'E01:W01'), Resolution.UNMET)
         self.assertEqual(board.unresolved, [])
 
+    def test_a_link_carrying_a_fragment_names_its_issue(self):
+        board, key = self.board()
+        dependency = f"[#9]({url('issues', 9, 'o/skills')}#issuecomment-1)"
+        self.assertIs(board.met(dependency, key, {}, 'E01:W01'), Resolution.UNMET)
+        self.assertEqual(board.unresolved, [])
+
+    def test_a_number_whose_link_names_no_issue_cannot_resolve(self):
+        board, key = self.board()
+        dependency = f"[#9]({url('pull', 9, 'o/skills')})"
+        self.assertIs(board.met(dependency, key, {}, 'E01:W01'), Resolution.UNRESOLVABLE)
+        self.assertEqual(board.unresolved, ['E01:W01: cannot resolve #9: its link names no issue'])
+
     def test_an_unlinked_number_names_the_row_s_own_repository_s_issue(self):
         board, key = self.board()
         self.assertIs(board.met('#9', key, {}, 'E01:W01'), Resolution.MET)

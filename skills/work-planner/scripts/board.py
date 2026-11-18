@@ -56,10 +56,10 @@ issue and no pull request is delivered when that issue is closed as completed. A
 does not deliver the task. A linked entry names the issue its link names, in whichever repository,
 whatever its text. An unlinked #750 names an issue in the repository of the issue whose row cites
 it. An entry naming no row and linking no issue, naming an issue not given (another initiative's
-epic, #750), naming a row an epic does not carry, or whose #750 text and link name different issues
-of the repository holding the row cannot resolve: the entry is named, the task it gates keeps the Status it
-holds, and the run exits 1. Give the missing issue with --others to resolve it. An issue outside
-the initiative's repository prints as owner/repo#number.
+epic, #750) or naming a row an epic does not carry cannot resolve. So does a #750 entry whose link
+names no issue, or names another issue of the repository holding the row. The entry is named, the
+task it gates keeps the Status it holds, and the run exits 1. Give the missing issue with --others
+to resolve it. An issue outside the initiative's repository prints as owner/repo#number.
 
 An issue from Ready on is assigned to the --assignee user, and one in Backlog has no assignee.
 
@@ -86,7 +86,7 @@ from sync import (PR_REF, PREFIX, TICKED, Unreadable, attach_links, git, issue_d
 TASK = re.compile(r'W\d\d')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
 WORK_ITEM = re.compile(r'/blob/[^/]+/(.+\.md)$')
-ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)$')
+ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)/?(?:[#?].*)?$')
 RANGE = re.compile(r'^W(\d\d)[–-]W(\d\d)$')
 TASK_REF = re.compile(r'(?:^|:)(W\d\d)$')
 REPO_OF = re.compile(r'github\.com/([^/]+/[^/]+)/(?:pull|commit)/')
@@ -456,7 +456,10 @@ class Board:
                 answer = self.row_delivered(home, text, why)
             elif re.fullmatch(r'#\d+', text):
                 written = (home[0], int(text[1:]))
-                if found and found[0] == home[0] and found != written:
+                if url and not found:
+                    self.unresolved.append(f'{why}: {UNRESOLVABLE} {text}: its link names no issue')
+                    answer = Resolution.UNRESOLVABLE
+                elif found and found[0] == home[0] and found != written:
                     self.unresolved.append(f'{why}: {UNRESOLVABLE} {text}: its link names '
                                            f'{label(found, self.home)}')
                     answer = Resolution.UNRESOLVABLE
