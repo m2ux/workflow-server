@@ -14,6 +14,7 @@ The fix has a linked entry resolve by its link, an unlinked number by the row's 
 | --- | --- |
 | [F20 work item](f20.md) | The files the hot-fix changes and its plan |
 | [Test results](test-results.md) | The checks run for F20, the revision tested and each result |
+| [Agent review](agent-review.json) | The review record of pull request #1730 at its reviewed head, its findings and their fixes |
 
 ## Links
 

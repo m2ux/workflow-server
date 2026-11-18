@@ -1,0 +1,70 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1730",
+    "base": "a70671a73225a60281b509b387c39f45ebd8f7a3",
+    "base_ref": "workspace",
+    "head": "deca059289c4bae56b737a98e3c36ca0c5c1c1ea",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-18-1724-f20-outside-dependencies/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (hot-fix agent review)",
+    "reviewed_at": "2026-11-18",
+    "scope": "The whole branch against workspace, a70671a73..2575d31af, by an independent reviewer with issue #1724: Board.met and every caller reading a Depends on entry (epic_prerequisites_met, startable, referenced_epics, progress.py, board-queue.py, deliver.py), every issue_url and linked_issue caller after ISSUE_REF widened, deps.py parse and check_initiative, stale #750 and bare-number prose under skills/work-planner, and line width. 2575d31af..51be6ba4b fixes its six findings, 51be6ba4b..22f1a1023 its two re-check findings, and 22f1a1023..deca05928 the third round's one; each round re-checked its fixes alone.",
+    "criteria": "AC1: test_board IssueDependencies resolves [#9] and [#4] linking o/skills#9 to that issue. AC2: test_board resolves an unlinked #9 to o/r#9, closed, beside an open o/skills#9. AC3: test_board reports [#9] linking o/r#4 as unresolvable; test_deps IssueEntries reports a #750 linking issue 751 on a task row and an initiative row. AC4: epic-issue-body.md Work Breakdown states a dependency on another repository's issue is a link to that issue; check_skill_files.py reports 0 findings.",
+    "validation": "Planner suite at deca05928: 1197 tests OK, 1 skipped. Shared suite: 319 tests OK. check_skill_files.py skills/work-planner: 65 files, 0 findings. git diff --check clean.",
+    "findings": [
+      {
+        "description": "An issue link carrying a trailing slash, fragment or query named no issue, so a cross-repository #N fell back to the row's own repository; a #N linking no issue did the same silently.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/af9757e71a1de3f1d6f72a81575a3e3eec4f57e7"
+      },
+      {
+        "description": "No deps test pinned a cross-repository number mismatch.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/51be6ba4bb671613c8b5dfbac510d9d03eb8aeea"
+      },
+      {
+        "description": "deps.py compared a #N entry's number with its link as strings, so #09 linking issue 9 was reported.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/51be6ba4bb671613c8b5dfbac510d9d03eb8aeea"
+      },
+      {
+        "description": "deps.py's usage line still called #750 not checked.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/51be6ba4bb671613c8b5dfbac510d9d03eb8aeea"
+      },
+      {
+        "description": "board.py's module docstring left a 107-character line and mixed a relative clause into a participle list.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/af9757e71a1de3f1d6f72a81575a3e3eec4f57e7"
+      },
+      {
+        "description": "Two test_deps lines ran past the module width.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/51be6ba4bb671613c8b5dfbac510d9d03eb8aeea"
+      },
+      {
+        "description": "deps.py passed a #N entry linking no issue, which board.py refuses.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/22f1a1023a2468473f8c2d591c55db4dc1594f8f"
+      },
+      {
+        "description": "board.py ISSUE_URL rejected the suffixed issue-link form ISSUE_REF accepts.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/22f1a1023a2468473f8c2d591c55db4dc1594f8f"
+      },
+      {
+        "description": "deps.py read an issue link on any host, where board.py reads a github.com owner/repo link alone.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/deca059289c4bae56b737a98e3c36ca0c5c1c1ea"
+      }
+    ]
+  }
+]
