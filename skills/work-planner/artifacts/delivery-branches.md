@@ -43,7 +43,7 @@ git push origin 'origin/[**&lt;source-branch&gt;**](#source-branch "○"):refs/h
 - Run in the [Project Checkout](#project-checkout "○").
 - Require [Missing Destination](#missing-destination "○"), [Prerequisite Evidence](#prerequisite-evidence "○") before executing the command.
 
-- Retain [Branch Result](#branch-result) with the created branch, or [Failure](#failure).
+- For each published base, retain [Branch Result](#branch-result) with the created branch, or [Failure](#failure).
 
 #### 6. Provide Prepare Delivery Bases
 
@@ -97,7 +97,7 @@ git push
 - Run in the [Checkout](#checkout "○").
 - Require [Successful Merge](#successful-merge "○") before executing the command.
 
-- Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
+- After the push, provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
 
 ### Update Task Branch
 
@@ -129,7 +129,7 @@ git push origin 'HEAD:refs/heads/[**&lt;task-branch&gt;**](#task-branch "○")'
 - Run in the [Unit Checkout](#unit-checkout "○").
 - Require [Successful Merge](#successful-merge "○") before executing the command.
 
-- Provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
+- After the push, provide [Branch Result](#branch-result) with the updated branch, or [Failure](#failure).
 
 ### Create Pull Request Worktree
 
