@@ -12,6 +12,8 @@ The fix places each specification in the step that runs it across the shared gui
 
 | Artifact | What it holds |
 | --- | --- |
+| [F00 work item](f00.md) | The files the hot-fix changes and its plan |
+| [Test results](test-results.md) | The checks run for F00, the revision tested and each result |
 
 ## Links
 
