@@ -22,7 +22,7 @@ Validates one system change on the live sidecar: the MVW first, then a specimen 
 
 1. **Clone.**  Clone the target at `<projects-root>/workflow-server` so origin derivation yields `owner/repo`. A `working_directory` outside the bind returns `unmapped-root`. That clone is the checkout under work. Planning is written at `<project>/.engineering/artifacts/planning` of the primary project checkout, not in the clone and not in a worktree.
 2. **Worktree.**  If a specimen must edit the changed files, add a worktree of that branch under the projects root and pass it as `working_directory`. Planning still goes to the primary project checkout.
-3. **Reload.**  Reload:
+3. **Reload.**  Run the reload script:
 
    ```bash
    ./tests/scripts/reload-exp-sidecar.sh \
