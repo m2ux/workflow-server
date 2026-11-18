@@ -66,9 +66,9 @@ Each procedure file's sections, in order, and the ones it requires. A blank cell
   - A script used several ways has a spec for each use.
 - **In the step that runs it.**
   - A specification sits in the procedure step that runs it: its description, detail and command block. No file takes a Commands section.
-  - A specification several steps run, or a step of another file runs, is a sub-section of the procedure in the file owning its subject, and those steps run it.
-  - A specification no procedure runs has no step to hold it, so it stays with the section whose prose or sibling specification names it.
-  - A caller is a procedure that runs the command. A sibling specification, and any passage of prose naming a command, does not make the file holding it a caller.
+  - A specification several steps run, a step of another file runs, or text outside its step links to, is a sub-section of the procedure in the file owning its subject, and those steps run it.
+  - A specification no procedure runs has no step to hold it, so it stays with the section whose prose or sibling specification names it; in a mode file, whose commands stand in its procedure, it is a sub-section of the procedure.
+  - A caller is a procedure that runs the command. A specification standing outside any step, and any passage of prose naming a command, does not make the file holding it a caller.
   - A procedure is a section carrying numbered steps, whatever its heading names it. The step is the author stating that the reader performs these, in this order, and is the only place a file records that.
   - Prose runs nothing whatever its mood, order or count: a sentence routing three commands in sequence names them as a statement of what one command does names it. State a route as steps to call them.
   - SKILL.md holds no specification. A command the entry point names is specified in the step that runs it.

@@ -33,36 +33,6 @@ Author and Audit use the same captured inventory, applicability matrices and evi
 4. **Check the proposed inventory.**
    Read [Identity](#identity), then assign [independent inventory verification](audit-dispatch.md#phases). Verifiers derive expected items and relationships from captured sources and the corpus manifest. They compare the proposed rows, complete AP/DP inventory, diagnostics and unselected files against those expectations. Automated extraction is a candidate inventory, including unresolved reference candidates; it does not establish completeness.
 
-### Submit Audit Results
-
-Validate a typed return and preserve its immutable receipt.
-
-- Invalid returns cannot partially change state; valid partial results leave the residual incomplete.
-
-```bash
-python3 <skill-root>/scripts/audit_surface.py submit --run <run> --receipt <receipt.json>
-```
-
-### Reset Audit Cells
-
-Reopen selected decisions and invalidate dependent evidence and assignments.
-
-- Supply a JSON array of cell IDs and the correction reason.
-
-```bash
-python3 <skill-root>/scripts/audit_surface.py reset --run <run> --items <items.json> --reason '<reason>'
-```
-
-### Retry Audit Assignment
-
-Retire interrupted ownership so its unresolved work can be planned again.
-
-- Accepted items remain settled. Record why the worker stopped and recalibrate excessive estimates.
-
-```bash
-python3 <skill-root>/scripts/audit_surface.py retry --run <run> --assignment <id> --reason '<reason>'
-```
-
 ## Reference
 
 ### Identity
@@ -96,11 +66,72 @@ Shared reasons name the exact assigned row set and hold for every member. A clea
 
 After all decisions are `A` or `N`, independent verifiers check every cell, including every exclusion, against the original criterion and source. They cannot verify cells they mapped. The receipt binds the exact mapping reason, disposition and evidence. Disputes return to the coordinator for correction through [reset](#reset-audit-cells) or [refresh](#refresh-audit-surface), then fresh verification. Open the evaluation gate only when [status requires the map](#check-audit-status) successfully.
 
+##### Check Audit Status
+
+Reconcile current evidence, rendered views and outstanding obligations.
+
+- Require `map` before evaluation and `complete` before claiming completion; omit `--require` for status only.
+- Output contains bounded counts, the generation identity and artifact paths. Read the relevant coverage section or assignment packet for individual residuals.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py status --run <run> --require <map-or-complete>
+```
+
+##### Reset Audit Cells
+
+Reopen selected decisions and invalidate dependent evidence and assignments.
+
+- Supply a JSON array of cell IDs and the correction reason.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py reset --run <run> --items <items.json> --reason '<reason>'
+```
+
+##### Refresh Audit Surface
+
+Capture current inputs and invalidate a changed generation.
+
+- Add `--scope <scope.json>` for inventory corrections. Identical generations retain evidence; changed generations archive prior state.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py refresh --run <run>
+```
+
+##### Render Audit Surface
+
+Regenerate matrices, evidence and reports from canonical state.
+
+- Changed source evidence requires refresh.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py render --run <run>
+```
+
+##### Run Audit Script Tests
+
+Run inventory, evidence-gate and assignment regressions with the paired parser.
+
+- Run from the skill worktree. Synthetic judgments test coordination, not semantic corpus conformance.
+
+```bash
+CANON_TEST_ENGINE=<engine-root> python3 -m unittest discover -s skills/workflow-canon/test -p 'test_audit_*.py'
+```
+
 ### Evaluation
 
 #### Worker Obligations
 
 Assign the verified applicable cells through [dispatch](audit-dispatch.md#phases). Workers follow the complete [walk rules](walk-rules.md), read the full source and required relationship context, and return evidence for each pass, finding or blockage. Reconcile returns through the typed [receipt](audit-dispatch.md#returns). Whole-file reads, supplemental units, selected project checks and independent finding confirmation are separate obligations. A command result carries its command, working directory, exit status and captured output; an unmeasured check stays blocked.
+
+##### Submit Audit Results
+
+Validate a typed return and preserve its immutable receipt.
+
+- Invalid returns cannot partially change state; valid partial results leave the residual incomplete.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py submit --run <run> --receipt <receipt.json>
+```
 
 #### Remediation Authority
 
@@ -129,6 +160,16 @@ Coverage completion and conformance are separate. Confirmed violations can have 
 - **Author byte agreement.**
   Before applying a verified draft, compare its captured source hashes with the bytes to write. After writing, capture the actual working tree and run its selected checks. Reuse evidence only for an identical generation; changed roots, contracts or candidate bytes require their current verification. A draft-only request makes no commit-completion claim.
 
+#### Retry Audit Assignment
+
+Retire interrupted ownership so its unresolved work can be planned again.
+
+- Accepted items remain settled. Record why the worker stopped and recalibrate excessive estimates.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py retry --run <run> --assignment <id> --reason '<reason>'
+```
+
 ### Artifacts
 
 | Artifact | Role |
@@ -143,44 +184,3 @@ Coverage completion and conformance are separate. Confirmed violations can have 
 | `audit-report.md` | Generated findings and completion status |
 
 For a workflow-owned report, follow [Workflow Reports](reporting.md#workflow-reports) and transfer the generated counts, residuals and links into that guide's layout. The generated coverage remains authoritative.
-
-### Check Audit Status
-
-Reconcile current evidence, rendered views and outstanding obligations.
-
-- Require `map` before evaluation and `complete` before claiming completion; omit `--require` for status only.
-- Output contains bounded counts, the generation identity and artifact paths. Read the relevant coverage section or assignment packet for individual residuals.
-
-```bash
-python3 <skill-root>/scripts/audit_surface.py status --run <run> --require <map-or-complete>
-```
-
-### Render Audit Surface
-
-Regenerate matrices, evidence and reports from canonical state.
-
-- Changed source evidence requires refresh.
-
-```bash
-python3 <skill-root>/scripts/audit_surface.py render --run <run>
-```
-
-### Refresh Audit Surface
-
-Capture current inputs and invalidate a changed generation.
-
-- Add `--scope <scope.json>` for inventory corrections. Identical generations retain evidence; changed generations archive prior state.
-
-```bash
-python3 <skill-root>/scripts/audit_surface.py refresh --run <run>
-```
-
-### Run Audit Script Tests
-
-Run inventory, evidence-gate and assignment regressions with the paired parser.
-
-- Run from the skill worktree. Synthetic judgments test coordination, not semantic corpus conformance.
-
-```bash
-CANON_TEST_ENGINE=<engine-root> python3 -m unittest discover -s skills/workflow-canon/test -p 'test_audit_*.py'
-```
