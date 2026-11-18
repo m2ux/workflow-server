@@ -71,7 +71,7 @@ from lane import check_unit, read_lanes
 
 LINK = re.compile(r'\[([^\]]*)\]\([^)]*\)')
 NUMBERED = re.compile(r'\[#(\d+)\]\(([^)]*)\)')
-ISSUE_LINK = re.compile(r'/issues/(\d+)/?(?:[#?].*)?$')
+ISSUE_LINK = re.compile(r'github\.com/[^/]+/[^/]+/issues/(\d+)/?(?:[#?].*)?$')
 RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
 TASK = re.compile(r'E\d\d:W\d\d')
 EPIC = re.compile(r'E\d\d')
