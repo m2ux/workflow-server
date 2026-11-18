@@ -114,5 +114,18 @@
         "evidence": "https://github.com/m2ux/workflow-server/commit/fbecce7d8479f2d3107ff5100508007e6b22345a"
       }
     ]
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1731",
+    "base": "3ea815122e6d1f79e05b032ed78ef93c32ec0bd7",
+    "base_ref": "workspace",
+    "head": "97c5e56d501bc611c22ce879674d71aea2de5830",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-18-1725-f00-command-specifications-in-steps/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (coordinator review)",
+    "reviewed_at": "2026-11-18",
+    "scope": "fbecce7d8..97c5e56d5: one line in skills/server-in-the-loop/references/loop-mode.md, step 3 reading \"Run the reload script:\" for the repeated \"Reload:\", as the user chose for the held question. The user accepted the other four held items as they stand.",
+    "criteria": "AC1: skills/guidelines.md Commands rules write a single step's command in the step and make shared ones operations, with no Commands section; shared suite passes. AC2: test_a_commands_section_is_reported_wherever_it_stands and test_a_specifications_key_is_refused; the check over skills/ reports Commands sections in workflow-canon alone. AC3: every work-planner specification stands in its step or an operation its steps Apply, with its contract links; the work-planner suite and the check over it pass. AC4: the check reports no finding for server-in-the-loop, and the vendored gitnexus skills stand outside it by the rule skills/guidelines.md states.",
+    "validation": "At 97c5e56d5: check_skill_files.py over skills/server-in-the-loop reports 3 files checked, 0 findings. The change touches no script, test or other skill.",
+    "findings": []
   }
 ]
