@@ -12,6 +12,8 @@ The fix has a linked entry resolve by its link, an unlinked number by the row's 
 
 | Artifact | What it holds |
 | --- | --- |
+| [F20 work item](f20.md) | The files the hot-fix changes and its plan |
+| [Test results](test-results.md) | The checks run for F20, the revision tested and each result |
 
 ## Links
 
@@ -19,3 +21,4 @@ The fix has a linked entry resolve by its link, an unlinked number by the row's 
 | --- | --- |
 | Hot-fix issue | [[F20] Outside Dependencies](https://github.com/m2ux/workflow-server/issues/1724) |
 | Board | [Work Planner](https://github.com/users/m2ux/projects/17) |
+| Pull request | [#1730](https://github.com/m2ux/workflow-server/pull/1730) |
