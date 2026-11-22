@@ -12,7 +12,8 @@ The change preserves the existing product-branch ancestry gate. A synthetic loca
 
 | Artifact | What it holds |
 | --- | --- |
-| [Review Handoff](handoff.json) | Confirmed ready head, In Review status and required human approval |
+| [Delivery Handoff](handoff.json) | Confirmed merged head, completed issue and Done status |
+| [Closeout](closeout.json) | Exact merged-tree equality, file hashes, Development closure gate and board readbacks |
 | [Agent Review](agent-review.json) | Exact-head integration review, fixed guidance finding and source-bound validation |
 | [Validation](validation.md) | Candidate revision, checks, observations and limits |
 | [Focused Results](regressions.txt) | Synthetic local-Git and branch-reader regression output |

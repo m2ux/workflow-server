@@ -4,16 +4,16 @@
   "base": "3ea815122e6d1f79e05b032ed78ef93c32ec0bd7",
   "base_ref": "workspace",
   "draft": false,
-  "merged": false,
+  "merged": true,
   "board": "users/m2ux/projectsV2/17",
-  "status": "In Review",
+  "status": "Done",
   "criteria_verified": [
     "AC1",
     "AC2",
     "AC3"
   ],
   "agent_review": "agent-review.json",
-  "remaining_boundary": "Target active rules require one approving human review before merge.",
+  "remaining_boundary": null,
   "source_bound_tests": {
     "runtime_baseline": "c67ad13692b278dbdef431ac8c295dac8771907e",
     "total": 1204,
@@ -22,5 +22,11 @@
     "final_head_focused_and_docs": 66,
     "executable_ast_matches_baseline": true
   },
-  "recorded_at": "2026-11-22T20:40:48.616950+00:00"
+  "recorded_at": "2026-11-22T21:02:58.732906+00:00",
+  "merge_commit": "9a5f10ee96a38ee70cf52239067b2b17cf58ae64",
+  "merged_at": "2026-11-22T20:53:05Z",
+  "merged_by": "m2ux",
+  "issue_state": "closed",
+  "issue_state_reason": "completed",
+  "closeout": "closeout.json"
 }

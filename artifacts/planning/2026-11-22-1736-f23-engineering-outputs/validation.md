@@ -1,6 +1,6 @@
 # F23 validation
 
-Candidate: [07956cf6cd0e5dc130eeb0230e4ee8940a6894fb](https://github.com/m2ux/workflow-server/commit/07956cf6cd0e5dc130eeb0230e4ee8940a6894fb), target workspace. All fixtures use synthetic issue records and temporary local Git repositories; no private inputs or remote service calls are required.
+Delivered source: [07956cf6cd0e5dc130eeb0230e4ee8940a6894fb](https://github.com/m2ux/workflow-server/commit/07956cf6cd0e5dc130eeb0230e4ee8940a6894fb), target workspace. All fixtures use synthetic issue records and temporary local Git repositories; no private inputs or remote service calls are required.
 
 ## T1
 
@@ -35,3 +35,7 @@ The [review log](review-checks.txt) records all 66 checks passing in 2.931 secon
 ## Limits
 
 The automated checks use local Git and fixture tracker records. The optional live Development-link test was not run. No model evaluation or external publication evaluation is required. Exact-head hot-fix review and merge readiness are separate delivery gates.
+
+## Delivery Closeout
+
+The user merged PR #1737 as [9a5f10ee96a38ee70cf52239067b2b17cf58ae64](https://github.com/m2ux/workflow-server/commit/9a5f10ee96a38ee70cf52239067b2b17cf58ae64) into workspace. The complete merged tree and reviewed-head tree both equal a9b3c2202ce0dd7849a1e62fdfc231ae5e255c1b; all six changed files in the retained task checkout match their merged blobs. Existing test evidence therefore applies to the delivered source without a new test run. Issue #1736 is completed, its Development field names only merged PR #1737, the closure audit is clear, and Board 17 reads Done. [Closeout](closeout.json) retains the source proof and tracker readbacks.

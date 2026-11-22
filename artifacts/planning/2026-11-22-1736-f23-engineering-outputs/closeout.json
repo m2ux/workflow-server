@@ -1,0 +1,82 @@
+{
+  "repository": "m2ux/workflow-server",
+  "issue": 1736,
+  "pull_request": 1737,
+  "head": "07956cf6cd0e5dc130eeb0230e4ee8940a6894fb",
+  "base_ref": "workspace",
+  "merge_commit": "9a5f10ee96a38ee70cf52239067b2b17cf58ae64",
+  "merged_at": "2026-11-22T20:53:05Z",
+  "merged_by": "m2ux",
+  "reviewed_tree": "a9b3c2202ce0dd7849a1e62fdfc231ae5e255c1b",
+  "merged_tree": "a9b3c2202ce0dd7849a1e62fdfc231ae5e255c1b",
+  "whole_tree_equal": true,
+  "checked_out_head": "07956cf6cd0e5dc130eeb0230e4ee8940a6894fb",
+  "checkout_clean": true,
+  "changed_file_proof": [
+    {
+      "path": "skills/work-planner/artifacts/delivery-branches.md",
+      "blob": "0019b6fb7e025b86c7dbbadedcef35503c38a2fc",
+      "sha256": "a37dbdc757499cd0daa5e6cfc565ce6e49ac71731a1507e87cedf650cb2c6e68"
+    },
+    {
+      "path": "skills/work-planner/scripts/board.py",
+      "blob": "a0438341c435fbc996598d2842e79238e9718df0",
+      "sha256": "307003be323ceacf64021e59a47c7a789092453e7c3e6ae420a8c79b85d328c3"
+    },
+    {
+      "path": "skills/work-planner/scripts/deliver.py",
+      "blob": "138187d41d45fc40ecc80e34b9f3b2fb9b70d808",
+      "sha256": "9b1f3c4070f375de9b3a39812fdbc080b6cc8b74379bfae4e294e2b9bbcb9809"
+    },
+    {
+      "path": "skills/work-planner/test/README.md",
+      "blob": "d0407fc7bfc972f362ee94735c06c41ca9d33798",
+      "sha256": "2c61d826d0bab315dd7a31311f865d826e5e6e5eaa84c1bb3fe6bda0ec493c91"
+    },
+    {
+      "path": "skills/work-planner/test/test_board.py",
+      "blob": "80be15b19ad541753be22f005fbc63e8685e53ae",
+      "sha256": "4572a1e8f9a87100a03e83732fe48dd2495f2fdcc401187ac31cf7b69a641ecf"
+    },
+    {
+      "path": "skills/work-planner/test/test_deliver.py",
+      "blob": "950b2378d8e375390c16f2dd4bd9d516b85227bc",
+      "sha256": "b09f2bcc39ebbee25e5cecc4254f858aa870c0f598c7e9997d6ebd8c6bea26db"
+    }
+  ],
+  "criteria_verified": [
+    "AC1",
+    "AC2",
+    "AC3"
+  ],
+  "issue_state": "closed",
+  "issue_state_reason": "completed",
+  "issue_closed_at": "2026-11-22T21:01:43Z",
+  "development": {
+    "repository": "m2ux/workflow-server",
+    "issues": {
+      "1736": [
+        {
+          "repo": "m2ux/workflow-server",
+          "number": 1737,
+          "state": "MERGED"
+        }
+      ]
+    }
+  },
+  "immediate_closure_gate": "closure gate: passed; normal delivery checks must also pass",
+  "closure_audit": "0 unsupported, 0 unevaluable, 0 not planned",
+  "sync": "#1736 hot-fix (open)\n  linked: F23 delivered by #1737\n  closable: yes",
+  "board": {
+    "owner": "m2ux",
+    "number": 17,
+    "item_id": 314386831,
+    "status_field_id": 422017304,
+    "done_option_id": "98236657",
+    "status": "Done",
+    "write_required": false
+  },
+  "auto_close_linked_merged_issues": "Disabled; explicit user confirmation for this session",
+  "observed_at": "2026-11-22T21:02:58.732906+00:00",
+  "remaining_work": []
+}
