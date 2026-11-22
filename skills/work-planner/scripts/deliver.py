@@ -26,9 +26,11 @@ prerequisite epics its initiative row names are completed, its Done cell carries
 free, and every entry in its own Depends on cell is delivered. A row waits for what it names and for
 nothing a sibling row names, so the rows of one epic start in the order that epic's own graph sets,
 whatever its siblings wait on. An entry naming another epic's row is delivered when that row is and
-each output it delivered is available at this epic's base in the repository --project locates, as
-board.Outputs reads it; that epic's other rows and its closure gate nothing. Tasks that name each
-other in Joins are one unit, and a unit is one session's work.
+each output it delivered is available on its declared branch in the repository --project locates,
+as board.Outputs reads it. Direct commits must reach the remote planning-records branch. Product
+outputs must reach this epic's base on their long-lived branch, or that branch itself while this
+epic has no base there. The producer epic's other rows and its closure gate nothing. Tasks that
+name each other in Joins are one unit, and a unit is one session's work.
 
 A unit's lane comes from the raw Lane cells of its epic task table, read by lane.read_lanes.
 --lane names one opaque decimal index and admits that lane and unlaned units. Without --lane,
