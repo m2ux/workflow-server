@@ -23,5 +23,6 @@ The change preserves the existing product-branch ancestry gate. A synthetic loca
 
 | Resource | Link |
 | --- | --- |
+| Delivery | [Draft PR #1737](https://github.com/m2ux/workflow-server/pull/1737) |
 | Hotfix | [F23 #1736](https://github.com/m2ux/workflow-server/issues/1736) |
 | Board | [Process #17](https://github.com/users/m2ux/projects/17) |
