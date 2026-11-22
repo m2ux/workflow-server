@@ -1,0 +1,26 @@
+{
+  "pull_request": "https://github.com/m2ux/workflow-server/pull/1737",
+  "head": "07956cf6cd0e5dc130eeb0230e4ee8940a6894fb",
+  "base": "3ea815122e6d1f79e05b032ed78ef93c32ec0bd7",
+  "base_ref": "workspace",
+  "draft": false,
+  "merged": false,
+  "board": "users/m2ux/projectsV2/17",
+  "status": "In Review",
+  "criteria_verified": [
+    "AC1",
+    "AC2",
+    "AC3"
+  ],
+  "agent_review": "agent-review.json",
+  "remaining_boundary": "Target active rules require one approving human review before merge.",
+  "source_bound_tests": {
+    "runtime_baseline": "c67ad13692b278dbdef431ac8c295dac8771907e",
+    "total": 1204,
+    "passed": 1203,
+    "optional_live_skipped": 1,
+    "final_head_focused_and_docs": 66,
+    "executable_ast_matches_baseline": true
+  },
+  "recorded_at": "2026-11-22T20:40:48.616950+00:00"
+}

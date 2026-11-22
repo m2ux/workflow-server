@@ -12,6 +12,7 @@ The change preserves the existing product-branch ancestry gate. A synthetic loca
 
 | Artifact | What it holds |
 | --- | --- |
+| [Review Handoff](handoff.json) | Confirmed ready head, In Review status and required human approval |
 | [Agent Review](agent-review.json) | Exact-head integration review, fixed guidance finding and source-bound validation |
 | [Validation](validation.md) | Candidate revision, checks, observations and limits |
 | [Focused Results](regressions.txt) | Synthetic local-Git and branch-reader regression output |
@@ -25,6 +26,6 @@ The change preserves the existing product-branch ancestry gate. A synthetic loca
 
 | Resource | Link |
 | --- | --- |
-| Delivery | [Draft PR #1737](https://github.com/m2ux/workflow-server/pull/1737) |
+| Delivery | [PR #1737](https://github.com/m2ux/workflow-server/pull/1737) |
 | Hotfix | [F23 #1736](https://github.com/m2ux/workflow-server/issues/1736) |
 | Board | [Process #17](https://github.com/users/m2ux/projects/17) |
