@@ -12,6 +12,9 @@ The change preserves the existing product-branch ancestry gate. A synthetic loca
 
 | Artifact | What it holds |
 | --- | --- |
+| [Validation](validation.md) | Candidate revision, checks, observations and limits |
+| [Focused Results](regressions.txt) | Synthetic local-Git and branch-reader regression output |
+| [Suite Results](suite.txt) | Complete Work Planner test result |
 | [Work Item](f23.md) | Declared files, exact behavior and focused verification |
 | [Synthetic Reproduction](reproduce.py) | Current branch-less failure and known-engineering success on local Git repositories |
 | [Reproduction Result](reproduction.json) | The measured unmet/met contrast before implementation |
