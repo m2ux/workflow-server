@@ -80,6 +80,17 @@ class RowPrerequisites(unittest.TestCase):
         self.assertIn('consumer: I02:E00:W01 o/other#9 available on o/other main by o/other#12',
                       board.outputs.lines)
 
+    def test_a_cross_repository_commit_needs_checkout_ancestry_evidence(self):
+        upstream = issue(2, '[I02:E00] Producer: Work', repo='o/other', body=epic_body(
+            (f"[W01]({url('commit', 'b41c0bf3e2201452ba9b9fffe6c681b157a5e946', 'o/other')})",
+             'Produce', '')))
+        key = ('o/r', 3)
+        dependency = f"[I02:E00:W01]({url('issues', 2, 'o/other')})"
+        consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(('W01', 'Consume', dependency)))
+        board = Board({('o/other', 2): upstream, key: consumer}, [], 'o/r')
+        self.assertIs(board.met(dependency, key, {}, 'consumer'), Resolution.UNMET)
+        self.assertIn('o/other engineering needs a checkout to verify its commit', board.outputs.lines[0])
+
     def test_a_cross_repository_output_merged_into_a_task_branch_is_unverified(self):
         upstream = issue(2, '[I02:E00] Producer: Work', repo='o/other',
                          body=epic_body((f"[W01]({url('pull', 9, 'o/other')})", 'Produce', '')))
@@ -132,6 +143,21 @@ class RowPrerequisites(unittest.TestCase):
             (f"[W01]({url('pull', 9)})", 'Produce', ''), ('W02', 'Consume', 'W01')))
         board = Board({key: epic}, [], 'o/r', [pr(9, '[I01:E00] Produce', merged='2026-01-01T00:00:00Z')])
         self.assertIs(board.met('W01', key, {}, 'local'), Resolution.MET)
+
+    def test_delivered_outputs_retain_their_declared_branches(self):
+        key = ('o/r', 2)
+        identity = 'b41c0bf3e2201452ba9b9fffe6c681b157a5e946'
+        commit = url('commit', identity)
+        epic = issue(2, '[I01:E00] Producer: Work', body=epic_body(
+            (f"[W01]({commit}), [W01]({url('pull', 9)})", 'Produce', '')))
+        pull = pr(9, '[I01:E00] Produce', merged='2026-01-01T00:00:00Z', base='i01/e00/main')
+        pull['merge_commit_sha'] = 'product-merge'
+        board = Board({key: epic}, [], 'o/r', [pull])
+        outputs = board.delivered_outputs(key, 'W01')
+        self.assertEqual([(output.identity, output.branch) for output in outputs],
+                         [(identity, 'engineering'), ('product-merge', 'main')])
+        self.assertIsNone(outputs[0].pull)
+        self.assertIs(outputs[1].pull, pull)
 
     def test_a_pushed_commit_beside_an_open_pull_request_leaves_the_row_undelivered(self):
         key = ('o/r', 2)

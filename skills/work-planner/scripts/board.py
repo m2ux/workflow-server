@@ -50,7 +50,7 @@ holds it In Progress.
 The board's Status field offers Backlog, Ready, In Progress and Done, and In Review optionally;
 statuses.py holds the field, the option body files and the fallback for an option the board lacks.
 
-A dependency within an epic is delivered when its task row is, or its issue is closed as completed. A dependency on another epic's task is met when that row is delivered and each output it delivered is available at the consumer's base, as Outputs verifies; the producer epic's other rows and its closure gate nothing. It gates the row naming it and leaves its siblings free. board.py reads no checkout, so an output in the consumer's own repository is unverified here, and a task naming its row stays in Backlog until its session holds it; an output another repository holds is available once it has reached its long-lived branch. An epic starts only after every prerequisite epic its initiative row names is completed. A task row is
+A dependency within an epic is delivered when its task row is, or its issue is closed as completed. A dependency on another epic's task is met when that row is delivered and each output it delivered is available on its declared branch, as Outputs verifies; the producer epic's other rows and its closure gate nothing. It gates the row naming it and leaves its siblings free. board.py reads no checkout, so an output in the consumer's own repository is unverified here, and a task naming its row stays in Backlog until its session holds it; a pull-request output another repository holds is available once it has reached its long-lived branch. An epic starts only after every prerequisite epic its initiative row names is completed. A task row is
 delivered when a linked pull request has merged, or its id links a commit and no pull request. A row that links a task
 issue and no pull request is delivered when that issue is closed as completed. An open pull request
 does not deliver the task. A linked entry names the issue its link names, in whichever repository,
@@ -80,8 +80,8 @@ from typing import NamedTuple
 
 from format import AC, LINK, TICK, cell, done_mark, hrefs, id_cell, reservation, row_id, split_sections
 from statuses import DELIVERY, STATUSES, Changes, Jurisdiction, Key, StatusField, board_items, label
-from sync import (PR_REF, PREFIX, TICKED, Unreadable, attach_links, git, issue_done, issue_key, links_issue,
-                  pull_requests, table)
+from sync import (PR_REF, PREFIX, RECORDS_BRANCH, TICKED, Unreadable, attach_links, git, issue_done, issue_key,
+                  links_issue, pull_requests, table)
 
 TASK = re.compile(r'W\d\d')
 ISSUE_URL = re.compile(r'/issues/(\d+)/?(?:[#?].*)?$')
@@ -183,8 +183,8 @@ def weakest(answers: Iterable[Resolution]) -> Resolution:
 class Output(NamedTuple):
     """One output a delivered producer row carries: the delivery naming it, the repository holding
     it, its commit, the long-lived branch it lands on, and the pull request delivering it. The branch
-    is empty for a linked commit, and for a pull request merged into a ref that is neither an epic
-    base nor a long-lived branch, such as a task branch."""
+    is the planning-records branch for a linked commit, and empty for a pull request merged into a
+    ref that is neither an epic base nor a long-lived branch, such as a task branch."""
     delivery: str
     repo: str
     identity: str
@@ -205,14 +205,14 @@ def off_route(pull: dict) -> str:
 
 
 class Outputs:
-    """Whether an output a producer row delivered is available at its consumer's base commit, read
-    in the repository project locates.
+    """Whether an output a producer row delivered is available on its declared branch, read in
+    the repository project locates.
 
     It is available when its commit is an ancestor of the consumer epic's base on the output's
     long-lived branch, as the remote holds it, or of that branch while the consumer has no base
-    there; a linked commit is read against each base the consumer has. A merge into the producer's
-    own base alone is not availability. Every reading is recorded in lines, naming the producer
-    row, the output, the consumer commit and the answer. An output with no commit, one the checkout
+    there. A linked commit is available on the remote planning-records branch, which has no epic
+    base. A merge into the producer's own base alone is not availability. Every reading is recorded
+    in lines, naming the producer row, the output, the consumer commit and the answer. An output with no commit, one the checkout
     does not hold, one merged into a branch that is neither an epic base nor a long-lived branch, such
     as a task branch, or a reading with no project is unverified, and leaves the row unmet."""
 
@@ -225,15 +225,10 @@ class Outputs:
         return done.stdout.strip() if done.returncode == 0 else ''
 
     def consumer(self, prefix: str, branch: str) -> list[tuple[str, str]]:
-        """The (revision, commit) an output on branch is read against, or every consumer base for
-        a commit on no named branch."""
-        if not branch:
-            if not prefix:
-                return []
-            done = git(self.project, 'for-each-ref', '--format=%(refname:short)', f'refs/remotes/{REMOTE}/{prefix}/')
-            names = done.stdout.split() if done.returncode == 0 else []
-            return [(name, found) for name in names if (found := self.commit(name))]
-        for revision in ([f'{REMOTE}/{prefix}/{branch}'] if prefix else []) + [f'{REMOTE}/{branch}']:
+        """The (revision, commit) an output on branch is read against. Planning records use the
+        remote branch directly; product outputs use the consumer's base when it exists."""
+        names = [f'{REMOTE}/{prefix}/{branch}'] if prefix and branch != RECORDS_BRANCH else []
+        for revision in names + [f'{REMOTE}/{branch}']:
             if found := self.commit(revision):
                 return [(revision, found)]
         return []
@@ -256,7 +251,8 @@ class Outputs:
             return Resolution.UNMET
         targets = self.consumer(prefix, output.branch)
         if not targets:
-            place = '/'.join(part for part in (prefix, output.branch) if part)
+            place = output.branch if output.branch == RECORDS_BRANCH else '/'.join(
+                part for part in (prefix, output.branch) if part)
             self.lines.append(f'{named} {output.identity[:12]} unverified: {REMOTE}/{place} resolves to no commit')
             return Resolution.UNMET
         held = [(revision, found) for revision, found in targets
@@ -327,14 +323,15 @@ class Board:
 
     def delivered_outputs(self, key: Key, task: str) -> list[Output]:
         """The outputs a delivered row carries: the merge commit of each merged pull request it
-        links, on the long-lived branch its base names, and each commit it links."""
+        links, on the long-lived branch its base names, and each linked commit on the
+        planning-records branch."""
         header, found = self.table(key)
         outputs = []
         for link in LINK.finditer(id_cell(header, found[task])):
             href = link[2]
             repo = repo_of(href)
             if '/commit/' in href:
-                outputs.append(Output(href, repo, href.rstrip('/').rsplit('/', 1)[-1], ''))
+                outputs.append(Output(href, repo, href.rstrip('/').rsplit('/', 1)[-1], RECORDS_BRANCH))
             elif (pr := self.pulls.get(href)) and pr.get('merged_at'):
                 base = (pr.get('base') or {}).get('ref') or ''
                 outputs.append(Output(label((repo, pr['number']), self.home), repo,
@@ -342,12 +339,13 @@ class Board:
         return outputs
 
     def integrated(self, output: Output, why: str) -> Resolution:
-        """Whether an output another repository holds has reached its long-lived branch: it was
-        delivered to that branch, or a pull request merging its epic base into the branch merged
-        after it."""
+        """Whether a pull-request output another repository holds has reached its long-lived
+        branch: delivered there, or carried by a later integration. A direct commit needs a
+        checkout of its repository to verify its ancestry on the planning-records branch."""
         named = f'{why}: {output.delivery}'
         if output.pull is None:
-            self.outputs.lines.append(f'{named} unverified: {output.repo} holds it on no named branch')
+            self.outputs.lines.append(f'{named} unverified: {output.repo} {output.branch} '
+                                      'needs a checkout to verify its commit')
             return Resolution.UNMET
         if not output.branch:
             self.outputs.lines.append(f'{named} unverified: {off_route(output.pull)}')
@@ -370,8 +368,9 @@ class Board:
 
     def outputs_available(self, key: Key, task: str, home: Key, producer: str, why: str) -> Resolution:
         """Whether every output a delivered row of another epic carries is available to the row
-        naming it: at the consumer's base where the consumer's repository holds the output, and on
-        its long-lived branch where another repository does. producer is the entry as written."""
+        naming it: on the planning-records branch for a linked commit, at the consumer's base for
+        a product output, and on its long-lived branch for a pull request another repository holds.
+        producer is the entry as written."""
         outputs = [output._replace(delivery=f'{producer} {output.delivery}')
                    for output in self.delivered_outputs(key, task)]
         if not outputs:
