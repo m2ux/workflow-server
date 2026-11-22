@@ -518,14 +518,14 @@ The successful result of merging the fetched source into the checked-out branch.
 
 ### Producer Outputs
 
-A task row naming another epic's row starts once that row is delivered and each output it delivered is available at the consumer's base commit.
+A task row naming another epic's row starts once that row is delivered and each output it delivered is available on its declared branch.
 
 - **The output.**
-  Each merged pull request the producer row links carries its merge commit, on the long-lived branch its base names. Each commit the row links is an output of its own.
+  Each merged pull request the producer row links carries its merge commit, on the long-lived branch its base names. Each commit the row links is an output on the [planning-records branch](../configuration.md#planning-records), which takes direct pushes and has no epic base.
 - **Available.**
-  The output is an ancestor of the consumer epic's base on that branch, as the remote holds it at the evaluated commit, or of the long-lived branch itself while the consumer has no base there. An output another repository holds is available once it has reached its long-lived branch: delivered there, or carried by an integration pull request merged after it.
+  A linked commit is an ancestor of the remote planning-records branch. A product output is an ancestor of the consumer epic's base on its branch, as the remote holds it at the evaluated commit, or of the long-lived branch itself while the consumer has no base there. A pull-request output another repository holds is available once it has reached its long-lived branch: delivered there, or carried by an integration pull request merged after it.
 - **Not available.**
-  A merge into the producer's own base alone, a merge into a ref that is neither an epic base nor a long-lived branch, such as a task branch, an output recording no merge commit, a commit the checkout does not hold, and a consumer base moved to a commit without the output each leave the row waiting.
+  A merge into the producer's own base alone, a merge into a ref that is neither an epic base nor a long-lived branch, such as a task branch, an output recording no merge commit, a commit the checkout does not hold, a planning commit absent from the remote planning-records branch, and a consumer product base moved to a commit without the output each leave the row waiting.
 - **Not gates.**
   The producer epic's other rows and its closure.
 - **Record.**

@@ -771,8 +771,8 @@ class DispatchStatus(unittest.TestCase):
 
 class ProducerOutputs(unittest.TestCase):
     """A row naming another epic's row starts once that row is delivered and each output it
-    delivered is available at the consumer's base commit, whatever the producer's other rows and
-    its closure.
+    delivered is available on its declared branch, whatever the producer's other rows and its
+    closure.
 
     The checkout holds the producer's merge commit on its own base, origin/i07/e00/main, and the
     consumer's base, origin/i07/e01/main, starts without it."""
@@ -800,8 +800,9 @@ class ProducerOutputs(unittest.TestCase):
         git(self.checkout, 'update-ref', '-d', f'refs/remotes/origin/{branch}')
 
     def survey(self, merge: str | None = 'produced', *args: str, base: str = 'i07/e00/main',
-               link: str | None = None) -> str:
-        producer = epic(943, (f"[W01]({link or url('pull', 9)})", 'Produce', '', ''),
+               links: tuple[str, ...] = ()) -> str:
+        ident = ', '.join(f'[W01]({link})' for link in links or (url('pull', 9),))
+        producer = epic(943, (ident, 'Produce', '', ''),
                         ('W02', 'Unrelated', '', ''))
         consumer = epic(944, ('W01', 'Independent work', '', ''),
                         ('W02', 'Consume', f"[E00:W01]({url('issues', 943)})", ''), which='07:E01')
@@ -848,15 +849,57 @@ class ProducerOutputs(unittest.TestCase):
                 self.assertIn(f'output #944 W02: E00:W01 #9 {self.produced[:12]} unverified: it merged into '
                               f'{base}, which is neither an epic base nor a long-lived branch', output)
 
-    def test_a_linked_commit_is_read_against_each_consumer_base(self):
-        link = url('commit', self.produced)
-        output = self.survey(link=link)
-        self.assertIn('blocked I07:E01:W02', output)
-        self.assertIn(f'{self.produced[:12]} absent at origin/i07/e01/main {self.start[:12]}', output)
-        self.point('i07/e01/workspace', self.produced)
-        output = self.survey(link=link)
+    def test_a_pushed_engineering_output_is_available_without_product_ancestry(self):
+        self.point('engineering', self.produced)
+        output = self.survey(links=(url('commit', self.produced),))
         self.assertIn('unit I07:E01:W02', output)
-        self.assertIn(f'{self.produced[:12]} available at origin/i07/e01/workspace {self.produced[:12]}', output)
+        self.assertIn(f'{self.produced[:12]} available at origin/engineering {self.produced[:12]}', output)
+        self.assertEqual(git(self.checkout, 'rev-parse', 'origin/i07/e01/main'), self.start)
+
+    def test_an_engineering_epic_ref_does_not_shadow_published_evidence(self):
+        self.point('engineering', self.produced)
+        self.point('i07/e01/engineering', self.start)
+        output = self.survey(links=(url('commit', self.produced),))
+        self.assertIn('unit I07:E01:W02', output)
+        self.assertIn('available at origin/engineering', output)
+
+    def test_engineering_without_a_remote_ref_stays_unavailable(self):
+        git(self.checkout, 'branch', 'engineering', self.produced)
+        self.point('i07/e01/engineering', self.produced)
+        self.point('i07/e01/main', self.produced)
+        output = self.survey(links=(url('commit', self.produced),))
+        self.assertIn('blocked I07:E01:W02', output)
+        self.assertIn('unverified: origin/engineering resolves to no commit', output)
+
+    def test_a_local_engineering_commit_absent_from_the_remote_stays_unavailable(self):
+        git(self.checkout, 'branch', 'engineering', self.produced)
+        self.point('engineering', self.start)
+        self.point('i07/e01/engineering', self.produced)
+        self.point('i07/e01/main', self.produced)
+        output = self.survey(links=(url('commit', self.produced),))
+        self.assertIn('blocked I07:E01:W02', output)
+        self.assertIn(f'{self.produced[:12]} absent at origin/engineering {self.start[:12]}', output)
+
+    def test_a_missing_engineering_commit_stays_unavailable(self):
+        self.point('engineering', self.produced)
+        output = self.survey(links=(url('commit', '0123456789abcdef0123456789abcdef01234567'),))
+        self.assertIn('blocked I07:E01:W02', output)
+        self.assertIn('unverified: 0123456789ab is not in the checkout', output)
+
+    def test_mixed_outputs_require_engineering_and_product_availability(self):
+        links = (url('commit', self.produced), url('pull', 9))
+        self.point('engineering', self.produced)
+        output = self.survey(links=links)
+        self.assertIn('blocked I07:E01:W02', output)
+        self.assertIn('available at origin/engineering', output)
+        self.assertIn(f'#9 {self.produced[:12]} absent at origin/i07/e01/main', output)
+        self.point('i07/e01/main', self.produced)
+        self.assertIn('unit I07:E01:W02', self.survey(links=links))
+        self.point('engineering', self.start)
+        output = self.survey(links=links)
+        self.assertIn('blocked I07:E01:W02', output)
+        self.assertIn('absent at origin/engineering', output)
+        self.assertIn(f'#9 {self.produced[:12]} available at origin/i07/e01/main', output)
 
     def test_missing_evidence_is_rejected(self):
         output = self.survey(None)
