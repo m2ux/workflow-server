@@ -12,6 +12,7 @@ The change preserves the existing product-branch ancestry gate. A synthetic loca
 
 | Artifact | What it holds |
 | --- | --- |
+| [Agent Review](agent-review.json) | Exact-head integration review, fixed guidance finding and source-bound validation |
 | [Validation](validation.md) | Candidate revision, checks, observations and limits |
 | [Focused Results](regressions.txt) | Synthetic local-Git and branch-reader regression output |
 | [Review Checks](review-checks.txt) | Focused regressions and documentation checks for the dispatch guidance correction |

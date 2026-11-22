@@ -1,0 +1,22 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1737",
+    "head": "07956cf6cd0e5dc130eeb0230e4ee8940a6894fb",
+    "base": "3ea815122e6d1f79e05b032ed78ef93c32ec0bd7",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-22-1736-f23-engineering-outputs/agent-review.json",
+    "reviewer": "Codex coordinator /root",
+    "reviewed_at": "2026-11-22T20:38:17.271142+00:00",
+    "scope": "Complete six-file integration diff, changed Output/Outputs/Board definitions, deliver.survey consumer and same/foreign repository routes; producer-output operation, task delivery ownership and existing RECORDS_BRANCH; real-Git board/delivery fixtures and test catalogue. The five-file runtime change at c67 plus the module-guidance delta at this head were inspected. No unrelated observation is excluded. No concurrency or remote-service guarantee is inferred from local fixtures.",
+    "criteria": "AC1: direct engineering commit is checked only on origin/engineering and admits a dependent consumer without product ancestry. AC2: missing/unpublished engineering, rogue engineering refs, producer-only product merges and incomplete mixed output sets remain blocked. AC3: output-reader comments, Producer Outputs and dispatch module guidance state the same branch rules.",
+    "validation": "At runtime baseline c67: full suite runs1204 checks,1203 pass and1 optional live Development-link test is skipped; focused24 pass. At final07956:66 focused/documentation checks pass and help invocation exits0. Root independently confirms executable AST equality after removing only the changed module docstring. Reused full-suite evidence remains explicitly pinned to c67; no fresh full-suite run at07956 or CI/live-service pass is claimed. Published validation links contain the original and final-head evidence.",
+    "findings": [
+      {
+        "description": "Dispatch module guidance required every output at the consumer product base, contradicting the engineering-output rule. Its module docstring now states the declared branch rules; argparse does not render this text in help, and no runtime or help-rendering change is claimed.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/07956cf6cd0e5dc130eeb0230e4ee8940a6894fb"
+      }
+    ]
+  }
+]
