@@ -1,0 +1,12 @@
+{
+  "synthetic": true,
+  "network_calls": 0,
+  "product_base_contains_evidence": false,
+  "engineering_contains_evidence": true,
+  "branchless_result": "Resolution.UNMET",
+  "known_engineering_result": "Resolution.MET",
+  "readings": [
+    "consumer W05: pushed planning commit e32f3e46ef73 absent at origin/i02/e21/main d6f11124b9d7",
+    "consumer W05: same known planning commit e32f3e46ef73 available at origin/engineering e32f3e46ef73"
+  ]
+}
