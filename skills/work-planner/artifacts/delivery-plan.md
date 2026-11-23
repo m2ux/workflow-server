@@ -2,7 +2,7 @@
 
 The available units, held units, blocked work and merge candidates for one board.
 
-## Commands
+## Operations
 
 ### Compute Available Work
 

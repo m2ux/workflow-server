@@ -22,7 +22,7 @@ Apply [Write Issue Table](issue-body.md#write-issue-table "ƒ") with [Task Rows]
 
 - Fill the epic-specific cells.
 - Each row must meet [Work Breakdown](#work-breakdown).
-- Run [Write Lane Assignments](lane.md#write-lane-assignments "ƒ") with the populated body, confirmed task-to-index map and output path.
+- Apply [Write Lane Assignments](lane.md#write-lane-assignments "ƒ") with the populated body, confirmed task-to-index map and output path.
 
 #### 4. Build Draft Snapshot
 
@@ -105,11 +105,9 @@ The agreed disposition of criteria a delivered row left unmet.
 
 #### 3. Reconcile Revised Delivery
 
-- Run [Sync Epic](#sync-epic "ƒ") for the revised epic in the project checkout with the same fetched epic bases.
+- Apply [Sync Epic](#sync-epic "ƒ") for the revised epic in the project checkout with the same fetched epic bases.
 - Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ") with the provided body.
 - Provide [Row Result](#row-result) with the saved row and criterion disposition.
-
-## Commands
 
 ### Sync Epic
 

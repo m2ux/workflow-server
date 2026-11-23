@@ -27,7 +27,7 @@ Take the user’s stated and confirmed goal from [Goal Evidence](#goal-evidence)
 
 - Read each local source in [Requirement References](initiative-issue-body.md#requirement-references) at its checkout path, retaining any supplied [Source Evidence](initiative-issue-body.md#source-evidence).
 
-- For a pinned GitHub blob, Run [Fetch Source](initiative-issue-body.md#fetch-source "ƒ") with its repository, path and pinned revision, saving it at [Output Files](initiative-issue-body.md#output-files).
+- For a pinned GitHub blob, Apply [Fetch Source](initiative-issue-body.md#fetch-source "ƒ") with its repository, path and pinned revision, saving it at [Output Files](initiative-issue-body.md#output-files).
 
 - Fetch other URLs through the harness's web access.
 

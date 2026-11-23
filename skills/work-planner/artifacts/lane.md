@@ -2,7 +2,7 @@
 
 A board-wide delivery lane, its task assignments and the units a request admits.
 
-## Commands
+## Operations
 
 ### Read Lane Assignments
 

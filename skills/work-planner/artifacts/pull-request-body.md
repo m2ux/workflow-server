@@ -10,7 +10,17 @@ One body file checked against the [Template](#template), or against [Review Body
 
 #### 1. Check Body Against Template
 
-Run [Check Pull Request Body](#check-pull-request-body "ƒ") for the [Body File](#body-file).
+Check Pull Request Body for the [Body File](#body-file).
+
+Check one body file against its template and provide [Body Findings](#body-findings "●") to the requester.
+
+Exit 1 means the body has a finding.
+
+<big><pre>
+[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/pull_request_body.py '[**&lt;body-file&gt;**](#body-file "○")'
+</pre></big>
+
+- An epic review body adds `--review`, which holds it to [Review Body](#review-body).
 
 #### 2. Provide Body Findings
 
@@ -35,20 +45,6 @@ The current change carried by one epic base.
 #### 3. Provide Updated Body
 
 Provide the complete [updated body](#output-body) file to the caller.
-
-## Commands
-
-### Check Pull Request Body
-
-Check one body file against its template and provide [Body Findings](#body-findings "●") to the requester.
-
-Exit 1 means the body has a finding.
-
-<big><pre>
-[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/pull_request_body.py '[**&lt;body-file&gt;**](#body-file "○")'
-</pre></big>
-
-- An epic review body adds `--review`, which holds it to [Review Body](#review-body).
 
 ## Fields
 

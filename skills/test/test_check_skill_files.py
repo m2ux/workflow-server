@@ -24,24 +24,22 @@ STRUCTURE = {
     'modes': {
         'sections': ['Prerequisites', 'Procedure', 'Outcomes', 'Guidance', 'Operations'],
         'required': ['Procedure', 'Outcomes'],
-        'specifications': 'Operations',
     },
     'protocols': {
         'sections': ['Prerequisites', 'Procedure', 'Guidance'],
         'required': ['Procedure'],
     },
     'artifacts': {
-        'sections': ['Prerequisites', 'Operations', 'Fields', 'Guidance', 'Commands'],
+        'sections': ['Prerequisites', 'Operations', 'Fields', 'Guidance'],
         'required': ['Fields'],
         'procedures': 'Operations',
-        'keeps_commands': True,
     },
     '*-mode.md': {
-        'sections': ['Prerequisites', 'Procedure', 'Reference', 'Rules', 'Commands'],
+        'sections': ['Prerequisites', 'Procedure', 'Reference', 'Rules'],
         'required': ['Procedure', 'Rules'],
     },
     '*': {
-        'sections': ['Prerequisites', 'Procedure', 'Reference', 'Rules', 'Commands'],
+        'sections': ['Prerequisites', 'Procedure', 'Reference', 'Rules'],
         'required': ['Procedure'],
     },
 }
@@ -94,11 +92,10 @@ class SkillFileChecks(unittest.TestCase):
     def findings(self):
         files = sorted(self.skill.rglob('*.md'))
         declared = {}
-        cited, called = checker.citations(files, declared)
         cache = {}
         out = []
         for path in files:
-            out += checker.check(path, self.root, cache, cited, called, declared)
+            out += checker.check(path, self.root, cache, declared)
         return [(Path(where).name, line, kind) for where, line, kind, _ in out]
 
     def kinds(self):
@@ -117,46 +114,17 @@ class SkillFileChecks(unittest.TestCase):
                     '## Procedure\n\n' + body + '\n## Guidance\n\n'
                     'See [Advice](../artifacts/issue.md#advice).\n')
                 issue = self.write('artifacts/issue.md',
-                    '# Issue\n\n## Fields\n\n### Identity\n\nNumber.\n\n'
-                    '### Advice\n\nContext.\n\n## Commands\n\n### Fetch Issue\n\nFetches one.\n\n'
+                    '# Issue\n\n## Operations\n\n### Fetch Issue\n\nFetches one.\n\n'
                     '#### Fetch Issue Inputs\n\n[Identity](#identity)\n\n'
-                    '#### Fetch Issue Invocation\n\nAccess the issue.\n')
+                    '#### Fetch Issue Invocation\n\nAccess the issue.\n\n'
+                    '## Fields\n\n### Identity\n\nNumber.\n\n### Advice\n\nContext.\n')
                 kinds = {target: kind for _, target, kind in checker.citation_kinds(protocol, structure['protocols'])}
                 self.assertEqual(kinds, {'../artifacts/issue.md#identity': checker.PREREQUISITE_READ,
                     '../artifacts/issue.md#fetch-issue': checker.STEP,
                     '../artifacts/issue.md#advice': checker.DESCRIPTIVE})
                 _, called = checker.citations([protocol, issue], {})
-                self.assertEqual(called[issue], {'fetch-issue': {protocol}})
+                self.assertEqual(called[issue]['fetch-issue'], {protocol})
                 self.assertEqual(self.findings(), [])
-
-    def test_sectioned_command_context_is_required_reach_without_an_execution_caller(self):
-        path = self.write('artifacts/issue.md',
-            '# Issue\n\n## Operations\n\n### Read Issue\n\n'
-            '#### Read Issue Procedure\n\nRun [Fetch Issue](#fetch-issue).\n\n'
-            '## Fields\n\n### Identity\n\nNumber.\n\n'
-            '## Commands\n\n### Fetch Issue\n\nFetches one.\n\n'
-            '#### Fetch Issue Inputs\n\n[Identity](#identity)\n\n'
-            '#### Fetch Issue Invocation\n\nSee [Context](context.md#fields).\n')
-        self.write('artifacts/context.md', '# Context\n\n## Fields\n\nText.\n')
-        kinds = {target: kind for _, target, kind in checker.citation_kinds(path, STRUCTURE['artifacts'])}
-        self.assertEqual(kinds['#fetch-issue'], checker.STEP)
-        self.assertEqual(kinds['#identity'], checker.SPECIFICATION)
-        self.assertEqual(kinds['context.md#fields'], checker.SPECIFICATION)
-        _, called = checker.citations([path], {})
-        self.assertEqual(called[path], {'fetch-issue': {path}})
-        self.assertEqual(self.findings(), [])
-
-    def test_heading_procedure_keeps_unused_subject_specifications_visible(self):
-        structure = json.loads(json.dumps(STRUCTURE))
-        structure['protocols']['procedures'] = 'Procedure'
-        declare(self.skill, structure)
-        self.write('protocols/intake.md', '# Intake\n\n## Procedure\n\n'
-                   '### 1. Read the Issue\n\nRun [Fetch Issue](../artifacts/issue.md#fetch-issue).\n\n'
-                   '### 2. Return the Issue\n\nReturn it.\n')
-        self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\nNumber.\n\n'
-                   '## Commands\n\n### Fetch Issue\n\nFetches one.\n\n'
-                   '### Write Issue\n\nWrites one.\n')
-        self.assertEqual(self.findings(), [('issue.md', 13, 'command specification nothing cites')])
 
     def scoped_operations(self):
         structure = json.loads(json.dumps(STRUCTURE))
@@ -317,167 +285,28 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(self.findings(), [])
 
     CATALOG = '# Catalog\n\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n'
-    LISTING = ('# Commands\n\n## Conventions\n\n### Execution\n\nWhere every command runs.\n'
-               '\n## Issues\n\n### Fetch issue\n\nFetches one issue.\n')
     MODE = '# Plan mode\n\nWhat the mode does.\n'
     PROCEDURE = '\n## Procedure\n\n1. **Open.**  The first step.\n'
     RULES = '\n## Rules\n\n- **Scope.**  One sentence.\n'
 
-    def test_a_specification_cited_from_one_other_file_is_reported(self):
-        self.write('references/catalog.md', self.CATALOG)
-        self.write('references/plan.md', calling('Plan', 'catalog.md#fetch-issue'))
-        self.assertIn('command specification with one caller', self.kinds())
+    def test_a_commands_section_is_reported_wherever_it_stands(self):
+        for name in ('SKILL.md', 'references/catalog.md', 'references/plan-mode.md', 'artifacts/issue.md'):
+            with self.subTest(name=name):
+                self.write(name, self.CATALOG)
+                self.assertIn(('catalog.md' if 'catalog' in name else Path(name).name, 3, 'Commands section'),
+                              self.findings())
+                (self.skill / name).unlink()
 
-    def test_a_specification_several_files_cite_stands(self):
-        self.write('references/catalog.md', self.CATALOG)
-        self.write('references/plan.md', calling('Plan', 'catalog.md#fetch-issue'))
-        self.write('references/sync.md', calling('Sync', 'catalog.md#fetch-issue'))
+    def test_a_guides_commands_rules_are_no_commands_section(self):
+        self.write('references/guidelines.md', '# Guidelines\n\n## Commands\n\n'
+                   '- **One spec per operation.**  Every command has a sub-section.\n')
+        self.assertNotIn('Commands section', self.kinds())
+
+    def test_a_specification_in_its_running_step_stands(self):
+        self.write('references/plan.md', '# Plan\n\n## Procedure\n\n'
+                   '1. **Fetch.**  Fetch the issue.\n\n'
+                   f'   {FENCE}bash\n   gh api repos/o/r/issues/1\n   {FENCE}\n')
         self.assertEqual(self.findings(), [])
-
-    def test_a_specification_nobody_cites_is_reported(self):
-        self.write('references/catalog.md', self.CATALOG)
-        self.assertEqual(self.findings(), [('catalog.md', 5, 'command specification nothing cites')])
-
-    def test_a_specification_only_its_own_file_cites_stands(self):
-        self.write('references/catalog.md',
-                   '# Catalog\n\nRun [Fetch issue](#fetch-issue) for it.\n' + self.CATALOG[len('# Catalog\n'):])
-        self.assertEqual(self.findings(), [])
-
-    def test_a_procedure_of_the_holding_file_counts_as_a_caller(self):
-        self.write('references/plan.md',
-                   '# Plan\n\n## Procedure\n\n1. **Open.**  Run [Fetch issue](#fetch-issue).\n'
-                   '\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n')
-        self.write('references/sync.md', calling('Sync', 'plan.md#fetch-issue'))
-        self.assertEqual(self.findings(), [])
-
-    def test_a_step_under_a_procedure_sub_section_counts_as_a_caller(self):
-        self.write('references/plan.md',
-                   '# Plan\n\n## Procedure\n\n### Open\n\n1. **Open.**  Run [Fetch issue](#fetch-issue).\n'
-                   '\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n')
-        self.write('references/sync.md', calling('Sync', 'plan.md#fetch-issue'))
-        self.assertEqual(self.findings(), [])
-
-    def test_a_procedure_under_a_heading_of_its_own_name_counts_as_a_caller(self):
-        self.write('references/plan.md',
-                   '# Plan\n\n## Delivery\n\n1. **Open.**  Run [Fetch issue](#fetch-issue).\n'
-                   '\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n')
-        self.write('references/sync.md', calling('Sync', 'plan.md#fetch-issue'))
-        self.assertNotIn('command specification with one caller', self.kinds())
-
-    def test_a_procedure_under_a_heading_of_its_own_name_in_another_file_is_a_caller(self):
-        self.write('references/catalog.md', self.CATALOG)
-        self.write('references/plan.md', calling('Plan', 'catalog.md#fetch-issue', 'Ordering Pass'))
-        self.assertIn('command specification with one caller', self.kinds())
-
-    def test_a_procedure_heading_over_prose_runs_no_command(self):
-        self.write('references/catalog.md', self.CATALOG)
-        self.write('references/guide.md',
-                   '# Guide\n\n## Procedure\n\n- **Sub-bullets.**  A step naming '
-                   '[Fetch issue](catalog.md#fetch-issue) is in sentence case.\n')
-        self.assertEqual(self.findings(), [])
-
-    ROUTE_CATALOG = ('# Catalog\n\n## Commands\n\n### Plan assignments\n\nPlans them.\n'
-                     '\n### Bind agent\n\nBinds one.\n\n### Write packet\n\nWrites one.\n')
-    ROUTE_CALLER = ('# Plan\n\n## Procedure\n\n'
-                    '1. **Plan.**  Run [Plan assignments](catalog.md#plan-assignments).\n'
-                    '2. **Bind.**  Run [Bind agent](catalog.md#bind-agent).\n'
-                    '3. **Write.**  Run [Write packet](catalog.md#write-packet).\n')
-
-    def test_a_prose_route_naming_commands_in_order_runs_none(self):
-        self.write('references/catalog.md', self.ROUTE_CATALOG)
-        self.write('references/plan.md', self.ROUTE_CALLER)
-        self.write('references/dispatch.md',
-                   '# Dispatch\n\n## Dispatch Route\n\nUse [Plan assignments](catalog.md#plan-assignments), '
-                   '[Bind agent](catalog.md#bind-agent), then [Write packet](catalog.md#write-packet).\n')
-        self.assertEqual([kind for _, _, kind in self.findings()],
-                         ['command specification with one caller'] * 3)
-
-    def test_the_same_route_stated_as_steps_runs_each_command(self):
-        self.write('references/catalog.md', self.ROUTE_CATALOG)
-        self.write('references/plan.md', self.ROUTE_CALLER)
-        self.write('references/dispatch.md',
-                   '# Dispatch\n\n## Dispatch Route\n\n'
-                   '1. **Plan.**  Run [Plan assignments](catalog.md#plan-assignments).\n'
-                   '2. **Bind.**  Run [Bind agent](catalog.md#bind-agent).\n'
-                   '3. **Write.**  Run [Write packet](catalog.md#write-packet).\n')
-        self.assertNotIn('command specification with one caller', self.kinds())
-
-    def test_a_sibling_specification_of_a_catalog_is_not_a_caller(self):
-        self.write('references/commands.md',
-                   '# Commands\n\n## Issues\n\n### Fetch issue\n\nFetches one issue.\n'
-                   '\n### Close issue\n\nRun [Fetch issue](#fetch-issue) first.\n')
-        self.write('references/plan.md', calling('Plan', 'commands.md#fetch-issue'))
-        self.assertIn('command specification with one caller', self.kinds())
-
-    def test_a_sibling_specification_in_another_file_is_not_a_caller(self):
-        self.write('references/catalog.md', self.CATALOG)
-        self.write('references/plan.md',
-                   '# Plan\n\nIssues close through [Close issue](#close-issue).\n'
-                   '\n## Commands\n\n### Close issue\n\nCloses one issue.\n'
-                   '\n- Run [Fetch issue](catalog.md#fetch-issue) first.\n')
-        self.assertEqual(self.findings(), [])
-
-    def test_reference_prose_of_the_holding_file_is_not_a_caller(self):
-        self.write('references/context.md',
-                   '# Context\n\n## Checks\n\nEvery check runs [Fetch issue](#fetch-issue).\n'
-                   '\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n')
-        self.write('references/plan.md', calling('Plan', 'context.md#fetch-issue'))
-        self.assertIn('command specification with one caller', self.kinds())
-
-    def test_reference_prose_in_another_file_is_not_a_caller(self):
-        self.write('references/catalog.md', self.CATALOG)
-        self.write('references/context.md',
-                   '# Context\n\n## Checks\n\nEvery check runs [Fetch issue](catalog.md#fetch-issue).\n')
-        self.assertEqual(self.findings(), [])
-
-    def test_a_rules_section_of_the_holding_file_is_not_a_caller(self):
-        self.write('references/plan.md',
-                   '# Plan\n\n## Rules\n\n- **Scope.**  Run [Fetch issue](#fetch-issue) alone.\n'
-                   '\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n')
-        self.write('references/sync.md', calling('Sync', 'plan.md#fetch-issue'))
-        self.assertIn('command specification with one caller', self.kinds())
-
-    def test_a_catalog_entry_cited_from_one_file_is_reported(self):
-        self.write('references/commands.md',
-                   '# Commands\n\n## Issues\n\n### Fetch issue\n\nFetches one issue.\n')
-        self.write('references/plan.md', calling('Plan', 'commands.md#fetch-issue'))
-        self.assertIn('command specification with one caller', self.kinds())
-
-    def test_a_specification_in_the_entry_point_is_reported(self):
-        self.write('SKILL.md', '---\nname: specimen\n---\n\n# Specimen\n\n'
-                               '## Commands\n\n### Fetch issue\n\nFetches one issue.\n')
-        self.write('references/plan.md', calling('Plan', '../SKILL.md#fetch-issue'))
-        self.assertIn('command specification in the entry point', self.kinds())
-
-    def test_a_heading_of_a_catalogs_conventions_is_not_a_specification(self):
-        self.write('references/commands.md', self.LISTING)
-        self.write('references/plan.md', '# Plan\n\nSee [Execution](commands.md#execution) '
-                                          'for [Fetch issue](commands.md#fetch-issue).\n')
-        self.assertEqual(self.findings(), [])
-
-    def test_a_heading_of_a_catalogs_listing_is_a_specification(self):
-        self.write('references/commands.md', self.LISTING)
-        self.write('references/plan.md', calling('Plan', 'commands.md#fetch-issue'))
-        self.assertIn('command specification with one caller', self.kinds())
-
-    def test_a_heading_outside_a_commands_section_is_not_a_specification(self):
-        self.write('references/catalog.md', '# Catalog\n\n## Reference\n\n### Fetch issue\n\nA sentence.\n')
-        self.write('references/plan.md', calling('Plan', 'catalog.md#fetch-issue'))
-        self.assertEqual(self.findings(), [])
-
-    def test_a_caller_under_another_root_is_reported(self):
-        elsewhere = Path(tempfile.mkdtemp())
-        self.addCleanup(shutil.rmtree, elsewhere)
-        catalog = self.write('references/catalog.md', self.CATALOG)
-        plan = elsewhere / 'sibling' / 'references' / 'plan.md'
-        plan.parent.mkdir(parents=True)
-        target = os.path.relpath(catalog, plan.parent)
-        plan.write_text(calling('Plan', f'{target}#fetch-issue'))
-        printed = io.StringIO()
-        with redirect_stdout(printed):
-            status = checker.main([str(self.skill), str(elsewhere / 'sibling')])
-        self.assertEqual(status, 1)
-        self.assertIn('command specification with one caller', printed.getvalue())
 
     def test_a_conforming_mode_file_reports_nothing(self):
         self.write('references/plan-mode.md', self.MODE + self.PROCEDURE + self.RULES)
@@ -578,7 +407,7 @@ class SkillFileChecks(unittest.TestCase):
 
     def test_modes_directory_uses_outcomes_and_operations(self):
         self.write('modes/plan-mode.md', '# Plan\n\n## Procedure\n\n'
-                   '1. **Check.**\n   Run [Check files](#check-files).\n\n'
+                   '1. **Check.**\n   Check the files.\n\n'
                    '## Outcomes\n\nThe files conform.\n\n## Operations\n\n'
                    '### Check Files\n\nChecks files.\n')
         self.assertEqual(self.findings(), [])
@@ -595,34 +424,19 @@ class SkillFileChecks(unittest.TestCase):
 
     def test_artifacts_directory_accepts_single_step_and_command_only_contracts(self):
         self.write('artifacts/issue.md', '# Issue\n\n## Operations\n\n### Read Tracker Issue\n\n'
-                   '- Run [Fetch issue](#fetch-issue).\n\n## Fields\n\nNumber.\n\n'
-                   '## Commands\n\n### Fetch Issue\n\nFetches it.\n')
-        self.write('artifacts/source.md', '# Source\n\n## Fields\n\n'
-                   'Text, read through [Fetch Source](#fetch-source).\n\n'
-                   '## Commands\n\n### Fetch Source\n\nFetches it.\n')
-        self.assertEqual(self.findings(), [])
-
-    def test_an_artifact_command_keeps_its_subject_with_one_external_caller(self):
-        self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\nNumber.\n\n'
-                   '## Commands\n\n### Fetch Issue\n\nFetches it.\n')
-        self.write('modes/plan.md', calling('Plan', '../artifacts/issue.md#fetch-issue') +
-                   '\n## Outcomes\n\nThe issue is read.\n')
+                   '- Run [Fetch issue](#fetch-issue).\n\n### Fetch Issue\n\nFetches it.\n\n'
+                   '## Fields\n\nNumber.\n')
+        self.write('artifacts/source.md', '# Source\n\n## Operations\n\n### Fetch Source\n\nFetches it.\n\n'
+                   '## Fields\n\nText, read through [Fetch Source](#fetch-source).\n')
         self.assertEqual(self.findings(), [])
 
     def test_a_single_step_artifact_operation_is_a_caller(self):
         path = self.write('artifacts/issue.md', '# Issue\n\n## Operations\n\n'
                           '### Read Tracker Issue\n\n- Run [Fetch issue](#fetch-issue).\n\n'
-                          '## Fields\n\nNumber.\n\n## Commands\n\n### Fetch Issue\n\nFetches it.\n')
+                          '### Fetch Issue\n\nFetches it.\n\n## Fields\n\nNumber.\n')
         _, called = checker.citations([path], {})
         self.assertEqual(called[path]['fetch-issue'], {path})
 
-    def test_mode_operations_are_specifications_not_procedures(self):
-        path = self.write('modes/plan.md', '# Plan\n\n## Procedure\n\n'
-                          '1. **Check.**\n   Run [Check files](#check-files).\n\n'
-                          '## Outcomes\n\nDone.\n\n## Operations\n\n### Check Files\n\n'
-                          '1. A specimen naming [another](#other).\n\n### Other\n\nA command.\n')
-        _, called = checker.citations([path], {})
-        self.assertNotIn('other', called[path])
 
     def test_a_structure_reaches_files_whatever_root_is_named(self):
         """The contract comes from the nearest guide declaring Sections above
@@ -668,26 +482,13 @@ class SkillFileChecks(unittest.TestCase):
                 path = self.write('artifacts/issue.md',
                     f'{h} Operations\n\n{h}# Read Issue\n\n'
                     '- Run [Fetch Issue](#fetch-issue).\n\n'
-                    f'{h} Fields\n\n{h}# Identity\n\nNumber.\n\n'
-                    f'{h} Commands\n\n{h}# Fetch Issue\n\n'
-                    '1. A specimen naming [Read Issue](#read-issue).\n')
+                    f'{h}# Fetch Issue\n\nFetches it.\n\n'
+                    f'{h} Fields\n\n{h}# Identity\n\nNumber.\n')
                 self.assertEqual(self.findings(), [])
                 _, called = checker.citations([path], {})
                 self.assertEqual(called[path], {'fetch-issue': {path}})
                 path.write_text(path.read_text() + f'\n{h} Surprise\n\nUnexpected.\n')
                 self.assertIn('section outside the set', self.kinds())
-
-    def test_h1_commands_section_does_not_make_the_whole_file_a_catalog(self):
-        structure = {'*': {'sections': ['Procedure', 'Commands', 'Guidance'], 'section_level': 1}}
-        declare(self.skill, structure)
-        path = self.write('references/run.md', '# Procedure\n\n'
-                          '1. Run [Fetch](#fetch).\n\n# Commands\n\n## Fetch\n\n'
-                          '1. Example [Advice](#advice).\n\n# Guidance\n\n## Advice\n\nText.\n')
-        self.assertEqual(self.findings(), [])
-        lines, fenced, headings = checker.scan(path)
-        self.assertEqual([title for _, title in checker.specifications(headings, section_level=1)], ['Fetch'])
-        _, called = checker.citations([path], {})
-        self.assertEqual(called[path], {'fetch': {path}})
 
     def test_invalid_section_levels_are_refused(self):
         for level in (0, 7, 'one', 'yes', 1.5):
@@ -712,8 +513,7 @@ class SkillFileChecks(unittest.TestCase):
                     path = self.write('artifacts/issue.md',
                         f'{h} Prerequisites\n\n- [Context](context.md)\n\n'
                         f'{h} {procedure}\n\n1. Run [Fetch](#fetch).\n\n'
-                        f'{h} Commands\n\n{h}# Fetch\n\n'
-                        '1. Example with [Fields](context.md#fields).\n\n'
+                        f'{h}# Fetch\n\nFetches with [Fields](context.md#fields "○").\n\n'
                         f'{h} Guidance\n\nSee [Advice](context.md#advice).\n')
                     context = path.parent / 'context.md'
                     kinds = {target: kind for _, target, kind in checker.citation_kinds(path, entry)}
@@ -733,7 +533,7 @@ class SkillFileChecks(unittest.TestCase):
                     'artifacts': dict(STRUCTURE['artifacts'], section_level=level)})
                 h = '#' * level
                 path = self.write('artifacts/issue.md',
-                    f'{h} Fields\n\nNumber.\n\n{h} Commands\n\n'
+                    f'{h} Fields\n\nNumber.\n\n{h} Guidance\n\n'
                     f'{h}# Fetch Issue\n\nFetches it.\n\n{FENCE}bash\n'
                     f'gh api graphql -F query=@issue.graphql\n{FENCE}\n\n'
                     f'{h}# Fetch Board\n\nFetches it.\n\n**REST gap:** Board field.\n\n'
@@ -751,11 +551,11 @@ class SkillFileChecks(unittest.TestCase):
                 path = self.write('modes/plan-mode.md',
                     f'{h} Procedure\n\n1. Run [Fetch](#fetch).\n\n'
                     f'{FENCE}bash\ngh api repos/o/r\n{FENCE}\n\n'
-                    f'{h} Operations\n\n{h}# Fetch\n\nFetches it.\n\n'
+                    f'{h} Outcomes\n\nFetched.\n\n'
                     f'{FENCE}bash\ngh api repos/o/r\n{FENCE}\n')
                 found = checker.mode_commands(path, self.root, {})
                 self.assertEqual([(line, kind) for _, line, kind, _ in found],
-                                 [(5, 'command spelled out in a mode')])
+                                 [(5, 'command spelled out in a mode'), (13, 'command spelled out in a mode')])
 
     def test_directory_sections_reject_wrong_order_and_rules(self):
         self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\nNumber.\n\n'
@@ -921,7 +721,7 @@ class EmptySectionChecks(unittest.TestCase):
 class ParallelSectionMood(unittest.TestCase):
     """Sibling sections whose titles end in one word open in one mood."""
 
-    COMMANDS = ('## Commands\n\n### Check Shell Syntax\n\nParse a script.\n\n'
+    COMMANDS = ('## Checks\n\n### Check Shell Syntax\n\nParse a script.\n\n'
                 '### Validate Compose\n\nResolve the file.\n')
 
     def setUp(self):
@@ -933,9 +733,8 @@ class ParallelSectionMood(unittest.TestCase):
     def findings(self, text):
         path = self.skill / 'coverage.md'
         path.write_text(text)
-        cited, called = checker.citations([path], {})
         return [(line, detail) for _, line, kind, detail
-                in checker.check(path, self.root, {}, cited, called, {})
+                in checker.check(path, self.root, {}, {})
                 if kind == 'parallel section in another mood']
 
     def test_a_section_directing_among_stating_siblings_is_reported(self):
@@ -1020,16 +819,23 @@ class SkillWideChecks(unittest.TestCase):
 
     # Commands check.
 
-    def test_a_shell_block_in_a_mode_procedure_is_reported(self):
-        self.mode(f'1. **Fetch.**\n   Fetch it.\n\n   {FENCE}bash\n   gh api repos/o/r\n   {FENCE}\n')
-        self.assertEqual(self.found('command spelled out in a mode'), [('plan-mode.md', 8)])
+    def test_a_shell_block_outside_the_mode_procedure_is_reported(self):
+        self.mode('1. **Fetch.**\n   Fetch it.\n',
+                  f'### Fetch Issue\n\nFetches one issue.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n')
+        self.assertEqual(self.found('command spelled out in a mode'), [('plan-mode.md', 18)])
 
-    def test_an_unlabelled_block_in_a_mode_procedure_is_reported(self):
-        self.mode(f'1. **Fetch.**\n   Fetch it.\n\n{FENCE}\ngh api repos/o/r\n{FENCE}\n')
+    def test_an_unlabelled_block_outside_the_mode_procedure_is_reported(self):
+        self.mode('1. **Fetch.**\n   Fetch it.\n', f'### Fetch Issue\n\n{FENCE}\ngh api repos/o/r\n{FENCE}\n')
         self.assertEqual(len(self.found('command spelled out in a mode')), 1)
 
-    def test_a_command_inside_the_modes_specification_stands(self):
-        self.mode('1. **Fetch.**\n   Run [Fetch Issue](#fetch-issue).\n',
+    def test_a_command_in_the_step_running_it_stands(self):
+        self.mode(f'1. **Fetch.**\n   Fetch it.\n\n   {FENCE}bash\n   gh api repos/o/r\n   {FENCE}\n')
+        status, printed = self.run_check()
+        self.assertEqual((status, printed.splitlines()[-1].split(', ')[1]), (0, '0 findings'))
+
+    def test_a_command_several_steps_run_stands_under_the_procedure(self):
+        self.mode('1. **Fetch.**\n   Run [Fetch Issue](#fetch-issue).\n'
+                  '2. **Refresh.**\n   Run [Fetch Issue](#fetch-issue) again.\n\n'
                   f'### Fetch Issue\n\nFetches one issue.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n')
         status, printed = self.run_check()
         self.assertEqual((status, printed.splitlines()[-1].split(', ')[1]), (0, '0 findings'))
@@ -1101,9 +907,8 @@ class SkillWideChecks(unittest.TestCase):
     def artifact(self, specification, script=None):
         if script is not None:
             self.write('scripts/link.py', script)
-        return self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\n'
-                          'Number, linked through [Link Issue](#link-issue).\n\n## Commands\n\n'
-                          + specification)
+        return self.write('artifacts/issue.md', '# Issue\n\n## Operations\n\n' + specification
+                          + '\n## Fields\n\nNumber, linked through [Link Issue](#link-issue).\n')
 
     def specification(self, command, gap=False):
         return ('### Link Issue\n\nLinks one issue.\n\n**Inputs:** Issue identity.\n\n'
@@ -1128,12 +933,12 @@ class SkillWideChecks(unittest.TestCase):
 
     def test_graphql_without_a_rest_gap_is_reported(self):
         self.artifact(self.specification('gh api graphql -F query=@read.graphql'))
-        self.assertEqual(self.found('GraphQL without a REST gap'), [('issue.md', 9)])
+        self.assertEqual(self.found('GraphQL without a REST gap'), [('issue.md', 5)])
 
     def test_graphql_through_a_script_without_a_rest_gap_is_reported(self):
         self.artifact(self.specification('python3 scripts/link.py add'),
                       script="run(['gh', 'api', 'graphql', '-F', 'query=@mutation'])\n")
-        self.assertEqual(self.found('GraphQL without a REST gap'), [('issue.md', 9)])
+        self.assertEqual(self.found('GraphQL without a REST gap'), [('issue.md', 5)])
 
     def test_a_script_sending_no_graphql_needs_no_gap(self):
         self.artifact(self.specification('python3 scripts/link.py add'),
@@ -1142,11 +947,11 @@ class SkillWideChecks(unittest.TestCase):
 
     def test_a_classic_projects_mutation_is_reported_whatever_its_gap(self):
         self.artifact(self.specification('gh api graphql -f query=addProjectCard', gap=True))
-        self.assertEqual(self.found('Projects classic interface'), [('issue.md', 18)])
+        self.assertEqual(self.found('Projects classic interface'), [('issue.md', 14)])
 
     def test_a_classic_projects_endpoint_is_reported(self):
         self.artifact(self.specification("gh api 'repos/<owner>/<repo>/projects'"))
-        self.assertEqual(self.found('Projects classic interface'), [('issue.md', 16)])
+        self.assertEqual(self.found('Projects classic interface'), [('issue.md', 12)])
 
     def test_a_classic_projects_field_in_prose_is_reported(self):
         self.write('references/guide.md', '# Guide\n\nRead each projectCards entry.\n')
@@ -1158,16 +963,16 @@ class SkillWideChecks(unittest.TestCase):
 
     def test_a_body_file_sent_as_text_is_reported(self):
         self.artifact(self.specification("gh api --method PATCH 'repos/o/r/issues/1' -f 'body=@body.md'"))
-        self.assertEqual(self.found('file value sent as text'), [('issue.md', 16)])
+        self.assertEqual(self.found('file value sent as text'), [('issue.md', 12)])
 
     def test_a_body_file_sent_as_text_in_an_html_invocation_is_reported(self):
         self.artifact('### Link Issue\n\nLinks one issue.\n\n<big><pre>\ngh api repos/o/r/issues/1 &#92;\n'
                       "  --raw-field body=@body.md\n</pre></big>\n")
-        self.assertEqual(self.found('file value sent as text'), [('issue.md', 15)])
+        self.assertEqual(self.found('file value sent as text'), [('issue.md', 11)])
 
     def test_a_joined_flag_and_a_hyphenated_key_sent_as_text_are_reported(self):
         self.artifact(self.specification("gh api 'repos/o/r/issues/1' --raw-field=body=@body.md -fbody-text=@b.md"))
-        self.assertEqual(self.found('file value sent as text'), [('issue.md', 16)])
+        self.assertEqual(self.found('file value sent as text'), [('issue.md', 12)])
 
     def test_a_body_file_read_as_a_file_and_text_sent_as_text_are_accepted(self):
         self.artifact(self.specification("gh api 'repos/o/r/issues/1' -F 'body=@body.md' -f title='Fix @home'"))
@@ -1232,7 +1037,7 @@ class SkillWideChecks(unittest.TestCase):
 # its link retargeted, and the other sections stay where they stand.
 BEFORE = {
     'skill/artifacts/issue.md': (
-        '# Issue\n\n## Commands\n\n### Fetch Issue\n\nRead the issue.\n\n'
+        '# Issue\n\n## Operations\n\n### Fetch Issue\n\nRead the issue.\n\n'
         '- See [Fields](issue.md#fields).\n\n### Save Issue\n\nWrite the issue.\n\n'
         '## Fields\n\n### Template\n\nThe issue template.\n'),
     'skill/modes/sync-mode.md': (
@@ -1241,7 +1046,7 @@ BEFORE = {
 }
 AFTER = {
     'skill/artifacts/issue.md': (
-        '# Issue\n\n## Commands\n\n### Save Issue\n\nWrite the issue.\n\n'
+        '# Issue\n\n## Operations\n\n### Save Issue\n\nWrite the issue.\n\n'
         '## Fields\n\n### Template\n\nThe issue template.\n'),
     'skill/modes/sync-mode.md': (
         '# Sync\n\n## Operations\n\n### Close Issue\n\nClose the issue.\n\n'
@@ -1269,6 +1074,18 @@ class SectionBodyComparison(unittest.TestCase):
     def test_a_heading_inside_a_fence_is_no_section(self):
         _, counted_base, counted_head = checker.compare(BEFORE, AFTER)
         self.assertEqual((counted_base, counted_head), (4, 4))
+
+    def test_a_section_moved_into_a_step_pairs_by_its_own_text(self):
+        before = {'s/artifacts/a.md': '# A\n\n## Operations\n\n### Read\n\nOpening.\n\n'
+                                      '#### 1. Fetch\n\nRun [Fetch It](b.md#fetch-it).\n',
+                  's/artifacts/b.md': '# B\n\n## Commands\n\n### Fetch It\n\nFetches it.\n'}
+        after = {'s/artifacts/a.md': '# A\n\n## Operations\n\n### Read\n\nOpening.\n\n'
+                                     '#### 1. Fetch\n\nRun [Fetch It](#fetch-it).\n\n##### Fetch It\n\nFetches it.\n',
+                 's/artifacts/b.md': '# B\n'}
+        results, counted_base, counted_head = checker.compare(before, after)
+        judged = {title: kind for kind, _, _, title, _ in results}
+        self.assertEqual(judged, {'Read': 'identical', '1. Fetch': 'identical', 'Fetch It': 'moved'})
+        self.assertEqual((counted_base, counted_head), (3, 3))
 
     def test_a_reworded_body_is_differing_with_its_diff(self):
         after = dict(AFTER)
@@ -1369,9 +1186,9 @@ class SectionBodyComparison(unittest.TestCase):
 
 
 class CallersAndReach(unittest.TestCase):
-    """Callers decide placement and reach decides what a reader loads, over
-    one specimen holding an execution step, a command specification citing a
-    sibling, and an artifact keeping its subject's command."""
+    """Callers are the steps running a target and reach decides what a reader
+    loads, over one specimen holding an execution step and an artifact keeping
+    its subject's command as an operation of its own."""
 
     def setUp(self):
         self.root = Path(tempfile.mkdtemp())
@@ -1382,11 +1199,10 @@ class CallersAndReach(unittest.TestCase):
         self.issue = self.write('artifacts/issue.md',
                                 '# Issue\n\n## Prerequisites\n\nRead these files first.\n\n'
                                 '- [Body](body.md)\n\n## Operations\n\n### Read Tracker Issue\n\n'
-                                '- Run [Fetch Issue](#fetch-issue).\n\n## Fields\n\n'
-                                'Number, as [Body](body.md#fields) describes.\n\n'
-                                '## Commands\n\n### Fetch Issue\n\nFetches it.\n')
-        self.body = self.write('artifacts/body.md', '# Body\n\n## Fields\n\nText.\n\n'
-                               '## Commands\n\n### Check Body\n\nChecks it.\n')
+                                '- Run [Fetch Issue](#fetch-issue).\n\n### Fetch Issue\n\nFetches it.\n\n'
+                                '## Fields\n\nNumber, as [Body](body.md#fields) describes.\n')
+        self.body = self.write('artifacts/body.md', '# Body\n\n## Operations\n\n### Check Body\n\n'
+                               'Checks it.\n\n## Fields\n\nText.\n')
         self.plan = self.write('modes/plan.md',
                                '# Plan\n\n## Procedure\n\n'
                                '1. **Read.**  Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).\n'
@@ -1416,37 +1232,6 @@ class CallersAndReach(unittest.TestCase):
         self.assertEqual(called[self.issue]['read-tracker-issue'], {self.plan})
         self.assertEqual(reached[self.issue]['read-tracker-issue'], {(self.plan, checker.STEP)})
 
-    def test_a_command_specification_link_is_reach_and_no_caller(self):
-        cited, called = checker.citations(self.files(), {})
-        reached = checker.reach(self.files(), {})
-        self.assertEqual(self.kinds(self.plan)['../artifacts/body.md#check-body'], checker.SPECIFICATION)
-        self.assertEqual(cited[self.body]['check-body'], {self.plan})
-        self.assertNotIn('check-body', called.get(self.body, {}))
-        self.assertEqual(reached[self.body]['check-body'], {(self.plan, checker.SPECIFICATION)})
-
-    def test_a_specification_link_moves_no_specification(self):
-        """Without the artifact keeping its subject's commands, the body's
-        command has one file reaching it. A specification's reach asks for no
-        move, and the same citation stated as a step does."""
-        declare(self.skill, 
-            {key: {k: v for k, v in entry.items() if k != 'keeps_commands'}
-             for key, entry in STRUCTURE.items()})
-
-        def placed():
-            files = self.files()
-            declared = {}
-            cited, called = checker.citations(files, declared)
-            findings = []
-            for path in files:
-                findings += checker.check(path, self.root, {}, cited, called, declared)
-            return [(Path(where).name, detail) for where, _, kind, detail in findings
-                    if kind == 'command specification with one caller']
-
-        self.assertEqual(placed(), [])
-        self.write('modes/plan.md', calling('Plan', '../artifacts/body.md#check-body') +
-                   '\n## Outcomes\n\nChecked.\n')
-        self.assertEqual(placed(), [('body.md', 'Check Body, cited from specimen/modes/plan.md')])
-
     def test_a_subject_owned_artifact_command_stays_with_its_subject(self):
         _, called = checker.citations(self.files(), {})
         self.assertEqual(called[self.issue]['fetch-issue'], {self.issue})
@@ -1454,14 +1239,52 @@ class CallersAndReach(unittest.TestCase):
                    '\n## Outcomes\n\nRead.\n')
         files = self.files()
         declared = {}
-        cited, called = checker.citations(files, declared)
         findings = []
         for path in files:
-            findings += checker.check(path, self.root, {}, cited, called, declared)
+            findings += checker.check(path, self.root, {}, declared)
         self.assertEqual(findings, [])
         reached = checker.reach(files, declared)
         self.assertEqual({source.name for source, _ in reached[self.issue]['fetch-issue']},
                          {'issue.md', 'sync.md'})
+
+    def callers(self, name, text):
+        path = self.write(name, text)
+        _, called = checker.citations(self.files(), {})
+        return {anchor for anchor, sources in called.get(self.issue, {}).items() if path in sources}
+
+    def test_a_prose_route_naming_commands_in_order_runs_none(self):
+        self.assertEqual(self.callers('references/route.md',
+            '# Route\n\n## Dispatch Route\n\nUse [Fetch Issue](../artifacts/issue.md#fetch-issue), '
+            'then [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).\n'), set())
+
+    def test_the_same_route_stated_as_steps_runs_each_command(self):
+        self.assertEqual(self.callers('references/route.md',
+            '# Route\n\n## Dispatch Route\n\n1. **Fetch.**  Run [Fetch Issue](../artifacts/issue.md#fetch-issue).\n'
+            '2. **Read.**  Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).\n'),
+            {'fetch-issue', 'read-tracker-issue'})
+
+    def test_a_procedure_heading_over_prose_runs_no_command(self):
+        self.assertEqual(self.callers('references/guide.md',
+            '# Guide\n\n## Procedure\n\n- **Sub-bullets.**  A step naming '
+            '[Fetch Issue](../artifacts/issue.md#fetch-issue) is in sentence case.\n'), set())
+
+    def test_reference_and_rules_prose_is_not_a_caller(self):
+        self.assertEqual(self.callers('references/plan-mode.md',
+            '# Plan Mode\n\n## Procedure\n\n1. **Open.**  The first step.\n\n## Reference\n\n'
+            'Every check runs [Fetch Issue](../artifacts/issue.md#fetch-issue).\n\n## Rules\n\n'
+            '- **Scope.**  Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) alone.\n'), set())
+
+    def test_a_specification_outside_any_step_reaches_without_calling(self):
+        FENCE_TEXT = chr(96) * 3
+        path = self.write('references/route-mode.md',
+            '# Route Mode\n\n## Procedure\n\n1. **Open.**  Run [Close Issue](#close-issue).\n\n'
+            '### Close Issue\n\nCloses it after [Fetch Issue](../artifacts/issue.md#fetch-issue).\n\n'
+            f'{FENCE_TEXT}bash\ngh api repos/o/r/issues/1\n{FENCE_TEXT}\n\n## Rules\n\n- **Scope.**  One.\n')
+        self.assertEqual(self.kinds(path)['../artifacts/issue.md#fetch-issue'], checker.SPECIFICATION)
+        _, called = checker.citations(self.files(), {})
+        self.assertNotIn(path, called.get(self.issue, {}).get('fetch-issue', set()))
+        reached = checker.reach(self.files(), {})
+        self.assertIn((path, checker.SPECIFICATION), reached[self.issue]['fetch-issue'])
 
     def test_prerequisites_are_reach_and_descriptive_links_are_neither(self):
         kinds = self.kinds(self.issue)
@@ -1475,75 +1298,6 @@ class CallersAndReach(unittest.TestCase):
         guide = self.write('references/guide.md',
                            '# Guide\n\nRead [Fields](../artifacts/body.md#fields) first.\n')
         self.assertEqual(self.kinds(guide)['../artifacts/body.md#fields'], checker.PREREQUISITE_READ)
-
-
-class UncitedSpecifications(unittest.TestCase):
-    """A specification no procedure runs stays with the subject whose text
-    names it, and one nothing names is reported."""
-
-    COMMANDS = '\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n'
-
-    def setUp(self):
-        self.root = Path(tempfile.mkdtemp())
-        self.addCleanup(shutil.rmtree, self.root)
-        self.skill = self.root / 'specimen'
-        self.skill.mkdir()
-        declare(self.skill, STRUCTURE)
-
-    def write(self, name, text):
-        path = self.skill / name
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text)
-
-    def uncited(self):
-        files = sorted(self.skill.rglob('*.md'))
-        declared = {}
-        cited, called = checker.citations(files, declared)
-        found = []
-        for path in files:
-            found += checker.check(path, self.root, {}, cited, called, declared)
-        return [(Path(where).name, detail) for where, _, kind, detail in found
-                if kind == 'command specification nothing cites']
-
-    def test_a_specification_no_procedure_runs_and_nothing_cites_is_reported(self):
-        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS)
-        self.assertEqual(self.uncited(), [('catalog.md', 'Fetch issue')])
-
-    def test_a_step_citing_it_clears_the_report(self):
-        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS)
-        self.write('references/plan.md', calling('Plan', 'catalog.md#fetch-issue'))
-        self.assertEqual(self.uncited(), [])
-
-    def test_a_subject_owned_command_nothing_cites_is_reported(self):
-        self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\nNumber.\n' + self.COMMANDS)
-        self.assertEqual(self.uncited(), [('issue.md', 'Fetch issue')])
-
-    def test_a_subject_owned_command_its_prose_names_stays(self):
-        self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\n'
-                   'Number, read through [Fetch issue](#fetch-issue).\n' + self.COMMANDS)
-        self.assertEqual(self.uncited(), [])
-
-    def test_a_sibling_specification_citing_it_keeps_it(self):
-        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS +
-                   '\n### Close issue\n\nCloses one issue.\n'
-                   '\n- Run [Fetch issue](#fetch-issue) first.\n')
-        self.assertEqual(self.uncited(), [('catalog.md', 'Close issue')])
-
-    def test_a_prerequisite_citing_it_keeps_it(self):
-        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS)
-        self.write('references/guide.md',
-                   '# Guide\n\nRead [Fetch issue](catalog.md#fetch-issue) first.\n')
-        self.assertEqual(self.uncited(), [])
-
-    def test_reference_prose_in_another_file_keeps_it(self):
-        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS)
-        self.write('references/guide.md',
-                   '# Guide\n\nEvery check opens with [Fetch issue](catalog.md#fetch-issue).\n')
-        self.assertEqual(self.uncited(), [])
-
-    def test_the_entry_point_reports_its_specification_as_misplaced_alone(self):
-        self.write('SKILL.md', '---\nname: specimen\n---\n\n# Specimen\n' + self.COMMANDS)
-        self.assertEqual(self.uncited(), [])
 
 
 class RepeatedHeadings(unittest.TestCase):
@@ -1563,10 +1317,9 @@ class RepeatedHeadings(unittest.TestCase):
 
     def repeats(self):
         files = sorted(self.skill.rglob('*.md'))
-        cited, called = checker.citations(files, {})
         found = []
         for path in files:
-            found += checker.check(path, self.root, {}, cited, called, {})
+            found += checker.check(path, self.root, {}, {})
         return [(Path(where).name, line, detail)
                 for where, line, kind, detail in found if kind == 'duplicate anchor']
 
@@ -1602,76 +1355,6 @@ class RepeatedHeadings(unittest.TestCase):
         self.assertEqual(self.repeats(), [])
 
 
-class SpecificationInItsCallersCommands(unittest.TestCase):
-    """A command specification is one in the Commands section of the mode file
-    whose procedure runs it, under a structure declaring mode files by name
-    pattern."""
-
-    MODE = '*-mode.md'
-
-    def setUp(self):
-        self.root = Path(tempfile.mkdtemp())
-        self.addCleanup(shutil.rmtree, self.root)
-        self.skill = self.root / 'specimen'
-        (self.skill / 'references').mkdir(parents=True)
-        declare(self.skill, {self.MODE: STRUCTURE[self.MODE]})
-        self.write('references/revise-mode.md',
-                   '# Revise\n\n## Procedure\n\n1. **Check.**  Run [Run Skill Checks](#run-skill-checks).\n\n'
-                   '## Rules\n\n- **Scope.**  One skill.\n\n## Commands\n\n### Run Skill Checks\n\n'
-                   'Checks it.\n\n- Use [Run Project Check](review-mode.md#run-project-check).\n')
-
-    def write(self, name, text):
-        path = self.skill / name
-        path.write_text(text)
-        return path
-
-    def placed(self, root):
-        files = sorted(path for path in root.rglob('*.md') if 'fixtures' not in path.relative_to(root).parts)
-        declared = {}
-        cited, called = checker.citations(files, declared)
-        findings = []
-        for path in files:
-            findings += checker.check(path, root.parent, {}, cited, called, declared)
-        held = [(path.name, title) for path in files
-                for _, title in checker.specifications(
-                    checker.scan(path)[2], checker.held_section(checker.contract(path, declared)))
-                if title == 'Run Project Check']
-        return held, called, findings
-
-    def test_a_specification_in_its_callers_commands_is_recognized_and_placed(self):
-        review = self.write('references/review-mode.md',
-                            '# Review\n\n## Procedure\n\n1. **Exercise.**  [Run Project Check](#run-project-check).\n\n'
-                            '## Rules\n\n- **Scope.**  One integration.\n\n## Commands\n\n'
-                            '### Run Project Check\n\nRuns the selected check.\n')
-        held, called, findings = self.placed(self.skill)
-        self.assertEqual(held, [('review-mode.md', 'Run Project Check')])
-        self.assertEqual(called[review.resolve()]['run-project-check'], {review.resolve()})
-        self.assertEqual(findings, [])
-
-    def test_a_specification_away_from_its_one_caller_is_reported(self):
-        self.write('references/review-mode.md',
-                   '# Review\n\n## Procedure\n\n1. **Exercise.**  [Run Project Check](checks.md#run-project-check).\n\n'
-                   '## Rules\n\n- **Scope.**  One integration.\n')
-        self.write('references/checks.md', '# Checks\n\n## Commands\n\n### Run Project Check\n\nRuns it.\n')
-        self.write('references/revise-mode.md',
-                   '# Revise\n\n## Procedure\n\n1. **Check.**  Check it.\n\n## Rules\n\n- **Scope.**  One skill.\n')
-        held, _, findings = self.placed(self.skill)
-        self.assertEqual(held, [('checks.md', 'Run Project Check')])
-        self.assertEqual([(Path(where).name, kind) for where, _, kind, _ in findings],
-                         [('checks.md', 'command specification with one caller')])
-
-    def test_a_section_outside_a_commands_section_is_no_specification(self):
-        self.write('references/review-mode.md',
-                   '# Review\n\n## Procedure\n\n1. **Exercise.**  [Run Project Check](checks.md#run-project-check).\n\n'
-                   '## Rules\n\n- **Scope.**  One integration.\n')
-        self.write('references/checks.md', '# Checks\n\n## Run Project Check\n\nRuns it.\n')
-        self.write('references/revise-mode.md',
-                   '# Revise\n\n## Procedure\n\n1. **Check.**  Check it.\n\n## Rules\n\n- **Scope.**  One skill.\n')
-        held, _, findings = self.placed(self.skill)
-        self.assertEqual(held, [])
-        self.assertEqual(findings, [])
-
-
 def entry_point(description, modes=('Audit', 'Revise')):
     """A specimen entry point whose Modes section lists each named mode."""
     listed = ''.join(f'- **[{mode}](references/{mode.lower()}-mode.md)**\n'
@@ -1696,10 +1379,9 @@ class FrontmatterAndLayoutChecks(unittest.TestCase):
 
     def findings(self):
         files = sorted(self.skill.rglob('*.md'))
-        cited, called = checker.citations(files)
         out = []
         for path in files:
-            out += checker.check(path, self.root, {}, cited, called)
+            out += checker.check(path, self.root, {})
         return [(Path(where).name, line, kind, detail) for where, line, kind, detail in out]
 
     def modes_found(self):
@@ -1847,7 +1529,7 @@ class ReviewedCheckCases(unittest.TestCase):
         self.artifact(self.specification('gh api graphql -F query=@link.graphql')
                       + '\n### Unlink Issue\n\nUnlinks one issue.\n\n**REST gap:** None.\n\n'
                       f'{FENCE}bash\ngh api graphql -F query=@unlink.graphql\n{FENCE}\n')
-        self.assertEqual(self.found('GraphQL without a REST gap'), [('issue.md', 9)])
+        self.assertEqual(self.found('GraphQL without a REST gap'), [('issue.md', 5)])
 
     def test_graphql_named_in_prose_needs_no_gap(self):
         self.artifact('### Link Issue\n\nLinks one issue, never through gh api graphql.\n\n'
@@ -1874,6 +1556,81 @@ class ReviewedCheckCases(unittest.TestCase):
     def test_an_entry_point_commands_section_is_outside_the_set(self):
         self.write('SKILL.md', '# Specimen\n\nA sentence.\n\n## Commands\n\n### Run It\n\nRuns it.\n')
         self.assertEqual(self.found('section outside the set'), [('SKILL.md', 5)])
+        self.assertEqual(self.found('Commands section'), [('SKILL.md', 5)])
+
+    def test_a_specification_in_the_entry_point_is_reported_wherever_it_stands(self):
+        self.write('SKILL.md', '# Specimen\n\nA sentence.\n\n## Conventions\n\n'
+                   f'### Run It\n\nRuns it.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n')
+        self.assertEqual(self.found('command specification in the entry point'), [('SKILL.md', 11)])
+
+    def test_a_specification_nothing_cites_is_reported(self):
+        self.write('references/plan-mode.md', '# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n'
+                   '1. **Fetch.**  Fetch the issue.\n\n'
+                   f'### Fetch Issue\n\nFetches it.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n\n'
+                   '## Rules\n\n- **Scope.**  One issue.\n')
+        self.assertEqual(self.found('command specification nothing cites'), [('plan-mode.md', 9)])
+        self.write('references/plan-mode.md', (self.skill / 'references/plan-mode.md').read_text()
+                   .replace('Fetch the issue.', 'Run [Fetch Issue](#fetch-issue).'))
+        self.assertEqual(self.found('command specification nothing cites'), [])
+
+    def test_any_citation_gives_an_operation_specification_its_reader(self):
+        mode = ('# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n1. **Fetch.**  Fetch the issue.\n\n'
+                f'### Fetch Issue\n\nFetches it.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n\n'
+                f'### Close Issue\n\nCloses it.\n\n{FENCE}bash\ngh api repos/o/r/close\n{FENCE}\n\n'
+                '## Rules\n\n- **Scope.**  One issue.\n')
+        for name, text, other in (
+                ('sibling', mode.replace('Closes it.', 'Closes it after [Fetch Issue](#fetch-issue).'), None),
+                ('prose elsewhere', mode, ('references/guide.md',
+                                           '# Guide\n\nIssues open through [Fetch Issue](plan-mode.md#fetch-issue).\n')),
+                ('prerequisite', mode, ('references/sync.md',
+                                        '# Sync\n\nRead [Fetch Issue](plan-mode.md#fetch-issue) first.\n'))):
+            with self.subTest(citation=name):
+                for stale in ('references/guide.md', 'references/sync.md'):
+                    (self.skill / stale).unlink(missing_ok=True)
+                self.write('references/plan-mode.md', text)
+                if other:
+                    self.write(*other)
+                self.assertNotIn(('plan-mode.md', 9), self.found('command specification nothing cites'))
+
+    def test_a_command_under_any_entry_point_heading_is_reported(self):
+        self.write('SKILL.md', '# Specimen\n\nA sentence.\n\n## Conventions\n\n### Setup\n\n'
+                   f'1. **Install.**  Install it.\n\n{FENCE}bash\nnpm ci\n{FENCE}\n\n'
+                   f'2. **Run.**  Run it.\n\n   {FENCE}bash\nnpm test\n   {FENCE}\n')
+        self.assertEqual(self.found('command specification in the entry point'), [('SKILL.md', 11), ('SKILL.md', 17)])
+
+    def test_a_flush_graphql_block_in_a_sub_procedure_needs_its_gap(self):
+        self.write('references/plan-mode.md', '# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n'
+                   '1. **Read.**  Read the board.\n\n### Read Board\n\n1. **Fetch.**  Fetch it.\n\n'
+                   f'{FENCE}bash\ngh api graphql -F query=@board.graphql\n{FENCE}\n\n'
+                   '## Rules\n\n- **Scope.**  One board.\n')
+        self.assertEqual(self.found('GraphQL without a REST gap'), [('plan-mode.md', 13)])
+        self.write('references/plan-mode.md', (self.skill / 'references/plan-mode.md').read_text()
+                   .replace('Fetch it.\n', 'Fetch it.\n\n**REST gap:** No board read.\n'))
+        self.assertEqual(self.found('GraphQL without a REST gap'), [])
+
+    def test_numbered_detail_after_the_command_stays_the_specifications(self):
+        self.write('references/plan-mode.md', '# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n'
+                   '1. **Fetch.**  Fetch the issue.\n\n'
+                   f'### Fetch Issue\n\nFetches it.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n\n'
+                   '1. A first detail.\n2. A second.\n\n## Rules\n\n- **Scope.**  One issue.\n')
+        self.assertEqual(self.found('command specification nothing cites'), [('plan-mode.md', 9)])
+
+    def test_a_procedure_preamble_holds_no_command(self):
+        self.write('references/plan-mode.md', '# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n'
+                   f'{FENCE}bash\ngh api repos/o/r\n{FENCE}\n\n1. **Fetch.**  Fetch it.\n\n'
+                   '## Rules\n\n- **Scope.**  One issue.\n')
+        self.assertEqual(self.found('command spelled out in a mode'), [('plan-mode.md', 7)])
+        # A heading carrying numbered steps is a procedure, never a specification.
+        self.assertEqual(self.found('command specification nothing cites'), [])
+
+    def test_a_nested_specifications_rest_gap_stands_in_its_own_item(self):
+        self.write('references/plan-mode.md', '# Plan Mode\n\nWhat it does.\n\n## Procedure\n\n'
+                   '1. **Read.**\n   - **Read Board.**  Reads it.\n\n'
+                   f'     {FENCE}bash\n     gh api graphql -F query=@board.graphql\n     {FENCE}\n'
+                   '2. **Write.**\n   - **Write Board.**  Writes it.\n\n     **REST gap:** No board write.\n\n'
+                   f'     {FENCE}bash\n     gh api graphql -F query=@write.graphql\n     {FENCE}\n\n'
+                   '## Rules\n\n- **Scope.**  One board.\n')
+        self.assertEqual(self.found('GraphQL without a REST gap'), [('plan-mode.md', 8)])
 
     # Layout, commands and mood.
 
@@ -1882,8 +1639,8 @@ class ReviewedCheckCases(unittest.TestCase):
         self.assertEqual(self.found('hard-wrapped line'), [])
 
     def test_a_fence_language_is_read_whatever_its_case(self):
-        self.mode(f'1. **Fetch.**\n   Fetch it.\n\n{FENCE}Bash\ngh api repos/o/r\n{FENCE}\n')
-        self.assertEqual(self.found('command spelled out in a mode'), [('plan-mode.md', 8)])
+        self.mode('1. **Fetch.**\n   Fetch it.\n', f'### Fetch\n\n{FENCE}Bash\ngh api repos/o/r\n{FENCE}\n')
+        self.assertEqual(self.found('command spelled out in a mode'), [('plan-mode.md', 16)])
 
     def test_siblings_under_different_parents_are_not_compared(self):
         self.write('references/coverage.md',
@@ -1894,10 +1651,9 @@ class ReviewedCheckCases(unittest.TestCase):
 
 class SkillsCheckedTogether(unittest.TestCase):
     """The check run over a seeded `skills/` tree, naming every skill in it:
-    alpha holds a command specification beta's prose cites, so alpha judged
-    alone reports it as cited by nothing."""
+    alpha holds a section beta's prose cites, which resolves across them."""
 
-    CATALOG = '# Catalog\n\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n'
+    CATALOG = '# Catalog\n\n## Issues\n\n### Fetch issue\n\nFetches one issue.\n'
     JUMP = '\n#### Too deep\n\nA sentence.\n'
 
     def setUp(self):
@@ -1927,6 +1683,18 @@ class SkillsCheckedTogether(unittest.TestCase):
         self.write('beta/SKILL.md', '# Beta\n\nEvery check opens with '
                    '[Fetch issue](../alpha/references/catalog.md#fetch-issue).\n' + self.JUMP)
         self.assertFalse(self.run_check('alpha', 'beta')[0])
+
+    def test_a_vendored_skill_stands_outside_the_check(self):
+        self.write('gitnexus/gitnexus-cli/SKILL.md', '# CLI\n\n## Commands\n\n### analyze\n\n'
+                   + chr(96) * 3 + 'bash\nnpx gitnexus analyze\n' + chr(96) * 3 + '\n')
+        printed = io.StringIO()
+        with redirect_stdout(printed):
+            status = checker.main([str(self.root / 'skills')])
+        self.assertEqual((status, printed.getvalue()), (0, '3 files checked, 0 findings\n'))
+        printed = io.StringIO()
+        with redirect_stdout(printed):
+            status = checker.main([str(self.root / 'skills' / 'gitnexus' / 'gitnexus-cli')])
+        self.assertEqual((status, printed.getvalue()), (0, '0 files checked, 0 findings\n'))
 
     def test_the_check_takes_no_exclusion(self):
         printed = io.StringIO()
@@ -1997,7 +1765,7 @@ class ReviewedUrlCases(unittest.TestCase):
     def test_a_rest_gap_named_mid_line_is_no_gap(self):
         guide = self.root / 'skills' / 'alpha' / 'artifacts' / 'issue.md'
         guide.parent.mkdir(parents=True)
-        guide.write_text('# Issue\n\n## Commands\n\n### Link Issue\n\n'
+        guide.write_text('# Issue\n\n## Operations\n\n### Link Issue\n\n'
                          'Links one issue, as the **REST gap:** of Unlink Issue states.\n\n'
                          f'{FENCE}bash\ngh api graphql -F query=@link.graphql\n{FENCE}\n')
         passed, output = self.run_check('alpha', 'beta')
@@ -2011,22 +1779,22 @@ class DeclaredHeadingModels(unittest.TestCase):
     MODEL = {
         'SKILL.md': {'sections': ['Modes', 'Dependencies']},
         'modes': {
-            'sections': ['Prerequisites', 'Procedure', 'Outcomes', 'Commands'],
+            'sections': ['Prerequisites', 'Procedure', 'Outcomes'],
             'required': ['Procedure', 'Outcomes'], 'procedures': 'Procedure',
-            'steps': 'headings', 'commands': 'html', 'specifications': 'Commands', 'link_roles': True,
+            'steps': 'headings', 'commands': 'html', 'link_roles': True,
             'preamble': ['../rules.md', '../conventions.md', '#outcomes'],
             'calls': {'artifacts': 'Apply', 'modes': 'Follow', 'protocols': 'Follow'},
         },
         'protocols': {
-            'sections': ['Prerequisites', 'Procedure', 'Commands'], 'required': ['Procedure'],
-            'procedures': 'Procedure', 'steps': 'headings', 'commands': 'html', 'specifications': 'Commands', 'link_roles': True,
+            'sections': ['Prerequisites', 'Procedure'], 'required': ['Procedure'],
+            'procedures': 'Procedure', 'steps': 'headings', 'commands': 'html', 'link_roles': True,
             'preamble': ['../rules.md', '../conventions.md'],
             'calls': {'artifacts': 'Apply', 'modes': 'Follow', 'protocols': 'Follow'},
         },
         'artifacts': {
-            'sections': ['Prerequisites', 'Operations', 'Commands', 'Fields'],
+            'sections': ['Prerequisites', 'Operations', 'Fields'],
             'required': ['Fields'], 'procedures': 'Operations', 'steps': 'headings',
-            'commands': 'html', 'specifications': 'Commands', 'contracts': 'Fields', 'link_roles': True, 'keeps_commands': True,
+            'commands': 'html', 'contracts': 'Fields', 'link_roles': True,
             'calls': {'artifacts': 'Apply'},
         },
     }
@@ -2040,16 +1808,6 @@ An inventory page from supplied evidence.
 
 #### 1. Fetch Inventory Page
 
-Run [Fetch Inventory Page](#fetch-inventory-page "ƒ").
-
-#### 2. Inspect Inventory Page
-
-Inspect the page against the requested inventory and provide findings.
-
-## Commands
-
-### Fetch Inventory Page
-
 Fetches one inventory page.
 
 Fetch the requested page using [Limit](#limit "○").
@@ -2059,6 +1817,10 @@ inventory_fetch { [**limit**](#limit "○"), offset }
 </pre></big>
 
 Provide [Page](#page "●").
+
+#### 2. Inspect Inventory Page
+
+Inspect the page against the requested inventory and provide findings.
 
 ## Fields
 
@@ -2124,10 +1886,9 @@ Apply [Read Inventory](../artifacts/inventory.md#read-inventory "ƒ").
     def findings(self):
         files = sorted(self.skill.rglob('*.md'))
         structures = {}
-        cited, called = checker.citations(files, structures)
         found = []
         for path in files:
-            found += checker.check(path, self.root, {}, cited, called, structures)
+            found += checker.check(path, self.root, {}, structures)
             found += checker.mode_commands(path, self.root, structures)
             found += checker.interfaces(path, self.root, structures)
         return found
@@ -2209,10 +1970,9 @@ Keep the refreshed inventory.
         self.assertIn('heading step sequence', self.kinds())
 
     def test_each_artifact_operation_has_its_own_step_sequence(self):
-        second = self.INVENTORY.split('### Read Inventory', 1)[1].split('## Commands', 1)[0]
-        second = second.replace('1. Fetch Inventory Page', '1. Fetch Refreshed Page')
-        second = second.replace('2. Inspect Inventory Page', '2. Inspect Refreshed Page')
-        self.replace(self.inventory, '## Commands', '### Refresh Inventory' + second + '## Commands')
+        second = self.INVENTORY.split('### Read Inventory', 1)[1].split('## Fields', 1)[0]
+        second = second.replace('Inventory Page', 'Refreshed Page').replace('inventory-page', 'refreshed-page')
+        self.replace(self.inventory, '## Fields', '### Refresh Inventory' + second + '## Fields')
         self.assertEqual(self.findings(), [])
 
     def test_nested_item_without_an_introducing_parent_is_reported(self):
@@ -2349,11 +2109,12 @@ Keep the refreshed inventory.
     def test_an_html_invocation_belongs_to_its_command_specification(self):
         command = '<big><pre>\ninventory_fetch { [**limit**](#limit "○"), offset }\n</pre></big>\n\n'
         self.replace(self.inventory, command, '')
-        self.replace(self.inventory, '## Fields', command + '## Fields')
-        # The specification owns the invocation up to the next sibling or ancestor.
+        self.replace(self.inventory, '#### 2. Inspect', command + '#### 2. Inspect')
+        # The specification owns the invocation up to its next heading.
         self.assertEqual(self.findings(), [])
-        self.replace(self.inventory, command + '## Fields', '## Fields\n\n' + command)
-        self.assertIn('invocation outside command specification', self.kinds())
+        self.replace(self.inventory, command + '#### 2. Inspect', '#### 2. Inspect')
+        self.replace(self.inventory, '## Fields\n', '## Fields\n\n' + command)
+        self.assertIn('invocation outside a procedure', self.kinds())
 
     def test_raw_html_in_invocations_is_rejected(self):
         for payload in ('[**<limit>**](#limit "○")', "'<workspace>'", '>', '>>', '<'):
@@ -2529,8 +2290,8 @@ Keep the refreshed inventory.
             {'required': ['Absent']}, {'steps': 'lists'},
             {'commands': 'fenced'}, {'contracts': 'Absent'}, {'preamble': ['rules.md', '']},
             {'calls': {'artifacts': 'Run'}}, {'calls': 'artifacts'},
-            {'keeps_commands': 'maybe'}, {'link_roles': 'true'}, {'unknown': True}, {'procedures': 'Absent'},
-            {'commands': 'html', 'sections': ['Procedure', 'Commands'], 'procedures': 'Procedure'},
+            {'keeps_commands': True}, {'link_roles': 'true'}, {'unknown': True}, {'procedures': 'Absent'},
+            {'specifications': 'Procedure'},
         ]
         for values in invalid:
             with self.subTest(values=values):
@@ -2543,13 +2304,65 @@ Keep the refreshed inventory.
                 self.assertEqual(status, 1)
                 self.assertIn('unreadable structure', printed.getvalue())
 
+    def test_a_specifications_key_is_refused(self):
+        """A specification stands in the step running it, so a structure
+        naming a section to hold specifications is refused."""
+        model = json.loads(json.dumps(self.MODEL))
+        model['artifacts']['specifications'] = 'Operations'
+        self.declare(model)
+        printed = io.StringIO()
+        with redirect_stdout(printed):
+            status = checker.main([str(self.skill)])
+        self.assertEqual(status, 1)
+        self.assertIn('artifacts has unknown options: specifications', printed.getvalue())
+
+    def test_a_commands_section_is_refused_in_a_heading_model(self):
+        self.replace(self.inventory, '## Fields', '## Commands\n\n### Fetch Page\n\nFetches one.\n\n'
+                     '<big><pre>\ninventory_fetch { [**limit**](#limit "○") }\n</pre></big>\n\n'
+                     'Provide [Page](#page "●").\n\n## Fields')
+        self.assertIn('Commands section', self.kinds())
+        self.assertIn('invocation outside a procedure', self.kinds())
+
+
+    def operation(self, again='again, then inspect the page against'):
+        """The step's command moved into an operation of its own that both steps apply."""
+        spec = self.INVENTORY.split('#### 1. Fetch Inventory Page\n', 1)[1].split('#### 2.', 1)[0]
+        self.replace(self.inventory, '#### 1. Fetch Inventory Page\n' + spec,
+                     '#### 1. Fetch Inventory Page\n\nApply [Fetch Inventory Page](#fetch-inventory-page "ƒ").\n\n')
+        self.replace(self.inventory, '## Fields', '### Fetch Inventory Page\n' + spec + '## Fields')
+        self.replace(self.inventory, 'Inspect the page against',
+                     'Apply [Fetch Inventory Page](#fetch-inventory-page "ƒ") ' + again)
+        return spec
+
+    def test_an_invocation_over_an_operations_steps_is_reported(self):
+        self.replace(self.inventory, 'An inventory page from supplied evidence.\n',
+                     'An inventory page from supplied evidence.\n\n<big><pre>\ninventory_inspect\n</pre></big>\n')
+        self.assertIn('invocation outside command specification', self.kinds())
+
+    def test_a_step_holding_its_command_keeps_the_step_layout(self):
+        self.replace(self.inventory, 'Fetches one inventory page.\n', '1. Fetches one inventory page.\n')
+        self.assertIn('list step in heading model', self.kinds())
+
+    def test_an_operation_specification_and_a_procedure_are_compared_apart(self):
+        self.replace(self.inventory, '## Fields', '### Count Inventory\n\nCount the inventory pages.\n\n'
+                     '<big><pre>\ninventory_limit { [**limit**](#limit "○") }\n</pre></big>\n\n'
+                     'Provide [Limit](#limit "●").\n\n## Fields')
+        self.replace(self.inventory, 'Inspect the page against', 'Run [Count Inventory](#count-inventory "ƒ"), '
+                     'then inspect the page against')
+        self.assertNotIn('parallel section in another mood', self.kinds())
+
+    def test_an_operation_several_steps_run_may_be_one_specification(self):
+        self.operation()
+        self.assertEqual(self.findings(), [])
+
     def test_nested_calls_have_no_duplicate_io_contract(self):
-        self.replace(self.inventory, 'Run [Fetch Inventory Page](#fetch-inventory-page "ƒ").',
-                     'Run [Fetch Inventory Page](#fetch-inventory-page "ƒ") with [Limit](#limit "○").')
+        self.operation('with [Limit](#limit "○"), then inspect the page against')
         self.assertIn('command contract links', self.kinds())
 
-    def test_command_calls_use_run(self):
-        self.replace(self.inventory, 'Run [Fetch Inventory Page]', 'Apply [Fetch Inventory Page]')
+    def test_operation_specifications_are_applied(self):
+        self.operation()
+        self.replace(self.inventory, 'Apply [Fetch Inventory Page](#fetch-inventory-page "ƒ").',
+                     'Run [Fetch Inventory Page](#fetch-inventory-page "ƒ").')
         self.assertIn('operation call verb', self.kinds())
 
     def test_a_procedures_output_does_not_supply_the_command_contract(self):
@@ -2561,17 +2374,30 @@ Keep the refreshed inventory.
     def test_entity_continuations_preserve_shell_tokenization(self):
         self.assertEqual(checker.logical_command_lines('git &#92;\n  status'), ['git status'])
 
-    def test_a_pure_command_forwarder_is_redundant(self):
-        self.replace(self.inventory, 'Inspect the page against the requested inventory and provide findings.',
-                     'Provide the page.')
-        self.assertIn('redundant command wrapper', self.kinds())
-
     def test_a_step_names_its_action_without_repeating_its_parent(self):
         self.replace(self.inventory, '#### 1. Fetch Inventory Page', '#### 1. Read Inventory')
         self.assertIn('repeated procedure title', self.kinds())
 
-    def test_a_specification_contains_exactly_one_invocation(self):
+    def test_a_step_writing_two_commands_carries_each_contract(self):
+        second = '\n**Count Pages.**  Count the pages.\n\n<big><pre>\ninventory_count\n</pre></big>\n'
+        self.replace(self.inventory, 'Provide [Page](#page "●").\n',
+                     'Provide [Page](#page "●").\n' + second)
+        self.replace(self.inventory, 'Fetches one inventory page.', '**Fetch Page.**  Fetches one inventory page.')
+        details = [detail for _, _, kind, detail in self.findings() if kind == 'command contract links']
+        self.assertEqual(details, ['1. Fetch Inventory Page, command 2: contextual input link required',
+                                   '1. Fetch Inventory Page, command 2: contextual output link required'])
+
+    def test_a_call_link_to_a_steps_own_command_is_refused(self):
+        self.replace(self.inventory, 'Inspect the page against',
+                     'Apply [Fetch Inventory Page](#1-fetch-inventory-page "ƒ"), then inspect the page against')
+        self.assertIn('operation link role', self.kinds())
+
+    def test_an_operation_specification_contains_exactly_one_invocation(self):
         command = '<big><pre>\ninventory_fetch { [**limit**](#limit "○"), offset }\n</pre></big>'
+        self.replace(self.inventory, command, command + '\n\n' + command)
+        self.assertNotIn('malformed HTML invocation', self.kinds())
+        self.inventory.write_text(self.INVENTORY)
+        self.operation()
         self.replace(self.inventory, command, command + '\n\n' + command)
         self.assertIn('malformed HTML invocation', self.kinds())
 
@@ -2623,8 +2449,7 @@ class FieldsBoundary(unittest.TestCase):
                           f'## {section}\n\n### Board Items\n\nThe supplied board items.\n\n### {heading}\n\n{body}\n')
 
     def kinds(self, path):
-        cited, called = checker.citations(sorted(self.skill.rglob('*.md')), {})
-        return [(line, kind, detail) for _, line, kind, detail in checker.check(path, self.root, {}, cited, called, {})]
+        return [(line, kind, detail) for _, line, kind, detail in checker.check(path, self.root, {}, {})]
 
     def line_of(self, path, text):
         return next(number for number, line in enumerate(path.read_text().splitlines(), 1) if text in line)
@@ -2653,7 +2478,7 @@ class FieldsBoundary(unittest.TestCase):
 
     def test_command_invocations_under_fields_keep_their_own_kinds(self):
         path = self.artifact('<big><pre>\ngh issue view 1\n</pre></big>')
-        self.assertIn('invocation outside command specification', {kind for _, kind, _ in self.kinds(path)})
+        self.assertIn('invocation outside a procedure', {kind for _, kind, _ in self.kinds(path)})
         path = self.artifact(FENCE + 'bash\ngh issue view 1\n' + FENCE)
         self.assertIn('fenced invocation in HTML model', {kind for _, kind, _ in self.kinds(path)})
 
@@ -2673,8 +2498,7 @@ class InstalledWorkPlannerModel(unittest.TestCase):
 
     def test_installed_fields_hold_no_execution(self):
         files = [(path, self.SKILL.parent) for path in self.paths]
-        cited, called = checker.citations(self.paths, {})
-        kinds = {kind for path, root in files for _, _, kind, _ in checker.check(path, root, {}, cited, called, {})}
+        kinds = {kind for path, root in files for _, _, kind, _ in checker.check(path, root, {}, {})}
         self.assertNotIn('executable step in Fields', kinds)
 
 
@@ -2695,10 +2519,9 @@ class EntryPointLinks(unittest.TestCase):
 
     def found(self):
         files = sorted(self.skill.rglob('*.md'))
-        cited, called = checker.citations(files, {})
         out = []
         for path in files:
-            out += checker.check(path, self.root, {}, cited, called, {})
+            out += checker.check(path, self.root, {}, {})
         return [(str(Path(where).relative_to('specimen')), line, kind)
                 for where, line, kind, _ in out if kind == 'link to the entry point']
 

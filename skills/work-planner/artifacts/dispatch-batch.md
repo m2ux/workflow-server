@@ -2,7 +2,7 @@
 
 The admitted units selected for the currently free worker slots of one authorized delivery run.
 
-## Commands
+## Operations
 
 ### Compute Dispatch Batch
 

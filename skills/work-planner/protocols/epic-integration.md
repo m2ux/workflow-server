@@ -8,7 +8,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 1. Prepare the Evidence
 
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for the supplied review identity, Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for the supplied board unless its absence is confirmed, and Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with that fresh metadata and [Published Reviews](../artifacts/pull-request.md#published-reviews).
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for the supplied review identity, Apply [Read Board State](../artifacts/board.md#read-board-state "ƒ") for the supplied board unless its absence is confirmed, and Apply [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with that fresh metadata and [Published Reviews](../artifacts/pull-request.md#published-reviews).
 - For an open review pull request already handed off, ready for review, standing In Review where a board exists, and passing that validation against its current head and target, provide it to the user as [Hand Off](#3-hand-off) does and return without holding it.
 - Otherwise, with stale review evidence, a moved target or no handoff yet, continue below.
 - Before any preparation, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") for the supplied review identity and Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") requesting In Progress with the epic, board identity, fresh pull request records, an empty review-record list and output paths. An absent board item is reported; it does not prevent validation.
@@ -40,9 +40,9 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - Require [Epic Readiness](../artifacts/pull-request.md#epic-readiness) and Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for [Identity](../artifacts/pull-request.md#identity).
 
-- Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with the fresh metadata and [Published Reviews](../artifacts/pull-request.md#published-reviews). On a finding, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") and stop. For a draft with passing evidence, Run [Mark Review Ready](../artifacts/pull-request.md#mark-review-ready "ƒ") with its node id.
+- Apply [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with the fresh metadata and [Published Reviews](../artifacts/pull-request.md#published-reviews). On a finding, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") and stop. For a draft with passing evidence, Apply [Mark Review Ready](../artifacts/pull-request.md#mark-review-ready "ƒ") with its node id.
 
-- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again with the same identity, then Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records. For a changed revision, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") and report the discrepancy. Retain [Review State](../artifacts/pull-request.md#review-state) only with current evidence, or [Failure](../artifacts/pull-request.md#failure) for the changed revision or discrepancy.
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") again with the same identity, then Apply [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") again with that fresh metadata and the same published records. For a changed revision, Apply [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review "ƒ") and report the discrepancy. Retain [Review State](../artifacts/pull-request.md#review-state) only with current evidence, or [Failure](../artifacts/pull-request.md#failure) for the changed revision or discrepancy.
 
 - On a readiness failure, stop this handoff before requesting In Review.
 - Apply [Record Epic Review](../artifacts/board-delivery.md#record-epic-review "ƒ") requesting In Review, with the epic, board identity, fresh pull request records and published agent review records. Report an absent board item; integration is not gated on board membership.
@@ -50,6 +50,6 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 3. Hand Off
 
-- Refresh the review metadata and Run [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding.
+- Refresh the review metadata and Apply [Validate Agent Review](../artifacts/agent-review.md#validate-agent-review "ƒ") with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding.
 - Provide the ready review pull request to the user with its verified head, target, [Epic Readiness](../artifacts/pull-request.md#epic-readiness) and published agent review records, and return.
 - The user reviews and merges every epic review pull request, whatever its target's protection, and the epic's sync records the merge once it lands.

@@ -30,7 +30,18 @@ The delivery findings for one epic from supplied evidence.
 
 #### 1. Match Supplied Delivery
 
-- Run [Match Pull Requests](#match-pull-requests "ƒ") for the selected epic, using a local scratch output body.
+- Match Pull Requests for the selected epic, using a local scratch output body.
+
+Report an epic's delivery state against the pull requests that name it and provide [Delivery Findings](#delivery-findings "●") to the requester.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record "○")' &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' &#92;
+  --fix '[**&lt;epic-body-file&gt;**](#output-body "○")'
+</pre></big>
+
 - A closed epic is normalized to the current Work Breakdown columns before its tasks are read, using the shared format rules. Ambiguous or unsupported table content is a blocker.
 - For reported table normalization, Apply [Save Tracker Issue](issue.md#save-tracker-issue "ƒ"), fetch the saved epic and repeat the match before returning its evidence.
 
@@ -53,20 +64,6 @@ Confirm every task is delivered, every epic criterion has current [Verification 
 #### 3. Provide Integration Readiness
 
 Provide the integration readiness in [Delivery State](#delivery-state), with the evidence revisions and each blocker. Readiness establishes the epic's content conditions; the caller supplies pull-request review, target and head-check evidence for the handoff.
-
-## Commands
-
-### Match Pull Requests
-
-Report an epic's delivery state against the pull requests that name it and provide [Delivery Findings](#delivery-findings "●") to the requester.
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record "○")' &#92;
-  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
-  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' &#92;
-  --fix '[**&lt;epic-body-file&gt;**](#output-body "○")'
-</pre></big>
 
 ## Fields
 

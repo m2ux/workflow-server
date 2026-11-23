@@ -19,9 +19,10 @@ def arguments(document, heading, values, omit=()):
     """Shell arguments of the installed invocation after concrete substitution."""
     path = ROOT / 'artifacts' / document
     lines, _, headings = checker.scan(path)
-    start = next(index for index, title in checker.specifications(headings)
-                 if title == heading)
-    end = checker.heading_end(headings, start, 3, len(lines))
+    start, level = next((index, level) for index, level, title in
+                        checker.specifications(lines, headings, checker.contract(path, {}))
+                        if title == heading)
+    end = checker.heading_end(headings, start, level, len(lines))
     first, last = next((first, last) for first, last in checker.scan_blocks(lines).invocations
                        if start < first <= last < end)
     payload = '\n'.join(lines[first:last + 1]).removeprefix('<big><pre>').removesuffix('</pre></big>')

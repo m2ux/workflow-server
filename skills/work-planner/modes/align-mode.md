@@ -31,9 +31,9 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 #### Reference Visibility
 
 - For each issue being aligned:
-  - Run [List Reference Repositories](../artifacts/issue-body.md#list-reference-repositories "ƒ") to [Body Record](../artifacts/issue-body.md#body-record) to identify the destination and cited repositories.
-  - Run [Fetch Reference Repository](../artifacts/issue-body.md#fetch-reference-repository "ƒ") for each provided name; collect the objects into a JSON array at the snapshot path in [Output Files](../artifacts/issue-body.md#output-files). Retain failed fetches as unresolved visibility, never as public visibility.
-  - Run [Validate Reference Visibility](../artifacts/issue-body.md#validate-reference-visibility "ƒ") with that snapshot and the issue record.
+  - Apply [List Reference Repositories](../artifacts/issue-body.md#list-reference-repositories "ƒ") to [Body Record](../artifacts/issue-body.md#body-record) to identify the destination and cited repositories.
+  - Apply [Fetch Reference Repository](../artifacts/issue-body.md#fetch-reference-repository "ƒ") for each provided name; collect the objects into a JSON array at the snapshot path in [Output Files](../artifacts/issue-body.md#output-files). Retain failed fetches as unresolved visibility, never as public visibility.
+  - Apply [Validate Reference Visibility](../artifacts/issue-body.md#validate-reference-visibility "ƒ") with that snapshot and the issue record.
   - Retain [Visibility Findings](../artifacts/issue-body.md#visibility-findings) identifying each private reference on a public issue and each unavailable visibility. A private destination has no public-reference restriction; deciding how to replace or remove a private reference belongs to the requester.
 
 - Carry the visibility findings to [Resolve Content Decisions](#6-resolve-content-decisions).
@@ -111,14 +111,14 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 9. Coverage
 
-- For a pull request explicitly selected for alignment, Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for it, then Run [Check Test Plan](../artifacts/test-plan.md#check-test-plan "ƒ") with its saved record and report each [Plan Finding](../artifacts/test-plan.md#plan-finding). When no initiative or epic is selected, continue at [Re-Run](#13-re-run).
+- For a pull request explicitly selected for alignment, Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for it, then Apply [Check Test Plan](../artifacts/test-plan.md#check-test-plan "ƒ") with its saved record and report each [Plan Finding](../artifacts/test-plan.md#plan-finding). When no initiative or epic is selected, continue at [Re-Run](#13-re-run).
 
 - For initiative or epic scope, Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence "ƒ") with the fetched initiative, epic and task issue JSON.
 - Continue with its provided records.
-- For each task pull request in those records, Run [Check Test Plan](../artifacts/test-plan.md#check-test-plan "ƒ") with its own record, saved from the collection as one [Pull Request Record](../artifacts/test-plan.md#pull-request-record), and report each [Plan Finding](../artifacts/test-plan.md#plan-finding). An epic review carries no Test Plan, as [Review Body](../artifacts/pull-request-body.md#review-body) states.
+- For each task pull request in those records, Apply [Check Test Plan](../artifacts/test-plan.md#check-test-plan "ƒ") with its own record, saved from the collection as one [Pull Request Record](../artifacts/test-plan.md#pull-request-record), and report each [Plan Finding](../artifacts/test-plan.md#plan-finding). An epic review carries no Test Plan, as [Review Body](../artifacts/pull-request-body.md#review-body) states.
 - An unreadable plan stays a finding until its pull request's Test Plan is written as [Plan Table](../artifacts/test-plan.md#plan-table) defines, from the checks the work ran.
 
-- For each epic being aligned, Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for the current epic in the project checkout with the fetched epic bases, retaining the confirmed task-to-pull-request matches:
+- For each epic being aligned, Apply [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for the current epic in the project checkout with the fetched epic bases, retaining the confirmed task-to-pull-request matches:
   - **Unmet.**
     - Each task the preceding Sync Epic call reports unmet is a gap.
     - Apply [Plan Gap Task](../artifacts/epic-issue-body.md#plan-gap-task "ƒ") for the delivered row and unmet criterion ids, using the project checkout and fetched epic bases.
@@ -129,10 +129,10 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
   - **Unlinked.**
     - For a criterion ticked while its row links no pull request and no commit, Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue "ƒ") for its discussion.
     - Link the one delivery that discussion names, taking a path as the commit that holds it. Several candidates, or none, go to the user before linking.
-    - Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the corrected evidence, the same epic bases and the same output body file.
+    - Apply [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the corrected evidence, the same epic bases and the same output body file.
 
 - For an initiative being aligned:
-  - Run [Sync Initiative](../artifacts/initiative-issue-body.md#sync-initiative "ƒ") with the current initiative JSON, every linked epic's current JSON and an output body file.
+  - Apply [Sync Initiative](../artifacts/initiative-issue-body.md#sync-initiative "ƒ") with the current initiative JSON, every linked epic's current JSON and an output body file.
   - Present the provided [Delivery Findings](../artifacts/initiative.md#delivery-findings) to the user.
   - When the user chooses to verify ready criteria now:
     - Apply [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria "ƒ") for the selected criterion ids against current delivery evidence in the project checkout.
@@ -167,11 +167,11 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
   - Confirm it with the user; an unanswered placement stays pending.
   - Apply [Revise Epic Rows](../artifacts/epic-issue-body.md#revise-epic-rows "ƒ") with the confirmed row.
   - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue "ƒ") with the provided body.
-  - Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again for the refreshed epic evidence in the project checkout with the fetched epic bases. An unanswered placement stays pending.
+  - Apply [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again for the refreshed epic evidence in the project checkout with the fetched epic bases. An unanswered placement stays pending.
 
 ### 12. Review Pull Requests
 
-- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for each open epic, with the project checkout and its fetched epic bases.
+- Apply [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") for each open epic, with the project checkout and its fetched epic bases.
 
 - Open a reported base as a draft review pull request.
 - Leave the epic open. A subsequent delivery or sync run establishes readiness from the completed delivery evidence.

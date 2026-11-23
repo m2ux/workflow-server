@@ -12,7 +12,7 @@ The task graph and the row numbers it permits, checked and renumbered across the
 
 - Use local drafts from [Graph Inputs](#graph-inputs) when reviewing unpublished work.
 - For published issues, Apply [Read Tracker Issue](issue.md#read-tracker-issue "ƒ") for the initiative and each epic body.
-- Run [Check Dependencies](#check-dependencies "ƒ") with the initiative body, every epic body and every supplied work-item file. The computation invokes Run [Validate Lane Unit](lane.md#validate-lane-unit "ƒ") internally with each derived unit’s epic body and complete ids.
+- Apply [Check Dependencies](#check-dependencies "ƒ") with the initiative body, every epic body and every supplied work-item file.
 
 #### 2. Resolve Graph Findings
 
@@ -28,54 +28,24 @@ The task graph and the row numbers it permits, checked and renumbered across the
 #### 3. Apply Confirmed Numbering
 
 - Renumber the confirmed maps, preserving the numbers [Numbering Map](#numbering-map) protects.
-- For a confirmed epic map, Run [Renumber Epics](#renumber-epics "ƒ") with current pull request records and every affected body.
-- For a confirmed task map, Run [Renumber Tasks](#renumber-tasks "ƒ") with the initiative and epic identities, owning epic body, confirmed old-to-new task-number map and every affected body file.
-- Re-sort rewritten tables.
-- Inspect every reported range.
-- Search prose for references the script cannot see.
-- After each edge or numbering change, Run [Check Dependencies](#check-dependencies "ƒ") with the refreshed initiative and epic bodies and every supplied work-item and split-unit record file. Repeat that operation until it reports no problem.
-- Record the printed longest chains and each printed contending pair in the planning record.
-- Provide [Graph Result](#graph-result) with the checked bodies, proposed [Epic Priority](work-priority.md#epic-priority) map and unresolved findings; do not publish a failed renumbering.
+- For a confirmed epic map, Renumber Epics with current pull request records and every affected body.
 
-## Commands
-
-### Check Dependencies
-
-Check the task dependency graph across the supplied epics, include the initiative's Depends on cells when `I=` is supplied, and provide [Graph Result](#graph-result "●") to the requester.
+**Renumber Epics.**  Renumber an initiative's epics across supplied body files and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deps.py 'I=[**&lt;initiative-body-file&gt;**](#dependency-files "○")' &#92;
-  '[**&lt;epic-id&gt;**](#dependency-files "○")=[**&lt;epic-body-file&gt;**](#dependency-files "○")' '[**&lt;epic-id&gt;**](#dependency-files "○"):[**&lt;task-id&gt;**](#dependency-files "○")=[**&lt;work-item-file&gt;**](#dependency-files "○")' 'R=[**&lt;record-file&gt;**](#dependency-files "○")'
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py &#92;
+  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs "○") &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --map [**&lt;epic-number-map&gt;**](#renumber-inputs "○") '[**&lt;body-file&gt;**](#renumber-inputs "○")'
 </pre></big>
 
-- Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.
-- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files "○") defines them.
+- The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.
+- Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.
 
-- Initiative edges must follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.
-- It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.
-- It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero.
-- It prints each open [candidate unit](#joins), one its rows do not join and no `R=` record line names exactly, with both resolutions, so neither is the cheaper answer, and each direct edge a join drops. An `R=` file it cannot read is a problem.
-- It prints each candidate split by rule with its reason, and asks no record line for it.
-- An entry that [cannot resolve](#edges) is a problem naming the entry as written, and the run exits nonzero. Its second clause says what this run could not find, which is the epics it was given.
-- It prints each pair of rows in different epics whose work items share a declared file, with the files they share, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.
-- A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic's rows, so a body carrying the retired form is reported once rather than taking its initiative's gates down with it.
-- It reads each declared file without its link, a wrapping code span or a trailing full stop, and reports a work item it cannot read.
-- It reports each declared entry that is not one `<branch>:<path>` holding no whitespace, as [Component](work-item.md#component) lays an entry out.
-- It reports a work item declaring a directory among its files: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.
-- It prints the proposed [Epic Priority](work-priority.md#epic-priority) of each epic, largest first.
-- Its supplied inputs are published body text or local drafts.
+- For a confirmed task map, Renumber Tasks with the initiative and epic identities, owning epic body, confirmed old-to-new task-number map and every affected body file.
 
-- The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the files its rows declare. Epics sharing a number form one of the [Priority Sets](work-priority.md#priority-sets), so the number asserts they can run in parallel, and it holds a set only where both of these do.
-
-- **Prerequisite depth establishes when an epic may start.**
-  An epic with no prerequisite epic, one whose tasks are not yet written among them, carries the largest number, and each other epic takes one less than the smallest its prerequisites carry.
-- **Component contention establishes whether it can.**
-  An epic holding a row that contends with a row of an epic of the same depth takes the number below that depth, and the epics depending on it follow it down, as [Component Contention](#component-contention) states.
-
-### Renumber Tasks
-
-Renumber one epic's tasks in the supplied files according to the given map and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
+**Renumber Tasks.**  Renumber one epic's tasks in the supplied files according to the given map and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
@@ -93,20 +63,46 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - Append `--outside` followed by each explicitly authorized outside-initiative body file when supplied; only this initiative's prefixed references change there.
 - Only rows no pull request names may be renumbered. Inspect the rewritten files before publishing them.
 
-### Renumber Epics
+- Re-sort rewritten tables.
+- Inspect every reported range.
+- Search prose for references the script cannot see.
+- After each edge or numbering change, Apply [Check Dependencies](#check-dependencies "ƒ") with the refreshed initiative and epic bodies and every supplied work-item and split-unit record file. Repeat that operation until it reports no problem.
+- Record the printed longest chains and each printed contending pair in the planning record.
+- Provide [Graph Result](#graph-result) with the checked bodies, proposed [Epic Priority](work-priority.md#epic-priority) map and unresolved findings; do not publish a failed renumbering.
 
-Renumber an initiative's epics across supplied body files and provide [Rewritten Bodies](#rewritten-bodies "●") to the requester.
+### Check Dependencies
+
+Check the task dependency graph across the supplied epics, include the initiative's Depends on cells when `I=` is supplied, and provide [Graph Result](#graph-result "●") to the requester.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/renumber.py &#92;
-  --initiative [**&lt;initiative-number&gt;**](#renumber-inputs "○") &#92;
-  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
-  --map [**&lt;epic-number-map&gt;**](#renumber-inputs "○") '[**&lt;body-file&gt;**](#renumber-inputs "○")'
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deps.py 'I=[**&lt;initiative-body-file&gt;**](#dependency-files "○")' &#92;
+  '[**&lt;epic-id&gt;**](#dependency-files "○")=[**&lt;epic-body-file&gt;**](#dependency-files "○")' '[**&lt;epic-id&gt;**](#dependency-files "○"):[**&lt;task-id&gt;**](#dependency-files "○")=[**&lt;work-item-file&gt;**](#dependency-files "○")' 'R=[**&lt;record-file&gt;**](#dependency-files "○")'
 </pre></big>
 
-- The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.
-- Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.
+- Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.
+- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files "○") defines them.
+
+- Initiative edges must follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.
+- It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.
+- It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero. The computation invokes [Validate Lane Unit](lane.md#validate-lane-unit "ƒ") internally with each derived unit’s epic body and complete ids.
+- It prints each open [candidate unit](#joins), one its rows do not join and no `R=` record line names exactly, with both resolutions, so neither is the cheaper answer, and each direct edge a join drops. An `R=` file it cannot read is a problem.
+- It prints each candidate split by rule with its reason, and asks no record line for it.
+- An entry that [cannot resolve](#edges) is a problem naming the entry as written, and the run exits nonzero. Its second clause says what this run could not find, which is the epics it was given.
+- It prints each pair of rows in different epics whose work items share a declared file, with the files they share, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.
+- A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic's rows, so a body carrying the retired form is reported once rather than taking its initiative's gates down with it.
+- It reads each declared file without its link, a wrapping code span or a trailing full stop, and reports a work item it cannot read.
+- It reports each declared entry that is not one `<branch>:<path>` holding no whitespace, as [Component](work-item.md#component) lays an entry out.
+- It reports a work item declaring a directory among its files: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.
+- It prints the proposed [Epic Priority](work-priority.md#epic-priority) of each epic, largest first.
+- Its supplied inputs are published body text or local drafts.
+
+- The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the files its rows declare. Epics sharing a number form one of the [Priority Sets](work-priority.md#priority-sets), so the number asserts they can run in parallel, and it holds a set only where both of these do.
+
+- **Prerequisite depth establishes when an epic may start.**
+  An epic with no prerequisite epic, one whose tasks are not yet written among them, carries the largest number, and each other epic takes one less than the smallest its prerequisites carry.
+- **Component contention establishes whether it can.**
+  An epic holding a row that contends with a row of an epic of the same depth takes the number below that depth, and the epics depending on it follow it down, as [Component Contention](#component-contention) states.
 
 ## Fields
 

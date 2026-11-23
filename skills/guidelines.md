@@ -23,11 +23,13 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **References.**
   - A mode file is named `<mode>-mode.md`. `references/` holds `guidelines.md` when the skill has rules of its own, and each guide the skill's files share.
   - A skill may add directories of its own, one for its modes among them, and keep its guidelines beside SKILL.md. Its guidelines state what those files carry and the sections they take.
-  - The skill's guide holds a Sections section whose one table declares the sections of every file carrying a procedure, read by authors and the shared check alike. Its header row reads Option and then one file selector per column: a directory, a `*suffix`, a file name, or `*` for any other such file. Each further row is an option: sections in order, required, procedures, specifications, steps, commands, contracts, preamble and scoped_children as comma-separated lists or single words, link_roles and keeps_commands as yes or no, and calls as `directory: Verb` pairs. A blank cell leaves the option undeclared. Each entry may declare section_level as an integer from 1 to 6; an absent level means 2. Command specifications sit one level below their section. An entry may declare `scoped_children` for local role titles one level below the named procedures' operations; readers select them within their unique operation, and file-fragment links select unique headings. The check reports a file carrying a procedure that no entry covers.
+  - The skill's guide holds a Sections section whose one table declares the sections of every file carrying a procedure, read by authors and the shared check alike. Its header row reads Option and then one file selector per column: a directory, a `*suffix`, a file name, or `*` for any other such file. Each further row is an option: sections in order, required, procedures, steps, commands, contracts, preamble and scoped_children as comma-separated lists or single words, link_roles as yes or no, and calls as `directory: Verb` pairs. A blank cell leaves the option undeclared. Each entry may declare section_level as an integer from 1 to 6; an absent level means 2. An entry may declare `scoped_children` for local role titles one level below the named procedures' operations; readers select them within their unique operation, and file-fragment links select unique headings. The check reports a file carrying a procedure that no entry covers.
   - Its guidelines also state how its procedure files and command specifications are written.
   - Scripts and tests each have a folder of their own. Standalone templates use `templates/`.
 - **Shared.**
   `skills/` holds this file beside the `scripts/` and `test/` folders for checks that every skill runs. A check binding one skill lives in that skill's own folders.
+- **Vendored.**
+  The gitnexus skills under `skills/gitnexus/` are vendored from GitNexus and keep its shape, so they stand outside these guidelines and the shared check.
 
 ## SKILL.md structure
 
@@ -53,7 +55,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **Dependencies.**
   Every tool, sandbox, runtime, branch and harness capability the skill relies on is named in Dependencies, with what it is needed for.
 - **Commands.**
-  SKILL.md holds no command of its own, so it takes no Commands section.
+  SKILL.md holds no command specification of its own.
 
 ## Procedure files
 
@@ -62,7 +64,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - A file carrying one takes the sections below. A catalog, a context file and a contract file state what a procedure consults, and nothing about them is a sequence, so each keeps its own shape.
   - A skill's entry point takes [its own structure](#skillmd-structure) whatever it carries.
 - **Top-level sections.**
-  - Prerequisites, Procedure, Reference, Rules and Commands, in that order, each optional but for Procedure.
+  - Prerequisites, Procedure, Reference and Rules, in that order, each optional but for Procedure.
   - Anything else the file needs is a sub-section under one of them, so a diverse title names a part of a known whole.
 - **What the reader does with a heading places it.**
   - Reference holds what a step consults or produces: a table, an output shape, a vocabulary.
@@ -127,33 +129,33 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 ## Commands
 
 - **One spec per operation.**
-  - Every command has a sub-section named for what it does: Fetch issue, Run guard suite.
+  - A command standing as an operation has a sub-section named for what it does: Fetch issue, Run guard suite.
+  - A step running one command names it in its line by its plain title; a step running several opens each command's text with its bold title.
   - A script used several ways has a spec for each use.
-- **Local to the procedure.**
-  - A specification sits in the file whose procedure runs it, in a `## Commands` section at the position its declared layout gives it.
-  - A single catalog holds only those specifications most of whose entries have several callers. Where a block of a catalog has one caller, it belongs to that caller.
-  - A caller is a procedure that runs the command. A sibling specification, and any passage of prose naming a command, does not make the file holding it a caller.
-  - Reach is what a reader must load: a step's citation, a specification's citation, and a prerequisite. A specification citing another command reaches it without calling it, so reach measures retrieval and leaves placement to callers.
-  - Placement follows the skill's declared structure. A structure whose commands belong to their subject keeps each there, however few procedures call it.
-  - A specification no procedure runs has no caller to place it, so it stays with the subject of the file whose prose or sibling specification names it. One nothing cites has no reader, whatever structure holds it.
+- **In the step that runs it.**
+  - A specification one step runs is written in that step: its description, template and detail, with its `○` inputs and `●` output, and no link to it. No file takes a Commands section.
+  - A specification several steps run, a step of another file runs, or text outside its step links to, is an operation of its own in the procedure section of the file owning its subject, and those steps Apply it. An operation holding one command takes no numbered step heading.
+  - A caller is a procedure that runs the command. A specification standing outside any step, and any passage of prose naming a command, does not make the file holding it a caller.
+  - Reach is what a reader must load: a step's citation, a specification's citation, and a prerequisite. A specification standing outside any step reaches a command it cites without calling it, so reach measures retrieval and leaves placement to callers.
+  - A specification no procedure runs has no step to hold it, so it stays with the section whose prose or sibling specification names it; in a mode file, whose commands stand in its procedure, it is an operation of the procedure. An operation specification nothing cites has no reader.
   - A procedure is a section carrying numbered steps, whatever its heading names it. The step is the author stating that the reader performs these, in this order, and is the only place a file records that.
   - Prose runs nothing whatever its mood, order or count: a sentence routing three commands in sequence names them as a statement of what one command does names it. State a route as steps to call them.
-  - SKILL.md holds no specification. A command the entry point names is specified in the file whose procedure runs it, or in the catalog.
+  - SKILL.md holds no specification. A command the entry point names is specified in the step that runs it.
   - A specification with two owners has one home and a link from the other. A count of those links that keeps growing says the split is in the wrong place.
 - **Spec layout.**
   - Each spec opens with a one-line, succinct description of what the command does.
   - Detail a caller needs, such as flags, inputs or refusals, follows as bullets, then the command block.
 - **Named by link.**
-  - Prose names a spec by linking to its sub-section, mid-sentence: "run [Check Body Format](work-planner/artifacts/issue-body.md#check-body-format) on each epic".
+  - Prose names a specification standing as an operation by linking to its section, mid-sentence: "apply [Check Body Format](work-planner/artifacts/issue-body.md#check-body-format) to each epic".
   - A command body is inlined only in the file that owns the spec.
-  - A mode file holds a shell or unlabelled code block only inside its command specifications.
+  - A mode file holds a shell or unlabelled code block only inside its procedure: in the step that runs it, or in an operation those steps run.
 - **Interface.**
   - A command reaches GitHub through REST wherever REST supports the operation, and through current GraphQL where it does not.
   - A specification whose command sends GraphQL, itself or through a script it runs, states what REST lacks on a `**REST gap:**` line.
   - Projects (classic) fields, types, mutations and REST endpoints are never used. Project operations use Projects V2.
 - **Conventions.**
   - Session setup, execution location, example values and other skill-wide prerequisites stand where a procedure reaching them opens no further file: SKILL.md, which selects the mode, or the file holding the operations those procedures open anyway.
-  - Conventions governing one procedure's commands sit in that procedure's file, ahead of its Commands section.
+  - Conventions governing one procedure's commands sit in that procedure's file, ahead of the procedure.
 
 ## Progressive Disclosure
 

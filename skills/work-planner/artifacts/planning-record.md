@@ -14,7 +14,22 @@ One planning directory and its artifact inventory.
 
 ##### New Record
 
-- Run [Add Planning Record](#add-planning-record "ƒ") with the engineering checkout and supplied planning-folder path.
+- Add Planning Record with the engineering checkout and supplied planning-folder path.
+
+Add the folder for one planning record on the long-lived engineering worktree and provide [Planning Folder](#planning-folder "●") to the requester.
+
+<big><pre>
+mkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder "○")'
+</pre></big>
+
+- Run in the [Engineering Worktree](#engineering-worktree "○").
+
+- `<planning-folder-path>` is `<yyyy-mm-dd>[-<ref>]-<slug>/` under the [configured planning directory](../configuration.md#planning-records). The date is the day the record is opened.
+- `<ref>` is the bare number of the issue or the pull request the record is for. A record for ad hoc work, which has neither, has no ref segment.
+- The slug is lowercase words separated by hyphens, a short name of the work.
+- The folder's files are the [planning layout](planning-record.md#layout).
+- Edits are made on that worktree. The engineering branch takes no further worktree and no branch.
+
 - Populate README.md from the [Template](#template).
 
 ##### Existing Record
@@ -43,21 +58,7 @@ The record's folder committed and pushed, so every link into it resolves for a r
 
 #### 1. Find Engineering Checkout
 
-Run [Find Engineering Worktree](#find-engineering-worktree "ƒ") for [Planning Folder](#planning-folder).
-
-#### 2. Publish Planning Files
-
-- Run [Commit Planning Record](#commit-planning-record "ƒ") using [Commit Message File](#commit-message-file).
-- Confirm the files this record wrote reached `origin/engineering`, meeting [Shared Worktree](#shared-worktree).
-- Report a rebase that stops on a conflict rather than rewriting the branch.
-
-#### 3. Provide Published Planning Record
-
-Provide [Publication Result](#publication-result) after confirming publication, or with the conflict that prevents it.
-
-## Commands
-
-### Find Engineering Worktree
+Find Engineering Worktree for [Planning Folder](#planning-folder).
 
 Print the checkout holding the engineering branch and provide [Engineering Worktree](#engineering-worktree "●") to the requester. Every planning record is written in that checkout.
 
@@ -67,7 +68,9 @@ The engineering branch has one long-lived worktree and takes no further one.
 git -C '[**&lt;checkout&gt;**](#project-checkout "○")' worktree list | grep '\&#91;engineering\&#93;'
 </pre></big>
 
-### Commit Planning Record
+#### 2. Publish Planning Files
+
+- Commit Planning Record using [Commit Message File](#commit-message-file).
 
 Commit everything pending in the engineering worktree, publish the branch so every record's links resolve, and provide [Publication Result](#publication-result "●") to the requester.
 
@@ -88,21 +91,12 @@ cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' && &#92;
 - Planning records go straight to the branch; they take no pull request.
 - Pass the message through a file outside the worktree; the worktree is a linked one, so git writes here run unsandboxed.
 
-### Add Planning Record
+- Confirm the files this record wrote reached `origin/engineering`, meeting [Shared Worktree](#shared-worktree).
+- Report a rebase that stops on a conflict rather than rewriting the branch.
 
-Add the folder for one planning record on the long-lived engineering worktree and provide [Planning Folder](#planning-folder "●") to the requester.
+#### 3. Provide Published Planning Record
 
-<big><pre>
-mkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder "○")'
-</pre></big>
-
-- Run in the [Engineering Worktree](#engineering-worktree "○").
-
-- `<planning-folder-path>` is `<yyyy-mm-dd>[-<ref>]-<slug>/` under the [configured planning directory](../configuration.md#planning-records). The date is the day the record is opened.
-- `<ref>` is the bare number of the issue or the pull request the record is for. A record for ad hoc work, which has neither, has no ref segment.
-- The slug is lowercase words separated by hyphens, a short name of the work.
-- The folder's files are the [planning layout](planning-record.md#layout).
-- Edits are made on that worktree. The engineering branch takes no further worktree and no branch.
+Provide [Publication Result](#publication-result) after confirming publication, or with the conflict that prevents it.
 
 ## Fields
 

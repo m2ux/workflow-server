@@ -2,7 +2,7 @@
 
 The Status and membership each board item takes from supplied issue, delivery and review evidence, proposed as calls held to one write jurisdiction.
 
-## Commands
+## Operations
 
 ### Compute Board Changes
 

@@ -36,8 +36,6 @@ Write a JSON list containing the [Review Record](#review-record), with the full 
 
 Provide the record for publication on the engineering branch. Evidence lives outside the reviewed branch, so publishing it does not change the head it identifies.
 
-## Commands
-
 ### Validate Agent Review
 
 Check published review evidence against a freshly fetched integration pull request and provide [Review Eligibility](#review-eligibility "●") to the requester.

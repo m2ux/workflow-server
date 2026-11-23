@@ -2,7 +2,7 @@
 
 The queue for one theme board: the statuses [Priority Sets](work-priority.md#priority-sets) give initiatives and epics, hot-fix status, status and assignee changes, pending decisions, waiting work, next epics, Ready units and epics waiting on a priority.
 
-## Commands
+## Operations
 
 ### Compute Board Queue
 
