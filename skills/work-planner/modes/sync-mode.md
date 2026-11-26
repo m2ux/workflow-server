@@ -120,8 +120,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
   - **Unevaluable.**
     - Report each source and why to the user, with each check the run names not checked.
     - Leave an unmatched or in-flight pull request whose head is an epic base unmatched, since the run could not tell it from a task delivery.
-    - Fetch the tooling branch and each draft base, long-lived branch or review head named unread, and Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the same epic bases.
-    - The epic stays open until the tooling branch states a readable declaration.
+    - Fetch each branch or head the run names unread, and Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the same epic bases.
   - **Source.**
     - Report it with the results.
   - **Not checked.**

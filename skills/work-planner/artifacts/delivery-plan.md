@@ -59,7 +59,7 @@ A hot-fix is a unit as its [Delivery Unit](hotfix.md#delivery-unit) states, with
 
 ### Branch Context
 
-The long-lived branch names are the ones [Branches](delivery-branches.md#branches) reads, and the `source` line names their commit. A base whose last segment is not one of those names is ignored. A supplied record date determines the planning folder's day; the default is today.
+The long-lived branch names are the ones [Branches](delivery-branches.md#branches) declares, and the `source` line names their commit. A base whose last segment is not one of those names is ignored. A supplied record date determines the planning folder's day; the default is today.
 
 ### Dispatch Export
 

@@ -18,7 +18,7 @@ Run [List Epic Bases](#list-epic-bases "ƒ") in the project checkout for [Epic I
 
 #### 3. Resolve Missing Branch Configuration
 
-- If `config/branches` is missing or empty on the tooling branch, or does not name a branch in [Changed Branches](#changed-branches):
+- If the listing reports the names unevaluable, or names no branch in [Changed Branches](#changed-branches):
   - Report the names as unevaluable, with their source.
   - Obtain the project's branch names before creating delivery branches.
 
@@ -141,7 +141,7 @@ Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#
 
 #### 2. Read Declared Branch Names
 
-Run [List Long-Lived Branches](#list-long-lived-branches "ƒ") with the supplied [checkout](#project-checkout). Absent, empty or unreadable configuration on the tooling branch leaves branch names unevaluable, reported with its source.
+Run [List Long-Lived Branches](#list-long-lived-branches "ƒ") with the supplied [checkout](#project-checkout), retaining unevaluable names with their source.
 
 #### 3. List Current Epic Bases
 
