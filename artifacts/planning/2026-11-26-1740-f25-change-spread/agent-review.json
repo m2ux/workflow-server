@@ -18,5 +18,25 @@
         "evidence": "https://github.com/m2ux/workflow-server/commit/6396c88036f61c40cf086a01105bd29b25420457"
       }
     ]
+  },
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1741",
+    "head": "83296214939194c042a65a3dc4a8e6c0566e4435",
+    "base": "5583d7900c4e4854930ca087a9b32e1119fb70d0",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-26-1740-f25-change-spread/agent-review.json",
+    "reviewer": "Claude Code independent review sub-agent (head c35fb38) and delivery session (fix round to 8329621)",
+    "reviewed_at": "2026-11-26T21:00:00+00:00",
+    "scope": "The change 6396c8803..c35fb38ba, two pre-existing faults added to F25 at the user's request: 84942c6fb, test/README.md's Run one module by name command; c35fb38ba, Validate Epic Body reading the Required Criteria declaration (new step 1, with its unevaluable bullet) before step 2 reads changed paths for the branches it names, steps renumbered 1-6. This resolves the pre-existing ordering observation the previous record held outside findings. Inspected: every reference in skills/ (md, py, json, ts, yaml, toon) to the operation's step anchors and titles (read-changed-paths, identify-required-criteria, validate-kind-conditions, read-delivery-reach, provide-local-findings) - only the headings themselves, outside links target #validate-epic-body and #required-criteria alone; tests and scripts tied to the headings (check_skill_files.py, test_readme RunCommand and ReadmeShape); the old test.test.* form anywhere in the repository (none; workflow-canon revise-mode.md already uses the discover -p form); parallel Required Criteria reads in issue-body.md, task-body.md, hotfix-body.md, initiative-issue-body.md and standalone-body.md (none carry such a step); the unevaluable path, where step 2 iterates over no named branch and reads nothing. Fix round: 8329621 and the finding it fixes. Rejected as no defect: step 2 reading changed paths through Read Pull Request State and step 5 reading each pull request's changed files as the tracker lists them, a redundant read present at 6396c8803 that breaks no run and that the reorder neither causes nor depends on.",
+    "criteria": "Added scope: the README's Run one module by name command runs one module (118 tests, OK) where the replaced test.test.format form errors; Validate Epic Body reads the declaration before any step that depends on it, and the unevaluable gate sits at the step that reports lacking criteria. AC1-AC3 evidence as the 6396c88 record states; no file those criteria cover changed.",
+    "validation": "At c35fb38 and again at 8329621: python3 -m unittest discover -s test in skills/work-planner ran 1215 tests, OK, 1 skipped (optional live Development-link test); skills/scripts/check_skill_files.py skills/work-planner: 65 files, 0 findings; skills/test 319 tests OK; python3 -m unittest discover -v -s test -p test_format.py from skills/work-planner: 118 tests OK; python3 -m unittest -v test.test.format: FAILED (errors=1). The repository runs no CI checks on this pull request.",
+    "findings": [
+      {
+        "description": "c35fb38 moved the rule that an unevaluable declaration reports no epic as lacking a criterion into step 1, away from step 5, the step that raises lacking-criterion findings, so step 5 stated no gate. The gate now sits in step 5 beside the declares-nothing case, stated once.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/83296214939194c042a65a3dc4a8e6c0566e4435"
+      }
+    ]
   }
 ]
