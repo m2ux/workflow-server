@@ -11,8 +11,8 @@ config/required-criteria.json declares at the tooling branch's remote head, orig
 repository --project locates, whatever branch the epic's work reaches. Which worktree --project is, and
 what its working files hold, choose nothing. The run prints the declaration path, the resolved commit
 and the repository as its source. A missing or empty declaration, or an empty array, requires no
-criterion. A tooling branch resolving to no commit, unreadable JSON, a value other than an array, or an entry lacking a field leaves the
-required criteria unevaluable: the run reports that and names the fault, and reports no criterion
+criterion. A tooling branch resolving to no commit, unreadable JSON, a value other than an array, or
+an entry lacking a field leaves the required criteria unevaluable: the run reports that and names the fault, and reports no criterion
 as lacking. Each declared criterion is required of an epic one of whose pull requests, from
 --prs, reaches its branch through an epic base or initiative branch and changes a file at or under one
 of its paths. --files gives each pull request's changed files, the path list the tracker returns for
