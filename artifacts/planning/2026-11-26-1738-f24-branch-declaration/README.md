@@ -13,6 +13,7 @@ A project that keeps config/ on its tooling branch alone, as prosiform does, oth
 | Decision | State |
 | --- | --- |
 | Which branch holds the declaration | The tooling branch is workspace for every project; no project setting names another. |
+| A project with no workspace branch | Decided by the user: midnight-agent-eng, whose declaration sits on ghsa-classifier, is not catered for. F24 ships as it is. |
 
 ## Artifacts
 
