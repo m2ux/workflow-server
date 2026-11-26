@@ -47,7 +47,7 @@ The body's local format and field findings.
 #### 1. Read Required Criteria
 
 - Read the [Required Criteria](#required-criteria) declaration, naming its path, commit and repository as the source.
-- A tooling branch resolving to no commit, or a [malformed statement](#required-criteria), leaves the project's required criteria unevaluable. Report that with the fault named, and report no epic as lacking a criterion.
+- A tooling branch resolving to no commit, or a [malformed statement](#required-criteria), leaves the project's required criteria unevaluable. Report that with the fault named.
 
 #### 2. Read Changed Paths
 
@@ -65,7 +65,7 @@ Read reach from each epic pull request's base, through an epic base or initiativ
 
 - Read each pull request's changed files as the tracker lists them.
 - Include in the findings each declared criterion an epic lacks whose work changes the criterion's paths on its branch, and any epic criterion no task row delivers.
-- A declaration that declares nothing brings no required-criteria finding.
+- A declaration that declares nothing, or an unevaluable one, reports no epic as lacking a declared criterion.
 - A pull request reaching a declared branch whose changed files are not supplied leaves that criterion unevaluable, unless another pull request of the epic is known to change a declared path. Report it as unevaluable.
 
 #### 6. Provide Local Findings
