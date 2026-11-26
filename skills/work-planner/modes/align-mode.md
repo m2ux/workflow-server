@@ -152,7 +152,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 - After preparing the bases, align the selected initiative's pull requests:
   - Apply [Read Initiative Pull Requests](../artifacts/pull-request.md#read-initiative-pull-requests "ƒ") with the initiative, epic and task issues this alignment fetched.
-  - For each open epic, Apply [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches "ƒ") in the project checkout, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic. Unevaluable branch names stop this step with a finding.
+  - For each open epic, Apply [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches "ƒ") in the project checkout. Unevaluable branch names stop this step with a finding.
   - Use the provided long-lived target; for example, `main` and `i07/e00/main` identify the same target.
   - Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request "ƒ") to point an open task pull request at its epic base.
   - When that pull request is not mergeable, Apply [Update Task Branch](../artifacts/delivery-branches.md#update-task-branch "ƒ") with the epic base, task branch and the unit checkout holding it. A conflict is reported and the pull request stays open.

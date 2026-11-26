@@ -10,7 +10,8 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from fixtures import SCRIPTS, declared, git, hotfix, initiative_body, issue, item, links, pr, run, url, work_item
+from fixtures import (SCRIPTS, commit_branches, declared, git, hotfix, initiative_body, issue, item, links, pr, run,
+                      tooling, url, work_item)
 from test_agent_review import reviewed_pr
 
 sys.path.insert(0, str(SCRIPTS))
@@ -959,6 +960,24 @@ class HotFixUnits(unittest.TestCase):
         self.assertIn('  unit F05 #5:', out)
         self.assertIn('base workspace', out)
         self.assertIn('undeclared: 1', out)
+
+    def test_a_target_is_checked_against_the_tooling_branch_alone(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp) / 'checkout'
+            checkout.mkdir()
+            git(checkout, 'init')
+            git(checkout, 'commit', '--allow-empty', '-m', 'product')
+            git(checkout, 'remote', 'add', 'origin', 'git@github.com:o/r.git')
+            git(checkout, 'checkout', '-q', '--orphan', 'workspace')
+            stated = commit_branches(checkout, 'main', 'workspace')
+            tooling(checkout, stated)
+            git(checkout, 'checkout', '-q', 'main')
+            out = survey(staged((hotfix(4, target='main'), 'Ready'), (hotfix(5, target='feature/x'), 'Ready')),
+                         None, '--project', str(checkout), code=1)
+        self.assertIn(f'source: config/branches at {stated} in ', out)
+        self.assertIn('  unit F04 #4:', out)
+        self.assertIn('  undeclared F05 #5: its target feature/x is no long-lived branch config/branches declares',
+                      out)
 
     def test_a_passed_pull_request_into_an_undeclared_target_is_no_merge_candidate(self):
         with tempfile.TemporaryDirectory() as tmp:

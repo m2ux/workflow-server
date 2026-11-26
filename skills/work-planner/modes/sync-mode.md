@@ -63,7 +63,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 
 ### 6. Sync Each Epic
 
-- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ"), linking every match from [Match Pull Requests to Tasks](#4-match-pull-requests-to-tasks), open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at. Linking a pull request replaces the planning-record link on that task.
+- Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ"), linking every match from [Match Pull Requests to Tasks](#4-match-pull-requests-to-tasks), open or merged, with the task issues, the project checkout and the fetched epic bases. Linking a pull request replaces the planning-record link on that task.
 
 - Handle the provided delivery findings:
   - **Normalized.**
@@ -120,8 +120,8 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
   - **Unevaluable.**
     - Report each source and why to the user, with each check the run names not checked.
     - Leave an unmatched or in-flight pull request whose head is an epic base unmatched, since the run could not tell it from a task delivery.
-    - Fetch each draft base, long-lived branch or review head named unread, and Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the same epic bases.
-    - The epic stays open until every epic base states the same readable declaration.
+    - Fetch the tooling branch and each draft base, long-lived branch or review head named unread, and Run [Sync Epic](../artifacts/epic-issue-body.md#sync-epic "ƒ") again with the same epic bases.
+    - The epic stays open until the tooling branch states a readable declaration.
   - **Source.**
     - Report it with the results.
   - **Not checked.**

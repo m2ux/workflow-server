@@ -8,9 +8,9 @@ The long-lived branches, epic bases and task branches used for delivery.
 
 The branches a task pull request targets.
 
-#### 1. Read Changed Branches
+#### 1. Read Long-Lived Branches
 
-For each branch in [Changed Branches](#changed-branches), Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout), then Run [List Long-Lived Branches](#list-long-lived-branches "ƒ") with `--project` set to the checkout and `--revision` to that remote branch, such as `origin/main`, as [Branches](#branches) names for base preparation.
+Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the tooling branch [Branches](#branches) names, then Run [List Long-Lived Branches](#list-long-lived-branches "ƒ") with `--project` set to the checkout.
 
 #### 2. List Existing Epic Bases
 
@@ -18,8 +18,8 @@ Run [List Epic Bases](#list-epic-bases "ƒ") in the project checkout for [Epic I
 
 #### 3. Resolve Missing Branch Configuration
 
-- If `config/branches` is missing or empty at that revision, or does not name the changed branch:
-  - Report the names as unevaluable at that revision.
+- If `config/branches` is missing or empty on the tooling branch, or does not name a branch in [Changed Branches](#changed-branches):
+  - Report the names as unevaluable, with their source.
   - Obtain the project's branch names before creating delivery branches.
 
 #### 4. Require Confirmed Prerequisites
@@ -135,13 +135,13 @@ Provide [Worktree Result](#worktree-result) with the selected detached worktree 
 
 The configured long-lived branches and existing epic bases.
 
-#### 1. Fetch Evaluated Revision
+#### 1. Fetch Tooling Branch
 
-Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the branch the supplied [revision](#revision) names on origin, such as `i07/e00/main` for `origin/i07/e00/main`; stop on failure.
+Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the tooling branch [Branches](#branches) names; stop on failure.
 
 #### 2. Read Declared Branch Names
 
-Run [List Long-Lived Branches](#list-long-lived-branches "ƒ") with the supplied [checkout](#project-checkout) and [revision](#revision). Absent, empty or unreadable configuration at that revision leaves branch names unevaluable, reported with its source.
+Run [List Long-Lived Branches](#list-long-lived-branches "ƒ") with the supplied [checkout](#project-checkout). Absent, empty or unreadable configuration on the tooling branch leaves branch names unevaluable, reported with its source.
 
 #### 3. List Current Epic Bases
 
@@ -174,15 +174,11 @@ Print the long-lived branch names with one name per line and provide [Branch Nam
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py &#92;
   --names &#92;
-  --project '[**&lt;checkout&gt;**](#project-checkout "○")' &#92;
-  --revision '[**&lt;revision&gt;**](#revision "○")'
+  --project '[**&lt;checkout&gt;**](#project-checkout "○")'
 </pre></big>
 
-- The names should meet [Branches](#branches).
-- Select the evaluated revision according to [Branches](#branches).
-- The names are the ones `config/branches` states at the commit `--revision` resolves to. Standard error carries their source: the configuration path, that commit and the repository.
-- `--names` reads one `--revision`.
-- An absent, empty or unreadable statement, or a revision resolving to no commit, prints `unevaluable:` with the source and why, and exits 1.
+- The names are the ones `config/branches` states on the tooling branch, read as [Branches](#branches) states. Standard error carries their source: the configuration path, the commit and the repository.
+- An absent, empty or unreadable statement, or a tooling branch resolving to no commit, prints `unevaluable:` with the source and why, and exits 1.
 
 ### Fetch Remote Branch
 
@@ -346,13 +342,10 @@ git -C '[**&lt;checkout&gt;**](#checkout "○")' status --porcelain --branch
 
 ### Branches
 
-The project's ordered long-lived branch names, declared in `config/branches` at its root, one name per line. A run reads the statement at the fetched commit it evaluates, in the repository its checkout locates; which worktree the checkout is, and what its working files hold, choose nothing.
+The project's long-lived branch names, declared in `config/branches` at the root of its tooling branch, `workspace`, one name per line. Every run that needs them reads the statement at one revision, the tooling branch's remote head `origin/workspace`, in the repository its checkout locates, whatever branch it evaluates. Which worktree the checkout is, what its working files hold and what any other branch carries choose nothing.
 
-- An epic sync evaluates each of its epic bases, such as `origin/i07/e00/main` and `origin/i07/e00/workflows`. Declarations that disagree across those bases leave the names unevaluable.
-- A read of one epic's branches evaluates its epic base, such as `origin/i07/e00/main`.
-- Base preparation, before a base exists, evaluates the long-lived branch the base is cut from, such as `origin/main`.
-- A delivery survey evaluates the long-lived branch that states the project's branches, such as `origin/workspace`.
-- Verification of merged delivery evaluates the merged commit.
+- Fetch `workspace` before the read, so its remote head is current.
+- Epic bases, review pull requests, task targets and hot-fix targets are evaluated against those names. An epic base, and the long-lived branch it is cut from, need not carry the statement.
 
 - eg `docker`, `main`, `workflows` and `workspace` in workflow-server's `config/branches`.
 

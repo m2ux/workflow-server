@@ -140,18 +140,26 @@ def commit_branches(checkout: Path, *names: str, message: str = 'state branches'
     return git(checkout, 'rev-parse', 'HEAD')
 
 
+def tooling(checkout: Path, commit: str) -> None:
+    """Point the tooling branch's remote head, origin/workspace, at commit."""
+    git(checkout, 'update-ref', 'refs/remotes/origin/workspace', commit)
+
+
 def repository(checkout: Path, *names: str) -> str:
-    """A repository on main whose one commit states the long-lived branches in config/branches."""
+    """A repository on main whose one commit states the long-lived branches in config/branches,
+    with the tooling branch's remote head at that commit."""
     checkout.mkdir(parents=True, exist_ok=True)
     git(checkout, 'init')
-    return commit_branches(checkout, *names)
+    commit = commit_branches(checkout, *names)
+    tooling(checkout, commit)
+    return commit
 
 
 def declared(root: Path, *names: str) -> list[str]:
-    """The --project and --revision arguments of a repository whose HEAD states names."""
+    """The --project argument of a repository whose tooling branch states names."""
     checkout = root / 'checkout'
     repository(checkout, *names)
-    return ['--project', str(checkout), '--revision', 'HEAD']
+    return ['--project', str(checkout)]
 
 
 def lane_table(*rows: tuple[str, str, str]) -> str:

@@ -67,7 +67,7 @@ The continuing coordinator for one authorized delivery scope.
 - Apply [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites "ƒ") for each authorized epic the queue places Ready or In Progress, with current initiative, epic, prerequisite and base-merge records.
 
 - Apply [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases "ƒ") with each confirmed result and the project checkout.
-- Apply [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches "ƒ") in the project checkout for the project and each epic, at the revision [Branches](../artifacts/delivery-branches.md#branches) names.
+- Apply [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches "ƒ") in the project checkout for the project and each epic.
 
 - Run [Compute Available Work](../artifacts/delivery-plan.md#compute-available-work "ƒ") for the selected board and the authorization’s requested lane in the project checkout, using the selected record date and requesting a dispatch export.
 
