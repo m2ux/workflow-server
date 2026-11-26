@@ -261,7 +261,7 @@ class DocumentedCommandBehavior(unittest.TestCase):
             'epic-json-file': self.snapshot('child.json', issue(2, '[I01:E00] Actual Name: Clear Result')),
             'pull-request-records-file': self.snapshot('prs.json', pr(950, '[I01:E00] Work', base='i01/e00/main')),
             'pull-request-changed-paths': '950=' + str(self.root / 'changed paths.txt'),
-            'checkout': str(self.root / 'checkout'), 'revision': 'HEAD',
+            'checkout': str(self.root / 'checkout'),
             'output-body-file': str(output),
         }
         return values, output
@@ -271,14 +271,14 @@ class DocumentedCommandBehavior(unittest.TestCase):
                        body=initiative_body((f'[E00]({url("issues", 2)})', '')))
         values, output = self.format_values(record)
         self.execute('issue-body.md', 'Check Body Format', values,
-                     omit=('--initiative', '--prs', '--files', '--project', '--revision'))
+                     omit=('--initiative', '--prs', '--files', '--project'))
         self.assertIn('| Actual Name |', output.read_text())
 
     def test_epic_format_resolves_cross_epic_rows_from_its_parent(self):
         record = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', 'E01:W01')))
         values, output = self.format_values(record)
         self.execute('issue-body.md', 'Check Body Format', values,
-                     omit=('--epic', '--prs', '--files', '--project', '--revision'))
+                     omit=('--epic', '--prs', '--files', '--project'))
         self.assertIn(f'[E01:W01]({url("issues", 3)})', output.read_text())
 
     def test_epic_format_observes_project_required_criteria_and_changed_paths(self):
@@ -294,6 +294,8 @@ class DocumentedCommandBehavior(unittest.TestCase):
         }]))
         git(checkout, 'add', 'config/required-criteria.json')
         git(checkout, 'commit', '-m', 'Declare required criteria')
+        tooling(checkout, git(checkout, 'rev-parse', 'HEAD'))
+        git(checkout, 'switch', '-c', 'i01/e00/main', 'HEAD~1')
         (self.root / 'changed paths.txt').write_text('src/example.py\n')
         done = self.execute('issue-body.md', 'Check Body Format', values, omit=('--epic',))
         self.assertEqual(done.returncode, 1, done.stderr)

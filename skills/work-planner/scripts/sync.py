@@ -97,7 +97,7 @@ import sys
 from pathlib import Path
 from typing import NamedTuple
 
-from format import Review, Template, AC, LINK, TICK, cell, cells, cited, id_cell, join_sections, row, row_id, split_sections
+from format import TOOLING_BRANCH, Review, Template, AC, LINK, TICK, cell, cells, cited, id_cell, join_sections, row, row_id, split_sections
 from kinds import interface, kind_of
 import testplan
 
@@ -110,8 +110,6 @@ COMMIT = re.compile(r'[0-9a-f]{40}')
 PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 BELONGS = re.compile(r'\b(?:belongs? to|left to|owned by)\s+(W\d\d)\b', re.IGNORECASE)
 LONG_LIVED: tuple[str, ...] = ()
-# The tooling branch's remote head, where config/branches declares every project's long-lived branches.
-TOOLING_BRANCH = 'origin/workspace'
 # The planning-records branch: direct pushes and no epic base, as rules.md states.
 RECORDS_BRANCH = 'engineering'
 

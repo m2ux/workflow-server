@@ -10,7 +10,7 @@ The branches a task pull request targets.
 
 #### 1. Read Long-Lived Branches
 
-Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the tooling branch [Branches](#branches) names, then Run [List Long-Lived Branches](#list-long-lived-branches "ƒ") with `--project` set to the checkout.
+Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the [tooling branch](#tooling-branch), then Run [List Long-Lived Branches](#list-long-lived-branches "ƒ") with `--project` set to the checkout.
 
 #### 2. List Existing Epic Bases
 
@@ -137,7 +137,7 @@ The configured long-lived branches and existing epic bases.
 
 #### 1. Fetch Tooling Branch
 
-Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the tooling branch [Branches](#branches) names; stop on failure.
+Run [Fetch Remote Branch](#fetch-remote-branch "ƒ") in the [project checkout](#project-checkout) with the [tooling branch](#tooling-branch); stop on failure.
 
 #### 2. Read Declared Branch Names
 
@@ -177,7 +177,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --project '[**&lt;checkout&gt;**](#project-checkout "○")'
 </pre></big>
 
-- The names are the ones `config/branches` states on the tooling branch, read as [Branches](#branches) states. Standard error carries their source: the configuration path, the commit and the repository.
+- The names are the ones [Branches](#branches) declares. Standard error carries their source: the configuration path, the commit and the repository.
 - An absent, empty or unreadable statement, or a tooling branch resolving to no commit, prints `unevaluable:` with the source and why, and exits 1.
 
 ### Fetch Remote Branch
@@ -340,11 +340,17 @@ git -C '[**&lt;checkout&gt;**](#checkout "○")' status --porcelain --branch
 
 ## Fields
 
-### Branches
+### Tooling Branch
 
-The project's long-lived branch names, declared in `config/branches` at the root of its tooling branch, `workspace`, one name per line. Every run that needs them reads the statement at one revision, the tooling branch's remote head `origin/workspace`, in the repository its checkout locates, whatever branch it evaluates. Which worktree the checkout is, what its working files hold and what any other branch carries choose nothing.
+The branch whose `config/` folder holds every declaration a project makes to this skill: `workspace`. Every run reading a declaration reads it at one revision, the tooling branch's remote head `origin/workspace`, in the repository its checkout locates, whatever branch it evaluates. Which worktree the checkout is, what its working files hold and what any other branch carries choose nothing.
 
 - Fetch `workspace` before the read, so its remote head is current.
+- eg [Branches](#branches) and [Required Criteria](epic-issue-body.md#required-criteria).
+
+### Branches
+
+The project's long-lived branch names, declared in `config/branches` on its [tooling branch](#tooling-branch), one name per line.
+
 - Epic bases, review pull requests, task targets and hot-fix targets are evaluated against those names. An epic base, and the long-lived branch it is cut from, need not carry the statement.
 
 - eg `docker`, `main`, `workflows` and `workspace` in workflow-server's `config/branches`.
