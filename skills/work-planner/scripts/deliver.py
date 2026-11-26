@@ -4,7 +4,7 @@ or release a task row.
 Usage:
   python3 deliver.py --items items.json --prs prs.json --links links.json
       [--others issue-750.json ...]
-      [--project . --revision origin/workspace] [--bases i07/e00/main,i07/e00/workflows]
+      [--project .] [--bases i07/e00/main,i07/e00/workflows]
       [--engineering .engineering] [--lane 2] [--date 2026-10-06]
       [--dispatch-plan available.json]
   python3 deliver.py --items items.json --board users/{owner}/projectsV2/9 --fields fields.json
@@ -70,8 +70,8 @@ unit_state reads its delivery unit, as the kind's artifact states it: a unit lin
 criterion it carries as coverage and the record folder and branch its tag and title name give it;
 a hold line; or an unrecorded line naming its merged delivering pull requests. Its base is its
 target, the branch the kind's target reads from its body. An issue naming no target, or an issue of
---project's repository, as its origin remote names it, whose target that repository's
-config/branches does not declare, is printed as an undeclared line naming why, whatever its state,
+--project's repository, as its origin remote names it, whose target the long-lived branches that
+repository's tooling branch declares, as sync.py reads them, do not include, is printed as an undeclared line naming why, whatever its state,
 and is offered as no unit and no merge. An issue of another repository has a target --project cannot
 check: it is printed as an unresolved line, offered once a run whose --project is a checkout of its
 repository finds its target declared, and does not fail the run.
@@ -370,9 +370,7 @@ def survey(args: argparse.Namespace) -> int:
     prs = pull_requests(args.prs) if args.prs else []
     if args.prs:
         attach_links(prs, args.links)
-    if bool(args.project) != bool(args.revision):
-        sys.exit('--project and --revision go together')
-    declared = long_lived_names(args.project, args.revision) if args.project else None
+    declared = long_lived_names(args.project) if args.project else None
     lived = declared.names if declared else ()
     repository = origin_repository(args.project) if declared else ''
     if declared:
@@ -627,8 +625,7 @@ def main() -> int:
     parser.add_argument('--records', help='the URL of the planning records folder')
     parser.add_argument('--lane', help='the requested bare decimal lane index; omission admits only unlaned units')
     parser.add_argument('--date', help='the day the record is opened, today by default')
-    parser.add_argument('--project', default='', help='any checkout of the repository whose config/branches states the long-lived branches')
-    parser.add_argument('--revision', default='', help='the commit config/branches is read at, e.g. origin/workspace')
+    parser.add_argument('--project', default='', help='any checkout of the repository whose tooling branch states the long-lived branches in config/branches')
     parser.add_argument('--engineering', default='', help='the checkout holding the planning records each free row or released row links')
     parser.add_argument('--bases', default='', help='epic bases, comma-separated, e.g. i07/e00/main,i07/e00/workflows')
     parser.add_argument('--progress', help='issues to set In Progress, e.g. 637,943')
