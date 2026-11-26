@@ -1,6 +1,6 @@
 """The installed prose API exposes complete inputs and directed reading paths, Work Priority, Proposal and Test Plan
 each define what every other file reaching it links, Proposals Board alone selects and creates the proposals
-board, and every document naming config/branches reads it on the tooling branch."""
+board, and every document naming a config/ declaration reads it on the tooling branch."""
 import json
 import re
 import tempfile
@@ -569,38 +569,58 @@ class ProposalsBoardHome(unittest.TestCase):
                 self.assertIn(f'(../artifacts/proposals-board.md#{operation} "ƒ")', (ROOT / name).read_text())
 
 
-BRANCH_DECLARATION = 'config/branches'
+DECLARATIONS = ('config/branches', 'config/required-criteria.json')
 REMOTE_REVISION = re.compile(r'\borigin/[\w./-]+')
+DELIVERY_BRANCHES = ROOT / 'artifacts' / 'delivery-branches.md'
 
 
-class BranchDeclarationHome(unittest.TestCase):
-    """Every document naming config/branches reads it on the tooling branch, and Branches names its one revision."""
+def field(path: Path, title: str) -> str:
+    lines, _, headings = checker.scan(path)
+    start = next(i for i, level, name in headings if level == 3 and name == title)
+    return '\n'.join(lines[start + 1:checker.heading_end(headings, start, 3, len(lines))])
+
+
+class DeclarationHome(unittest.TestCase):
+    """Every config/ declaration is read at the tooling branch, and Tooling Branch alone names its revision."""
 
     def mentions(self):
         for path in sorted(ROOT.rglob('*.md')):
             if 'test' in path.relative_to(ROOT).parts:
                 continue
             for number, line in enumerate(path.read_text().splitlines(), 1):
-                if BRANCH_DECLARATION in line:
+                if any(declaration in line for declaration in DECLARATIONS):
                     yield f'{path.relative_to(ROOT)}:{number}', line
 
-    def test_every_mention_names_the_tooling_branch_or_its_example(self):
-        found = list(self.mentions())
-        self.assertTrue(found)
-        for where, line in found:
+    def test_every_declaration_is_mentioned(self):
+        found = ' '.join(line for _, line in self.mentions())
+        for declaration in DECLARATIONS:
+            with self.subTest(declaration=declaration):
+                self.assertIn(declaration, found)
+
+    def test_every_mention_names_the_tooling_branch_and_no_other_revision(self):
+        for where, line in self.mentions():
             with self.subTest(line=where):
                 self.assertTrue('tooling branch' in line or line.startswith('- eg '), line)
                 self.assertNotIn('--revision', line)
                 self.assertNotIn('epic base', line)
+                self.assertEqual(REMOTE_REVISION.findall(line), [])
 
-    def test_the_one_revision_named_is_the_tooling_branch_remote_head(self):
-        revisions = {revision for _, line in self.mentions() for revision in REMOTE_REVISION.findall(line)}
+    def test_the_tooling_branch_names_its_one_revision(self):
+        revisions = set(REMOTE_REVISION.findall(field(DELIVERY_BRANCHES, 'Tooling Branch')))
         self.assertEqual(revisions, {'origin/workspace'})
 
+    def test_no_other_field_names_the_tooling_branch_remote_head(self):
+        holders = [str(path.relative_to(ROOT)) for path in sorted(ROOT.rglob('*.md'))
+                   if 'test' not in path.relative_to(ROOT).parts
+                   and path != DELIVERY_BRANCHES and 'origin/workspace' in path.read_text()]
+        self.assertEqual(holders, [])
+
     def test_listing_the_branches_takes_no_revision(self):
-        path = ROOT / 'artifacts' / 'delivery-branches.md'
-        lines, _, headings = checker.scan(path)
-        start = next(i for i, level, title in headings if level == 3 and title == 'List Long-Lived Branches')
-        section = '\n'.join(lines[start + 1:checker.heading_end(headings, start, 3, len(lines))])
+        section = field(DELIVERY_BRANCHES, 'List Long-Lived Branches')
         self.assertIn('--names', section)
+        self.assertNotIn('--revision', section)
+
+    def test_checking_a_body_takes_no_revision(self):
+        section = field(ROOT / 'artifacts' / 'issue-body.md', 'Check Body Format')
+        self.assertIn('--project', section)
         self.assertNotIn('--revision', section)

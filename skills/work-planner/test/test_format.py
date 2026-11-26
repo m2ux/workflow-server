@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from fixtures import SCRIPTS, hotfix_body, issue, pr, run
+from fixtures import SCRIPTS, hotfix_body, issue, pr, run, tooling
 
 sys.path.insert(0, str(SCRIPTS))
 import kinds  # noqa: E402
@@ -701,19 +701,27 @@ def commit_declaration(checkout: Path, text: str | None, message: str = 'declare
     return git(checkout, 'rev-parse', 'HEAD')
 
 
-class DeclarationAtRevision(unittest.TestCase):
+class DeclarationAtToolingBranch(unittest.TestCase):
+    """The required criteria are the ones config/required-criteria.json states at origin/workspace."""
+
     def setUp(self):
         self.root = Path(self.enterContext(tempfile.TemporaryDirectory()))
         self.checkout = self.root / 'checkout'
         self.checkout.mkdir()
         git(self.checkout, 'init')
 
-    def read(self, revision: str, checkout: Path | None = None) -> Required:
-        return required_criteria(str(checkout or self.checkout), revision)
+    def declare(self, text: str | None, message: str = 'declare') -> str:
+        """Commit the declaration and point the tooling branch at that commit."""
+        commit = commit_declaration(self.checkout, text, message)
+        tooling(self.checkout, commit)
+        return commit
 
-    def test_the_guide_names_the_declaration_and_its_fields(self):
+    def read(self, checkout: Path | None = None) -> Required:
+        return required_criteria(str(checkout or self.checkout))
+
+    def test_the_guide_names_the_declaration_its_home_and_its_fields(self):
         section = guide_section('Required Criteria')
-        self.assertIn(f'`{DECLARATION}` at its root', section)
+        self.assertIn(f'`{DECLARATION}` on its [tooling branch](delivery-branches.md#tooling-branch)', section)
         self.assertEqual(tuple(re.findall(r'^\| `(\w+)` \|', section, re.MULTILINE)), DECLARED_FIELDS)
 
     def test_the_guide_requires_nothing_of_a_project_declaring_nothing(self):
@@ -730,88 +738,99 @@ class DeclarationAtRevision(unittest.TestCase):
             with self.subTest(fault=fault):
                 self.assertIn(fault, malformed[1])
 
-    def test_the_criteria_and_their_source_come_from_the_resolved_commit(self):
-        commit = commit_declaration(self.checkout, guide_example())
-        read = self.read('HEAD')
+    def test_the_criteria_and_their_source_come_from_the_tooling_commit(self):
+        commit = self.declare(guide_example())
+        read = self.read()
         self.assertEqual(read.unevaluable, '')
         self.assertEqual(read.criteria, AUDIT.criteria)
         common = git(self.checkout, 'rev-parse', '--path-format=absolute', '--git-common-dir')
         self.assertEqual(read.source, f'{DECLARATION} at {commit} in {common}')
 
-    def test_divergent_revisions_each_read_their_own_declaration(self):
-        audit = commit_declaration(self.checkout, guide_example())
-        git(self.checkout, 'switch', '-c', 'other')
-        load = commit_declaration(self.checkout, json.dumps([LOAD_TEST]))
-        self.assertEqual(self.read(audit).criteria, AUDIT.criteria)
-        self.assertEqual(self.read('main').criteria, AUDIT.criteria)
-        self.assertEqual(self.read(load).criteria, (LOAD_TEST,))
-        self.assertIn(load, self.read('other').source)
+    def test_the_branch_checked_out_chooses_nothing(self):
+        audit = self.declare(guide_example())
+        git(self.checkout, 'switch', '-c', 'i01/e00/workflows')
+        commit_declaration(self.checkout, json.dumps([LOAD_TEST]))
+        self.assertEqual(self.read().criteria, AUDIT.criteria)
+        self.assertIn(audit, self.read().source)
+
+    def test_an_epic_base_without_the_declaration_reads_the_tooling_branch(self):
+        self.declare(guide_example())
+        git(self.checkout, 'switch', '-c', 'i01/e00/workflows')
+        commit_declaration(self.checkout, None, 'remove')
+        read = self.read()
+        self.assertEqual((read.criteria, read.unevaluable), (AUDIT.criteria, ''))
 
     def test_working_files_choose_nothing(self):
-        commit_declaration(self.checkout, guide_example())
+        self.declare(guide_example())
         (self.checkout / DECLARATION).write_text(json.dumps([LOAD_TEST]))
-        self.assertEqual(self.read('HEAD').criteria, AUDIT.criteria)
+        self.assertEqual(self.read().criteria, AUDIT.criteria)
 
-    def test_the_same_revision_reads_alike_from_every_worktree(self):
-        commit_declaration(self.checkout, guide_example())
+    def test_every_worktree_reads_the_tooling_branch_alike(self):
+        self.declare(guide_example())
         linked = self.root / 'linked'
         git(self.checkout, 'worktree', 'add', '-b', 'side', str(linked))
         commit_declaration(linked, json.dumps([LOAD_TEST]))
-        self.assertEqual(self.read('main', linked), self.read('main'))
-        self.assertEqual(self.read('side', linked), self.read('side'))
-        self.assertEqual(self.read('main').criteria, AUDIT.criteria)
+        self.assertEqual(self.read(linked), self.read())
+        self.assertEqual(self.read().criteria, AUDIT.criteria)
 
-    def test_a_revision_resolving_to_no_commit_is_unevaluable(self):
+    def test_a_local_tooling_branch_chooses_nothing(self):
         commit_declaration(self.checkout, guide_example())
-        read = self.read('no-such-branch')
-        self.assertIn('no-such-branch resolves to no commit', read.unevaluable)
+        git(self.checkout, 'branch', 'workspace')
+        read = self.read()
+        self.assertIn('origin/workspace resolves to no commit', read.unevaluable)
+        self.assertEqual(read.criteria, ())
+
+    def test_a_repository_without_the_tooling_branch_is_unevaluable(self):
+        commit_declaration(self.checkout, guide_example())
+        read = self.read()
+        self.assertEqual(read.source, f'{DECLARATION} at origin/workspace in {self.checkout}')
+        self.assertIn('origin/workspace resolves to no commit', read.unevaluable)
         self.assertEqual(read.criteria, ())
 
     def test_a_project_declaring_none_requires_nothing(self):
-        commit = commit_declaration(self.checkout, None)
-        read = self.read('HEAD')
+        commit = self.declare(None)
+        read = self.read()
         self.assertEqual((read.criteria, read.unevaluable), ((), ''))
         self.assertIn(f'{DECLARATION} at {commit}', read.source)
 
-    def test_a_declaration_at_another_revision_supplies_nothing(self):
-        declared = commit_declaration(self.checkout, guide_example())
-        removed = commit_declaration(self.checkout, None, 'remove')
-        self.assertEqual(self.read(declared).criteria, AUDIT.criteria)
-        self.assertIn(f'{DECLARATION} at {removed}', self.read('HEAD').source)
+    def test_a_declaration_the_tooling_branch_lacks_supplies_nothing(self):
+        commit_declaration(self.checkout, guide_example())
+        removed = self.declare(None, 'remove')
+        self.assertIn(f'{DECLARATION} at {removed}', self.read().source)
         (self.checkout / DECLARATION).write_text(guide_example())
-        self.assertEqual((self.read('HEAD').criteria, self.read('HEAD').unevaluable), ((), ''))
+        self.assertEqual((self.read().criteria, self.read().unevaluable), ((), ''))
 
     def test_an_empty_declaration_requires_nothing(self):
         for text in ('', ' \n', '[]'):
             with self.subTest(text=text):
-                commit_declaration(self.checkout, text)
-                read = self.read('HEAD')
+                self.declare(text)
+                read = self.read()
                 self.assertEqual((read.criteria, read.unevaluable), ((), ''))
 
     def test_a_declaration_other_than_an_array_is_unevaluable(self):
         for text in ('{}', 'null', '"canon audit"', json.dumps(LOAD_TEST)):
             with self.subTest(text=text):
-                commit_declaration(self.checkout, text)
-                read = self.read('HEAD')
+                self.declare(text)
+                read = self.read()
                 self.assertEqual(read.unevaluable, f'{read.source} is not an array')
                 self.assertEqual(read.criteria, ())
 
     def test_an_unreadable_declaration_is_unevaluable(self):
-        commit_declaration(self.checkout, 'branch: workflows')
-        read = self.read('HEAD')
+        self.declare('branch: workflows')
+        read = self.read()
         self.assertEqual(read.unevaluable, f'{read.source} is not JSON')
         self.assertEqual(read.criteria, ())
 
     def test_an_entry_lacking_a_field_is_unevaluable(self):
         entry = {'branch': 'workflows', 'criterion': 'Holds.', 'phrase': ''}
-        commit_declaration(self.checkout, json.dumps([entry]))
-        self.assertTrue(self.read('HEAD').unevaluable.endswith('lacks paths, phrase, row'))
+        self.declare(json.dumps([entry]))
+        self.assertTrue(self.read().unevaluable.endswith('lacks paths, phrase, row'))
 
     def test_paths_other_than_a_list_of_paths_are_unevaluable(self):
         for paths in ('corpus', [], [''], ['corpus', 3]):
             with self.subTest(paths=paths):
-                commit_declaration(self.checkout, json.dumps([{**LOAD_TEST, 'paths': paths}]))
-                read = self.read('HEAD')
+                self.declare(json.dumps([{**LOAD_TEST, 'paths': paths}]))
+                read = self.read()
                 self.assertTrue(read.unevaluable.endswith('lacks paths'))
                 self.assertEqual(read.criteria, ())
 
@@ -829,23 +848,40 @@ class CheckFormat(unittest.TestCase):
         self.files = self.root / 'changed-950.txt'
         self.files.write_text(f'config/branches\n{DEFINITION}\n')
 
+    def declare(self, text: str | None) -> str:
+        commit = commit_declaration(self.checkout, text)
+        tooling(self.checkout, commit)
+        return commit
+
     def check(self, *args: str):
         return run('format.py', str(self.epic), '--prs', str(self.prs), '--files', f'950={self.files}', *args)
 
     def test_the_run_names_its_source_and_the_lacking_criterion(self):
-        commit = commit_declaration(self.checkout, guide_example())
-        done = self.check('--project', str(self.checkout), '--revision', 'HEAD')
+        commit = self.declare(guide_example())
+        done = self.check('--project', str(self.checkout))
         self.assertEqual(done.returncode, 1)
         self.assertIn(f'source: {DECLARATION} at {commit} in ', done.stdout)
         self.assertIn(WANTED, done.stdout)
 
+    def test_an_epic_base_without_the_declaration_is_held_to_the_tooling_branch(self):
+        """The epic's base carries no config/required-criteria.json; origin/workspace does."""
+        commit = self.declare(guide_example())
+        git(self.checkout, 'switch', '--orphan', 'i01/e00/workflows')
+        git(self.checkout, 'commit', '--allow-empty', '-m', 'epic base')
+        self.assertFalse((self.checkout / DECLARATION).exists())
+        done = self.check('--project', str(self.checkout))
+        self.assertEqual(done.returncode, 1)
+        self.assertIn(f'source: {DECLARATION} at {commit} in ', done.stdout)
+        self.assertIn(WANTED, done.stdout)
+        self.assertNotIn('unevaluable', done.stdout)
+
     def test_a_project_declaring_nothing_is_held_to_nothing(self):
         for text in (None, '', '[]'):
             with self.subTest(text=text):
-                commit = commit_declaration(self.checkout, text)
+                commit = self.declare(text)
                 (self.checkout / DECLARATION).parent.mkdir(exist_ok=True)
                 (self.checkout / DECLARATION).write_text(guide_example())
-                done = self.check('--project', str(self.checkout), '--revision', 'HEAD')
+                done = self.check('--project', str(self.checkout))
                 self.assertIn(f'source: {DECLARATION} at {commit} in ', done.stdout)
                 self.assertNotIn('required criteria', done.stdout)
                 self.assertNotIn('no criterion carries', done.stdout)
@@ -853,17 +889,24 @@ class CheckFormat(unittest.TestCase):
     def test_an_unreadable_declaration_is_reported_with_its_fault(self):
         for text, fault in (('{}', 'is not an array'), ('branch: workflows', 'is not JSON')):
             with self.subTest(text=text):
-                commit_declaration(self.checkout, text)
-                done = self.check('--project', str(self.checkout), '--revision', 'HEAD')
+                self.declare(text)
+                done = self.check('--project', str(self.checkout))
                 self.assertEqual(done.returncode, 1)
                 self.assertIn(f'required criteria unevaluable: {DECLARATION} at ', done.stdout)
                 self.assertIn(fault, done.stdout)
                 self.assertNotIn('no criterion carries', done.stdout)
 
-    def test_changed_files_touching_no_declared_path_bring_nothing(self):
+    def test_a_project_without_the_tooling_branch_is_unevaluable(self):
         commit_declaration(self.checkout, guide_example())
+        done = self.check('--project', str(self.checkout))
+        self.assertEqual(done.returncode, 1)
+        self.assertIn('required criteria unevaluable: origin/workspace resolves to no commit', done.stdout)
+        self.assertNotIn('no criterion carries', done.stdout)
+
+    def test_changed_files_touching_no_declared_path_bring_nothing(self):
+        self.declare(guide_example())
         self.files.write_text('config/branches\n')
-        done = self.check('--project', str(self.checkout), '--revision', 'HEAD')
+        done = self.check('--project', str(self.checkout))
         self.assertNotIn('no criterion carries', done.stdout)
         self.assertNotIn('unevaluable', done.stdout)
 
@@ -872,10 +915,10 @@ class CheckFormat(unittest.TestCase):
         self.assertNotEqual(done.returncode, 0)
         self.assertIn('expected NUMBER=FILE', done.stderr)
 
-    def test_project_and_revision_go_together(self):
-        done = self.check('--project', str(self.checkout))
+    def test_the_declaration_takes_no_revision(self):
+        done = self.check('--project', str(self.checkout), '--revision', 'HEAD')
         self.assertNotEqual(done.returncode, 0)
-        self.assertIn('--project and --revision go together', done.stderr)
+        self.assertIn('unrecognized arguments: --revision', done.stderr)
 
 
 class CoverageNamesDelivery(unittest.TestCase):

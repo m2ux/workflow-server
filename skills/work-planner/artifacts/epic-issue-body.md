@@ -44,29 +44,31 @@ Provide the populated [Output Body](#output-body), [Row Result](#row-result) wit
 
 The body's local format and field findings.
 
-#### 1. Read Changed Paths
+#### 1. Read Required Criteria
 
-For each epic pull request reaching a branch the project's [Required Criteria](#required-criteria) declare, Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") to read its changed paths.
+- Read the [Required Criteria](#required-criteria) declaration, naming its path, commit and repository as the source.
+- A tooling branch resolving to no commit, or a [malformed statement](#required-criteria), leaves the project's required criteria unevaluable. Report that with the fault named.
 
-#### 2. Validate Kind Conditions
+#### 2. Read Changed Paths
 
-- Apply [Validate Issue Body](issue-body.md#validate-issue-body "ƒ") against local [Fields](#fields) and initiative context, including each changed-path record at the supplied project revision.
-- The [evaluated revision](#evaluated-revision) is the epic's base on the long-lived branch that holds the project's configuration, such as `origin/i07/e00/workspace`, or that branch itself, such as `origin/workspace`, while the epic has no base on it. Fetch it before the check reads it.
+For each epic pull request reaching a branch the declaration names, Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") to read its changed paths.
 
-#### 3. Read Delivery Reach
+#### 3. Validate Kind Conditions
+
+- Apply [Validate Issue Body](issue-body.md#validate-issue-body "ƒ") against local [Fields](#fields) and initiative context, including each changed-path record.
+
+#### 4. Read Delivery Reach
 
 Read reach from each epic pull request's base, through an epic base or initiative branch. Without pull requests, no criterion is lacking.
 
-#### 4. Identify Required Criteria
+#### 5. Identify Required Criteria
 
-- Read the [Required Criteria](#required-criteria) declaration at the commit the [evaluated revision](#evaluated-revision) resolves to, in the repository the [project checkout](#project-checkout) locates, and name that path, commit and repository as the source. Which worktree the checkout is chooses nothing.
 - Read each pull request's changed files as the tracker lists them.
 - Include in the findings each declared criterion an epic lacks whose work changes the criterion's paths on its branch, and any epic criterion no task row delivers.
-- A declaration that declares nothing brings no required-criteria finding.
-- A revision resolving to no commit, or a [malformed statement](#required-criteria), leaves the project's required criteria unevaluable. Report that with the fault named, and report no epic as lacking a criterion.
+- A declaration that declares nothing, or an unevaluable one, reports no epic as lacking a declared criterion.
 - A pull request reaching a declared branch whose changed files are not supplied leaves that criterion unevaluable, unless another pull request of the epic is known to change a declared path. Report it as unevaluable.
 
-#### 5. Provide Local Findings
+#### 6. Provide Local Findings
 
 Provide the corrected [Output Body](#output-body) and [Validation Findings](#validation-findings), including the mechanical diff and unresolved findings.
 
@@ -131,8 +133,8 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - A pull request whose head is an epic base is the pull request that merges that base, and is not matched to a task.
 - An unmerged epic base keeps the epic open, even when every row is delivered and every criterion is ticked.
 - An epic base is reported `draft` only where it holds a commit its long-lived branch lacks. The base is read at the `--revision` naming it and the long-lived branch beside it on the same remote, so `origin/i07/e00/main` is compared with `origin/main`; a base no `--revision` names is reported `unevaluable`.
-- Fetch the tooling branch [Branches](delivery-branches.md#branches) names before the run.
-- The long-lived branch names are the ones the tooling branch declares, read as [Branches](delivery-branches.md#branches) states; the `source` line names their path, commit and repository. Repeat `--revision` for every fetched epic base, such as `origin/i07/e00/main`, whose commits the draft check reads.
+- Fetch the [tooling branch](delivery-branches.md#tooling-branch) before the run.
+- The long-lived branch names are the ones [Branches](delivery-branches.md#branches) declares; the `source` line names their path, commit and repository. Repeat `--revision` for every fetched epic base, such as `origin/i07/e00/main`, whose commits the draft check reads.
 - An absent, empty or unreadable statement is reported `unevaluable` with its source. Without the long-lived branch names, the run names each check it did not make as `not checked`, and an epic that would otherwise be closable is not.
 - An open review pull request's Changes paths are read at its head commit in the `--project` repository: a path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree. A head commit the repository does not hold is reported `unevaluable`.
 - Passed checks settle criteria under [Test Evidence](#test-evidence).
@@ -302,7 +304,7 @@ A collection of undecided question statements, each with a recommendation in the
 
 ### Required Criteria
 
-The project's required-criterion declaration array. A project states the criteria its epics must carry in `config/required-criteria.json` at its root. The file is a JSON array, and each entry is one required criterion with these fields, each a non-empty string except `paths`:
+The project's required-criterion declaration array. A project states the criteria its epics must carry in `config/required-criteria.json` on its [tooling branch](delivery-branches.md#tooling-branch). The file is a JSON array, and each entry is one required criterion with these fields, each a non-empty string except `paths`:
 
 | Field | What it states |
 | --- | --- |
@@ -314,8 +316,6 @@ The project's required-criterion declaration array. A project states the criteri
 
 - **The declared row delivers the criterion.**
   It carries the declared `row` as its Description, depends on the rows whose work changes the declared paths, and covers that criterion alone.
-- **A committed file holds the declaration.**
-  The declaration is the file as one commit of the project's repository holds it. Working files declare nothing.
 - **A project declaring nothing requires nothing.**
   A missing or empty file, or an empty array, declares no required criterion. A project declaring nothing acquires no other project's criteria.
 - **A malformed statement is no declaration.**
@@ -375,10 +375,6 @@ The confirmed task-to-pull-request matches supplied by the caller. eg `W01=950,W
 ### Project Checkout
 
 The supplied project checkout.
-
-### Evaluated Revision
-
-The fetched revision supplied for evaluation at the project checkout.
 
 ### Epic Bases
 

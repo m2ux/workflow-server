@@ -3,9 +3,8 @@ match what the folder holds.
 
 A catalogue a reader trusts is one a change cannot quietly outdate. The check
 reads the two tables the README carries against the files beside it: each
-module gets a row in the table its subject belongs to, the coverage table names
-what exercises each script and document, and each module's test count sits
-beside its name there.
+module gets a row in the table its subject belongs to, and the coverage table
+names what exercises each script and document, by module alone.
 """
 import ast
 import functools
@@ -31,7 +30,6 @@ STALE = r'^Run from the skill directory: python3 -m unittest discover -s test$'
 # document. Held in a constant so the check does not read its own search for it.
 CATALOGUE = 'README.md'
 READ_EVERY_FILE = 'rglob(' + "'*.md'" + ')'
-COUNT = re.compile(r'\((\d+)\)')
 THIS = Path(__file__).name
 
 
@@ -62,10 +60,6 @@ def summary(name: str) -> str:
     """The module docstring's first sentence, without its full stop."""
     doc = ' '.join((ast.get_docstring(ast.parse((HERE / name).read_text())) or '').split())
     return re.split(r'(?<=[.!?]) ', doc)[0].rstrip('.')
-
-
-def test_count(name: str) -> str:
-    return str(len(re.findall(r'^\s*def test_', (HERE / name).read_text(), re.M)))
 
 
 def without_extension(text: str) -> str:
@@ -213,18 +207,6 @@ class Coverage(unittest.TestCase):
             with self.subTest(document=document):
                 self.assertTrue(readers, f'{document} is read by no module')
                 self.assertEqual(set(Path(target).stem for target in linked(row[1])), readers)
-
-    def test_each_count_is_the_modules_test_methods(self):
-        """A count sits beside the module it measures, in every row naming it."""
-        for row in rows(SCRIPT_COVERAGE) + rows(DOCUMENT_COVERAGE):
-            for target, count in zip(linked(row[1]), COUNT.findall(row[1])):
-                with self.subTest(module=target):
-                    self.assertEqual(count, test_count(Path(target).name))
-
-    def test_each_named_module_carries_its_count(self):
-        for row in rows(SCRIPT_COVERAGE) + rows(DOCUMENT_COVERAGE):
-            self.assertEqual(len(linked(row[1])), len(COUNT.findall(row[1])),
-                             f'a module in {row[0]} carries no count')
 
     def test_every_prose_module_is_named_somewhere(self):
         named_modules = {Path(target).stem for row in rows(DOCUMENT_COVERAGE) for target in linked(row[1])}

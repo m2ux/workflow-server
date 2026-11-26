@@ -4,16 +4,15 @@ template, and fix what is mechanical.
 Usage:
   python3 format.py issue-943.json [--initiative issue-936.json] [--fix fixed-943.md]
   python3 format.py issue-936.json --epic issue-943.json --epic issue-937.json … [--fix fixed-936.md]
-  python3 format.py issue-943.json --prs prs.json --files 950=changed-950.txt … --project <checkout> \
-    --revision origin/i07/e00/workspace
+  python3 format.py issue-943.json --prs prs.json --files 950=changed-950.txt … --project <checkout>
 
-An epic checked with --project and --revision is held to the criteria its project requires. They are
-the ones config/required-criteria.json declares at the commit --revision resolves to, in the repository
---project locates. Which worktree --project is, and what its working files hold, choose nothing. The
-run prints the declaration path, the resolved commit and the repository as its source. A missing or
-empty declaration at that commit, or an empty array, requires no criterion. A revision resolving to
-no commit, unreadable JSON, a value other than an array, or an entry lacking a field leaves the
-required criteria unevaluable: the run reports that and names the fault, and reports no criterion
+An epic checked with --project is held to the criteria its project requires. They are the ones
+config/required-criteria.json declares at the tooling branch's remote head, origin/workspace, in the
+repository --project locates, whatever branch the epic's work reaches. Which worktree --project is, and
+what its working files hold, choose nothing. The run prints the declaration path, the resolved commit
+and the repository as its source. A missing or empty declaration, or an empty array, requires no
+criterion. A tooling branch resolving to no commit, unreadable JSON, a value other than an array, or
+an entry lacking a field leaves the required criteria unevaluable: the run reports that and names the fault, and reports no criterion
 as lacking. Each declared criterion is required of an epic one of whose pull requests, from
 --prs, reaches its branch through an epic base or initiative branch and changes a file at or under one
 of its paths. --files gives each pull request's changed files, the path list the tracker returns for
@@ -369,6 +368,9 @@ def colon_refs(text: str) -> str:
     return re.sub(r'\bE(\d\d) W(\d\d)\b', r'E\1:W\2', text)
 
 
+# The tooling branch's remote head, where config/ holds every project's declarations: its long-lived
+# branches and the criteria it requires of its epics.
+TOOLING_BRANCH = 'origin/workspace'
 DECLARATION = 'config/required-criteria.json'
 DECLARED_FIELDS = ('branch', 'paths', 'criterion', 'phrase', 'row')
 
@@ -402,19 +404,19 @@ def refs(numbers: list[int]) -> str:
     return ', '.join(f'#{n}' for n in numbers)
 
 
-def required_criteria(project: str, revision: str) -> Required:
-    """The required criteria config/required-criteria.json declares at the commit revision resolves to.
+def required_criteria(project: str) -> Required:
+    """The required criteria config/required-criteria.json declares at the commit TOOLING_BRANCH resolves to.
 
     The checkout locates the repository and nothing more: its working files, and which of the
     repository's worktrees it is, do not choose the criteria. The source names the declaration path,
     the resolved commit and the repository's shared git directory, which every worktree of it
     resolves to. A missing or empty declaration at that commit, or an empty array, requires no
-    criterion. A revision that resolves to no commit, unreadable JSON, a value other than an array, or
-    an entry lacking a field leaves the criteria unevaluable."""
-    resolved = git(project, 'rev-parse', '--verify', '--quiet', '--end-of-options', f'{revision}^{{commit}}')
+    criterion. A tooling branch that resolves to no commit, unreadable JSON, a value other than an
+    array, or an entry lacking a field leaves the criteria unevaluable."""
+    resolved = git(project, 'rev-parse', '--verify', '--quiet', '--end-of-options', f'{TOOLING_BRANCH}^{{commit}}')
     if resolved.returncode != 0:
-        source = f'{DECLARATION} at {revision} in {project}'
-        return Required((), source, f'{revision} resolves to no commit in {project}')
+        source = f'{DECLARATION} at {TOOLING_BRANCH} in {project}'
+        return Required((), source, f'{TOOLING_BRANCH} resolves to no commit in {project}')
     commit = resolved.stdout.strip()
     repository = git(project, 'rev-parse', '--path-format=absolute', '--git-common-dir').stdout.strip()
     source = f'{DECLARATION} at {commit} in {repository}'
@@ -1129,17 +1131,13 @@ def main() -> int:
                         'pull request reaching a declared branch')
     parser.add_argument('--project', default='', help='epic: any checkout of the repository whose '
                         'config/required-criteria.json declares the required criteria')
-    parser.add_argument('--revision', default='', help='epic: the commit the declaration is read at, its epic '
-                        'base, e.g. origin/i07/e00/workspace')
     args = parser.parse_args()
-    if bool(args.project) != bool(args.revision):
-        sys.exit('--project and --revision go together')
 
     issue = json.loads(Path(args.issue).read_text())
     initiative = json.loads(Path(args.initiative).read_text()) if args.initiative else None
     epics = [json.loads(Path(e).read_text()) for e in args.epic or []]
     prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()] if args.prs else None
-    required = required_criteria(args.project, args.revision) if args.project else None
+    required = required_criteria(args.project) if args.project else None
     files = {}
     for given in args.files:
         number, _, path = given.partition('=')

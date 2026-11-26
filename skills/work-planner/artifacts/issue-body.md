@@ -141,7 +141,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
   --files '[**&lt;pull-request-changed-paths&gt;**](#changed-file-records "○")' &#92;
   --project '[**&lt;checkout&gt;**](#project-checkout "○")' &#92;
-  --revision '[**&lt;revision&gt;**](#evaluated-revision "○")' &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
 
@@ -150,7 +149,8 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - The format reader takes the template fence from the body artifact and its table columns where present. A body with a Work Breakdown table requires coverage for every criterion.
 - For an epic, supply its parent with `--initiative`. For an initiative, supply every linked epic by repeating `--epic`; omit those options for other kinds.
 - For epic delivery checks, supply the pull request snapshot with `--prs` and repeat `--files` for each supplied changed-path record.
-- Supply `--project` and `--revision` together for project-required-criteria validation at the fetched revision. Omit both when that validation is outside the request.
+- Supply `--project` for project-required-criteria validation, which reads the [Required Criteria](epic-issue-body.md#required-criteria) declaration. Omit it when that validation is outside the request.
+- Fetch the [tooling branch](delivery-branches.md#tooling-branch) before a run with `--project`.
 - Omit optional flags whose corresponding evidence is not applicable; retain all evidence required by the selected kind. Omit `--fix` when no corrected body is requested.
 
 ### List Reference Repositories
@@ -370,11 +370,7 @@ Each pull request number paired with its local changed-paths file as `NUMBER=FIL
 
 ### Project Checkout
 
-The checkout holding the project-required-criteria declaration and the fetched revision at which it is evaluated.
-
-### Evaluated Revision
-
-The fetched epic base on the declaration's long-lived branch, or that long-lived branch while the epic has no base on it. eg `origin/i07/e00/workspace`
+Any checkout of the repository whose project-required-criteria declaration the check reads.
 
 ### Snapshot Metadata
 
