@@ -1,0 +1,51 @@
+test_a_module_sits_under_the_table_its_scripts_put_it_in (test_readme.Catalogue.test_a_module_sits_under_the_table_its_scripts_put_it_in)
+A module that reaches a script is a script test, and one that ... ok
+test_every_module_has_one_row (test_readme.Catalogue.test_every_module_has_one_row) ... ok
+test_every_module_links_to_its_own_file (test_readme.Catalogue.test_every_module_links_to_its_own_file) ... ok
+test_the_description_is_the_docstring (test_readme.Catalogue.test_the_description_is_the_docstring)
+The row states what the docstring states. A link marks a name in one ... ok
+test_a_document_row_names_the_modules_that_read_it (test_readme.Coverage.test_a_document_row_names_the_modules_that_read_it) ... ok
+test_a_script_row_names_the_modules_that_reach_it (test_readme.Coverage.test_a_script_row_names_the_modules_that_reach_it) ... ok
+test_every_document_the_prose_tests_read_has_a_row (test_readme.Coverage.test_every_document_the_prose_tests_read_has_a_row) ... ok
+test_every_prose_module_is_named_somewhere (test_readme.Coverage.test_every_prose_module_is_named_somewhere) ... ok
+test_every_script_has_one_row_and_links_to_it (test_readme.Coverage.test_every_script_has_one_row_and_links_to_it) ... ok
+test_the_readme_resolves_every_link (test_readme.ReadmeShape.test_the_readme_resolves_every_link) ... ok
+test_only_the_readme_carries_the_run_command (test_readme.RunCommand.test_only_the_readme_carries_the_run_command)
+A module restating the command once the README states it is a second ... ok
+test_a_declaration_other_than_an_array_is_unevaluable (test_format.DeclarationAtToolingBranch.test_a_declaration_other_than_an_array_is_unevaluable) ... ok
+test_a_declaration_the_tooling_branch_lacks_supplies_nothing (test_format.DeclarationAtToolingBranch.test_a_declaration_the_tooling_branch_lacks_supplies_nothing) ... ok
+test_a_local_tooling_branch_chooses_nothing (test_format.DeclarationAtToolingBranch.test_a_local_tooling_branch_chooses_nothing) ... ok
+test_a_project_declaring_none_requires_nothing (test_format.DeclarationAtToolingBranch.test_a_project_declaring_none_requires_nothing) ... ok
+test_a_repository_without_the_tooling_branch_is_unevaluable (test_format.DeclarationAtToolingBranch.test_a_repository_without_the_tooling_branch_is_unevaluable) ... ok
+test_an_empty_declaration_requires_nothing (test_format.DeclarationAtToolingBranch.test_an_empty_declaration_requires_nothing) ... ok
+test_an_entry_lacking_a_field_is_unevaluable (test_format.DeclarationAtToolingBranch.test_an_entry_lacking_a_field_is_unevaluable) ... ok
+test_an_epic_base_without_the_declaration_reads_the_tooling_branch (test_format.DeclarationAtToolingBranch.test_an_epic_base_without_the_declaration_reads_the_tooling_branch) ... ok
+test_an_unreadable_declaration_is_unevaluable (test_format.DeclarationAtToolingBranch.test_an_unreadable_declaration_is_unevaluable) ... ok
+test_every_worktree_reads_the_tooling_branch_alike (test_format.DeclarationAtToolingBranch.test_every_worktree_reads_the_tooling_branch_alike) ... ok
+test_paths_other_than_a_list_of_paths_are_unevaluable (test_format.DeclarationAtToolingBranch.test_paths_other_than_a_list_of_paths_are_unevaluable) ... ok
+test_the_branch_checked_out_chooses_nothing (test_format.DeclarationAtToolingBranch.test_the_branch_checked_out_chooses_nothing) ... ok
+test_the_criteria_and_their_source_come_from_the_tooling_commit (test_format.DeclarationAtToolingBranch.test_the_criteria_and_their_source_come_from_the_tooling_commit) ... ok
+test_the_guide_names_the_declaration_its_home_and_its_fields (test_format.DeclarationAtToolingBranch.test_the_guide_names_the_declaration_its_home_and_its_fields) ... ok
+test_the_guide_requires_nothing_of_a_project_declaring_nothing (test_format.DeclarationAtToolingBranch.test_the_guide_requires_nothing_of_a_project_declaring_nothing) ... ok
+test_working_files_choose_nothing (test_format.DeclarationAtToolingBranch.test_working_files_choose_nothing) ... ok
+test_a_project_declaring_nothing_is_held_to_nothing (test_format.CheckFormat.test_a_project_declaring_nothing_is_held_to_nothing) ... ok
+test_a_project_without_the_tooling_branch_is_unevaluable (test_format.CheckFormat.test_a_project_without_the_tooling_branch_is_unevaluable) ... ok
+test_an_epic_base_without_the_declaration_is_held_to_the_tooling_branch (test_format.CheckFormat.test_an_epic_base_without_the_declaration_is_held_to_the_tooling_branch)
+The epic's base carries no config/required-criteria.json; origin/workspace does. ... ok
+test_an_unreadable_declaration_is_reported_with_its_fault (test_format.CheckFormat.test_an_unreadable_declaration_is_reported_with_its_fault) ... ok
+test_changed_files_touching_no_declared_path_bring_nothing (test_format.CheckFormat.test_changed_files_touching_no_declared_path_bring_nothing) ... ok
+test_files_name_their_pull_request (test_format.CheckFormat.test_files_name_their_pull_request) ... ok
+test_the_declaration_takes_no_revision (test_format.CheckFormat.test_the_declaration_takes_no_revision) ... ok
+test_the_run_names_its_source_and_the_lacking_criterion (test_format.CheckFormat.test_the_run_names_its_source_and_the_lacking_criterion) ... ok
+test_checking_a_body_takes_no_revision (test_documents.DeclarationHome.test_checking_a_body_takes_no_revision) ... ok
+test_every_declaration_is_mentioned (test_documents.DeclarationHome.test_every_declaration_is_mentioned) ... ok
+test_every_mention_names_the_tooling_branch_and_no_other_revision (test_documents.DeclarationHome.test_every_mention_names_the_tooling_branch_and_no_other_revision) ... ok
+test_listing_the_branches_takes_no_revision (test_documents.DeclarationHome.test_listing_the_branches_takes_no_revision) ... ok
+test_no_other_field_names_the_tooling_branch_remote_head (test_documents.DeclarationHome.test_no_other_field_names_the_tooling_branch_remote_head) ... ok
+test_the_tooling_branch_names_its_one_revision (test_documents.DeclarationHome.test_the_tooling_branch_names_its_one_revision) ... ok
+test_epic_format_observes_project_required_criteria_and_changed_paths (test_command_contracts.DocumentedCommandBehavior.test_epic_format_observes_project_required_criteria_and_changed_paths) ... ok
+
+----------------------------------------------------------------------
+Ran 42 tests in 1.152s
+
+OK
