@@ -1,0 +1,22 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1741",
+    "head": "6396c88036f61c40cf086a01105bd29b25420457",
+    "base": "5583d7900c4e4854930ca087a9b32e1119fb70d0",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-26-1740-f25-change-spread/agent-review.json",
+    "reviewer": "Claude Code independent review sub-agent (head a5da90f) and delivery session (fix round to 6396c88)",
+    "reviewed_at": "2026-11-26T19:00:00+00:00",
+    "scope": "Complete 13-file diff 5583d7900..a5da90f17: format.py required_criteria, TOOLING_BRANCH, module docstring and argparse (--revision removed); sync.py's import of TOOLING_BRANCH and read_branches/--names paths; every caller of required_criteria and format.py in scripts, tests and documents; the Operations and Commands of epic-issue-body.md and issue-body.md; callers of Check Body Format, Validate Epic Body and Validate Issue Body in plan-mode.md, work-kind.md, hoist-mode.md, sync-mode.md, proposal-body.md and initiative-issue-body.md; delivery-branches.md Tooling Branch, Branches, Prepare Delivery Bases, Read Delivery Branches and List Long-Lived Branches; the changed tests and fixtures.tooling. Greps of skills/work-planner for evaluated revision, at the revision, required_criteria, required-criteria, --revision, TOOLING_BRANCH, origin/workspace, tooling branch, config/ and the removed anchors. Fix round: the one-line docstring rewrap a5da90f..6396c88 and the finding it fixes. Rejected as speculative: a local ref named refs/heads/origin/workspace shadowing the remote ref; TOOLING_BRANCH placed in format.py rather than a neutral module (a placement preference; format.py is the module sync.py already imports); no check refusing a README that re-adds counts (AC1 asks that the check fail only on mapping faults). Pre-existing, outside findings: Validate Epic Body step 1 reads changed paths for branches the declaration names before step 2's Check Body Format, which carries the fetch note; at base 5583d7900 step 1 is identical and the fetch sat in step 2, so the ordering predates and is independent of this change.",
+    "criteria": "AC1: test_readme keeps every mapping check (catalogue rows, table placement by script imports, docstring descriptions, script and document coverage rows naming the modules that reach them, links) and carries no count check; test/README.md states no count. AC2: a search of skills/work-planner for 'at the revision' and 'at the evaluated revision' finds two lines, Fetch Source's own command description and the acceptance-criteria readiness rule, neither a caller restating a called operation's input; the wider search in f25.md removed the restatements in Prepare Delivery Bases, Read Delivery Branches, epic.md delivery fields, Sync Mode and Validate Epic Body; test_documents DeclarationHome holds every config/ declaration mention to the tooling branch and only Tooling Branch naming origin/workspace. AC3: test_format CheckFormat.test_an_epic_base_without_the_declaration_is_held_to_the_tooling_branch runs format.py --project from an orphan epic base without config/required-criteria.json while origin/workspace declares the canon audit, and reports the lacking criterion with the tooling commit as source; DeclarationAtToolingBranch and the documented Check Body Format command in test_command_contracts agree; a live run over the workflow-server checkout reads the declaration at origin/workspace 5583d7900 and reports the canon audit for a workflows epic.",
+    "validation": "At a5da90f and again at 6396c88: python3 -m unittest discover -s test in skills/work-planner ran 1215 tests, OK, 1 skipped (optional live Development-link test); check_skill_files.py work-planner: 65 files, 0 findings; skills/test 319 tests OK. Focused criterion tests: 42 OK. The repository runs no CI checks on this pull request.",
+    "findings": [
+      {
+        "description": "The rewritten format.py module docstring left one line unwrapped at 136 characters against the docstring's width of about 105; rewrapped.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/6396c88036f61c40cf086a01105bd29b25420457"
+      }
+    ]
+  }
+]

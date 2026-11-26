@@ -21,6 +21,7 @@ A count restated on every row, and a read location restated by every caller, mad
 | Artifact | What it holds |
 | --- | --- |
 | [Work Item](f25.md) | Declared files, design, the AC2 search, criteria and test plan |
+| [Agent Review](agent-review.json) | Exact-head review of PR #1741, its fixed finding, rejected cases and the pre-existing observation |
 | [Validation](validation.md) | Tested revision, checks, spread measure and limits |
 | [Focused Results](focused.txt) | The criterion tests' verbose output |
 | [Suite Results](suite.txt) | Complete Work Planner test result |
@@ -30,4 +31,5 @@ A count restated on every row, and a read location restated by every caller, mad
 | Resource | URL |
 | --- | --- |
 | Hot-fix issue | https://github.com/m2ux/workflow-server/issues/1740 |
+| Pull request | https://github.com/m2ux/workflow-server/pull/1741 |
 | F24, the change measured | https://github.com/m2ux/workflow-server/pull/1739 |

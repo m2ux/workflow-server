@@ -1,6 +1,6 @@
 # F25 Validation
 
-Tested revision: `a5da90f173bed0d85c734beee56dce31c7b4a4a3` on `f25-change-spread`, cut from `workspace` at `5583d7900c4e4854930ca087a9b32e1119fb70d0`. Every check runs on local Git repositories built in temporary directories, under the workspace sandbox with no network.
+Tested revisions: `a5da90f173bed0d85c734beee56dce31c7b4a4a3`, and the reviewed head `6396c88036f61c40cf086a01105bd29b25420457`, which rewraps one docstring line and reruns T4 with the same result, on `f25-change-spread`, cut from `workspace` at `5583d7900c4e4854930ca087a9b32e1119fb70d0`. Every check runs on local Git repositories built in temporary directories, under the workspace sandbox with no network.
 
 ## T1
 
