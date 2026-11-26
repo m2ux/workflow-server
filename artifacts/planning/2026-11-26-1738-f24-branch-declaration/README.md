@@ -19,6 +19,7 @@ A project that keeps config/ on its tooling branch alone, as prosiform does, oth
 | Artifact | What it holds |
 | --- | --- |
 | [Work Item](f24.md) | Declared files, design, criteria and test plan |
+| [Agent Review](agent-review.json) | Exact-head review of PR #1739, its fixed finding and the observation held for the user |
 | [Validation](validation.md) | Tested revision, checks, observations and limits |
 | [Focused Results](focused.txt) | The criterion tests' verbose output |
 | [Suite Results](suite.txt) | Complete Work Planner test result |

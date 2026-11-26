@@ -1,6 +1,6 @@
 # F24 Validation
 
-Tested revision: `89ed4c4cb9e3b9802de7f2d6cd47a6a5d7739dbc` on `f24-branch-declaration`, cut from `workspace` at `9a5f10ee96a38ee70cf52239067b2b17cf58ae64`. Every check runs on local Git repositories built in temporary directories, under the workspace sandbox with no network.
+Tested revisions: `89ed4c4cb9e3b9802de7f2d6cd47a6a5d7739dbc`, and the reviewed head `667631fc15302f9f990e4707def5bc5ad1e4ca84`, which adds one Sync Epic line and reruns T4 with the same result, on `f24-branch-declaration`, cut from `workspace` at `9a5f10ee96a38ee70cf52239067b2b17cf58ae64`. Every check runs on local Git repositories built in temporary directories, under the workspace sandbox with no network.
 
 ## T1
 

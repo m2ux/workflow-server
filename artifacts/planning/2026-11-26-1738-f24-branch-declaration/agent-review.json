@@ -1,0 +1,22 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1739",
+    "head": "667631fc15302f9f990e4707def5bc5ad1e4ca84",
+    "base": "9a5f10ee96a38ee70cf52239067b2b17cf58ae64",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-26-1738-f24-branch-declaration/agent-review.json",
+    "reviewer": "Claude Code independent review sub-agent (head 89ed4c4) and delivery session (fix round to 667631f)",
+    "reviewed_at": "2026-11-26T15:30:00+00:00",
+    "scope": "Complete 16-file diff 9a5f10ee9..89ed4c4cb: sync.py read_branches, long_lived_names, list_long_lived, main, base_lead, draft_bases, belongs/misrouted and every LONG_LIVED consumer; deliver.py survey, target_fault and argparse; every script importing sync; every caller of Read Delivery Branches, Prepare Delivery Bases, List Long-Lived Branches, Sync Epic and Compute Available Work in modes/, protocols/ and artifacts/; the changed tests and fixtures; greps of skills/work-planner for --revision and config/branches. Fix round: the one-line Sync Epic change 89ed4c4..667631f and the finding it fixes. Held for the user's decision, outside findings because it is the decided behaviour of issue #1738 (origin/workspace fixed for every project, no project setting): shieldedtech/midnight-agent-eng has no origin/workspace and keeps config/branches on its ghsa-classifier branch alone, so once its installed skill carries this change its epic syncs report the branch names unevaluable and base preparation fails its tooling-branch fetch until that repository holds an origin/workspace carrying config/branches. Rejected as speculative: a remote not named origin (the skill assumes origin throughout); --revision accepted beside --project on a task or hot-fix sync (it drives only the epic draft check); concurrent fetches of workspace (git fetch repeats safely). Out of scope, predating and independent of the change: config/required-criteria.json is still read at an epic-specific evaluated revision (epic-issue-body.md, issue-body.md), a different declaration the diff does not touch; reported to the user for a follow-up decision.",
+    "criteria": "AC1: test_sync ToolingDeclaration runs an epic sync over an epic base and long-lived branch carrying no config/branches, with origin/workspace stating the names on an orphan branch; it reports draft and source lines and no unevaluable or not-checked line; SeveralEpicBases shows bases stating different names, or none, choose nothing. AC2: test_sync LongLivedNames and UnavailableDeclaration read --names at origin/workspace across worktrees and refuse --revision; test_command_contracts runs the documented List Long-Lived Branches invocation of base preparation over a repository declaring branches on the tooling branch alone; test_deliver checks hot-fix targets against those names. AC3: test_documents BranchDeclarationHome searches every skill document for config/branches and finds only tooling-branch statements naming origin/workspace.",
+    "validation": "At 89ed4c4 and again at 667631f: python3 -m unittest discover -s test in skills/work-planner ran 1210 tests, OK, 1 skipped (optional live Development-link test); check_skill_files.py work-planner: 65 files, 0 findings; skills/test 319 tests OK. Focused criterion tests: 28 OK. Live read of the workflow-server checkout: sync.py --names prints docker, main, workflows, workspace sourced at origin/workspace 9a5f10ee9. The repository runs no CI checks on this pull request.",
+    "findings": [
+      {
+        "description": "Sync Epic deferred the tooling-branch fetch to the Branches field alone, so its callers could read a stale origin/workspace silently; Sync Epic now states the fetch before the run.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/667631fc15302f9f990e4707def5bc5ad1e4ca84"
+      }
+    ]
+  }
+]
