@@ -168,7 +168,7 @@ cd "<workspace>/skills/work-planner" && "<workspace>/scripts/sbx" python3 -m uni
 Run one module by name:
 
 ```bash
-cd "<workspace>/skills/work-planner" && "<workspace>/scripts/sbx" python3 -m unittest -v test.test.format
+cd "<workspace>/skills/work-planner" && "<workspace>/scripts/sbx" python3 -m unittest discover -v -s test -p test_format.py
 ```
 
 A module that reaches `gh` runs outside the sandbox. No module docstring repeats these commands; this section is their only home.
