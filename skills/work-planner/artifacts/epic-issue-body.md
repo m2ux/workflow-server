@@ -44,28 +44,31 @@ Provide the populated [Output Body](#output-body), [Row Result](#row-result) wit
 
 The body's local format and field findings.
 
-#### 1. Read Changed Paths
+#### 1. Read Required Criteria
 
-For each epic pull request reaching a branch the project's [Required Criteria](#required-criteria) declare, Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") to read its changed paths.
+- Read the [Required Criteria](#required-criteria) declaration, naming its path, commit and repository as the source.
+- A tooling branch resolving to no commit, or a [malformed statement](#required-criteria), leaves the project's required criteria unevaluable. Report that with the fault named, and report no epic as lacking a criterion.
 
-#### 2. Validate Kind Conditions
+#### 2. Read Changed Paths
+
+For each epic pull request reaching a branch the declaration names, Apply [Read Pull Request State](pull-request.md#read-pull-request-state "ƒ") to read its changed paths.
+
+#### 3. Validate Kind Conditions
 
 - Apply [Validate Issue Body](issue-body.md#validate-issue-body "ƒ") against local [Fields](#fields) and initiative context, including each changed-path record.
 
-#### 3. Read Delivery Reach
+#### 4. Read Delivery Reach
 
 Read reach from each epic pull request's base, through an epic base or initiative branch. Without pull requests, no criterion is lacking.
 
-#### 4. Identify Required Criteria
+#### 5. Identify Required Criteria
 
-- Read the [Required Criteria](#required-criteria) declaration, naming its path, commit and repository as the source.
 - Read each pull request's changed files as the tracker lists them.
 - Include in the findings each declared criterion an epic lacks whose work changes the criterion's paths on its branch, and any epic criterion no task row delivers.
 - A declaration that declares nothing brings no required-criteria finding.
-- A tooling branch resolving to no commit, or a [malformed statement](#required-criteria), leaves the project's required criteria unevaluable. Report that with the fault named, and report no epic as lacking a criterion.
 - A pull request reaching a declared branch whose changed files are not supplied leaves that criterion unevaluable, unless another pull request of the epic is known to change a declared path. Report it as unevaluable.
 
-#### 5. Provide Local Findings
+#### 6. Provide Local Findings
 
 Provide the corrected [Output Body](#output-body) and [Validation Findings](#validation-findings), including the mechanical diff and unresolved findings.
 
