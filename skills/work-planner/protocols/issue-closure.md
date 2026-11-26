@@ -23,7 +23,7 @@ Follow the [Procedure](#procedure "ƒ"), adhering to [Rules](../rules.md) and [C
 #### Epic Completion
 
 - For an epic:
-  - Apply [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches "ƒ") in the project checkout for the complete expected bases, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic.
+  - Apply [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches "ƒ") in the project checkout for the complete expected bases.
   - Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state "ƒ") for their merge evidence.
   - Use the current delivery and criterion evidence and confirmed base-merge records.
   - Apply [Check Epic Readiness](../artifacts/epic.md#check-epic-readiness "ƒ") against current delivery and verification evidence.

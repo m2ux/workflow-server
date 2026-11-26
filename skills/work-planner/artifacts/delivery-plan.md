@@ -15,7 +15,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
   --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot "○")' &#92;
   --project '[**&lt;checkout&gt;**](#project-checkout "○")' &#92;
-  --revision '[**&lt;revision&gt;**](#revision "○")' &#92;
   --bases '[**&lt;epic-base-names&gt;**](#epic-base-names "○")' &#92;
   --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' &#92;
   --lane [**&lt;lane-index&gt;**](#requested-lane "○") &#92;
@@ -48,7 +47,7 @@ A hot-fix is a unit as its [Delivery Unit](hotfix.md#delivery-unit) states, with
 
 - A `unit` line names one session's tasks, its lane as `lane 2` or `unlaned`, Coverage and record folder, then a branch, base and worktree for each epic base it changes, separated by semicolons: `branch i07/e00/w01-queue-plan-main, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan-main; branch i07/e00/w01-queue-plan-workflows, base i07/e00/workflows, worktree .worktrees/i07/e00/w01-queue-plan-workflows`. One base keeps the unsuffixed branch: `branch i07/e00/w01-queue-plan, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan`. A unit whose rows change the [planning-records branch](../rules.md#rules) ends with `push engineering`, and names no branch when that push is all it changes: `record 2026-10-06-943-i07-e00-w02-queue-notes, push engineering`. A hot-fix's line names its prefix and issue: `unit F00 #874: unlaned, coverage AC1, record 2026-10-06-874-f00-key-validation, branch f00-key-validation, base workspace, worktree .worktrees/f00-key-validation`.
 - An `invalid` line names a malformed task-table Lane cell or a joined unit with different Lane values. The unit is not offered and the run exits nonzero; the summary counts invalid units.
-- An `undeclared` line names a row whose linked work item is unread, declares no file or declares a file entry that is no `<branch>:<path>`, or, in an epic of several bases, names a branch with no epic base, and why. The unit is not offered until its work item declares one, and a run meeting one exits nonzero. It also names an open hot-fix, whatever its state, whose body names no [target](hotfix-body.md#target), or one of the project checkout's repository whose target the evaluated revision's [Branches](delivery-branches.md#branches) does not declare. It is offered as no unit and no merge until its target is one.
+- An `undeclared` line names a row whose linked work item is unread, declares no file or declares a file entry that is no `<branch>:<path>`, or, in an epic of several bases, names a branch with no epic base, and why. The unit is not offered until its work item declares one, and a run meeting one exits nonzero. It also names an open hot-fix, whatever its state, whose body names no [target](hotfix-body.md#target), or one of the project checkout's repository whose target [Branches](delivery-branches.md#branches) does not declare. It is offered as no unit and no merge until its target is one.
 - A `hold` line names a row a session holds and the record it links, or a hot-fix its [Delivery Unit](hotfix.md#delivery-unit) holds.
 - A `blocked` line names a free row whose dependencies are undelivered or whose joined task is unavailable.
 - An `output` line records each output read for a row naming another epic's row, as [Producer Outputs](delivery-branches.md#producer-outputs) states: the producer row, the delivery, the output commit, the consumer revision and commit, and whether it is available there, or why it is unverified.
@@ -60,7 +59,7 @@ A hot-fix is a unit as its [Delivery Unit](hotfix.md#delivery-unit) states, with
 
 ### Branch Context
 
-The long-lived branch names are the ones [Branches](delivery-branches.md#branches) reads at the evaluated revision a delivery survey names, and the `source` line names it. A base whose last segment is not one of those names is ignored. A supplied record date determines the planning folder's day; the default is today.
+The long-lived branch names are the ones [Branches](delivery-branches.md#branches) reads, and the `source` line names their commit. A base whose last segment is not one of those names is ignored. A supplied record date determines the planning folder's day; the default is today.
 
 ### Dispatch Export
 
@@ -113,10 +112,6 @@ The checkout holding the installed skill, its scripts and tests.
 ### Project Checkout
 
 The project repository checkout supplied for branch and delivery reads or writes.
-
-### Revision
-
-The fetched commit or revision evaluated by the run. eg `origin/workspace`
 
 ### Failure
 

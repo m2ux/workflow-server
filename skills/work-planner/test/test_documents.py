@@ -1,6 +1,6 @@
 """The installed prose API exposes complete inputs and directed reading paths, Work Priority, Proposal and Test Plan
-each define what every other file reaching it links, and Proposals Board alone selects and creates the proposals
-board."""
+each define what every other file reaching it links, Proposals Board alone selects and creates the proposals
+board, and every document naming config/branches reads it on the tooling branch."""
 import json
 import re
 import tempfile
@@ -567,3 +567,40 @@ class ProposalsBoardHome(unittest.TestCase):
                                 ('modes/sync-mode.md', 'create-proposals-board')):
             with self.subTest(file=name, operation=operation):
                 self.assertIn(f'(../artifacts/proposals-board.md#{operation} "ƒ")', (ROOT / name).read_text())
+
+
+BRANCH_DECLARATION = 'config/branches'
+REMOTE_REVISION = re.compile(r'\borigin/[\w./-]+')
+
+
+class BranchDeclarationHome(unittest.TestCase):
+    """Every document naming config/branches reads it on the tooling branch, and Branches names its one revision."""
+
+    def mentions(self):
+        for path in sorted(ROOT.rglob('*.md')):
+            if 'test' in path.relative_to(ROOT).parts:
+                continue
+            for number, line in enumerate(path.read_text().splitlines(), 1):
+                if BRANCH_DECLARATION in line:
+                    yield f'{path.relative_to(ROOT)}:{number}', line
+
+    def test_every_mention_names_the_tooling_branch_or_its_example(self):
+        found = list(self.mentions())
+        self.assertTrue(found)
+        for where, line in found:
+            with self.subTest(line=where):
+                self.assertTrue('tooling branch' in line or line.startswith('- eg '), line)
+                self.assertNotIn('--revision', line)
+                self.assertNotIn('epic base', line)
+
+    def test_the_one_revision_named_is_the_tooling_branch_remote_head(self):
+        revisions = {revision for _, line in self.mentions() for revision in REMOTE_REVISION.findall(line)}
+        self.assertEqual(revisions, {'origin/workspace'})
+
+    def test_listing_the_branches_takes_no_revision(self):
+        path = ROOT / 'artifacts' / 'delivery-branches.md'
+        lines, _, headings = checker.scan(path)
+        start = next(i for i, level, title in headings if level == 3 and title == 'List Long-Lived Branches')
+        section = '\n'.join(lines[start + 1:checker.heading_end(headings, start, 3, len(lines))])
+        self.assertIn('--names', section)
+        self.assertNotIn('--revision', section)
