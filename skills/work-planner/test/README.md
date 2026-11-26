@@ -5,7 +5,7 @@ Work Planner plans work as GitHub issues and keeps that plan true until the work
 ## What Is Under Test
 
 - **The scripts.**
-  Twenty-eight programs read those issue bodies, board items and pull request records, and report what a run should change. Most modules here hold one script to the rules its own docstring states.
+  The programs in `../scripts` read those issue bodies, board items and pull request records, and report what a run should change. Most modules here hold one script to the rules its own docstring states.
 - **The prose.**
   Modes, protocols and artifacts are instructions an agent follows. The modules check their shape: resolving links, contextual command contracts, selected checkout inputs, planning-record publication, worktree placement and this catalogue.
 - **Neither against a live tracker.**
@@ -24,7 +24,7 @@ Both kinds sit in one folder. The script tests import the fixture module from be
 
 ## Catalogue
 
-One row per module, split by what it tests. The description is the module's docstring, and the coverage table carries each module's test count beside its name.
+One row per module, split by what it tests. The description is the module's docstring.
 
 ### Script Tests
 
@@ -86,67 +86,65 @@ These modules exercise the skill's instruction routes and document contracts.
 
 ## Coverage
 
-One row per script in `../scripts`, then one per document the tests read. The table is the reverse of the catalogue: it answers what exercises a given file. Each module carries its test count, which is the only signal of how much of a subject a module reaches.
+One row per script in `../scripts`, then one per document the tests read. The table is the reverse of the catalogue: it answers what exercises a given file. A row names modules alone; a run of the suite reports how many tests they hold.
 
 ### Scripts
 
 | Script | Exercised by |
 | --- | --- |
-| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (22), [test_review_scope](test_review_scope.py) (6) |
-| [align](../scripts/align.py) | [test_align](test_align.py) (13) |
-| [board](../scripts/board.py) | [test_board](test_board.py) (69), [test_board_queue](test_board_queue.py) (79), [test_deliver](test_deliver.py) (116), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (19) |
-| [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py) (7), [test_board_queue](test_board_queue.py) (79), [test_shared](test_shared.py) (19) |
-| [closure](../scripts/closure.py) | [test_closure](test_closure.py) (13), [test_command_contracts](test_command_contracts.py) (15) |
-| [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) (14) |
-| [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (116), [test_dispatch](test_dispatch.py) (33), [test_shared](test_shared.py) (19) |
-| [delivery-branches](../scripts/delivery-branches.py) | [test_task_worktree](test_task_worktree.py) (9) |
-| [deps](../scripts/deps.py) | [test_deps](test_deps.py) (88) |
-| [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
-| [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
-| [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (33) |
-| [format](../scripts/format.py) | [test_format](test_format.py) (114), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (19), [test_sync](test_sync.py) (192), [test_templates](test_templates.py) (6) |
-| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (24), [test_kinds](test_kinds.py) (9) |
-| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py) (22), [test_board_queue](test_board_queue.py) (79), [test_deliver](test_deliver.py) (116), [test_dispatch](test_dispatch.py) (33), [test_format](test_format.py) (114), [test_hotfix](test_hotfix.py) (24), [test_kinds](test_kinds.py) (9), [test_orphans](test_orphans.py) (4), [test_progress](test_progress.py) (79), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (192) |
-| [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (33), [test_lane](test_lane.py) (12) |
-| [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
-| [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
-| [links-by-pull-request](../scripts/links-by-pull-request.py) | [test_link_capture](test_link_capture.py) (22) |
-| [orphans](../scripts/orphans.py) | [test_orphans](test_orphans.py) (4) |
-| [priority](../scripts/priority.py) | [test_board_queue](test_board_queue.py) (79), [test_deliver](test_deliver.py) (116), [test_hotfix](test_hotfix.py) (24), [test_priority](test_priority.py) (12), [test_progress](test_progress.py) (79) |
-| [progress](../scripts/progress.py) | [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (19) |
-| [pull_request_body](../scripts/pull_request_body.py) | [test_pull_request_body](test_pull_request_body.py) (14) |
-| [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32), [test_shared](test_shared.py) (19) |
-| [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |
-| [statuses](../scripts/statuses.py) | [test_board](test_board.py) (69), [test_shared](test_shared.py) (19), [test_statuses](test_statuses.py) (24) |
-| [sync](../scripts/sync.py) | [test_align](test_align.py) (13), [test_board_queue](test_board_queue.py) (79), [test_deliver](test_deliver.py) (116), [test_link_capture](test_link_capture.py) (22), [test_progress](test_progress.py) (79), [test_shared](test_shared.py) (19), [test_statuses](test_statuses.py) (24), [test_sync](test_sync.py) (192) |
-| [testplan](../scripts/testplan.py) | [test_align](test_align.py) (13), [test_testplan](test_testplan.py) (12) |
+| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py), [test_review_scope](test_review_scope.py) |
+| [align](../scripts/align.py) | [test_align](test_align.py) |
+| [board](../scripts/board.py) | [test_board](test_board.py), [test_board_queue](test_board_queue.py), [test_deliver](test_deliver.py), [test_progress](test_progress.py), [test_shared](test_shared.py) |
+| [board-queue](../scripts/board-queue.py) | [test_advance_decisions](test_advance_decisions.py), [test_board_queue](test_board_queue.py), [test_shared](test_shared.py) |
+| [closure](../scripts/closure.py) | [test_closure](test_closure.py), [test_command_contracts](test_command_contracts.py) |
+| [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) |
+| [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py), [test_dispatch](test_dispatch.py), [test_shared](test_shared.py) |
+| [delivery-branches](../scripts/delivery-branches.py) | [test_task_worktree](test_task_worktree.py) |
+| [deps](../scripts/deps.py) | [test_deps](test_deps.py) |
+| [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) |
+| [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) |
+| [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) |
+| [format](../scripts/format.py) | [test_format](test_format.py), [test_progress](test_progress.py), [test_shared](test_shared.py), [test_sync](test_sync.py), [test_templates](test_templates.py) |
+| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py), [test_kinds](test_kinds.py) |
+| [kinds](../scripts/kinds.py) | [test_agent_review](test_agent_review.py), [test_board_queue](test_board_queue.py), [test_deliver](test_deliver.py), [test_dispatch](test_dispatch.py), [test_format](test_format.py), [test_hotfix](test_hotfix.py), [test_kinds](test_kinds.py), [test_orphans](test_orphans.py), [test_progress](test_progress.py), [test_statuses](test_statuses.py), [test_sync](test_sync.py) |
+| [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py), [test_lane](test_lane.py) |
+| [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) |
+| [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) |
+| [links-by-pull-request](../scripts/links-by-pull-request.py) | [test_link_capture](test_link_capture.py) |
+| [orphans](../scripts/orphans.py) | [test_orphans](test_orphans.py) |
+| [priority](../scripts/priority.py) | [test_board_queue](test_board_queue.py), [test_deliver](test_deliver.py), [test_hotfix](test_hotfix.py), [test_priority](test_priority.py), [test_progress](test_progress.py) |
+| [progress](../scripts/progress.py) | [test_progress](test_progress.py), [test_shared](test_shared.py) |
+| [pull_request_body](../scripts/pull_request_body.py) | [test_pull_request_body](test_pull_request_body.py) |
+| [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py), [test_shared](test_shared.py) |
+| [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) |
+| [statuses](../scripts/statuses.py) | [test_board](test_board.py), [test_shared](test_shared.py), [test_statuses](test_statuses.py) |
+| [sync](../scripts/sync.py) | [test_align](test_align.py), [test_board_queue](test_board_queue.py), [test_deliver](test_deliver.py), [test_link_capture](test_link_capture.py), [test_progress](test_progress.py), [test_shared](test_shared.py), [test_statuses](test_statuses.py), [test_sync](test_sync.py) |
+| [testplan](../scripts/testplan.py) | [test_align](test_align.py), [test_testplan](test_testplan.py) |
 
 ### Documents
 
 | Document | Exercised by |
 | --- | --- |
-| `*/SKILL.md` | [test_modes](test_modes.py) (4) |
-| [README](README.md) | [test_readme](test_readme.py) (14) |
-| `SKILL.md` | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (31) |
-| `artifacts/` | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_command_contracts](test_command_contracts.py) (15), [test_documents](test_documents.py) (31) |
-| [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) (16) |
-| [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) (16) |
-| [hotfix](../artifacts/hotfix.md) | [test_kind_operations](test_kind_operations.py) (6) |
-| [work-kind](../artifacts/work-kind.md) | [test_kind_operations](test_kind_operations.py) (6) |
-| [delivery-branches](../artifacts/delivery-branches.md) | [test_worktrees](test_worktrees.py) (2) |
-| [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (14) |
-| [configuration](../configuration.md) | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (31) |
-| [conventions](../conventions.md) | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (31) |
-| [guidelines](../guidelines.md) | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (31) |
-| `modes/` | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (31) |
-| [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (14), [test_plan_publication](test_plan_publication.py) (14) |
-| [propose-mode](../modes/propose-mode.md) | [test_plan_mode](test_plan_mode.py) (14) |
-| [proposal](../artifacts/proposal.md) | [test_plan_mode](test_plan_mode.py) (14) |
-| `protocols/` | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (31) |
-| `references/` | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (31) |
-| [rules](../rules.md) | [test_board_status](test_board_status.py) (24), [test_checkouts](test_checkouts.py) (10), [test_documents](test_documents.py) (31) |
-
-A count beside a module measures that module, not the subject it appears against. The 33 tests of [test_dispatch](test_dispatch.py) do not all touch [deliver](../scripts/deliver.py), so a row's numbers are not a total.
+| `*/SKILL.md` | [test_modes](test_modes.py) |
+| [README](README.md) | [test_readme](test_readme.py) |
+| `SKILL.md` | [test_board_status](test_board_status.py), [test_checkouts](test_checkouts.py), [test_documents](test_documents.py) |
+| `artifacts/` | [test_board_status](test_board_status.py), [test_checkouts](test_checkouts.py), [test_command_contracts](test_command_contracts.py), [test_documents](test_documents.py) |
+| [pull-request](../artifacts/pull-request.md) | [test_merge_outcomes](test_merge_outcomes.py) |
+| [epic-integration](../protocols/epic-integration.md) | [test_merge_outcomes](test_merge_outcomes.py) |
+| [hotfix](../artifacts/hotfix.md) | [test_kind_operations](test_kind_operations.py) |
+| [work-kind](../artifacts/work-kind.md) | [test_kind_operations](test_kind_operations.py) |
+| [delivery-branches](../artifacts/delivery-branches.md) | [test_worktrees](test_worktrees.py) |
+| [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) |
+| [configuration](../configuration.md) | [test_board_status](test_board_status.py), [test_checkouts](test_checkouts.py), [test_documents](test_documents.py) |
+| [conventions](../conventions.md) | [test_board_status](test_board_status.py), [test_checkouts](test_checkouts.py), [test_documents](test_documents.py) |
+| [guidelines](../guidelines.md) | [test_board_status](test_board_status.py), [test_checkouts](test_checkouts.py), [test_documents](test_documents.py) |
+| `modes/` | [test_board_status](test_board_status.py), [test_checkouts](test_checkouts.py), [test_documents](test_documents.py) |
+| [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py), [test_plan_publication](test_plan_publication.py) |
+| [propose-mode](../modes/propose-mode.md) | [test_plan_mode](test_plan_mode.py) |
+| [proposal](../artifacts/proposal.md) | [test_plan_mode](test_plan_mode.py) |
+| `protocols/` | [test_board_status](test_board_status.py), [test_checkouts](test_checkouts.py), [test_documents](test_documents.py) |
+| `references/` | [test_board_status](test_board_status.py), [test_checkouts](test_checkouts.py), [test_documents](test_documents.py) |
+| [rules](../rules.md) | [test_board_status](test_board_status.py), [test_checkouts](test_checkouts.py), [test_documents](test_documents.py) |
 
 A folder row stays as code text because a link to a directory resolves to nothing a reader can open. [README](README.md) is this folder's own file, so [test_readme](test_readme.py) is the one row whose subject is the catalogue itself.
 
