@@ -1,0 +1,33 @@
+test_a_base_without_the_statement_runs_every_branch_check (test_sync.ToolingDeclaration.test_a_base_without_the_statement_runs_every_branch_check) ... ok
+test_a_complete_epic_waits_on_its_unmerged_base (test_sync.ToolingDeclaration.test_a_complete_epic_waits_on_its_unmerged_base) ... ok
+test_a_statement_the_base_carries_chooses_nothing (test_sync.ToolingDeclaration.test_a_statement_the_base_carries_chooses_nothing) ... ok
+test_a_sync_naming_no_base_reads_the_names_and_leaves_the_draft_unread (test_sync.ToolingDeclaration.test_a_sync_naming_no_base_reads_the_names_and_leaves_the_draft_unread) ... ok
+test_a_base_dropping_the_statement_leaves_every_check_made (test_sync.SeveralEpicBases.test_a_base_dropping_the_statement_leaves_every_check_made) ... ok
+test_bases_stating_different_names_choose_nothing (test_sync.SeveralEpicBases.test_bases_stating_different_names_choose_nothing) ... ok
+test_a_readable_statement_leaves_no_check_unmade_over_a_base_without_one (test_sync.UnavailableDeclaration.test_a_readable_statement_leaves_no_check_unmade_over_a_base_without_one) ... ok
+test_a_revision_needs_a_project (test_sync.UnavailableDeclaration.test_a_revision_needs_a_project) ... ok
+test_a_run_given_no_branches_names_the_checks_it_did_not_make (test_sync.UnavailableDeclaration.test_a_run_given_no_branches_names_the_checks_it_did_not_make) ... ok
+test_a_tooling_branch_without_the_statement_is_unevaluable_with_its_source (test_sync.UnavailableDeclaration.test_a_tooling_branch_without_the_statement_is_unevaluable_with_its_source) ... ok
+test_an_absent_tooling_branch_leaves_the_checks_unmade (test_sync.UnavailableDeclaration.test_an_absent_tooling_branch_leaves_the_checks_unmade) ... ok
+test_a_directory_beside_the_statement_names_nothing (test_sync.LongLivedNames.test_a_directory_beside_the_statement_names_nothing) ... ok
+test_a_directory_in_place_of_the_statement_is_unreadable (test_sync.LongLivedNames.test_a_directory_in_place_of_the_statement_is_unreadable) ... ok
+test_a_local_tooling_branch_chooses_nothing (test_sync.LongLivedNames.test_a_local_tooling_branch_chooses_nothing) ... ok
+test_a_repository_without_the_tooling_branch_is_unevaluable (test_sync.LongLivedNames.test_a_repository_without_the_tooling_branch_is_unevaluable) ... ok
+test_a_statement_only_on_another_branch_is_unevaluable (test_sync.LongLivedNames.test_a_statement_only_on_another_branch_is_unevaluable) ... ok
+test_a_statement_that_is_not_text_is_unreadable (test_sync.LongLivedNames.test_a_statement_that_is_not_text_is_unreadable) ... ok
+test_an_empty_statement_is_unevaluable (test_sync.LongLivedNames.test_an_empty_statement_is_unevaluable) ... ok
+test_an_uncommitted_statement_is_not_read (test_sync.LongLivedNames.test_an_uncommitted_statement_is_not_read) ... ok
+test_every_worktree_reads_the_tooling_branch_alike (test_sync.LongLivedNames.test_every_worktree_reads_the_tooling_branch_alike) ... ok
+test_names_need_a_project (test_sync.LongLivedNames.test_names_need_a_project) ... ok
+test_names_take_no_revision (test_sync.LongLivedNames.test_names_take_no_revision) ... ok
+test_the_statement_names_the_branches (test_sync.LongLivedNames.test_the_statement_names_the_branches) ... ok
+test_base_preparation_reads_the_branches_the_tooling_branch_alone_declares (test_command_contracts.DocumentedCommandBehavior.test_base_preparation_reads_the_branches_the_tooling_branch_alone_declares) ... ok
+test_a_target_is_checked_against_the_tooling_branch_alone (test_deliver.HotFixUnits.test_a_target_is_checked_against_the_tooling_branch_alone) ... ok
+test_every_mention_names_the_tooling_branch_or_its_example (test_documents.BranchDeclarationHome.test_every_mention_names_the_tooling_branch_or_its_example) ... ok
+test_listing_the_branches_takes_no_revision (test_documents.BranchDeclarationHome.test_listing_the_branches_takes_no_revision) ... ok
+test_the_one_revision_named_is_the_tooling_branch_remote_head (test_documents.BranchDeclarationHome.test_the_one_revision_named_is_the_tooling_branch_remote_head) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 1.705s
+
+OK

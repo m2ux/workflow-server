@@ -14,6 +14,15 @@ A project that keeps config/ on its tooling branch alone, as prosiform does, oth
 | --- | --- |
 | Which branch holds the declaration | The tooling branch is workspace for every project; no project setting names another. |
 
+## Artifacts
+
+| Artifact | What it holds |
+| --- | --- |
+| [Work Item](f24.md) | Declared files, design, criteria and test plan |
+| [Validation](validation.md) | Tested revision, checks, observations and limits |
+| [Focused Results](focused.txt) | The criterion tests' verbose output |
+| [Suite Results](suite.txt) | Complete Work Planner test result |
+
 ## Links
 
 | Resource | URL |
