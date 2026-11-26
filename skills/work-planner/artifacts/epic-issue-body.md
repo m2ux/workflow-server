@@ -131,6 +131,7 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 - A pull request whose head is an epic base is the pull request that merges that base, and is not matched to a task.
 - An unmerged epic base keeps the epic open, even when every row is delivered and every criterion is ticked.
 - An epic base is reported `draft` only where it holds a commit its long-lived branch lacks. The base is read at the `--revision` naming it and the long-lived branch beside it on the same remote, so `origin/i07/e00/main` is compared with `origin/main`; a base no `--revision` names is reported `unevaluable`.
+- Fetch the tooling branch [Branches](delivery-branches.md#branches) names before the run.
 - The long-lived branch names are the ones the tooling branch declares, read as [Branches](delivery-branches.md#branches) states; the `source` line names their path, commit and repository. Repeat `--revision` for every fetched epic base, such as `origin/i07/e00/main`, whose commits the draft check reads.
 - An absent, empty or unreadable statement is reported `unevaluable` with its source. Without the long-lived branch names, the run names each check it did not make as `not checked`, and an epic that would otherwise be closable is not.
 - An open review pull request's Changes paths are read at its head commit in the `--project` repository: a path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree. A head commit the repository does not hold is reported `unevaluable`.
